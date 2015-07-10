@@ -1,0 +1,43 @@
+<div class="well groupCard">
+  <div class="row">
+    <div class="col-sm-8">
+      <p class="lead">
+        <%= @group.name %>
+      </p>
+    </div>
+    <div class="col-sm-4">
+      <p class="lead text-right">
+        <%= link_to edit_user_group_path(@user, @group) do %>
+            <span class="glyphicon glyphicon-pencil"></span>
+        <% end %>
+        <%= link_to user_group_path(@user, @group), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+            <span class="glyphicon glyphicon-trash"></span>
+        <% end %>
+      </p>
+    </div>
+  </div>
+  <table class="table table-striped">
+    <thead>
+    <td>
+      Schüler/-in
+    </td>
+    <td>
+      Tests
+    </td>
+    </thead>
+    <tbody>
+    <% @group.students.each do |student| %>
+        <tr>
+          <td>
+            <%= link_to student.name, user_group_student_path(@user, @group, student)%>
+          </td>
+          <td>
+            --
+          </td>
+        </tr>
+    <% end %>
+    </tbody>
+  </table>
+  <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default" %>
+</div>
+
