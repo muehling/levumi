@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<component name="dataSourceStorage">
-  <data-source source="LOCAL" name="Rails Levumi: development" uuid="b4f51ad0-3067-47a5-adce-618b67484def">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-  <data-source source="LOCAL" name="Rails Levumi: test" uuid="f29818b8-7489-43d4-a0e0-5ba44c14e073">
-    <database-info product="" version="" jdbc-version="" driver-name="" driver-version=""/>
-  </data-source>
-</component>
