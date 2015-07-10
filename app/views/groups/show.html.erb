@@ -1,4 +1,5 @@
-<div class="well groupCard">
+<div class="well groupCard" id="group">
+
   <div class="row">
     <div class="col-sm-8">
       <p class="lead">
@@ -16,28 +17,21 @@
       </p>
     </div>
   </div>
-  <table class="table table-striped">
-    <thead>
-    <td>
-      Schüler/-in
-    </td>
-    <td>
-      Tests
-    </td>
-    </thead>
-    <tbody>
-    <% @group.students.each do |student| %>
-        <tr>
-          <td>
-            <%= link_to student.name, user_group_student_path(@user, @group, student)%>
-          </td>
-          <td>
-            --
-          </td>
-        </tr>
-    <% end %>
-    </tbody>
-  </table>
-  <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default" %>
+
+  <ul class="nav nav-tabs" role="tablist">
+    <li role="presentation" class="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab">Überblick</a></li>
+    <li role="presentation"><a href="#setup" aria-controls="setup" role="tab" data-toggle="tab">Schüler/-innen</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane" id="overview">
+      <%= render 'overview' %>
+    </div>
+    <div role="tabpanel" class="tab-pane" id="setup">
+      <%= render 'students/index' %>
+    </div>
+  </div>
+
+
 </div>
 
