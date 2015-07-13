@@ -30,9 +30,11 @@
     </div>
 <% end %>
   <div class="col-md-4 col-sm-6 col-xs-12">
-  <%= link_to new_user_group_path(@user) do %>
-    <div class="btn btn-default groupButton">
-        Neue Klasse anlegen
+    <div id="newGroup">
+      <%= link_to new_user_group_path(@user), :data => {:remote => true} do %>
+          <div class="btn btn-default groupButton">
+            Neue Klasse anlegen
+          </div>
+      <% end %>
     </div>
-  <% end %>
   </div>

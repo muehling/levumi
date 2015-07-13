@@ -25,13 +25,13 @@ class GroupsController < ApplicationController
   # POST /groups
   # POST /groups.json
   def create
+    @groups = @user.groups
     @group = @user.groups.build(group_params)
-
     respond_to do |format|
       if @group.save
-        format.html { redirect_to [@user, @group], notice: 'Klasse wurde erfolgreich angelegt.' }
+        format.js
       else
-        format.html { render :new }
+        format.js {render :new}
       end
     end
   end
@@ -41,9 +41,12 @@ class GroupsController < ApplicationController
   def update
     respond_to do |format|
       if @group.update(group_params)
-        format.html { redirect_to [@user, @group]}
+        format.js
       else
-        format.html { render :edit }
+        format.js {
+        @group.reload
+        render :edit
+        }
       end
     end
   end
