@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20150708084011) do
   end
 
   create_table "students", force: true do |t|
+    t.text     "firstname"
     t.text     "name"
     t.integer  "group_id"
     t.datetime "created_at"
@@ -30,6 +31,8 @@ ActiveRecord::Schema.define(version: 20150708084011) do
   create_table "users", force: true do |t|
     t.text     "email"
     t.text     "password_digest"
+    t.text     "name"
+    t.text     "school"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,14 +1,14 @@
 <div class="well groupCard" id="group">
 
   <div class="row">
-    <div class="col-sm-8">
+    <div class="col-sm-10">
       <div id="groupName">
         <p class="lead">
           <%= @group.name %>
         </p>
       </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-sm-2">
       <p class="lead text-right">
         <%= link_to edit_user_group_path(@user, @group), :data => {:remote => true} do %>
             <span class="glyphicon glyphicon-pencil"></span>

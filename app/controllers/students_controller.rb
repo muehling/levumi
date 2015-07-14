@@ -1,4 +1,6 @@
 class StudentsController < ApplicationController
+  before_action :set_user
+  before_action :set_group
   before_action :set_student, only: [:show, :edit, :update, :destroy]
 
   # GET /students
@@ -24,11 +26,26 @@ class StudentsController < ApplicationController
   # POST /students
   # POST /students.json
   def create
-    @student = Student.new(student_params)
+    @student = Student.new
+    if (params.has_key?(:file))
+      begin
+        success = true
+        Student.import(params[:file], @group)
+      rescue
+        success = false
+      end
+    else
+      @student = @group.students.new(student_params)
+      success = @student.save
+      unless success
+        @student.destroy
+        @group.reload
+      end
+    end
 
     respond_to do |format|
-      if @student.save
-        format.html { redirect_to @student, notice: 'Student was successfully created.' }
+      if success
+        format.html { redirect_to new_user_group_student_path(@user, @group), notice: 'Schüler/-in erfolgreich angelegt.' }
       else
         format.html { render :new }
       end
@@ -62,8 +79,17 @@ class StudentsController < ApplicationController
       @student = Student.find(params[:id])
     end
 
+
+    def set_user
+      @user = User.find(params[:user_id])
+    end
+
+    def set_group
+      @group = Group.find(params[:group_id])
+    end
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def student_params
-      params.require(:student).permit(:name)
+      params.require(:student).permit(:name, :firstname)
     end
 end

@@ -25,13 +25,12 @@ class ApplicationController < ActionController::Base
     redirect_to '/'
   end
 
-
   private
 
   def check_login
     if session[:user_id].nil?
-      #redirect_to '/'
-    else
+      @login = User.find(1) # Auto-Login!
+     else
       @login = User.find(session[:user_id])
     end
   end

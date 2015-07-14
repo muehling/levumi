@@ -1,21 +1,38 @@
-<%= form_for(@user) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= form_for(@user, :html => {:class => "form"}) do |f| %>
+    <% if @user.errors.any? %>
+        <div class="alert alert-danger">
+            <% @user.errors.full_messages.each do |message| %>
+                <%= message %><br/>
+            <% end %>
+        </div>
+    <% end %>
 
-      <ul>
-      <% @user.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+    <div class="form-group">
+      <%= f.label :name, :class => "control-label" %><br>
+      <%= f.text_field :name, :class => "form-control" %>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :email %><br>
-    <%= f.text_field :email %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
-  </div>
+    <div class="form-group">
+      <%= f.label :email, :class => "control-label" %><br>
+      <%= f.text_field :email, :class => "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :school, :class => "control-label" %><br>
+      <%= f.text_field :school, :class => "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password, :class => "control-label" %><br>
+      <%= f.password_field :password, :class => "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password_confirmation, :class => "control-label" %><br>
+      <%= f.password_field :password_confirmation, :class => "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.submit :class => "btn btn-primary"%>
+      <% if @user.id.nil? %>
+        <%= link_to "Abbrechen", users_path, :class => "btn btn-default"%>
+      <% else %>
+          <%= link_to "Abbrechen", user_path(@user), :class => "btn btn-default"%>
+      <% end %>
+    </div>
 <% end %>
