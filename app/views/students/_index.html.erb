@@ -6,9 +6,12 @@
   <th>
     Tests
   </th>
+  <th>
+    Aktion
+  </th>
   </thead>
   <tbody>
-  <% @group.students.each do |student| %>
+  <% @group.students.sort_by { |a| a.name}.each do |student| %>
       <tr>
         <td>
           <%= link_to "#{student.name}, #{student.firstname}", user_group_student_path(@user, @group, student)%>
@@ -16,8 +19,19 @@
         <td>
           --
         </td>
+        <td>
+            <%= link_to edit_user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
+                <span class="glyphicon glyphicon-pencil"></span>
+            <% end %>
+            <%= link_to user_group_student_path(@user, @group, student), :method => :delete, :data => {:remote => true, :confirm => "Sind Sie sicher?"} do %>
+                <span class="glyphicon glyphicon-trash"></span>
+            <% end %>
+        </td>
       </tr>
   <% end %>
   </tbody>
 </table>
-<%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default" %>
+<div id="form">
+  <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
+</div>
+

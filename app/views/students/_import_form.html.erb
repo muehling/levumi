@@ -1,14 +1,10 @@
+<% unless alert.blank? %>
+    <div class="alert alert-danger">
+        <%= alert %>
+    </div>
+<% end %>
+
 <%= form_for([@user, @group, @student], :html => {:class => "form-inline"}, multipart: true) do |f| %>
-
-  <% if @student.errors.any? %>
-      <ul>
-      <% @student.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-  <% end %>
-
-
     <div class="form-group">
       <%= f.label "Datei", :class => "sr-only" %>
       <%= file_field_tag "file" %>

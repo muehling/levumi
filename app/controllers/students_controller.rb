@@ -31,8 +31,10 @@ class StudentsController < ApplicationController
       begin
         success = true
         Student.import(params[:file], @group)
+        flash.now[:notice] = "Schülerdaten erfolgreich importiert."
       rescue
         success = false
+        flash.now[:alert] = "Fehler beim Importieren der Schülerdaten."
       end
     else
       @student = @group.students.new(student_params)
@@ -45,9 +47,12 @@ class StudentsController < ApplicationController
 
     respond_to do |format|
       if success
-        format.html { redirect_to new_user_group_student_path(@user, @group), notice: 'Schüler/-in erfolgreich angelegt.' }
+        format.html { redirect_to new_user_group_student_path(@user, @group), notice: flash.now[:notice] }
+        format.js {
+          @student = Student.new
+        }
       else
-        format.html { render :new }
+        format.js { render :new }
       end
     end
   end
@@ -57,9 +62,9 @@ class StudentsController < ApplicationController
   def update
     respond_to do |format|
       if @student.update(student_params)
-        format.html { redirect_to @student, notice: 'Student was successfully updated.' }
+        format.js
       else
-        format.html { render :edit }
+        format.js { render :edit }
       end
     end
   end
@@ -69,7 +74,7 @@ class StudentsController < ApplicationController
   def destroy
     @student.destroy
     respond_to do |format|
-      format.html { redirect_to students_url, notice: 'Student was successfully destroyed.' }
+      format.js
     end
   end
 

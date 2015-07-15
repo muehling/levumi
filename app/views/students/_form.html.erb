@@ -1,24 +1,36 @@
-<%= form_for([@user, @group, @student], :html => {:class => "form-inline"}) do |f| %>
-
-  <% if @student.errors.any? %>
-      <ul>
+<% if @student.errors.any? %>
+    <div class="alert alert-danger">
       <% @student.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+          <%= message %><br/>
       <% end %>
-      </ul>
-  <% end %>
+    </div>
+<% end %>
 
-    <div class="form-group">
-      <%= f.label :name, :class => "control-label" %>
-      <%= f.text_field :name, :class => "form-control" %>
-    </div>
-    <div class="form-group">
-      <%= f.label :firstname, :class => "control-label" %>
-      <%= f.text_field :firstname, :class => "form-control" %>
-    </div>
+<%= form_for([@user, @group, @student], :html => {:class => "form-inline"}, :data => {:remote => true}) do |f| %>
+
+  <% if @student.errors[:name].any? %>
+        <div class="form-group has-error">
+  <% else %>
+        <div class="form-group">
+  <% end %>
+    <%= f.label :name, :class => "control-label" %>
+    <%= f.text_field :name, :class => "form-control" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :firstname, :class => "control-label" %>
+    <%= f.text_field :firstname, :class => "form-control" %>
+  </div>
 
   <div class="form-group">
     <%= f.submit :class => "btn btn-primary" %>
-    <%= link_to "Abbrechen", user_group_path(@user, @group), :class => "btn btn-default"%>
+
+    <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
   </div>
+
 <% end %>
+
+<script>
+    function cancelForm() {
+        $('#form').html("<%= escape_javascript(raw(link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true})) %>");
+    }
+</script>

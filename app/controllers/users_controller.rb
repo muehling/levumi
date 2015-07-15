@@ -42,7 +42,13 @@ class UsersController < ApplicationController
   def update
     respond_to do |format|
       if @user.update(user_params)
-        format.html { redirect_to @user, notice: 'Daten erfolgreich geändert.' }
+        format.html {
+          if @login.isAdmin? && @login.id != @user.id
+            redirect_to users_path
+          else
+            redirect_to @user
+          end
+        }
       else
         format.html { render :edit }
       end

@@ -29,7 +29,7 @@
     </div>
     <div class="form-group">
       <%= f.submit :class => "btn btn-primary"%>
-      <% if @user.id.nil? %>
+      <% if @user.id.nil? || (@login.isAdmin? && @login.id != @user.id) %>
         <%= link_to "Abbrechen", users_path, :class => "btn btn-default"%>
       <% else %>
           <%= link_to "Abbrechen", user_path(@user), :class => "btn btn-default"%>

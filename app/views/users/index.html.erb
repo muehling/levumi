@@ -5,6 +5,12 @@
         Benutzer
       </th>
       <th>
+        Name
+      </th>
+      <th>
+        Schule
+      </th>
+      <th>
         Aktion
       </th>
       </thead>
@@ -12,7 +18,13 @@
       <% @users.each do |user| %>
           <tr>
             <td>
-              <%= link_to user.name, user_path(user) %>
+              <%= link_to user.email, user_path(user) %>
+            </td>
+            <td>
+              <%= user.name %>
+            </td>
+            <td>
+              <%= user.school %>
             </td>
             <td>
               <%= link_to edit_user_path(user) do %>
