@@ -1,8 +1,37 @@
-<div id="graph">
+<div id="chart">
 
 </div>
+
 <script type="text/javascript" charset="utf-8">
-    var vis = d3.select("#graph").append("svg");
-    vis.attr("width", $('#group').width())
-       .attr("height", Math.round($('#group').width()*9/16));
+    var chart = c3.generate({
+        bindto: '#chart',
+        data: {
+            x: 'x',
+            columns: [
+                ['x', '2013-01-01', '2013-02-02', '2013-03-03', '2013-04-04', '2013-06-05', '2013-09-06'],
+                 <% @group.students.each do |student| %>
+                    ['<%= student.name %>', <%= rand(1..100)%>, <%= rand(1..100)%>, <%= rand(1..100)%>, <%= rand(1..100)%>, <%= rand(1..100)%>, <%= rand(1..100)%>],
+                <% end %>
+            ]
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    fit: true,
+                    format: "%e %b %y"
+                },
+                label: { // ADD
+                    text: 'Testzeitpunkte',
+                    position: 'outer-left'
+                }
+            },
+            y: {
+                label: { // ADD
+                    text: 'Prozentsatz',
+                    position: 'outer-middle'
+                }
+            }
+        }
+    });
 </script>

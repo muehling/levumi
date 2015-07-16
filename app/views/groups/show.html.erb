@@ -20,20 +20,19 @@
     </div>
   </div>
 
-  <ul class="nav nav-tabs" role="tablist">
+  <ul id="tabs" class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab">Überblick</a></li>
     <li role="presentation"><a href="#setup" aria-controls="setup" role="tab" data-toggle="tab">Schüler/-innen</a></li>
   </ul>
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane" id="overview">
+    <div role="tabpanel" class="tab-pane active" id="overview">
       <%= render 'overview' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="setup">
       <%= render 'students/index' %>
     </div>
   </div>
-
 
 </div>
 
