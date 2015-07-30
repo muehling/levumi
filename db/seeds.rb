@@ -13,3 +13,25 @@ s = g.students.build(name: "Adam")
 s.save
 s = g.students.build(name: "Eva")
 s.save
+t = Test.create(name: "Lesetest")
+a = g.assessments.build(test_id: t.id)
+a.save
+
+m = a.measurements.build(date: Date.yesterday)
+m.save
+r = m.results.build(student: Student.find(1), total: 0.5)
+r.save
+r = m.results.build(student: Student.find(2), total: 0.3)
+r.save
+
+m = a.measurements.build(date: Date.today)
+m.save
+r = m.results.build(student: Student.find(1), total: 0.5)
+r.save
+
+m = a.measurements.build(date: Date.tomorrow)
+m.save
+r = m.results.build(student: Student.find(1), total: 0.512)
+r.save
+r = m.results.build(student: Student.find(2), total: 0.6)
+r.save

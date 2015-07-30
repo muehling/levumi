@@ -212,6 +212,7 @@ de:
     models:
       group: Klasse
       student: Schüler/-in
+      user: Benutzer
     attributes:
       user:
         school: Schule

@@ -11,11 +11,44 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150708084011) do
+ActiveRecord::Schema.define(version: 20150730143725) do
+
+  create_table "assessments", force: true do |t|
+    t.integer  "group_id"
+    t.integer  "test_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "groups", force: true do |t|
     t.text     "name"
     t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "archive"
+  end
+
+  create_table "items", force: true do |t|
+    t.integer  "test_id"
+    t.text     "text"
+    t.integer  "difficulty"
+    t.integer  "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "measurements", force: true do |t|
+    t.integer  "assessment_id"
+    t.datetime "date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "results", force: true do |t|
+    t.integer  "student_id"
+    t.integer  "measurement_id"
+    t.text     "result"
+    t.float    "total"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -24,6 +57,13 @@ ActiveRecord::Schema.define(version: 20150708084011) do
     t.text     "firstname"
     t.text     "name"
     t.integer  "group_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tests", force: true do |t|
+    t.text     "name"
+    t.text     "info"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

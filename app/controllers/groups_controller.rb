@@ -42,6 +42,9 @@ class GroupsController < ApplicationController
     respond_to do |format|
       if @group.update(group_params)
         format.js
+        format.html {
+          redirect_to user_groups_path(@user)
+        }
       else
         format.js {
         @group.reload
@@ -72,6 +75,6 @@ class GroupsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
-      params.require(:group).permit(:name)
+      params.require(:group).permit(:name, :archive)
     end
 end

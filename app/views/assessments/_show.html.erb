@@ -1,0 +1,78 @@
+<div class="groupCard">
+
+  <div class="row">
+    <div class="col-sm-10">
+      <p class="lead text-left">
+        <%= Test.find(@assessment.test_id).name %>
+      </p>
+    </div>
+    <div class="col-sm-2">
+      <p class="lead text-right">
+        <%= link_to user_group_assessments_path(@user, @group), :title => "Neue Messung", :data => {:remote => true} do%>
+            <span class="glyphicon glyphicon-plus"></span>
+        <% end %>
+        <%= link_to user_group_assessments_path(@user, @group), :title => "Zurück", :data => {:remote => true} do%>
+            <span class="glyphicon glyphicon-list"></span>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class = "row">
+    <div class="col-sm-12">
+        <div id="chart">
+        </div>
+    </div>
+  </div>
+
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    var chart = c3.generate({
+        bindto: '#chart',
+        data: {
+            x: 'x',
+            columns: [
+                ['x',
+                <% @assessment.measurements.each do |m| %>
+                   '<%= m.date.to_date %>',
+                <% end %>
+                ],
+                <% @group.students.each do |student| %>
+                ['<%= student.name %>',
+                <% @assessment.measurements.each do |m| %>
+                    <% r = m.results.find_by_student_id(student.id) %>
+                    <% unless r.nil? %>
+                        <%= r.total*100%>
+                    <% else %>
+                        null
+                    <% end %>,
+                <% end %>
+                ],
+                <% end %>
+            ]
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    fit: true,
+                    format: "%e %b %y"
+                },
+                label: { // ADD
+                    text: 'Testzeitpunkte',
+                    position: 'outer-left'
+                }
+            },
+            y: {
+                label: { // ADD
+                    text: 'Prozentsatz',
+                    position: 'outer-middle'
+                }
+            }
+        },
+        line: {
+            connectNull: true
+        }
+    });
+</script>

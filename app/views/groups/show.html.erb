@@ -10,10 +10,19 @@
     </div>
     <div class="col-sm-2">
       <p class="lead text-right">
-        <%= link_to edit_user_group_path(@user, @group), :data => {:remote => true} do %>
+        <%= link_to edit_user_group_path(@user, @group), :title => "Bearbeiten", :data => {:remote => true} do %>
             <span class="glyphicon glyphicon-pencil"></span>
         <% end %>
-        <%= link_to user_group_path(@user, @group), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+        <% if @group.archive? %>
+            <%= link_to user_group_path(@user, @group, :group => {:archive => false}), :title => "Aktuell setzen", :method => :put do %>
+                <span class="glyphicon glyphicon-floppy-open"></span>
+            <% end %>
+        <% else %>
+            <%= link_to user_group_path(@user, @group, :group => {:archive => true}), :title => "Archivieren", :method => :put do %>
+                <span class="glyphicon glyphicon-floppy-save"></span>
+            <% end %>
+        <% end %>
+        <%= link_to user_group_path(@user, @group), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
             <span class="glyphicon glyphicon-trash"></span>
         <% end %>
       </p>
@@ -21,13 +30,13 @@
   </div>
 
   <ul id="tabs" class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#overview" aria-controls="overview" role="tab" data-toggle="tab">Überblick</a></li>
+    <li role="presentation" class="active"><a href="#tests" aria-controls="tests" role="tab" data-toggle="tab">Tests</a></li>
     <li role="presentation"><a href="#setup" aria-controls="setup" role="tab" data-toggle="tab">Schüler/-innen</a></li>
   </ul>
 
   <div class="tab-content">
-    <div role="tabpanel" class="tab-pane active" id="overview">
-      <%= render 'overview' %>
+    <div role="tabpanel" class="tab-pane active" id="tests">
+      <%= render 'assessments/index' %>
     </div>
     <div role="tabpanel" class="tab-pane" id="setup">
       <%= render 'students/index' %>

@@ -1,40 +1,44 @@
-<% @groups.each do |group| %>
+<ul id="tabs" class="nav nav-tabs" role="tablist">
+  <li role="presentation" class="active"><a href="#active" aria-controls="active" role="tab" data-toggle="tab">Aktuell</a></li>
+  <li role="presentation"><a href="#archive" aria-controls="archive" role="tab" data-toggle="tab">Archiv</a></li>
+</ul>
+
+<div class="tab-content">
+  <div role="tabpanel" class="tab-pane active" id="active">
+    <% @groups.each do |group| %>
+        <% unless group.archive %>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+              <%= link_to user_group_path(@user, group) do %>
+                  <div class="btn btn-default groupButton">
+                    <b><%= group.name %></b>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
+    <% end %>
     <div class="col-md-4 col-sm-6 col-xs-12">
-      <%= link_to user_group_path(@user, group) do %>
-      <div class="btn btn-default groupButton">
-        <p class="lead">
-          <%= group.name %>
-        </p>
-        <table class="table table-condensed">
-          <thead>
-          <td>
-            Schüler/-innen
-          </td>
-          <td>
-            Tests
-          </td>
-          </thead>
-          <tbody>
-          <tr>
-            <td>
-              <%= group.students.size %>
-            </td>
-            <td>
-              --
-            </td>
-          </tr>
-          </tbody>
-        </table>
+      <div id="newGroup">
+        <%= link_to new_user_group_path(@user), :data => {:remote => true} do %>
+            <div class="btn btn-default groupButton">
+              <i>Neue Klasse anlegen</i>
+            </div>
+        <% end %>
       </div>
-      <% end %>
-    </div>
-<% end %>
-  <div class="col-md-4 col-sm-6 col-xs-12">
-    <div id="newGroup">
-      <%= link_to new_user_group_path(@user), :data => {:remote => true} do %>
-          <div class="btn btn-default groupButton">
-            Neue Klasse anlegen
-          </div>
-      <% end %>
     </div>
   </div>
+
+  <div role="tabpanel" class="tab-pane" id="archive">
+    <% @groups.each do |group| %>
+        <% if group.archive %>
+            <div class="col-md-4 col-sm-6 col-xs-12">
+              <%= link_to user_group_path(@user, group) do %>
+                  <div class="btn btn-default groupButton">
+                     <b><%= group.name %></b>
+                  </div>
+              <% end %>
+            </div>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+
