@@ -213,6 +213,7 @@ de:
       group: Klasse
       student: Schüler/-in
       user: Benutzer
+      measurement: Messung
     attributes:
       user:
         school: Schule
@@ -221,3 +222,5 @@ de:
         password_confirmation: Passwort-Bestätigung
       student:
         firstname: Vorname
+      measurement:
+        date: Zeitpunkt

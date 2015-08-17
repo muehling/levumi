@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20150730143725) do
   create_table "results", force: true do |t|
     t.integer  "student_id"
     t.integer  "measurement_id"
-    t.text     "result"
+    t.text     "results"
     t.float    "total"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -64,6 +64,7 @@ ActiveRecord::Schema.define(version: 20150730143725) do
   create_table "tests", force: true do |t|
     t.text     "name"
     t.text     "info"
+    t.integer  "len"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,0 +1,47 @@
+var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+        x: 'x',
+        columns: [
+            ['x',
+                <% @assessment.measurements.each do |m| %>
+                '<%= m.date.to_date %>',
+                <% end %>
+            ],
+            <% @group.students.each do |student| %>
+            ['<%= student.name %>',
+                <% @assessment.measurements.each do |m| %>
+                <% r = m.results.find_by_student_id(student.id) %>
+                <% unless r.nil? %>
+                <%= r.total*100%>
+                <% else %>
+                null
+                <% end %>,
+                <% end %>
+            ],
+            <% end %>
+        ]
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                fit: true,
+                format: "%e %b %y"
+            },
+            label: { // ADD
+                text: 'Testzeitpunkte',
+                position: 'outer-left'
+            }
+        },
+        y: {
+            label: { // ADD
+                text: 'Prozentsatz',
+                position: 'outer-middle'
+            }
+        }
+    },
+    line: {
+        connectNull: true
+    }
+});

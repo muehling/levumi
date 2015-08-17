@@ -4,7 +4,7 @@
     Schüler/-in
   </th>
   <th>
-    Tests
+    Insgesamte Messungen
   </th>
   <th>
     Aktion
@@ -17,7 +17,7 @@
           <%= link_to "#{student.name}, #{student.firstname}", user_group_student_path(@user, @group, student)%>
         </td>
         <td>
-          --
+          <%= student.results.count %>
         </td>
         <td>
             <%= link_to edit_user_group_student_path(@user, @group, student), :data => {:remote => true} do %>

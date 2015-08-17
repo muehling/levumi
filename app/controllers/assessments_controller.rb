@@ -59,8 +59,7 @@ class AssessmentsController < ApplicationController
   def destroy
     @assessment.destroy
     respond_to do |format|
-      format.html { redirect_to assessments_url, notice: 'Assessment was successfully destroyed.' }
-      format.json { head :no_content }
+      format.html { redirect_to user_group_path(@user, @group) }
     end
   end
 

@@ -1,5 +1,6 @@
 class Student < ActiveRecord::Base
   belongs_to :group
+  has_many :results, :dependent => :destroy
 
   validates_presence_of :name
 

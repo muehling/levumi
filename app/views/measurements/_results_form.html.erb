@@ -1,0 +1,62 @@
+<div class="panel-group" role="tablist">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="hSimple">
+      <h4 class="panel-title">
+        <a class="" role="button" data-toggle="collapse" href="#cSimple" aria-expanded="false" aria-controls="cSimple">
+          Direkte Eingabemasken
+        </a>
+      </h4>
+    </div>
+    <div style="" aria-expanded="true" id="cSimple" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hSimple">
+      <div class="panel-body">
+        <%= form_for([@user, @group, @assessment, @measurement], :html => {:class => "form-inline"}, :data => {:remote => true}) do |f| %>
+            <table class="table table-striped">
+              <thead>
+              <th>
+                Schüler/-in
+              </th>
+              <th>
+                Ergebnis
+              </th>
+              </thead>
+              <tbody>
+              <% @measurement.results.each do |r| %>
+                  <tr>
+                    <td>
+                      <%= r.student.name %>
+                    </td>
+                    <td>
+                      <%= text_field_tag "results[#{r.student.id}]", r.to_csv, class: "form-control", placeholder: "z.B. 1,0,0,1"%>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+          <%= submit_tag 'Speichern', :class => "btn btn-default" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+   <% first = true %>
+    <% @measurement.results.each do |r| %>
+        <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="h<%=r.id%>">
+          <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded="<%=first%>" aria-controls="c<%=r.id%>">
+              <%= r.student.name %>
+            </a>
+          </h4>
+        </div>
+        <div id="c<%=r.id%>" class="panel-collapse collapse <% if first %> in <% end %>" role="tabpanel" aria-labelledby="h<%=r.id%>">
+          <div class="panel-body">
+            ...
+          </div>
+        </div>
+      </div>
+     <% first = false %>
+    <% end %>
+</div>

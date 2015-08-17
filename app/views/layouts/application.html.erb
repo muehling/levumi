@@ -25,7 +25,6 @@
       <% if @login != nil %>
           <ul class="nav navbar-nav">
             <li><%= link_to "Klassen", user_groups_path(@login)%></li>
-            <li><a href="#">Tests</a></li>
             <li><%= link_to("Meine Daten", user_path(@login))%></li>
             <% if @login.isAdmin? %>
                 <li><%= link_to("Verwaltung", users_path)%></li>

@@ -2,7 +2,9 @@ Rails.application.routes.draw do
 
   resources :users do
     resources :groups do
-      resources :assessments
+      resources :assessments do
+        resources :measurements
+      end
       resources :students
     end
   end

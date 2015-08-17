@@ -1,0 +1,50 @@
+<table class="table table-striped">
+  <thead>
+  <th>
+    Zeitpunkt
+  </th>
+  <th>
+    Anzahl Ergebnisse
+  </th>
+  <th>
+    Durchschnitt
+  </th>
+  <th>
+    Aktionen
+  </th>
+  </thead>
+  <tbody>
+  <% @assessment.measurements.sort_by { |a| a.date}.each do |measurement| %>
+      <tr>
+        <td>
+          <%= measurement.date.to_date.strftime("%d.%m.%Y") %>
+        </td>
+        <td>
+          <%= measurement.results.count %>
+        </td>
+        <td>
+          <% if measurement.results.count > 0 %>
+            <%= ((measurement.results.map{|f| f.total}.sum*100)/measurement.results.count).round(1) %>%
+          <% else %>
+            --
+          <% end %>
+        </td>
+        <td>
+          <%= link_to '#', :title => "Messung jetzt durchführen" do %>
+              <span class="glyphicon glyphicon-expand"></span>
+          <% end %>
+          <%= link_to edit_user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>
+              <span class="glyphicon glyphicon-pencil"></span>
+          <% end %>
+          <%= link_to user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Löschen", :method => :delete, :data => {:remote => true, :confirm => "Damit gehen alle Ergebnisse dieser Messung verloren!\n\nSind Sie sicher?"} do %>
+              <span class="glyphicon glyphicon-trash"></span>
+          <% end %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+<div id="form">
+  <%= link_to "Neue Messung", new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true} %>
+</div>
+
