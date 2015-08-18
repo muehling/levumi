@@ -27,14 +27,14 @@ class StudentsController < ApplicationController
   # POST /students.json
   def create
     @student = Student.new
-    if (params.has_key?(:file))
+    if student_params.has_key?(:file)
       begin
         success = true
-        Student.import(params[:file], @group)
+        Student.import(student_params[:file], @group)
         flash.now[:notice] = "Schülerdaten erfolgreich importiert."
       rescue
         success = false
-        flash.now[:alert] = "Fehler beim Importieren der Schülerdaten."
+        flash.now[:notice] = "Fehler beim Importieren der Schülerdaten!"
       end
     else
       @student = @group.students.new(student_params)
@@ -47,12 +47,13 @@ class StudentsController < ApplicationController
 
     respond_to do |format|
       if success
-        format.html { redirect_to new_user_group_student_path(@user, @group), notice: flash.now[:notice] }
+        format.html { redirect_to user_group_students_path(@user, @group), notice: flash.now[:notice] }
         format.js {
           @student = Student.new
         }
       else
         format.js { render :new }
+        format.html { redirect_to user_group_students_path(@user, @group), notice: flash.now[:notice] }
       end
     end
   end
@@ -95,6 +96,6 @@ class StudentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def student_params
-      params.require(:student).permit(:name, :firstname)
+      params.require(:student).permit(:name, :firstname, :file)
     end
 end

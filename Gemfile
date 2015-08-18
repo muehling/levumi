@@ -42,4 +42,4 @@ gem 'bootstrap-sass', '~> 3.2.0'
 
 gem 'roo', '~> 2.0.0'
 gem 'roo-xls'
-
+gem "iconv", "~> 1.0.3"

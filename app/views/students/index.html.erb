@@ -1,0 +1,24 @@
+<div class="well groupCard" id="group">
+  <h2>Ergebnisse des Imports</h2>
+
+    <table class="table table-striped">
+      <thead>
+      <th>
+        Schüler/-in
+      </th>
+      </thead>
+      <tbody>
+      <% @group.students.sort_by { |a| a.name}.each do |student| %>
+          <tr>
+            <td>
+              <%= student.name %>, <%= student.firstname %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <div id="form">
+      <%= link_to "Zurück", user_group_path(@user, @group), :class => "btn btn-default" %>
+    </div>
+
+</div>
