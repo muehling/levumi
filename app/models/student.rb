@@ -7,9 +7,10 @@ class Student < ActiveRecord::Base
   def self.import(file, group)
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
+    header.each{|h| h.downcase!}
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      student = Student.new
+      student = Student.new(name: row["name"], firstname: row["vorname"])
       student.attributes = row.to_hash.slice(*accessible_attributes)
       student.save!
     end

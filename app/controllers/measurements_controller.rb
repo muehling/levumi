@@ -42,21 +42,10 @@ class MeasurementsController < ApplicationController
   # PATCH/PUT /measurements/1.json
   def update
     respond_to do |format|
-      results = params[:results]
-      unless results.nil?
-        results.each do |id, val|
-          r = @measurement.results.find_by_student_id(id)
-          unless r.nil?
-            r.parse_csv(val)
-          end
-        end
-        format.js { render 'assessments/show' }
+      if @measurement.update(measurement_params)
+        format.js { redirect_to [@user, @group, @assessment] }
       else
-        if @measurement.update(measurement_params)
-          format.js { redirect_to [@user, @group, @assessment] }
-        else
-          format.js { render :edit }
-        end
+        format.js { render :edit }
       end
     end
   end

@@ -10,7 +10,6 @@
     Durchschnitt
   </th>
   <th>
-    Aktionen
   </th>
   </thead>
   <tbody>
@@ -20,20 +19,25 @@
           <%= measurement.date.to_date.strftime("%d.%m.%Y") %>
         </td>
         <td>
-          <%= measurement.results.count %>
+          <% if measurement.results.count == 0 %>
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Messung jetzt durchführen" do %>
+                  <span class="glyphicon glyphicon-expand"></span>
+              <% end %>
+          <% else %>
+              <%= link_to edit_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>
+                  <%= measurement.results.count %>
+              <% end %>
+          <% end %>
         </td>
         <td>
           <% if measurement.results.count > 0 %>
             <%= ((measurement.results.map{|f| f.total}.sum*100)/measurement.results.count).round(1) %>%
           <% else %>
-            --
+          --
           <% end %>
         </td>
         <td>
-          <%= link_to '#', :title => "Messung jetzt durchführen" do %>
-              <span class="glyphicon glyphicon-expand"></span>
-          <% end %>
-          <%= link_to edit_user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>
+          <%= link_to edit_user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Messung bearbeiten", :data => {:remote => true} do %>
               <span class="glyphicon glyphicon-pencil"></span>
           <% end %>
           <%= link_to user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Löschen", :method => :delete, :data => {:remote => true, :confirm => "Damit gehen alle Ergebnisse dieser Messung verloren!\n\nSind Sie sicher?"} do %>

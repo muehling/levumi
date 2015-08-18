@@ -14,7 +14,7 @@
   <% @group.students.sort_by { |a| a.name}.each do |student| %>
       <tr>
         <td>
-          <%= link_to "#{student.name}, #{student.firstname}", user_group_student_path(@user, @group, student)%>
+          <%= student.name %>, <%= student.firstname %>
         </td>
         <td>
           <%= student.results.count %>

@@ -1,0 +1,75 @@
+<div class="panel-group" role="tablist">
+</div>
+
+
+<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="hSimple">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#cSimple" aria-expanded=<% if @last.nil? %>"true"<% else %>"false"<% end %>  aria-controls="cSimple">
+        Direkte Eingabemasken
+        </a>
+      </h4>
+    </div>
+    <div style="" aria-expanded="true" id="cSimple" class="panel-collapse collapse <% if @last.nil? %>in<% end %> " role="tabpanel" aria-labelledby="hSimple">
+      <div class="panel-body">
+        <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form-inline"}, :data => {:remote => true}) do %>
+            <table class="table table-striped">
+              <thead>
+              <th>
+                Schüler/-in
+              </th>
+              <th>
+                Ergebnis
+              </th>
+              </thead>
+              <tbody>
+              <% @measurement.results.each do |r| %>
+                  <tr>
+                    <td>
+                      <%= r.student.name %>
+                    </td>
+                    <td>
+                      <%= text_field_tag "results[#{r.student.id}]", r.to_csv, class: "form-control", placeholder: "z.B. 1,0,0,1"%>
+                    </td>
+                  </tr>
+              <% end %>
+              </tbody>
+            </table>
+            <%= submit_tag 'Speichern', :class => "btn btn-primary" %>
+            <%= link_to "Zurück",  [@user, @group, @assessment], :data => {:remote => true}%>
+        <% end %>
+      </div>
+    </div>
+    </div>
+
+    <% open = false %>
+    <% @measurement.results.each do |r| %>
+        <div class="panel panel-default">
+        <div class="panel-heading" role="tab" id="h<%=r.id%>">
+          <h4 class="panel-title">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded=<% if open %>"true"<% else %>"false"<% end %> aria-controls="c<%=r.id%>">
+              <%= r.student.name %>
+            </a>
+          </h4>
+        </div>
+        <div id="c<%=r.id%>" class="panel-collapse collapse <% if open %>in<% end %>" role="tabpanel" aria-labelledby="h<%=r.id%>">
+          <div class="panel-body">
+            <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form"}, :data => {:remote => true}) do %>
+                  <% r.items.each do |i| %>
+                    <div class="checkbox">
+                      <label>
+                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 0, true, hidden: true%>
+                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %> <%= Item.find(i).description %><br/>
+                      </label>
+                    </div>
+                  <% end %>
+                <%= submit_tag 'Speichern', :class => "btn btn-primary" %>
+                <%= link_to "Zurück",  [@user, @group, @assessment], :data => {:remote => true}%>
+            <% end %>
+          </div>
+        </div>
+      </div>
+      <% open = true if (not @last.nil?) && (@last == r) %>
+    <% end %>
+</div>
