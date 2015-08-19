@@ -44,7 +44,7 @@ gem 'sshkit-sudo'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'bootstrap-sass', '~> 3.2.0'
+gem 'bootstrap-sass', '~> 3.3.5'
 
 gem 'roo', '~> 2.0.0'
 gem 'roo-xls'
