@@ -33,7 +33,11 @@ gem 'bcrypt', '~> 3.1.7'
 # gem 'unicorn'
 
 # Use Capistrano for deployment
-# gem 'capistrano-rails', group: :development
+gem 'capistrano', '~> 3.0'
+gem 'capistrano-rvm'
+gem 'capistrano-rails'
+gem 'capistrano-passenger'
+gem 'sshkit-sudo'
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
@@ -42,4 +46,6 @@ gem 'bootstrap-sass', '~> 3.2.0'
 
 gem 'roo', '~> 2.0.0'
 gem 'roo-xls'
-gem "iconv", "~> 1.0.3"
+gem 'iconv', '~> 1.0.3'
+
+gem 'magic_encoding'

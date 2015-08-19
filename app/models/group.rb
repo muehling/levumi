@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Group < ActiveRecord::Base
   belongs_to :user
   has_many :students

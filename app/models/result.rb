@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement

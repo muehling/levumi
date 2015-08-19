@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AssessmentsController < ApplicationController
   before_action :set_assessment, only: [:show, :edit, :update, :destroy]
   before_action :set_user

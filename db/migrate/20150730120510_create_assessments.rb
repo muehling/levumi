@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAssessments < ActiveRecord::Migration
   def change
     create_table :assessments do |t|

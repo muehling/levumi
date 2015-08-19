@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Test < ActiveRecord::Base
   has_many :items
   has_many :assessments
