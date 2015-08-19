@@ -3,6 +3,16 @@ class Result < ActiveRecord::Base
   belongs_to :measurement
   serialize :results, Hash
 
+  def initialize_results()
+    self.results = Hash.new
+    items = measurement.assessment.test.draw_items(0)
+    items.each do |i|
+      results[i.to_s] = '0'
+    end
+    self.total = 0
+    save
+  end
+
   def parse_csv(data)
     vals = data.split(',')
     len = measurement.assessment.test.len

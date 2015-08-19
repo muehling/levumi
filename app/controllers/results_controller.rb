@@ -17,7 +17,7 @@ class ResultsController < ApplicationController
 
   # GET /results/new
   def new
-    @result = Result.new
+   @measurement.prepare_test
   end
 
   # GET /results/1/edit
@@ -47,15 +47,19 @@ class ResultsController < ApplicationController
       results = result_params
       unless results.nil?
         stay = true
-        results.each do |id, val|
-          r = @measurement.results.find_by_student_id(id)
-          unless r.nil?
-            if val.is_a?(Hash)
-              r.parse_Hash(val)
-              @last = r
-            else
-              r.parse_csv(val)
-              stay = false
+        if results.has_key?("students")
+          @measurement.update_students(results["students"])
+        else
+          results.each do |id, val|
+            r = @measurement.results.find_by_student_id(id)
+            unless r.nil?
+              if val.is_a?(Hash)
+                r.parse_Hash(val)
+                @last = r
+              else
+                r.parse_csv(val)
+                stay = false
+              end
             end
           end
         end

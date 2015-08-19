@@ -72,4 +72,38 @@
       </div>
       <% open = true if (not @last.nil?) && (@last == r) %>
     <% end %>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="hAdd">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#cAdd" aria-expanded="false" aria-controls="cAdd">
+        Schüler/-innen hinzufügen oder entfernen
+        </a>
+        </h4>
+    </div>
+    <div id="cAdd" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hAdd">
+      <div class="panel-body">
+        <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form"}, :data => {:remote => true}) do %>
+            <% (@measurement.students).each do |s| %>
+                <div class="checkbox">
+                  <label>
+                    <%= check_box_tag "results[students[#{s.name}]]", s.id, true %> <%= "#{s.name}, #{s.firstname}" %><br/>
+                  </label>
+                </div>
+            <% end %>
+            --------------------------------------
+            <% (@group.students - @measurement.students).each do |s| %>
+                <div class="checkbox">
+                  <label>
+                    <%= check_box_tag "results[students[#{s.name}]]", s.id, false %> <%= "#{s.name}, #{s.firstname}" %><br/>
+                  </label>
+                </div>
+            <% end %>
+            <%= submit_tag 'Speichern', :class => "btn btn-primary", :data => {:confirm => "Sind Sie sicher?"} %>
+            <%= link_to "Zurück",  [@user, @group, @assessment], :data => {:remote => true}%>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
 </div>
