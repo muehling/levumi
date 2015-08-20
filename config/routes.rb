@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 Rails.application.routes.draw do
 
+  root 'application#welcome'
 
   resources :users do
     resources :groups do

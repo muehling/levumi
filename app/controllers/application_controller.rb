@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
     redirect_to '/'
   end
 
+  def welcome
+    render 'layouts/welcome', :layout => false
+  end
+
   private
 
   def check_login
