@@ -175,6 +175,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   spring
+  sprockets (~> 2.8)
   sqlite3
   sshkit-sudo
   turbolinks

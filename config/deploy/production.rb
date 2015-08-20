@@ -2,12 +2,13 @@
 set :stage, :production
 set :branch, 'master'
 
-server "vmhub1.informatik.tu-muenchen.de", user: 'administrator', password: 'DDI?istcool!', roles: %w{web app db}, :primary => true
+server "vmhub1.informatik.tu-muenchen.de", roles: %w{web app db}, user: 'administrator', password: 'DDI?istcool!', :primary => true
+
 set :web_user, 'www-data'
 
-set :use_sudo, false
+#set :use_sudo, false
 
-set :asset_env, "RAILS_RELATIVE_URL_ROOT=/levumi"
+#set :asset_env, "RAILS_RELATIVE_URL_ROOT=/levumi"
 
 set :rails_env, :production
 
@@ -34,4 +35,5 @@ namespace :custom do
 
 namespace :deploy do
   after :deploy, "custom:chown"
+  after :deploy, "passenger:restart"
 end
