@@ -1,21 +1,21 @@
 # -*- encoding : utf-8 -*-
 Rails.application.routes.draw do
 
-  scope 'levumi' do
-    resources :users do
-      resources :groups do
-        resources :assessments do
-          resources :measurements do
-            resource :results
-          end
-        end
-        resources :students
-      end
-    end
 
-    post 'login' => 'application#login'
-    post 'logout' => 'application#logout'
+  resources :users do
+    resources :groups do
+      resources :assessments do
+        resources :measurements do
+          resource :results
+        end
+      end
+      resources :students
+    end
   end
+
+  post 'login' => 'application#login'
+  post 'logout' => 'application#logout'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
