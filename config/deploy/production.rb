@@ -16,14 +16,20 @@ namespace :custom do
 
    task :chown do
      on roles(:app) do
-       execute :sudo, "chown -R #{fetch(:user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
+       execute :sudo, "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
      end
    end
+
+  task :restart do
+    on roles(:app) do
+      execute "touch #{fetch(:deploy_to)}/current/tmp/restart.txt"
+    end
+  end
 
 #   task :symlink do
 #     on roles(:app) do
 #       execute :sudo, "ln -s #{fetch(:deploy_to)}/current/public /var/www/levumi"
-#       execute :sudo, "chown -R #{fetch(:user)}:#{fetch(:web_user)} /var/www/levumi"
+#       execute :sudo, "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} /var/www/levumi"
 #     end
 #   end
 
@@ -35,5 +41,5 @@ namespace :custom do
 
 namespace :deploy do
   after :deploy, "custom:chown"
-  after :deploy, "passenger:restart"
+  after :deploy, "custom:restart"
 end

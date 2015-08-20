@@ -7,8 +7,6 @@ gem 'rails', '4.1.6'
 gem 'sqlite3'
 gem 'mysql2', '~> 0.3.13'
 
-gem 'sprockets', '~> 2.8'
-
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 4.0.3'
 # Use Uglifier as compressor for JavaScript assets
@@ -40,7 +38,7 @@ gem 'bcrypt', '~> 3.1.7'
 gem 'capistrano', '~> 3.4.0'
 gem 'capistrano-rvm'
 gem 'capistrano-rails', '~> 1.1.3'
-gem 'capistrano-passenger'
+#gem 'capistrano-passenger'
 gem 'sshkit-sudo'
 
 # Use debugger

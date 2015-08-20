@@ -30,7 +30,7 @@ set :pty, true
 SSHKit.config.command_map[:rake]  = "bundle exec rake"
 SSHKit.config.command_map[:rails] = "bundle exec rails"
 
-#set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system', 'public/uploads')
+#set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', 'public/system')
 #set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/secrets.yml')
 
 # Default value for default_env is {}
@@ -38,5 +38,3 @@ SSHKit.config.command_map[:rails] = "bundle exec rails"
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
-
-set :passenger_restart_with_touch, true
