@@ -35,9 +35,9 @@ gem 'bcrypt', '~> 3.1.7'
 # gem 'unicorn'
 
 # Use Capistrano for deployment
-gem 'capistrano', '~> 3.0'
+gem 'capistrano', '~> 3.4.0'
 gem 'capistrano-rvm'
-gem 'capistrano-rails'
+gem 'capistrano-rails', '~> 1.1.3'
 gem 'capistrano-passenger'
 gem 'sshkit-sudo'
 
