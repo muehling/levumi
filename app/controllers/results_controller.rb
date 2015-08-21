@@ -19,6 +19,7 @@ class ResultsController < ApplicationController
   # GET /results/new
   def new
    @measurement.prepare_test
+   render 'new', :layout => 'bare'
   end
 
   # GET /results/1/edit
