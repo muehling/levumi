@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   def logout
     session[:user_id] = nil
     @login = nil
-    redirect_to '/'
+    redirect_to root_url
   end
 
   def welcome
