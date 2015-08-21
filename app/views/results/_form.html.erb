@@ -27,7 +27,7 @@
               <% @measurement.results.each do |r| %>
                   <tr>
                     <td>
-                      <%= r.student.name %>
+                      <%= "#{r.student.name}, #{r.student.firstname}"  %>
                     </td>
                     <td>
                       <%= text_field_tag "results[#{r.student.id}]", r.to_csv, class: "form-control", placeholder: "z.B. 1,0,0,1"%>
