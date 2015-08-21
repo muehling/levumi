@@ -19,6 +19,8 @@ class AssessmentsController < ApplicationController
   # GET /assessments/new
   def new
     @assessment = Assessment.new
+    existing = @group.assessments.map{|x| x.test}
+    @tests = Test.all - existing
   end
 
   # GET /assessments/1/edit
@@ -28,31 +30,21 @@ class AssessmentsController < ApplicationController
   # POST /assessments
   # POST /assessments.json
   def create
-    @assessment = Assessment.new(assessment_params)
-
-    respond_to do |format|
-      if @assessment.save
-        format.html { redirect_to @assessment, notice: 'Assessment was successfully created.' }
-        format.json { render :show, status: :created, location: @assessment }
-      else
-        format.html { render :new }
-        format.json { render json: @assessment.errors, status: :unprocessable_entity }
+    @assessment = nil?
+    unless params[:test].nil?
+      test = params[:test].to_i
+      if Test.find(test)
+        @assessment = @group.assessments.build(:test_id => test)
+        @assessment.save
       end
     end
+    @assessments = Assessment.all
+    render :index
   end
 
   # PATCH/PUT /assessments/1
   # PATCH/PUT /assessments/1.json
   def update
-    respond_to do |format|
-      if @assessment.update(assessment_params)
-        format.html { redirect_to @assessment, notice: 'Assessment was successfully updated.' }
-        format.json { render :show, status: :ok, location: @assessment }
-      else
-        format.html { render :edit }
-        format.json { render json: @assessment.errors, status: :unprocessable_entity }
-      end
-    end
   end
 
   # DELETE /assessments/1
