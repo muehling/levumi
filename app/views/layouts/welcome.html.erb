@@ -24,7 +24,7 @@
     <div class="jumbotron">
       <h1>LeVuMi</h1>
       <p>Lern-Verlaufs-Monitoring</p>
-      <%= form_tag('/login', :class => "form") do %>
+      <%= form_tag(url_for(:controller => 'application', :action => 'login'), :class => "form") do %>
           <div class="form-group">
             <label class="sr-only" for="email">Email Adresse</label>
             <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
