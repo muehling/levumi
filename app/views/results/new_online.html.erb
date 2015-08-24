@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <p class="navbar-brand"><%= @measurement.assessment.test.name %></p>
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
 <div class="container-fluid">
@@ -21,7 +21,7 @@
                 <div class="row">
                     <% r.items.each do |i| %>
                       <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="btn btn-default groupButton" id="<%= r.id%>-<%= i%>" onclick="toggleState(this)">
+                        <div class="btn btn-default groupButton" id="<%= r.id%>-<%= i%>" onclick="toggleState(this, '<%= r.id%>', '<%= i.to_i%>')">
                           <b><%= Item.find(i.to_i).description %></b>
                         </div>
                       </div>
@@ -38,7 +38,15 @@
 </div>
 
 <script>
-    function toggleState(el) {
+    function toggleState(el, res, item) {
         $(el).toggleClass("btn-success");
+        var dict = {};
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = res + "#" + item + "#" + $(el).hasClass("btn-success");
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
     }
 </script>

@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
   end
 
   def welcome
-    render 'layouts/welcome', :layout => 'bare'
+    render 'welcome', :layout => 'bare'
   end
 
   private

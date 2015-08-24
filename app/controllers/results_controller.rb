@@ -19,7 +19,14 @@ class ResultsController < ApplicationController
   # GET /results/new
   def new
    @measurement.prepare_test
-   render 'new', :layout => 'bare'
+
+   respond_to do |format|
+     format.html {@format = "html"}
+     format.text {@format = "plain"}
+   end
+
+  render 'new', :formats => [:js], content_type: 'text/javascript'
+
   end
 
   # GET /results/1/edit
@@ -45,10 +52,17 @@ class ResultsController < ApplicationController
   # PATCH/PUT /results/1
   # PATCH/PUT /results/1.json
   def update
-    respond_to do |format|
-      results = result_params
-      unless results.nil?
-        stay = true
+    results = result_params
+    unless results.nil?
+      stay = true
+      if results.is_a?(String)
+        parts = results.split("#")
+        r = @measurement.results.find(parts[0].to_i)
+        unless r.nil?
+          r.update_item(parts[1], (parts[2] == "true" ? "1"  : "0"))
+          render nothing: true
+        end
+      else
         if results.has_key?("students")
           @measurement.update_students(results["students"])
         else
@@ -65,13 +79,15 @@ class ResultsController < ApplicationController
             end
           end
         end
-        format.js {
-          unless stay
-            render 'assessments/show'
-          else
-            render :edit
-          end
-        }
+        respond_to do |format|
+          format.js {
+            unless stay
+              render 'assessments/show'
+            else
+              render :edit
+            end
+          }
+        end
       end
     end
   end

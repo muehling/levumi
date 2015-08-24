@@ -51,6 +51,18 @@ class Result < ActiveRecord::Base
     save
   end
 
+  def update_item(item, val)
+    results[item] = val;
+    sum = 0.0
+    results.keys.each do |i|
+        if results[i] == '1'
+          sum = sum + 1.0
+        end
+    end
+    self.total = sum / measurement.assessment.test.len
+    save
+  end
+
   def to_csv()
     res = ""
     results.keys.sort.each do |i|

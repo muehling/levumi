@@ -20,8 +20,11 @@
         </td>
         <td>
           <% if measurement.results.count == 0 %>
-              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Messung jetzt durchführen" do %>
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :html), :title => "Messung online durchführen", :data => {:remote => true} do %>
                   <span class="glyphicon glyphicon-expand"></span>
+              <% end %>
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text), :title => "Messung offline durchführen", :data => {:remote => true} do %>
+                  <span class="glyphicon glyphicon-print"></span>
               <% end %>
           <% else %>
               <%= link_to edit_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>

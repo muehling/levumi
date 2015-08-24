@@ -60,7 +60,7 @@
                     <div class="checkbox">
                       <label>
                         <%= check_box_tag "results[#{r.student.id}[#{i}]]", 0, true, hidden: true%>
-                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %> <%= Item.find(i).description %><br/>
+                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %><%= Item.find(i).description %><br/>
                       </label>
                     </div>
                   <% end %>

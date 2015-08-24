@@ -1,0 +1,13 @@
+$('#table').html("<%= escape_javascript(render file: 'measurements/_index', :formats => [:html])%>");
+
+testWindow = window.open();
+testWindow.location = '';
+content = testWindow.document;
+
+<% if @format == 'plain' %>
+    content.write("<%= escape_javascript(render file: 'results/new_offline',  :layout => 'layouts/bare') %>");
+<% else %>
+    content.write("<%= escape_javascript(render file: 'results/new_online',  :layout => 'layouts/bare') %>");
+<% end %>
+
+content.close();
