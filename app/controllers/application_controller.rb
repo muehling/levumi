@@ -6,9 +6,9 @@ class ApplicationController < ActionController::Base
   before_filter :check_login, except: [:welcome, :login]
 
   def login
-    u = User.find_by_email(params[:email])
+    u = User.find_by_email(params[:loginemail])
     if u != nil
-      if u.authenticate(params[:password])
+      if u.authenticate(params[:loginpassword])
         session[:user_id] = u.id
         @login = u
         redirect_to user_groups_path(u), notice: "Eingeloggt als #{u.email}"

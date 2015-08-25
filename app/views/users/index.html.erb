@@ -30,8 +30,10 @@
               <%= link_to edit_user_path(user) do %>
                   <span class="glyphicon glyphicon-pencil"></span>
               <% end %>
-              <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                <span class="glyphicon glyphicon-trash"></span>
+              <% if user != @login %>
+                  <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                    <span class="glyphicon glyphicon-trash"></span>
+                  <% end %>
               <% end %>
             </td>
           </tr>
