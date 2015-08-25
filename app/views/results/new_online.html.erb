@@ -52,6 +52,12 @@
       </div>
     </div>
 
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="iButton" type="button" class="btn btn-block" onclick="window.close()">Messung beenden</button>
+      </div>
+    </div>
+
   </div>
 </div>
 
@@ -59,46 +65,46 @@
 
 <script>
 
-  $(window).keydown(function(event) {
-    switch (event.keyCode) {
-        case 49:
-            correct();
-            break;
-        case 48:
-            incorrect();
-            break;
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49, 97:
+                correct();
+                break;
+            case 48, 96:
+                incorrect();
+                break;
 
-    }
-  });
+        }
+    });
 
-  var currentStudent = -1;
-  var currentItemIndex = -1;
-  var currentResult = "";
+    var currentStudent = -1;
+    var currentItemIndex = -1;
+    var currentResult = "";
 
-  var itemData = {
-  <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= i.description%>",
-  <% end %>
-  };
+    var itemData = {
+        <% @measurement.assessment.test.items.each do |i| %>
+         <%= i.id%>: "<%= i.description%>",
+        <% end %>
+    };
 
-  var students = {
-  <% @measurement.results.each do |r| %>
-  <%= r.id%>: "<%= r.student.name%>, <%= r.student.firstname%>",
-  <% end %>
-  };
+    var students = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: "<%= r.student.name%>, <%= r.student.firstname%>",
+        <% end %>
+    };
 
-  var studentData = {
-      <% @measurement.results.each do |r| %>
-        <%= r.id%>: [
-              <% r.items.each do |i| %>
-              <%= i %>,
-              <% end %>
-      ],
-      <% end %>
-  };
+    var studentData = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: [
+                  <% r.items.each do |i| %>
+                  <%= i %>,
+                  <% end %>
+            ],
+        <% end %>
+    };
 
 
-  function setButtons(enabled) {
+    function setButtons(enabled) {
       if (enabled) {
           $('#cButton').removeClass("disabled");
           $('#cButton').addClass("btn-success");
@@ -115,9 +121,9 @@
           $('#sButton').removeClass("disabled");
           $('#sButton').addClass("btn-primary");
       }
-  }
+    }
 
-  function nextItem() {
+    function nextItem() {
       currentItemIndex++;
       if (currentItemIndex < studentData[currentStudent].length)
         $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
@@ -126,9 +132,9 @@
 
       if ((currentItemIndex+1) > studentData[currentStudent].length)
           setButtons(false);
-  }
+    }
 
-  function startTest(student) {
+    function startTest(student) {
       currentStudent = student;
       $('#mainModalHeader').html(students[student]);
       setButtons(true);
@@ -136,34 +142,34 @@
       nextItem();
       currentResult = "";
       $('#mainModal').modal('show');
-  }
+    }
 
-  function correct() {
+    function correct() {
     if (!$('#cButton').hasClass("disabled")) {
         currentResult = currentResult + "1,"
         nextItem();
     }
-  }
+    }
 
-  function incorrect() {
+    function incorrect() {
       if (!$('#iButton').hasClass("disabled")) {
           currentResult = currentResult + "0,"
           nextItem();
       }
-  }
+    }
 
     function save() {
-        if (!$('#sButton').hasClass("disabled")) {
-            $('#btn'+currentStudent).addClass("btn-success");
-            $('#mainModal').modal('hide');
-            var dict = {};
-            dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-            dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
-            $.ajax({
-                type: "PUT",
-                url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
-                data: dict
-            });
-        }
+    if (!$('#sButton').hasClass("disabled")) {
+        $('#btn'+currentStudent).addClass("btn-success");
+        $('#mainModal').modal('hide');
+        var dict = {};
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
     }
+  }
 </script>
