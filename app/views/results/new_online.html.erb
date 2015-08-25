@@ -4,49 +4,150 @@
 
 <div class="container-fluid">
   <div id="content">
-    <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
-      <% open = true %>
+    <div class="row">
       <% @measurement.results.each do |r| %>
-          <div class="panel panel-default">
-            <div class="panel-heading" role="tab" id="h<%=r.id%>">
-              <h4 class="panel-title">
-                <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded=<% if open %>"true"<% else %>"false"<% end %> aria-controls="c<%=r.id%>">
-                <%= "#{r.student.name}, #{r.student.firstname}" %>
-                </a>
-                </h4>
-            </div>
-            <div id="c<%=r.id%>" class="panel-collapse collapse <% if open %>in<% end %>" role="tabpanel" aria-labelledby="h<%=r.id%>">
-              <div class="panel-body">
-                <div class="row">
-                    <% r.items.each do |i| %>
-                      <div class="col-md-4 col-sm-6 col-xs-12">
-                        <div class="btn btn-default groupButton" id="<%= r.id%>-<%= i%>" onclick="toggleState(this, '<%= r.id%>', '<%= i.to_i%>')">
-                          <b><%= Item.find(i.to_i).description %></b>
-                        </div>
-                      </div>
-                    <% end %>
-                  </div>
-              </div>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="btn btn-default groupButton" id="btn<%=r.id%>" onclick="startTest(<%=r.id%>)">
+              <%= "#{r.student.name}, #{r.student.firstname}" %>
             </div>
           </div>
-          <% open = false%>
       <% end %>
-
     </div>
+
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="mainModalHeader"></h4>
+          </div>
+          <div class="modal-body" id="modalBody">
+            <h1 id="itemText" class="text-center">
+                Itemtext
+            </h1>
+          </div>
+          <div class="modal-footer" style="text-align: center">
+            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="incorrect()">Falsch</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="save()">Speichern</button>
+            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="correct()">Richtig</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
 
+
+
 <script>
-    function toggleState(el, res, item) {
-        $(el).toggleClass("btn-success");
-        var dict = {};
-        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-        dict["results"] = res + "#" + item + "#" + $(el).hasClass("btn-success");
-        $.ajax({
-            type: "PUT",
-            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
-            data: dict
-        });
+
+  $(window).keydown(function(event) {
+    switch (event.keyCode) {
+        case 49:
+            correct();
+            break;
+        case 48:
+            incorrect();
+            break;
+
+    }
+  });
+
+  var currentStudent = -1;
+  var currentItemIndex = -1;
+  var currentResult = "";
+
+  var itemData = {
+  <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.description%>",
+  <% end %>
+  };
+
+  var students = {
+  <% @measurement.results.each do |r| %>
+  <%= r.id%>: "<%= r.student.name%>, <%= r.student.firstname%>",
+  <% end %>
+  };
+
+  var studentData = {
+      <% @measurement.results.each do |r| %>
+        <%= r.id%>: [
+              <% r.items.each do |i| %>
+              <%= i %>,
+              <% end %>
+      ],
+      <% end %>
+  };
+
+
+  function setButtons(enabled) {
+      if (enabled) {
+          $('#cButton').removeClass("disabled");
+          $('#cButton').addClass("btn-success");
+          $('#iButton').removeClass("disabled");
+          $('#iButton').addClass("btn-danger");
+          $('#sButton').addClass("disabled");
+          $('#sButton').removeClass("btn-primary");
+      }
+      else {
+          $('#cButton').addClass("disabled");
+          $('#cButton').removeClass("btn-success");
+          $('#iButton').addClass("disabled");
+          $('#iButton').removeClass("btn-danger");
+          $('#sButton').removeClass("disabled");
+          $('#sButton').addClass("btn-primary");
+      }
+  }
+
+  function nextItem() {
+      currentItemIndex++;
+      if (currentItemIndex < studentData[currentStudent].length)
+        $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+      else
+        $('#itemText').html("");
+
+      if ((currentItemIndex+1) > studentData[currentStudent].length)
+          setButtons(false);
+  }
+
+  function startTest(student) {
+      currentStudent = student;
+      $('#mainModalHeader').html(students[student]);
+      setButtons(true);
+      currentItemIndex = -1;
+      nextItem();
+      currentResult = "";
+      $('#mainModal').modal('show');
+  }
+
+  function correct() {
+    if (!$('#cButton').hasClass("disabled")) {
+        currentResult = currentResult + "1,"
+        nextItem();
+    }
+  }
+
+  function incorrect() {
+      if (!$('#iButton').hasClass("disabled")) {
+          currentResult = currentResult + "0,"
+          nextItem();
+      }
+  }
+
+    function save() {
+        if (!$('#sButton').hasClass("disabled")) {
+            $('#btn'+currentStudent).addClass("btn-success");
+            $('#mainModal').modal('hide');
+            var dict = {};
+            dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+            dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+            $.ajax({
+                type: "PUT",
+                url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+                data: dict
+            });
+        }
     }
 </script>

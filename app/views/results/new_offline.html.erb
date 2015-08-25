@@ -10,11 +10,21 @@
       <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
       <% @measurement.results.each do |r| %>
           <h4><%= "#{r.student.name}, #{r.student.firstname}" %></h4>
-          <p class="lead">
-            <% r.items.each do |i| %>
-                <b><%= Item.find(i.to_i).description %></b><br/>
+          <table class="table table-bordered">
+            <% index = 0 %>
+            <% (r.items.count / 5 + 1).times do %>
+                <tr>
+                  <% 5.times do %>
+                      <td>
+                          <% if index < r.items.count %>
+                          <b><%= Item.find(r.items[index].to_i).description %></b>
+                           <% end %>
+                          <% index = index + 1 %>
+                      </td>
+                <% end %>
+                </tr>
             <% end %>
-          </p>
+          </table>
     <% end %>
   </div>
 </div>

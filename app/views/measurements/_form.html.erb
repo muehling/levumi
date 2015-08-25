@@ -15,6 +15,6 @@
 
 <script>
     function cancelForm() {
-        $('#form').html("<%= escape_javascript(raw(link_to 'Neue Messung', new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true})) %>");
+        $('#measurementForm').html("<%= escape_javascript(raw(link_to 'Neue Messung', new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true})) %>");
     }
 </script>

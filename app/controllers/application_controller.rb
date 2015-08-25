@@ -13,10 +13,10 @@ class ApplicationController < ActionController::Base
         @login = u
         redirect_to user_groups_path(u), notice: "Eingeloggt als #{u.email}"
       else
-        redirect_to '/', notice: "Benutzername oder Passwort falsch!"
+        redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
       end
     else
-      redirect_to '/', notice: "Benutzername oder Passwort falsch!"
+      redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
     end
   end
 

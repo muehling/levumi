@@ -4,6 +4,12 @@ class Test < ActiveRecord::Base
   has_many :assessments
 
   def draw_items(ability)
-    return items[0..(len-1)].map{|i| i.id}
+    itemset = Array.new
+    (1..len).each  do
+      remaining = items - itemset
+      itemset = itemset + [remaining.sample]
+    end
+    return itemset.map{|i| i.id}
   end
+
 end

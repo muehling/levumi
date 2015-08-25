@@ -59,7 +59,7 @@ class ResultsController < ApplicationController
         parts = results.split("#")
         r = @measurement.results.find(parts[0].to_i)
         unless r.nil?
-          r.update_item(parts[1], (parts[2] == "true" ? "1"  : "0"))
+          r.parse_csv(parts[1])
           render nothing: true
         end
       else
