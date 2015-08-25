@@ -23,14 +23,30 @@
             <h4 class="modal-title" id="mainModalHeader"></h4>
           </div>
           <div class="modal-body" id="modalBody">
-            <h1 id="itemText" class="text-center">
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <strong>
+              <p style="font-size:48px" id="itemText" class="text-center">
                 Itemtext
-            </h1>
+              </p>
+            </strong>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
           </div>
           <div class="modal-footer" style="text-align: center">
-            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="incorrect()">Falsch</button>
+            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="correct()">Richtig (Taste: 1)</button>
             <button id="sButton" type="button" class="btn btn-default disabled" onclick="save()">Speichern</button>
-            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="correct()">Richtig</button>
+            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="incorrect()">Falsch (Taste: 0)</button>
           </div>
         </div>
       </div>
@@ -106,7 +122,7 @@
       if (currentItemIndex < studentData[currentStudent].length)
         $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
       else
-        $('#itemText').html("");
+        $('#itemText').html("Test beendet. Bitte speichern.");
 
       if ((currentItemIndex+1) > studentData[currentStudent].length)
           setButtons(false);
