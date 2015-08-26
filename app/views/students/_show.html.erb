@@ -1,0 +1,123 @@
+<div class="groupCard">
+
+  <div class="row">
+    <div class="col-sm-12">
+      <p class="lead text-right">
+        <%= link_to '#', :title => "Zurück", :onclick => "cancel()" do%>
+            <span class="glyphicon glyphicon-th"></span>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+  <div class = "row">
+    <div class="col-sm-12">
+      <p class="lead text-center">
+        <%= @student.fullName %>
+      </p>
+    </div>
+  </div>
+
+<% @results.each do |key, val| %>
+  <% test = Test.find(key) %>
+  <% items = @student.getTestResults(key)%>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="h<%=key%>">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
+        <%= test.name %>
+        </a>
+        </h4>
+    </div>
+    <div id="c<%=key%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=key%>">
+      <div class="panel-body">
+
+        <p>
+          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+          <% first = true %>
+          <% test.items.each do |i| %>
+              <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] >= items["4th"] %>
+                  <% unless first %>
+                      <%= ", " %>
+                  <% end %>
+                  <% first = false %>
+                  <%= i.description %>
+              <% end %>
+          <% end %>
+        </p>
+        <p>
+          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+          <% first = true %>
+          <% test.items.each do |i| %>
+              <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] <= items["1st"] %>
+                  <% unless first %>
+                      <%= ", " %>
+                  <% end %>
+                  <% first = false %>
+                  <%= i.description %>
+              <% end %>
+          <% end %>
+        </p>
+
+        <table class="table table-striped">
+          <thead>
+          <th>
+            Zeitpunkt
+          </th>
+          <th>
+            Gelöste Items
+          </th>
+          <th>
+            Nicht gelöste Items
+          </th>
+          <th>
+            Prozentwert
+          </th>
+          </thead>
+          <tbody>
+            <% val.each do |r| %>
+                <tr>
+                  <td>
+                    <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% r.results.keys.sort.each do |i|%>
+                        <% if r.results[i] ==  "1" %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(i.to_i).description %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% r.results.keys.sort.each do |i|%>
+                        <% if r.results[i] ==  "0" %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(i.to_i).description %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= (r.total * 100).round(1)%>
+                  </td>
+                </tr>
+            <%end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+<% end %>
+
+<script>
+    function cancel() {
+        $('#students').html("<%= escape_javascript(render 'index') %>");
+    }
+</script>

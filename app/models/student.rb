@@ -24,4 +24,60 @@ class Student < ActiveRecord::Base
     end
   end
 
+  def getResults
+    tests = Hash.new()
+    items = Hash.new()
+    results.each do |r|
+      test = r.measurement.assessment.test.id
+      if tests.has_key?(test)
+        tests[test] = tests[test] + [r]
+      else
+        tests[test] = [r]
+      end
+      r.results.each do |item, val|
+        if items.has_key?(item)
+          items[item]["freq"] = items[item]["freq"] + 1
+          items[item]["cor"] = items[item]["cor"] + (val == "0" ? 0 : 1)
+          items[item]["prob"] = items[item]["cor"].to_f / items[item]["freq"]
+          items[item]["dates"] = items[item]["dates"] + [r.measurement.date]
+        else
+          items[item] = {"freq" => 1,"cor" => val.to_i, "prob" => val.to_i, "dates" => [r.measurement.date]}
+        end
+      end
+    end
+    return tests
+  end
+
+  def getTestResults(test_id)
+    items = Hash.new()
+    results.each do |r|
+      if test_id == r.measurement.assessment.test.id
+        r.results.each do |item, val|
+          if items.has_key?(item)
+            items[item]["freq"] = items[item]["freq"] + 1
+            items[item]["cor"] = items[item]["cor"] + (val == "0" ? 0 : 1)
+            items[item]["prob"] = items[item]["cor"].to_f / items[item]["freq"]
+            items[item]["dates"] = items[item]["dates"] + [r.measurement.date]
+          else
+            items[item] = {"freq" => 1,"cor" => val.to_i, "prob" => val.to_i, "dates" => [r.measurement.date]}
+          end
+        end
+      end
+    end
+    probs = []
+    items.each do |key, val|
+      probs = probs + [val["prob"]]
+    end
+    probs.sort!
+    return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
+  end
+
+  def fullName
+    if firstname.blank?
+      return name
+    else
+      return name + ", " + firstname
+    end
+  end
+
 end

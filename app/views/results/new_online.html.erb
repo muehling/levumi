@@ -9,7 +9,7 @@
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="btn btn-default groupButton" id="btn<%=r.id%>" onclick="startTest(<%=r.id%>)">
-              <%= "#{r.student.name}, #{r.student.firstname}" %>
+              <%= r.student.fullName %>
             </div>
           </div>
       <% end %>

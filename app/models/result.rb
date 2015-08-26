@@ -2,6 +2,7 @@
 class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement
+
   serialize :results, Hash
 
   def initialize_results()

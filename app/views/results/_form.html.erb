@@ -11,7 +11,7 @@
         </a>
       </h4>
     </div>
-    <div style="" aria-expanded="true" id="cSimple" class="panel-collapse collapse <% if @last.nil? %>in<% end %> " role="tabpanel" aria-labelledby="hSimple">
+    <div style="" aria-expanded=<% if @last.nil? %>"true"<% else %>"false"<% end %> id="cSimple" class="panel-collapse collapse <% if @last.nil? %>in<% end %> " role="tabpanel" aria-labelledby="hSimple">
       <div class="panel-body">
         <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form-inline"}, :data => {:remote => true}) do %>
             <table class="table table-striped">

@@ -6,6 +6,8 @@ class Measurement < ActiveRecord::Base
 
   validates_presence_of :date
 
+  default_scope {order('date DESC')}
+
   def prepare_test
     assessment.group.students.each do |s|
       r = results.build(student: s)

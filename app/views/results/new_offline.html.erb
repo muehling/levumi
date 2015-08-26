@@ -9,7 +9,7 @@
   <div id="content">
       <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
       <% @measurement.results.each do |r| %>
-          <h4><%= "#{r.student.name}, #{r.student.firstname}" %></h4>
+          <h4><%= r.student.fullName %></h4>
           <table class="table table-bordered">
             <% index = 0 %>
             <% (r.items.count / 5 + 1).times do %>

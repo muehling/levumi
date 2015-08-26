@@ -30,18 +30,22 @@
   </div>
 
   <ul id="tabs" class="nav nav-tabs" role="tablist">
-    <li role="presentation" class="active"><a href="#tests" aria-controls="tests" role="tab" data-toggle="tab">Tests</a></li>
-    <li role="presentation"><a href="#setup" aria-controls="setup" role="tab" data-toggle="tab">Schüler/-innen</a></li>
+    <li role="presentation" class="active"><%= link_to "Tests", user_group_assessments_path(@user, @group), :data => {:remote => true, :target => "#tests"} %></li>
+    <li role="presentation"><%= link_to "Schüler/-innen", user_group_students_path(@user, @group), :data => {:remote => true, :target => "#students"} %></li>
   </ul>
 
   <div class="tab-content">
     <div role="tabpanel" class="tab-pane active" id="tests">
       <%= render 'assessments/index' %>
     </div>
-    <div role="tabpanel" class="tab-pane" id="setup">
+    <div role="tabpanel" class="tab-pane" id="students">
       <%= render 'students/index' %>
     </div>
   </div>
 
 </div>
+
+<script>
+    $('#tabs a:first').tab('show');
+</script>
 
