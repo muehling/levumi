@@ -51,3 +51,5 @@ gem 'roo-xls'
 gem 'iconv', '~> 1.0.3'
 
 gem 'magic_encoding'
+
+gem 'seedbank'

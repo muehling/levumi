@@ -27,7 +27,7 @@ class Result < ActiveRecord::Base
       sum = 0.0
       items = results.keys
       v = 0
-      items.sort.each do |i|
+      items.each do |i|
       if vals[v] == '1'
         sum = sum + 1.0
         results[i] = '1'
@@ -43,7 +43,7 @@ class Result < ActiveRecord::Base
 
   def parse_Hash(hash)
     sum = 0.0
-    results.keys.sort.each do |i|
+    results.keys.each do |i|
       if hash.has_key?(i)
         if hash[i] == '1'
           results[i] = '1'
@@ -71,13 +71,13 @@ class Result < ActiveRecord::Base
 
   def to_csv()
     res = ""
-    results.keys.sort.each do |i|
+    results.keys.each do |i|
       res = res + results[i].to_s + ','
     end
     return res.chop
   end
 
   def items
-    return results.keys.sort
+    return results.keys
   end
 end
