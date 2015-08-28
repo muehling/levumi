@@ -6,6 +6,12 @@
   <div id="content">
 
     <div class="row">
+      <div class="col-lg-12">
+        <p class="lead">Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft 1 Sekunde nach Klick auf Namen los!</p>
+      </div>
+    </div>
+
+    <div class="row">
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="btn btn-default groupButton" id="btn<%=r.id%>" onclick="startTest(<%=r.id%>)">
@@ -30,11 +36,9 @@
             <br/>
             <br/>
             <br/>
-            <strong>
-              <p style="font-size:48px" id="itemText" class="text-center">
+              <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
                 Itemtext
               </p>
-            </strong>
             <br/>
             <br/>
             <br/>
@@ -83,7 +87,7 @@
 
     var itemData = {
         <% @measurement.assessment.test.items.each do |i| %>
-         <%= i.id%>: "<%= i.description%>",
+         <%= i.id%>: "<%= i.itemtext%>",
         <% end %>
     };
 
@@ -102,7 +106,6 @@
             ],
         <% end %>
     };
-
 
     function setButtons(enabled) {
       if (enabled) {
@@ -128,10 +131,7 @@
       if (currentItemIndex < studentData[currentStudent].length)
         $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
       else
-        $('#itemText').html("Test beendet. Bitte speichern.");
-
-      if ((currentItemIndex+1) > studentData[currentStudent].length)
-          setButtons(false);
+        stopTest();
     }
 
     function startTest(student) {
@@ -141,7 +141,13 @@
       currentItemIndex = -1;
       nextItem();
       currentResult = "";
+      window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 1000);
       $('#mainModal').modal('show');
+    }
+
+    function stopTest() {
+        $('#itemText').html("Test beendet. Bitte speichern.");
+        setButtons(false);
     }
 
     function correct() {

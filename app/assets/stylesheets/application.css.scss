@@ -25,3 +25,16 @@
   url(asset_path('bootstrap/glyphicons-halflings-regular.ttf')) format('truetype'),
   url(asset_path('bootstrap/glyphicons-halflings-regular.svg#glyphicons_halflingsregular')) format('svg');
 }
+
+@font-face {
+  font-family: 'fibel_nordregular';
+  src: url(font-path('fibel_nord-webfont.eot'));
+  src: url(font-path('fibel_nord-webfont.eot?#iefix')) format('embedded-opentype'),
+  url(font-path('fibel_nord-webfont.woff2')) format('woff2'),
+  url(font-path('fibel_nord-webfont.woff')) format('woff'),
+  url(font-path('fibel_nord-webfont.ttf')) format('truetype'),
+  url(font-path('fibel_nord-webfont.svg#fibel_nordregular')) format('svg');
+  font-weight: normal;
+  font-style: normal;
+
+}

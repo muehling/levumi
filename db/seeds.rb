@@ -15,17 +15,17 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
-t = Test.create(name: "Lesetest", len: 2, info: "Lesetest für die Grundschule, 1. Klasse")
-i = t.items.build(description: "haha", difficulty: 0.1, itemtype: 0)
-i.save
-i = t.items.build(description: "hoha", difficulty: 0.4, itemtype: 0)
-i.save
-i = t.items.build(description: "huho", difficulty: 0.7, itemtype: 0)
-i.save
-i = t.items.build(description: "laho", difficulty: 0.9, itemtype: 0)
-i.save
-
 t = Test.create(name: "Lesetest, Stufe 2", len: 0, info: "Lesetest für die Grundschule, 1. Klasse, Niveaustufe 2")
+
+t = TestSpeed.create(name: "Lesetest", len: 2, info: "Lesetest für die Grundschule, 1. Klasse", time: 60)
+i = t.items.build(itemtext: "haha", difficulty: 0.1)
+i.save
+i = t.items.build(itemtext: "hoha", difficulty: 0.4)
+i.save
+i = t.items.build(itemtext: "huho", difficulty: 0.7)
+i.save
+i = t.items.build(itemtext: "laho", difficulty: 0.9)
+i.save
 
 a = g.assessments.build(test_id: t.id)
 a.save

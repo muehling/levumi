@@ -8,6 +8,6 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   def isAdmin?
-    return id == 1
+    return id == 1 #TODO: Besser!
   end
 end

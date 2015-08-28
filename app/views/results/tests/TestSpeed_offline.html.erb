@@ -8,6 +8,7 @@
 <div class="container-fluid">
   <div id="content">
       <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
+      <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
       <% @measurement.results.each do |r| %>
           <h4><%= r.student.fullName %></h4>
           <table class="table table-bordered">
@@ -17,7 +18,7 @@
                   <% 5.times do %>
                       <td>
                           <% if index < r.items.count %>
-                          <b><%= Item.find(r.items[index].to_i).description %></b>
+                          <b><%= Item.find(r.items[index].to_i).itemtext %></b>
                            <% end %>
                           <% index = index + 1 %>
                       </td>

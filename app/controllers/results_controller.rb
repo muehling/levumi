@@ -19,6 +19,7 @@ class ResultsController < ApplicationController
   # GET /results/new
   def new
    @measurement.prepare_test
+   @test = @measurement.assessment.test.type
 
    respond_to do |format|
      format.html {@format = "html"}

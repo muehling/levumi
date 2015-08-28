@@ -16,6 +16,11 @@ class Result < ActiveRecord::Base
   end
 
   def parse_csv(data)
+    if data.nil?
+      self.total = 0
+      save
+      return
+    end
     vals = data.split(',')
     len = measurement.assessment.test.len
     if vals.size == len

@@ -6,12 +6,12 @@
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="hSimple">
       <h4 class="panel-title">
-        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#cSimple" aria-expanded=<% if @last.nil? %>"true"<% else %>"false"<% end %>  aria-controls="cSimple">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#cSimple" aria-expanded="false" aria-controls="cSimple">
         Direkte Eingabemasken
         </a>
       </h4>
     </div>
-    <div style="" aria-expanded=<% if @last.nil? %>"true"<% else %>"false"<% end %> id="cSimple" class="panel-collapse collapse <% if @last.nil? %>in<% end %> " role="tabpanel" aria-labelledby="hSimple">
+    <div style="" aria-expanded="false" id="cSimple" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hSimple">
       <div class="panel-body">
         <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form-inline"}, :data => {:remote => true}) do %>
             <table class="table table-striped">
@@ -43,7 +43,7 @@
     </div>
     </div>
 
-    <% open = false %>
+    <% open = @last.nil? %>
     <% @measurement.results.each do |r| %>
         <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="h<%=r.id%>">
@@ -60,7 +60,7 @@
                     <div class="checkbox">
                       <label>
                         <%= check_box_tag "results[#{r.student.id}[#{i}]]", 0, true, hidden: true%>
-                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %><%= Item.find(i).description %><br/>
+                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %><%= Item.find(i).shorthand %><br/>
                       </label>
                     </div>
                   <% end %>

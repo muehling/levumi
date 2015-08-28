@@ -5,9 +5,9 @@ testWindow.location = '';
 content = testWindow.document;
 
 <% if @format == 'plain' %>
-    content.write("<%= escape_javascript(render file: 'results/new_offline',  :layout => 'layouts/bare') %>");
+    content.write("<%= escape_javascript(render file: "results/tests/#{@test}_offline",  :layout => 'layouts/bare') %>");
 <% else %>
-    content.write("<%= escape_javascript(render file: 'results/new_online',  :layout => 'layouts/bare') %>");
+    content.write("<%= escape_javascript(render file: "results/tests/#{@test}_online",  :layout => 'layouts/bare') %>");
 <% end %>
 
 content.close();
