@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 
-cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 50, info: "(c) Dr. Diehl _ ISER, Uni-Rostock", time: 60)
+cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl _ ISER, Uni-Rostock", time: 60)
 
-consonantes = ["l", "n", "r", "m", "s", "L", "N", "R", "M", "S"]
+consonantes = ["l", "n", "r", "m", "f", "s", "L", "N", "R", "M", "F", "S"]
 vowels = ["a", "e", "i", "o", "u"]
 
 consonantes.each do |c|

@@ -84,6 +84,10 @@
     <div id="cAdd" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hAdd">
       <div class="panel-body">
         <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form"}, :data => {:remote => true}) do %>
+            <label>Zur Zeit erfasst (Häkchen entfernen für Änderung):</label>
+            <% if @measurement.students.empty? %>
+                <p>--</p>
+            <% end %>
             <% (@measurement.students).each do |s| %>
                 <div class="checkbox">
                   <label>
@@ -91,7 +95,10 @@
                   </label>
                 </div>
             <% end %>
-            --------------------------------------
+            <label>Noch nicht erfasst (Häkchen setzen für Änderung):</label>
+            <% if (@group.students - @measurement.students).empty? %>
+                <p>--</p>
+            <% end %>
             <% (@group.students - @measurement.students).each do |s| %>
                 <div class="checkbox">
                   <label>
