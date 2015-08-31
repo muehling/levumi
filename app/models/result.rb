@@ -3,81 +3,44 @@ class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement
 
-  serialize :results, Hash
+  serialize :items, Array
+  serialize :responses, Array
+
+  def update_total
+    self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/responses.size
+    save
+  end
 
   def initialize_results()
-    self.results = Hash.new
-    items = measurement.assessment.test.draw_items(0)
-    items.each do |i|
-      results[i.to_s] = '0'
-    end
-    self.total = 0
-    save
+    self.responses = Array.new
+    self.items = measurement.assessment.test.draw_items(0)
+    self.responses[self.items.size-1] = nil
+    update_total
   end
 
   def parse_csv(data)
     if data.nil?
-      self.total = 0
-      save
+      self.responses[self.items.size-1] = nil
       return
-    end
-    vals = data.split(',')
-    len = measurement.assessment.test.len
-    if vals.size == len
-      sum = 0.0
-      items = results.keys
-      v = 0
-      items.each do |i|
-      if vals[v] == '1'
-        sum = sum + 1.0
-        results[i] = '1'
-      else
-        results[i] = '0'
+    else
+      vals = data.split(',')
+      vals.length.times do |i|
+          self.responses[i] =  vals[i] == "1" ? 1 : (vals[i] == "0" ? 0 : nil)
       end
-      v = v + 1
-      end
-      self.total = sum / len
-      save      
     end
+    update_total
   end
 
   def parse_Hash(hash)
-    sum = 0.0
-    results.keys.each do |i|
-      if hash.has_key?(i)
-        if hash[i] == '1'
-          results[i] = '1'
-          sum = sum + 1.0
-        else
-          results[i] = '0'
-        end
-      end
+    hash.each do |i, r|
+      p = items.index(i.to_i)
+      responses[p] = (r == "1" ? 1 : (r == "0" ? 0 : nil)) unless p.nil?
     end
-    self.total = sum / measurement.assessment.test.len
-    save
+    update_total
   end
 
-  def update_item(item, val)
-    results[item] = val;
-    sum = 0.0
-    results.keys.each do |i|
-        if results[i] == '1'
-          sum = sum + 1.0
-        end
-    end
-    self.total = sum / measurement.assessment.test.len
-    save
+  def to_csv(includeNA)
+    responses.map{|x| (x == nil && includeNA)  ? 'NA': (x == nil ? 0 : x.to_s) }.join(",")
   end
 
-  def to_csv()
-    res = ""
-    results.keys.each do |i|
-      res = res + results[i].to_s + ','
-    end
-    return res.chop
-  end
-
-  def items
-    return results.keys
-  end
 end

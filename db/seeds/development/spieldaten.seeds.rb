@@ -32,19 +32,19 @@ a.save
 
 m = a.measurements.build(date: Date.yesterday)
 m.save
-r = m.results.build(student: Student.find(1), results: {"1" => "1", "2" => "0"}, total: 0.5)
+r = m.results.build(student: Student.find(1), items: [1, 2], responses: [1,0], total: 0.5)
 r.save
-r = m.results.build(student: Student.find(2), results: {"1" => "0", "2" => "0"}, total: 0.0)
+r = m.results.build(student: Student.find(2), items: [1, 2], responses:[0, 0], total: 0.0)
 r.save
 
 m = a.measurements.build(date: Date.today)
 m.save
-r = m.results.build(student: Student.find(1), results: {"1" => "1", "2" => "0"}, total: 0.5)
+r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
 r.save
 
 m = a.measurements.build(date: Date.tomorrow)
 m.save
-r = m.results.build(student: Student.find(1), results: {"1" => "1", "2" => "0"}, total: 0.5)
+r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
 r.save
-r = m.results.build(student: Student.find(2), results: {"1" => "1", "2" => "1"}, total: 1.0)
+r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
 r.save

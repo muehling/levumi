@@ -20,7 +20,7 @@
                 Schüler/-in
               </th>
               <th>
-                Ergebnisse (Werte 1 und 0, durch Komma getrennt)
+                Ergebnisse: Pro Item des Tests einer der Werte 1, 0 oder NA für "richtig", "falsch", bzw. "kein Ergebnis vorhanden". Werte durch Komma getrennt.)
               </th>
               </thead>
               <tbody>
@@ -30,7 +30,7 @@
                       <%= "#{r.student.name}, #{r.student.firstname}"  %>
                     </td>
                     <td>
-                      <%= text_field_tag "results[#{r.student.id}]", r.to_csv, class: "form-control", placeholder: "z.B. 1,0,0,1"%>
+                      <%= text_field_tag "results[#{r.student.id}]", r.to_csv(true), class: "form-control", placeholder: "z.B. 1,0,0,NA"%>
                     </td>
                   </tr>
               <% end %>
@@ -56,11 +56,13 @@
         <div id="c<%=r.id%>" class="panel-collapse collapse <% if open %>in<% end %>" role="tabpanel" aria-labelledby="h<%=r.id%>">
           <div class="panel-body">
             <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, :html => {:class => "form"}, :data => {:remote => true}) do %>
+                  <% index = 0 %>
                   <% r.items.each do |i| %>
                     <div class="checkbox">
                       <label>
                         <%= check_box_tag "results[#{r.student.id}[#{i}]]", 0, true, hidden: true%>
-                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.results[i] == "1" %><%= Item.find(i).shorthand %><br/>
+                        <%= check_box_tag "results[#{r.student.id}[#{i}]]", 1, r.responses[index] == 1 %><%= Item.find(i).shorthand %><br/>
+                        <% index = index + 1 %>
                       </label>
                     </div>
                   <% end %>
@@ -70,7 +72,7 @@
           </div>
         </div>
       </div>
-      <% open = true if (not @last.nil?) && (@last == r) %>
+      <% open = (not @last.nil?) && (@last == r) %>
     <% end %>
 
   <div class="panel panel-default">

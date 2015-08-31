@@ -18,7 +18,7 @@
                   <% 5.times do %>
                       <td>
                           <% if index < r.items.count %>
-                          <b><%= Item.find(r.items[index].to_i).itemtext %></b>
+                          <b><%= Item.find(r.items[index]).itemtext %></b>
                            <% end %>
                           <% index = index + 1 %>
                       </td>
