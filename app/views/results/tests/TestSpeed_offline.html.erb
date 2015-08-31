@@ -11,14 +11,14 @@
       <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
       <% @measurement.results.each do |r| %>
           <h4><%= r.student.fullName %></h4>
-          <table class="table table-bordered">
+          <table style="font-family: 'fibel_nordregular'; font-size:36px" class="table table-bordered">
             <% index = 0 %>
             <% (r.items.count / 5 + 1).times do %>
                 <tr>
                   <% 5.times do %>
                       <td>
                           <% if index < r.items.count %>
-                          <b><%= Item.find(r.items[index]).itemtext %></b>
+                          <%= Item.find(r.items[index]).itemtext %>
                            <% end %>
                           <% index = index + 1 %>
                       </td>
