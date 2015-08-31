@@ -13,7 +13,7 @@ var chart = c3.generate({
                 <% @assessment.measurements.each do |m| %>
                 <% r = m.results.find_by_student_id(student.id) %>
                 <% unless r.nil? %>
-                <%= r.total*100%>
+                <%= r.score %>
                 <% else %>
                 null
                 <% end %>,
@@ -36,7 +36,7 @@ var chart = c3.generate({
         },
         y: {
             label: { // ADD
-                text: 'Prozentsatz',
+                text: 'Anzahl richtiger Items',
                 position: 'outer-middle'
             }
         }

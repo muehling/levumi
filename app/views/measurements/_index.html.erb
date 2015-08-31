@@ -34,7 +34,7 @@
         </td>
         <td>
           <% if measurement.results.count > 0 %>
-            <%= ((measurement.results.map{|f| f.total}.sum*100)/measurement.results.count).round(1) %>%
+            <%= ((measurement.results.map{|f| f.score}.sum).to_f/measurement.results.count).round(1) %>
           <% else %>
           --
           <% end %>

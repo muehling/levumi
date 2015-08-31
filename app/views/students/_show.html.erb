@@ -33,7 +33,7 @@
       <div class="panel-body">
 
         <p>
-          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b><br/>
           <% first = true %>
           <% test.items.each do |i| %>
               <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] >= items["4th"] %>
@@ -46,7 +46,7 @@
           <% end %>
         </p>
         <p>
-          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b><br/>
           <% first = true %>
           <% test.items.each do |i| %>
               <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] <= items["1st"] %>
@@ -82,25 +82,25 @@
                   </td>
                   <td>
                     <% first = true %>
-                    <% r.results.keys.sort.each do |i|%>
-                        <% if r.results[i] ==  "1" %>
+                    <% for i in 0..r.items.size-1 do %>
+                        <% if r.responses[i] ==  1 %>
                             <% unless first %>
                                 <%= ", " %>
                             <% end %>
                             <% first = false %>
-                            <%= Item.find(i.to_i).shorthand %>
+                            <%= Item.find(r.items[i]).shorthand %>
                         <% end %>
                     <% end %>
                   </td>
                   <td>
                     <% first = true %>
-                    <% r.results.keys.sort.each do |i|%>
-                        <% if r.results[i] ==  "0" %>
+                    <% for i in 0..r.items.size-1 do%>
+                        <% if r.responses[i] ==  0 %>
                             <% unless first %>
                                 <%= ", " %>
                             <% end %>
                             <% first = false %>
-                            <%= Item.find(i.to_i).shorthand %>
+                            <%= Item.find(r.items[i]).shorthand %>
                         <% end %>
                     <% end %>
                   </td>

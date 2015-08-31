@@ -43,4 +43,8 @@ class Result < ActiveRecord::Base
     responses.map{|x| (x == nil && includeNA)  ? 'NA': (x == nil ? 0 : x.to_s) }.join(",")
   end
 
+  def score
+    responses.map{|x| x == nil ? 0:x}.sum
+  end
+
 end

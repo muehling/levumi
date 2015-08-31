@@ -34,15 +34,18 @@ class Student < ActiveRecord::Base
       else
         tests[test] = [r]
       end
-      r.results.each do |item, val|
+      for i in 0..r.responses.size-1 do
+        item = r.items[i].to_s
+        val = r.responses[i]
         if items.has_key?(item)
           items[item]["freq"] = items[item]["freq"] + 1
-          items[item]["cor"] = items[item]["cor"] + (val == "0" ? 0 : 1)
+          items[item]["cor"] = items[item]["cor"] + (val == nil ? 0 : val)
           items[item]["prob"] = items[item]["cor"].to_f / items[item]["freq"]
           items[item]["dates"] = items[item]["dates"] + [r.measurement.date]
         else
-          items[item] = {"freq" => 1,"cor" => val.to_i, "prob" => val.to_i, "dates" => [r.measurement.date]}
+          items[item] = {"freq" => 1,"cor" => (val == nil ? 0 : val), "prob" => (r.responses[i] == nil ? 0 : r.responses[i]), "dates" => [r.measurement.date]}
         end
+        i = i + 1
       end
     end
     return tests
@@ -52,15 +55,18 @@ class Student < ActiveRecord::Base
     items = Hash.new()
     results.each do |r|
       if test_id == r.measurement.assessment.test.id
-        r.results.each do |item, val|
+        for i in 0..r.responses.size-1 do
+          item = r.items[i].to_s
+          val = r.responses[i]
           if items.has_key?(item)
             items[item]["freq"] = items[item]["freq"] + 1
-            items[item]["cor"] = items[item]["cor"] + (val == "0" ? 0 : 1)
+            items[item]["cor"] = items[item]["cor"] + (val == nil ? 0 : val)
             items[item]["prob"] = items[item]["cor"].to_f / items[item]["freq"]
             items[item]["dates"] = items[item]["dates"] + [r.measurement.date]
           else
-            items[item] = {"freq" => 1,"cor" => val.to_i, "prob" => val.to_i, "dates" => [r.measurement.date]}
+            items[item] = {"freq" => 1,"cor" => (val == nil ? 0 : val), "prob" => (r.responses[i] == nil ? 0 : r.responses[i]), "dates" => [r.measurement.date]}
           end
+          i = i + 1
         end
       end
     end
