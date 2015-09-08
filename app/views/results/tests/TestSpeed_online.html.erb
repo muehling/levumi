@@ -71,10 +71,12 @@
 
     $(window).keydown(function(event) {
         switch (event.keyCode) {
-            case 49, 97:
+            case 49:
+            case 97:
                 correct();
                 break;
-            case 48, 96:
+            case 48:
+            case 96:
                 incorrect();
                 break;
 

@@ -15,9 +15,9 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
-t = Test.create(name: "Lesetest, Stufe 2", len: 0, info: "Lesetest für die Grundschule, 1. Klasse, Niveaustufe 2")
+t = Test.create(name: "Lesetest, Stufe 2", len: 0, info: "Lesetest für die Grundschule, 1. Klasse, Niveaustufe 2", short_info:  "Lesetest für die Grundschule, 1. Klasse, Niveaustufe 2")
 
-t = TestSpeed.create(name: "Lesetest", len: 2, info: "Lesetest für die Grundschule, 1. Klasse", time: 60)
+t = TestSpeed.create(name: "Lesetest", len: 2, info: "Lesetest für die Grundschule, 1. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse, Niveaustufe 2", time: 60)
 i = t.items.build(itemtext: "haha", difficulty: 0.1)
 i.save
 i = t.items.build(itemtext: "hoha", difficulty: 0.4)

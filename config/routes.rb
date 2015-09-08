@@ -14,6 +14,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :tests
+
   post 'login' => 'application#login'
   post 'logout' => 'application#logout'
 

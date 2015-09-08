@@ -12,4 +12,12 @@ class Test < ActiveRecord::Base
     return itemset.map{|i| i.id}
   end
 
+  def len_info
+    return "#{len} Items"
+  end
+
+  def type_info
+    return "Test"
+  end
+
 end
