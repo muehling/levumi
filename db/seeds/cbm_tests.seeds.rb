@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 65, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
 consonantes = ["l", "n", "r", "m", "f", "s", "L", "N", "R", "M", "F", "S"]
 vowels = ["a", "e", "i", "o", "u"]
@@ -27,7 +27,7 @@ consonantes.each do |c|
 end
 cbmN2.save
 
-cbmN3 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 3", len: 65, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN3 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 3", len: 100, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
 consonantes = ["j", "z", "v", "sch"]
 consonantes_up = ["J", "Z", "V", "Sch"]
