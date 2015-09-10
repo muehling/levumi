@@ -55,12 +55,6 @@ vowels_up.each do |c|
   end
 end
 vowels.each do |v|
-  i = cbmN3.items.build(itemtext: "qu"+v, difficulty: 0)
-  i.save
-  i = cbmN3.items.build(itemtext: "Qu"+v, difficulty: 0)
-  i.save
-end
-vowels.each do |v|
   if (v != "u" && v != "U")
     i = cbmN3.items.build(itemtext: "qu"+v, difficulty: 0)
     i.save
