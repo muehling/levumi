@@ -38,8 +38,10 @@ consonantes.each do |c|
   vowels.each do |v|
     i = cbmN3.items.build(itemtext: c+v, difficulty: 0)
     i.save
-    i = cbmN3.items.build(itemtext: v+c, difficulty: 0)
-    i.save
+    if c != "j"
+      i = cbmN3.items.build(itemtext: v+c, difficulty: 0)
+      i.save
+    end
   end
 end
 consonantes_up.each do |c|
@@ -48,14 +50,16 @@ consonantes_up.each do |c|
     i.save
   end
 end
-vowels_up.each do |c|
-  consonantes.each do |v|
-    i = cbmN3.items.build(itemtext: c+v, difficulty: 0)
-    i.save
+vowels_up.each do |v|
+  consonantes.each do |c|
+    if c != "j"
+      i = cbmN3.items.build(itemtext: v+c, difficulty: 0)
+      i.save
+    end
   end
 end
 vowels.each do |v|
-  if (v != "u")
+  if (v != "u" && v != "ü")
     i = cbmN3.items.build(itemtext: "qu"+v, difficulty: 0)
     i.save
     i = cbmN3.items.build(itemtext: "Qu"+v, difficulty: 0)
