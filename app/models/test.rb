@@ -6,8 +6,6 @@ class Test < ActiveRecord::Base
   def draw_items(ability)
     itemset = Array.new
     (1..len).each  do
-      puts itemset
-      puts"---------------------------"
       remaining = items - itemset
       itemset = itemset + [remaining.sample]
     end

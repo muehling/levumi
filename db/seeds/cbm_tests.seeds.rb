@@ -2,92 +2,50 @@
 
 cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
-consonantes = %w{f l m n r s F L M N R S}
-vowels = %w{a e i o u}
+items = %w{Fa fa Fe fe Fi fi Fo fo Fu fu la La le Le li Li lo Lo lu Lu ma Ma me Me mi Mi mo Mo mu Mu Na na Ne ne Ni ni No no Nu nu ra Ra re Re ri Ri ro Ro ru Ru Sa sa Se se Si si So so Su su}
 
-consonantes.each do |c|
-  vowels.each do |v|
-    i = cbmN1.items.build(itemtext: c+v, difficulty: 0)
-    i.save
-  end
+items.each do |i|
+  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it.save
 end
+
 cbmN1.save
 
 
-cbmN2 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 2", len: 65, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
-consonantes = %w{b d g h k p t w ch B D G H K P T W Ch}
-vowels = %w{a e i o u au ei eu}
+cbmN2 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 2", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
-consonantes.each do |c|
-  vowels.each do |v|
-    i = cbmN2.items.build(itemtext: c+v, difficulty: 0)
-    i.save
-  end
+items = %w{bel bel ben ber beu Beu bo Bo che chen cher da Da dau Dau de De del der do Do Du du ei Ei en eu Eu fen fer feu Feu ga Ga gel gen ha Ha hau Hau hei Hei hen ho Ho hu Hu ka Ka kau Kau ke Ke keu Keu Ki ki ko Ko ku Ku lau Lau lei Lei len men mer nen neu Neu pa Pa pi Pi po Po ra Ra rau Rau rei Rei sau Sau scha Scha schau Schau sche Sche schei Schei scheu Scheu schu Schu Sei sei sen seu Seu tau Tau tei Tei wa Wa we We wei Wei wu Wu za Za zau Zau ze Ze zei Zei zen zu Zu}
+
+items.each do |i|
+  it = cbmN2.items.build(itemtext: i, difficulty: 0)
+  it.save
 end
+
 cbmN2.save
+
+
 
 cbmN3 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 3", len: 100, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
-consonantes = %w{j v z sch}
-consonantes_up = %w{J V Z Sch}
-vowels = %w{a e i o u au ei eu ä ö ü}
-vowels_up = %w{A E I O U Au Ei Eu Ä Ö Ü}
+items = %w{auch Auch euch Euch hex Hex ja Ja jä Jä jau Jau je Je jo Jo ju Ju Py py qua Qua quä Quä qui Qui schä Schä schö Schö schü Schü spa Spa spä Spä spe Spe spei Spei spi Spi spu Spu spü Spü ße ßen ßer sta Sta stä Stä stau Stau Ste ste stei Stei sti Sti sto Sto stö Stö stu Stu Ty ty va Va vei Vei vi Vi vo Vo vö Vö xi za Za zä Zä zau Zau ze Ze zei Zei zeu Zeu Zi zi  zö Zö Zu zu zü Zü}
 
-consonantes.each do |c|
-  vowels.each do |v|
-    i = cbmN3.items.build(itemtext: c+v, difficulty: 0)
-    i.save
-    if c != "j"
-      i = cbmN3.items.build(itemtext: v+c, difficulty: 0)
-      i.save
-    end
-  end
+items.each do |i|
+  it = cbmN3.items.build(itemtext: i, difficulty: 0)
+  it.save
 end
-consonantes_up.each do |c|
-  vowels.each do |v|
-    i = cbmN3.items.build(itemtext: c+v, difficulty: 0)
-    i.save
-  end
-end
-vowels_up.each do |v|
-  consonantes.each do |c|
-    if c != "j"
-      i = cbmN3.items.build(itemtext: v+c, difficulty: 0)
-      i.save
-    end
-  end
-end
-vowels.each do |v|
-  if v != "u"
-    i = cbmN3.items.build(itemtext: "qu"+v, difficulty: 0)
-    i.save
-    i = cbmN3.items.build(itemtext: "Qu"+v, difficulty: 0)
-    i.save
-  end
-end
-(vowels + vowels_up).each do |v|
-  i = cbmN3.items.build(itemtext: v+"tz", difficulty: 0)
-  i.save
-  i = cbmN3.items.build(itemtext: v+"ck", difficulty: 0)
-  i.save
-end
+
 cbmN3.save
+
+
 
 cbmN4 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 4", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
-consonantes = %w{b d f g h k l m n p r s t w ch B D F G H K L M N P R S T W Ch}
-vowels = %w{a e i o u au ei eu}
-extras = %w{ab ach ack an am asch auch auf ech eck eich eil ein eis el em en er es esch euch ich ick im in isch och ock osch uch um un usch}
+items = %w{Bla bla blau Blau Ble ble Bli bli Blo blo Blu blu bra Bra Brau brau bre Bre Brei brei Bri bri Bro bro Bru bru dra Dra Drau drau Drei drei Dri dri Dro dro Dru dru Frau frau Fre Fre frei Frei Freu freu Fri fri Fro fro Gla gla Glau glau Gle gle Glei glei Gli gli Glo glo Glu glu klau Klau Kle kle Kli kli Klo klo Klu klu Kra kra Krau krau Krei krei Kreu kreu Kro kro Kru kru Pla pla Plau plau ple Ple pleu Pleu Pli pli Plo plo Plu plu Schla schla Schle schle Schli schli Schlo schlo Schlu schlu spra Spra Spre spre spri Spri Spro spro spru Spru Tra tra Trau trau Tre tre Trei trei Tri tri Tro tro Tru tru}
 
-consonantes.each do |c|
-  vowels.each do |v|
-    i = cbmN4.items.build(itemtext: c+v, difficulty: 0)
-    i.save
-  end
+items.each do |i|
+  it = cbmN4.items.build(itemtext: i, difficulty: 0)
+  it.save
 end
-extras.each do |e|
-  i = cbmN4.items.build(itemtext: e, difficulty: 0)
-  i.save
-end
+
 cbmN4.save
