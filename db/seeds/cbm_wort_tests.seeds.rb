@@ -1,6 +1,105 @@
 # -*- encoding : utf-8 -*-
+items = %w{
+lese
+lila
+Lora
+Lore
+male
+Mama
+Mami
+Mofa
+Name
+Nase
+Oma
+Omi
+rase
+rosa
+Rose
+Rosi
+Sofa
+Suse
+Susi
+}
+
+cbmN1 = TestSpeed.create(name: "CBM Wörter lesen - N1 Stufe 1-2", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+
+items.each do |i|
+  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it.save
+end
+
+cbmN1.save
+
+
 
 items = %w{
+Eimer
+Eisen
+Feile
+Hafen
+Hafer
+Haufen
+holen
+Hosen
+laufe
+laufen
+Laune
+leimen
+Leine
+leise
+lesen
+malen
+Maler
+Maus
+Meile
+mein
+Meise
+nein
+Raum
+Reifen
+reime
+Reise
+Rosen
+rufen
+Saum
+Sauna
+sause
+sehen
+Seife
+fauchen
+hauchen
+heizen
+Heizer
+rauchen
+reichen
+reizen
+suchen
+Ware
+Weiche
+Weile
+Weizen
+Zeichen
+Zeile
+Auto
+Haken
+Hupe
+Kanal
+kaufen
+Kilo
+Kino
+Kuli
+Laken
+Lupe
+Note
+Pauke
+Pause
+Pilot
+Pirat
+Pokal
+Pute
+taufen
+Ton
+Tor
 Bauch
 Baum
 Beil
@@ -20,14 +119,14 @@ Regen
 Segen
 }
 
-cbmN1 = TestSpeed.create(name: "CBM Wörter lesen - N2 Stufe 6", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN2 = TestSpeed.create(name: "CBM Wörter lesen - N2 Stufe 3-6", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN1.save
+cbmN2.save
 
 
 
@@ -92,16 +191,17 @@ quer
 Quote
 Typ
 Type
+
 }
 
-cbmN2 = TestSpeed.create(name: "CBM Wörter lesen - N3 Stufe 7-10", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN3 = TestSpeed.create(name: "CBM Wörter lesen - N3 Stufe 7-10", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
 items.each do |i|
-  it = cbmN2.items.build(itemtext: i, difficulty: 0)
+  it = cbmN3.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN2.save
+cbmN3.save
 
 
 
@@ -172,12 +272,12 @@ scherben
 schreiben
 }
 
-cbmN3 = TestSpeed.create(name: "CBM Wörter lesen - N4 Stufe 11-13", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN4 = TestSpeed.create(name: "CBM Wörter lesen - N4 Stufe 11-13", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
 
 items.each do |i|
-  it = cbmN3.items.build(itemtext: i, difficulty: 0)
+  it = cbmN4.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN3.save
+cbmN4.save
 
