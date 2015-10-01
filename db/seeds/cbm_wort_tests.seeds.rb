@@ -191,7 +191,6 @@ quer
 Quote
 Typ
 Type
-
 }
 
 cbmN3 = TestSpeed.create(name: "CBM Wörter lesen - N3 Stufe 7-10", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
@@ -280,4 +279,3 @@ items.each do |i|
 end
 
 cbmN4.save
-
