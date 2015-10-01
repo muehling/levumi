@@ -10,11 +10,7 @@ class Item < ActiveRecord::Base
 
   def check_shorthand
     if shorthand.nil? || shorthand.blank?
-      if itemtext.length > 5
-        self.shorthand = itemtext[0..4]
-      else
-        self.shorthand = itemtext
-      end
+      self.shorthand = itemtext
     end
   end
 
