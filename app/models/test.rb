@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Test < ActiveRecord::Base
-  has_many :items
-  has_many :assessments
+  has_many :items, :dependent => :destroy
+  has_many :assessments, :dependent => :destroy
 
   def draw_items(ability)
     itemset = Array.new
