@@ -113,7 +113,7 @@ heben
 Laden
 Lager
 Leber
-leder
+Leder
 Rauch
 Regen
 Segen
@@ -140,7 +140,7 @@ Hobel
 Kegel
 Keule
 Kugel
-nadel
+Nadel
 neu
 Nudel
 Scheine
@@ -220,7 +220,7 @@ Graben
 Kragen
 Kreide
 Kreise
-Kreuze
+kreuze
 Probe
 Traube
 Traum
@@ -262,12 +262,11 @@ Knust
 Konto
 Korken
 Kragen
-Kreuze
 Krone
 Kunst
 plus
 Puls
-scherben
+Scherben
 schreiben
 }
 

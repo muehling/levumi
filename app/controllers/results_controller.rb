@@ -18,16 +18,18 @@ class ResultsController < ApplicationController
 
   # GET /results/new
   def new
-   @measurement.prepare_test
-   @test = @measurement.assessment.test.type
+    if @measurement.results.count == 0
+      @measurement.prepare_test
+    end
 
-   respond_to do |format|
+    @test = @measurement.assessment.test.type
+
+    respond_to do |format|
      format.html {@format = "html"}
      format.text {@format = "plain"}
-   end
+    end
 
-  render 'new', :formats => [:js], content_type: 'text/javascript'
-
+    render 'new', :formats => [:js], content_type: 'text/javascript'
   end
 
   # GET /results/1/edit
