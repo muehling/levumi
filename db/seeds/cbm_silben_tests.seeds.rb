@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN1 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
 Fa
@@ -74,7 +74,7 @@ cbmN1.save
 
 
 
-cbmN2 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 2", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN2 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 2", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
 bel
@@ -212,7 +212,7 @@ cbmN2.save
 
 
 
-cbmN3 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 3", len: 100, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN3 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 3", len: 100, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
 auch
@@ -326,7 +326,7 @@ cbmN3.save
 
 
 
-cbmN4 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 4", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60)
+cbmN4 = TestSpeed.create(name: "CBM Silben lesen - Niveaustufe 4", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
 Bla

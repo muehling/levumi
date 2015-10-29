@@ -1,65 +1,82 @@
-<div class="well userCard">
+<% subjects = Test.uniq.pluck(:subject) %>
 
-  <% @tests.each do |t| %>
-      <div class="panel panel-default">
-        <div class="panel-heading" role="tab" id="h<%=t.id%>">
-          <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" href="#c<%=t.id%>" aria-expanded="false" aria-controls="c<%=t.id%>">
-              <%= t.name %>
-            </a>
-          </h4>
-        </div>
-        <div id="c<%=t.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=t.id%>">
-          <div class="panel-body">
+<ul id="tabs" class="nav nav-tabs" role="tablist">
+<% first = true %>
+<% subjects.each do |s| %>
+      <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s%>" aria-controls="<%= s%>" role="tab" data-toggle="tab"><%= s%></a></li>
+      <% first = false %>
+<% end %>
+</ul>
 
-            <p class="lead">Beschreibung</p>
-            <p>
-              <%= t.info %>
-            </p>
-            <p class="lead">Testdurchführung</p>
-            <p>
-            <table class="table">
-              <tr>
-                <td>
-                  Art
-                </td>
-                <td>
-                  <%= t.type_info %>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Länge des Tests
-                </td>
-                <td>
-                  <%= t.len_info %>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Größe des Itempools
-                </td>
-                <td>
-                  <%= t.items.count %>
-                </td>
-              </tr>
-            </table>
-            </p>
-            <p class="lead">Items</p>
-            <p>
-              <% first = true %>
-              <% t.items.each do |i| %>
-                  <% unless first %>
-                      <%= "," %>
+<div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+  <% first = true %>
+  <% subjects.each do |s| %>
+    <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s%>">
+
+      <% Test.where(:subject => s).find_each do |t| %>
+          <div class="panel panel-default">
+            <div class="panel-heading" role="tab" id="h<%=t.id%>">
+              <h4 class="panel-title">
+                <a role="button" data-toggle="collapse" href="#c<%=t.id%>" aria-expanded="false" aria-controls="c<%=t.id%>">
+                  <%= t.name %>
+                </a>
+              </h4>
+            </div>
+            <div id="c<%=t.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=t.id%>">
+              <div class="panel-body">
+
+                <p class="lead">Beschreibung</p>
+                <p>
+                  <%= t.info %>
+                </p>
+                <p class="lead">Testdurchführung</p>
+                <p>
+                <table class="table">
+                  <tr>
+                    <td>
+                      Art
+                    </td>
+                    <td>
+                      <%= t.type_info %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Länge des Tests
+                    </td>
+                    <td>
+                      <%= t.len_info %>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      Größe des Itempools
+                    </td>
+                    <td>
+                      <%= t.items.count %>
+                    </td>
+                  </tr>
+                </table>
+                </p>
+                <p class="lead">Items</p>
+                <p>
+                  <% first = true %>
+                  <% t.items.each do |i| %>
+                      <% unless first %>
+                          <%= "," %>
+                      <% end %>
+                      <% first = false %>
+                      <%= i.shorthand %>
                   <% end %>
-                  <% first = false %>
-                  <%= i.shorthand %>
-              <% end %>
-            </p>
+                </p>
 
+              </div>
+            </div>
           </div>
-        </div>
-      </div>
-  <% end %>
+      <% end %>
 
+    </div>
+     <% first = false %>
+  <% end %>
 </div>
+
