@@ -29,33 +29,50 @@
         </a>
         </h4>
     </div>
-    <div id="c<%=key%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=key%>">
+    <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
       <div class="panel-body">
 
+        <p class="lead text-right" id="p<%=key%>">
+            <a onclick="print('<%=key%>', '<%= test.name %>')"><span class="glyphicon glyphicon-print"></span></a>
+        </p>
+
+        <div id="chart<%=test.id%>">
+        </div>
+
         <p>
-          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b><br/>
-          <% first = true %>
-          <% test.items.each do |i| %>
-              <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] >= items["4th"] %>
-                  <% unless first %>
-                      <%= ", " %>
+          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+          <% if val.size < 3 %>
+              -
+          <% else %>
+              <% first = true %>
+              <% test.items.each do |i| %>
+                  <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] > items["4th"] %>
+                      <% unless first %>
+                          <%= ", " %>
+                      <% end %>
+                      <% first = false %>
+                      <%= i.shorthand %>
                   <% end %>
-                  <% first = false %>
-                  <%= i.shorthand %>
               <% end %>
+              <% if first %> - <% end %>
           <% end %>
         </p>
         <p>
-          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b><br/>
-          <% first = true %>
-          <% test.items.each do |i| %>
-              <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] <= items["1st"] %>
-                  <% unless first %>
-                      <%= ", " %>
+          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+          <% if val.size < 3 %>
+              -
+          <% else %>
+              <% first = true %>
+              <% test.items.each do |i| %>
+                  <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] < items["1st"] %>
+                      <% unless first %>
+                          <%= ", " %>
+                      <% end %>
+                      <% first = false %>
+                      <%= i.shorthand %>
                   <% end %>
-                  <% first = false %>
-                  <%= i.shorthand %>
               <% end %>
+              <% if first %> - <% end %>
           <% end %>
         </p>
 
@@ -116,8 +133,34 @@
   </div>
 <% end %>
 
-<script>
+</div>
+
+<script type="text/javascript" charset="utf-8">
+
     function cancel() {
         $('#students').html("<%= escape_javascript(render 'index') %>");
-    }
+    };
+
+    <% @results.each do |key, val| %>
+    <% test = Test.find(key) %>
+    <%= render file: 'students/_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
+    <% end %>
+
+    function print(id, test) {
+        var old = document.body.innerHTML;
+        document.body.innerHTML = $("#c" + id).html();
+        $("#p" + id).html("<%= @student.fullName %> - " + test);
+        $("#p" + id).removeClass("text-right");
+        $("#p" + id).addClass("text-middle");
+        var content = document.documentElement.outerHTML;
+        document.body.innerHTML = old;
+        printWindow = window.open();
+        printWindow.location = '';
+        printWindow.document.write(content);
+        printWindow.document.close();
+        printWindow.document.title =  "Druckansicht";
+        printWindow.focus();
+        printWindow.print();
+    };
+
 </script>

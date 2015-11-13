@@ -1,17 +1,15 @@
-var chart = c3.generate({
-    bindto: '#chart',
+var chart<%=test%> = c3.generate({
+    bindto: '#chart<%=test%>',
     data: {
         x: 'x',
         columns: [
             ['x',
-                <% @assessment.measurements.each do |m| %>
-                '<%= m.date.to_date %>',
+                <% results.each do |r| %>
+                '<%= r.measurement.date.to_date %>',
                 <% end %>
             ],
-            <% @group.students.each do |student| %>
             ['<%= student.name %>',
-                <% @assessment.measurements.each do |m| %>
-                <% r = m.results.find_by_student_id(student.id) %>
+                <% results.each do |r| %>
                 <% unless r.nil? %>
                 <%= r.score %>
                 <% else %>
@@ -19,7 +17,6 @@ var chart = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            <% end %>
         ]
     },
     axis: {
@@ -43,5 +40,8 @@ var chart = c3.generate({
     },
     line: {
         connectNull: true
+    },
+    legend: {
+        hide: true
     }
 });

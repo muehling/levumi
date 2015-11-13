@@ -8,7 +8,7 @@ class TestSpeed < Test
       i = remaining.sample
       if (itemset.size > 0)
         count = 0
-        while (i.itemtext.first.downcase == itemset.last.itemtext.first.downcase) & (count < 100)
+        while (count < 100) & ((i.itemtext.first.downcase == itemset.last.itemtext.first.downcase) | (i.itemtext.first + itemset.last.itemtext.first == 'bd') | (i.itemtext.first + itemset.last.itemtext.first == 'db'))
           i = remaining.sample
           count = count + 1
         end
