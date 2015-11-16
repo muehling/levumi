@@ -11,7 +11,7 @@ var chart<%=test%> = c3.generate({
             ['<%= student.name %>',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
-                <%= r.score %>
+                <%= r.score.nil? ? "null" : r.score %>
                 <% else %>
                 null
                 <% end %>,

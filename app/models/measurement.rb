@@ -33,4 +33,12 @@ class Measurement < ActiveRecord::Base
     end
   end
 
+  def real_results
+    x = results.map{|f| f.score} - [nil]
+    return x.count
+  end
+
+  def average
+    return ((results.map{|f| f.score.nil? ? 0 : f.score}.sum).to_f/real_results).round(1)
+  end
 end

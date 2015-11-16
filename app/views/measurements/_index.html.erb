@@ -32,15 +32,15 @@
         <td>
           <% if measurement.results.count > 0 %>
               <%= link_to edit_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>
-                  <%= measurement.results.count %>
+                  <%= measurement.real_results %>
               <% end %>
           <% else %>
               --
           <% end %>
         </td>
         <td>
-          <% if measurement.results.count > 0 %>
-            <%= ((measurement.results.map{|f| f.score}.sum).to_f/measurement.results.count).round(1) %>
+          <% if measurement.real_results > 0 %>
+            <%= measurement.average %>
           <% else %>
           --
           <% end %>

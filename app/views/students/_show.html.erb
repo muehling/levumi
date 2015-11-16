@@ -93,6 +93,7 @@
           </thead>
           <tbody>
             <% val.each do |r| %>
+            <% unless r.score.nil? %>
                 <tr>
                   <td>
                     <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
@@ -125,7 +126,8 @@
                     <%= (r.total * 100).round(1)%>
                   </td>
                 </tr>
-            <%end %>
+            <% end %>
+            <% end %>
           </tbody>
         </table>
       </div>

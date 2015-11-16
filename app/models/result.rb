@@ -44,7 +44,11 @@ class Result < ActiveRecord::Base
   end
 
   def score
-    responses.map{|x| x == nil ? 0:x}.sum
+    if responses.include?(nil)
+      return nil
+    else
+      return responses.sum
+    end
   end
 
 end

@@ -13,7 +13,7 @@ var chart = c3.generate({
                 <% @assessment.measurements.each do |m| %>
                 <% r = m.results.find_by_student_id(student.id) %>
                 <% unless r.nil? %>
-                <%= r.score %>
+                <%= r.score.nil? ? "null" : r.score %>
                 <% else %>
                 null
                 <% end %>,
