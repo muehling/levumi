@@ -82,13 +82,19 @@
             Zeitpunkt
           </th>
           <th>
-            Gelöste Items
+            Richtig gelöste Items
           </th>
           <th>
-            Nicht gelöste Items
+            Falsch gelöste Items
           </th>
           <th>
-            Prozentwert
+            Anzahl richtig gelöster Items
+          </th>
+          <th>
+            Anzahl falsch gelöster Items
+          </th>
+          <th>
+            Lösungswahrscheinlichkeit in %
           </th>
           </thead>
           <tbody>
@@ -121,6 +127,12 @@
                             <%= Item.find(r.items[i]).shorthand %>
                         <% end %>
                     <% end %>
+                  </td>
+                  <td>
+                    <%= r.count_1 %>
+                  </td>
+                  <td>
+                    <%= r.count_0 %>
                   </td>
                   <td>
                     <%= (r.total * 100).round(1)%>

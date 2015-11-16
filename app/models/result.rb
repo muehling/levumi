@@ -7,7 +7,7 @@ class Result < ActiveRecord::Base
   serialize :responses, Array
 
   def update_total
-    self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/responses.size
+    self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/(responses - [nil]).size
     save
   end
 
@@ -44,11 +44,22 @@ class Result < ActiveRecord::Base
   end
 
   def score
-    if responses.include?(nil)
-      return nil
+    if responses.include?(1) | responses.include?(0)
+      return responses.map{|x| x == nil ? 0:x}.sum
     else
-      return responses.sum
+      return nil
     end
   end
 
+  def count_1
+    return (responses - [nil, 0]).size
+  end
+
+  def count_0
+    return (responses - [nil, 1]).size
+  end
+
+  def count_NA
+    return (responses - [0, 1]).size
+  end
 end
