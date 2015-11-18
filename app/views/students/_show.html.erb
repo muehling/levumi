@@ -33,7 +33,7 @@
       <div class="panel-body">
 
         <p class="lead text-right" id="p<%=key%>">
-            <a onclick="print('<%=key%>', '<%= test.name %>')"><span class="glyphicon glyphicon-print"></span></a>
+          <%= link_to '#', :title => "Ausdrucken", :onclick => "print('#{key}','#{test.name}')" do%><span class="glyphicon glyphicon-print"></span><% end %>
         </p>
 
         <div id="chart<%=test.id%>">
