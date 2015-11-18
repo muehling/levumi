@@ -21,7 +21,7 @@ Suse
 Susi
 }
 
-cbmN1 = TestSpeed.create(name: "CBM Wörter lesen - N1 Stufe 1-2", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN1 = TestCBM.create(name: "CBM Wörter lesen - N1 Stufe 1-2", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0)
@@ -119,7 +119,7 @@ Regen
 Segen
 }
 
-cbmN2 = TestSpeed.create(name: "CBM Wörter lesen - N2 Stufe 3-6", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN2 = TestCBM.create(name: "CBM Wörter lesen - N2 Stufe 3-6", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN2.items.build(itemtext: i, difficulty: 0)
@@ -193,7 +193,7 @@ Typ
 Type
 }
 
-cbmN3 = TestSpeed.create(name: "CBM Wörter lesen - N3 Stufe 7-10", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN3 = TestCBM.create(name: "CBM Wörter lesen - N3 Stufe 7-10", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN3.items.build(itemtext: i, difficulty: 0)
@@ -270,7 +270,7 @@ Scherben
 schreiben
 }
 
-cbmN4 = TestSpeed.create(name: "CBM Wörter lesen - N4 Stufe 11-13", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN4 = TestCBM.create(name: "CBM Wörter lesen - N4 Stufe 11-13", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0)

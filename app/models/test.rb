@@ -20,4 +20,7 @@ class Test < ActiveRecord::Base
     return "Test"
   end
 
+  def view_info
+    return "Test"
+  end
 end

@@ -22,7 +22,7 @@ class ResultsController < ApplicationController
       @measurement.prepare_test
     end
 
-    @test = @measurement.assessment.test.type
+    @test = @measurement.assessment.test
 
     respond_to do |format|
      format.html {@format = "html"}
