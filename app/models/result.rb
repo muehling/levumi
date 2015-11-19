@@ -7,7 +7,11 @@ class Result < ActiveRecord::Base
   serialize :responses, Array
 
   def update_total
-    self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/(responses - [nil]).size
+    if count_NA == responses.size
+      self.total = 0
+    else
+      self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/(responses - [nil]).size
+    end
     save
   end
 

@@ -98,7 +98,7 @@
           </th>
           </thead>
           <tbody>
-            <% val.each do |r| %>
+            <% val.sort_by { |x| x.measurement.date}.each do |r| %>
             <% unless r.score.nil? %>
                 <tr>
                   <td>
