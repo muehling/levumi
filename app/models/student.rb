@@ -28,6 +28,9 @@ class Student < ActiveRecord::Base
     tests = Hash.new()
     items = Hash.new()
     results.each do |r|
+      if r.score == nil
+        next
+      end
       test = r.measurement.assessment.test.id
       if tests.has_key?(test)
         tests[test] = tests[test] + [r]
