@@ -23,19 +23,19 @@
   <% items = @student.getTestResults(key)%>
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="h<%=key%>">
-
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
         <%= test.name%>
         </a>
       </h4>
     </div>
+
     <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
       <div class="panel-body">
 
         <div class="dropdown text-right" id="p<%=key%>">
           <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPrint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-            <span class="glyphicon glyphicon-print"></span>
+            <span class="glyphicon glyphicon-print" style="color:#337AB7"></span>
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
