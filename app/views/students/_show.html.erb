@@ -23,21 +23,31 @@
   <% items = @student.getTestResults(key)%>
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="h<%=key%>">
+
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
         <%= test.name%>
         </a>
-        </h4>
+      </h4>
     </div>
     <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
       <div class="panel-body">
 
-        <p class="lead text-right" id="p<%=key%>">
-          <%= link_to '#', :title => "Ausdrucken", :onclick => "print('#{key}','#{test.name}')" do%><span class="glyphicon glyphicon-print"></span><% end %>
-        </p>
-
-        <div id="chart<%=test.id%>">
+        <div class="dropdown text-right" id="p<%=key%>">
+          <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPrint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <span class="glyphicon glyphicon-print"></span>
+            <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
+            <li><%= link_to '#', :title => "Alles ausdrucken", :onclick => "print('#{key}','#{test.name}', true)" do%>Alles<% end %></li>
+            <li><%= link_to '#', :title => "Nur Graph ausdrucken", :onclick => "print('#{key}','#{test.name}', false)" do%>Nur Graph<% end %></li>
+          </ul>
         </div>
+
+        <div id="chart<%=key%>">
+        </div>
+
+        <div id="table<%=key%>">
 
         <p>
           <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
@@ -143,6 +153,8 @@
           </tbody>
         </table>
 
+        </div>
+
       </div>
     </div>
   </div>
@@ -161,12 +173,15 @@
     <%= render file: 'students/_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
     <% end %>
 
-    function print(id, test) {
+    function print(id, test, all) {
         var old = document.body.innerHTML;
         document.body.innerHTML = $("#c" + id).html();
-        $("#p" + id).html("<%= @student.fullName %> - " + test);
+        if (!all)
+            $("#table" + id).html("");
+        $("#p" + id).html("<p class='lead text-middle'><%= @student.fullName %> - " + test + "</p>");
+        $("#p" + id).removeClass("dropdown");
         $("#p" + id).removeClass("text-right");
-        $("#p" + id).addClass("text-middle");
+        $("#p" + id).addClass("text-center");
         var content = document.documentElement.outerHTML;
         document.body.innerHTML = old;
         printWindow = window.open();
