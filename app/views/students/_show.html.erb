@@ -191,6 +191,10 @@
         printWindow.document.title =  "Druckansicht";
         printWindow.focus();
         printWindow.print();
+        <% @results.each do |key, val| %>
+        <% test = Test.find(key) %>
+        <%= render file: 'students/_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
+        <% end %>
     };
 
 </script>
