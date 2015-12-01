@@ -3,8 +3,8 @@ items = %w{
 lese
 lila
 Lora
-Lore
-male
+Susi
+Sofa
 Mama
 Mami
 Mofa
@@ -16,12 +16,9 @@ rase
 rosa
 Rose
 Rosi
-Sofa
-Suse
-Susi
 }
 
-cbmN1 = TestCBM.create(name: "CBM Wörter lesen - N1 Stufe 1-2", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN1 = TestCBM.create(name: "CBM Wörter lesen - N1", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0)
@@ -66,40 +63,48 @@ Sauna
 sause
 sehen
 Seife
-fauchen
-hauchen
-heizen
-Heizer
-rauchen
-reichen
-reizen
-suchen
 Ware
 Weiche
 Weile
-Weizen
-Zeichen
-Zeile
 Auto
-Haken
 Hupe
+Lupe
+Note
+Pause
+Pilot
+Pirat
+Pute
+taufen
+Ton
+Tor
+}
+
+cbmN2a = TestCBM.create(name: "CBM Wörter lesen - N2a", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+
+items.each do |i|
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0)
+  it.save
+end
+
+cbmN2a.save
+
+
+
+items = %w{
+fauchen
+hauchen
+rauchen
+reichen
+suchen
+Haken
 Kanal
 kaufen
 Kilo
 Kino
 Kuli
 Laken
-Lupe
-Note
 Pauke
-Pause
-Pilot
-Pirat
 Pokal
-Pute
-taufen
-Ton
-Tor
 Bauch
 Baum
 Beil
@@ -117,20 +122,40 @@ Leder
 Rauch
 Regen
 Segen
+gegen
+gut
+gemein
+Gabel
+Gas
+Gebet
+gehen
+Geige
+Geist
+Gel
+genau
+genug
+Glaube
 }
 
-cbmN2 = TestCBM.create(name: "CBM Wörter lesen - N2 Stufe 3-6", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN2b = TestCBM.create(name: "CBM Wörter lesen - N2b", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
-  it = cbmN2.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2b.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN2.save
+cbmN2b.save
+
 
 
 
 items = %w{
+Zeichen
+Zeile
+heizen
+Heizer
+reizen
+Weizen
 Beule
 Beute
 Eule
@@ -140,7 +165,7 @@ Hobel
 Kegel
 Keule
 Kugel
-Nadel
+nadel
 neu
 Nudel
 Scheine
@@ -220,7 +245,7 @@ Graben
 Kragen
 Kreide
 Kreise
-kreuze
+Kreuze
 Probe
 Traube
 Traum
@@ -262,12 +287,15 @@ Knust
 Konto
 Korken
 Kragen
+Kreuze
 Krone
 Kunst
 plus
 Puls
-Scherben
+scherben
 schreiben
+Galopp
+Gipfel
 }
 
 cbmN4 = TestCBM.create(name: "CBM Wörter lesen - N4 Stufe 11-13", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")

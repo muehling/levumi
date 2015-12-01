@@ -3,6 +3,9 @@ class Test < ActiveRecord::Base
   has_many :items, :dependent => :destroy
   has_many :assessments, :dependent => :destroy
 
+  validates_presence_of :name
+  validates_presence_of :subject
+
   def draw_items(ability)
     itemset = Array.new
     (1..len).each  do

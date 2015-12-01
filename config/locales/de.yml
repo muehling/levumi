@@ -224,3 +224,7 @@ de:
         firstname: Vorname
       measurement:
         date: Zeitpunkt
+      test:
+        info: Informationen
+        short_info: Kurzinfo
+        subject: Fach

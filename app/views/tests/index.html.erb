@@ -24,52 +24,18 @@
             </div>
             <div id="c<%=t.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=t.id%>">
               <div class="panel-body">
-
-                <p class="lead">Beschreibung</p>
-                <p>
-                  <%= t.info %>
-                </p>
-                <p class="lead">Testdurchführung</p>
-                <p>
-                <table class="table">
-                  <tr>
-                    <td>
-                      Art
-                    </td>
-                    <td>
-                      <%= t.type_info %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Länge des Tests
-                    </td>
-                    <td>
-                      <%= t.len_info %>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      Größe des Itempools
-                    </td>
-                    <td>
-                      <%= t.items.count %>
-                    </td>
-                  </tr>
-                </table>
-                </p>
-                <p class="lead">Items</p>
-                <p>
-                  <% first = true %>
-                  <% t.items.each do |i| %>
-                      <% unless first %>
-                          <%= "," %>
+                <% if @login.isAdmin? %>
+                    <p class="lead text-right">
+                      <%= link_to edit_test_path(t), :title => "Bearbeiten", :data => {:remote => true} do %>
+                          <span class="glyphicon glyphicon-pencil"></span>
                       <% end %>
-                      <% first = false %>
-                      <%= i.shorthand %>
-                  <% end %>
-                </p>
+                      <%= link_to test_path(t), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                          <span class="glyphicon glyphicon-trash"></span>
+                      <% end %>
+                    </p>
+                <% end %>
 
+                <%= render(file: 'tests/_show', :locals =>  {:test => t})%>
               </div>
             </div>
           </div>
