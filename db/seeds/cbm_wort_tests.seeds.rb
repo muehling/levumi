@@ -218,7 +218,7 @@ Typ
 Type
 }
 
-cbmN3 = TestCBM.create(name: "CBM Wörter lesen - Niveaustufe 3 Stufe", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN3 = TestCBM.create(name: "CBM Wörter lesen - Niveaustufe 3", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items.each do |i|
   it = cbmN3.items.build(itemtext: i, difficulty: 0)

@@ -2,7 +2,7 @@
 
 <ul id="tabs" class="nav nav-tabs" role="tablist">
 <% first = true %>
-<% subjects.each do |s| %>
+<% subjects.sort.each do |s| %>
       <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s%>" aria-controls="<%= s%>" role="tab" data-toggle="tab"><%= s%></a></li>
       <% first = false %>
 <% end %>
@@ -10,7 +10,7 @@
 
 <div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
   <% first = true %>
-  <% subjects.each do |s| %>
+  <% subjects.sort.each do |s| %>
     <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s%>">
 
       <% Test.where(:subject => s).find_each do |t| %>

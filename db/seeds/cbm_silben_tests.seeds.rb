@@ -1,6 +1,38 @@
 # -*- encoding : utf-8 -*-
+items = %w{
+la
+La
+le
+Le
+li
+Li
+lo
+Lo
+lu
+Lu
+ma
+Ma
+me
+Me
+mi
+Mi
+mo
+Mo
+mu
+Mu
+}
 
-cbmN1 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 1", len: 60, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+cbmN0 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 0", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+items.each do |i|
+  it = cbmN0.items.build(itemtext: i, difficulty: 0)
+  it.save
+end
+
+cbmN0.save
+
+
+
+
 
 items = %w{
 Fa
@@ -65,6 +97,7 @@ Su
 su
 }
 
+cbmN1 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 1", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0)
   it.save
@@ -74,19 +107,8 @@ cbmN1.save
 
 
 
-cbmN2 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 2", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
-bel
-ben
-ber
-beu
-Beu
-bo
-Bo
-che
-chen
-cher
 da
 Da
 dau
@@ -99,19 +121,11 @@ do
 Do
 Du
 du
-ei
-Ei
+dei
+fei
 en
-eu
-Eu
 fen
 fer
-feu
-Feu
-ga
-Ga
-gel
-gen
 ha
 Ha
 hau
@@ -123,20 +137,6 @@ ho
 Ho
 hu
 Hu
-ka
-Ka
-kau
-Kau
-ke
-Ke
-keu
-Keu
-Ki
-ki
-ko
-Ko
-ku
-Ku
 lau
 Lau
 lei
@@ -145,8 +145,6 @@ len
 men
 mer
 nen
-neu
-Neu
 pa
 Pa
 pi
@@ -161,18 +159,6 @@ rei
 Rei
 sau
 Sau
-scha
-Scha
-schau
-Schau
-sche
-Sche
-schei
-Schei
-scheu
-Scheu
-schu
-Schu
 Sei
 sei
 sen
@@ -190,29 +176,93 @@ wei
 Wei
 wu
 Wu
-za
-Za
-zau
-Zau
-ze
-Ze
-zei
-Zei
-zen
-zu
-Zu
 }
 
+cbmN2a = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 2a", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 items.each do |i|
-  it = cbmN2.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN2.save
+cbmN2a.save
 
 
 
-cbmN3 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 3", len: 100, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+
+
+items = %w{
+bel
+ben
+ber
+bo
+Bo
+bi
+bi
+bu
+Bu
+ba
+Ba
+che
+chen
+cher
+cha
+chu
+chau
+chei
+cho
+ga
+Ga
+gel
+gen
+gu
+Gu
+go
+Go
+gi
+Gi
+gau
+gei
+ka
+Ka
+kau
+Kau
+ke
+Ke
+keu
+Keu
+Ki
+ki
+ko
+Ko
+ku
+Ku
+kei
+Kei
+scha
+Scha
+schau
+Schau
+sche
+Sche
+schei
+Schei
+schu
+Schu
+scho
+Scho
+}
+
+cbmN2b = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 2b", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
+items.each do |i|
+  it = cbmN2b.items.build(itemtext: i, difficulty: 0)
+  it.save
+end
+
+cbmN2b.save
+
+
+
+
 
 items = %w{
 auch
@@ -315,8 +365,21 @@ Zu
 zu
 zü
 Zü
+feu
+Feu
+cheu
+beu
+Beu
+geu
+neu
+Neu
+scheu
+Scheu
+eu
+Eu
 }
 
+cbmN3 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 3", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 items.each do |i|
   it = cbmN3.items.build(itemtext: i, difficulty: 0)
   it.save
@@ -326,7 +389,6 @@ cbmN3.save
 
 
 
-cbmN4 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 4", len: 120, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 
 items = %w{
 Bla
@@ -465,6 +527,7 @@ Tru
 tru
 }
 
+cbmN4 = TestCBM.create(name: "CBM Silben lesen - Niveaustufe 4", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch")
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0)
   it.save
