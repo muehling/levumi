@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
 
