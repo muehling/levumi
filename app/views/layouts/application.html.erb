@@ -43,7 +43,7 @@
         <% if @login.hasCapability?("user") %>
             <li><%= link_to("Benutzer", users_path)%></li>
         <% end %>
-        <li><%= link_to "Impressum", "http://www.ddi.edu.tum.de/index.php?id=11"%></li>
+        <li><%= link_to "Impressum", url_for(:controller => "application", :action => "static", :page => "imprint")%></li>
       </ul>
     </div>
   </div>
