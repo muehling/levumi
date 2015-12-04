@@ -5,6 +5,7 @@ class Test < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :subject
+  validates_presence_of :category
 
   def draw_items(ability)
     itemset = Array.new

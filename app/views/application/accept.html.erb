@@ -1,0 +1,22 @@
+<nav class="navbar">
+</nav>
+
+<div class="container-fluid">
+  <div id="content">
+    <div class="jumbotron">
+      <h2>Einverständnis</h2>
+      <p>
+        Hiermit bestätige ich, dass ich für alle Daten die ich von Schülern mit Hilfe dieser Plattform erhebe die nötige Berechtigung eingeholt habe.
+      </p>
+      <p>
+        Hinweise zum Datenschutz sowie eine Vorlage für einen Elternbrief finden Sie oben im Menü.
+      </p>
+      <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form") do %>
+          <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary" %>
+      <% end %>
+
+    </div>
+  </div>
+</div>
+
+

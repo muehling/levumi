@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_filter :is_admin, only: [:index, :destroy]
-  before_filter :is_own_page
+  before_filter :is_allowed
 
   # GET /users
   # GET /users.json
@@ -44,7 +43,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html {
-          if @login.isAdmin? && @login.id != @user.id
+          if @login.id != @user.id
             redirect_to users_path
           else
             redirect_to @user
@@ -76,11 +75,10 @@ class UsersController < ApplicationController
       params.require(:user).permit(:email, :name, :school, :password, :password_confirmation)
     end
 
-  def is_admin
-     return @login.isAdmin?
+  def is_allowed
+    unless @login.hasCapability?("user") || (params.has_key?(:id) && (@login.id == params[:id].to_i))
+      redirect_to '/'
+    end
   end
 
-  def is_own_page
-    return (@login.id == params[:id]) || is_admin
-  end
 end

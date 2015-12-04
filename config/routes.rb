@@ -18,6 +18,8 @@ Rails.application.routes.draw do
 
   post 'login' => 'application#login'
   post 'logout' => 'application#logout'
+  post 'accept' => 'application#accept'
+  get 'static' => 'application#static'
 
 
   # The priority is based upon order of creation: first created -> highest priority.

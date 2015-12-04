@@ -32,6 +32,14 @@
         <%= f.label :subject, :class => "control-label" %>
         <%= f.text_field :subject, :class => "form-control" %>
     </div>
+    <% if @test.errors[:subject].any? %>
+        <div class="form-group has-error">
+    <% else %>
+        <div class="form-group">
+    <% end %>
+    <%= f.label :category, :class => "control-label" %>
+    <%= f.text_field :category, :class => "form-control" %>
+    </div>
 
   <div class="form-group">
     <%= f.submit :class => "btn btn-primary" %>

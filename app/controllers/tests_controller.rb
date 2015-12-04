@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
+  before_filter :is_allowed, only: [:edit, :update, :destroy, :new]
 
   # GET /tests
   def index
@@ -40,6 +41,14 @@ class TestsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def test_params
-    params.require(:test).permit(:name, :info, :shortinfo, :subject)
+    params.require(:test).permit(:name, :info, :shortinfo, :subject, :category)
+  end
+
+  def is_allowed
+    unless @login.hasCapability?("test")
+      redirect_to '/'
+      return false
+    end
+    return true
   end
 end

@@ -7,7 +7,7 @@ class User < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email
 
-  def isAdmin?
-    return id == 1 #TODO: Besser!
+  def hasCapability?(cap)
+    return !capabilities.nil? && (capabilities.include?(cap) || capabilities.include?("admin"))
   end
 end

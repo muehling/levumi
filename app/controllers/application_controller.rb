@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
   before_filter :check_login, except: [:welcome, :login]
+  before_filter :check_accept, except: [:welcome, :login, :accept, :static, :logout]
 
   def login
     u = User.find_by_email(params[:email])
@@ -30,6 +31,16 @@ class ApplicationController < ActionController::Base
     render 'welcome', :layout => 'bare'
   end
 
+  def accept
+    @login.tcaccept = DateTime.now
+    @login.save
+    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von LeVuMi!"
+  end
+
+  def static
+    render params[:page]
+  end
+
   private
 
   def check_login
@@ -39,4 +50,11 @@ class ApplicationController < ActionController::Base
       @login = User.find(session[:user_id])
     end
   end
+
+  def check_accept
+    if @login.tcaccept.nil?
+      render 'accept'
+    end
+  end
+
 end
