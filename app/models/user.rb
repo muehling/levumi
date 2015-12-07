@@ -8,6 +8,11 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :email
 
   def hasCapability?(cap)
-    return !capabilities.nil? && (capabilities.include?(cap) || capabilities.include?("admin"))
+    return !isRegularUser? && (capabilities.include?(cap) || capabilities.include?("admin"))
   end
+
+  def isRegularUser?
+    return capabilities.nil? || capabilities.blank?
+  end
+
 end
