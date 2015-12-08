@@ -15,7 +15,7 @@
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="startTest(<%=r.id%>)">
-              <%= r.student.fullName %>
+              <%= r.student.name %>
             </div>
           </div>
       <% end %>
@@ -95,7 +95,7 @@
 
     var students = {
         <% @measurement.results.each do |r| %>
-            <%= r.id%>: "<%= r.student.name%>, <%= r.student.firstname%>",
+            <%= r.id%>: "<%= r.student.name%>",
         <% end %>
     };
 

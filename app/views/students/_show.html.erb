@@ -13,7 +13,7 @@
   <div class = "row">
     <div class="col-sm-12">
       <p class="lead text-center">
-        <%= @student.fullName %>
+        <%= @student.name %>
       </p>
     </div>
   </div>
@@ -178,7 +178,7 @@
         document.body.innerHTML = $("#c" + id).html();
         if (!all)
             $("#table" + id).html("");
-        $("#p" + id).html("<p class='lead text-middle'><%= @student.fullName %> - " + test + "</p>");
+        $("#p" + id).html("<p class='lead text-middle'><%= @student.name %> - " + test + "</p>");
         $("#p" + id).removeClass("dropdown");
         $("#p" + id).removeClass("text-right");
         $("#p" + id).addClass("text-center");

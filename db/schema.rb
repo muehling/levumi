@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151204123358) do
+ActiveRecord::Schema.define(version: 20151207141712) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -55,11 +55,12 @@ ActiveRecord::Schema.define(version: 20151204123358) do
   end
 
   create_table "students", force: true do |t|
-    t.text     "firstname"
     t.text     "name"
     t.integer  "group_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.date     "birthdate"
+    t.boolean  "gender"
   end
 
   create_table "tests", force: true do |t|

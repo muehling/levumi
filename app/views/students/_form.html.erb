@@ -16,9 +16,15 @@
     <%= f.label :name, :class => "control-label" %>
     <%= f.text_field :name, :class => "form-control" %>
   </div>
+
   <div class="form-group">
-    <%= f.label :firstname, :class => "control-label" %>
-    <%= f.text_field :firstname, :class => "form-control" %>
+    <%= f.label :gender, :class => "control-label" %>
+    <%= f.select(:gender, options_for_select([['', nil], ['männlich', true], ['weiblich', false]], @student.gender), {}, {:class => "form-control"}) %>
+  </div>
+
+  <div class="form-group">
+    <%= f.label :birthdate, :class => "control-label" %>
+    <%= f.date_select :birthdate, {:order => [:month, :year], :include_blank => true}, {:class => "form-control"}%>
   </div>
 
   <div class="form-group">

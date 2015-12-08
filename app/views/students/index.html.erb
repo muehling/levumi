@@ -11,7 +11,7 @@
       <% @group.students.sort_by { |a| a.name}.each do |student| %>
           <tr>
             <td>
-              <%= student.fullName %>
+              <%= student.name %>
             </td>
           </tr>
       <% end %>

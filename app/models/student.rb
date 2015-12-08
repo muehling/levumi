@@ -5,13 +5,29 @@ class Student < ActiveRecord::Base
 
   validates_presence_of :name
 
+  #Getter für Merkmale:
+
+  def get_gender
+    return self[:gender].nil? ? "<i>nicht erfasst</i>" : (self[:gender] ? "männlich" : "weiblich")
+  end
+
+  def get_birthdate
+    if self[:birthdate].nil?
+      return "<i>nicht erfasst</i>"
+    else
+      return I18n.l(self[:birthdate].to_date, format: "%b %Y")
+    end
+  end
+
+  #####################
+
   def self.import(file, group)
     spreadsheet = open_spreadsheet(file)
     header = spreadsheet.row(1)
     header.each{|h| h.downcase!}
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      student = group.students.build(name: row["name"], firstname: row["vorname"])
+      student = group.students.build(name: row["name"])
       student.save!
     end
   end
@@ -79,14 +95,6 @@ class Student < ActiveRecord::Base
     end
     probs.sort!
     return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
-  end
-
-  def fullName
-    if firstname.blank?
-      return name
-    else
-      return name + ", " + firstname
-    end
   end
 
 end

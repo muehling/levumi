@@ -27,7 +27,7 @@
               <% @measurement.results.each do |r| %>
                   <tr>
                     <td>
-                      <%= "#{r.student.name}, #{r.student.firstname}"  %>
+                      <%= "#{r.student.name}"  %>
                     </td>
                     <td>
                       <%= text_field_tag "results[#{r.student.id}]", r.to_csv(true), class: "form-control", placeholder: "z.B. 1,0,0,NA"%>
@@ -49,7 +49,7 @@
         <div class="panel-heading" role="tab" id="h<%=r.id%>">
           <h4 class="panel-title">
             <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded=<% if open %>"true"<% else %>"false"<% end %> aria-controls="c<%=r.id%>">
-              <%= "#{r.student.name}, #{r.student.firstname}" %>
+              <%= "#{r.student.name}" %>
             </a>
           </h4>
         </div>
@@ -108,7 +108,7 @@
             <% (@measurement.students).each do |s| %>
                 <div class="checkbox">
                   <label>
-                    <%= check_box_tag "results[students[#{s.name}]]", s.id, true %> <%= "#{s.name}, #{s.firstname}" %><br/>
+                    <%= check_box_tag "results[students[#{s.name}]]", s.id, true %> <%= "#{s.name}" %><br/>
                   </label>
                 </div>
             <% end %>
@@ -119,7 +119,7 @@
             <% (@group.students - @measurement.students).each do |s| %>
                 <div class="checkbox">
                   <label>
-                    <%= check_box_tag "results[students[#{s.name}]]", s.id, false %> <%= "#{s.name}, #{s.firstname}" %><br/>
+                    <%= check_box_tag "results[students[#{s.name}]]", s.id, false %> <%= "#{s.name}}" %><br/>
                   </label>
                 </div>
             <% end %>

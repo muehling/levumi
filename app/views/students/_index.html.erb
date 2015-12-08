@@ -4,6 +4,12 @@
     Schüler/-in
   </th>
   <th>
+    Geschlecht
+  </th>
+  <th>
+    Geburtsdatum
+  </th>
+  <th>
     Insgesamte Messungen
   </th>
   <th>
@@ -14,7 +20,13 @@
   <% @group.students.sort_by { |a| a.name}.each do |student| %>
       <tr>
         <td>
-          <%= student.fullName %>
+          <%= student.name %>
+        </td>
+        <td>
+          <%= raw(student.get_gender) %>
+        </td>
+        <td>
+          <%= raw(student.get_birthdate) %>
         </td>
         <td>
           <%= link_to user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
