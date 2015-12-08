@@ -10,6 +10,12 @@
     Geburtsdatum
   </th>
   <th>
+    Migrationshintergrund
+  </th>
+  <th>
+    Diag. Förderbedarf
+  </th>
+  <th>
     Insgesamte Messungen
   </th>
   <th>
@@ -27,6 +33,12 @@
         </td>
         <td>
           <%= raw(student.get_birthdate) %>
+        </td>
+        <td>
+          <%= raw(student.get_migration) %>
+        </td>
+        <td>
+          <%= raw(student.get_specific_needs) %>
         </td>
         <td>
           <%= link_to user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
