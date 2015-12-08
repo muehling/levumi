@@ -82,7 +82,7 @@ class GroupsController < ApplicationController
 
     def is_allowed
       unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
-        redirect_to '/'
+        redirect_to root_url
       end
     end
 end

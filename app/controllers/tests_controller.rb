@@ -46,7 +46,7 @@ class TestsController < ApplicationController
 
   def is_allowed
     unless @login.hasCapability?("test")
-      redirect_to '/'
+      redirect_to root_url
       return false
     end
     return true
