@@ -2,6 +2,7 @@
 class GroupsController < ApplicationController
   before_action :set_user
   before_action :set_group, only: [:show, :edit, :update, :destroy]
+  before_filter :is_allowed
 
   # GET /groups
   # GET /groups.json
@@ -77,5 +78,11 @@ class GroupsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def group_params
       params.require(:group).permit(:name, :archive)
+    end
+
+    def is_allowed
+      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+        redirect_to '/'
+      end
     end
 end

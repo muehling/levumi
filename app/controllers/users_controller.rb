@@ -77,7 +77,7 @@ class UsersController < ApplicationController
 
   def is_allowed
     unless @login.hasCapability?("user") || (params.has_key?(:id) && (@login.id == params[:id].to_i))
-      redirect_to '/'
+      redirect_to root_url
     end
   end
 

@@ -3,7 +3,7 @@ class AssessmentsController < ApplicationController
   before_action :set_assessment, only: [:show, :edit, :update, :destroy]
   before_action :set_user
   before_action :set_group
-
+  before_filter :is_allowed
 
   # GET /assessments
   # GET /assessments.json
@@ -73,5 +73,11 @@ class AssessmentsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def assessment_params
       params[:assessment]
+    end
+
+    def is_allowed
+      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+        redirect_to root_url
+      end
     end
 end

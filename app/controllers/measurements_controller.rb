@@ -4,6 +4,7 @@ class MeasurementsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
+  before_filter :is_allowed
 
   # GET /measurements
   # GET /measurements.json
@@ -81,5 +82,11 @@ class MeasurementsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def measurement_params
       params.require(:measurement).permit(:date)
+    end
+
+    def is_allowed
+      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+        redirect_to root_url
+      end
     end
 end

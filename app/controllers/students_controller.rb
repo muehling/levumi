@@ -3,6 +3,7 @@ class StudentsController < ApplicationController
   before_action :set_user
   before_action :set_group
   before_action :set_student, only: [:show, :edit, :update, :destroy]
+  before_filter :is_allowed
 
   # GET /students
   # GET /students.json
@@ -99,5 +100,11 @@ class StudentsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def student_params
       params.require(:student).permit(:name, :birthdate, :gender, :specific_needs, :migration, :file)
+    end
+
+    def is_allowed
+      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+        redirect_to root_url
+      end
     end
 end
