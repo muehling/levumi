@@ -19,6 +19,24 @@ class Student < ActiveRecord::Base
     end
   end
 
+  def get_specific_needs
+    if self[:specific_needs].nil?
+      return "<i>nicht erfasst</i>"
+    else
+      return case self[:specific_needs]
+        when 0 then "Keinen"
+        when 1 then "Lernen"
+        when 2 then "Geistige Entwicklung"
+        when 3 then "Andere"
+      end
+    end
+  end
+
+  def get_migration
+    return self[:migration].nil? ? "<i>nicht erfasst</i>" : (self[:migration] ? "Ja" : "Nein")
+  end
+
+
   #####################
 
   def self.import(file, group)

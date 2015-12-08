@@ -224,6 +224,8 @@ de:
         name: Name/Code
         birthdate: Geburtsdatum
         gender: Geschlecht
+        specific_needs: Diagnostizierter Förderbedarf
+        migration: Migrationshintergrund
       measurement:
         date: Zeitpunkt
       test:
