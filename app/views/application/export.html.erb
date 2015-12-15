@@ -9,15 +9,15 @@
           <div class="row">
 
             <% @tests.each do |test| %>
-                <div class="col-md-4 col-sm-6 col-xs-12">
                   <% unless Assessment.find_by_test_id(test.id).nil? %>
+                    <div class="col-md-4 col-sm-6 col-xs-12">
                       <%= link_to url_for(:controller => "application", :action => "export", :test => test.id) do %>
                           <div class="btn btn-default groupButton">
                             <b><%= test.name %></b>
                           </div>
                       <% end %>
+                    </div>
                   <% end %>
-                </div>
             <% end %>
           </div>
         </div>
