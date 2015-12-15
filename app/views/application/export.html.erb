@@ -1,5 +1,5 @@
 <ul id="tabs" class="nav nav-tabs" role="tablist">
-    <li role="presentation active"><a href="#tests" aria-controls="tests" role="tab" data-toggle="tab">Nach Tests</a></li>
+    <li role="presentation" class="active"><a href="#tests" aria-controls="tests" role="tab" data-toggle="tab">Nach Tests</a></li>
     <li role="presentation"><a href="#users" aria-controls="users" role="tab" data-toggle="tab">Nach Nutzern</a></li>
 </ul>
 
@@ -7,18 +7,7 @@
   <div role="tabpanel" class="tab-pane active" id="tests">
         <div class="tab-content" style="padding-top: 19px;">
           <div class="row">
-
-            <% @tests.each do |test| %>
-                  <% unless Assessment.find_by_test_id(test.id).nil? %>
-                    <div class="col-md-4 col-sm-6 col-xs-12">
-                      <%= link_to url_for(:controller => "application", :action => "export", :test => test.id) do %>
-                          <div class="btn btn-default groupButton">
-                            <b><%= test.name %></b>
-                          </div>
-                      <% end %>
-                    </div>
-                  <% end %>
-            <% end %>
+            <%= render 'tests/index' %>
           </div>
         </div>
   </div>

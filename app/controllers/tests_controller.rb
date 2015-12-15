@@ -12,6 +12,17 @@ class TestsController < ApplicationController
   def edit
   end
 
+  # GET /tests/1.xml
+  def show
+    unless @login.hasCapability?("export")
+      redirect_to root_url
+    end
+    respond_to do |format|
+      format.xml {
+        send_file @test.export, filename: @test.name + " - Export.xls", type: "text/csv"}
+    end
+  end
+
   # DELETE /tests/1
   # DELETE /tests/1.json
   def destroy
