@@ -75,7 +75,6 @@ class ResultsController < ApplicationController
             unless r.nil?
               if val.is_a?(Hash)
                 r.parse_Hash(val)
-                @last = r
               else
                 r.parse_csv(val)
                 stay = false

@@ -37,11 +37,11 @@ class Student < ActiveRecord::Base
   end
 
   def self.xls_headings
-    return %w{ID Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
+    return %w{ID Code Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
   end
 
   def to_a
-    return [id.to_s, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+    return [id.to_s, name, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
 
   #####################

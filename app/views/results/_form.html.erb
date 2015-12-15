@@ -43,17 +43,16 @@
     </div>
     </div>
 
-    <% open = @last.nil? %>
     <% @measurement.results.each do |r| %>
         <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="h<%=r.id%>">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded=<% if open %>"true"<% else %>"false"<% end %> aria-controls="c<%=r.id%>">
+            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded="false" aria-controls="c<%=r.id%>">
               <%= "#{r.student.name}" %>
             </a>
           </h4>
         </div>
-        <div id="c<%=r.id%>" class="panel-collapse collapse <% if open %>in<% end %>" role="tabpanel" aria-labelledby="h<%=r.id%>">
+        <div id="c<%=r.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=r.id%>">
           <div class="panel-body">
             <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, class: "form", :data => {:remote => true}) do %>
                   <% index = 0 %>
@@ -87,7 +86,6 @@
           </div>
         </div>
       </div>
-      <% open = (not @last.nil?) && (@last == r) %>
     <% end %>
 
   <div class="panel panel-default">

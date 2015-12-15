@@ -72,6 +72,6 @@ class Result < ActiveRecord::Base
     itemset.each do |i|
       res = res + [responses[items.index(i)].nil? ? '' : responses[items.index(i)].to_s]
     end
-    return [student.id.to_s] + res
+    return res
   end
 end

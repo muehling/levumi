@@ -55,21 +55,29 @@ class Test < ActiveRecord::Base
     end
 
     sheet = book.create_worksheet :name => "Alle Messungen"
-    sheet.row(0).concat %w(Student)
+    sheet.row(0).concat %w(Schüler/in Messzeitpunkt Tester)
     itemset = items.pluck(:id)
     sheet.row(0).concat itemset
     i = 1
     results.find_each do |r|
+      sheet.row(i).push r.student.id
+      sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
+      sheet.row(i).push r.measurement.assessment.group.user.id
       sheet.row(i).concat r.to_a(itemset)
       i = i+1
     end
 
     measurements.sort_by { |a| a.date}.each do |m|
-      sheet = book.create_worksheet :name => "Messung #{m.date.to_date.strftime("%d.%m.%Y")}"
-      sheet.row(0).concat %w(Student)
+      sheet = book.create_worksheet :name => "Messung #{m.id}"
+      sheet.row(0).push "Datum"
+      sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
+      sheet.row(1).push "Tester"
+      sheet.row(1).push m.assessment.group.user.id
+
+      sheet.row(2).concat %w(Student)
       itemset = items.pluck(:id)
-      sheet.row(0).concat itemset
-      i = 1
+      sheet.row(2).concat itemset
+      i = 3
       m.results.each do |r|
         sheet.row(i).concat r.to_a(itemset)
         i = i+1

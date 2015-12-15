@@ -2,6 +2,9 @@
     <table class="table table-striped">
       <thead>
       <th>
+        ID
+      </th>
+      <th>
         Benutzer
       </th>
       <th>
@@ -17,6 +20,9 @@
       <tbody>
       <% @users.each do |user| %>
           <tr>
+            <td>
+              <%= user.id %>
+            </td>
             <td>
               <%= link_to user.email, user_path(user) %>
             </td>
