@@ -173,6 +173,7 @@ DEPENDENCIES
   sass-rails (~> 4.0.3)
   sdoc (~> 0.4.0)
   seedbank
+  spreadsheet
   spring
   sqlite3
   sshkit-sudo

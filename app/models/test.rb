@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+
+require 'spreadsheet'
+
 class Test < ActiveRecord::Base
   has_many :items, :dependent => :destroy
   has_many :assessments, :dependent => :destroy
@@ -26,5 +29,56 @@ class Test < ActiveRecord::Base
 
   def view_info
     return "Test"
+  end
+
+  def export
+    measurements = Measurement.where(:assessment => Assessment.where(:test => self))
+    results = Result.where(:measurement => measurements)
+    students = Student.where(:id => results.uniq.pluck(:student_id))
+
+    book = Spreadsheet::Workbook.new
+
+    sheet = book.create_worksheet :name => 'Items'
+    sheet.row(0).concat Item.xls_headings
+    i = 1
+    items.each do |it|
+      sheet.row(i).concat it.to_a
+      i = i+1
+    end
+
+    sheet = book.create_worksheet :name => 'SuS'
+    sheet.row(0).concat Student.xls_headings
+    i = 1
+    students.find_each do |s|
+      sheet.row(i).concat s.to_a
+      i = i+1
+    end
+
+    sheet = book.create_worksheet :name => "Alle Messungen"
+    sheet.row(0).concat %w(Student)
+    itemset = items.pluck(:id)
+    sheet.row(0).concat itemset
+    i = 1
+    results.find_each do |r|
+      sheet.row(i).concat r.to_a(itemset)
+      i = i+1
+    end
+
+    measurements.sort_by { |a| a.date}.each do |m|
+      sheet = book.create_worksheet :name => "Messung #{m.date.to_date.strftime("%d.%m.%Y")}"
+      sheet.row(0).concat %w(Student)
+      itemset = items.pluck(:id)
+      sheet.row(0).concat itemset
+      i = 1
+      m.results.each do |r|
+        sheet.row(i).concat r.to_a(itemset)
+        i = i+1
+      end
+    end
+
+    temp = Tempfile.new("LeVuMi")
+    temp.close
+    book.write temp.path
+    return temp.path
   end
 end

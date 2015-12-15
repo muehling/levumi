@@ -41,4 +41,12 @@ class Measurement < ActiveRecord::Base
   def average
     return ((results.map{|f| f.score.nil? ? 0 : f.score}.sum).to_f/real_results).round(1)
   end
+
+  def self.xls_headings
+    return %w{Student}
+  end
+
+  def to_a
+    return [id.to_s, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+  end
 end

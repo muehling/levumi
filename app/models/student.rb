@@ -7,21 +7,21 @@ class Student < ActiveRecord::Base
 
   #Getter für Merkmale:
 
-  def get_gender
-    return self[:gender].nil? ? "<i>nicht erfasst</i>" : (self[:gender] ? "männlich" : "weiblich")
+  def get_gender(raw = false)
+    return self[:gender].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:gender] ? "männlich" : "weiblich")
   end
 
-  def get_birthdate
+  def get_birthdate(raw = false)
     if self[:birthdate].nil?
-      return "<i>nicht erfasst</i>"
+      return raw ? "nicht erfasst" : "<i>nicht erfasst</i>"
     else
       return I18n.l(self[:birthdate].to_date, format: "%b %Y")
     end
   end
 
-  def get_specific_needs
+  def get_specific_needs(raw = false)
     if self[:specific_needs].nil?
-      return "<i>nicht erfasst</i>"
+      return raw ? "nicht erfasst" : "<i>nicht erfasst</i>"
     else
       return case self[:specific_needs]
         when 0 then "Keinen"
@@ -32,12 +32,21 @@ class Student < ActiveRecord::Base
     end
   end
 
-  def get_migration
-    return self[:migration].nil? ? "<i>nicht erfasst</i>" : (self[:migration] ? "Ja" : "Nein")
+  def get_migration(raw = false)
+    return self[:migration].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:migration] ? "Ja" : "Nein")
   end
 
+  def self.xls_headings
+    return %w{ID Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
+  end
+
+  def to_a
+    return [id.to_s, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+  end
 
   #####################
+
+
 
   def self.import(file, group)
     spreadsheet = open_spreadsheet(file)

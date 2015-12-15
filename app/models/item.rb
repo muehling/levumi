@@ -6,6 +6,14 @@ class Item < ActiveRecord::Base
 
   before_save :check_shorthand
 
+  def self.xls_headings
+    return %w{ID Kurztext}
+  end
+
+  def to_a
+    return [id.to_s, shorthand]
+  end
+
   private
 
   def check_shorthand

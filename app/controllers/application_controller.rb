@@ -41,6 +41,19 @@ class ApplicationController < ActionController::Base
     render params[:page]
   end
 
+  def export
+    unless @login.hasCapability?("export")
+      redirect_to root_url
+    end
+    if params.has_key?("test")
+      test = Test.find(params[:test])
+      send_file test.export, filename: test.name + " - Export.xls", type: "text/csv"
+      return
+    end
+    @tests = Test.all
+    @users = User.all
+  end
+
   private
 
   def check_login
