@@ -79,6 +79,7 @@ class Test < ActiveRecord::Base
       sheet.row(2).concat itemset
       i = 3
       m.results.each do |r|
+        sheet.row(i).push r.student.id
         sheet.row(i).concat r.to_a(itemset)
         i = i+1
       end

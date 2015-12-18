@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_filter :is_allowed
+  before_filter :is_allowed, except: [:show]
 
   # GET /users
   # GET /users.json
@@ -12,6 +12,19 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.json
   def show
+    respond_to do |format|
+      format.html {
+        unless @login.hasCapability?("user")
+          redirect_to root_url
+        end
+      }
+      format.xml {
+        unless @login.hasCapability?("export")
+          redirect_to root_url
+        end
+        send_file @user.export, filename: @user.name + " - Export.xls", type: "text/csv"
+      }
+    end
   end
 
   # GET /users/new

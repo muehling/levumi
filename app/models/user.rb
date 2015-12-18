@@ -15,4 +15,58 @@ class User < ActiveRecord::Base
     return capabilities.nil? || capabilities.blank?
   end
 
+  def export
+    groups = Group.where(:user => self)
+    assessments = Assessment.where(:group => groups)
+    tests = Test.where(:id => assessments.uniq.pluck(:test_id))
+    measurements = Measurement.where(:assessment => assessments)
+    results = Result.where(:measurement => measurements)
+    students = Student.where(:id => results.uniq.pluck(:student_id))
+    items = Item.where(:test => tests)
+
+    book = Spreadsheet::Workbook.new
+
+    sheet = book.create_worksheet :name => 'Items'
+    sheet.row(0).concat Item.xls_headings
+    i = 1
+    items.each do |it|
+      sheet.row(i).concat it.to_a
+      i = i+1
+    end
+
+    sheet = book.create_worksheet :name => 'SuS'
+    sheet.row(0).concat Student.xls_headings
+    i = 1
+    students.find_each do |s|
+      sheet.row(i).concat s.to_a
+      i = i+1
+    end
+
+    assessments.each do |a|
+      sheet = book.create_worksheet :name => "Assessment #{a.id}"
+      sheet.row(0).push "Test"
+      sheet.row(0).push a.test.name
+      sheet.row(1).push "Klasse"
+      sheet.row(1).push a.group.id
+
+      sheet.row(2).concat %w(Student)
+      itemset = Item.where(:test => a.test).pluck(:id)
+      sheet.row(2).concat itemset
+      i = 3
+      measurements.sort_by {|x| x.date}.each do |m|
+        date = m.date.to_date.strftime("%d.%m.%Y")
+        m.results.each do |r|
+          sheet.row(i).push r.student.id
+          sheet.row(i).concat r.to_a(itemset)
+          i = i+1
+        end
+      end
+    end
+
+    temp = Tempfile.new("LeVuMi")
+    temp.close
+    book.write temp.path
+    return temp.path
+  end
+
 end
