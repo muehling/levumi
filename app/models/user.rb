@@ -17,11 +17,9 @@ class User < ActiveRecord::Base
 
   def export
     groups = Group.where(:user => self)
+    students = Student.where(:group => groups)
     assessments = Assessment.where(:group => groups)
     tests = Test.where(:id => assessments.uniq.pluck(:test_id))
-    measurements = Measurement.where(:assessment => assessments)
-    results = Result.where(:measurement => measurements)
-    students = Student.where(:id => results.uniq.pluck(:student_id))
     items = Item.where(:test => tests)
 
     book = Spreadsheet::Workbook.new
@@ -53,7 +51,7 @@ class User < ActiveRecord::Base
       itemset = Item.where(:test => a.test).pluck(:id)
       sheet.row(2).concat itemset
       i = 3
-      measurements.sort_by {|x| x.date}.each do |m|
+      Measurement.where(:assessment => a).sort_by {|x| x.date}.each do |m|
         date = m.date.to_date.strftime("%d.%m.%Y")
         m.results.each do |r|
           sheet.row(i).push r.student.id
