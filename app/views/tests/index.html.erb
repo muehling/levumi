@@ -26,7 +26,7 @@
             <% first = true %>
             <% categories.sort.each do |c| %>
                 <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= (s+c).parameterize%>">
-                    <% Test.where(:subject => s, :category => c).find_each do |t| %>
+                    <% Test.where(:subject => s, :category => c).order(:name).each do |t| %>
 
                       <div class="panel panel-default">
                         <div class="panel-heading" role="tab" id="h<%=t.id%>">

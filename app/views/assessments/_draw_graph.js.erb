@@ -27,7 +27,7 @@ var chart = c3.generate({
             type: 'timeseries',
             tick: {
                 fit: true,
-                format: "%e %b %y"
+                format: "%d.%m%.%y"
             },
             label: {
                 text: 'Testzeitpunkte',
@@ -37,11 +37,17 @@ var chart = c3.generate({
         y: {
             label: {
                 text: 'Anzahl richtiger Items',
-                position: 'outer-middle'
-            }
+                position: 'outer-middle',
+            },
+            min: 1
         }
     },
     line: {
         connectNull: true
+    },
+    tooltip: {
+        format: {
+            title: function (d) { return 'Messzeitpunkt: ' + d.getDate() + "." + (d.getMonth()+1) + "." + d.getFullYear(); }
+        }
     }
 });
