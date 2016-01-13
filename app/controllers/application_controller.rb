@@ -28,7 +28,11 @@ class ApplicationController < ActionController::Base
   end
 
   def welcome
-    render 'welcome', :layout => 'bare'
+    if params.has_key?(:page)
+      render params[:page], :layout => 'bare'
+    else
+      render 'welcome', :layout => 'bare'
+    end
   end
 
   def accept

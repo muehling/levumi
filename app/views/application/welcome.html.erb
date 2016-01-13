@@ -1,37 +1,19 @@
-<nav class="navbar">
-</nav>
-
-<div class="container-fluid">
-  <div id="content">
-    <div id="alert">
-      <% unless notice.blank? %>
-          <div class="alert alert-info alert-dismissible">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <p id="notice"><%= notice %></p>
-          </div>
-      <% end %>
-    </div>
-    <div class="jumbotron">
-      <h1>LeVuMi</h1>
-      <p>Lern-Verlaufs-Monitoring</p>
-      <%= form_tag(url_for(:controller => 'application', :action => 'login'), :class => "form") do %>
-          <div class="form-group">
-            <label class="sr-only" for="email">Email Adresse</label>
-            <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
-          </div>
-          <div class="form-group">
-            <label class="sr-only" for="email">Passwort</label>
-            <%= text_field_tag "password", nil, type: "password", class: "form-control", placeholder: "Passwort"%>
-          </div>
-          <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
-      <% end %>
-    </div>
-    <p class="lead">
-      Für eine fehlerfreie Darstellung, verwenden Sie bitte einen <a href="http://www.browsehappy.com">modernen Browser</a> (z.B. Mozilla Firefox).<br/>
-      Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
-    </p>
-    <p class="text-center">
-      <a href="http://www.ddi.edu.tum.de/index.php?id=11">Impressum</a>
-    </p>
-  </div>
+<div class="jumbotron">
+  <h1>LeVuMi</h1>
+  <p>Lern-Verlaufs-Monitoring</p>
+  <%= form_tag(url_for(:controller => 'application', :action => 'login'), :class => "form") do %>
+      <div class="form-group">
+        <label class="sr-only" for="email">Email Adresse</label>
+        <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="email">Passwort</label>
+        <%= text_field_tag "password", nil, type: "password", class: "form-control", placeholder: "Passwort"%>
+      </div>
+      <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
+  <% end %>
 </div>
+<p class="lead">
+  Für eine fehlerfreie Darstellung, verwenden Sie bitte einen <a href="http://www.browsehappy.com">modernen Browser</a> (z.B. Mozilla Firefox).<br/>
+  Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
+</p>
