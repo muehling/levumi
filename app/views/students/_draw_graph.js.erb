@@ -46,7 +46,7 @@ var chart<%=test%> = c3.generate({
     },
     tooltip: {
         contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-            var res = "<table class='table table-bordered table-condensed'><thead><tr><td>Schüler/-in</td><td>Punkte</td></tr><tbody>";
+            var res = "<table class='table table-bordered table-condensed'><thead><tr><td style='background-color:white'>Schüler/-in</td><td style='background-color:white'>Punkte</td></tr><tbody>";
             var i = 0;
             d.sort(function(a, b){return b.value - a.value});
             for (i = 0; i < d.length; i++)
