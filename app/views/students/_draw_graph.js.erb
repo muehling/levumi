@@ -43,5 +43,17 @@ var chart<%=test%> = c3.generate({
     },
     legend: {
         hide: true
+    },
+    tooltip: {
+        contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+            var res = "<table class='table table-bordered table-condensed'><thead><tr><td>Schüler/-in</td><td>Punkte</td></tr><tbody>";
+            var i = 0;
+            d.sort(function(a, b){return b.value - a.value});
+            for (i = 0; i < d.length; i++)
+                if (d[i].value != null)
+                    res = res + "<tr><td style='background-color:" + color(d[i]) + "'>" + d[i].name + "</td><td style='background-color:white'>" + d[i].value + "</td></tr>";
+            res = res + "</tbody></table>";
+            return res;
+        }
     }
 });
