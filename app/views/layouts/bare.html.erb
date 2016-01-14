@@ -10,11 +10,6 @@
 <body>
 
 <nav class="navbar">
-  <ul class="nav navbar-nav">
-    <li><%= link_to "Login", url_for(:controller => "application", :action => "welcome")%></li>
-    <li><%= link_to "Über LeVuMi", url_for(:controller => "application", :action => "welcome", :page => "about")%></li>
-    <li><%= link_to "Impressum", url_for(:controller => "application", :action => "welcome", :page => "imprint")%></li>
-  </ul>
 </nav>
 
 <div class="container-fluid">
@@ -30,10 +25,18 @@
 
     <%= yield %>
   </div>
-
-
 </div>
 
+<p class="text-center">
+  <%= link_to "Login", url_for(:controller => "application", :action => "welcome")%>
+  -
+  <%= link_to "Über LeVuMi", url_for(:controller => "application", :action => "welcome", :page => "about")%>
+  -
+  <%= link_to "Impressum", url_for(:controller => "application", :action => "welcome", :page => "imprint")%>
+</p>
+
+<nav class="navbar">
+</nav>
 
 </body>
 </html>

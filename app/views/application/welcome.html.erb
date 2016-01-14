@@ -1,6 +1,7 @@
 <div class="jumbotron">
   <h1>LeVuMi</h1>
-  <p>Lern-Verlaufs-Monitoring</p>
+  <h3>Lern-Verlaufs-Monitoring</h3>
+  <br/>
   <%= form_tag(url_for(:controller => 'application', :action => 'login'), :class => "form") do %>
       <div class="form-group">
         <label class="sr-only" for="email">Email Adresse</label>
@@ -12,8 +13,9 @@
       </div>
       <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
   <% end %>
+  <br/>
+  <p>
+    Für eine fehlerfreie Darstellung, verwenden Sie bitte einen <a href="http://www.browsehappy.com">modernen Browser</a> (z.B. Mozilla Firefox).<br/>
+    Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
+  </p>
 </div>
-<p class="lead">
-  Für eine fehlerfreie Darstellung, verwenden Sie bitte einen <a href="http://www.browsehappy.com">modernen Browser</a> (z.B. Mozilla Firefox).<br/>
-  Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
-</p>
