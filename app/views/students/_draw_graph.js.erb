@@ -50,8 +50,8 @@ var chart<%=test%> = c3.generate({
             var res = "<table class='table table-condensed table-striped' style='background-color:white'>";
             res = res + "<tr><td>Schüler/-in</td><td>" + d[0].name + "</td></tr>";
             res = res + "<tr><td>Punkte</td><td>" + d[0].value + "</td></tr>";
-            res = res + "<tr><td>Minimum</td><td>" + Math.min(chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
-            res = res + "<tr><td>Maximum</td><td>" + Math.max(chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+            res = res + "<tr><td>Minimum</td><td>" + Math.min(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+            res = res + "<tr><td>Maximum</td><td>" + Math.max(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
 
 
             res = res + "</table>";
