@@ -35,7 +35,8 @@ var chart<%=test%> = c3.generate({
             label: {
                 text: 'Anzahl richtiger Items',
                 position: 'outer-middle'
-            }
+            },
+            min: 1
         }
     },
     line: {
@@ -46,13 +47,14 @@ var chart<%=test%> = c3.generate({
     },
     tooltip: {
         contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-            var res = "<table class='table table-bordered table-condensed'><thead><th style='background-color:white'>Schüler/-in</th><th style='background-color:white'>Punkte</th><tbody>";
-            var i = 0;
-            d.sort(function(a, b){return b.value - a.value});
-            for (i = 0; i < d.length; i++)
-                if (d[i].value != null)
-                    res = res + "<tr><td style='background-color:" + color(d[i]) + "'>" + d[i].name + "</td><td style='background-color:white'>" + d[i].value + "</td></tr>";
-            res = res + "</tbody></table>";
+            var res = "<table class='table table-condensed table-striped'>";
+            res = res + "<tr><td>Schüler/-in</td><td>" + d[0].name + "</td></tr>";
+            res = res + "<tr><td>Punkte</td><td>" + d[0].value + "</td></tr>";
+            res = res + "<tr><td>Minimum</td><td>" + Math.min(chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+            res = res + "<tr><td>Maximum</td><td>" + Math.max(chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+
+
+            res = res + "</table>";
             return res;
         }
     }

@@ -47,12 +47,12 @@ var chart = c3.generate({
     },
     tooltip: {
         contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-            var res = "<table class='table table-bordered table-condensed'><thead><th style='background-color:white'>Schüler/-in</th><th style='background-color:white'>Punkte</th><tbody>";
+            var res = "<table class='table table-condensed'><thead><th></th><th style='background-color:white'>Schüler/-in</th><th style='background-color:white'>Punkte</th><tbody>";
             var i = 0;
             d.sort(function(a, b){return b.value - a.value});
             for (i = 0; i < d.length; i++)
                 if (d[i].value != null)
-                    res = res + "<tr><td style='background-color:" + color(d[i]) + "'>" + d[i].name + "</td><td style='background-color:white'>" + d[i].value + "</td></tr>";
+                    res = res + "<tr><td><span class='glyphicon glyphicon-stop' style='color:" + color(d[i]) + "'></span></td><td style='background-color:white'>" + d[i].name + "</td><td style='background-color:white'>" + d[i].value + "</td></tr>";
             res = res + "</tbody></table>";
             return res;
         }
