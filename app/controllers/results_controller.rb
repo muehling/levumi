@@ -37,22 +37,6 @@ class ResultsController < ApplicationController
   def edit
   end
 
-  # POST /results
-  # POST /results.json
-  def create
-    @result = Result.new(result_params)
-
-    respond_to do |format|
-      if @result.save
-        format.html { redirect_to @result, notice: 'Result was successfully created.' }
-        format.json { render :show, status: :created, location: @result }
-      else
-        format.html { render :new }
-        format.json { render json: @result.errors, status: :unprocessable_entity }
-      end
-    end
-  end
-
   # PATCH/PUT /results/1
   # PATCH/PUT /results/1.json
   def update
@@ -95,15 +79,6 @@ class ResultsController < ApplicationController
     end
   end
 
-  # DELETE /results/1
-  # DELETE /results/1.json
-  def destroy
-    @result.destroy
-    respond_to do |format|
-      format.html { redirect_to results_url, notice: 'Result was successfully destroyed.' }
-      format.json { head :no_content }
-    end
-  end
 
   private
     # Use callbacks to share common setup or constraints between actions.
