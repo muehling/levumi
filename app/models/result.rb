@@ -70,7 +70,7 @@ class Result < ActiveRecord::Base
   def to_a(itemset)
     res = []
     itemset.each do |i|
-      res = res + [responses[items.index(i)].nil? ? '' : responses[items.index(i)].to_s]
+      res = res + [responses[items.index(i)].nil? ? '' : responses[items.index(i)]]
     end
     return res
   end

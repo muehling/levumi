@@ -52,8 +52,6 @@ var chart<%=test%> = c3.generate({
             res = res + "<tr><td>Punkte</td><td>" + d[0].value + "</td></tr>";
             res = res + "<tr><td>Minimum</td><td>" + Math.min(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
             res = res + "<tr><td>Maximum</td><td>" + Math.max(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
-
-
             res = res + "</table>";
             return res;
         }
