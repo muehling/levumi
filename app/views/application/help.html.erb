@@ -21,11 +21,10 @@
 <div class="well">
   <h3>Häufig gestellte Fragen (FAQ)</h3>
   <br/>
-  <p class="lead">Wie kann ich die Übersichtsgraphen in der Klassen- bzw. Schüleransicht am Besten ausdrucken?</p>
-  <p class="text-justify">
-    Wenn man auf das Drucken Symbol <span class="glyphicon glyphicon-print"></span> klickt, bzw. in der Schülernsicht noch die Option "Nur Graph" auswählt,
-    öffnet sich ein neues Fenster in dem nur der Graph dargestellt wird.
-    Diese Seite können Sie dann ganz normal mit Ihrem Browser ausdrucken. Es empfiehlt sich dafür Querformat einzustellen und die Skalierung so zu wählen,
-    dass der Graph in die Seite eingepasst wird. In Firefox heißt die entsprechende Option in der Druckvorschau "Auf Seite verkleinern".
-  </p>
+  <% Faq.all.each do |f| %>
+      <p class="lead"><%= raw(f.question) %></p>
+      <p class="text-justify">
+        <%= raw(f.response) %>
+      </p>
+  <% end %>
 </div>
