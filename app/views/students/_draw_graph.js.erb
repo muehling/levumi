@@ -17,7 +17,37 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-        ]
+            ['Maximum',
+                <% results.each do |r| %>
+                <% unless r.nil? %>
+                <%= r.measurement.max.nil? ? "null" : r.measurement.max %>
+                <% else %>
+                null
+                <% end %>,
+                <% end %>
+            ],
+            ['Minimum',
+                <% results.each do |r| %>
+                <% unless r.nil? %>
+                <%= r.measurement.min.nil? ? "null" : r.measurement.min %>
+                <% else %>
+                null
+                <% end %>,
+                <% end %>
+            ],
+            ['Durchschnitt',
+                <% results.each do |r| %>
+                <% unless r.nil? %>
+                <%= r.measurement.average.nil? ? "null" : r.measurement.average %>
+                <% else %>
+                null
+                <% end %>,
+                <% end %>
+            ]
+        ],
+    },
+    color: {
+        pattern: ['#46B8DA', '#5CB85C', '#D9534F', '#F0AD4E']
     },
     axis: {
         x: {
@@ -43,7 +73,7 @@ var chart<%=test%> = c3.generate({
         connectNull: true
     },
     legend: {
-        hide: true
+        hide: false
     },
     tooltip: {
         contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
@@ -57,3 +87,4 @@ var chart<%=test%> = c3.generate({
         }
     }
 });
+chart<%=test%>.focus(['<%= student.name %>']);

@@ -141,6 +141,7 @@
     function prepareTest(student) {
         currentStudent = student;
          $('#mainModalHeader').html(students[student]);
+        $('#itemText').html("Test");
         preparation = true;
         $('#cButton').removeClass("disabled");
         $('#cButton').removeClass("btn-success");
@@ -179,20 +180,20 @@
     }
 
     function correct() {
-    if (!$('#cButton').hasClass("disabled")) {
-        if (preparation) {
-            curSize=parseInt($('#itemText').css('font-size')) + 6;
-            $('#itemText').css('font-size', curSize);
+        if (!$('#cButton').hasClass("disabled")) {
+            if (preparation) {
+                curSize=parseInt($('#itemText').css('font-size')) + 6;
+                $('#itemText').css('font-size', curSize);
+            }
+            else {
+                currentResult = currentResult + "1,"
+                nextItem();
+            }
         }
-        else {
-            currentResult = currentResult + "1,"
-            nextItem();
-        }
-    }
     }
 
     function incorrect() {
-      if (!$('#iButton').hasClass("disabled")) {
+        if (!$('#iButton').hasClass("disabled")) {
           if (preparation) {
               curSize = parseInt($('#itemText').css('font-size')) - 6;
               $('#itemText').css('font-size', curSize);
@@ -201,26 +202,26 @@
               currentResult = currentResult + "0,"
               nextItem();
           }
-      }
+        }
     }
 
     function save() {
-    if (!$('#sButton').hasClass("disabled")) {
-        if (preparation) {
-            startTest();
+        if (!$('#sButton').hasClass("disabled")) {
+            if (preparation) {
+                startTest();
+            }
+            else {
+                $('#btn'+currentStudent).addClass("btn-success");
+                $('#mainModal').modal('hide');
+                var dict = {};
+                dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+                dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+                $.ajax({
+                    type: "PUT",
+                    url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+                    data: dict
+                });
+            }
         }
-        else {
-            $('#btn'+currentStudent).addClass("btn-success");
-            $('#mainModal').modal('hide');
-            var dict = {};
-            dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-            dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
-            $.ajax({
-                type: "PUT",
-                url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
-                data: dict
-            });
-        }
-    }
   }
 </script>

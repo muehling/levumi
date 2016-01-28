@@ -42,6 +42,14 @@ class Measurement < ActiveRecord::Base
     return ((results.map{|f| f.score.nil? ? 0 : f.score}.sum).to_f/real_results).round(1)
   end
 
+  def min
+    return results.map{|f| f.score.nil? ? 0 : f.score}.min
+  end
+
+  def max
+    return results.map{|f| f.score.nil? ? 0 : f.score}.max
+  end
+
   def self.xls_headings
     return %w{Student}
   end
