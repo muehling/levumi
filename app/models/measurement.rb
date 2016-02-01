@@ -50,6 +50,16 @@ class Measurement < ActiveRecord::Base
     return results.map{|f| f.score.nil? ? 0 : f.score}.max
   end
 
+  def first_quart
+    x = results.map{|f| f.score.nil? ? 0 : f.score}.sort
+    return x[x.size/4]
+  end
+
+  def third_quart
+    x = results.map{|f| f.score.nil? ? 0 : f.score}.sort
+    return x[3*x.size/4]
+  end
+
   def self.xls_headings
     return %w{Student}
   end

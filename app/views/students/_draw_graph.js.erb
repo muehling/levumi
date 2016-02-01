@@ -9,7 +9,11 @@ var chart<%=test%> = c3.generate({
                 <% end %>
             ],
             ['<%= student.name %>',
+                <% max = 0 %>
                 <% results.each do |r| %>
+                  <%if !r.measurement.max.nil? && r.measurement.max > max %>
+                    <% max = r.measurement.max %>
+                  <% end %>
                 <% unless r.nil? %>
                 <%= r.score.nil? ? "null" : r.score %>
                 <% else %>
@@ -17,25 +21,25 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            ['Maximum',
+            ['75% Niveau der Klasse',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
-                <%= r.measurement.max.nil? ? "null" : r.measurement.max %>
+                <%= r.measurement.max.nil? ? "null" : r.measurement.third_quart %>
                 <% else %>
                 null
                 <% end %>,
                 <% end %>
             ],
-            ['Minimum',
+            ['25% Niveau der Klasse',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
-                <%= r.measurement.min.nil? ? "null" : r.measurement.min %>
+                <%= r.measurement.min.nil? ? "null" : r.measurement.first_quart %>
                 <% else %>
                 null
                 <% end %>,
                 <% end %>
             ],
-            ['Durchschnitt',
+            ['Klassen-Durchschnitt',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
                 <%= r.measurement.average.nil? ? "null" : r.measurement.average %>
@@ -66,7 +70,8 @@ var chart<%=test%> = c3.generate({
                 text: 'Anzahl richtiger Items',
                 position: 'outer-middle'
             },
-            min: 1
+            min: 1,
+            max: <%= max %>
         }
     },
     line: {
@@ -80,8 +85,8 @@ var chart<%=test%> = c3.generate({
             var res = "<table class='table table-condensed table-striped' style='background-color:white'>";
             res = res + "<tr><td>Schüler/-in</td><td>" + d[0].name + "</td></tr>";
             res = res + "<tr><td>Punkte</td><td>" + d[0].value + "</td></tr>";
-            res = res + "<tr><td>Minimum</td><td>" + Math.min(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
-            res = res + "<tr><td>Maximum</td><td>" + Math.max(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+            res = res + "<tr><td>Bisheriges Minimum</td><td>" + Math.min(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
+            res = res + "<tr><td>Bisheriges Maximum</td><td>" + Math.max(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
             res = res + "</table>";
             return res;
         }
