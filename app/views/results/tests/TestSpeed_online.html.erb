@@ -49,9 +49,9 @@
             <br/>
           </div>
           <div class="modal-footer" style="text-align: center">
-            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="correct()">Richtig (Taste: 1)</button>
-            <button id="sButton" type="button" class="btn btn-default disabled" onclick="save()">Speichern</button>
-            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="incorrect()">Falsch (Taste: 0)</button>
+            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
           </div>
         </div>
       </div>
@@ -74,11 +74,11 @@
         switch (event.keyCode) {
             case 49:
             case 97:
-                correct();
+                cButtonClick();
                 break;
             case 48:
             case 96:
-                incorrect();
+                iButtonClick();
                 break;
 
         }
@@ -113,20 +113,30 @@
 
     function setButtons(enabled) {
       if (enabled) {
-          $('#cButton').removeClass("disabled");
-          $('#cButton').addClass("btn-success");
-          $('#iButton').removeClass("disabled");
-          $('#iButton').addClass("btn-danger");
-          $('#sButton').addClass("disabled");
-          $('#sButton').removeClass("btn-primary");
+          if (preparation) {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').removeClass("btn-success");
+              $('#sButton').removeClass("disabled");
+              $('#sButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').removeClass("btn-danger");
+          }
+          else {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').addClass("btn-danger");
+              $('#sButton').addClass("disabled");
+              $('#sButton').removeClass("btn-success");
+          }
       }
       else {
           $('#cButton').addClass("disabled");
           $('#cButton').removeClass("btn-success");
           $('#iButton').addClass("disabled");
           $('#iButton').removeClass("btn-danger");
-          $('#sButton').removeClass("disabled");
-          $('#sButton').addClass("btn-primary");
+          $('#sButton').addClass("disabled");
+          $('#sButton').removeClass("btn-success");
       }
     }
 
@@ -135,51 +145,53 @@
         if (currentItemIndex < studentData[currentStudent].length)
             $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
         else
-            stopTest();
+            stopTest(false);
     }
 
     function prepareTest(student) {
         currentStudent = student;
          $('#mainModalHeader').html(students[student]);
+        $('#itemText').css('font-size', 96);
         $('#itemText').html("Test");
         preparation = true;
-        $('#cButton').removeClass("disabled");
-        $('#cButton').removeClass("btn-success");
-        $('#sButton').removeClass("disabled");
-        $('#sButton').addClass("btn-success");
-        $('#iButton').removeClass("disabled");
-        $('#iButton').removeClass("btn-danger");
         $('#cButton').html("Schrift größer");
         $('#iButton').html("Schrift kleiner");
-        $('#sButton').html("Test starten");
+        setButtons(true)
         $('#mainModal').modal('show');
     }
 
     function startTest() {
         preparation = false;
-        $('#cButton').addClass("disabled");
-        $('#cButton').addClass("btn-success");
-        $('#sButton').addClass("disabled");
-        $('#sButton').removeClass("btn-success");
-        $('#iButton').addClass("disabled");
-        $('#iButton').addClass("btn-danger");
         $('#cButton').html("Richtig (Taste: 1)");
         $('#iButton').html("Falsch (Taste: 0)");
-        $('#sButton').html("Speichern");
         setButtons(true);
         currentItemIndex = -1;
         nextItem();
         currentResult = "";
-        window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500);
+        window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
     }
 
-    function stopTest() {
-        $('#itemText').css('font-size', 96);
-        $('#itemText').html("Test beendet. Bitte speichern.");
+    function stopTest(timeout) {
+
+        var dict = {};
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
+
         setButtons(false);
+        $('#itemText').css('font-size', 36);
+        if (timeout)
+            $('#itemText').html("Zeit abgelaufen. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+        else
+            $('#itemText').html("Alle Items beantwortet. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+        $('#btn'+currentStudent).addClass('btn-success');
     }
 
-    function correct() {
+    function cButtonClick() {
         if (!$('#cButton').hasClass("disabled")) {
             if (preparation) {
                 curSize=parseInt($('#itemText').css('font-size')) + 6;
@@ -192,7 +204,7 @@
         }
     }
 
-    function incorrect() {
+    function iButtonClick() {
         if (!$('#iButton').hasClass("disabled")) {
           if (preparation) {
               curSize = parseInt($('#itemText').css('font-size')) - 6;
@@ -205,23 +217,9 @@
         }
     }
 
-    function save() {
-        if (!$('#sButton').hasClass("disabled")) {
-            if (preparation) {
-                startTest();
-            }
-            else {
-                $('#btn'+currentStudent).addClass("btn-success");
-                $('#mainModal').modal('hide');
-                var dict = {};
-                dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-                dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
-                $.ajax({
-                    type: "PUT",
-                    url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
-                    data: dict
-                });
-            }
+    function sButtonClick() {
+        if (preparation) {
+            startTest();
         }
   }
 </script>
