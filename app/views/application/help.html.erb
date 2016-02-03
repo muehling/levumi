@@ -26,7 +26,7 @@
 <div class="well">
   <h3>Häufig gestellte Fragen (FAQ)</h3>
   <br/>
-  <% Faq.all.each do |f| %>
+  <% Faq.order(created_at: :desc).each do |f| %>
       <p class="lead"><%= raw(f.question) %></p>
       <p class="text-justify">
         <%= raw(f.response) %>
