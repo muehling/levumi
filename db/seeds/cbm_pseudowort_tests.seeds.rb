@@ -270,6 +270,151 @@ cbmN1.save
 
 
 items = %w{
+scheura
+scheuse
+scheuli
+scheuno
+scheufu
+euma
+eure
+euni
+eufo
+eusu
+neusa
+neune
+neumi
+neulo
+neufu
+geula
+geume
+geusi
+geuso
+geufu
+beusa
+beure
+beumi
+beuno
+beulu
+hexaf
+hexef
+hexim
+hexol
+hexun
+jara
+jale
+jafi
+jamo
+jasu
+pysa
+pyme
+pyri
+pyno
+pyfu
+quara
+quase
+quani
+qualo
+quafu
+schöla
+schöse
+schöme
+schöfo
+schönu
+spema
+spele
+speni
+spelo
+spesu
+speira
+speife
+speimi
+speino
+speilu
+stana
+stame
+stafi
+stalo
+stasu
+steila
+steime
+steisi
+steifo
+steiru
+tyma
+tyne
+tyli
+tyso
+tyru
+vala
+vane
+vari
+vano
+vasu
+vofa
+vore
+vomi
+vono
+volu
+xila
+xime
+xine
+xilo
+xisu
+zafa
+zale
+zasi
+zamo
+zanu
+zisa
+zile
+zili
+zino
+zifu
+feuma
+feune
+feuli
+feuso
+feufu
+zula
+zufe
+zuri
+zumo
+zusu
+zema
+zele
+zeni
+zefo
+zeru
+vila
+vise
+vimi
+vifo
+viru
+vura
+vume
+vuni
+vufo
+vuru
+jera
+jese
+jeli
+jemo
+jenu
+}
+
+cbmN3a = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 3a", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+
+items.each do |i|
+  it = cbmN3a.items.build(itemtext: i, difficulty: 0)
+  it.save
+end
+
+cbmN3a.save
+
+
+
+
+items = %w{
 züstu
 zäßen
 quäjo
@@ -453,14 +598,14 @@ zöstä
 spüvi
 }
 
-cbmN3 = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 3", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN3b = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 3b", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
-  it = cbmN3.items.build(itemtext: i, difficulty: 0)
+  it = cbmN3b.items.build(itemtext: i, difficulty: 0)
   it.save
 end
 
-cbmN3.save
+cbmN3b.save
 
 
 
