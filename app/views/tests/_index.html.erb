@@ -20,7 +20,7 @@
   </th>
   </thead>
   <tbody>
-  <% @tests.order("subject ASC, category ASC, name ASC").each do |test| %>
+  <% @tests.order("subject ASC, construct ASC, name ASC").each do |test| %>
   <tr>
     <td>
       <%= link_to test_path(test.id, format: "xml") do %>
@@ -31,7 +31,7 @@
       <%= test.subject %>
     </td>
     <td>
-      <%= test.category %>
+      <%= test.construct %>
     </td>
     <td>
       <%= test.assessments.count %>

@@ -13,8 +13,8 @@
   <% subjects.sort.each do |s| %>
     <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s.parameterize%>">
 
-          <% categories = Test.where(:subject => s).uniq.pluck(:category) %>
-          <ul id="tabs" class="nav nav-tabs" role="tablist">
+          <% categories = Test.where(:subject => s).uniq.pluck(:construct) %>
+          <ul id="tabs" class="nav nav-pills" role="tablist">
             <% first = true %>
             <% categories.sort.each do |c| %>
                 <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= (s+c).parameterize%>" aria-controls="<%= (s+c).parameterize%>" role="tab" data-toggle="tab"><%= c%></a></li>
@@ -26,34 +26,50 @@
             <% first = true %>
             <% categories.sort.each do |c| %>
                 <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= (s+c).parameterize%>">
-                    <% Test.where(:subject => s, :category => c).order(:name).each do |t| %>
+                    <% Test.where(:subject => s, :construct => c).uniq.pluck(:name).each do |t| %>
 
                       <div class="panel panel-default">
-                        <div class="panel-heading" role="tab" id="h<%=t.id%>">
+                        <div class="panel-heading" role="tab" id="h<%=(s+c+t).parameterize %>">
                           <h4 class="panel-title">
-                            <a role="button" data-toggle="collapse" href="#c<%=t.id%>" aria-expanded="false" aria-controls="c<%=t.id%>">
-                              <%= t.name %>
+                            <a role="button" data-toggle="collapse" href="#c<%=(s+c+t).parameterize %>" aria-expanded="false" aria-controls="c<%=(s+c+t).parameterize %>">
+                              <%= t %>
                             </a>
                           </h4>
                         </div>
-                        <div id="c<%=t.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=t.id%>">
+                        <div id="c<%=(s+c+t).parameterize %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=(s+c+t).parameterize %>">
                           <div class="panel-body">
-                            <p class="lead text-right">
-                              <% if @login.hasCapability?("export") %>
-                                  <%= link_to test_path(t, format: "xml"), :title => "Datenexport" do %>
-                                      <span class="glyphicon glyphicon-save"></span>
-                                  <% end %>
-                              <% end %>
-                              <% if @login.hasCapability?("test") %>
-                                  <%= link_to edit_test_path(t), :title => "Bearbeiten", :data => {:remote => true} do %>
-                                      <span class="glyphicon glyphicon-pencil"></span>
-                                  <% end %>
-                                  <%= link_to test_path(t), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                                      <span class="glyphicon glyphicon-trash"></span>
-                                  <% end %>
-                              <% end %>
-                            </p>
-                            <%= render(file: 'tests/_show', :locals =>  {:test => t})%>
+
+                            <% Test.where(:subject => s, :construct => c, :name => t).order(:level).each do |test| %>
+                                <div class="panel panel-default">
+                                  <div class="panel-heading" role="tab" id="h<%=(s+c+t).parameterize %>">
+                                    <h4 class="panel-title">
+                                      <a role="button" data-toggle="collapse" href="#c<%=test.id %>" aria-expanded="false" aria-controls="c<%=test.id %>">
+                                        <%= test.level %>
+                                      </a>
+                                    </h4>
+                                  </div>
+                                  <div id="c<%=test.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=test.id %>">
+                                    <div class="panel-body">
+                                      <p class="lead text-right">
+                                        <% if @login.hasCapability?("export") %>
+                                            <%= link_to test_path(test, format: "xml"), :title => "Datenexport" do %>
+                                                <span class="glyphicon glyphicon-save"></span>
+                                            <% end %>
+                                        <% end %>
+                                        <% if @login.hasCapability?("test") %>
+                                            <%= link_to edit_test_path(test), :title => "Bearbeiten", :data => {:remote => true} do %>
+                                                <span class="glyphicon glyphicon-pencil"></span>
+                                            <% end %>
+                                            <%= link_to test_path(test), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                                                <span class="glyphicon glyphicon-trash"></span>
+                                            <% end %>
+                                        <% end %>
+                                      </p>
+                                      <%= render(file: 'tests/_show', :locals =>  {:test => test})%>
+                                    </div>
+                                  </div>
+                                </div>
+                            <%end %>
                           </div>
                         </div>
                       </div>

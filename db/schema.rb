@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160119133221) do
+ActiveRecord::Schema.define(version: 20160210125858) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -82,7 +82,8 @@ ActiveRecord::Schema.define(version: 20160119133221) do
     t.integer  "time"
     t.text     "short_info"
     t.text     "subject"
-    t.text     "category"
+    t.text     "construct"
+    t.text     "level"
   end
 
   create_table "users", force: true do |t|

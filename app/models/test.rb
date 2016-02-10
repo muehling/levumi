@@ -8,7 +8,8 @@ class Test < ActiveRecord::Base
 
   validates_presence_of :name
   validates_presence_of :subject
-  validates_presence_of :category
+  validates_presence_of :construct
+  validates_presence_of :level
 
   def draw_items(ability)
     itemset = Array.new
@@ -32,7 +33,7 @@ class Test < ActiveRecord::Base
   end
 
   def long_name
-    return subject + " - " + category + " - " + name
+    return name + " - " + level + " (" + subject + " - " + construct + ")"
   end
 
   def export
