@@ -3,7 +3,7 @@
         <div class="col-md-4 col-sm-6 col-xs-12">
           <%= link_to user_group_assessment_path(@user, @group, a), :data => {:remote => true}  do %>
               <div class="btn btn-default groupButton">
-                <b><%= Test.find(a.test_id).name %></b>
+                <b><%= Test.find(a.test_id).short_name %></b>
               </div>
           <% end %>
         </div>

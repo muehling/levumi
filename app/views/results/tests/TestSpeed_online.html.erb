@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
 <div class="container-fluid">

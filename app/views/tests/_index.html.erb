@@ -20,11 +20,11 @@
   </th>
   </thead>
   <tbody>
-  <% @tests.order("subject ASC, construct ASC, name ASC").each do |test| %>
+  <% @tests.order("subject ASC, construct ASC, name ASC, level ASC").each do |test| %>
   <tr>
     <td>
       <%= link_to test_path(test.id, format: "xml") do %>
-          <%= test.name %>
+          <%= test.short_name %>
       <% end %>
     </td>
     <td>

@@ -7,7 +7,7 @@
 
 <div class="container-fluid">
   <div id="content">
-      <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
+      <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
       <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
       <% @measurement.results.each do |r| %>
           <h4><%= r.student.name %></h4>

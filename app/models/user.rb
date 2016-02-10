@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
     assessments.each do |a|
       sheet = book.create_worksheet :name => "Assessment #{a.id}"
       sheet.row(0).push "Test"
-      sheet.row(0).push a.test.name
+      sheet.row(0).push a.test.long_name
       sheet.row(1).push "Klasse"
       sheet.row(1).push a.group.id
 

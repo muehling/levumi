@@ -19,7 +19,7 @@ class TestsController < ApplicationController
     end
     respond_to do |format|
       format.xml {
-        send_file @test.export, filename: @test.name + " - Export.xls", type: "text/csv"}
+        send_file @test.export, filename: @test.long_name + " - Export.xls", type: "text/csv"}
     end
   end
 
@@ -52,7 +52,7 @@ class TestsController < ApplicationController
 
   # Never trust parameters from the scary internet, only allow the white list through.
   def test_params
-    params.require(:test).permit(:name, :info, :shortinfo, :subject, :construct)
+    params.require(:test).permit(:name, :info, :shortinfo, :subject, :construct, :level)
   end
 
   def is_allowed

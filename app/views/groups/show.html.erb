@@ -29,7 +29,7 @@
     </div>
   </div>
 
-  <ul id="tabs" class="nav nav-tabs" role="tablist">
+  <ul id="tabs" class="nav nav-pills" role="tablist">
     <li role="presentation" class="active"><%= link_to "Tests", user_group_assessments_path(@user, @group), :data => {:remote => true, :target => "#tests"} %></li>
     <li role="presentation"><%= link_to "Schüler/-innen", user_group_students_path(@user, @group), :data => {:remote => true, :target => "#students"} %></li>
   </ul>
