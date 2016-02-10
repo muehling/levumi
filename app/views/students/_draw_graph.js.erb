@@ -39,10 +39,10 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            ['Klassen-Durchschnitt',
+            ['50% Niveau der Klasse',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
-                <%= r.measurement.average.nil? ? "null" : r.measurement.average %>
+                <%= r.measurement.average.nil? ? "null" : r.measurement.median %>
                 <% else %>
                 null
                 <% end %>,

@@ -60,6 +60,11 @@ class Measurement < ActiveRecord::Base
     return x[3*x.size/4]
   end
 
+  def median
+    x = results.map{|f| f.score.nil? ? 0 : f.score}.sort
+    return x[x.size/2]
+  end
+
   def self.xls_headings
     return %w{Student}
   end
