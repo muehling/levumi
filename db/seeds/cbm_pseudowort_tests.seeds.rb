@@ -70,7 +70,7 @@ milu
 limi
 }
 
-cbmN0 = TestCBM.create(name: "CBM Pseudowörter lesen - Vorstufe", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN0 = TestCBM.create(name: "Pseudowörter lesen - Vorstufe", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
   it = cbmN0.items.build(itemtext: i, difficulty: 0)
@@ -258,7 +258,7 @@ faro
 lale
 }
 
-cbmN1 = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 1", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN1 = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 1", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0)
@@ -402,7 +402,7 @@ jemo
 jenu
 }
 
-cbmN3a = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 3a", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN3a = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 3a", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
   it = cbmN3a.items.build(itemtext: i, difficulty: 0)
@@ -598,7 +598,7 @@ zöstä
 spüvi
 }
 
-cbmN3b = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 3b", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN3b = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 3b", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
   it = cbmN3b.items.build(itemtext: i, difficulty: 0)
@@ -802,7 +802,7 @@ glutra
 sprispre
 }
 
-cbmN4 = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 4", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN4 = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 4", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0)
@@ -814,7 +814,7 @@ cbmN4.save
 
 
 
-cbmN2a = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 2a", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN2a = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 2a", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items = %w{
 dofen
@@ -989,7 +989,7 @@ cbmN2a.save
 
 
 
-cbmN2b = TestCBM.create(name: "CBM Pseudowörter lesen - Niveaustufe 2b", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
+cbmN2b = TestCBM.create(name: "Pseudowörter lesen - Niveaustufe 2b", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", category: "Wörter lesen")
 
 items = %w{
 schuku

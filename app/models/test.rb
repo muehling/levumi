@@ -31,6 +31,10 @@ class Test < ActiveRecord::Base
     return "Test"
   end
 
+  def long_name
+    return subject + " - " + category + " - " + name
+  end
+
   def export
     measurements = Measurement.where(:assessment => Assessment.where(:test => self))
     results = Result.where(:measurement => measurements)
