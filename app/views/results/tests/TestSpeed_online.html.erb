@@ -84,10 +84,18 @@
         }
     });
 
+    $('#mainModal').on('hidden.bs.modal', function () {
+       if (timeoutId != -1) {
+           window.clearTimeout(timeoutId);
+           timeoutId = -1;
+       }
+    })
+
     var currentStudent = -1;
     var currentItemIndex = -1;
     var currentResult = "";
     var preparation = true;
+    var timeoutId = -1;
 
     var itemData = {
         <% @measurement.assessment.test.items.each do |i| %>
@@ -168,11 +176,10 @@
         currentItemIndex = -1;
         nextItem();
         currentResult = "";
-        window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
+        timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*100 %> + 500, true);
     }
 
     function stopTest(timeout) {
-
         var dict = {};
         dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
         dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
@@ -181,14 +188,13 @@
             url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
             data: dict
         });
-
-        setButtons(false);
         $('#itemText').css('font-size', 36);
         if (timeout)
             $('#itemText').html("Zeit abgelaufen. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
         else
             $('#itemText').html("Alle Items beantwortet. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
         $('#btn'+currentStudent).addClass('btn-success');
+        setButtons(false);
     }
 
     function cButtonClick() {
