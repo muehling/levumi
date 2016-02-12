@@ -64,13 +64,14 @@ class Test < ActiveRecord::Base
     end
 
     sheet = book.create_worksheet :name => "Alle Messungen"
-    sheet.row(0).concat %w(Schüler/in Messzeitpunkt Tester)
+    sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
     itemset = items.pluck(:id)
     sheet.row(0).concat itemset
     i = 1
     results.find_each do |r|
       sheet.row(i).push r.student.id
       sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
+      sheet.row(i).push r.measurement.assessment.group.id
       sheet.row(i).push r.measurement.assessment.group.user.id
       sheet.row(i).concat r.to_a(itemset)
       i = i+1
@@ -80,13 +81,15 @@ class Test < ActiveRecord::Base
       sheet = book.create_worksheet :name => "Messung #{m.id}"
       sheet.row(0).push "Datum"
       sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-      sheet.row(1).push "Tester"
+      sheet.row(1).push "Benutzer-Id"
       sheet.row(1).push m.assessment.group.user.id
+      sheet.row(2).push "Klassen-Id"
+      sheet.row(2).push m.assessment.group.id
 
-      sheet.row(2).concat %w(Student)
+      sheet.row(3).concat %w(Student)
       itemset = items.pluck(:id)
-      sheet.row(2).concat itemset
-      i = 3
+      sheet.row(3).concat itemset
+      i = 4
       m.results.each do |r|
         sheet.row(i).push r.student.id
         sheet.row(i).concat r.to_a(itemset)
