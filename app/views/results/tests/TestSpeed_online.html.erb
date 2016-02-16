@@ -176,7 +176,10 @@
         currentItemIndex = -1;
         nextItem();
         currentResult = "";
-        timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*100 %> + 500, true);
+        if (timeoutId != -1) {
+            window.clearTimeout(timeoutId);
+        }
+        timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
     }
 
     function stopTest(timeout) {
