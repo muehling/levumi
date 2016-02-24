@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160210125858) do
+ActiveRecord::Schema.define(version: 20160224141428) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 20160210125858) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "archive"
+    t.boolean  "export"
+    t.boolean  "demo"
   end
 
   create_table "items", force: true do |t|

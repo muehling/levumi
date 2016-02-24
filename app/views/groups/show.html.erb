@@ -10,8 +10,12 @@
     </div>
     <div class="col-sm-2">
       <p class="lead text-right">
-        <%= link_to edit_user_group_path(@user, @group), :title => "Bearbeiten", :data => {:remote => true} do %>
-            <span class="glyphicon glyphicon-pencil"></span>
+        <% unless @group.demo %>
+            <%= link_to edit_user_group_path(@user, @group), :title => "Bearbeiten", :data => {:remote => true} do %>
+                <span class="glyphicon glyphicon-pencil"></span>
+            <% end %>
+        <% else %>
+            <span class="glyphicon glyphicon-pencil text-muted"></span>
         <% end %>
         <% if @group.archive? %>
             <%= link_to user_group_path(@user, @group, :group => {:archive => false}), :title => "Aktuell setzen", :method => :put do %>
@@ -22,8 +26,12 @@
                 <span class="glyphicon glyphicon-floppy-save"></span>
             <% end %>
         <% end %>
-        <%= link_to user_group_path(@user, @group), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-            <span class="glyphicon glyphicon-trash"></span>
+        <% unless @group.demo %>
+            <%= link_to user_group_path(@user, @group), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                <span class="glyphicon glyphicon-trash"></span>
+            <% end %>
+        <% else %>
+            <span class="glyphicon glyphicon-trash text-muted"></span>
         <% end %>
       </p>
     </div>

@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email
 
+  after_create :create_test_group
+
   def hasCapability?(cap)
     return !isRegularUser? && (capabilities.include?(cap) || capabilities.include?("admin"))
   end
@@ -15,8 +17,12 @@ class User < ActiveRecord::Base
     return capabilities.nil? || capabilities.blank?
   end
 
+  def create_test_group
+    self.groups.create(:name => "Testklasse", :export => false, :archive => false, :demo => true)
+  end
+
   def export
-    groups = Group.where(:user => self)
+    groups = Group.where(:user => self, :export => true)
     students = Student.where(:group => groups)
     assessments = Assessment.where(:group => groups)
     tests = Test.where(:id => assessments.uniq.pluck(:test_id))
