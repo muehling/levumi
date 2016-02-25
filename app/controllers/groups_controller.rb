@@ -29,6 +29,8 @@ class GroupsController < ApplicationController
   def create
     @groups = @user.groups
     @group = @user.groups.build(group_params)
+    @group.demo = false
+    @group.export = true
     respond_to do |format|
       if @group.save
         format.js
@@ -59,7 +61,9 @@ class GroupsController < ApplicationController
   # DELETE /groups/1
   # DELETE /groups/1.json
   def destroy
-    @group.destroy
+    unless @group.demo
+      @group.destroy
+    end
     respond_to do |format|
       format.html { redirect_to user_groups_url(@user), notice: 'Klasse wurde gelöscht.' }
     end
