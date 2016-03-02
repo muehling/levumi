@@ -8,7 +8,7 @@ var chart<%=test%> = c3.generate({
                 '<%= r.measurement.date.to_date %>',
                 <% end %>
             ],
-            ['<%= student.name %>',
+            ['student',
                 <% max = 0 %>
                 <% results.each do |r| %>
                   <%if !r.measurement.max.nil? && r.measurement.max > max %>
@@ -21,7 +21,7 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            ['75% Niveau der Klasse',
+            ['n75',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
                 <%= r.measurement.max.nil? ? "null" : r.measurement.third_quart %>
@@ -30,7 +30,7 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            ['25% Niveau der Klasse',
+            ['n25',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
                 <%= r.measurement.min.nil? ? "null" : r.measurement.first_quart %>
@@ -39,7 +39,7 @@ var chart<%=test%> = c3.generate({
                 <% end %>,
                 <% end %>
             ],
-            ['50% Niveau der Klasse',
+            ['n50',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
                 <%= r.measurement.average.nil? ? "null" : r.measurement.median %>
@@ -49,6 +49,12 @@ var chart<%=test%> = c3.generate({
                 <% end %>
             ]
         ],
+        names: {
+            student: '<%= student.name %>',
+            n75: '75% Niveau der Klasse',
+            n25: '25% Niveau der Klasse',
+            n50: '50% Niveau der Klasse'
+        },
     },
     color: {
         pattern: ['#46B8DA', '#5CB85C', '#D9534F', '#F0AD4E']
@@ -92,4 +98,3 @@ var chart<%=test%> = c3.generate({
         }
     }
 });
-chart<%=test%>.focus(['<%= student.name %>']);

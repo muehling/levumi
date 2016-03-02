@@ -15,6 +15,11 @@ class StudentsController < ApplicationController
   # GET /students/1.json
   def show
     @results = @student.getResults
+    respond_to do |format|
+      format.html {render 'show', layout: 'plain'}
+      format.js {}
+    end
+
   end
 
   # GET /students/new
