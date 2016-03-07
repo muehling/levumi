@@ -14,12 +14,22 @@ class FrontendController < ApplicationController
       session[:student_id] = s.id
       redirect_to '/frontend'
     else
-      redirect_to '/student', :layout => 'bare', notice: "Der eingegebene Code ist nicht gültig!"
+      redirect_to '/student', notice: "Der eingegebene Code ist nicht gültig!"
     end
   end
 
   def index
     @measurements = @student.get_open_measurements
+  end
+
+  def start
+    @measurement = Measurement.find(params[:id])
+    @test = @measurement.assessment.test
+    if (@test.student_access) #...ggf mehr Tests
+      render "results/tests/#{@test.view_info}_student"
+    else
+      redirect_to '/student'
+    end
   end
 
   private

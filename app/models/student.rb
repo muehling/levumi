@@ -131,7 +131,8 @@ class Student < ActiveRecord::Base
   end
 
   def get_open_measurements
-    a = Assessment.where(:group => self.group.id)
+    t = Test.where(:student_access => true)
+    a = Assessment.where(:group => self.group.id, :test => t)
     m = Measurement.where(:assessment => a)
     #...
     return m.nil? ? [] : m
