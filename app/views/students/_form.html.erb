@@ -9,7 +9,7 @@
 <%= form_for([@user, @group, @student], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
 
   <div class="row">
-    <div class="col-xs-5">
+    <div class="col-xs-4">
       <% if @student.errors[:name].any? %>
           <div class="form-group has-error">
       <% else %>
@@ -21,6 +21,14 @@
       </div>
     </div>
 
+    <div class="col-xs-3">
+      <div class="form-group">
+        <%= f.label :login, :class => "control-label" %>
+        <%= f.text_field :login, :class => "form-control input-sm", "aria-describedby" => "helpBlockL" %>
+        <span id="helpBlockL" class="help-block">Falls leer wird der Name/Code verwendet.</span>
+      </div>
+    </div>
+
     <div class="col-xs-2">
       <div class="form-group">
         <%= f.label :gender, :class => "control-label" %>
@@ -28,7 +36,7 @@
       </div>
     </div>
 
-    <div class="col-xs-5">
+    <div class="col-xs-3">
       <div class="form-group">
         <%= f.label :birthdate, :class => "control-label" %><br/>
         <%= f.date_select :birthdate, {:order => [:month, :year], :include_blank => true, :start_year => 1990, :end_year => Date.today().year}, {:class => "form-control input-sm", :style => "display:inline-block;width:30%;"}%>

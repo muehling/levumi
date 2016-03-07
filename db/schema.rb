@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160224141428) do
+ActiveRecord::Schema.define(version: 20160307101546) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -72,6 +72,7 @@ ActiveRecord::Schema.define(version: 20160224141428) do
     t.boolean  "gender"
     t.integer  "specific_needs"
     t.boolean  "migration"
+    t.text     "login"
   end
 
   create_table "tests", force: true do |t|

@@ -4,7 +4,13 @@ class Student < ActiveRecord::Base
   has_many :results, :dependent => :destroy
 
   validates_presence_of :name
+  before_save :check_login
 
+  def check_login
+    if self.login.nil? | self.login.blank?
+      self.login = self.name
+    end
+  end
   #Getter für Merkmale:
 
   def get_gender(raw = false)
@@ -124,4 +130,10 @@ class Student < ActiveRecord::Base
     return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
   end
 
+  def get_open_measurements
+    a = Assessment.where(:group => self.group.id)
+    m = Measurement.where(:assessment => a)
+    #...
+    return m.nil? ? [] : m
+  end
 end

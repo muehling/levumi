@@ -22,6 +22,10 @@ Rails.application.routes.draw do
   get 'static' => 'application#static'
   get 'export' => 'application#export'
 
+  get 'student' => 'frontend#welcome'
+  post 'frontend/login' => 'frontend#login'
+  get 'frontend' => 'frontend#index'
+  get 'frontend/:id' => 'frontend#start'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
