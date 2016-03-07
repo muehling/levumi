@@ -14,7 +14,7 @@ class UsersController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        unless @login.hasCapability?("user")
+        unless @login.hasCapability?("user") || (@user.id == @login.id)
           redirect_to root_url
         end
       }
