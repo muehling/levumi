@@ -48,13 +48,14 @@
     <div class="col-xs-3">
         <div class="form-group">
           <%= f.label :specific_needs, :class => "control-label" %>
-          <%= f.select(:specific_needs, options_for_select([['', nil], ['Keiner', 0], ['Lernen', 1], ['Geistige Entwicklung', 2], ['Andere', 3]], @student.specific_needs), {}, {:class => "form-control input-sm"}) %>
+          <%= f.select(:specific_needs, options_for_select([['', nil], ['Keiner', 0], ['Lernen', 1], ['Geistige Entwicklung', 2], ['Andere', 3]], @student.specific_needs), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockSPF"}) %>
+          <span id="helpBlockSPF" class="help-block">Diagnostizierter, sonderpädagogischer Förderbedarf.</span>
         </div>
     </div>
     <div class="col-xs-2">
       <div class="form-group">
         <%= f.label :migration, :class => "control-label" %>
-        <%= f.select(:migration, options_for_select([['', nil], ['Nein', 0], ['Ja', 1]], @student.migration), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockMG"}) %>
+        <%= f.select(:migration, options_for_select([['', nil], ['Nein', false], ['Ja', true]], @student.migration), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockMG"}) %>
         <span id="helpBlockMG" class="help-block">Falls Kind oder die Eltern im Ausland geboren.</span>
       </div>
     </div>  </div>
