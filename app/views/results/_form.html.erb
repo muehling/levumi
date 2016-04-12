@@ -63,12 +63,12 @@
                       </p>
                       <div class="radio">
                         <label>
-                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '0', r.responses[index] == 1 %>Richtig<br/>
+                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '1', r.responses[index] == 1 %>Richtig<br/>
                         </label>
                       </div>
                       <div class="radio">
                         <label>
-                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '1', r.responses[index] == 0 %>Falsch<br/>
+                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '0', r.responses[index] == 0 %>Falsch<br/>
                         </label>
                       </div>
                       <div class="radio">
