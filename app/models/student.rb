@@ -33,7 +33,8 @@ class Student < ActiveRecord::Base
         when 0 then "Keinen"
         when 1 then "Lernen"
         when 2 then "Geistige Entwicklung"
-        when 3 then "Andere"
+        when 3 then "Anderer Förderbedarf"
+        when 4 then "Deutsch"
       end
     end
   end

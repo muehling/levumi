@@ -48,8 +48,8 @@
     <div class="col-xs-3">
         <div class="form-group">
           <%= f.label :specific_needs, :class => "control-label" %>
-          <%= f.select(:specific_needs, options_for_select([['', nil], ['Keiner', 0], ['Lernen', 1], ['Geistige Entwicklung', 2], ['Andere', 3]], @student.specific_needs), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockSPF"}) %>
-          <span id="helpBlockSPF" class="help-block">Diagnostizierter, sonderpädagogischer Förderbedarf.</span>
+          <%= f.select(:specific_needs, options_for_select([['', nil], ['Keiner', 0], ['Lernen', 1], ['Geistige Entwicklung', 2], ['Anderer Förderbedarf', 3], ['Deutsch', 4]], @student.specific_needs), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockSPF"}) %>
+          <span id="helpBlockSPF" class="help-block">Diagnostizierter sonderpädagogischer Förderbedarf oder Erlernen der deutschen Sprache.</span>
         </div>
     </div>
     <div class="col-xs-2">
