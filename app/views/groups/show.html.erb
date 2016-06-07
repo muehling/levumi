@@ -1,17 +1,17 @@
 <div class="well groupCard" id="group">
 
   <div class="row">
-    <div class="col-sm-10">
+    <div class="col-sm-11">
       <div id="groupName">
         <p class="lead">
           <%= @group.name %>
         </p>
       </div>
     </div>
-    <div class="col-sm-2">
+    <div class="col-sm-1">
       <p class="lead text-right">
         <% unless @group.demo %>
-            <%= link_to edit_user_group_path(@user, @group), :title => "Bearbeiten", :data => {:remote => true} do %>
+            <%= link_to edit_user_group_path(@user, @group), :title => "Klasse Bearbeiten oder Löschen", :data => {:remote => true} do %>
                 <span class="glyphicon glyphicon-pencil"></span>
             <% end %>
         <% else %>
@@ -25,13 +25,6 @@
             <%= link_to user_group_path(@user, @group, :group => {:archive => true}), :title => "Archivieren", :method => :put do %>
                 <span class="glyphicon glyphicon-floppy-save"></span>
             <% end %>
-        <% end %>
-        <% unless @group.demo %>
-            <%= link_to user_group_path(@user, @group), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                <span class="glyphicon glyphicon-trash"></span>
-            <% end %>
-        <% else %>
-            <span class="glyphicon glyphicon-trash text-muted"></span>
         <% end %>
       </p>
     </div>

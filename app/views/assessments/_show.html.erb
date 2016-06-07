@@ -6,7 +6,7 @@
         <%= link_to user_group_assessments_path(@user, @group), :title => "Zurück", :data => {:remote => true} do%>
             <span class="glyphicon glyphicon-th"></span>
         <% end %>
-        <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Löschen", :method => :delete, :data => {:confirm => "Damit gehen alle Messungen des Tests in dieser Klasse verloren!\n\nSind Sie sicher?"} do %>
+        <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Test Löschen", :method => :delete, :data => {:confirm => "Damit gehen alle Messungen des Tests in dieser Klasse verloren!\n\nSind Sie sicher?"} do %>
             <span class="glyphicon glyphicon-trash"></span>
         <% end %>
       </p>
