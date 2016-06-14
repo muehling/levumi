@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
       if u.authenticate(params[:password])
         session[:user_id] = u.id
         @login = u
-        redirect_to user_groups_path(u), notice: "Eingeloggt als #{u.email}<br/><br/>Das neue Lehrerhandbuch ist jetzt verfügbar! Sie finden es im Menü unter \"Weitere Informationen\"."
+        redirect_to user_groups_path(u), notice: "Eingeloggt als #{u.email}"
       else
         redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
       end

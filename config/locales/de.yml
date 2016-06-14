@@ -213,7 +213,7 @@ de:
       group: Klasse
       student: Schüler/-in
       user: Benutzer
-      measurement: Messung
+      measurement: Messzeitpunkt
     attributes:
       user:
         school: Schule
