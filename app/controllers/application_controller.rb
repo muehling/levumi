@@ -12,7 +12,10 @@ class ApplicationController < ActionController::Base
       if u.authenticate(params[:password])
         session[:user_id] = u.id
         @login = u
-        redirect_to user_groups_path(u), notice: "Eingeloggt als #{u.email}"
+        news = News.new_items(u)
+        u.last_login = Time.now
+        u.save
+        redirect_to user_groups_path(u), notice: news.empty? ? "Eingeloggt als #{u.email}" : news.join("<br/><br/>")
       else
         redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
       end

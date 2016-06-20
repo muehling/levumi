@@ -11,7 +11,7 @@
       <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
       <% @measurement.results.each do |r| %>
           <h4><%= r.student.name %></h4>
-          <table style="font-family: 'fibel_nordregular'; font-size:36px" class="table table-bordered">
+          <table style="font-family: 'fibel_nordregular'; font-size:48px" class="table table-bordered">
             <% index = 0 %>
             <% (r.items.count / 5 + 1).times do %>
                 <tr>
