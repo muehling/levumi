@@ -74,4 +74,15 @@ class Result < ActiveRecord::Base
     end
     return res
   end
+
+  def getPriorResult()
+    measurements = Measurement.where("assessment_id = ? AND created_at < ?", measurement.assessment, measurement.created_at)
+    res = Result.where(:measurement => measurements, :student => student).order(created_at: :desc).first
+    if res.nil?
+      return 0
+    else
+      return res.score
+    end
+
+  end
 end

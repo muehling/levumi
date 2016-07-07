@@ -119,6 +119,12 @@
         <% end %>
     };
 
+    var lastResults = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: <%= r.getPriorResult%>,
+        <% end %>
+    };
+
     function setButtons(enabled) {
       if (enabled) {
           if (preparation) {
@@ -184,6 +190,7 @@
 
     function stopTest(timeout) {
         var dict = {};
+        var trend = "";
         dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
         dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
         $.ajax({
@@ -192,10 +199,14 @@
             data: dict
         });
         $('#itemText').css('font-size', 36);
-        if (timeout)
-            $('#itemText').html("Zeit abgelaufen. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+        if (lastResults[currentStudent] < currentResult.split("1").length)
+            trend = "Du hast dich verbessert!"
         else
-            $('#itemText').html("Alle Items beantwortet. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+            trend = "Du hast dich leider nicht verbessert!"
+        if (timeout)
+            $('#itemText').html("Zeit abgelaufen. " +  trend + "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
+        else
+            $('#itemText').html("Alle Items beantwortet. " +  trend + "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
         $('#btn'+currentStudent).addClass('btn-success');
         setButtons(false);
     }
