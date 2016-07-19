@@ -22,7 +22,7 @@ test:
 
 production:
   adapter: mysql2
-  host: vmhubdb
+  host: localhost
   database: levumi
   username: levumi
   password: wdMdwyJH6pdphhSR

@@ -2,7 +2,7 @@
 set :stage, :production
 set :branch, 'master'
 
-server "levumi.informatik.uni-kiel.de", roles: %w{web app db}, user: 'levumi', password: 'levumi', :primary => true
+server "vmhub1.informatik.tu-muenchen.de", roles: %w{web app db}, user: 'administrator', password: 'DDI?istcool!', :primary => true
 
 set :web_user, 'www-data'
 
@@ -16,9 +16,15 @@ namespace :custom do
 
    task :chown do
      on roles(:app) do
-       execute "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
+       execute :sudo, "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
      end
    end
+
+  task :restart do
+    on roles(:app) do
+      execute "touch #{fetch(:deploy_to)}/current/tmp/restart.txt"
+    end
+  end
 
 #   task :symlink do
 #     on roles(:app) do
@@ -34,6 +40,6 @@ namespace :custom do
 # after "deploy:symlink", "custom:symlink"
 
 namespace :deploy do
-  after :deploy, :'custom:chown'
-  after :deploy, :'passenger:restart'
+  after :deploy, "custom:chown"
+  after :deploy, "custom:restart"
 end

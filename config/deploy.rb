@@ -6,12 +6,10 @@ set :application, 'levumi'
 set :deploy_user, 'administrator'
 
 set :scm, :git
-set :repo_url,  'git@vmhub1.informatik.tu-muenchen.de:/var/git/levumi.git'
+set :repo_url,  'levumi@levumi.informatik.uni-kiel.de:/var/git/levumi.git'
 
-set :deploy_to, "/var/webapps/levumi"
+set :deploy_to, "/var/www/levumi"
 set :deploy_via, :remote_cache
-
-set :rvm_type, :user
 
 set :tests, []
 
