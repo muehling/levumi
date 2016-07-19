@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 set :stage, :production
-set :branch, 'master'
+set :branch, 'deploy'
 
 server "levumi.informatik.uni-kiel.de", roles: %w{web app db}, user: 'levumi', password: 'levumi', :primary => true
 
