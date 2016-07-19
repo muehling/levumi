@@ -25,5 +25,5 @@ production:
   host: localhost
   database: levumi
   username: levumi
-  password: wdMdwyJH6pdphhSR
+  password: imuvel
   encoding: utf8
