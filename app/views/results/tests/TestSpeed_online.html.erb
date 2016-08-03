@@ -33,17 +33,19 @@
             <br/>
             <br/>
             <br/>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+              <p class="text-center" style="font-size: 24px" id="pic">
+                <br/>
+                <br/>
+                <br/>
+              </p>
               <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
                 Test
               </p>
-            <br/>
-            <br/>
-            <br/>
-            <br/>
+            <p class="text-center" style="font-size: 24px" id="status">
+              <br/>
+              <br/>
+              <br/>
+            </p>
             <br/>
             <br/>
             <br/>
@@ -167,6 +169,8 @@
          $('#mainModalHeader').html(students[student]);
         $('#itemText').css('font-size', 96);
         $('#itemText').html("Test");
+        $('#pic').html("<br/><br/><br/>")
+        $('#status').html("<br/><br/><br/>")
         preparation = true;
         $('#cButton').html("Schrift größer");
         $('#iButton').html("Schrift kleiner");
@@ -198,15 +202,15 @@
             url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
             data: dict
         });
-        $('#itemText').css('font-size', 36);
+        $('#itemText').html("");
         if (lastResults[currentStudent] < currentResult.split("1").length)
-            trend = "Du hast dich verbessert!"
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>")
         else
-            trend = "Du hast dich leider nicht verbessert!"
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>")
         if (timeout)
-            $('#itemText').html("Zeit abgelaufen. " +  trend + "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
+            $('#status').html("Zeit abgelaufen. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
         else
-            $('#itemText').html("Alle Items beantwortet. " +  trend + "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
+            $('#status').html("Alle Items beantwortet. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
         $('#btn'+currentStudent).addClass('btn-success');
         setButtons(false);
     }
