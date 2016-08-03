@@ -169,12 +169,12 @@
          $('#mainModalHeader').html(students[student]);
         $('#itemText').css('font-size', 96);
         $('#itemText').html("Test");
-        $('#pic').html("<br/><br/><br/>")
-        $('#status').html("<br/><br/><br/>")
+        $('#pic').html("<br/><br/><br/>");
+        $('#status').html("<br/><br/><br/>");
         preparation = true;
         $('#cButton').html("Schrift größer");
         $('#iButton').html("Schrift kleiner");
-        setButtons(true)
+        setButtons(true);
         $('#mainModal').modal('show');
     }
 
@@ -204,9 +204,9 @@
         });
         $('#itemText').html("");
         if (lastResults[currentStudent] < currentResult.split("1").length)
-            $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>")
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
         else
-            $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>")
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");
         if (timeout)
             $('#status').html("Zeit abgelaufen. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
         else
@@ -222,7 +222,7 @@
                 $('#itemText').css('font-size', curSize);
             }
             else {
-                currentResult = currentResult + "1,"
+                currentResult = currentResult + "1,";
                 nextItem();
             }
         }
@@ -235,7 +235,7 @@
               $('#itemText').css('font-size', curSize);
           }
           else {
-              currentResult = currentResult + "0,"
+              currentResult = currentResult + "0,";
               nextItem();
           }
         }
