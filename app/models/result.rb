@@ -81,7 +81,8 @@ class Result < ActiveRecord::Base
     if res.nil?
       return 0
     else
-      return res.score
+      t = res.score
+      return t.nil? ? 0 : t
     end
 
   end
