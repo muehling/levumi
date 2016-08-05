@@ -11,6 +11,10 @@ class Test < ActiveRecord::Base
   validates_presence_of :construct
   validates_presence_of :level
 
+  def after_initialize
+    @archive ||= false
+  end
+
   def draw_items(ability)
     itemset = Array.new
     (1..len).each  do
