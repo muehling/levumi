@@ -133,7 +133,7 @@ Eu
 Ü
 }
 
-cbmN2 = TestSreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2")
+cbmN2 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2")
 
 items.each do |i|
   it = cbmN2.items.build(itemtext: i, difficulty: 0)
