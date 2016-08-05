@@ -37,7 +37,7 @@ class Test < ActiveRecord::Base
   end
 
   def short_name
-    return name + " - " + level
+    return name + " - " + level + (archive ? " (veraltet)":"")
   end
 
   def export

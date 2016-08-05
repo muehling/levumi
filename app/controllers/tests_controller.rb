@@ -5,7 +5,8 @@ class TestsController < ApplicationController
 
   # GET /tests
   def index
-    @tests = Test.all
+    @tests = Test.where(:archive => false)
+    @archive = Test.where(:archive => true)
   end
 
   # GET /tests/1/edit

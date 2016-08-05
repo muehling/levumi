@@ -1101,7 +1101,6 @@ bochi
 gabo
 bische
 kauko
-chabo
 gaka
 gobu
 }
@@ -1118,8 +1117,6 @@ gelcha
 genki
 belkau
 belchen
-chenbo
-chenka
 benschau
 gengo
 gelsche
@@ -1138,8 +1135,6 @@ belscho
 berku
 berscho
 belke
-cherbi
-chenkau
 bergi
 bercha
 berbu

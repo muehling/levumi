@@ -48,7 +48,7 @@ Sch
 G
 }
 
-cbmN1 = TestCBM.create(name: "Buchstaben erkennen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 600, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
+cbmN1 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
 
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0)
@@ -88,7 +88,6 @@ v
 ß
 sp
 st
-ck
 z
 qu
 x
@@ -124,7 +123,6 @@ J
 V
 Sp
 St
-Ck
 Z
 Qu
 X
@@ -135,7 +133,7 @@ Eu
 Ü
 }
 
-cbmN2 = TestCBM.create(name: "Buchstaben erkennen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 600, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2")
+cbmN2 = TestSreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2")
 
 items.each do |i|
   it = cbmN2.items.build(itemtext: i, difficulty: 0)

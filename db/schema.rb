@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160620131334) do
+ActiveRecord::Schema.define(version: 20160805104700) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -95,6 +95,7 @@ ActiveRecord::Schema.define(version: 20160620131334) do
     t.text     "level"
     t.text     "answers"
     t.boolean  "student_access"
+    t.boolean  "archive"
   end
 
   create_table "users", force: true do |t|

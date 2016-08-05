@@ -58,6 +58,10 @@
   </tbody>
 </table>
 <div id="measurementForm">
-  <%= link_to "Neuer Messzeitpunkt", new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true} %>
+  <%if @assessment.test.archive %>
+    <button class=" btn btn-default btn-disabled">Test ist nicht mehr aktuell! Bitte neuen Test verwenden.</button>
+  <% else %>
+    <%= link_to "Neuer Messzeitpunkt", new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true} %>
+  <% end %>
 </div>
 

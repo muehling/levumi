@@ -6,4 +6,4 @@ git push github development
 git push deploy development
 git push deploy preview
 git checkout development
-cap testing deploy
+#cap testing deploy
