@@ -6,8 +6,10 @@ class Group < ActiveRecord::Base
 
   validates_presence_of :name
 
-  def after_initialize
-      @archive ||= false
+  after_create :set_defaults
+
+  def set_defaults
+      self.archive ||= false
   end
 
 end
