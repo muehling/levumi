@@ -203,7 +203,7 @@
             data: dict
         });
         $('#itemText').html("");
-        if (lastResults[currentStudent] < currentResult.split("1").length)
+        if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split("1").length)
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
         else
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");

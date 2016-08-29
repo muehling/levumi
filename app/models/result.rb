@@ -79,7 +79,7 @@ class Result < ActiveRecord::Base
     measurements = Measurement.where("assessment_id = ? AND created_at < ?", measurement.assessment, measurement.created_at)
     res = Result.where(:measurement => measurements, :student => student).order(created_at: :desc).first
     if res.nil?
-      return 0
+      return -1
     else
       t = res.score
       return t.nil? ? 0 : t
