@@ -7,5 +7,17 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-u = User.create(email: "andreas.muehling@tum.de", password: "slide;2005", password_confirmation: "slide;2005", capabilities:"admin")
-u.save
+STDOUT.puts "Enter e-mail for admin:"
+email = STDIN.gets.strip.downcase
+STDOUT.puts "Enter password for admin:"
+pw = STDIN.gets.strip
+STDOUT.puts "Re-enter password for admin:"
+pwc = STDIN.gets.strip
+
+u = User.create(email: email, password: pw, password_confirmation: pwc, capabilities:"admin")
+if u.save
+  STDOUT.puts "Admin account created!"
+else
+  STDOUT.puts "Something went wrong!"
+end
+
