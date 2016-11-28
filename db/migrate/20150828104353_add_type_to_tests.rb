@@ -1,4 +1,4 @@
-class AddTypeToTest < ActiveRecord::Migration
+class AddTypeToTests < ActiveRecord::Migration
   def change
     add_column :tests, :type, :text
   end

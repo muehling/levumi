@@ -43,15 +43,16 @@ class ResultsController < ApplicationController
     results = result_params
     unless results.nil?
       stay = true
-      if results.is_a?(String)
+      if results.is_a?(String)                #Update comes from online testing
         parts = results.split("#")
         r = @measurement.results.find(parts[0].to_i)
         unless r.nil?
           r.parse_csv(parts[1])
+          r.add_times(parts[2])               #Possible hack: Will this always be the case?
           render nothing: true
         end
       else
-        if results.has_key?("students")
+        if results.has_key?("students")       #Update comes from editing form
           @measurement.update_students(results["students"])
         else
           results.each do |id, val|

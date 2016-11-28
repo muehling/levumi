@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160805104700) do
+ActiveRecord::Schema.define(version: 20161124154730) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -67,6 +67,7 @@ ActiveRecord::Schema.define(version: 20160805104700) do
     t.float    "total"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "extra_data"
   end
 
   create_table "students", force: true do |t|
