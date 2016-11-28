@@ -48,7 +48,7 @@ class ResultsController < ApplicationController
         r = @measurement.results.find(parts[0].to_i)
         unless r.nil?
           r.parse_csv(parts[1])
-          r.add_times(parts[2])               #Possible hack: Will this always be the case?
+          r.add_times(parts[2]) if parts.length > 2               #Possible hack: Will this always be the case?
           render nothing: true
         end
       else
