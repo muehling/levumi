@@ -96,6 +96,8 @@
     var currentStudent = -1;
     var currentItemIndex = -1;
     var currentResult = "";
+    var currentTimes = "";
+    var stopwatch = null;
     var preparation = true;
     var timeoutId = -1;
 
@@ -158,8 +160,10 @@
 
     function nextItem() {
         currentItemIndex++;
-        if (currentItemIndex < studentData[currentStudent].length)
-            $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+        if (currentItemIndex < studentData[currentStudent].length) {
+          $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+          stopwatch = new Date();
+        }
         else
             stopTest(false);
     }
@@ -184,8 +188,9 @@
         $('#iButton').html("Falsch (Taste: 0)");
         setButtons(true);
         currentItemIndex = -1;
-        nextItem();
         currentResult = "";
+        currentTimes = "";
+        nextItem();
         if (timeoutId != -1) {
             window.clearTimeout(timeoutId);
         }
@@ -193,10 +198,14 @@
     }
 
     function stopTest(timeout) {
+        if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+        }
         var dict = {};
         var trend = "";
         dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
         $.ajax({
             type: "PUT",
             url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
@@ -222,6 +231,8 @@
                 $('#itemText').css('font-size', curSize);
             }
             else {
+                stopwatch = new Date() - stopwatch;
+                currentTimes = currentTimes + stopwatch + ",";
                 currentResult = currentResult + "1,";
                 nextItem();
             }
@@ -235,6 +246,8 @@
               $('#itemText').css('font-size', curSize);
           }
           else {
+              stopwatch = new Date() - stopwatch;
+              currentTimes = currentTimes + stopwatch + ",";
               currentResult = currentResult + "0,";
               nextItem();
           }
