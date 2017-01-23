@@ -34,6 +34,6 @@ namespace :custom do
 # after "deploy:symlink", "custom:symlink"
 
 namespace :deploy do
-  after :deploy, :'custom:chown'
+  #after :deploy, :'custom:chown'
   after :deploy, :'passenger:restart'
 end
