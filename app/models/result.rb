@@ -98,11 +98,18 @@ class Result < ActiveRecord::Base
   end
 
   #Create an array representation of the results.
+  #Temporary hack: If extra_data contain "times" then export the times instead of the 1/0 values.
   #Used for exporting to XLS
   def to_a(itemset)
     res = []
     itemset.each do |i|
-      res = res + [responses[items.index(i)].nil? ? '' : responses[items.index(i)]]
+      val = responses[items.index(i)]
+      time = extra_data['times'][items.index(i)].nil? ? '' : extra_data['times'][items.index(i)].to_i
+      if extra_data.has_key?('times')
+        res = res + [time.nil? ? '' : (val == 1 ? time : -1*time)]
+      else
+        res = res + [val.nil? ? '' :val]
+      end
     end
     return res
   end
