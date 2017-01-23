@@ -14,11 +14,11 @@ set :rails_env, :production
 
 namespace :custom do
 
-   task :chown do
-     on roles(:app) do
-       execute "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
-     end
-   end
+#   task :chown do
+#     on roles(:app) do
+#       execute "chown -R #{fetch(:deploy_user)}:#{fetch(:web_user)} #{fetch(:deploy_to)}"
+#     end
+#   end
 
 #   task :symlink do
 #     on roles(:app) do
@@ -34,6 +34,5 @@ namespace :custom do
 # after "deploy:symlink", "custom:symlink"
 
 namespace :deploy do
-  #after :deploy, :'custom:chown'
   after :deploy, :'passenger:restart'
 end
