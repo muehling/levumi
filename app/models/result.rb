@@ -104,8 +104,8 @@ class Result < ActiveRecord::Base
     res = []
     itemset.each do |i|
       val = responses[items.index(i)]
-      time = extra_data['times'][items.index(i)].nil? ? '' : extra_data['times'][items.index(i)].to_i
       if extra_data.has_key?('times')
+        time = extra_data['times'][items.index(i)].nil? ? '' : extra_data['times'][items.index(i)].to_i
         res = res + [time.nil? ? '' : (val == 1 ? time : -1*time)]
       else
         res = res + [val.nil? ? '' :val]

@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 # config valid only for current version of Capistrano
-lock '3.4.0'
+lock '~> 3.4.0'
 
 set :application, 'levumi'
-set :deploy_user, 'administrator'
+set :deploy_user, 'levumi'
 
 set :scm, :git
 set :repo_url,  'levumi@levumi.informatik.uni-kiel.de:/var/git/levumi.git'
