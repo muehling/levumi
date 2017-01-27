@@ -7,7 +7,7 @@ content = testWindow.document;
 <% if @format == 'plain' %>
     content.write("<%= escape_javascript(render file: "results/tests/#{@test.view_info}_offline",  :layout => 'layouts/plain') %>");
 <% else %>
-    content.write("<%= escape_javascript(render file: "results/tests/#{@test.view_info}_online",  :layout => 'layouts/plain') %>");
+    content.write("<%= escape_javascript(render file: "results/tests/#{@test.view_info}_online1",  :layout => 'layouts/plain') %>");
 <% end %>
 
 content.title = "<%= @test.short_name %>, Klasse: <%= @measurement.assessment.group.name%>";

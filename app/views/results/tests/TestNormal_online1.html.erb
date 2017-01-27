@@ -23,15 +23,17 @@
     </div>
 
     <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
-      <div class="modal-dialog modal-lg">
+      <div class="modal-dialog" style="width:70%">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="mainModalHeader"></h4>
           </div>
           <div class="modal-body" id="modalBody">
+            <p align="center"><button id="rButton" type="button" class="btn btn-warning btn-lg" onclick="rButtonClick()">Lautstärketest: <span class="glyphicon glyphicon-arrow-up"></span></button></p>
             <br/>
             <br/>
+            <audio id="Audio1"></audio>
             <br/>
             <p class="text-center" style="font-size: 24px" id="pic">
               <br/>
@@ -46,14 +48,21 @@
               <br/>
               <br/>
             </p>
+            <!--Textfeld ist immer in der mitte, hat größe 96px-->
+            <p align="center"><input style="font-family: 'fibel_nordregular'; font-size:96px" id="answer" type="text" class="text-center" placeholder="Test" align="middle">
+              <br/>
+              <br/>
+              <br/>
+            </p>
             <br/>
             <br/>
             <br/>
           </div>
           <div class="modal-footer" style="text-align: center">
-            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
-            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
-            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
+            <button id="cButton" type="button" class="btn btn-info btn-lg disabled" onclick="cButtonClick()">Nochmal anhören</button>
+            <span class="glyphicons glyphicons-arrow-left"></span>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten <span class="glyphicon glyphicon-arrow-down"></span></button>
+            <button id="iButton" type="button" class="btn btn-success btn-lg disabled" onclick="iButtonClick()">Weiter</button>
           </div>
         </div>
       </div>
@@ -68,24 +77,32 @@
   </div>
 </div>
 
-
-
 <script>
+
+    /*Was passiert beim schließen der Dialogbox*/
+    $("#mainModal").on("hidden.bs.modal", function () {
+        $('#answer').attr('font-size', 96);
+        $('#answer').val(''); /*input box leeren*/
+        document.getElementById("answer").placeholder = "Test"; /*input box wieder placeholder geben*/
+        $('#answer').attr('type', 'text');
+    });
 
     $(window).keydown(function(event) {
         switch (event.keyCode) {
-            case 49:
-            case 97:
+            case 37:
                 cButtonClick();
                 break;
-            case 48:
-            case 96:
+            case 38:
+                rButtonClick();
+                break;
+            case 39:
                 iButtonClick();
                 break;
-
+            case 40:
+                sButtonClick();
+                break;
         }
     });
-
     var currentStudent = -1;
     var currentItemIndex = -1;
     var currentResult = "";
@@ -96,13 +113,11 @@
     <%= i.id%>: "<%= i.itemtext%>",
     <% end %>
     };
-
     var students = {
     <% @measurement.results.each do |r| %>
     <%= r.id%>: "<%= r.student.name%>",
     <% end %>
     };
-
     var studentData = {
     <% @measurement.results.each do |r| %>
     <%= r.id%>: [
@@ -112,74 +127,78 @@
     ],
     <% end %>
     };
-
     var lastResults = {
     <% @measurement.results.each do |r| %>
     <%= r.id%>: <%= r.getPriorResult%>,
     <% end %>
     };
-
     function setButtons(enabled) {
         if (enabled) {
             if (preparation) {
                 $('#cButton').removeClass("disabled");
-                $('#cButton').removeClass("btn-success");
+                $('#cButton').removeClass("btn-info");
                 $('#sButton').removeClass("disabled");
                 $('#sButton').addClass("btn-success");
                 $('#iButton').removeClass("disabled");
-                $('#iButton').removeClass("btn-danger");
+                $('#iButton').removeClass("btn-success");
             }
             else {
                 $('#cButton').removeClass("disabled");
-                $('#cButton').addClass("btn-success");
+                $('#cButton').addClass("btn-info");
                 $('#iButton').removeClass("disabled");
-                $('#iButton').addClass("btn-danger");
+                $('#iButton').addClass("btn-success");
                 $('#sButton').addClass("disabled");
                 $('#sButton').removeClass("btn-success");
             }
         }
         else {
             $('#cButton').addClass("disabled");
-            $('#cButton').removeClass("btn-success");
+            $('#cButton').removeClass("btn-info");
             $('#iButton').addClass("disabled");
-            $('#iButton').removeClass("btn-danger");
+            $('#iButton').removeClass("btn-success");
             $('#sButton').addClass("disabled");
             $('#sButton').removeClass("btn-success");
         }
     }
-
     function nextItem() {
         currentItemIndex++;
         if (currentItemIndex < studentData[currentStudent].length)
-            $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+            $('#itemText').html("");/*
+            $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);*/
         else
             stopTest();
     }
-
     function prepareTest(student) {
         currentStudent = student;
         $('#mainModalHeader').html(students[student]);
         $('#itemText').css('font-size', 96);
         $('#itemText').html("Test");
+        $('#answer').attr('font-size', 96);
         $('#pic').html("<br/><br/><br/>");
         $('#status').html("<br/><br/><br/>");
         preparation = true;
-        $('#cButton').html("Schrift größer");
-        $('#iButton').html("Schrift kleiner");
+        $('#cButton').html("Schrift größer: <span class='glyphicon glyphicon-arrow-left'></span>");
+        $('#iButton').html("Schrift kleiner: <span class='glyphicon glyphicon-arrow-right'></span>");
+        var fileName = "/assets/Test.mp3";
+        $("#Audio1").attr("src",fileName).trigger('play');
+        $('#rButton').toggle(true);
         setButtons(true);
         $('#mainModal').modal('show');
     }
-
     function startTest() {
         preparation = false;
-        $('#cButton').html("Richtig (Taste: 1)");
-        $('#iButton').html("Falsch (Taste: 0)");
+        $('#cButton').html("Nochmal anhören:  <span class='glyphicon glyphicon-arrow-left'></span>");
+        $('#iButton').html("Weiter:  <span class='glyphicon glyphicon-arrow-right'></span>");
+        $('#answer').val('');
+        $('#answer').focus();
+        document.getElementById("answer").placeholder = "";
         setButtons(true);
         currentItemIndex = -1;
         nextItem();
+        var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
+        $("#Audio1").attr("src",fileName).trigger('play');
         currentResult = "";
     }
-
     function stopTest() {
         var dict = {};
         var trend = "";
@@ -191,6 +210,7 @@
             data: dict
         });
         $('#itemText').html("");
+        $('#answer').attr('type', 'hidden');
         if (lastResults[currentStudent] < currentResult.split("1").length)
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
         else
@@ -199,36 +219,75 @@
         $('#btn'+currentStudent).addClass('btn-success');
         setButtons(false);
     }
-
     function cButtonClick() {
         if (!$('#cButton').hasClass("disabled")) {
             if (preparation) {
                 curSize=parseInt($('#itemText').css('font-size')) + 6;
                 $('#itemText').css('font-size', curSize);
+                $('#answer').css('font-size', curSize);
             }
             else {
-                currentResult = currentResult + "1,";
-                nextItem();
+                /*TODO Audiodatei nochmal abspielen*/
+                var h = document.getElementById("Audio1");
+                h.pause();
+                h.currentTime = 0;
+                h.play();/*
+                $("#Audio1").trigger('play');*/
+
             }
         }
     }
-
+    /*TODO Audiodatei abspielen*/
     function iButtonClick() {
         if (!$('#iButton').hasClass("disabled")) {
             if (preparation) {
                 curSize = parseInt($('#itemText').css('font-size')) - 6;
                 $('#itemText').css('font-size', curSize);
+                $('#answer').css('font-size', curSize);
             }
             else {
-                currentResult = currentResult + "0,";
-                nextItem();
+                /*Wenn Wörter abgefragt werden:
+                    - Wennh richtig eingegeben: - 1 Punkt dazu
+                    - Wenn falsch eingegeben  : - Keinen Punkt dazu
+                    Dann: - inputfeld leeren
+                          -nächstes Wort auswählen
+
+                 */
+                var temp = document.getElementById("answer").value;
+                if(itemData[studentData[currentStudent][currentItemIndex]] == temp) {
+                    currentResult = currentResult + "1,";
+                    document.getElementById("answer").value = "";
+                    nextItem();
+                    $('#answer').focus();
+                    var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
+                    $("#Audio1").attr("src",fileName).trigger('play');
+                }
+                else {
+                    currentResult = currentResult + "0,";
+                    document.getElementById("answer").value = "";
+                    nextItem();
+                    $('#answer').focus();
+                    var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
+                    $("#Audio1").attr("src",fileName).trigger('play');
+                }
             }
         }
     }
-
     function sButtonClick() {
         if (preparation) {
+            $('#rButton').toggle(false);
             startTest();
         }
     }
+
+    function rButtonClick() {
+        if (preparation) {
+            var h = document.getElementById("Audio1");
+            h.pause();
+            h.currentTime = 0;
+            h.play();
+        }
+    }
+
+
 </script>

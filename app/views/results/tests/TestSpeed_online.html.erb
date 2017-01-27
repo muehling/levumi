@@ -1,17 +1,19 @@
+<!--Überschrift holen. bsp Klasse 10a: Lesetest -Level 0 am 20.01.2017-->
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
+<!--Info/Alertbox in Form eines Containers mit voller witdh, welche einen closebutton beinhaltet-->
 <div class="container-fluid">
   <div id="content">
-
     <div id="alert">
       <div class="alert alert-info alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen. <br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
       </div>
     </div>
-
+<!--Darstellung der Schüler welche sich in der Klasse befinden. Bei klick
+ auf den Studenten wird für den jeweiligen die funktion prepare Test ausgeführt.-->
     <div class="row">
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
@@ -21,7 +23,7 @@
           </div>
       <% end %>
     </div>
-
+<!-- Ist theoretisch die ganze zeit da, wird nur dann durch prepareTest angezeigt-->
     <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -52,7 +54,7 @@
           </div>
           <div class="modal-footer" style="text-align: center">
             <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
-            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button> <!-- Startet den Test-->
             <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
           </div>
         </div>
@@ -68,17 +70,18 @@
   </div>
 </div>
 
-
+<!--schriftgröße für die Eingabe ändern-->
+<p>Vorname:<br><input name="vorname" type="text" size="30" maxlength="30" style="font-size:30pt;"></p>
 
 <script>
-
+/*Kann genau so genutzt werden nur mit 37 für linke pfeiltaste und 39 für rechte Pfeiltaste*/
     $(window).keydown(function(event) {
         switch (event.keyCode) {
             case 49:
-            case 97:
+            case 97:/*die 1 wird geklickt*/
                 cButtonClick();
                 break;
-            case 48:
+            case 48:/*die 0 wird angeklickt*/
             case 96:
                 iButtonClick();
                 break;
@@ -92,7 +95,7 @@
            timeoutId = -1;
        }
     })
-
+    /*Initialisierung der benötigten Variablen*/
     var currentStudent = -1;
     var currentItemIndex = -1;
     var currentResult = "";
@@ -128,7 +131,7 @@
             <%= r.id%>: <%= r.getPriorResult%>,
         <% end %>
     };
-
+/*Funktionen der Buttons, ausgrauen usw*/
     function setButtons(enabled) {
       if (enabled) {
           if (preparation) {
@@ -157,9 +160,9 @@
           $('#sButton').removeClass("btn-success");
       }
     }
-
+    /*Item rausziehen nacheinander*/
     function nextItem() {
-        currentItemIndex++;
+        currentItemIndex++;/*ehöhen +1*/
         if (currentItemIndex < studentData[currentStudent].length) {
           $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
           stopwatch = new Date();
@@ -167,30 +170,31 @@
         else
             stopTest(false);
     }
-
+/*Vorbereitung für den Test. Innerhalb der Dialogbox. Dialogbox id=mainModal */
     function prepareTest(student) {
         currentStudent = student;
          $('#mainModalHeader').html(students[student]);
-        $('#itemText').css('font-size', 96);
-        $('#itemText').html("Test");
+        $('#itemText').css('font-size', 96);/*Größe beispieltext*/
+        $('#itemText').html("Hallo");/*was steht im Beispieltext*/
         $('#pic').html("<br/><br/><br/>");
         $('#status').html("<br/><br/><br/>");
-        preparation = true;
-        $('#cButton').html("Schrift größer");
-        $('#iButton').html("Schrift kleiner");
+        preparation = true; /*was machen die Button kleiner/größer oder ja/nein*/
+        $('#cButton').html("Schrift größer"); /*was steht auf den Button*/
+        $('#iButton').html("Schrift kleiner");/*was steht auf den Button*/
         setButtons(true);
-        $('#mainModal').modal('show');
+        $('#mainModal').modal('show');/*anzeigen der Dialogbox*/
     }
 
     function startTest() {
         preparation = false;
-        $('#cButton').html("Richtig (Taste: 1)");
-        $('#iButton').html("Falsch (Taste: 0)");
+        $('#cButton').html("Richtig (Taste: 1)");/*was steht auf den Button*/
+        $('#iButton').html("Falsch (Taste: 0)");/*was steht auf den Button*/
         setButtons(true);
+        /*initialisierung/Zurücksetzen der nötigen variablen*/
         currentItemIndex = -1;
         currentResult = "";
         currentTimes = "";
-        nextItem();
+        nextItem(); /*item aus dem Topf ziehen*/
         if (timeoutId != -1) {
             window.clearTimeout(timeoutId);
         }
@@ -216,6 +220,7 @@
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
         else
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");
+        /*fällt bei mir komplett weg, da kein timeout möglich*/
         if (timeout)
             $('#status').html("Zeit abgelaufen. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
         else
