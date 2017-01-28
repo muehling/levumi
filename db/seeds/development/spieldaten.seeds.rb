@@ -14,7 +14,7 @@ s = g.students.build(name: "Adam")
 s.save
 s = g.students.build(name: "Eva")
 s.save
-=begin
+
 t = TestSpeed.create(name: "Lesetest", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60)
 i = t.items.build(itemtext: "haha", difficulty: 0.1)
 i.save
@@ -46,36 +46,36 @@ r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], t
 r.save
 r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
 r.save
-=end
 
-t = TestScreening.create(name: "LesetestByMe", len: 4, info: "Lesetest für die Grundschule, 2. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60)
-i = t.items.build(itemtext: "haha", difficulty: 0.1)
-i.save
-i = t.items.build(itemtext: "hoha", difficulty: 0.4)
-i.save
-i = t.items.build(itemtext: "huho", difficulty: 0.7)
-i.save
-i = t.items.build(itemtext: "laho", difficulty: 0.9)
-i.save
 
-a = g.assessments.build(test_id: t.id)
-a.save
+t1 = TestDictation.create(name: "DiktiertestByMe", len: 4, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:  "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0")
+i1 = t1.items.build(itemtext: "haha", difficulty: 0.1)
+i1.save
+i1 = t1.items.build(itemtext: "hoha", difficulty: 0.4)
+i1.save
+i1 = t1.items.build(itemtext: "huho", difficulty: 0.7)
+i1.save
+i1 = t1.items.build(itemtext: "laho", difficulty: 0.9)
+i1.save
 
-m = a.measurements.build(date: Date.yesterday)
-m.save
-r = m.results.build(student: Student.find(1), items: [1, 2], responses: [1,0], total: 0.5)
-r.save
-r = m.results.build(student: Student.find(2), items: [1, 2], responses:[0, 0], total: 0.0)
-r.save
+a1 = g.assessments.build(test_id: t1.id)
+a1.save
 
-m = a.measurements.build(date: Date.today)
-m.save
-r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
-r.save
+m1 = a1.measurements.build(date: Date.yesterday)
+m1.save
+r1 = m1.results.build(student: Student.find(1), items: [1, 2], responses: [1,0], total: 0.5)
+r1.save
+r1 = m1.results.build(student: Student.find(2), items: [1, 2], responses:[0, 0], total: 0.0)
+r1.save
 
-m = a.measurements.build(date: Date.tomorrow)
-m.save
-r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
-r.save
-r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
-r.save
+m1 = a1.measurements.build(date: Date.today)
+m1.save
+r1 = m1.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r1.save
+
+m1 = a1.measurements.build(date: Date.tomorrow)
+m1.save
+r1 = m1.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r1.save
+r1 = m1.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
+r1.save

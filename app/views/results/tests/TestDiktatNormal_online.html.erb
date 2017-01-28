@@ -33,10 +33,14 @@
             <p align="center"><button id="rButton" type="button" class="btn btn-warning btn-lg" onclick="rButtonClick()">Lautstärketest: <span class="glyphicon glyphicon-arrow-up"></span></button></p>
             <br/>
             <br/>
-            <audio id="Audio1"></audio>
+            <audio id="Audio1">
+              <!-- Notiz auf id achten
+              <source id="ogg_src" src="lib/audio/barger01.ogg" type="audio/ogg" />
+              <source id="mp3_src" src="lib/audio/barger01.mp3" type="audio/mp3" />
+              -->
+            </audio>
             <br/>
             <p class="text-center" style="font-size: 24px" id="pic">
-              <br/>
               <br/>
               <br/>
             </p>
@@ -79,13 +83,6 @@
 
 <script>
 
-    /*Was passiert beim schließen der Dialogbox*/
-    $("#mainModal").on("hidden.bs.modal", function () {
-        $('#answer').attr('font-size', 96);
-        $('#answer').val(''); /*input box leeren*/
-        document.getElementById("answer").placeholder = "Test"; /*input box wieder placeholder geben*/
-        $('#answer').attr('type', 'text');
-    });
 
     $(window).keydown(function(event) {
         switch (event.keyCode) {
@@ -279,7 +276,6 @@
             startTest();
         }
     }
-
     function rButtonClick() {
         if (preparation) {
             var h = document.getElementById("Audio1");
@@ -289,5 +285,24 @@
         }
     }
 
+
+    /*Was passiert beim schließen der Dialogbox*/
+    $("#mainModal").on("hidden.bs.modal", function () {
+        $('#answer').attr('font-size', 96);
+        $('#answer').val(''); /*input box leeren*/
+        document.getElementById("answer").placeholder = "Test"; /*input box wieder placeholder geben*/
+        $('#answer').attr('type', 'text');
+    });
+
+
+    $('#answer').keydown(function(e){
+        var key = e.charCode || e.keyCode;
+        if (key == 37||key == 38||key == 39||key == 40) {
+            // enter key do nothing
+            e.preventDefault();
+        } else {
+
+        }
+    });
 
 </script>
