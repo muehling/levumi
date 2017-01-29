@@ -8,7 +8,7 @@
     <div id="alert">
       <div class="alert alert-info alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen.</p>
+        <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen und die Lautstärke zu prüfen.</p>
       </div>
     </div>
 
@@ -33,12 +33,7 @@
             <p align="center"><button id="rButton" type="button" class="btn btn-warning btn-lg" onclick="rButtonClick()">Lautstärketest: <span class="glyphicon glyphicon-arrow-up"></span></button></p>
             <br/>
             <br/>
-            <audio id="Audio1">
-              <!-- Notiz auf id achten
-              <source id="ogg_src" src="lib/audio/barger01.ogg" type="audio/ogg" />
-              <source id="mp3_src" src="lib/audio/barger01.mp3" type="audio/mp3" />
-              -->
-            </audio>
+            <audio id="itemAudio"></audio>
             <br/>
             <p class="text-center" style="font-size: 24px" id="pic">
               <br/>
@@ -177,7 +172,7 @@
         $('#cButton').html("Schrift größer: <span class='glyphicon glyphicon-arrow-left'></span>");
         $('#iButton').html("Schrift kleiner: <span class='glyphicon glyphicon-arrow-right'></span>");
         var fileName = "/assets/Test.mp3";
-        $("#Audio1").attr("src",fileName).trigger('play');
+        $("#itemAudio").attr("src",fileName).trigger('play');
         $('#rButton').toggle(true);
         setButtons(true);
         $('#mainModal').modal('show');
@@ -193,7 +188,7 @@
         currentItemIndex = -1;
         nextItem();
         var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
-        $("#Audio1").attr("src",fileName).trigger('play');
+        $("#itemAudio").attr("src",fileName).trigger('play');
         currentResult = "";
     }
     function stopTest() {
@@ -225,11 +220,11 @@
             }
             else {
                 /*TODO Audiodatei nochmal abspielen*/
-                var h = document.getElementById("Audio1");
+                var h = document.getElementById("itemAudio");
                 h.pause();
                 h.currentTime = 0;
                 h.play();/*
-                $("#Audio1").trigger('play');*/
+                $("#itemAudio").trigger('play');*/
 
             }
         }
@@ -257,7 +252,7 @@
                     nextItem();
                     $('#answer').focus();
                     var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
-                    $("#Audio1").attr("src",fileName).trigger('play');
+                    $("#itemAudio").attr("src",fileName).trigger('play');
                 }
                 else {
                     currentResult = currentResult + "0,";
@@ -265,7 +260,7 @@
                     nextItem();
                     $('#answer').focus();
                     var fileName = "/assets/".concat(itemData[studentData[currentStudent][currentItemIndex]]).concat(".mp3");
-                    $("#Audio1").attr("src",fileName).trigger('play');
+                    $("#itemAudio").attr("src",fileName).trigger('play');
                 }
             }
         }
@@ -278,7 +273,7 @@
     }
     function rButtonClick() {
         if (preparation) {
-            var h = document.getElementById("Audio1");
+            var h = document.getElementById("itemAudio");
             h.pause();
             h.currentTime = 0;
             h.play();

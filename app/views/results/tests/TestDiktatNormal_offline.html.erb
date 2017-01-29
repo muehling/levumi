@@ -1,0 +1,55 @@
+<style>
+    @media print
+    {
+        h4 {page-break-before:always}
+    }
+</style>
+
+<div class="container-fluid">
+  <div id="content">
+      <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
+      <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
+      <h2>Testwörter:</h2>
+      <br/>
+      <% test = @measurement.results.first%>
+    <% index = 0 %>
+    <% 5.times do %>
+        <td>
+          <% if index < test.items.count %>
+              <div style="font-family: 'fibel_nordregular'; font-size:30px"><%= index+1 %>: <%= Item.find(test.items[index]).itemtext %></div>
+          <% end %>
+          <% index = index + 1 %>
+        </td>
+    <% end %>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <% @measurement.results.each do |r| %>
+          <h4><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h4>
+          <br/>
+          <h3><%= r.student.name %></h3>
+        <% index = 0 %>
+        <% (r.items.count / 5 + 1).times do %>
+            <tr>
+              <% 5.times do %>
+                  <td>
+                    <% if index < r.items.count %>
+                        <h3><%= index+1 %>: _________________________</h3>
+                        <br/>
+                    <% end %>
+                  <br/>
+                    <% index = index + 1 %>
+                  </td>
+              <% end %>
+            </tr>
+        <% end %>
+    <% end %>
+  </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        window.print();
+    });
+</script>
