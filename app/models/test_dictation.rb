@@ -1,7 +1,7 @@
 class TestDictation < Test
 
   def len_info
-    return "#{len} Items"
+    return "#{time} Sekunden, max. #{len} Items"
   end
 
   def type_info

@@ -133,9 +133,23 @@ class Student < ActiveRecord::Base
 
   def get_open_measurements
     t = Test.where(:student_access => true)
-    a = Assessment.where(:group => self.group.id, :test => t)
-    m = Measurement.where(:assessment => a)
-    #...
+    a = Assessment.where(:group => self.group.id)
+    #nur zurückgeben der Measurments welche noch nicht abgelaufen sind
+    m = Measurement.
+        where(:assessment => a).
+        where("date >?", Date.today)
     return m.nil? ? [] : m
+  end
+
+  #Aktuelles Resultobjekt des Schülers holen
+  def getCurrentResult(measurement_id)
+    rCreate = Result.where(:measurement_id => measurement_id, :student_id => self.id)
+    if(rCreate.empty?)
+      s = rCreate.build(student: self)
+      s.initialize_results()
+    end
+    r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
+    @result=r
+    return r.nil? ? [] : r
   end
 end

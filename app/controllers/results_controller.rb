@@ -21,6 +21,9 @@ class ResultsController < ApplicationController
   def new
     if @measurement.results.count == 0
       @measurement.prepare_test
+      #TODO Den elseif fall anpassen
+    elsif @measurement.results.count != @measurement.assessment.group.students.count
+      @measurement.prepare_test
     end
 
     @test = @measurement.assessment.test

@@ -1,0 +1,220 @@
+<div id="alert">
+  <div class="alert alert-info alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    <p id="notice">Du hast hier die Gelegenheit, die Schriftgröße für den Test individuell anzupassen und die Lautstärke zu überprüfen.
+      <br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
+  </div>
+</div>
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+</nav>
+<audio id="itemAudio" src="assets/haha.mp3" controls></audio>
+</br>
+<!-- Test was ich mir alles schon holen kann-->
+<%= "#{@student.id}"%>
+</br>
+<%= "#{@student.group.user.id}"%>
+</br>
+<%= "#{@student.group.id}"%>
+</br>
+<%= "#{@measurement.assessment.id}"%>
+</br>
+<%= "#{@result.id}"%>
+</br>
+<button id="testButton" type="button" class="btn btn-warning btn-lg" onclick="testButtonClick()">Test</button>
+
+
+</br>
+<div align="center">
+  <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
+    Test
+  </p>
+  <br/>
+  <br/>
+  <br/>
+</div>
+</br>
+<div align="center">
+  <p><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer" type="text" class="text-center" placeholder="Test" align="middle">
+    <br/>
+    <br/>
+    <br/>
+  </p>
+</div>
+
+<div align="center">
+  <footer>
+    <button id="cButton" type="button" class="btn btn-info btn-lg" onclick="cButtonClick()">Nochmal</button>
+    <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+    <button id="iButton" type="button" class="btn btn-success btn-lg" onclick="iButtonClick()">Weiter</button>
+  </footer>
+</div>
+
+
+
+<script>
+  /*Initialisierung der Variablen für den Testablauf*/
+  var currentStudent = -1;
+  var currentResult = "";
+  currentStudent = <%=@result.id%>;
+  var preparation = true;
+  var currentItemIndex = -1;
+  var timeoutId = -1;
+  var currentTimes = "";
+  var stopwatch = null;
+  /*Liste aller Items, wleche zum Test gehören*/
+  var itemData = {
+  <% @measurement.assessment.test.items.each do |i| %>
+  <%= i.id%>: "<%= i.itemtext%>",
+  <%end %>
+  };
+  /*Liste der Ids, der Items in der Reihenfolge, wie sie in Result vorkommen*/
+  var studentData = [
+      <%@result.items.each do |i|%>
+      <%=i%>,
+      <%end%>];
+
+
+  /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
+   * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
+  function prepareTest() {
+      $('#itemText').css('font-size', 96);
+      $('#itemText').html("Test");
+      preparation = true;
+      $('#cButton').html("Schrift größer");
+      $('#iButton').html("Schrift kleiner");
+      setButtons(true);
+  }
+  /*Testphase beginnt*/
+  function startTest() {
+      preparation = false;
+      $('#cButton').html("Nochmal anhören");
+      $('#iButton').html("Weiter");
+      setButtons(true);
+      currentItemIndex = -1;
+      currentResult = "";
+      currentTimes = "";
+      nextItem();
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+      }
+      timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
+  }
+  /*Wenn Zeit abgelaufen oder alle Wörter durchgelaufen test beenden*/
+  function stopTest(timeout) {
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+      }
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
+      $('#itemText').html("");
+      setButtons(false);
+  }
+  /*Nächstes Item anzeigen*/
+  function nextItem() {
+      currentItemIndex++;
+      if (currentItemIndex < studentData.length) {
+          $('#itemText').html(itemData[studentData[currentItemIndex]]);
+          stopwatch = new Date();
+      }
+      else
+          stopTest(false);
+  }
+
+  function iButtonClick() {
+      if (!$('#iButton').hasClass("disabled")) {
+          if (preparation) {
+              curSize = parseInt($('#itemText').css('font-size')) - 6;
+              $('#itemText').css('font-size', curSize);
+              $('#itemAnswer').css('font-size',curSize)
+          }
+          else {
+              stopwatch = new Date() - stopwatch;
+              currentTimes = currentTimes + stopwatch + ",";
+              currentResult = currentResult + "1,";
+              nextItem();
+          }
+      }
+  }
+
+  function cButtonClick() {
+      if (!$('#cButton').hasClass("disabled")) {
+          if (preparation) {
+              curSize=parseInt($('#itemText').css('font-size')) + 6;
+              $('#itemText').css('font-size', curSize);
+              $('#itemAnswer').css('font-size',curSize)
+          }
+          else {
+              stopwatch = new Date() - stopwatch;
+              currentTimes = currentTimes + stopwatch + ",";
+              currentResult = currentResult + "0,";
+              nextItem();
+          }
+      }
+  }
+
+  function testButtonClick() {
+      var count = 0;
+      while(count<4){
+          currentResult = currentResult + "1,";
+          count = count+1;
+      }
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
+    /*herausziehen der Items*/
+      $('#itemText').html(itemData[studentData[0]]);
+
+  }
+
+  function setButtons(enabled) {
+      if (enabled) {
+          if (preparation) {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').removeClass("btn-info");
+              $('#sButton').removeClass("disabled");
+              $('#sButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').removeClass("btn-success");
+          }
+          else {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').addClass("btn-info");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').addClass("btn-success");
+              $('#sButton').addClass("disabled");
+              $('#sButton').removeClass("btn-success");
+          }
+      }
+      else {
+          $('#cButton').addClass("disabled");
+          $('#cButton').removeClass("btn-info");
+          $('#iButton').addClass("disabled");
+          $('#iButton').removeClass("btn-success");
+          $('#sButton').addClass("disabled");
+          $('#sButton').removeClass("btn-success");
+      }
+  }
+
+  function sButtonClick() {
+      if (preparation) {
+          startTest();
+      }
+  }
+
+  /*Befehle/Funktionen die direkt ausgeführt werden, ohne Funktionsaufruf*/
+  $(window).onload = prepareTest();
+
+</script>

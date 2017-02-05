@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ApplicationController
-  layout 'bare'
+  #Festlegen des Allgemeinen Layout: siehe view/layouts/*
+  layout 'plain'
 
   skip_before_filter :check_login, :check_accept
 
@@ -26,11 +27,15 @@ class FrontendController < ApplicationController
   def start
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
+    @result = @student.getCurrentResult(@measurement.id)
+    render "results/tests/#{@test.view_info}_student"
+=begin TODO nochmal angucken
     if (@test.student_access) #...ggf mehr Tests
       render "results/tests/#{@test.view_info}_student"
     else
       redirect_to '/student'
     end
+=end
   end
 
   private
