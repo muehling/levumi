@@ -49,13 +49,13 @@ r.save
 
 
 t1 = TestDictation.create(name: "DiktiertestByMe", len: 4, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:  "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60)
-i1 = t1.items.build(itemtext: "haha", difficulty: 0.1)
+i1 = t1.items.build(itemtext: "haha", difficulty: 0.1, data: "haha.mp3")
 i1.save
-i1 = t1.items.build(itemtext: "hoha", difficulty: 0.4)
+i1 = t1.items.build(itemtext: "hoha", difficulty: 0.4, data: "hoha.mp3")
 i1.save
-i1 = t1.items.build(itemtext: "huho", difficulty: 0.7)
+i1 = t1.items.build(itemtext: "huho", difficulty: 0.7, data: "huho.mp3")
 i1.save
-i1 = t1.items.build(itemtext: "laho", difficulty: 0.9)
+i1 = t1.items.build(itemtext: "laho", difficulty: 0.9, data: "laho.mp3")
 i1.save
 
 a1 = g.assessments.build(test_id: t1.id)

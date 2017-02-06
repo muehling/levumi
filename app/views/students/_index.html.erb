@@ -7,6 +7,9 @@
     Login-Code
   </th>
   <th>
+    Passwort
+  </th>
+  <th>
     Geschlecht
   </th>
   <th>
@@ -33,6 +36,9 @@
         </td>
         <td>
           <%= student.login %>
+        </td>
+        <td>
+          <%= student.password_digest %>
         </td>
         <td>
           <%= raw(student.get_gender) %>
@@ -66,4 +72,3 @@
 <div id="studentForm">
   <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
 </div>
-

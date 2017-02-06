@@ -23,7 +23,7 @@ class ResultsController < ApplicationController
       @measurement.prepare_test
       #TODO Den elseif fall anpassen
     elsif @measurement.results.count != @measurement.assessment.group.students.count
-      @measurement.prepare_test
+      @measurement.complete_test
     end
 
     @test = @measurement.assessment.test

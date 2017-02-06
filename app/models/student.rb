@@ -4,11 +4,19 @@ class Student < ActiveRecord::Base
   has_many :results, :dependent => :destroy
 
   validates_presence_of :name
-  before_save :check_login
+  before_save :set_password
+  after_create :set_login
 
-  def check_login
-    if self.login.nil? | self.login.blank?
-      self.login = self.name
+  #Generieren von eindeutigen Login
+  def set_login
+    self.login = "stu" + self.id.to_s
+    self.save
+  end
+
+  #Setzen des passwortes für den Schüler
+  def set_password
+    if self.password_digest.nil? | self.password_digest.blank?
+      self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
     end
   end
   #Getter für Merkmale:
@@ -135,6 +143,7 @@ class Student < ActiveRecord::Base
     t = Test.where(:student_access => true)
     a = Assessment.where(:group => self.group.id)
     #nur zurückgeben der Measurments welche noch nicht abgelaufen sind
+    #TODO nur measurments die noch kein Resukt haben vermutlich nach results total fragen
     m = Measurement.
         where(:assessment => a).
         where("date >?", Date.today)

@@ -1,28 +1,19 @@
+<!--
 <div id="alert">
   <div class="alert alert-info alert-dismissible">
     <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
     <p id="notice">Du hast hier die Gelegenheit, die Schriftgröße für den Test individuell anzupassen und die Lautstärke zu überprüfen.
-      <br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
+      <br/> Die Zeit von < @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
   </div>
 </div>
+nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close event abfangen-->
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
-<audio id="itemAudio" src="assets/haha.mp3" controls></audio>
-</br>
-<!-- Test was ich mir alles schon holen kann-->
-<%= "#{@student.id}"%>
-</br>
-<%= "#{@student.group.user.id}"%>
-</br>
-<%= "#{@student.group.id}"%>
-</br>
-<%= "#{@measurement.assessment.id}"%>
-</br>
-<%= "#{@result.id}"%>
+<audio id="itemAudio"></audio>
 </br>
 <button id="testButton" type="button" class="btn btn-warning btn-lg" onclick="testButtonClick()">Test</button>
-
+<div><p><%=(('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(4).join%></p></div>
 
 </br>
 <div align="center">
@@ -68,6 +59,12 @@
   <%= i.id%>: "<%= i.itemtext%>",
   <%end %>
   };
+  /*Liste aller Items, wleche zum Test gehören*/
+  var itemDataSound = {
+  <% @measurement.assessment.test.items.each do |i| %>
+  <%= i.id%>: "<%= i.data%>",
+  <%end %>
+  };
   /*Liste der Ids, der Items in der Reihenfolge, wie sie in Result vorkommen*/
   var studentData = [
       <%@result.items.each do |i|%>
@@ -80,6 +77,12 @@
   function prepareTest() {
       $('#itemText').css('font-size', 96);
       $('#itemText').html("Test");
+      $('#itemAnswer').val('');
+      $('#itemAnswer').attr('maxlength',6);
+      $('#itemAnswer').focus();
+      document.getElementById("itemAnswer").placeholder = "";
+      var fileName = "/assets/Test.mp3";
+      $("#itemAudio").attr("src",fileName).trigger('play');
       preparation = true;
       $('#cButton').html("Schrift größer");
       $('#iButton').html("Schrift kleiner");
@@ -117,11 +120,15 @@
       $('#itemText').html("");
       setButtons(false);
   }
-  /*Nächstes Item anzeigen*/
+  /*Nächstes Item anzeigen und seine Daten laden*/
   function nextItem() {
       currentItemIndex++;
       if (currentItemIndex < studentData.length) {
           $('#itemText').html(itemData[studentData[currentItemIndex]]);
+          var length = itemData[studentData[currentItemIndex]].length;
+          $('#itemAnswer').attr('maxlength',(length+length/2));
+          var fileName = "/assets/".concat(itemDataSound[studentData[currentItemIndex]]);
+          $("#itemAudio").attr("src",fileName).trigger('play');
           stopwatch = new Date();
       }
       else
@@ -129,22 +136,44 @@
   }
 
   function iButtonClick() {
+
       if (!$('#iButton').hasClass("disabled")) {
           if (preparation) {
               curSize = parseInt($('#itemText').css('font-size')) - 6;
               $('#itemText').css('font-size', curSize);
               $('#itemAnswer').css('font-size',curSize)
           }
+          /*Wenn Wörter abgefragt werden:
+           - Wennh richtig eingegeben: - 1 Punkt dazu
+           - Wenn falsch eingegeben  : - Keinen Punkt dazu
+           Dann: - inputfeld leeren
+           -nächstes Wort auswählen
+
+           */
           else {
-              stopwatch = new Date() - stopwatch;
-              currentTimes = currentTimes + stopwatch + ",";
-              currentResult = currentResult + "1,";
-              nextItem();
+              var temp = document.getElementById("itemAnswer").value;
+              if(itemData[studentData[currentItemIndex]]==temp){
+                  stopwatch = new Date() - stopwatch;
+                  currentTimes = currentTimes + stopwatch + ",";
+                  currentResult = currentResult + "1,";
+                  document.getElementById("itemAnswer").value = "";
+                  nextItem();
+                  $('#itemAnswer').focus();
+              }
+              else {
+                  stopwatch = new Date() - stopwatch;
+                  currentTimes = currentTimes + stopwatch + ",";
+                  currentResult = currentResult + "0,";
+                  document.getElementById("itemAnswer").value = "";
+                  nextItem();
+                  $('#itemAnswer').focus();
+              }
           }
       }
   }
 
   function cButtonClick() {
+
       if (!$('#cButton').hasClass("disabled")) {
           if (preparation) {
               curSize=parseInt($('#itemText').css('font-size')) + 6;
@@ -152,31 +181,12 @@
               $('#itemAnswer').css('font-size',curSize)
           }
           else {
-              stopwatch = new Date() - stopwatch;
-              currentTimes = currentTimes + stopwatch + ",";
-              currentResult = currentResult + "0,";
-              nextItem();
+              var h = document.getElementById("itemAudio");
+              h.pause();
+              h.currentTime = 0;
+              h.play();
           }
       }
-  }
-
-  function testButtonClick() {
-      var count = 0;
-      while(count<4){
-          currentResult = currentResult + "1,";
-          count = count+1;
-      }
-      var dict = {};
-      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
-      $.ajax({
-          type: "PUT",
-          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
-          data: dict
-      });
-    /*herausziehen der Items*/
-      $('#itemText').html(itemData[studentData[0]]);
-
   }
 
   function setButtons(enabled) {
@@ -214,7 +224,45 @@
       }
   }
 
+  function clearInput() {
+      $('#itemAnswer').val('');
+  }
   /*Befehle/Funktionen die direkt ausgeführt werden, ohne Funktionsaufruf*/
   $(window).onload = prepareTest();
 
+  /*Pfeile fürs Input feld abstellen*/
+  $('#itemAnswer').keydown(function(e){
+      var key = e.charCode || e.keyCode;
+      if (key == 37||key == 38||key == 39||key == 40||key == 32) {
+          // enter key do nothing
+          e.preventDefault();
+      }
+      else {
+
+      }
+  });
+
+  /*funktionen bei Tastendruck auf der Seite*/
+  $(window).keydown(function(event) {
+      switch (event.keyCode) {
+          case 13:
+              iButtonClick();
+              break;
+          case 32:
+              clearInput();
+              break;
+          case 37:
+              cButtonClick();
+              break;
+          case 38:
+              rButtonClick();
+              break;
+          case 39:
+              iButtonClick();
+              break;
+          case 40:
+              sButtonClick();
+              break;
+      }
+  });
 </script>

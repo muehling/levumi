@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161124154730) do
+ActiveRecord::Schema.define(version: 20170206003640) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -44,6 +44,7 @@ ActiveRecord::Schema.define(version: 20161124154730) do
     t.integer  "difficulty"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "data"
   end
 
   create_table "measurements", force: true do |t|
@@ -80,6 +81,7 @@ ActiveRecord::Schema.define(version: 20161124154730) do
     t.integer  "specific_needs"
     t.boolean  "migration"
     t.text     "login"
+    t.text     "password_digest"
   end
 
   create_table "tests", force: true do |t|

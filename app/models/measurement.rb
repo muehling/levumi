@@ -15,6 +15,18 @@ class Measurement < ActiveRecord::Base
     end
   end
 
+  def complete_test
+    assessment.group.students.each do |s|
+      rTest = Result.where(measurement_id: self.id, student_id: s.id)
+      if(rTest.empty?)
+        r = results.build(student: s)
+        r.initialize_results()
+      else
+
+      end
+    end
+  end
+
   def update_students(hash)
     hash.each do  |name, id|
       s = Student.find(id.to_i)
