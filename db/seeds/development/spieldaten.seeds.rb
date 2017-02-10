@@ -48,7 +48,8 @@ r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], t
 r.save
 
 
-t1 = TestDictation.create(name: "DiktiertestByMe", len: 4, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:  "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60)
+t1 = TestDictation.create(name: "DiktiertestByMe", len: 5, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:
+    "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60, student_access:true)
 i1 = t1.items.build(itemtext: "haha", difficulty: 0.1, data: "haha.mp3")
 i1.save
 i1 = t1.items.build(itemtext: "hoha", difficulty: 0.4, data: "hoha.mp3")
@@ -56,6 +57,8 @@ i1.save
 i1 = t1.items.build(itemtext: "huho", difficulty: 0.7, data: "huho.mp3")
 i1.save
 i1 = t1.items.build(itemtext: "laho", difficulty: 0.9, data: "laho.mp3")
+i1.save
+i1 = t1.items.build(itemtext: "magic item", difficulty: 0.9, data: "magic-item.mp3")
 i1.save
 
 a1 = g.assessments.build(test_id: t1.id)
@@ -79,3 +82,36 @@ r1 = m1.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0],
 r1.save
 r1 = m1.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
 r1.save
+
+t2 = TestKeyboard.create(name: "Tasterturtest",len: 4, info: "Tastertur für die Grundschule, 1. Klasse", short_info:
+    "Tasterturtest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60, student_access:true)
+i2 = t2.items.build(itemtext: "haha", difficulty: 0.1)
+i2.save
+i2 = t2.items.build(itemtext: "hoha", difficulty: 0.4)
+i2.save
+i2 = t2.items.build(itemtext: "huho", difficulty: 0.7)
+i2.save
+i2 = t2.items.build(itemtext: "laho", difficulty: 0.9)
+i2.save
+
+a2 = g.assessments.build(test_id: t2.id)
+a2.save
+
+m2 = a2.measurements.build(date: Date.yesterday)
+m2.save
+r2 = m2.results.build(student: Student.find(1), items: [1, 2], responses: [1,0], total: 0.5)
+r2.save
+r2 = m2.results.build(student: Student.find(2), items: [1, 2], responses:[0, 0], total: 0.0)
+r2.save
+
+m2 = a2.measurements.build(date: Date.today)
+m2.save
+r2 = m2.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r2.save
+
+m2 = a2.measurements.build(date: Date.tomorrow)
+m2.save
+r2 = m2.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r2.save
+r2 = m2.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
+r2.save

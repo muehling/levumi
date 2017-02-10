@@ -12,10 +12,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 </nav>
 <audio id="itemAudio"></audio>
 </br>
-<button id="testButton" type="button" class="btn btn-warning btn-lg" onclick="testButtonClick()">Test</button>
-<div><p><%=(('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(4).join%></p></div>
-
-</br>
 <div align="center">
   <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
     Test
@@ -40,8 +36,13 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
     <button id="iButton" type="button" class="btn btn-success btn-lg" onclick="iButtonClick()">Weiter</button>
   </footer>
 </div>
-
-
+<br/>
+<br/>
+<div class="row">
+  <div class="col-lg-12">
+    <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung vorzeitig beenden</button><% end %>
+  </div>
+</div>
 
 <script>
   /*Initialisierung der Variablen für den Testablauf*/
@@ -53,6 +54,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   var timeoutId = -1;
   var currentTimes = "";
   var stopwatch = null;
+  var introRdy = true;
+  var currentIntroItem = -1;
+
+  var testSize = 0;
   /*Liste aller Items, wleche zum Test gehören*/
   var itemData = {
   <% @measurement.assessment.test.items.each do |i| %>
@@ -71,7 +76,17 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       <%=i%>,
       <%end%>];
 
+  var introData = [
+      "Hallo, ich bin Levumi. Heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
+      " Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!" +
+      " Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.",
+      "Jetzt machen wir zwei Beispiele, damit du weißt, was du aufschreiben sollst. Zuerst lese ich dir einen Satz vor." +
+      " Danach diktiere ich dir das Wort aus dem Satz, welches du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.",
+      "Wenn du ein Wort falsch geschrieben hast, kannst du die Leertaste benutzen und die Buchstaben löschen," +
+      " damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die Taste xy , dann lese" +
+      " ich dir den Satz und das Wort vor, das du schreiben sollst vor. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird."
 
+  ]
   /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
    * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
   function prepareTest() {
@@ -80,20 +95,41 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       $('#itemAnswer').val('');
       $('#itemAnswer').attr('maxlength',6);
       $('#itemAnswer').focus();
-      document.getElementById("itemAnswer").placeholder = "";
       var fileName = "/assets/Test.mp3";
       $("#itemAudio").attr("src",fileName).trigger('play');
-      preparation = true;
-      $('#cButton').html("Schrift größer");
+      $('#cButton').html("Schrift  größer");
       $('#iButton').html("Schrift kleiner");
       setButtons(true);
   }
+  function intro(){
+      preparation = false;
+      $('#itemText').css('font-size', 60);
+      $('#itemText').html(introData[0]);
+      $('#itemText').append('<img style="float: right; width: 250px " id="pic" src="/assets/Levumi-jubelt.gif"/>');
+      $('#cButton').html("Nochmal anhören");
+      $('#iButton').html("    Weiter     ");
+      $('#itemAnswer').attr('type', 'hidden');
+      introPhase();
+  }
+  function introPhase() {
+      nextIntroItem();
+  }
+  function nextIntroItem() {
+      currentIntroItem++;
+      if(currentIntroItem<introData.length){
+          $('#itemText').html(introData[currentIntroItem]);
+      }
+      else {
+          startTest();
+      }
+  }
+
   /*Testphase beginnt*/
   function startTest() {
-      preparation = false;
-      $('#cButton').html("Nochmal anhören");
-      $('#iButton').html("Weiter");
+      introRdy = false;
+      $('#itemText').css('font-size', testSize);
       setButtons(true);
+      $('#itemAnswer').attr('type', 'show');
       currentItemIndex = -1;
       currentResult = "";
       currentTimes = "";
@@ -102,6 +138,20 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           window.clearTimeout(timeoutId);
       }
       timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
+  }
+  /*Nächstes Item anzeigen und seine Daten laden*/
+  function nextItem() {
+      currentItemIndex++;
+      if (currentItemIndex < studentData.length) {
+          $('#itemText').html(itemData[studentData[currentItemIndex]]);
+          var length = itemData[studentData[currentItemIndex]].length;
+          $('#itemAnswer').attr('maxlength',(length+length/2));
+          var fileName = "/assets/".concat(itemDataSound[studentData[currentItemIndex]]);
+          $("#itemAudio").attr("src",fileName).trigger('play');
+          stopwatch = new Date();
+      }
+      else
+          stopTest(false);
   }
   /*Wenn Zeit abgelaufen oder alle Wörter durchgelaufen test beenden*/
   function stopTest(timeout) {
@@ -118,22 +168,15 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           data: dict
       });
       $('#itemText').html("");
+      $('#itemAnswer').attr('type', 'hidden');
+      if (timeout)
+          $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Du kannst das Testfenster jetzt schließen");
+      else
+          $('#itemText').html("Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.");
       setButtons(false);
   }
-  /*Nächstes Item anzeigen und seine Daten laden*/
-  function nextItem() {
-      currentItemIndex++;
-      if (currentItemIndex < studentData.length) {
-          $('#itemText').html(itemData[studentData[currentItemIndex]]);
-          var length = itemData[studentData[currentItemIndex]].length;
-          $('#itemAnswer').attr('maxlength',(length+length/2));
-          var fileName = "/assets/".concat(itemDataSound[studentData[currentItemIndex]]);
-          $("#itemAudio").attr("src",fileName).trigger('play');
-          stopwatch = new Date();
-      }
-      else
-          stopTest(false);
-  }
+
+
 
   function iButtonClick() {
 
@@ -142,6 +185,9 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
               curSize = parseInt($('#itemText').css('font-size')) - 6;
               $('#itemText').css('font-size', curSize);
               $('#itemAnswer').css('font-size',curSize)
+          }
+          else if((!preparation)&&introRdy){
+              introPhase();
           }
           /*Wenn Wörter abgefragt werden:
            - Wennh richtig eingegeben: - 1 Punkt dazu
@@ -220,7 +266,8 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
   function sButtonClick() {
       if (preparation) {
-          startTest();
+          testSize = parseInt($('#itemText').css('font-size'));
+          intro();
       }
   }
 
@@ -243,26 +290,45 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   });
 
   /*funktionen bei Tastendruck auf der Seite*/
-  $(window).keydown(function(event) {
-      switch (event.keyCode) {
-          case 13:
-              iButtonClick();
-              break;
-          case 32:
-              clearInput();
-              break;
-          case 37:
-              cButtonClick();
-              break;
-          case 38:
-              rButtonClick();
-              break;
-          case 39:
-              iButtonClick();
-              break;
-          case 40:
-              sButtonClick();
-              break;
+  $(window).keyup(function(event) {
+      if (preparation) {
+          switch (event.keyCode) {
+              case 37:
+                  cButtonClick();
+                  break;
+              case 39:
+                  iButtonClick();
+                  break;
+              case 13:
+                  sButtonClick();
+                  break;
+          }
       }
+      else if((!preparation)&&introRdy) {
+          iButtonClick();
+      }
+      else {
+          switch (event.keyCode) {
+              case 13:
+                  iButtonClick();
+                  break;
+              case 32:
+                  clearInput();
+                  break;
+              case 37:
+                  cButtonClick();
+                  break;
+              case 38:
+                  rButtonClick();
+                  break;
+              case 39:
+                  iButtonClick();
+                  break;
+              case 40:
+                  sButtonClick();
+                  break;
+          }
+      }
+
   });
 </script>

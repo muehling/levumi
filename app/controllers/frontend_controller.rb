@@ -28,14 +28,11 @@ class FrontendController < ApplicationController
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
     @result = @student.getCurrentResult(@measurement.id)
-    render "results/tests/#{@test.view_info}_student"
-=begin TODO nochmal angucken
     if (@test.student_access) #...ggf mehr Tests
       render "results/tests/#{@test.view_info}_student"
     else
       redirect_to '/student'
     end
-=end
   end
 
   private

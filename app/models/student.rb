@@ -139,14 +139,22 @@ class Student < ActiveRecord::Base
     return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
   end
 
+  #TODO Nur measurements anzeigen ,welche noch nicht bearbeitet wurden(in welche schon einmal reingespeichert wurde)
   def get_open_measurements
     t = Test.where(:student_access => true)
-    a = Assessment.where(:group => self.group.id)
+    a = Assessment.where(:group => self.group.id).
+                   where(:test => t)
     #nur zurückgeben der Measurments welche noch nicht abgelaufen sind
-    #TODO nur measurments die noch kein Resukt haben vermutlich nach results total fragen
     m = Measurement.
         where(:assessment => a).
         where("date >?", Date.today)
+    r = Result.
+        where(:measurement => m).
+        where(:student_id => self.id).
+        where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
+    r.each do |temp|
+     m = m.where.not(:id => temp.measurement_id)
+    end
     return m.nil? ? [] : m
   end
 
