@@ -2,6 +2,7 @@
 class Student < ActiveRecord::Base
   belongs_to :group
   has_many :results, :dependent => :destroy
+ # has_secure_password
 
   validates_presence_of :name
   before_save :set_password
@@ -13,11 +14,13 @@ class Student < ActiveRecord::Base
     self.save
   end
 
-  #Setzen des passwortes für den Schüler
+  #TODO vllt secure_password einfügen/Setzen des passwortes für den Schüler
   def set_password
-    if self.password_digest.nil? | self.password_digest.blank?
-      self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
-    end
+=begin has_secure_password schwer bis nicht möglich als Klartext wieder anzuzeigen
+    #self.password = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
+    #self.password_confirmation = self.password
+=end
+    self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
   end
   #Getter für Merkmale:
 

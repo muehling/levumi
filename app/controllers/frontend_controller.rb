@@ -12,11 +12,19 @@ class FrontendController < ApplicationController
 
   def login
     s = Student.find_by_login(params[:login])
-    if (s != nil)
+    if s != nil
+=begin
+      if s.password_digest == params[:password]
+          session[:student_id] = s.id
+      redirect_to '/frontend'
+      else
+        redirect_to '/student', notice: "Benutzername oder Password falsch!"
+      end
+=end
       session[:student_id] = s.id
       redirect_to '/frontend'
     else
-      redirect_to '/student', notice: "Der eingegebene Code ist nicht gültig!"
+      redirect_to '/student', notice: "Benutzername oder Password falsch!"
     end
   end
 
