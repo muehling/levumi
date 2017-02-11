@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ApplicationController
   #Festlegen des Allgemeinen Layout: siehe view/layouts/*
-  layout 'plain'
+  layout 'bare'
 
   skip_before_filter :check_login, :check_accept
 
