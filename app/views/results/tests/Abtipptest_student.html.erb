@@ -37,7 +37,7 @@
       </br>
       <div class="row">
         <div class="col-lg-12">
-          <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung vorzeitig beenden</button><% end %>
+          <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung abbrechen: <span><img src='/assets/Esc.png'/></span></button><% end %>
         </div>
       </div>
     </footer>
@@ -49,8 +49,31 @@
 
 <script>
     $(window).keyup(function(event) {
-        if(preparation) {
+        if(event.keyCode == 27) {
+            if(currentItemIndex==0){
+                introRdy = false;
+                nextItem();
+            }
+            else {
+                $(window).unbind('keyup');
+                $('#closeButton').click();
+            }
+        }
+        else if(preparation) {
+            switch (event.keyCode) {
+                case 37:
+                    cButtonClick();
+                    break;
+                case 39:
+                    iButtonClick();
+                    break;
+                case 13:
+                    sButtonClick();
+                    break;
+            }
 
+        }
+        else if(lastPage) {
         }
         else if((!preparation)&&introRdy) {
             introRdy = false;
@@ -87,6 +110,7 @@
   var testSize = 96;
   var testUmlaute =false;
   var testDelete = false;
+  var lastPage = false;
 
 
 
@@ -227,6 +251,8 @@
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = "";
                   $("#itemAudio").attr("src",fileName).trigger('play');
+                  lastPage=true;
+                  stopTest();
                   break;
 
           }
@@ -269,7 +295,7 @@
           window.clearTimeout(timeoutId);
           timeoutId = -1;
       }
-      $('#itemText').html("");
+      $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
       $('#picHeadphone').hide();
       $('#picKeyboard').hide();
       setButtons(false);

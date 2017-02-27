@@ -44,6 +44,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   </div>
 </div>
 
+
 <script>
   /*Initialisierung der Variablen für den Testablauf*/
   var currentStudent = -1;
@@ -169,7 +170,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
       $.ajax({
           type: "PUT",
-          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement, @student)%>",
           data: dict
       });
       if (lastResults[currentStudent] < currentResult.split("1").length)
@@ -300,8 +301,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   $(window).keyup(function(event) {
       if(event.keyCode == 27) {
           if(currentIntroItem==0){
+              iButtonClick();
           }
           else {
+              $(window).unbind('keyup');
               $('#closeButton').click();
           }
       }
@@ -317,9 +320,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
                   sButtonClick();
                   break;
           }
-      }
-      else if((!preparation)&&introRdy&&currentIntroItem==0) {
-          iButtonClick();
       }
       else if((!preparation)&&introRdy) {
           switch (event.keyCode) {

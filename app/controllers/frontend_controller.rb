@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class FrontendController < ApplicationController
+class FrontendController < ActionController::Base
   #Festlegen des Allgemeinen Layout: siehe view/layouts/*
   layout 'bare'
 
@@ -47,7 +47,7 @@ class FrontendController < ApplicationController
 
   def check_student
     if session[:student_id].nil?
-      redirect_to '/student', notice: "Bitte einloggen!"
+      redirect_to '/student', notice: "Bitte einloggen(frontend)!"
     else
       @student = Student.find(session[:student_id])
     end

@@ -5,7 +5,7 @@ class Student < ActiveRecord::Base
  # has_secure_password
 
   validates_presence_of :name
-  before_save :set_password
+  before_create :set_password
   after_create :set_login
 
   #Generieren von eindeutigen Login

@@ -4,6 +4,8 @@ class Measurement < ActiveRecord::Base
   has_many :results, :dependent => :destroy
   has_many :students, through: :results
 
+  after_create :prepare_test
+
   validates_presence_of :date
 
   default_scope {order('date DESC')}
@@ -12,18 +14,6 @@ class Measurement < ActiveRecord::Base
     assessment.group.students.each do |s|
       r = results.build(student: s)
       r.initialize_results()
-    end
-  end
-
-  def complete_test
-    assessment.group.students.each do |s|
-      rTest = Result.where(measurement_id: self.id, student_id: s.id)
-      if(rTest.empty?)
-        r = results.build(student: s)
-        r.initialize_results()
-      else
-
-      end
     end
   end
 

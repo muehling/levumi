@@ -19,13 +19,6 @@ class ResultsController < ApplicationController
 
   # GET /results/new
   def new
-    if @measurement.results.count == 0
-      @measurement.prepare_test
-      #TODO Den elseif fall anpassen
-    elsif @measurement.results.count != @measurement.assessment.group.students.count
-      @measurement.complete_test
-    end
-
     @test = @measurement.assessment.test
 
     respond_to do |format|
@@ -104,6 +97,10 @@ class ResultsController < ApplicationController
 
     def set_group
       @group = Group.find(params[:group_id])
+    end
+
+    def set_student
+      @student = Student.find(params[:student_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
