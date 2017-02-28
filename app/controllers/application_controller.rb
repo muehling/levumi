@@ -63,7 +63,7 @@ class ApplicationController < ActionController::Base
       redirect_to root_url, notice: "Bitte einloggen!"
     elsif session[:user_id].nil?
       @login = Student.find(session[:student_id])
-      redirect_to root_url, notice: @login.id
+      #redirect_to root_url, notice: @login.id
      else
       @login = User.find(session[:user_id])
     end

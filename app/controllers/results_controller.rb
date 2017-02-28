@@ -36,6 +36,7 @@ class ResultsController < ApplicationController
   # PATCH/PUT /results/1
   # PATCH/PUT /results/1.json
   def update
+    flash[:notice] = "update successfully created"
     results = result_params
     unless results.nil?
       stay = true
@@ -80,22 +81,27 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
+      flash[:notice] = "result successfully created"
       @result = Result.find(params[:id])
     end
 
     def set_measurement
+      flash[:notice] = "measurement successfully created"
       @measurement = Measurement.find(params[:measurement_id])
     end
 
     def set_assessment
+      flash[:notice] = "assessment successfully created"
       @assessment = Assessment.find(params[:assessment_id])
     end
 
     def set_user
+      flash[:notice] = "user successfully created"
       @user = User.find(params[:user_id])
     end
 
     def set_group
+      flash[:notice] = "group successfully created"
       @group = Group.find(params[:group_id])
     end
 
@@ -106,6 +112,7 @@ class ResultsController < ApplicationController
     end
 
     def is_allowed
+      flash[:notice] = "Post successfully created"
       unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i)) || (params.has_key?(:id) && (@login.id == @result.student.id))
         redirect_to root_url
       end

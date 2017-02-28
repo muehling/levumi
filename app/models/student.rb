@@ -5,24 +5,28 @@ class Student < ActiveRecord::Base
  # has_secure_password
 
   validates_presence_of :name
-  before_create :set_password
+  #before_create :set_password
   after_create :set_login
 
   #Generieren von eindeutigen Login
   def set_login
+    #vorläufiges setzen des Zugangscodes
     self.login = "stu" + self.id.to_s
     self.save
+=begin später zb ersetzbar durch TODO vergleich ob login schon vorhanden
+    self.login = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join
+    self.save
+=end
   end
 
-  #TODO vllt secure_password einfügen/Setzen des passwortes für den Schüler
+
+=begin setzen des Passwortes, eine Möglichkeit
   def set_password
-=begin has_secure_password schwer bis nicht möglich als Klartext wieder anzuzeigen
-    #self.password = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
-    #self.password_confirmation = self.password
-=end
     self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
   end
-  #Getter für Merkmale:
+=end
+
+ #Getter für Merkmale:
 
   def get_gender(raw = false)
     return self[:gender].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:gender] ? "männlich" : "weiblich")

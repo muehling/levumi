@@ -4,13 +4,14 @@
   <br/>
   <%= form_tag(url_for(:controller => 'frontend', :action => 'login'), :class => "form") do %>
       <p>
-        Hier bitte Zugangscode eingeben:
+        Hier bitte Zugangscode eingeben (z.B. stu1):
       </p>
       <div class="form-group">
         <label class="sr-only" for="login">Code</label>
         <%= text_field_tag "login", nil, type: "text", class: "form-control", placeholder: "Code"%>
       </div>
-      <!-- Passwort schonmal als Feld hinzugefügt, ohne Funktion-->
+
+      <!-- Passwort schonmal als Feld hinzugefügt, falls es später noch rein soll
       <p>
         Hier bitte Passwort eingeben:
       </p>
@@ -18,6 +19,7 @@
         <label class="sr-only" for="login">Passwort</label>
         <%= text_field_tag "password", nil, type: "text", class: "form-control", placeholder: "Passwort"%>
       </div>
+      -->
       <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
   <% end %>
 </div>
