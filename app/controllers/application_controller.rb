@@ -59,8 +59,11 @@ class ApplicationController < ActionController::Base
   private
 
   def check_login
-    if session[:user_id].nil?
+    if session[:user_id].nil? && session[:student_id].nil?
       redirect_to root_url, notice: "Bitte einloggen!"
+    elsif session[:user_id].nil?
+      @login = Student.find(session[:student_id])
+      redirect_to root_url, notice: @login.id
      else
       @login = User.find(session[:user_id])
     end

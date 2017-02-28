@@ -44,6 +44,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   </div>
 </div>
 
+<div id="myProgress" style="width: 100%; background-color: #dddd" >
+  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 30px"></div>
+</div>
+</br>
 
 <script>
   /*Initialisierung der Variablen für den Testablauf*/
@@ -99,7 +103,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
    * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
   function prepareTest() {
       $('#itemText').css('font-size', 96).html("Test");
-      $('#itemAnswer').attr('maxlength',6).val('');
+      $('#itemAnswer').attr('maxlength',6).attr('type', 'show').val('');
       var fileName = "/assets/Test.mp3";
       $("#itemAudio").attr("src",fileName).trigger('play');
       $('#cButton').html("Schrift größer: <span class='glyphicon glyphicon-arrow-left'/>");
@@ -170,7 +174,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
       $.ajax({
           type: "PUT",
-          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement, @student)%>",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict
       });
       if (lastResults[currentStudent] < currentResult.split("1").length)
@@ -282,8 +286,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   function clearInput() {
       $('#itemAnswer').val('');
   }
-  /*Befehle/Funktionen die direkt ausgeführt werden, ohne Funktionsaufruf*/
-  $(window).onload = prepareTest();
+
 
   /*Pfeile fürs Input feld abstellen*/
   $('#itemAnswer').keydown(function(e){
@@ -349,4 +352,40 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
 
   });
+
+  //Audiodaten vorladen
+  $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
+  $('#itemAnswer').attr('type', 'hidden');
+  function preloadAudio(url) {
+      var audio = new Audio();
+      // once this file loads, it will call loadedAudio()
+      // the file will be kept by the browser as cache
+      var completeUrl = "/assets/".concat(url);
+      audio.addEventListener('canplaythrough', loadedAudio, false);
+      audio.src = completeUrl;
+
+
+  }
+  var progress = 0;
+  var loaded = 0;
+  var soundLength = studentData.length;
+  function loadedAudio() {
+      // this will be called every time an audio file is loaded
+      // we keep track of the loaded files vs the requested files
+      loaded++;
+      progress = ((loaded *100) / (soundLength));
+      var elem = document.getElementById("myBar");
+      elem.style.width = progress +'%';
+      if (loaded == soundLength){
+          // all have loaded do something
+          prepareTest();
+
+      }
+  }
+
+  // we start preloading all the audio files
+  for (var i in itemDataSound) {
+      preloadAudio(itemDataSound[i]);
+
+  }
 </script>

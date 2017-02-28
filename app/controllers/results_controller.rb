@@ -99,9 +99,6 @@ class ResultsController < ApplicationController
       @group = Group.find(params[:group_id])
     end
 
-    def set_student
-      @student = Student.find(params[:student_id])
-    end
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
@@ -109,7 +106,7 @@ class ResultsController < ApplicationController
     end
 
     def is_allowed
-      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i)) || (params.has_key?(:id) && (@login.id == @result.student.id))
         redirect_to root_url
       end
     end

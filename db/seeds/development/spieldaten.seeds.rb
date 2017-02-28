@@ -49,7 +49,7 @@ r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], t
 r.save
 
 
-t = TestDictation.create(name: "DiktiertestByMe", len: 4, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:
+t = TestDictation.create(name: "DiktiertestByMe", len: 6, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:
     "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60, student_access:true)
 i = t.items.build(itemtext: "haha", difficulty: 0.1, data: "haha.mp3")
 i.save
@@ -58,6 +58,10 @@ i.save
 i = t.items.build(itemtext: "huho", difficulty: 0.7, data: "huho.mp3")
 i.save
 i = t.items.build(itemtext: "laho", difficulty: 0.9, data: "laho.mp3")
+i.save
+i = t.items.build(itemtext: "meer", difficulty: 0.9, data: "meer.mp3")
+i.save
+i = t.items.build(itemtext: "bach", difficulty: 0.9, data: "bach.mp3")
 i.save
 
 a = g.assessments.build(test_id: t.id)
