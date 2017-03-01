@@ -88,17 +88,24 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       <%end%>];
 
   var introData = [
-      "Hallo, ich bin Levumi. Heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
+      "„Hallo, ich bin Levumi. Heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
       " Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!" +
-      " Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.",
-      "Jetzt machen wir zwei Beispiele, damit du weißt, was du aufschreiben sollst. Zuerst lese ich dir einen Satz vor." +
-      " Danach diktiere ich dir das Wort aus dem Satz, welches du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.",
-      "Wenn du ein Wort falsch geschrieben hast, kannst du die Leertaste benutzen und die Buchstaben löschen," +
+      " Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.“",
+      "„Jetzt machen wir zwei Beispiele, damit du weißt, was du aufschreiben sollst. Zuerst lese ich dir einen Satz vor." +
+      " Danach diktiere ich dir das Wort aus dem Satz, welches du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“",
+      "„Wenn du ein Wort falsch geschrieben hast, kannst du die Leertaste benutzen und die Buchstaben löschen," +
       " damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste , dann lese" +
-      " ich dir den Satz und das Wort vor, das du schreiben sollst. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird."
+      " ich dir den Satz und das Wort vor, das du schreiben sollst. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“"
 
   ];
-  var introAudio =[];
+  var introAudio =["/assets/Anweisungen/15_Hallo.mp3",
+                   "/assets/Anweisungen/16_ErklärungTeilA.mp3",
+                   "/assets/Anweisungen/16_ErklärungTeilB.mp3",
+                   "/assets/Anweisungen/17_Beispiel1.mp3",
+                   "/assets/Anweisungen/18_Beispiel2.mp3",
+                   "/assets/Anweisungen/19_ich_beginne.mp3"
+
+  ];
   /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
    * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
   function prepareTest() {
@@ -127,7 +134,19 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       if(currentIntroItem<introData.length){
           $('#itemText').html(introData[currentIntroItem]).append(levumiTalks);
           var fileName = "/assets/".concat(introAudio[currentItemIndex]);
-          $("#itemAudio").attr("src",fileName).trigger('play');
+          $("#itemAudio").attr("src",introAudio[currentIntroItem]).trigger('play');
+      }
+      else if(currentIntroItem<introAudio.length-1) {
+          $('#itemText').html("");
+          var fileName = "/assets/".concat(introAudio[currentItemIndex]);
+          $("#itemAudio").attr("src",introAudio[currentIntroItem]).trigger('play');
+          $("#itemAnswer").attr('type', 'show').attr('maxlength', 8).focus().val('');
+      }
+      else if(currentIntroItem<introAudio.length) {
+          $('#itemText').html("„Ich beginne nun dir die Wörter zu diktieren:“").append(levumiTalks);
+          var fileName = "/assets/".concat(introAudio[currentItemIndex]);
+          $("#itemAudio").attr("src",introAudio[currentIntroItem]).trigger('play');
+          $("#itemAnswer").attr('type', 'hidden');
       }
       else {
           startTest();
@@ -186,8 +205,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
       if (timeout)
           $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
-      else
+      else {
           $('#itemText').html("Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
+          $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
+      }
       setButtons(false);
   }
 
@@ -287,7 +308,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       $('#itemAnswer').val('');
   }
 
-
   /*Pfeile fürs Input feld abstellen*/
   $('#itemAnswer').keydown(function(e){
       var key = e.charCode || e.keyCode;
@@ -302,60 +322,74 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
   /*funktionen bei Tastendruck auf der Seite*/
   $(window).keyup(function(event) {
-      if(event.keyCode == 27) {
-          if(currentIntroItem==0){
-              iButtonClick();
-          }
-          else {
+      if(currentIntroItem ==0) {
+          iButtonClick();
+      }
+      else {
+          if(event.keyCode == 27) {
               $(window).unbind('keyup');
               $('#closeButton').click();
           }
-      }
-      else if (preparation) {
-          switch (event.keyCode) {
-              case 37:
-                  cButtonClick();
-                  break;
-              case 39:
-                  iButtonClick();
-                  break;
-              case 13:
-                  sButtonClick();
-                  break;
+          else if (preparation) {
+              switch (event.keyCode) {
+                  case 37:
+                      cButtonClick();
+                      break;
+                  case 39:
+                      iButtonClick();
+                      break;
+                  case 13:
+                      sButtonClick();
+                      break;
+              }
+          }
+          else if((!preparation)&&introRdy) {
+              switch (event.keyCode) {
+                  case 13:
+                      iButtonClick();
+                      break;
+                  case 37:
+                      cButtonClick();
+                      break;
+                  case 32:
+                      clearInput();
+                      break;
+              }
+          }
+          else {
+              switch (event.keyCode) {
+                  case 13:
+                      iButtonClick();
+                      break;
+                  case 32:
+                      clearInput();
+                      break;
+                  case 37:
+                      cButtonClick();
+                      break;
+                  case 40:
+                      sButtonClick();
+                      break;
+              }
           }
       }
-      else if((!preparation)&&introRdy) {
-          switch (event.keyCode) {
-              case 13:
-                  iButtonClick();
-                  break;
-              case 37:
-                  cButtonClick();
-                  break;
-          }
-      }
-      else {
-          switch (event.keyCode) {
-              case 13:
-                  iButtonClick();
-                  break;
-              case 32:
-                  clearInput();
-                  break;
-              case 37:
-                  cButtonClick();
-                  break;
-              case 40:
-                  sButtonClick();
-                  break;
-          }
-      }
-
   });
 
   //Audiodaten vorladen
   $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
   $('#itemAnswer').attr('type', 'hidden');
+
+  var progress = 0;
+  var loaded = 0;
+  var soundLength = studentData.length;
+  var introAudioLength = introAudio.length;
+//TODO könnte man alles vielleicht schicker machen, wenn die url der introaudiodatein auch in items stecken
+  // we start preloading all the audio files
+  for (var i in studentData) {
+      preloadAudio(itemDataSound[studentData[i]]);
+
+  }
+
   function preloadAudio(url) {
       var audio = new Audio();
       // once this file loads, it will call loadedAudio()
@@ -366,26 +400,55 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
 
   }
-  var progress = 0;
-  var loaded = 0;
-  var soundLength = studentData.length;
+
   function loadedAudio() {
       // this will be called every time an audio file is loaded
       // we keep track of the loaded files vs the requested files
+
       loaded++;
-      progress = ((loaded *100) / (soundLength));
+      progress = ((loaded *100) / (soundLength+introAudioLength));
       var elem = document.getElementById("myBar");
       elem.style.width = progress +'%';
       if (loaded == soundLength){
+          // all have loaded do something
+          preloadIntro();
+
+      }
+  }
+
+
+  // we start preloading all the audio files
+  function preloadIntro() {
+      for (var i in introAudio) {
+          preloadAudioIntro(introAudio[i]);
+
+      }
+  }
+
+
+  function preloadAudioIntro(url) {
+      var audio = new Audio();
+      // once this file loads, it will call loadedAudio()
+      // the file will be kept by the browser as cache
+      audio.addEventListener('canplaythrough', loadedAudioIntro, false);
+      audio.src = url;
+
+
+  }
+
+  function loadedAudioIntro() {
+      // this will be called every time an audio file is loaded
+      // we keep track of the loaded files vs the requested files
+
+      loaded++;
+      progress = ((loaded *100) / (soundLength+introAudioLength));
+      var elem = document.getElementById("myBar");
+      elem.style.width = progress +'%';
+      if (loaded == (soundLength+introAudioLength)){
           // all have loaded do something
           prepareTest();
 
       }
   }
 
-  // we start preloading all the audio files
-  for (var i in itemDataSound) {
-      preloadAudio(itemDataSound[i]);
-
-  }
 </script>
