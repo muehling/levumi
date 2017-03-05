@@ -16,17 +16,8 @@ class FrontendController < ActionController::Base
 
 =begin
       if s.password_digest == params[:password]
-          session[:student_id] = s.id
-      redirect_to '/frontend'
-      else
-        redirect_to '/student', notice: "Benutzername oder Password falsch!"
-      end
 =end
       session[:student_id] = s.id
-      #TODO Speichern der Ergebnisse ohne diesen Trick mit der Session für die user_id zu setzen, das ist noch geschummelt!!!!!!!!!! UM Lisa zu zeigen wies insgesamt aussehen wird
-      u = s.group.user
-      session[:user_id] = u.id
-      #TODO dieser Abschnitt hier drüber soll noch weg
       redirect_to '/frontend'
     else
       redirect_to '/student', notice: "Benutzername oder Password falsch!"

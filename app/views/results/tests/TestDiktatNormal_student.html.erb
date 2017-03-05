@@ -20,6 +20,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   <br/>
   <br/>
 </div>
+<div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
+  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
+</div>
+</br>
 <div align="center"><img src="" id="resultReaction"></div>
 <div align="center">
   <p><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer" type="text" class="text-center" placeholder="Test" align="middle">
@@ -44,10 +48,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   </div>
 </div>
 
-<div id="myProgress" style="width: 100%; background-color: #dddd" >
-  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 30px"></div>
-</div>
-</br>
+
 
 <script>
   /*Initialisierung der Variablen für den Testablauf*/
@@ -59,6 +60,8 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   var timeoutId = -1;
   var currentTimes = "";
   var stopwatch = null;
+  var timedout=false;
+  var endTest = false;
   var introRdy = true;
   var currentIntroItem = -1;
   var levumiTalks = '<img style="float: right; width: 250px " id="pic" src="/assets/Levumi-jubelt.gif"/>';
@@ -88,7 +91,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       <%end%>];
 
   var introData = [
-      "„Hallo, ich bin Levumi. Heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
+      "„Hallo, heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
       " Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!" +
       " Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.“",
       "„Jetzt machen wir zwei Beispiele, damit du weißt, was du aufschreiben sollst. Zuerst lese ich dir einen Satz vor." +
@@ -101,8 +104,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   var introAudio =["/assets/Anweisungen/15_Hallo.mp3",
                    "/assets/Anweisungen/16_ErklärungTeilA.mp3",
                    "/assets/Anweisungen/16_ErklärungTeilB.mp3",
-                   "/assets/Anweisungen/17_Beispiel1.mp3",
-                   "/assets/Anweisungen/18_Beispiel2.mp3",
                    "/assets/Anweisungen/19_ich_beginne.mp3"
 
   ];
@@ -117,6 +118,9 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       $('#iButton').html("Schrift kleiner: <span class='glyphicon glyphicon-arrow-right'/>");
       $('#sButton').html("Test starten!: <span><img src='/assets/enter-arrow_icon.png'/></span>");
       setButtons(true);
+      $('#myProgress').hide();
+
+
   }
   function intro(){
       preparation = false;
@@ -127,6 +131,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       $('#itemAnswer').attr('placeholder', '').attr('type', 'hidden');
       nextIntroItem();
       setButtons(true);
+
   }
 
   function nextIntroItem() {
@@ -135,12 +140,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           $('#itemText').html(introData[currentIntroItem]).append(levumiTalks);
           var fileName = "/assets/".concat(introAudio[currentItemIndex]);
           $("#itemAudio").attr("src",introAudio[currentIntroItem]).trigger('play');
-      }
-      else if(currentIntroItem<introAudio.length-1) {
-          $('#itemText').html("");
-          var fileName = "/assets/".concat(introAudio[currentItemIndex]);
-          $("#itemAudio").attr("src",introAudio[currentIntroItem]).trigger('play');
-          $("#itemAnswer").attr('type', 'show').attr('maxlength', 8).focus().val('');
       }
       else if(currentIntroItem<introAudio.length) {
           $('#itemText').html("„Ich beginne nun dir die Wörter zu diktieren:“").append(levumiTalks);
@@ -156,7 +155,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   /*Testphase beginnt*/
   function startTest() {
       introRdy = false;
-      $('#itemText').css('font-size', testSize);
+      $('#itemText').hide();
       setButtons(true);
       $('#itemAnswer').attr('type', 'show').focus();
       currentItemIndex = -1;
@@ -166,18 +165,24 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
       }
-      timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
+      timeoutId = window.setTimeout(timedOut, <%= @measurement.assessment.test.time*1000 %> + 500);
+  }
+  function timedOut() {
+      timedout =true;
   }
   /*Nächstes Item anzeigen und seine Daten laden*/
   function nextItem() {
       currentItemIndex++;
       if (currentItemIndex < studentData.length) {
-          $('#itemText').html(itemData[studentData[currentItemIndex]]);
-          var length = itemData[studentData[currentItemIndex]].length;
-          $('#itemAnswer').attr('maxlength',(length+length/2)).focus();
-          var fileName = "/assets/".concat(itemDataSound[studentData[currentItemIndex]]);
-          $("#itemAudio").attr("src",fileName).trigger('play');
-          stopwatch = new Date();
+          if (timedout)
+              stopTest(timedout);
+          else {
+              var length = itemData[studentData[currentItemIndex]].length;
+              $('#itemAnswer').attr('maxlength',(length+length/2)).focus();
+              var fileName = "/assets/".concat(itemDataSound[studentData[currentItemIndex]]);
+              $("#itemAudio").attr("src",fileName).trigger('play');
+              stopwatch = new Date();
+          }
       }
       else
           stopTest(false);
@@ -200,11 +205,13 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           $('#resultReaction').attr('src', '/assets/Levumi-jubelt.gif').width(250);
       else
           $('#resultReaction').attr('src', '/assets/Levumi-weiterlesen.gif').width(250);
-      $('#itemText').css('font-size', 60).html("");
+      $('#itemText').css('font-size', 60).html("").show();
       $('#itemAnswer').attr('type', 'hidden');
-      $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
-      if (timeout)
+      endTest =true;
+      if (timeout) {
           $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
+          $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
+      }
       else {
           $('#itemText').html("Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
           $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
@@ -277,6 +284,9 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
               $('#sButton').addClass("btn-success");
               $('#iButton').removeClass("disabled");
               $('#iButton').removeClass("btn-success");
+              $('#sButton').show();
+              $('#iButton').show();
+              $('#cButton').show();
           }
           else {
               $('#cButton').removeClass("disabled");
@@ -326,8 +336,19 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           iButtonClick();
       }
       else {
-          if(event.keyCode == 27) {
+          if(endTest) {
+              if(event.keyCode == 13) {
+                  $(window).unbind('keyup');
+                  window.clearTimeout(timeoutId);
+                  $('#closeButton').click();
+              }
+              else {
+
+              }
+          }
+          else if(event.keyCode == 27) {
               $(window).unbind('keyup');
+              window.clearTimeout(timeoutId);
               $('#closeButton').click();
           }
           else if (preparation) {
@@ -378,6 +399,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   //Audiodaten vorladen
   $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
   $('#itemAnswer').attr('type', 'hidden');
+  $('#closeButton').hide();
+  $('#sButton').hide();
+  $('#iButton').hide();
+  $('#cButton').hide();
 
   var progress = 0;
   var loaded = 0;
@@ -415,8 +440,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
       }
   }
-
-
   // we start preloading all the audio files
   function preloadIntro() {
       for (var i in introAudio) {
@@ -424,7 +447,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
       }
   }
-
 
   function preloadAudioIntro(url) {
       var audio = new Audio();

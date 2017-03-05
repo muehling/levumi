@@ -167,11 +167,6 @@ class Student < ActiveRecord::Base
 
   #Aktuelles Resultobjekt des Schülers holen
   def getCurrentResult(measurement_id)
-    rCreate = Result.where(:measurement_id => measurement_id, :student_id => self.id)
-    if(rCreate.empty?)
-      s = rCreate.build(student: self)
-      s.initialize_results()
-    end
     r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
     @result=r
     return r.nil? ? [] : r

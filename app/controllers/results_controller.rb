@@ -36,7 +36,6 @@ class ResultsController < ApplicationController
   # PATCH/PUT /results/1
   # PATCH/PUT /results/1.json
   def update
-    flash[:notice] = "update successfully created"
     results = result_params
     unless results.nil?
       stay = true
@@ -81,27 +80,23 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
-      flash[:notice] = "result successfully created"
+      #Methode funktioniert leider nicht da keine result.id mitgegeben wird. Hack:Herrausziehen aus dem abgabestring
       @result = Result.find(params[:id])
     end
 
     def set_measurement
-      flash[:notice] = "measurement successfully created"
       @measurement = Measurement.find(params[:measurement_id])
     end
 
     def set_assessment
-      flash[:notice] = "assessment successfully created"
       @assessment = Assessment.find(params[:assessment_id])
     end
 
     def set_user
-      flash[:notice] = "user successfully created"
       @user = User.find(params[:user_id])
     end
 
     def set_group
-      flash[:notice] = "group successfully created"
       @group = Group.find(params[:group_id])
     end
 
@@ -112,8 +107,18 @@ class ResultsController < ApplicationController
     end
 
     def is_allowed
-      flash[:notice] = "Post successfully created"
-      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i)) || (params.has_key?(:id) && (@login.id == @result.student.id))
+      #Holen des Resultobjektes anhand des übergebenen Strings
+      if @login.instance_of?(Student)
+        results = result_params
+        unless results.nil?
+          if results.is_a?(String)
+            parts = results.split("#")
+            r = @measurement.results.find(parts[0].to_i)
+          end
+        end
+      end
+      unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
+          (@login.id == params[:user_id].to_i)) ||((@login.id == r.student.id) && @login.instance_of?(Student))
         redirect_to root_url
       end
     end

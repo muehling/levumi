@@ -8,14 +8,14 @@
         <!--TODO aussehen anpassen und im frontend cotroller neue Methode schreiben für den Tipptest-->
         <div class="col-sm-4">
           <div id="groupName">
-            <p class="lead">
+            <p style="font-size: 35px" class="lead">
               <%= m.assessment.test.name %>
             </p>
           </div>
         </div>
         <div class="col-sm-7">
           <p class="lead">
-            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success">Jetzt starten!</button><% end %>
+            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success btn-lg">Jetzt starten!</button><% end %>
           </p>
         </div>
       </div>
