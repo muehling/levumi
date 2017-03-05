@@ -1,7 +1,7 @@
 <div class="jumbotron">
   <h3>Die folgenden Tests stehen zur Verfügung:</h3>
   <br/>
-  <% @measurements.each do |m| %>
+  <% @measurements.sort_by(&:date).each do |m| %>
       <div class="row">
         <div class="col-sm-1">
         </div>
@@ -13,9 +13,14 @@
             </p>
           </div>
         </div>
-        <div class="col-sm-7">
+        <div class="col-sm-4">
           <p class="lead">
             <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success btn-lg">Jetzt starten!</button><% end %>
+          </p>
+        </div>
+        <div class="col-sm-3">
+          <p class="lead" style="font-size: 35px">
+            Abgabe bis: <%=m.date.strftime("%d.%m.%y")%>
           </p>
         </div>
       </div>
