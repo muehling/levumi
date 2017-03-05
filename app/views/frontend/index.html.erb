@@ -1,6 +1,11 @@
+<form class="navbar-form navbar-right" method="post" action="<%=url_for(:controller => "frontend", :action => "logout")%>">
+  <%= token_tag nil %>
+  <button type="submit" class="btn btn-lg btn-default">Abmelden</button>
+</form>
 <div class="jumbotron">
   <h3>Die folgenden Tests stehen zur Verfügung:</h3>
   <br/>
+
   <% @measurements.sort_by(&:date).each do |m| %>
       <div class="row">
         <div class="col-sm-1">

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
 
   get 'student' => 'frontend#welcome'
   post 'frontend/login' => 'frontend#login'
+  post 'frontend/logout' => 'frontend#logout'
   get 'frontend' => 'frontend#index'
   get 'frontend/:id' => 'frontend#start'
 

@@ -30,6 +30,12 @@ class FrontendController < ActionController::Base
     end
   end
 
+  def logout
+    session[:studet_id] = nil
+    @login = nil
+    redirect_to '/student'
+  end
+
   def index
     @measurements = @student.get_open_measurements
   end

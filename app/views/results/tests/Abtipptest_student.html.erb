@@ -7,8 +7,8 @@
     </p>
   </div>
   <div align="center" style="margin-left: 12%">
-    <img style="width: 150px " id="picHeadphone" src="/assets/headphones.png"/>
-    <img style="width: 150px " id="picKeyboard" src="/assets/tastertur.jpg"/>
+    <img style="width: 150px " id="picHeadphone" src=""/>
+    <img style="width: 150px " id="picKeyboard" src="/assets/tastertur.png"/>
     </br>
     </br>
   </div>
@@ -199,7 +199,7 @@
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 1:
-                  $('#picHeadphone').attr('src', '/assets/Enter.jpg').width(450).show();
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Eingabetaste.png').width(450).show();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[1];
                   $("#itemAudio").attr("src",fileName).trigger('play');
@@ -211,26 +211,27 @@
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 3:
-                  $('#picHeadphone').hide();
+                  $('#picHeadphone').show();
                   $('#picKeyboard').show();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[3];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 4:
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Umlaute.png').width(450);
                   $('#picKeyboard').hide();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[4];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 5:
-                  $('#picHeadphone').show();
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[5];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 6:
-                  $('#picHeadphone').attr('src', '/assets/backspace.png').width(450);
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Backspace.png').width(450);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[6];
                   $("#itemAudio").attr("src",fileName).trigger('play');
@@ -242,6 +243,7 @@
                   testDelet();
                   break;
               case 9:
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Großschreiben.png').width(450);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[9];
                   $("#itemAudio").attr("src",fileName).trigger('play');
@@ -291,7 +293,7 @@
   }
     function testDelet(){
         testDelete = true;
-        $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+        $('#picHeadphone').attr('src', '/assets/Tastatur_ß.png').width(450);
         $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
         var fileName = itemDataSound[8];
         $("#itemAudio").attr("src",fileName).trigger('play');
