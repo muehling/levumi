@@ -1,13 +1,18 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ActionController::Base
   #Festlegen des Allgemeinen Layout: siehe view/layouts/*
-  layout 'bare'
+  layout 'bareStudent'
 
   skip_before_filter :check_login, :check_accept
 
   before_filter :check_student, except: [:welcome, :login]
 
   def welcome
+    if params.has_key?(:page)
+      render params[:page], :layout => 'bareStudent'
+    else
+      render 'welcome', :layout => 'bareStudent'
+    end
   end
 
   def login
@@ -19,6 +24,7 @@ class FrontendController < ActionController::Base
 =end
       session[:student_id] = s.id
       redirect_to '/frontend'
+      self.class.layout 'plain'
     else
       redirect_to '/student', notice: "Benutzername oder Password falsch!"
     end
