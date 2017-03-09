@@ -2,10 +2,13 @@
   <p class="navbar-brand"><%= "Klasse #{@student.group.name}: Schüler: #{@student.name}: Tasterturschulung" %></p><audio id="itemAudio"></audio>
 </nav>
   <div id="text">
-    <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
+    <p style="font-family: 'fibel_nordregular';font-size:96px" id="itemText" class="text-center">
       Test
     </p>
   </div>
+<div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
+  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
+</div>
   <div align="center" style="margin-left: 12%">
     <img style="width: 150px " id="picHeadphone" src=""/>
     <img style="width: 150px " id="picKeyboard" src="/assets/tastertur.png"/>
@@ -16,38 +19,34 @@
   </br>
   </br>
   </br>
-  </br>
-  </br>
-  <!-- für die Umlaute ma gucken was er sagt
-  <table align="center">
+  <table id="testField" align="center">
     <tr>
-      <th><p id="firstPart">s</th>
-      <th><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer1" type="text" class="text-center" maxlength="1" size="1"/></th>
-      <th><p id="secondPart"/>d</th>
-      <th><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer2" type="text" class="text-center" maxlength="1" size="1"/></th>
-      <th><p id="thirdPart"/>a</th>
+      <th><p style="font-family: 'fibel_nordregular'; font-size:96px" id="firstPart" type="text ">s</th>
+      <th><input style="font-family: 'fibel_nordregular'; padding-bottom: 10px; line-height: 50px; width: 50px;  font-size:96px" id="itemAnswer1" type="text" class="text-center" maxlength="1" size="1"/></th>
+      <th><p style="font-family: 'fibel_nordregular'; font-size:96px" id="secondPart" type="text" />d</th>
   </table>
--->
+</br>
+</br>
+</br>
   <div align="center"  id="footerID">
-    <footer>
-      <button id="cButton" type="button" class="btn btn-info btn-lg" onclick="cButtonClick()">Nochmal anhören</button>
-      <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
-      <button id="iButton" type="button" class="btn btn-success btn-lg" onclick="iButtonClick()">Weiter</button>
-      </br>
-      </br>
-      <div class="row">
-        <div class="col-lg-12">
-          <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung abbrechen: <span><img src='/assets/Esc.png'/></span></button><% end %>
-        </div>
-      </div>
+    <footer  style="font-family: 'fibel_nordregular';font-size:60px">
+      Nochmal anhören: <span><img style="width: 50px" src='/assets/Tastatur_PfeilLinks.png'/></span> /
+      Weiter: <span><img style="width: 50px" src='/assets/Tastatur_EingabetasteAlleine.png'/></span></span>
     </footer>
   </div>
+<div class="row">
+  <div class="col-lg-12">
+    <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung abbrechen: <span><img src='/assets/Esc.png'/></span></button><% end %>
+  </div>
+</div>
+
+
 </br>
 
 
-<div><p id="test"></p></div>
 
 <script>
+  $('#closeButton').hide();
     $(window).keyup(function(event) {
         if(event.keyCode == 27) {
             if(currentItemIndex==0){
@@ -59,41 +58,114 @@
                 $('#closeButton').click();
             }
         }
-        else if(preparation) {
-            switch (event.keyCode) {
-                case 37:
-                    cButtonClick();
-                    break;
-                case 39:
-                    iButtonClick();
-                    break;
-                case 13:
-                    sButtonClick();
-                    break;
-            }
-
+        else if(event.keyCode == 37) {
+            cButtonClick();
         }
         else if(lastPage) {
+            if(event.keyCode == 13) {
+                $(window).unbind('keyup');
+                $('#closeButton').click();
+            }
         }
         else if((!preparation)&&introRdy) {
             introRdy = false;
             nextItem();
         }
         else if((!introRdy)&&levumiExplains) {
-            if(currentItemIndex == 4) {
+            if(currentItemIndex == 5) {
                 if(event.keyCode == 0||event.keyCode == 186||event.keyCode == 192||event.keyCode == 222) {
                     nextItem();
                 }
             }
-            else if(currentItemIndex == 6) {
+            else if(currentItemIndex == 7) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "ä") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 8) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "ö") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 9) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "ü") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 10) {
                 if(event.keyCode == 8) {
                     nextItem();
                 }
             }
-            else if(currentItemIndex == 8) {
+            else if(currentItemIndex == 11) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 12) {
                 if(event.keyCode == 63) {
                     nextItem();
                 }
+            }
+            else if(currentItemIndex == 15 ||currentItemIndex == 13||currentItemIndex == 14) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "ß") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 17) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "H") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 18) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "G") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 19) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "S") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 22) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "Garten") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 23) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "Apfelbäume") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(currentItemIndex == 24) {
+                if(event.keyCode == 13) {
+                    if($('#itemAnswer1').val() == "Quittenbäume") {
+                        nextItem();
+                    }
+                }
+            }
+            else if(event.keyCode == 37) {
+                cButtonClick();
             }
             else {
                 if(event.keyCode == 13) {
@@ -102,14 +174,21 @@
             }
         }
     });
+  $('#itemAnswer1').keydown(function(e){
+      var key = e.charCode || e.keyCode;
+      if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
+          // enter key do nothing
+          e.preventDefault();
+      }
+      else {
 
+      }
+  });
   /*Initialisierung der Variablen für den Testablauf*/
   var preparation = true;
   var introRdy = true;
   var levumiExplains = true;
   var testSize = 96;
-  var testUmlaute =false;
-  var testDelete = false;
   var lastPage = false;
 
 
@@ -117,75 +196,75 @@
   var neededPic = '<img style="float: right; width: 250px "src="/assets/Levumi-jubelt.gif"/>';
 
   var currentItemIndex = -1;
-  var timeoutId = -1;
-  var currentTimes = "";
-  var stopwatch = null;
   /*Liste aller Items, wleche zum Test gehören*/
   var itemData =
       [   "„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. "+
           "Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. "+
           "Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit wir beginnen können.“",//0
-          "„Um zur nächsten Aufgabe zu kommen, benutzen wir die Eingabetaste. Auf dem Bild sieht du wo diese Taste auf der Tastertur zu finden ist. Probier sie doch gleich mal aus.“",//1
+          "„Um zur nächsten Aufgabe zu kommen, drücke die Eingabetaste. Auf dem Bild siehst du, wo sie zu finden ist. Probiere sie jetzt aus.“",//1
           "„Hier siehst du auf dem Bild einen Kopfhörer. Immer, wenn du den Kopfhörer siehst, musst du gut zuhören, damit du genau weißt, was du tun sollst. “",
           "„Das Bild mit der Tastatur zeigt dir, wann du etwas mit der Tastatur eingeben sollst.““",//3
-          "„ä, ü, ö sind Umlaute, bestimmt kennst du diese Buchstaben. Auf der Tastatur findest du diese Buchstaben auf der rechten Seite. " +
-          " Auf dem Bild siehst du, wo du die Buchstaben auf der Tastatur finden kannst. "+
-          "Bitte drücke jetzt das ä, ü oder ö.“",//4
-          "„In den folgenden Wörtern fehlen die Umlaute. Kannst du mir bitte helfen, diese wieder einzufügen? Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//5
-          "„Bestimmt hast du schon einmal an einem Computer etwas geschrieben, das du wieder löschen wolltest. Dafür benutzt man die Löschtaste. Auf dem Bild kannst du erkennen," +
-          " wo du die Taste finden kannst. Bitte drücke jetzt die Löschtaste auf der Tastatur.“",//6
-          "„Jetzt benötige ich unbedingt deine Hilfe. Ich habe einen Satz geschrieben und möchte diesen wieder löschen. Bitte benutze die Löschtaste und lösche alle Buchstaben für mich.“",//7
-          "„Nun geht es um einen Buchstaben, den es nur im Deutschen gibt, das ß. Es hat sich auf der Computertastatur oben rechts ziemlich gut versteckt. Drücke bitte die Taste für das ß auf der Tastatur.“",//8
+          "„Wenn ich dir den Satz noch einmal vorlesen soll, drücke die linke Pfeiltaste. Auf dem Bild siehst du, dass sich diese Taste unten rechts befindet!“",//4
+          "„ä, ü, ö sind Umlaute, bestimmt kennst du diese Buchstaben. Auf der Tastatur findest du sie " +
+          "auf der rechten Seite. Auf dem Bild siehst du, wo du die Buchstaben auf der Tastatur sind."+
+          "Bitte drücke jetzt das ä, ü oder ö.“",//5
+          "„In den folgenden Wörtern fehlen die Umlaute. Kannst du mir bitte helfen, diese wieder einzufügen? Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//6
+          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//7
+          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//8
+          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//9
+          "„Bestimmt hast du schon einmal an einem Computer etwas geschrieben, das du wieder löschen wolltest. Dafür benutzt man die Löschtaste. Auf dem Bild kannst du erkennen, wo du " +
+          "die Taste findest. Bitte drücke jetzt die Löschtaste auf der Tastatur.“",//10
+          "„Jetzt brauche ich deine Hilfe. Ich habe einen Satz geschrieben und möchte diesen wieder löschen. Bitte benutze die Löschtaste und lösche alle Buchstaben für mich.“",//11
+          "„Nun geht es um einen Buchstaben, den es nur im Deutschen gibt, das ß. Es hat sich oben rechts versteckt. Drücke bitte die Taste für das ß auf der Tastatur“",//12
+          "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//13
+          "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//14
+          "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//15
           "„Um ein Wort großzuschreiben, muss man zwei Tasten gleichzeitig drücken: Den Pfeil, der nach oben zeigt, " +
-          "ganz links auf der Tastatur und eine Buchstabentaste. Am besten benutzt du dafür deine beiden Zeigefinger.“",//9
-          "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//10
-          "„Danke, dass du so gut mitmachst!“",//11
-          "„Jetzt hast du schon gut geübt, auf der Tastatur zu schreiben. Nun diktiere ich dir einen Satz." +
-          " Die Wörter, die du schreiben sollst, sind gelb makiert. Wenn du das Wort geschrieben hast, drücke die Eingabetaste, damit du zum nächsten Wort gelangst.“",//12
-          "„Die Familie Schmidt hat einen großen Obstgarten mit Apfelbäumen, Quittenbäumen und Kirschbäumen. Aus dem Obst machen sie viele Gläser Marmelade. Lecker!“",//13
-          "„Super, du hast es geschafft! Das hast du toll gemacht! Zum Beenden des Testes drücke bitte die Escapetaste.“"];//14
+          "ganz links auf der Tastatur und eine Buchstabentaste. Am besten benutzt du dafür deine beiden Zeigefinger.“",//16
+          "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//17
+          "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//18
+          "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//19
+          "„Danke, dass du so gut mitmachst!“",//20
+          "„Jetzt hast du schon gut geübt, auf der Tastatur zu " +
+          "schreiben. Nun lese ich dir einen Satz vor. Die Wörter, die du schreiben sollst, sind gelb " +
+          "makiert. Wenn du das Wort geschrieben hast, drücke die Eingabetaste, damit du zum nächsten Wort gelangst.“",//21
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//22
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//23
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//24
+          "„Super, du hast es geschafft! Das hast du toll gemacht! Zum Beenden des Testes drücke bitte die Eingabetaste.“"];//25
   /*Liste aller Items, wleche zum Test gehören*/
   var itemDataSound =["/assets/Anweisungen/1_Hallo_ich_bin_Levumi.mp3",
-      "/assets/magic-item.mp3",
+      "/assets/Anweisungen/1_Eingabetaste.mp3",
       "/assets/Anweisungen/2_Kopfhörer.mp3",
       "/assets/Anweisungen/3_Tastatur.mp3",
-      "/assets/Anweisungen/5_Umlaute1Und2.mp3",
+      "/assets/Anweisungen/6_Wiederholen.mp3",
+      "/assets/Anweisungen/5_Umlaute1Und2Und3.mp3",
       "/assets/Anweisungen/6_Umlaute3.mp3",
+      "/assets/Anweisungen/6_Umlaute4.mp3",
       "/assets/Anweisungen/7_Löschtaste.mp3",
-      "/assets/magic-item.mp3",
+      "/assets/Anweisungen/12_Löschaufgabe.mp3",
       "/assets/Anweisungen/9_ß.mp3",
+      "/assets/Anweisungen/13_ß2.mp3",
       "/assets/Anweisungen/11_Großschreibung.mp3",
       "/assets/Anweisungen/12_Großschreibung2.mp3",
       "/assets/Anweisungen/13_AbtippaufgabeDanke.mp3",
-      "/assets/Anweisungen/13_AbtippaufgabeAufgabenstellung.mp3",
+      "/assets/Anweisungen/8_Abtippaufgabe.mp3",
       "/assets/Anweisungen/13_AbtippaufgabeSatz.mp3",
       "/assets/Anweisungen/14_Super_geschafft.mp3"
   ];
 
 
-
+  $('#testField').hide();
+  $('#itemAnswer1').css('border','0px').css('border-bottom', 'black solid 1px');
   /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
    * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
-  function prepareTest() {
-        $('#itemText').css('font-size', 96).html("Test");
-        $('#picHeadphone').hide();
-        $('#picKeyboard').hide();
-        /*
-        $('#itemAnswer').val('');
-        $('#itemAnswer').attr('maxlength',6);
-        $('#itemAnswer').focus();
-        var fileName = "/assets/Test.mp3";
-        $("#itemAudio").attr("src",fileName).trigger('play');
-        */
-        $('#cButton').html("Schrift  größer");
-        $('#iButton').html("Schrift kleiner");
-        setButtons(true);
-    }
   function intro() {
+      $('#myProgress').hide();
       preparation = false;
       testSize = parseInt($('#itemText').css('font-size'));
+      $('#picHeadphone').hide();
+      $('#picKeyboard').hide();
       $('#itemText').css('font-size', 60);
-      $('#cButton').html("Nochmal anhören");
       $('#iButton').html("    Weiter     ");
       nextItem();
   }
@@ -199,7 +278,7 @@
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 1:
-                  $('#picHeadphone').attr('src', '/assets/Tastatur_Eingabetaste.png').width(450).show();
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Eingabetaste.png').width(650).show();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[1];
                   $("#itemAudio").attr("src",fileName).trigger('play');
@@ -211,72 +290,177 @@
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 3:
-                  $('#picHeadphone').show();
+                  $('#picHeadphone').hide();
                   $('#picKeyboard').show();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[3];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 4:
-                  $('#picHeadphone').attr('src', '/assets/Tastatur_Umlaute.png').width(450);
+                  $('#picHeadphone').attr('src', '');
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Pfeil.png').width(650);
+                  $('#picHeadphone').show();
                   $('#picKeyboard').hide();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[4];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 5:
-                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Umlaute.png').width(650);
+                  $('#picKeyboard').hide();
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[5];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 6:
-                  $('#picHeadphone').attr('src', '/assets/Tastatur_Backspace.png').width(450);
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[6];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 7:
-                  testUmlaut();
+                  var fileName = itemDataSound[7];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  $('#testField').show();
+                  $('#picKeyboard').show();
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  $('#firstPart').html("B");
+                  $('#itemAnswer1').val('').focus();
+                  $('#secondPart').html("ume");
                   break;
               case 8:
-                  testDelet();
+                  $('#firstPart').html("Schl");
+                  $('#itemAnswer1').val('');
+                  $('#secondPart').html("sser");
                   break;
               case 9:
-                  $('#picHeadphone').attr('src', '/assets/Tastatur_Großschreiben.png').width(450);
+                  $('#firstPart').html("s");
+                  $('#itemAnswer1').val('');
+                  $('#secondPart').html("ß");
+                  break;
+              case 10:
+                  $('#testField').hide();
+                  $('#picKeyboard').hide();
+                  $('#picHeadphone').attr('src', '');
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Backspace.png').width(650);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  var fileName = itemDataSound[8];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 11:
+                  $('#testField').show();
+                  $('#picKeyboard').show();
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  $('#firstPart').hide();
+                  $('#secondPart').hide();
+                  $('#itemAnswer1').attr('maxlength', '28').attr('size','28').val('Bitte lösche alle Buchstaben').css('width', '100%');
+
                   var fileName = itemDataSound[9];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
-              case 10:
-                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+              case 12:
+                  $('#testField').hide();
+                  $('#picKeyboard').hide();
+                  $('#picHeadphone').attr('src', '');
+                  $('#itemAnswer1').css('width', '50px');
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_ß.png').width(650);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[10];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
-              case 11:
-                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
-                  var fileName = itemDataSound[11];
-                  $("#itemAudio").attr("src",fileName).trigger('play');
-                  break;
-              case 12:
-                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
-                  var fileName = itemDataSound[12];
-                  $("#itemAudio").attr("src",fileName).trigger('play');
-                  break;
               case 13:
+                  $('#testField').show();
+                  $('#firstPart').show();
+                  $('#picKeyboard').show();
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
-                  var fileName = itemDataSound[13];
+                  $('#firstPart').html("Spa");
+                  $('#itemAnswer1').attr('maxlength', '1').attr('size','1').val('');
+                  var fileName = itemDataSound[11];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   break;
               case 14:
                   $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  $('#firstPart').html("sü");
+                  $('#itemAnswer1').val('');
+                  break;
+              case 15:
+                  $('#firstPart').html("Fu");
+                  $('#itemAnswer1').val('');
+                  break;
+              case 16:
+                  $('#testField').hide();
+                  $('#picKeyboard').hide();
+                  $('#picHeadphone').attr('src', '');
+                  $('#picHeadphone').attr('src', '/assets/Tastatur_Großschreiben.png').width(650);
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  var fileName = itemDataSound[12];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 17:
+                  $('#testField').show();
+                  $('#firstPart').hide();
+                  $('#secondPart').show();
+                  $('#picKeyboard').show();
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  $('#itemAnswer1').attr('maxlength', '1').attr('size','1').val('');
+                  $('#secondPart').html("aus");
+                  var fileName = itemDataSound[13];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 18:
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  $('#itemAnswer1').val('');
+                  $('#secondPart').html("arten");
+                  break;
+              case 19:
+                  $('#itemAnswer1').val('');
+                  $('#secondPart').html("onne");
+                  break;
+              case 20:
+                  $('#testField').hide();
+                  $('#picKeyboard').hide();
+                  $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
                   var fileName = itemDataSound[14];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 21:
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  var fileName = itemDataSound[15];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 22:
+                  $('#testField').show();
+                  $('#secondPart').hide();
+                  $('#picKeyboard').show();
+                  $('#itemAnswer1').css('width', '100%');
+                  $('#itemText').html(itemData[currentItemIndex].replace("Garten", "<span style='background-color:#FFFF00'>Garten</span>")).append(neededPic);
+                  $('#itemAnswer1').attr('maxlength', '16').attr('size','16').val('');
+                  var fileName = itemDataSound[16];
+                  $("#itemAudio").attr("src",fileName).trigger('play');
+                  break;
+              case 23:
+                  $('#itemText').html(itemData[currentItemIndex].replace("Apfelbäume", "<span style='background-color:#FFFF00'>Apfelbäume</span>")).append(neededPic);
+                  $('#itemAnswer1').val('');
+                  $("#itemAudio").trigger('play');
+                  break;
+              case 24:
+                  $('#itemText').html(itemData[currentItemIndex].replace("Quittenbäume", "<span style='background-color:#FFFF00'>Quittenbäume</span>")).append(neededPic);
+                  $('#itemAnswer1').val('');
+                  $("#itemAudio").trigger('play');
+                  break;
+              case 25:
+                  $('#testField').hide();
+                  $('#picKeyboard').hide();
+                  $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
+                  var fileName = itemDataSound[17];
                   $("#itemAudio").attr("src",fileName).trigger('play');
                   lastPage=true;
                   stopTest();
                   break;
-
           }
       }
       else {
@@ -284,141 +468,75 @@
       }
 
   }
-  function testUmlaut(){
-      testUmlaute = true;
-      $('#picHeadphone').attr('src', '/assets/headphones.png').width(150);
-      $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
-      var fileName = itemDataSound[7];
-      $("#itemAudio").attr("src",fileName).trigger('play');
-  }
-    function testDelet(){
-        testDelete = true;
-        $('#picHeadphone').attr('src', '/assets/Tastatur_ß.png').width(450);
-        $('#itemText').html(itemData[currentItemIndex]).append(neededPic);
-        var fileName = itemDataSound[8];
-        $("#itemAudio").attr("src",fileName).trigger('play');
-    }
-  /*Testphase beginnt*/
-  function startTest() {
-      preparation=false;
-      $('#cButton').html("Nochmal anhören");
-      $('#iButton').html("Weiter");
-      setButtons(true);
-      currentTimes = "";
-      nextItem();
-      if (timeoutId != -1) {
-          window.clearTimeout(timeoutId);
-      }
-      timeoutId = window.setTimeout(stopTest, <%= 180*1000 %> + 500, true);
-  }
+
   /*Wenn Zeit abgelaufen oder alle Wörter durchgelaufen test beenden*/
-  function stopTest(timeout) {
-      if (timeoutId != -1) {
-          window.clearTimeout(timeoutId);
-          timeoutId = -1;
-      }
+  function stopTest() {
       $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
       $('#picHeadphone').hide();
       $('#picKeyboard').hide();
-      setButtons(false);
+      var currentResult = "1,";
+      var currentStudent = <%=@result.id%>;
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
   }
 
 
 
   function iButtonClick() {
+      nextItem();
 
-      if (!$('#iButton').hasClass("disabled")) {
-          if (preparation) {
-              curSize = parseInt($('#itemText').css('font-size')) - 6;
-              $('#itemText').css('font-size', curSize);
-              /*
-              $('#itemAnswer').css('font-size',curSize)
-              */
-          }
-          else {
-              stopwatch = new Date() - stopwatch;
-              currentTimes = currentTimes + stopwatch + ",";
-              nextItem();
-          }
-      }
   }
 
   function cButtonClick() {
-
-      if (!$('#cButton').hasClass("disabled")) {
-          if (preparation) {
-              curSize=parseInt($('#itemText').css('font-size')) + 6;
-              $('#itemText').css('font-size', curSize);
-              /*
-              $('#itemAnswer').css('font-size',curSize)
-              */
-          }
-          else {
-              var h = document.getElementById("itemAudio");
-              h.pause();
-              h.currentTime = 0;
-              h.play();
-          }
-      }
+      var h = document.getElementById("itemAudio");
+      h.pause();
+      h.currentTime = 0;
+      h.play();
   }
 
-  function setButtons(enabled) {
-      if (enabled) {
-          if (preparation) {
-              $('#cButton').removeClass("disabled");
-              $('#cButton').removeClass("btn-info");
-              $('#sButton').removeClass("disabled");
-              $('#sButton').addClass("btn-success");
-              $('#iButton').removeClass("disabled");
-              $('#iButton').removeClass("btn-success");
-          }
-          else {
-              $('#cButton').removeClass("disabled");
-              $('#cButton').addClass("btn-info");
-              $('#iButton').removeClass("disabled");
-              $('#iButton').addClass("btn-success");
-              $('#sButton').addClass("disabled");
-              $('#sButton').removeClass("btn-success");
-          }
-      }
-      else {
-          $('#cButton').addClass("disabled");
-          $('#cButton').removeClass("btn-info");
-          $('#iButton').addClass("disabled");
-          $('#iButton').removeClass("btn-success");
-          $('#sButton').addClass("disabled");
-          $('#sButton').removeClass("btn-success");
-      }
-  }
 
-  function sButtonClick() {
-      if (preparation) {
-          intro();
-      }
-  }
 /*
   function clearInput() {
       $('#itemAnswer').val('');
   }
   */
   /*Befehle/Funktionen die direkt ausgeführt werden, ohne Funktionsaufruf*/
-  $(window).onload = prepareTest();
+  $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
+  $('#picHeadphone').hide();
+  $('#picKeyboard').hide();
+  for (var i in itemDataSound) {
+      preloadAudio(itemDataSound[i]);
 
-  /*Pfeile fürs Input feld abstellen
-  $('#itemAnswer').keydown(function(e){
-      var key = e.charCode || e.keyCode;
-      if (key == 37||key == 38||key == 39||key == 40||key == 32) {
-          // enter key do nothing
-          e.preventDefault();
+  }
+
+  function preloadAudio(url) {
+      var audio = new Audio();
+      // once this file loads, it will call loadedAudio()
+      // the file will be kept by the browser as cache
+      audio.addEventListener('canplaythrough', loadedAudio, false);
+      audio.src = url;
+  }
+  var progress = 0;
+  var loaded = 0;
+  function loadedAudio() {
+      // this will be called every time an audio file is loaded
+      // we keep track of the loaded files vs the requested files
+
+      loaded++;
+      progress = ((loaded *100) / itemDataSound.length);
+      var elem = document.getElementById("myBar");
+      elem.style.width = progress +'%';
+      if (loaded == itemDataSound.length){
+          // all have loaded do something
+          intro();
+
       }
-      else {
+  }
 
-      }
-  });
-   */
-
-  /*funktionen bei Tastendruck auf der Seite*/
-
-
-  $('#fotter').css({position:absolute, bottom:0});
 </script>

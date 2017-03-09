@@ -91,18 +91,20 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       <%end%>];
 
   var introData = [
-      "„Hallo, heute möchte ich gerne wissen, wie gut du schon schreiben kannst." +
-      " Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!" +
-      " Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.“",
-      "„Jetzt machen wir zwei Beispiele, damit du weißt, was du aufschreiben sollst. Zuerst lese ich dir einen Satz vor." +
-      " Danach diktiere ich dir das Wort aus dem Satz, welches du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“",
-      "„Wenn du ein Wort falsch geschrieben hast, kannst du die Leertaste benutzen und die Buchstaben löschen," +
-      " damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste , dann lese" +
-      " ich dir den Satz und das Wort vor, das du schreiben sollst. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“"
+      "„Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon" +
+      " schreiben kannst. Einige Wörter sind leicht, " +
+      "andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!“",
+      "„Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das " +
+      "Wort aus dem Satz, dass du schreiben sollst. Dann schreibst du das" +
+      " Wort auf der Tastatur.“",
+      "„Wenn du ein Wort falsch geschrieben hast, kannst du die Löschtaste benutzen und die Buchstaben löschen," +
+      " damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke " +
+      "die linke Pfeiltaste, dann lese ich dir noch einmal vor, was du schreiben sollst. " +
+      "Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“"
 
   ];
   var introAudio =["/assets/Anweisungen/15_Hallo.mp3",
-                   "/assets/Anweisungen/16_ErklärungTeilA.mp3",
+                   "/assets/Anweisungen/15_Erklärung.mp3",
                    "/assets/Anweisungen/16_ErklärungTeilB.mp3",
                    "/assets/Anweisungen/19_ich_beginne.mp3"
 
@@ -346,11 +348,6 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
               }
           }
-          else if(event.keyCode == 27) {
-              $(window).unbind('keyup');
-              window.clearTimeout(timeoutId);
-              $('#closeButton').click();
-          }
           else if (preparation) {
               switch (event.keyCode) {
                   case 37:
@@ -403,6 +400,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   $('#sButton').hide();
   $('#iButton').hide();
   $('#cButton').hide();
+
 
   var progress = 0;
   var loaded = 0;
