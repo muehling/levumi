@@ -10,13 +10,19 @@ class Student < ActiveRecord::Base
 
   #Generieren von eindeutigen Login
   def set_login
+=begin
     #vorläufiges setzen des Zugangscodes
     self.login = "stu" + self.id.to_s
     self.save
-=begin später zb ersetzbar durch TODO vergleich ob login schon vorhanden
-    self.login = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join
-    self.save
 =end
+    while self.login.nil? | self.login.blank?
+      tempLogin = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join;
+      tempStu = Student.where(:login => tempLogin);
+      if(tempStu.empty?)
+        self.login = tempLogin;
+        self.save
+      end
+    end
   end
 
 

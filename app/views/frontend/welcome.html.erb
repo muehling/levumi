@@ -4,11 +4,11 @@
   <br/>
   <%= form_tag(url_for(:controller => 'frontend', :action => 'login'), :class => "form") do %>
       <p>
-        Hier bitte Zugangscode eingeben (z.B. stu1):
+        Gebe hier bitte deinen Zugangscode ein(iwas mit r):
       </p>
       <div class="form-group">
         <label class="sr-only" for="login">Code</label>
-        <%= text_field_tag "login", nil, type: "text", class: "form-control", placeholder: "Code"%>
+        <%= text_field_tag "login", nil, type: "text", class: "form-control", placeholder: "Zugangscode"%>
       </div>
 
       <!-- Passwort schonmal als Feld hinzugefügt, falls es später noch rein soll

@@ -35,9 +35,15 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
 <div align="center">
   <footer>
-    <button id="cButton" type="button" class="btn btn-info btn-lg no-click" >Nochmal</button>
-    <button id="sButton" type="button" class="btn btn-default disabled">Test starten(Eingabetaste)</button>
-    <button id="iButton" type="button" class="btn btn-success btn-lg no-click">Weiter</button>
+    <table id="testField" align="center">
+      <tr>
+        <th><button id="cButton" type="button" class="btn btn-info btn-lg no-click" >Nochmal</button><th>
+        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="repeat">Nochmal anhören: <span><img style="width: 50px" src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div><th>
+        <th><button id="sButton" type="button" class="btn btn-default disabled">Test starten(Eingabetaste)</button><th>
+        <th><button id="iButton" type="button" class="btn btn-success btn-lg no-click">Weiter</button><th>
+        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="forward">Weiter: <span><img style="width: 50px" src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div><th>
+    </table>
+
   </footer>
 </div>
 <br/>
@@ -125,6 +131,8 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
   }
   function intro(){
+      $('#repeat').show();
+      $('#forward').show();
       preparation = false;
       $('#itemText').css('font-size', 60);
       $('#cButton').height(32).html("Nochmal anhören: <span class='glyphicon glyphicon-arrow-left'/>");
@@ -277,35 +285,22 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
   }
 
-  function setButtons(enabled) {
-      if (enabled) {
-          if (preparation) {
-              $('#cButton').removeClass("disabled");
-              $('#cButton').removeClass("btn-info");
-              $('#sButton').removeClass("disabled");
-              $('#sButton').addClass("btn-success");
-              $('#iButton').removeClass("disabled");
-              $('#iButton').removeClass("btn-success");
-              $('#sButton').show();
-              $('#iButton').show();
-              $('#cButton').show();
-          }
-          else {
-              $('#cButton').removeClass("disabled");
-              $('#cButton').addClass("btn-info");
-              $('#iButton').removeClass("disabled");
-              $('#iButton').addClass("btn-success");
-              $('#sButton').addClass("disabled");
-              $('#sButton').removeClass("btn-success");
-          }
+  function setButtons() {
+      if (preparation) {
+          $('#cButton').removeClass("disabled");
+          $('#cButton').removeClass("btn-info");
+          $('#sButton').removeClass("disabled");
+          $('#sButton').addClass("btn-success");
+          $('#iButton').removeClass("disabled");
+          $('#iButton').removeClass("btn-success");
+          $('#sButton').show();
+          $('#iButton').show();
+          $('#cButton').show();
       }
       else {
-          $('#cButton').addClass("disabled");
-          $('#cButton').removeClass("btn-info");
-          $('#iButton').addClass("disabled");
-          $('#iButton').removeClass("btn-success");
-          $('#sButton').addClass("disabled");
-          $('#sButton').removeClass("btn-success");
+          $('#sButton').hide();
+          $('#iButton').hide();
+          $('#cButton').hide();
       }
   }
 
@@ -400,6 +395,8 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   $('#sButton').hide();
   $('#iButton').hide();
   $('#cButton').hide();
+  $('#repeat').hide();
+  $('#forward').hide();
 
 
   var progress = 0;
