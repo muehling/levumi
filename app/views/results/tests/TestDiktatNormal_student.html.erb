@@ -1,17 +1,9 @@
-<!--
-<div id="alert">
-  <div class="alert alert-info alert-dismissible">
-    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    <p id="notice">Du hast hier die Gelegenheit, die Schriftgröße für den Test individuell anzupassen und die Lautstärke zu überprüfen.
-      <br/> Die Zeit von < @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
-  </div>
-</div>
-nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close event abfangen-->
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 <audio id="itemAudio"></audio>
 </br>
+<!-- Textcontent on page-->
 <div align="center">
   <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
     Test
@@ -20,11 +12,14 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   <br/>
   <br/>
 </div>
+<!-- Loading bar for the audiodata-->
 <div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
   <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
 </div>
 </br>
+
 <div align="center"><img src="" id="resultReaction"></div>
+<!-- Answerinput field-->
 <div align="center">
   <p><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer" type="text" class="text-center" placeholder="Test" align="middle">
     <br/>
@@ -32,32 +27,33 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
     <br/>
   </p>
 </div>
-
+<!-- Shows current extra keyboard controll options-->
 <div align="center">
   <footer>
     <table id="testField" align="center">
       <tr>
-        <th><button id="cButton" type="button" class="btn btn-info btn-lg no-click" >Nochmal</button><th>
-        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="repeat">Nochmal anhören: <span><img style="width: 50px" src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div><th>
-        <th><button id="sButton" type="button" class="btn btn-default disabled">Test starten(Eingabetaste)</button><th>
-        <th><button id="iButton" type="button" class="btn btn-success btn-lg no-click">Weiter</button><th>
-        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="forward">Weiter: <span><img style="width: 50px" src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div><th>
+        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="repeat">Nochmal anhören: <span><img style="width: 50px" src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="reSound"> Ton nochmal abspielen: <span><img style="width: 50px" src='/assets/Tastatur_PfeilOben.png'/></span> /&nbsp;&nbsp;</div></th>
+        <th><div style="font-family: 'fibel_nordregular';font-size:60px" id="forward">Weiter: <span><img style="width: 50px" src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      </tr>
+      <tr>
+        <th colspan="3" ><div align="center" style="font-family: 'fibel_nordregular';font-size:60px" id="startTest"> Test starten: <span><img style="width: 50px" src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      </tr>
     </table>
 
   </footer>
 </div>
 <br/>
 <br/>
-<div class="row">
-  <div class="col-lg-12">
-    <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung abbrechen: <span><img src='/assets/Esc.png'/></span></button><% end %>
-  </div>
+<!-- Needed for hack, url_for not pissible in script area-->
+<div>
+    <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
 
 
 
 <script>
-  /*Initialisierung der Variablen für den Testablauf*/
+  /*Initialization of needed variable*/
   var currentStudent = -1;
   var currentResult = "";
   currentStudent = <%=@result.id%>;
@@ -73,33 +69,35 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
   var levumiTalks = '<img style="float: right; width: 250px " id="pic" src="/assets/Levumi-jubelt.gif"/>';
 
   var testSize = 0;
-  /*Liste aller Items, wleche zum Test gehören*/
+  /*Hash of all items for used test*/
   var itemData = {
   <% @measurement.assessment.test.items.each do |i| %>
   <%= i.id%>: "<%= i.itemtext%>",
   <%end %>
   };
-  /*Liste aller Items, wleche zum Test gehören*/
+  /*Hash of all audios for used test*/
   var itemDataSound = {
   <% @measurement.assessment.test.items.each do |i| %>
   <%= i.id%>: "<%= i.data%>",
   <%end %>
   };
+  /*Hash of old results*/
   var lastResults = {
   <% @measurement.results.each do |r| %>
   <%= r.id%>: <%= r.getPriorResult%>,
   <% end %>
   };
-  /*Liste der Ids, der Items in der Reihenfolge, wie sie in Result vorkommen*/
+  /*Array of all items from current result(order)*/
   var studentData = [
       <%@result.items.each do |i|%>
       <%=i%>,
       <%end%>];
-
+  /*Array of introtexts*/
   var introData = [
       "„Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon" +
       " schreiben kannst. Einige Wörter sind leicht, " +
-      "andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst!“",
+      "andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut, wie du kannst! " +
+      "Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst“",
       "„Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das " +
       "Wort aus dem Satz, dass du schreiben sollst. Dann schreibst du das" +
       " Wort auf der Tastatur.“",
@@ -109,41 +107,40 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       "Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“"
 
   ];
+  /*Array of introaudios*/
   var introAudio =["/assets/Anweisungen/15_Hallo.mp3",
                    "/assets/Anweisungen/15_Erklärung.mp3",
                    "/assets/Anweisungen/16_ErklärungTeilB.mp3",
                    "/assets/Anweisungen/19_ich_beginne.mp3"
 
   ];
-  /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
-   * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
+  /*Show possiblity to adjust size*/
   function prepareTest() {
       $('#itemText').css('font-size', 96).html("Test");
       $('#itemAnswer').attr('maxlength',6).attr('type', 'show').val('');
       var fileName = "/assets/Test.mp3";
       $("#itemAudio").attr("src",fileName).trigger('play');
-      $('#cButton').html("Schrift größer: <span class='glyphicon glyphicon-arrow-left'/>");
-      $('#iButton').html("Schrift kleiner: <span class='glyphicon glyphicon-arrow-right'/>");
-      $('#sButton').html("Test starten!: <span><img src='/assets/enter-arrow_icon.png'/></span>");
-      setButtons(true);
+      $('#repeat').html("Schrift größer: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> / &nbsp;").show();
+      $('#forward').html("Schrift kleiner: <span><img style='width: 50px' src='/assets/Tastatur_PfeilRechts.png'/></span>").show();
+      $('#startTest').show();
+      $('#reSound').show();
       $('#myProgress').hide();
 
 
   }
+  /*Show needed intro-elements*/
   function intro(){
-      $('#repeat').show();
-      $('#forward').show();
+      $('#startTest').hide();
+      $('#reSound').hide();
+      $('#repeat').html("Nochmal anhören:  <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> / &nbsp;").show();
+      $('#forward').html("Weiter <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span>").show();
       preparation = false;
       $('#itemText').css('font-size', 60);
-      $('#cButton').height(32).html("Nochmal anhören: <span class='glyphicon glyphicon-arrow-left'/>");
-      $('#iButton').width(170).html("Weiter: <span><img src='/assets/enter-arrow_icon.png'/></span>");
-      $('#sButton').hide();
       $('#itemAnswer').attr('placeholder', '').attr('type', 'hidden');
       nextIntroItem();
-      setButtons(true);
 
   }
-
+  /*Work through introData*/
   function nextIntroItem() {
       currentIntroItem++;
       if(currentIntroItem<introData.length){
@@ -162,11 +159,10 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
   }
 
-  /*Testphase beginnt*/
+  /*Begin testphase*/
   function startTest() {
       introRdy = false;
       $('#itemText').hide();
-      setButtons(true);
       $('#itemAnswer').attr('type', 'show').focus();
       currentItemIndex = -1;
       currentResult = "";
@@ -177,10 +173,11 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
       timeoutId = window.setTimeout(timedOut, <%= @measurement.assessment.test.time*1000 %> + 500);
   }
+  /*Set flag for time-out*/
   function timedOut() {
       timedout =true;
   }
-  /*Nächstes Item anzeigen und seine Daten laden*/
+  /*Shows the next item and changes content of html-elements*/
   function nextItem() {
       currentItemIndex++;
       if (currentItemIndex < studentData.length) {
@@ -197,7 +194,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       else
           stopTest(false);
   }
-  /*Wenn Zeit abgelaufen oder alle Wörter durchgelaufen test beenden*/
+  /*What happens when test should stop*/
   function stopTest(timeout) {
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
@@ -226,96 +223,73 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
           $('#itemText').html("Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
           $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
       }
-      setButtons(false);
   }
-
-
-
+  /*Adjust size or change local result*/
   function iButtonClick() {
-      if (!$('#iButton').hasClass("disabled")) {
-          if (preparation) {
-              curSize = parseInt($('#itemText').css('font-size')) - 6;
-              $('#itemText').css('font-size', curSize);
-              $('#itemAnswer').css('font-size',curSize)
-          }
-          else if((!preparation)&&introRdy){
-              nextIntroItem();
-          }
-          /*Wenn Wörter abgefragt werden:
-           - Wennh richtig eingegeben: - 1 Punkt dazu
-           - Wenn falsch eingegeben  : - Keinen Punkt dazu
-           Dann: - inputfeld leeren
-           -nächstes Wort auswählen
-
-           */
-          else {
-              var temp = document.getElementById("itemAnswer").value;
-              if(itemData[studentData[currentItemIndex]]==temp){
-                  stopwatch = new Date() - stopwatch;
-                  currentTimes = currentTimes + stopwatch + ",";
-                  currentResult = currentResult + "1,";
-                  document.getElementById("itemAnswer").value = "";
-                  nextItem();
-              }
-              else {
-                  stopwatch = new Date() - stopwatch;
-                  currentTimes = currentTimes + stopwatch + ",";
-                  currentResult = currentResult + "0,";
-                  document.getElementById("itemAnswer").value = "";
-                  nextItem();
-              }
-          }
-      }
-  }
-
-  function cButtonClick() {
-
-      if (!$('#cButton').hasClass("disabled")) {
-          if (preparation) {
-              curSize=parseInt($('#itemText').css('font-size')) + 6;
-              $('#itemText').css('font-size', curSize);
-              $('#itemAnswer').css('font-size',curSize)
-          }
-          else {
-              var h = document.getElementById("itemAudio");
-              h.pause();
-              h.currentTime = 0;
-              h.play();
-          }
-      }
-  }
-
-  function setButtons() {
       if (preparation) {
-          $('#cButton').removeClass("disabled");
-          $('#cButton').removeClass("btn-info");
-          $('#sButton').removeClass("disabled");
-          $('#sButton').addClass("btn-success");
-          $('#iButton').removeClass("disabled");
-          $('#iButton').removeClass("btn-success");
-          $('#sButton').show();
-          $('#iButton').show();
-          $('#cButton').show();
+          curSize = parseInt($('#itemText').css('font-size')) - 6;
+          $('#itemText').css('font-size', curSize);
+          $('#itemAnswer').css('font-size',curSize)
+      }
+      else if((!preparation)&&introRdy){
+          nextIntroItem();
+      }
+      /* + 1 when word was correct
+         + 0  when word was incorrect
+       */
+      else {
+          var temp = document.getElementById("itemAnswer").value;
+          if(itemData[studentData[currentItemIndex]]==temp){
+              stopwatch = new Date() - stopwatch;
+              currentTimes = currentTimes + stopwatch + ",";
+              currentResult = currentResult + "1,";
+              document.getElementById("itemAnswer").value = "";
+              nextItem();
+          }
+          else {
+              stopwatch = new Date() - stopwatch;
+              currentTimes = currentTimes + stopwatch + ",";
+              currentResult = currentResult + "0,";
+              document.getElementById("itemAnswer").value = "";
+              nextItem();
+          }
+      }
+  }
+  /*Adjust size or repeat sound*/
+  function cButtonClick() {
+      if (preparation) {
+          curSize=parseInt($('#itemText').css('font-size')) + 6;
+          $('#itemText').css('font-size', curSize);
+          $('#itemAnswer').css('font-size',curSize)
       }
       else {
-          $('#sButton').hide();
-          $('#iButton').hide();
-          $('#cButton').hide();
+          var h = document.getElementById("itemAudio");
+          h.pause();
+          h.currentTime = 0;
+          h.play();
       }
-  }
 
+  }
+  /*repeat sound*/
+  function rButtonClick() {
+      var h = document.getElementById("itemAudio");
+      h.pause();
+      h.currentTime = 0;
+      h.play();
+  }
+  /*start Test*/
   function sButtonClick() {
       if (preparation) {
           testSize = parseInt($('#itemText').css('font-size'));
           intro();
       }
   }
-
+  /*Clear Inputfield*/
   function clearInput() {
       $('#itemAnswer').val('');
   }
 
-  /*Pfeile fürs Input feld abstellen*/
+  /*Turn off keyboard-arraws in input field */
   $('#itemAnswer').keydown(function(e){
       var key = e.charCode || e.keyCode;
       if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
@@ -327,26 +301,36 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
   });
 
-  /*funktionen bei Tastendruck auf der Seite*/
+  /*Keyboard controll in diffrent phases*/
   $(window).keyup(function(event) {
       if(currentIntroItem ==0) {
-          iButtonClick();
+          if(event.keyCode == 37){
+              rButtonClick();
+          }
+          else {
+              iButtonClick();
+          }
       }
       else {
+          /*last page*/
           if(endTest) {
               if(event.keyCode == 13) {
                   $(window).unbind('keyup');
                   window.clearTimeout(timeoutId);
-                  $('#closeButton').click();
+                      $('#closeButton').click();
               }
               else {
 
               }
           }
+          /*during preparation*/
           else if (preparation) {
               switch (event.keyCode) {
                   case 37:
                       cButtonClick();
+                      break;
+                  case 38:
+                      rButtonClick();
                       break;
                   case 39:
                       iButtonClick();
@@ -356,6 +340,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
                       break;
               }
           }
+          /*during introphase*/
           else if((!preparation)&&introRdy) {
               switch (event.keyCode) {
                   case 13:
@@ -370,6 +355,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
               }
           }
           else {
+              /*during testphase*/
               switch (event.keyCode) {
                   case 13:
                       iButtonClick();
@@ -388,23 +374,20 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
       }
   });
 
-  //Audiodaten vorladen
+  //Hide Html-elements during preload
   $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
   $('#itemAnswer').attr('type', 'hidden');
   $('#closeButton').hide();
-  $('#sButton').hide();
-  $('#iButton').hide();
-  $('#cButton').hide();
-  $('#repeat').hide();
   $('#forward').hide();
+  $('#startTest').hide();
+  $('#reSound').hide();
 
-
+  /*Variable for preload*/
   var progress = 0;
   var loaded = 0;
   var soundLength = studentData.length;
   var introAudioLength = introAudio.length;
-//TODO könnte man alles vielleicht schicker machen, wenn die url der introaudiodatein auch in items stecken
-  // we start preloading all the audio files
+  // start preloading all the intro audio files
   for (var i in studentData) {
       preloadAudio(itemDataSound[studentData[i]]);
 
@@ -435,7 +418,7 @@ nicht so gut da Schüler aus dem feld springen, wenn das drin sein soll close ev
 
       }
   }
-  // we start preloading all the audio files
+  // we start preloading all the test audio files
   function preloadIntro() {
       for (var i in introAudio) {
           preloadAudioIntro(introAudio[i]);

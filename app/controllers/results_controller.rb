@@ -4,7 +4,8 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_filter :is_allowed
+  before_filter :is_allowed, only: :update
+  before_filter :is_allowed_user, except: :update
 
   # GET /results
   # GET /results.json
@@ -80,7 +81,7 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
-      #Methode funktioniert leider nicht da keine result.id mitgegeben wird. Hack:Herrausziehen aus dem abgabestring
+      #Methode funktioniert leider nicht, da keine result.id mitgegeben wird. Hack:Herrausziehen aus dem Abgabestring
       @result = Result.find(params[:id])
     end
 
@@ -107,7 +108,7 @@ class ResultsController < ApplicationController
     end
 
     def is_allowed
-      #Holen des Resultobjektes anhand des übergebenen Strings
+      #Get result id, when user is a student
       if @login.instance_of?(Student)
         results = result_params
         unless results.nil?
@@ -117,9 +118,18 @@ class ResultsController < ApplicationController
           end
         end
       end
+      #check if user is allowed
       unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
           (@login.id == params[:user_id].to_i)) ||((@login.id == r.student.id) && @login.instance_of?(Student))
         redirect_to root_url
       end
     end
+
+  #check if user is of type user, student is not allowed to update
+  def is_allowed_user
+    unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
+        (@login.id == params[:user_id].to_i))
+      redirect_to root_url
+    end
+  end
 end

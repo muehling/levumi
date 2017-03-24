@@ -57,7 +57,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
+  #check if user is logged in
   def check_login
     if session[:user_id].nil? && session[:student_id].nil?
       redirect_to root_url, notice: "Bitte einloggen!"
@@ -67,9 +67,9 @@ class ApplicationController < ActionController::Base
       @login = User.find(session[:user_id])
     end
   end
-
+  #check if user accepted the letter of agreement
   def check_accept
-    if session[:user_id].nil?
+    if !session[:student_id].nil?
     else
       if @login.tcaccept.nil?
         render 'accept'

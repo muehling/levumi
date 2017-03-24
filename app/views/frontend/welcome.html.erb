@@ -2,29 +2,26 @@
   <h1><%= image_tag('Levumi-klein-blau.png', size: "120")%> LeVuMi  </h1>
   <h3>Zugang für Schüler/-innen</h3>
   <br/>
+  <!--field for logincode-->
   <%= form_tag(url_for(:controller => 'frontend', :action => 'login'), :class => "form") do %>
       <p>
-        Gebe hier bitte deinen Zugangscode ein(iwas mit r):
+        Gebe hier bitte deinen Zugangscode ein:
       </p>
       <div class="form-group">
         <label class="sr-only" for="login">Code</label>
-        <%= text_field_tag "login", nil, type: "text", class: "form-control", placeholder: "Zugangscode"%>
+        <%= text_field_tag "login", nil, type: "text",:autocomplete => :off , class: "form-control", placeholder: "Zugangscode"%>
       </div>
 
-      <!-- Passwort schonmal als Feld hinzugefügt, falls es später noch rein soll
+      <!-- Field for password
       <p>
         Hier bitte Passwort eingeben:
       </p>
       <div class="form-group">
         <label class="sr-only" for="login">Passwort</label>
-        <%= text_field_tag "password", nil, type: "text", class: "form-control", placeholder: "Passwort"%>
+        <%= text_field_tag "password", nil, type: "text",  class: "form-control", placeholder: "Passwort"%>
       </div>
       -->
       <%= submit_tag 'Anmelden', :class => "btn btn-primary" %>
   <% end %>
   <br/>
-  <p>
-    Für eine fehlerfreie Darstellung, verwenden Sie bitte einen <a href="http://www.browsehappy.com">modernen Browser</a> (z.B. Mozilla Firefox).<br/>
-    Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
-  </p>
 </div>

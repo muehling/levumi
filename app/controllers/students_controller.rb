@@ -113,8 +113,7 @@ class StudentsController < ApplicationController
       end
     end
 
-  #TODO anpassen
+  #TODO Übersichtsseite der Login codes für die Lehrer
   def getStudentData
-    render "results/studentLoginData"
   end
 end

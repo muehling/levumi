@@ -2,19 +2,14 @@
 class Student < ActiveRecord::Base
   belongs_to :group
   has_many :results, :dependent => :destroy
- # has_secure_password
 
   validates_presence_of :name
   #before_create :set_password
   after_create :set_login
 
-  #Generieren von eindeutigen Login
+
+  #Generate random login code
   def set_login
-=begin
-    #vorläufiges setzen des Zugangscodes
-    self.login = "stu" + self.id.to_s
-    self.save
-=end
     while self.login.nil? | self.login.blank?
       tempLogin = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join;
       tempStu = Student.where(:login => tempLogin);
@@ -25,7 +20,7 @@ class Student < ActiveRecord::Base
     end
   end
 
-
+#Generate random password if needed
 =begin setzen des Passwortes, eine Möglichkeit
   def set_password
     self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
@@ -152,12 +147,12 @@ class Student < ActiveRecord::Base
     return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
   end
 
-  #TODO Nur measurements anzeigen ,welche noch nicht bearbeitet wurden(in welche schon einmal reingespeichert wurde)
+  #Only get measurement which are available
   def get_open_measurements
     t = Test.where(:student_access => true)
     a = Assessment.where(:group => self.group.id).
                    where(:test => t)
-    #nur zurückgeben der Measurments welche noch nicht abgelaufen sind
+    #only return measurements which are not worked and out of date
     m = Measurement.
         where(:assessment => a).
         where("date >?", Date.today)
@@ -171,7 +166,7 @@ class Student < ActiveRecord::Base
     return m.nil? ? [] : m
   end
 
-  #Aktuelles Resultobjekt des Schülers holen
+  #get current result objekt of student
   def getCurrentResult(measurement_id)
     r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
     @result=r

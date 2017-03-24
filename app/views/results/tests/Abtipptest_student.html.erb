@@ -1,15 +1,17 @@
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@student.group.name}: Schüler: #{@student.name}: Tasterturschulung" %></p><audio id="itemAudio"></audio>
 </nav>
-  <div id="text">
+<!-- Textcontent on page-->
+<div id="text">
     <p style="font-family: 'fibel_nordregular';font-size:96px" id="itemText" class="text-center">
       Test
     </p>
   </div>
+<!-- Loading bar for the audiodata-->
 <div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
   <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
 </div>
-  <div align="center" >
+<div align="center" >
     <img style="width: 650px; margin-left: 12%" id="bigPic" src=""/>
     <img style="width: 150px;" id="picHeadphone"  src="/assets/headphones.png"/>
     <br/>
@@ -21,6 +23,7 @@
 </div>
 <br/>
 <br/>
+<!-- input area-->
   <table id="testField" align="center">
     <tr>
       <th><p style="font-family: 'fibel_nordregular'; font-size:96px" id="firstPart" type="text ">s</th>
@@ -31,6 +34,7 @@
 <br/>
 <br/>
 <br/>
+<!-- Shows current extra keyboard controll options-->
   <div align="center"  id="footerID">
     <footer>
       <table id="testField" align="center">
@@ -40,15 +44,15 @@
       </table>
     </footer>
   </div>
-<div class="row">
-  <div class="col-lg-12">
-    <%= link_to url_for(controller: 'frontend') do%><button id="closeButton" type="button" class="btn btn-block btn-warning btn-lg" >Messung abbrechen: <span><img src='/assets/Esc.png'/></span></button><% end %>
-  </div>
+<!-- Needed for hack, url_for not pissible in script area-->
+<div>
+  <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
 
 
 <script>
   $('#closeButton').hide();
+  /*Keyboard controll on diffrent pages + compare input*/
     $(window).keyup(function(event) {
         if(event.keyCode == 37) {
             repeatSound();
@@ -173,19 +177,17 @@
 
       }
   });
-  /*Initialisierung der Variablen für den Testablauf*/
+  /*Initialization of needed variable*/
   var preparation = true;
   var introRdy = true;
   var levumiExplains = true;
   var testSize = 96;
   var lastPage = false;
-
-
-
   var neededPic = '<img style="float: right; width: 300px "src="/assets/Levumi-jubelt.gif"/>';
-
   var currentItemIndex = -1;
-  /*Liste aller Items, wleche zum Test gehören*/
+
+
+  /*Array of all texts*/
   var itemData =
       [   "„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. "+
           "Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. "+
@@ -221,7 +223,7 @@
           "„Im Garten sind große Apfelbäume und Quittenbäume.“",//23
           "„Im Garten sind große Apfelbäume und Quittenbäume.“",//24
           "„Super, du hast es geschafft! Das hast du toll gemacht! Zum Beenden des Testes drücke bitte die Eingabetaste.“"];//25
-  /*Liste aller Items, wleche zum Test gehören*/
+  /*Array of all sounds*/
   var itemDataSound =["/assets/Anweisungen/1_Hallo_ich_bin_Levumi.mp3",
       "/assets/Anweisungen/1_Eingabetaste.mp3",
       "/assets/Anweisungen/2_Kopfhörer.mp3",
@@ -241,12 +243,7 @@
       "/assets/Anweisungen/13_AbtippaufgabeSatz.mp3",
       "/assets/Anweisungen/14_Super_geschafft.mp3"
   ];
-
-
-  $('#testField').hide();
-  $('#itemAnswer1').css('border','0px').css('border-bottom', 'black solid 1px');
-  /*was kann sollte noch vor Testbeginn gemacht/angezeigt werden
-   * TODO: Bild und andere Kleinigkeiten. siehe auch Diktiertest*/
+  /*Look for test*/
   function intro() {
       $('#myProgress').hide();
       preparation = false;
@@ -255,6 +252,7 @@
       $('#iButton').html("    Weiter     ");
       nextItem();
   }
+  /*Changes current content of Html-elements based on currentItemIndex*/
   function nextItem() {
       currentItemIndex++;
       if(currentItemIndex<itemData.length) {
@@ -493,7 +491,7 @@
 
   }
 
-  /*Wenn Zeit abgelaufen oder alle Wörter durchgelaufen test beenden*/
+  /*Stop test, when all items are asked*/
   function stopTest() {
       $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
       $('#picHeadphone').hide();
@@ -514,7 +512,6 @@
 
   function iButtonClick() {
       nextItem();
-
   }
 
   function repeatSound() {
@@ -524,22 +521,18 @@
       h.play();
   }
 
-
-/*
-  function clearInput() {
-      $('#itemAnswer').val('');
-  }
-  */
-  /*Befehle/Funktionen die direkt ausgeführt werden, ohne Funktionsaufruf*/
+  /*Adjust look of input field and starting page*/
+  $('#testField').hide();
+  $('#itemAnswer1').css('border','0px').css('border-bottom', 'black solid 1px');
   $('#itemText').css('font_size', 90).html('Daten werden vorbereitet');
   $('#picHeadphone').hide();
   $('#picKeyboard').hide();
   $('#bigPic').hide();
+  /*preload all audiodata*/
   for (var i in itemDataSound) {
       preloadAudio(itemDataSound[i]);
 
   }
-
   function preloadAudio(url) {
       var audio = new Audio();
       // once this file loads, it will call loadedAudio()

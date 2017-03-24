@@ -14,11 +14,11 @@ class FrontendController < ActionController::Base
       render 'welcome', :layout => 'bareStudent'
     end
   end
-
+  #Check logincode and redirect to next page
   def login
     s = Student.find_by_login(params[:login])
     if s != nil
-
+#check password, when needed
 =begin
       if s.password_digest == params[:password]
 =end
@@ -30,6 +30,7 @@ class FrontendController < ActionController::Base
     end
   end
 
+  #Logout student
   def logout
     session[:studet_id] = nil
     @login = nil
@@ -40,6 +41,7 @@ class FrontendController < ActionController::Base
     @measurements = @student.get_open_measurements
   end
 
+  #start Test
   def start
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
