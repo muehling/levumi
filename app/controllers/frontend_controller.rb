@@ -16,6 +16,8 @@ class FrontendController < ActionController::Base
   end
   #Check logincode and redirect to next page
   def login
+    #Avoiding login code for programming, id= 1 should be ok
+    #s = Student.find_by_id(params[:login])
     s = Student.find_by_login(params[:login])
     if s != nil
 #check password, when needed
@@ -32,11 +34,11 @@ class FrontendController < ActionController::Base
 
   #Logout student
   def logout
-    session[:studet_id] = nil
+    session[:student_id] = nil
     @login = nil
     redirect_to '/student'
   end
-
+  #get all available measurements
   def index
     @measurements = @student.get_open_measurements
   end
@@ -57,7 +59,7 @@ class FrontendController < ActionController::Base
 
   def check_student
     if session[:student_id].nil?
-      redirect_to '/student', notice: "Bitte einloggen(frontend)!"
+      redirect_to '/student', notice: "Bitte einloggen!"
     else
       @student = Student.find(session[:student_id])
     end

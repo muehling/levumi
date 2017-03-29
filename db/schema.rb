@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170206003640) do
+ActiveRecord::Schema.define(version: 20170329120142) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20170206003640) do
     t.integer  "difficulty"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "data"
+    t.text     "audiopath"
   end
 
   create_table "measurements", force: true do |t|

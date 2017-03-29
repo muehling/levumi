@@ -44,15 +44,25 @@ m.save
 
 
 
-t = TestKeyboard.create(name: "Tasterturtest",len: 4, info: "Tastertur für die Grundschule, 1. Klasse", short_info:
+t = TestKeyboard.create(name: "Tastaturschulung",len: 9, info: "Tastertur für die Grundschule, 1. Klasse", short_info:
     "Tasterturtest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60, student_access:true)
-i = t.items.build(itemtext: "haha", difficulty: 0.1)
+i = t.items.build(itemtext: "Einleitung", difficulty: 0.1)
 i.save
-i = t.items.build(itemtext: "hoha", difficulty: 0.4)
+i = t.items.build(itemtext: "Eingabetaste", difficulty: 0.1)
 i.save
-i = t.items.build(itemtext: "huho", difficulty: 0.7)
+i = t.items.build(itemtext: "Erklärung Bilder", difficulty: 0.1)
 i.save
-i = t.items.build(itemtext: "laho", difficulty: 0.9)
+i = t.items.build(itemtext: "Audio wiederholden", difficulty: 0.1)
+i.save
+i = t.items.build(itemtext: "Umlaute", difficulty: 0.3)
+i.save
+i = t.items.build(itemtext: "Löschtaste", difficulty: 0.1)
+i.save
+i = t.items.build(itemtext: "ß-Taste", difficulty: 0.3)
+i.save
+i = t.items.build(itemtext: "Großschreibung", difficulty: 0.3)
+i.save
+i = t.items.build(itemtext: "Abtippaufgabe", difficulty: 0.5)
 i.save
 
 a = g.assessments.build(test_id: t.id)
@@ -72,17 +82,17 @@ m.save
 
 t = TestDictation.create(name: "Diktiertest", len: 6, info: "Diktiertest für die Grundschule, 1. Klasse", short_info:
     "Diktiertesttest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", time: 60, student_access:true)
-i = t.items.build(itemtext: "Flug", difficulty: 0.1, data: "Woerter/4_Flug.mp3")
+i = t.items.build(itemtext: "Flug", difficulty: 0.1, audiopath: "Woerter/4_Flug.mp3")
 i.save
-i = t.items.build(itemtext: "einer", difficulty: 0.4, data: "Woerter/15_einer.mp3")
+i = t.items.build(itemtext: "einer", difficulty: 0.4, audiopath: "Woerter/15_einer.mp3")
 i.save
-i = t.items.build(itemtext: "Keller", difficulty: 0.7, data: "Woerter/33_Keller.mp3")
+i = t.items.build(itemtext: "Keller", difficulty: 0.7, audiopath: "Woerter/33_Keller.mp3")
 i.save
-i = t.items.build(itemtext: "Stärke", difficulty: 0.9, data: "Woerter/35_Stärke.mp3")
+i = t.items.build(itemtext: "Stärke", difficulty: 0.9, audiopath: "Woerter/35_Stärke.mp3")
 i.save
-i = t.items.build(itemtext: "Sieb", difficulty: 0.9, data: "Woerter/41_Sieb.mp3")
+i = t.items.build(itemtext: "Sieb", difficulty: 0.9, audiopath: "Woerter/41_Sieb.mp3")
 i.save
-i = t.items.build(itemtext: "Weihnachtsbaum", difficulty: 0.9, data: "Woerter/44_Weihnachtsbaum.mp3")
+i = t.items.build(itemtext: "Weihnachtsbaum", difficulty: 0.9, audiopath: "Woerter/44_Weihnachtsbaum.mp3")
 i.save
 
 a = g.assessments.build(test_id: t.id)

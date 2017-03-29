@@ -19,7 +19,7 @@
 </br>
 
 <div align="center"><img src="" id="resultReaction"></div>
-<!-- Answerinput field-->
+<!-- Input field for answers-->
 <div align="center">
   <p><input style="font-family: 'fibel_nordregular'; font-size:96px" id="itemAnswer" type="text" class="text-center" placeholder="Test" align="middle">
     <br/>
@@ -27,7 +27,7 @@
     <br/>
   </p>
 </div>
-<!-- Shows current extra keyboard controll options-->
+<!-- Shows current "special" keyboard controll options-->
 <div align="center">
   <footer>
     <table id="testField" align="center">
@@ -45,7 +45,7 @@
 </div>
 <br/>
 <br/>
-<!-- Needed for hack, url_for not pissible in script area-->
+<!-- Needed for hack, url_for not possible in script area-->
 <div>
     <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
@@ -53,7 +53,7 @@
 
 
 <script>
-  /*Initialization of needed variable*/
+  /*Initialization of variable*/
   var currentStudent = -1;
   var currentResult = "";
   currentStudent = <%=@result.id%>;
@@ -69,16 +69,16 @@
   var levumiTalks = '<img style="float: right; width: 250px " id="pic" src="/assets/Levumi-jubelt.gif"/>';
 
   var testSize = 0;
-  /*Hash of all items for used test*/
+  /*Hash of all used items*/
   var itemData = {
   <% @measurement.assessment.test.items.each do |i| %>
   <%= i.id%>: "<%= i.itemtext%>",
   <%end %>
   };
-  /*Hash of all audios for used test*/
+  /*Hash of all used audios*/
   var itemDataSound = {
   <% @measurement.assessment.test.items.each do |i| %>
-  <%= i.id%>: "<%= i.data%>",
+  <%= i.id%>: "<%= i.audiopath%>",
   <%end %>
   };
   /*Hash of old results*/
@@ -87,7 +87,7 @@
   <%= r.id%>: <%= r.getPriorResult%>,
   <% end %>
   };
-  /*Array of all items from current result(order)*/
+  /*Array of items from current result(order)*/
   var studentData = [
       <%@result.items.each do |i|%>
       <%=i%>,
@@ -114,7 +114,7 @@
                    "/assets/Anweisungen/19_ich_beginne.mp3"
 
   ];
-  /*Show possiblity to adjust size*/
+  /*Changes content of html-elements for "preparation-page"*/
   function prepareTest() {
       $('#itemText').css('font-size', 96).html("Test");
       $('#itemAnswer').attr('maxlength',6).attr('type', 'show').val('');
@@ -128,7 +128,7 @@
 
 
   }
-  /*Show needed intro-elements*/
+  /*Change content of html-elements for intro*/
   function intro(){
       $('#startTest').hide();
       $('#reSound').hide();
@@ -140,7 +140,7 @@
       nextIntroItem();
 
   }
-  /*Work through introData*/
+  /*Work through introData, change content of html-elements with element of currentIntroItem*/
   function nextIntroItem() {
       currentIntroItem++;
       if(currentIntroItem<introData.length){
@@ -173,7 +173,7 @@
       }
       timeoutId = window.setTimeout(timedOut, <%= @measurement.assessment.test.time*1000 %> + 500);
   }
-  /*Set flag for time-out*/
+  /*Set flag for time-out, no aprupt end*/
   function timedOut() {
       timedout =true;
   }
@@ -203,11 +203,13 @@
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
       dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      //semd data
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict
       });
+      //show content of last page
       if (lastResults[currentStudent] < currentResult.split("1").length)
           $('#resultReaction').attr('src', '/assets/Levumi-jubelt.gif').width(250);
       else
@@ -216,11 +218,11 @@
       $('#itemAnswer').attr('type', 'hidden');
       endTest =true;
       if (timeout) {
-          $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
+          $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Zum Beenden des Testes drücke bitte die Eingabetaste.");
           $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
       }
       else {
-          $('#itemText').html("Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Escapetaste.");
+          $('#itemText').html("Toll jetzt hast du es geschafft.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Eingabetaste.");
           $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
       }
   }
@@ -289,7 +291,7 @@
       $('#itemAnswer').val('');
   }
 
-  /*Turn off keyboard-arraws in input field */
+  /*Turn off keyboard-arrows in input field */
   $('#itemAnswer').keydown(function(e){
       var key = e.charCode || e.keyCode;
       if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
@@ -312,12 +314,12 @@
           }
       }
       else {
-          /*last page*/
-          if(endTest) {
-              if(event.keyCode == 13) {
+        /*last page*/
+          if (endTest) {
+              if (event.keyCode == 13) {
                   $(window).unbind('keyup');
                   window.clearTimeout(timeoutId);
-                      $('#closeButton').click();
+                  $('#closeButton').click();
               }
               else {
 
@@ -340,22 +342,9 @@
                       break;
               }
           }
-          /*during introphase*/
-          else if((!preparation)&&introRdy) {
-              switch (event.keyCode) {
-                  case 13:
-                      iButtonClick();
-                      break;
-                  case 37:
-                      cButtonClick();
-                      break;
-                  case 32:
-                      clearInput();
-                      break;
-              }
-          }
+          /*during introphase and testphase*/
           else {
-              /*during testphase*/
+            /*during testphase*/
               switch (event.keyCode) {
                   case 13:
                       iButtonClick();
@@ -365,9 +354,6 @@
                       break;
                   case 37:
                       cButtonClick();
-                      break;
-                  case 40:
-                      sButtonClick();
                       break;
               }
           }
@@ -428,7 +414,7 @@
 
   function preloadAudioIntro(url) {
       var audio = new Audio();
-      // once this file loads, it will call loadedAudio()
+      // once this file loads, it will call loadedAudioIntro()
       // the file will be kept by the browser as cache
       audio.addEventListener('canplaythrough', loadedAudioIntro, false);
       audio.src = url;
@@ -439,7 +425,6 @@
   function loadedAudioIntro() {
       // this will be called every time an audio file is loaded
       // we keep track of the loaded files vs the requested files
-
       loaded++;
       progress = ((loaded *100) / (soundLength+introAudioLength));
       var elem = document.getElementById("myBar");

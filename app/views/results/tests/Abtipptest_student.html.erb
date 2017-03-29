@@ -34,7 +34,7 @@
 <br/>
 <br/>
 <br/>
-<!-- Shows current extra keyboard controll options-->
+<!-- Shows current "special" keyboard controll options-->
   <div align="center"  id="footerID">
     <footer>
       <table id="testField" align="center">
@@ -44,7 +44,7 @@
       </table>
     </footer>
   </div>
-<!-- Needed for hack, url_for not pissible in script area-->
+<!-- Needed for hack, url_for not possible in script area-->
 <div>
   <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
@@ -167,17 +167,17 @@
             }
         }
     });
+  /*Turn off keyboard-arrows in input field */
   $('#itemAnswer1').keydown(function(e){
       var key = e.charCode || e.keyCode;
       if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
-          // enter key do nothing
           e.preventDefault();
       }
       else {
 
       }
   });
-  /*Initialization of needed variable*/
+  /*Initialization of variable*/
   var preparation = true;
   var introRdy = true;
   var levumiExplains = true;
@@ -249,7 +249,6 @@
       preparation = false;
       testSize = parseInt($('#itemText').css('font-size'));
       $('#itemText').css('font-size', 60);
-      $('#iButton').html("    Weiter     ");
       nextItem();
   }
   /*Changes current content of Html-elements based on currentItemIndex*/
@@ -493,7 +492,6 @@
 
   /*Stop test, when all items are asked*/
   function stopTest() {
-      $('#closeButton').html("Messung beenden: <span><img src='/assets/Esc.png'/></span>");
       $('#picHeadphone').hide();
       $('#picKeyboard').hide();
       var currentResult = "1,";
@@ -501,6 +499,7 @@
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
       dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      //send data
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
@@ -508,12 +507,7 @@
       });
   }
 
-
-
-  function iButtonClick() {
-      nextItem();
-  }
-
+  //play current audio again
   function repeatSound() {
       var h = document.getElementById("itemAudio");
       h.pause();
