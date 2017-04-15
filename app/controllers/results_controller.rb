@@ -125,7 +125,7 @@ class ResultsController < ApplicationController
       end
     end
 
-  #check if user is of type user, student is not allowed to update
+  #check if user is of type user, student is only allowed to update
   def is_allowed_user
     unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
         (@login.id == params[:user_id].to_i))

@@ -1,0 +1,168 @@
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@student.group.name}: Schüler: #{@student.name}: " %></p><audio id="itemAudio"></audio>
+</nav>
+
+<div id="testEnviroment">
+</div>
+<div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
+  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
+</div>
+<!-- Needed for hack, url_for not possible in script area-->
+<div>
+  <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
+</div>
+
+<script>
+    var currentItemIndex = -1;
+    var preparation = true;
+    var lastPage = false;
+    var currentStudent = -1;
+    currentStudent = <%=@result.id%>;
+    var currentResult ="";
+
+    var itemData = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.itemtext%>",
+    <% end %>
+    };
+    var itemView = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.itemview%>",
+    <% end %>
+    };
+
+    var itemDataSound = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.audiopath%>",
+    <%end %>
+    };
+
+    var students = {
+    <% @measurement.results.each do |r| %>
+    <%= r.id%>: "<%= r.student.name%>",
+    <% end %>
+    };
+    var studentData = [
+        <%@result.items.each do |i|%>
+        <%=i%>,
+        <%end%>];
+    var lastResults = {
+    <% @measurement.results.each do |r| %>
+    <%= r.id%>: <%= r.getPriorResult%>,
+    <% end %>
+    };
+
+
+
+
+  $('#closeButton').hide();
+  /*Keyboard controll on diffrent pages + compare input*/
+    $(window).keyup(function(event) {
+        if (event.keyCode==13&&preparation){
+
+        }
+    });
+
+    $(window).keydown(function (event) {
+        if (event.keyCode == 27 && lastPage) {
+            $(window).unbind('keydown');
+            $('#closeButton').click();
+        }
+    });
+
+    //$(window).keyup(function (event) { if(event.keyCode == 13) {nextItem();}})
+  /*Changes current content of Html-elements based on currentItemIndex*/
+  function nextItem() {
+      preparation = false;
+      currentItemIndex++;
+      if(currentItemIndex < studentData.length){
+          //$('#testEnviroment').html(itemView[testid]);
+          $('#testEnviroment').html($('<div />').html(itemView[studentData[currentItemIndex]]).text());
+          $('#result').html(studentData[currentStudent].length);
+          $('#resultCount').html(currentItemIndex);
+      }
+      else {
+          stopTest();
+          lastPage = true
+      }
+  }
+
+
+  /*Stop test, when all items are asked*/
+  function stopTest() {
+      $('#testEnviroment').html(currentResult);
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      //send data
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
+      /*if (timeout) {
+          $('#itemText').html("Deine Zeit ist leider abgelaufen.<br/>Die Testergebnisse wurden gespeichert! <br/>Zum Beenden des Testes drücke bitte die Eingabetaste.");
+          $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
+      }
+      else {
+          $('#itemText').html("Toll jetzt hast du es geschafft.<br/>Die Testergebnisse wurden gespeichert!<br/>Zum Beenden des Testes drücke bitte die Eingabetaste.");
+          $("#itemAudio").attr("src","/assets/Anweisungen/20_geschafft.mp3").trigger('play');
+      }*/
+  }
+
+  //play current audio again
+  function repeatSound() {
+      var h = document.getElementById("itemAudio");
+      h.pause();
+      h.currentTime = 0;
+      h.play();
+
+  }
+
+    /*Variable for preload*/
+    var progress = 0;
+    var loaded = 0;
+    var soundLength = studentData.length;
+    // start preloading all the intro audio files
+    for (var i in studentData) {
+        preloadAudio(itemDataSound[studentData[i]]);
+        $('#testEnviroment').html(soundLength);
+
+    }
+
+    function preloadAudio(url) {
+        var audio = new Audio();
+        // once this file loads, it will call loadedAudio()
+        // the file will be kept by the browser as cache
+        var completeUrl = "/assets/".concat(url);
+        audio.addEventListener('canplaythrough', loadedAudio, false);
+        audio.src = completeUrl;
+
+
+    }
+
+    function loadedAudio() {
+        // this will be called every time an audio file is loaded
+        // we keep track of the loaded files vs the requested files
+
+        loaded++;
+        progress = ((loaded *100) / (soundLength));
+        var elem = document.getElementById("myBar");
+        elem.style.width = progress +'%';
+        if (loaded == soundLength){
+            // all have loaded do something
+            $('#myProgress').hide();
+            $('#myBar').hide();
+            nextItem();
+
+        }
+    }
+
+
+
+    //methode for translate html tag if needed
+    function safe_tags(str) {
+        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
+    }
+</script>
+

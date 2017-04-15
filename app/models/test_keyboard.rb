@@ -10,7 +10,17 @@ class TestKeyboard < Test
   end
 #Return which view should be chosen
   def view_info
-    return "Abtipptest"
+    return "GenerischNormal"
+  end
+
+#draw item from itempool
+  def draw_items(ability)
+    itemset = Array.new
+    (1..len).each  do
+      remaining = items - itemset
+      itemset = itemset + [remaining.first]
+    end
+    return itemset.map{|i| i.id}
   end
 
 end

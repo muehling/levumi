@@ -17,8 +17,8 @@ class FrontendController < ActionController::Base
   #Check logincode and redirect to next page
   def login
     #Avoiding login code for programming, id= 1 should be ok
-    #s = Student.find_by_id(params[:login])
-    s = Student.find_by_login(params[:login])
+    s = Student.find_by_id(params[:login])
+    #s = Student.find_by_login(params[:login])
     if s != nil
 #check password, when needed
 =begin
