@@ -15,7 +15,7 @@
 
 <script>
     //variable for testsequence
-    var currentItemIndex = -1;
+    var currentItemIndex = 0;
     var preparation = true;
     var lastPage = false;
     var currentStudent = -1;
@@ -48,9 +48,18 @@
     <% end %>
     };
 
+    //data for timeout
+    var timeoutId = -1;
+    var currentTimes = "";
+    var stopwatch = null;
+    var timedout=false;
+    var workTime = <%= @measurement.assessment.test.time*1000 %>;
+
+
+
 
   $('#closeButton').hide();
-  /*Keyboard controll on preparationpage*/
+  /*Keyboard controll on last page*/
     $(window).keyup(function(event) {
         if (event.keyCode==13&&preparation){
 
@@ -61,8 +70,13 @@
   function nextItem() {
       preparation = false;
       currentItemIndex++;
-      if(currentItemIndex+1 < studentData.length){
-          $('#testEnviroment').html($('<div />').html(itemView[studentData[currentItemIndex]]).text());
+      if(currentItemIndex < studentData.length){
+          if (timedout)
+              stopTest(timedout);
+          else {
+              $('#testEnviroment').html($('<div />').html(itemView[studentData[currentItemIndex]]).text());
+              stopwatch = new Date();
+          }
       }
       else {
           stopTest();
@@ -70,11 +84,20 @@
       }
   }
 
+    /*Set flag for time-out, no aprupt end*/
+    function timedOut() {
+        timedout =true;
+    }
+
 
   /*Stop test, when all items are asked*/
   function stopTest() {
       lastPage = true;
-      $('#testEnviroment').html($('<div />').html(itemView[studentData[currentItemIndex]]).text());
+      $('#testEnviroment').html($('<div />').html(itemView[studentData[0]]).text());
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+      }
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
       dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);

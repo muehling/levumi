@@ -55,7 +55,7 @@
   /*Keyboard controll on diffrent pages + compare input*/
     $(window).keyup(function(event) {
         if(event.keyCode == 37) {
-            repeatSound();
+            repeatSound();Garten
         }
         else if(lastPage) {
             if(event.keyCode == 13) {
@@ -186,62 +186,61 @@
   var neededPic = '<img style="float: right; width: 300px "src="/assets/Levumi-jubelt.gif"/>';
   var currentItemIndex = -1;
 
-
   /*Array of all texts*/
   var itemData =
       [   "„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. "+
           "Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. "+
           "Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit wir beginnen können.“",//0
           "„Um zur nächsten Aufgabe zu kommen, drücke die Eingabetaste. Auf dem Bild siehst du, wo sie zu finden ist. Probiere sie jetzt aus.“",//1
-          "„Hier siehst du auf dem Bild einen Kopfhörer. Immer, wenn du den Kopfhörer siehst, musst du gut zuhören, damit du genau weißt, was du tun sollst. “",
-          "„Das Bild mit der Tastatur zeigt dir, wann du etwas mit der Tastatur eingeben sollst.““",//3
-          "„Wenn ich dir den Satz noch einmal vorlesen soll, drücke die linke Pfeiltaste. Auf dem Bild siehst du, dass sich diese Taste unten rechts befindet!“",//4
+          "„Hier siehst du auf dem Bild einen Kopfhörer. Immer, wenn du den Kopfhörer siehst, musst du gut zuhören, damit du genau weißt, was du tun sollst. “",//2
+          "„Das Bild mit der Tastatur zeigt dir, wann du etwas mit der Tastatur eingeben sollst.“",//3
+          "„Wenn ich dir den Satz noch einmal vorlesen soll, drücke die linke Pfeiltaste. Auf dem Bild siehst du, dass sich diese Taste unten rechts befindet!“",//4 hab ich
           "„ä, ü, ö sind Umlaute, bestimmt kennst du diese Buchstaben. Auf der Tastatur findest du sie " +
           "auf der rechten Seite. Auf dem Bild siehst du, wo du die Buchstaben auf der Tastatur sind."+
-          "Bitte drücke jetzt das ä, ü oder ö.“",//5
-          "„In den folgenden Wörtern fehlen die Umlaute. Kannst du mir bitte helfen, diese wieder einzufügen? Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//6
-          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//7
-          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//8
-          "Bitte ergänze jetzt für mich die fehlenden Umlaute.",//9
+          "Bitte drücke jetzt das ä, ü oder ö.“",//5 hab ich
+          "„In den folgenden Wörtern fehlen die Umlaute. Kannst du mir bitte helfen, diese wieder einzufügen? Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//6 hab ich
+          "„Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//7 hab ich
+          "„Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//8 hab ich
+          "„Bitte ergänze jetzt für mich die fehlenden Umlaute.“",//9 hab ich
           "„Bestimmt hast du schon einmal an einem Computer etwas geschrieben, das du wieder löschen wolltest. Dafür benutzt man die Löschtaste. Auf dem Bild kannst du erkennen, wo du " +
-          "die Taste findest. Bitte drücke jetzt die Löschtaste auf der Tastatur.“",//10
-          "„Jetzt brauche ich deine Hilfe. Ich habe einen Satz geschrieben und möchte diesen wieder löschen. Bitte benutze die Löschtaste und lösche alle Buchstaben für mich.“",//11
-          "„Nun geht es um einen Buchstaben, den es nur im Deutschen gibt, das ß. Es hat sich oben rechts versteckt. Drücke bitte die Taste für das ß auf der Tastatur“",//12
+          "die Taste findest. Bitte drücke jetzt die Löschtaste auf der Tastatur.“",//10 hab ich
+          "„Jetzt brauche ich deine Hilfe. Ich habe einen Satz geschrieben und möchte diesen wieder löschen. Bitte benutze die Löschtaste und lösche alle Buchstaben für mich.“",//11 hab ich
+          "„Nun geht es um einen Buchstaben, den es nur im Deutschen gibt, das ß. Es hat sich oben rechts versteckt. Drücke bitte die Taste für das ß auf der Tastatur“",//12 hab ich
           "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//13
           "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//14
           "„Bitte ergänze jetzt das fehlende ß in den Wörtern.“",//15
           "„Um ein Wort großzuschreiben, muss man zwei Tasten gleichzeitig drücken: Den Pfeil, der nach oben zeigt, " +
-          "ganz links auf der Tastatur und eine Buchstabentaste. Am besten benutzt du dafür deine beiden Zeigefinger.“",//16
+          "ganz links auf der Tastatur und eine Buchstabentaste. Am besten benutzt du dafür deine beiden Zeigefinger.“",//16 hab ich
           "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//17
           "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//18
           "„Bitte ergänze in den folgenden Wörtern die Großbuchstaben.“",//19
-          "„Danke, dass du so gut mitmachst!“",//20
+          "„Danke, dass du so gut mitmachst!“",//20 hab ich
           "„Jetzt hast du schon gut geübt, auf der Tastatur zu " +
           "schreiben. Nun lese ich dir einen Satz vor. Die Wörter, die du schreiben sollst, sind gelb " +
-          "makiert. Wenn du das Wort geschrieben hast, drücke die Eingabetaste, damit du zum nächsten Wort gelangst.“",//21
-          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//22
-          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//23
-          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//24
-          "„Super, du hast es geschafft! Das hast du toll gemacht! Zum Beenden des Testes drücke bitte die Eingabetaste.“"];//25
+          "makiert. Wenn du das Wort geschrieben hast, drücke die Eingabetaste, damit du zum nächsten Wort gelangst.“",//21 hab ich
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//22 hab ich
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//23 hab ich
+          "„Im Garten sind große Apfelbäume und Quittenbäume.“",//24 hab ich
+          "„Super, du hast es geschafft! Das hast du toll gemacht! Zum Beenden des Testes drücke bitte die Eingabetaste.“"];//25 hab ich
   /*Array of all sounds*/
-  var itemDataSound =["/assets/Anweisungen/1_Hallo_ich_bin_Levumi.mp3",
-      "/assets/Anweisungen/1_Eingabetaste.mp3",
-      "/assets/Anweisungen/2_Kopfhörer.mp3",
-      "/assets/Anweisungen/3_Tastatur.mp3",
-      "/assets/Anweisungen/6_Wiederholen.mp3",
-      "/assets/Anweisungen/5_Umlaute1Und2Und3.mp3",
-      "/assets/Anweisungen/6_Umlaute3.mp3",
-      "/assets/Anweisungen/6_Umlaute4.mp3",
-      "/assets/Anweisungen/7_Löschtaste.mp3",
-      "/assets/Anweisungen/12_Löschaufgabe.mp3",
-      "/assets/Anweisungen/9_ß.mp3",
-      "/assets/Anweisungen/13_ß2.mp3",
-      "/assets/Anweisungen/11_Großschreibung.mp3",
+  var itemDataSound =["/assets/Anweisungen/1_Hallo_ich_bin_Levumi.mp3", //hab ich
+      "/assets/Anweisungen/1_Eingabetaste.mp3",//hab ich
+      "/assets/Anweisungen/2_Kopfhörer.mp3",//hab ich
+      "/assets/Anweisungen/3_Tastatur.mp3",//hab ich
+      "/assets/Anweisungen/6_Wiederholen.mp3",//hab ich
+      "/assets/Anweisungen/5_Umlaute1Und2Und3.mp3", //ghab ich
+      "/assets/Anweisungen/6_Umlaute3.mp3", //hab ich
+      "/assets/Anweisungen/6_Umlaute4.mp3", //nur aufgabenstellung
+      "/assets/Anweisungen/7_Löschtaste.mp3",//hab ich
+      "/assets/Anweisungen/12_Löschaufgabe.mp3", //hab ich
+      "/assets/Anweisungen/9_ß.mp3",//hab ich
+      "/assets/Anweisungen/13_ß2.mp3", //nur aufgabenstellung
+      "/assets/Anweisungen/11_Großschreibung.mp3",//hab ich
       "/assets/Anweisungen/12_Großschreibung2.mp3",
-      "/assets/Anweisungen/13_AbtippaufgabeDanke.mp3",
-      "/assets/Anweisungen/8_Abtippaufgabe.mp3",
-      "/assets/Anweisungen/13_AbtippaufgabeSatz.mp3",
-      "/assets/Anweisungen/14_Super_geschafft.mp3"
+      "/assets/Anweisungen/13_AbtippaufgabeDanke.mp3",//hab ich
+      "/assets/Anweisungen/8_Abtippaufgabe.mp3",//hab ich
+      "/assets/Anweisungen/13_AbtippaufgabeSatz.mp3", //hab ich
+      "/assets/Anweisungen/14_Super_geschafft.mp3"//hab ich
   ];
   /*Look for test*/
   function intro() {
