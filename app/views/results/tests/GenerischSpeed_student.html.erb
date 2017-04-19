@@ -1,12 +1,16 @@
 <nav class="navbar">
-  <p class="navbar-brand"><%= "Klasse #{@student.group.name}: Schüler: #{@student.name}: " %></p><audio id="itemAudio"></audio>
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
 <div id="testEnviroment">
 </div>
+<div id="testEnviroment2">
+</div>
 <div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
   <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
 </div>
+
+
 <!-- Needed for hack, url_for not possible in script area-->
 <div>
   <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
@@ -74,7 +78,8 @@
           if (timedout)
               stopTest(timedout);
           else {
-              $('#testEnviroment').html($('<div />').html(itemView[studentData[currentItemIndex]]).text());
+              $('#testEnviroment').html($('<textarea />').html(itemView[studentData[currentItemIndex]]).text());
+              //$('#testEnviroment2').html($('<textarea />').html(itemView[studentData[currentItemIndex]]).text());
               stopwatch = new Date();
           }
       }
@@ -124,11 +129,13 @@
         var audio = new Audio();
         // once this file loads, it will call loadedAudio()
         // the file will be kept by the browser as cache
-        var completeUrl = "/assets/".concat(url);
-        audio.addEventListener('canplaythrough', loadedAudio, false);
-        audio.src = completeUrl;
-
-
+        if(url =="") {
+            loadedAudio()
+        }
+        else {
+            audio.addEventListener('canplaythrough', loadedAudio, false);
+            audio.src = url;
+        }
     }
 
     function loadedAudio() {

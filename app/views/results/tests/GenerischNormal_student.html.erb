@@ -1,5 +1,5 @@
 <nav class="navbar">
-  <p class="navbar-brand"><%= "Klasse #{@student.group.name}: Schüler: #{@student.name}: " %></p><audio id="itemAudio"></audio>
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
 <div id="testEnviroment">
@@ -41,6 +41,7 @@
         <%@result.items.each do |i|%>
         <%=i%>,
         <%end%>];
+
     //last result of testkind
     var lastResults = {
     <% @measurement.results.each do |r| %>
@@ -101,11 +102,13 @@
         var audio = new Audio();
         // once this file loads, it will call loadedAudio()
         // the file will be kept by the browser as cache
-        var completeUrl = "/assets/".concat(url);
-        audio.addEventListener('canplaythrough', loadedAudio, false);
-        audio.src = completeUrl;
-
-
+        if(url =="") {
+            loadedAudio()
+        }
+        else {
+            audio.addEventListener('canplaythrough', loadedAudio, false);
+            audio.src = url;
+        }
     }
 
     function loadedAudio() {

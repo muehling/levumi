@@ -125,7 +125,12 @@
     } else if(event.keyCode == 13 && tempAnswer.value == 'Garten') {
         $(window).unbind('keyup');
         nextItem();
-    }})
+    }});
+    $(tempAnswer).keydown(function (event) {
+        var key = event.charCode || event.keyCode;
+        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
+            event.preventDefault();
+        }})
 </script>
 
 <!--itemview für ein gesplitetetes Item vom Abtipptest-->
