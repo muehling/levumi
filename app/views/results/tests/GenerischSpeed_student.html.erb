@@ -4,14 +4,12 @@
 
 <div id="testEnviroment">
 </div>
-<div id="testEnviroment2">
-</div>
 <div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
   <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
 </div>
 
 
-<!-- Needed for hack, url_for not possible in script area-->
+<!-- TODO possible hack, should be changed-->
 <div>
   <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
@@ -29,10 +27,9 @@
     //Views for displayed Items
     var itemView = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= i.itemview%>",
+    <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
     <% end %>
     };
-
     //Audiopath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
@@ -78,8 +75,7 @@
           if (timedout)
               stopTest(timedout);
           else {
-              $('#testEnviroment').html($('<textarea />').html(itemView[studentData[currentItemIndex]]).text());
-              //$('#testEnviroment2').html($('<textarea />').html(itemView[studentData[currentItemIndex]]).text());
+              $('#testEnviroment').html(itemView[studentData[currentItemIndex]]);
               stopwatch = new Date();
           }
       }
@@ -98,7 +94,7 @@
   /*Stop test, when all items are asked*/
   function stopTest() {
       lastPage = true;
-      $('#testEnviroment').html($('<div />').html(itemView[studentData[0]]).text());
+      $('#testEnviroment').html(itemView[studentData[0]]);
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;
