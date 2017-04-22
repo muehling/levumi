@@ -76,8 +76,8 @@ sonnt
 /assets/Woerter/37_sonnt.mp3
 Kräne
 /assets/Woerter/38_Kräne.mp3
-beine
-/assets/Woerter/39_beine.mp3
+Beine
+/assets/Woerter/39_Beine.mp3
 Mäuse
 /assets/Woerter/40_Mäuse.mp3
 Sieb
@@ -86,8 +86,8 @@ winzig
 /assets/Woerter/42_winzig.mp3
 Korb
 /assets/Woerter/43_Korb.mp3
-Weichnachtsbaum
-/assets/Woerter/44_Weichnachtsbaum.mp3
+Weihnachtsbaum
+/assets/Woerter/44_Weihnachtsbaum.mp3
 Video
 /assets/Woerter/45_Video.mp3
 Nationalmannschaft
@@ -108,7 +108,7 @@ sind
 /assets/Woerter/53_sind.mp3
 }
 
-dicN1 = TestDictationLisa.create(name: "Wörter schreiben", info: "", short_info: "",  len: items.size/2, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level:"Level nicht bestimmt")
+dicN1 = TestDictationLisa.create(name: "Wörter schreiben", info: "", short_info: "",  len: items.size/2+5, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level:"Level nicht bestimmt")
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, audiopath: "/assets/Anweisungen/15_Hallo.mp3", itemview:"
 <audio id='audioItem' src='/assets/Anweisungen/15_Hallo.mp3'></audio>

@@ -110,7 +110,6 @@
       });
   }
 
-
     /*Variable for preload*/
     var progress = 0;
     var loaded = 0;
@@ -120,6 +119,7 @@
         preloadAudio(itemDataSound[studentData[i]]);
 
     }
+
 
     function preloadAudio(url) {
         var audio = new Audio();
@@ -149,13 +149,6 @@
             nextItem();
 
         }
-    }
-
-
-
-    //methode for translate html tag if needed
-    function safe_tags(str) {
-        return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') ;
     }
 </script>
 
