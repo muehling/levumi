@@ -4,14 +4,30 @@ class Student < ActiveRecord::Base
   has_many :results, :dependent => :destroy
 
   validates_presence_of :name
-  before_save :check_login
+  #before_create :set_password
+  after_create :set_login
 
-  def check_login
-    if self.login.nil? | self.login.blank?
-      self.login = self.name
+
+  #Generate random login code
+  def set_login
+    while self.login.nil? | self.login.blank?
+      tempLogin = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join;
+      tempStu = Student.where(:login => tempLogin);
+      if(tempStu.empty?)
+        self.login = tempLogin;
+        self.save
+      end
     end
   end
-  #Getter für Merkmale:
+
+#Generate random password if needed
+=begin setzen des Passwortes, eine Möglichkeit
+  def set_password
+    self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
+  end
+=end
+
+ #Getter für Merkmale:
 
   def get_gender(raw = false)
     return self[:gender].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:gender] ? "männlich" : "weiblich")
@@ -131,11 +147,29 @@ class Student < ActiveRecord::Base
     return {"1st" => probs[probs.size/4], "4th" => probs[3*probs.size/4], "data" => items}
   end
 
+  #Only get measurement which are available
   def get_open_measurements
     t = Test.where(:student_access => true)
-    a = Assessment.where(:group => self.group.id, :test => t)
-    m = Measurement.where(:assessment => a)
-    #...
+    a = Assessment.where(:group => self.group.id).
+                   where(:test => t)
+    #only return measurements which are not worked and out of date
+    m = Measurement.
+        where(:assessment => a).
+        where("date >?", Date.today)
+    r = Result.
+        where(:measurement => m).
+        where(:student_id => self.id).
+        where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
+    r.each do |temp|
+     m = m.where.not(:id => temp.measurement_id)
+    end
     return m.nil? ? [] : m
+  end
+
+  #get current result objekt of student
+  def getCurrentResult(measurement_id)
+    r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
+    @result=r
+    return r.nil? ? [] : r
   end
 end

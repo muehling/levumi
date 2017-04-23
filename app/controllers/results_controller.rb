@@ -4,7 +4,8 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_filter :is_allowed
+  before_filter :is_allowed, only: :update
+  before_filter :is_allowed_user, except: :update
 
   # GET /results
   # GET /results.json
@@ -19,10 +20,6 @@ class ResultsController < ApplicationController
 
   # GET /results/new
   def new
-    if @measurement.results.count == 0
-      @measurement.prepare_test
-    end
-
     @test = @measurement.assessment.test
 
     respond_to do |format|
@@ -84,6 +81,7 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
+      #Methode funktioniert leider nicht, da keine result.id mitgegeben wird. Hack:Herrausziehen aus dem Abgabestring
       @result = Result.find(params[:id])
     end
 
@@ -103,14 +101,35 @@ class ResultsController < ApplicationController
       @group = Group.find(params[:group_id])
     end
 
+
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
       params[:results]
     end
 
     def is_allowed
-      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+      #Get result id, when user is a student
+      if @login.instance_of?(Student)
+        results = result_params
+        unless results.nil?
+          if results.is_a?(String)
+            parts = results.split("#")
+            r = @measurement.results.find(parts[0].to_i)
+          end
+        end
+      end
+      #check if user is allowed
+      unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
+          (@login.id == params[:user_id].to_i)) ||((@login.id == r.student.id) && @login.instance_of?(Student))
         redirect_to root_url
       end
     end
+
+  #check if user is of type user, student is only allowed to update
+  def is_allowed_user
+    unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
+        (@login.id == params[:user_id].to_i))
+      redirect_to root_url
+    end
+  end
 end

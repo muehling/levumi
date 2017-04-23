@@ -1,10 +1,11 @@
+
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
+
 <div class="container-fluid">
   <div id="content">
-
     <div id="alert">
       <div class="alert alert-info alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -52,7 +53,7 @@
           </div>
           <div class="modal-footer" style="text-align: center">
             <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
-            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button> <!-- Startet den Test-->
             <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
           </div>
         </div>
@@ -67,7 +68,6 @@
 
   </div>
 </div>
-
 
 
 <script>
@@ -177,7 +177,7 @@
         $('#status').html("<br/><br/><br/>");
         preparation = true;
         $('#cButton').html("Schrift größer");
-        $('#iButton').html("Schrift kleiner");
+        $('#iButton').html("Schrift kleiner");/
         setButtons(true);
         $('#mainModal').modal('show');
     }
@@ -187,10 +187,11 @@
         $('#cButton').html("Richtig (Taste: 1)");
         $('#iButton').html("Falsch (Taste: 0)");
         setButtons(true);
+
         currentItemIndex = -1;
         currentResult = "";
         currentTimes = "";
-        nextItem();
+        nextItem(); /
         if (timeoutId != -1) {
             window.clearTimeout(timeoutId);
         }

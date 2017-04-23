@@ -1,20 +1,33 @@
+<form class="navbar-form navbar-right" method="post" action="<%=url_for(:controller => "frontend", :action => "logout")%>">
+  <%= token_tag nil %>
+  <button type="submit" class="btn btn-lg btn-default">Abmelden</button>
+</form>
 <div class="jumbotron">
   <h3>Die folgenden Tests stehen zur Verfügung:</h3>
   <br/>
-  <% @measurements.each do |m| %>
+
+  <% @measurements.sort_by(&:date).each do |m| %>
       <div class="row">
         <div class="col-sm-1">
         </div>
+        <!--Show available measurements-->
         <div class="col-sm-4">
           <div id="groupName">
-            <p class="lead">
+            <p style="font-size: 35px" class="lead">
               <%= m.assessment.test.name %>
             </p>
           </div>
         </div>
-        <div class="col-sm-7">
+        <!-- start Button-->
+        <div class="col-sm-4">
           <p class="lead">
-            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success">Jetzt starten!</button><% end %>
+            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success btn-lg">Jetzt starten!</button><% end %>
+          </p>
+        </div>
+        <!-- measurement workeable until-->
+        <div class="col-sm-3">
+          <p class="lead" style="font-size: 35px">
+            Abgabe bis: <%=m.date.strftime("%d.%m.%y")%>
           </p>
         </div>
       </div>

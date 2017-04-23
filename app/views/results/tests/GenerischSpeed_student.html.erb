@@ -1,0 +1,154 @@
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+</nav>
+
+<div id="testEnviroment">
+</div>
+<div id="myProgress" style="width: 100%;height: 90px; background-color: #dddd" >
+  <div id="myBar" style="width: 0%; background-color: #4cae4c; height: 90px"></div>
+</div>
+
+
+<!-- TODO possible hack, should be changed-->
+<div>
+  <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
+</div>
+
+
+<script>
+    //variable for testsequence
+    var currentItemIndex = 0;
+    var preparation = true;
+    var lastPage = false;
+    var currentStudent = -1;
+    currentStudent = <%=@result.id%>;
+    var currentResult ="";
+
+    //Views for displayed Items
+    var itemView = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
+    <% end %>
+    };
+    //Audiopath for displayed Items for preload
+    var itemDataSound = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.audiopath%>",
+    <%end %>
+    };
+
+    //Order of Items from resultobject
+    var studentData = [
+        <%@result.items.each do |i|%>
+        <%=i%>,
+        <%end%>];
+    //last result of testkind
+    var lastResults = {
+    <% @measurement.results.each do |r| %>
+    <%= r.id%>: <%= r.getPriorResult%>,
+    <% end %>
+    };
+
+    //data for timeout
+    var timeoutId = -1;
+    var currentTimes = "";
+    var stopwatch = null;
+    var timedout=false;
+    var workTime = <%= @measurement.assessment.test.time*1000 %>;
+
+
+
+
+  $('#closeButton').hide();
+  /*Keyboard controll on last page*/
+    $(window).keyup(function(event) {
+        if (event.keyCode==13&&preparation){
+
+        }
+    });
+
+  /*Changes current content of Html-elements based on currentItemIndex*/
+  function nextItem() {
+      preparation = false;
+      currentItemIndex++;
+      if(currentItemIndex < studentData.length){
+          if (timedout)
+              stopTest(timedout);
+          else {
+              $('#testEnviroment').html(itemView[studentData[currentItemIndex]]);
+              stopwatch = new Date();
+          }
+      }
+      else {
+          stopTest();
+
+      }
+  }
+
+    /*Set flag for time-out, no aprupt end*/
+    function timedOut() {
+        timedout =true;
+    }
+
+
+  /*Stop test, when all items are asked*/
+  function stopTest() {
+      lastPage = true;
+      $('#testEnviroment').html(itemView[studentData[0]]);
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+      }
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      //send data
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
+  }
+
+    /*Variable for preload*/
+    var progress = 0;
+    var loaded = 0;
+    var soundLength = studentData.length;
+    // start preloading all the intro audio files
+    for (var i in studentData) {
+        preloadAudio(itemDataSound[studentData[i]]);
+
+    }
+
+
+    function preloadAudio(url) {
+        var audio = new Audio();
+        // once this file loads, it will call loadedAudio()
+        // the file will be kept by the browser as cache
+        if(url =="") {
+            loadedAudio()
+        }
+        else {
+            audio.addEventListener('canplaythrough', loadedAudio, false);
+            audio.src = url;
+        }
+    }
+
+    function loadedAudio() {
+        // this will be called every time an audio file is loaded
+        // we keep track of the loaded files vs the requested files
+
+        loaded++;
+        progress = ((loaded *100) / (soundLength));
+        var elem = document.getElementById("myBar");
+        elem.style.width = progress +'%';
+        if (loaded == soundLength){
+            // all have loaded do something
+            $('#myProgress').hide();
+            $('#myBar').hide();
+            nextItem();
+
+        }
+    }
+</script>
+
