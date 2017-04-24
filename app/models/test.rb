@@ -11,9 +11,10 @@ class Test < ActiveRecord::Base
   validates_presence_of :subject
   validates_presence_of :construct
   validates_presence_of :level
+  after_create :set_defaults
 
-  def after_initialize
-    @archive ||= false
+  def set_defaults
+    self.archive ||= false
   end
 
   def draw_items(ability)
