@@ -1,13 +1,17 @@
 # -*- encoding : utf-8 -*-
 class Measurement < ActiveRecord::Base
+  #Connections with other model classes:
   belongs_to :assessment
   has_many :results, :dependent => :destroy
   has_many :students, through: :results
-  #create directly associated result objects
-  after_create :prepare_test
 
+  #Validations:
   validates_presence_of :date
 
+  #Active Record Callbacks:
+  after_create :prepare_test
+
+  #Default model order: By (due) date.
   default_scope {order('date DESC')}
 
   def prepare_test

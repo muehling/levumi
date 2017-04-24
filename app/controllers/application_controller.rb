@@ -67,13 +67,11 @@ class ApplicationController < ActionController::Base
       @login = User.find(session[:user_id])
     end
   end
+
   #check if user accepted the letter of agreement
   def check_accept
-    if !session[:student_id].nil?
-    else
-      if @login.tcaccept.nil?
-        render 'accept'
-      end
+    if @login.instance_of?(User) && @login.tcaccept.nil?
+      render 'accept'
     end
   end
 

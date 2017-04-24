@@ -1,31 +1,13 @@
 # -*- encoding : utf-8 -*-
 class Student < ActiveRecord::Base
+  #Connections with other model classes:
   belongs_to :group
   has_many :results, :dependent => :destroy
 
+  #Validations:
   validates_presence_of :name
-  #before_create :set_password
   after_create :set_login
 
-
-  #Generate random login code
-  def set_login
-    while self.login.nil? | self.login.blank?
-      tempLogin = (('0'..'9').to_a+('a'..'z').to_a).shuffle.first(6).join;
-      tempStu = Student.where(:login => tempLogin);
-      if(tempStu.empty?)
-        self.login = tempLogin;
-        self.save
-      end
-    end
-  end
-
-#Generate random password if needed
-=begin setzen des Passwortes, eine Möglichkeit
-  def set_password
-    self.password_digest = (('0'..'9').to_a+('a'..'z').to_a+('A'..'Z').to_a).shuffle.first(12).join
-  end
-=end
 
  #Getter für Merkmale:
 
@@ -59,6 +41,20 @@ class Student < ActiveRecord::Base
     return self[:migration].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:migration] ? "Ja" : "Nein")
   end
 
+
+  #####################
+
+  #Generate random login code
+  def set_login
+    while self.login.nil? | self.login.blank?
+      cur = (('0'..'9').to_a + ('a'..'z').to_a).shuffle.first(6).join
+      if(Student.where(:login => tempLogin).empty?)
+        self.login = cur
+        self.save
+      end
+    end
+  end
+
   def self.xls_headings
     return %w{ID Code Klassen-Id Klassen-Name Benutzer-Id Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
   end
@@ -66,10 +62,6 @@ class Student < ActiveRecord::Base
   def to_a
     return [id.to_s, name, group.id, group.name, group.user.id, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
-
-  #####################
-
-
 
   def self.import(file, group)
     spreadsheet = open_spreadsheet(file)
@@ -169,7 +161,6 @@ class Student < ActiveRecord::Base
   #get current result objekt of student
   def getCurrentResult(measurement_id)
     r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
-    @result=r
     return r.nil? ? [] : r
   end
 end

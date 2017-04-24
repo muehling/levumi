@@ -4,7 +4,7 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_filter :is_allowed, only: :update
+  before_filter :is_allowed_update, only: :update
   before_filter :is_allowed_user, except: :update
 
   # GET /results
@@ -81,8 +81,7 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
-      #Methode funktioniert leider nicht, da keine result.id mitgegeben wird. Hack:Herrausziehen aus dem Abgabestring
-      @result = Result.find(params[:id])
+      #TODO: Hier das parsen des Strings aus is_allowed hinpacken. Dann ggf. oben in update auch rausnehmen
     end
 
     def set_measurement
@@ -107,7 +106,7 @@ class ResultsController < ApplicationController
       params[:results]
     end
 
-    def is_allowed
+    def is_allowed_update
       #Get result id, when user is a student
       if @login.instance_of?(Student)
         results = result_params
@@ -118,6 +117,7 @@ class ResultsController < ApplicationController
           end
         end
       end
+      #TODO: Ggf. Logik vereinfachern
       #check if user is allowed
       unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
           (@login.id == params[:user_id].to_i)) ||((@login.id == r.student.id) && @login.instance_of?(Student))

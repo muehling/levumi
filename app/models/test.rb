@@ -1,3 +1,4 @@
+#TODO: Teststruktur überdenken?
 # -*- encoding : utf-8 -*-
 
 require 'spreadsheet'

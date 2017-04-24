@@ -29,6 +29,8 @@
     <% end %>
     };
 
+    <!-- TODO Entweder "Diktattest" bzw. "Audiotest" oder generischer? Siehe unten-->
+
     //Audiopath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
@@ -67,7 +69,6 @@
       }
       else {
           stopTest();
-
       }
   }
 
@@ -75,6 +76,7 @@
   /*Stop test, when all items are asked*/
   function stopTest() {
       lastPage = true;
+    <!-- TODO ??-->
       $('#testEnviroment').html(itemView[studentData[currentItemIndex]]);
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
@@ -124,7 +126,6 @@
             $('#myProgress').hide();
             $('#myBar').hide();
             nextItem();
-
         }
     }
 </script>

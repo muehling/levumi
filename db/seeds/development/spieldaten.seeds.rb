@@ -127,8 +127,8 @@ sind
 /assets/Woerter/53_sind.mp3
 }
 
-dicN1 = TestDictationLisa.create(name: "Wörter schreiben", info: "", short_info: "",  len: items.size/2+5, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
-                                 archive: false,student_access:true, level:"Level nicht bestimmt")
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size/2+5, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
+                             archive: false, student_access:true, level:"Level nicht bestimmt")
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, audiopath: "/assets/Anweisungen/15_Hallo.mp3", itemview:"
 <audio id='audioItem' src='/assets/Anweisungen/15_Hallo.mp3'></audio>

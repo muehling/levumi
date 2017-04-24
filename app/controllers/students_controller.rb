@@ -8,6 +8,7 @@ class StudentsController < ApplicationController
   # GET /students
   # GET /students.json
   def index
+    #TODO Liste der Schülercodes ggf. als format.txt realisieren
     @students = Student.all
   end
 
@@ -104,7 +105,7 @@ class StudentsController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def student_params
-      params.require(:student).permit(:name, :login,:password_digest, :birthdate, :gender, :specific_needs, :migration, :file)
+      params.require(:student).permit(:name, :login, :birthdate, :gender, :specific_needs, :migration, :file)
     end
 
     def is_allowed
@@ -112,8 +113,4 @@ class StudentsController < ApplicationController
         redirect_to root_url
       end
     end
-
-  #TODO Übersichtsseite der Login codes für die Lehrer
-  def getStudentData
-  end
 end
