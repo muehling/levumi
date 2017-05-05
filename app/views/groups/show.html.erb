@@ -11,6 +11,9 @@
     <div class="col-sm-1">
       <p class="lead text-right">
         <% unless @group.demo %>
+            <%= link_to user_group_students_path(@user, @group, :format => :text), :title => "Zugangsdaten der Klasse", :data => {:remote => true} do %>
+                <span class="glyphicon glyphicon-print"></span>
+            <% end %>
             <%= link_to edit_user_group_path(@user, @group), :title => "Klasse Bearbeiten oder Löschen", :data => {:remote => true} do %>
                 <span class="glyphicon glyphicon-pencil"></span>
             <% end %>

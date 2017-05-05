@@ -27,12 +27,11 @@
                           :title => "Messung online durchführen", :data => {:remote => true} do %>
                   <span class="glyphicon glyphicon-expand"></span>
               <% end %>
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text),
+                          :title => "Messung offline durchführen", :data => {:remote => true} do %>
+                  <span class="glyphicon glyphicon-print"></span>
+              <% end %>
           <%end%>
-          <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text),
-                      :title => "Messung offline durchführen", :data => {:remote => true} do %>
-              <span class="glyphicon glyphicon-print"></span>
-          <% end %>
-
         </td>
         <td>
           <% if measurement.results.count > 0 %>
@@ -67,7 +66,7 @@
     <button class=" btn btn-default btn-disabled">Test ist nicht mehr aktuell! Bitte neuen Test verwenden.</button>
   <% else %>
     <%= link_to "Neuer Messzeitpunkt", new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true} %>
-    <%= link_to "Neuer Messzeitpunkt in sieben Tagen", {:controller => "measurements", :action => "create", :assessment_id => @assessment, :measurement =>{:date =>Date.today+7}}, method: :post, :class => "btn btn-default", :data => {:remote => true}%>
+      <%= link_to "Neuer Messzeitpunkt in sieben Tagen", {:controller => "measurements", :action => "create", :assessment_id => @assessment, :measurement =>{:date =>Date.today+7}}, method: :post, :class => "btn btn-default", :data => {:remote => true}%>
   <% end %>
 </div>
 

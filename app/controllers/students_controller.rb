@@ -10,6 +10,14 @@ class StudentsController < ApplicationController
   def index
     #TODO Liste der Schülercodes ggf. als format.txt realisieren
     @students = Student.all
+    respond_to do |format|
+      format.js {@format = "js"}
+      format.text {
+        @students = Student.where(:group_id => @group.id)
+        @format = "plain"
+        render 'index', :formats => [:js], content_type: 'text/javascript'
+      }
+    end
   end
 
   # GET /students/1
