@@ -1,13 +1,12 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ActionController::Base
   #Festlegen des Allgemeinen Layout: siehe view/layouts/*
-  layout 'bareStudent'
 
-  skip_before_filter :check_login, :check_accept    #TODO: Logik überprüfen?
 
   before_filter :check_student, except: [:welcome, :login]
-
+  #Logik überprüft. skip before filter kann raus, da application und frontend unabhängig => check student benötigt
   def welcome
+    self.class.layout 'bareStudent'
     if params.has_key?(:page)
       render params[:page]
     else
@@ -17,7 +16,8 @@ class FrontendController < ActionController::Base
 
   #Check logincode and redirect to next page
   def login
-    s = Student.find_by_login(params[:login])
+    #s = Student.find_by_login(params[:login])
+    s = Student.find_by_id(params[:login])
     if s != nil
       session[:student_id] = s.id
       redirect_to '/frontend'
@@ -31,6 +31,7 @@ class FrontendController < ActionController::Base
   def logout
     session[:student_id] = nil
     @login = nil
+    self.class.layout 'bareStudent'
     redirect_to '/student'
   end
 
@@ -46,7 +47,7 @@ class FrontendController < ActionController::Base
     @test = @measurement.assessment.test
     @result = @student.getCurrentResult(@measurement.id)
     if (@test.student_access) #...ggf mehr Tests
-      render "results/tests/#{@test.view_info}_student"  #TODO: Als Teil von view_info
+      render "results/tests/#{@test.view_info}"
     else
       redirect_to '/student'
     end
@@ -54,7 +55,7 @@ class FrontendController < ActionController::Base
 
   private
 
-  #TODO: Kann wahrscheinlich raus?
+  #kann nicht raus, siehe oben
   def check_student
     if session[:student_id].nil?
       redirect_to '/student', notice: "Bitte einloggen!"

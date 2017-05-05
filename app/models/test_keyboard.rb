@@ -11,7 +11,7 @@ class TestKeyboard < Test
   end
 #Return which view should be chosen
   def view_info
-    return "GenerischNormal"
+    return "GenerischNormal_student"
   end
 
 #draw item from itempool

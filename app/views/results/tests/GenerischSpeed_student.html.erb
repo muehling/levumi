@@ -35,7 +35,7 @@
     //Audiopath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= i.audiopath%>",
+    <%= i.id%>: "<%= asset_path(i.audiopath)%>",
     <%end %>
     };
 

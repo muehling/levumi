@@ -4,6 +4,7 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
+  before_action :set_result, only: :update #dadurch sollte theoretisch is_allowed_user überflüssig sein?
   before_filter :is_allowed_update, only: :update
   before_filter :is_allowed_user, except: :update
 
@@ -42,13 +43,18 @@ class ResultsController < ApplicationController
       stay = true
       if results.is_a?(String)                #Update comes from online testing
         parts = results.split("#")
-        r = @measurement.results.find(parts[0].to_i)
-        unless r.nil?
-          r.parse_csv(parts[1])
-          r.add_times(parts[2]) if parts.length > 2               #Possible hack: Will this always be the case?
+        unless @result.nil?
+          @result.parse_csv(parts[1])
+          @result.add_times(parts[2]) if parts.length > 2               #Possible hack: Will this always be the case?
           render nothing: true
         end
-      else
+      else        results = result_params
+        unless results.nil?
+          if results.is_a?(String)
+            parts = results.split("#")
+            r = @measurement.results.find(parts[0].to_i)
+          end
+        end
         if results.has_key?("students")       #Update comes from editing form
           @measurement.update_students(results["students"])
         else
@@ -81,7 +87,13 @@ class ResultsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_result
-      #TODO: Hier das parsen des Strings aus is_allowed hinpacken. Dann ggf. oben in update auch rausnehmen
+      results = result_params
+      unless results.nil?
+        if results.is_a?(String)
+          parts = results.split("#")
+          @result = @measurement.results.find(parts[0].to_i)
+        end
+      end
     end
 
     def set_measurement
@@ -107,20 +119,9 @@ class ResultsController < ApplicationController
     end
 
     def is_allowed_update
-      #Get result id, when user is a student
-      if @login.instance_of?(Student)
-        results = result_params
-        unless results.nil?
-          if results.is_a?(String)
-            parts = results.split("#")
-            r = @measurement.results.find(parts[0].to_i)
-          end
-        end
-      end
-      #TODO: Ggf. Logik vereinfachern
       #check if user is allowed
       unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-          (@login.id == params[:user_id].to_i)) ||((@login.id == r.student.id) && @login.instance_of?(Student))
+          (@login.id == params[:user_id].to_i)) ||((@login.id == @result.student.id) && @login.instance_of?(Student))
         redirect_to root_url
       end
     end

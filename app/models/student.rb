@@ -48,7 +48,7 @@ class Student < ActiveRecord::Base
   def set_login
     while self.login.nil? | self.login.blank?
       cur = (('0'..'9').to_a + ('a'..'z').to_a).shuffle.first(6).join
-      if(Student.where(:login => tempLogin).empty?)
+      if(Student.where(:login => cur).empty?)
         self.login = cur
         self.save
       end

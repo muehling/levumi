@@ -10,7 +10,7 @@ class TestDictation < Test
   end
 #Return which view should be chosen
   def view_info
-    return "GenerischSpeed"
+    return "GenerischSpeed_student"
   end
 #draw item from itempool
   def draw_items(ability)
