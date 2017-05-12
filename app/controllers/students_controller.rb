@@ -8,10 +8,9 @@ class StudentsController < ApplicationController
   # GET /students
   # GET /students.json
   def index
-    #TODO Liste der Schülercodes ggf. als format.txt realisieren
-    @students = Student.all
     respond_to do |format|
-      format.js {@format = "js"}
+      format.js {}
+      format.html {}
       format.text {
         @students = Student.where(:group_id => @group.id)
         @format = "plain"

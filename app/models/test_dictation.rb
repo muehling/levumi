@@ -12,25 +12,5 @@ class TestDictation < Test
   def view_info
     return "GenerischSpeed_student"
   end
-#draw item from itempool
-  def draw_items(ability)
-    itemset = Array.new
-    x=0
-    while x<5
-      x +=1
-      if x == 1
-        remaining = items - itemset
-        itemset = itemset + [remaining.last]
-      else
-        remaining = items - itemset
-        itemset = itemset + [remaining.first]
-      end
-    end
-    (6..len).each  do
-      remaining = items - itemset
-      itemset = itemset + [remaining.sample]
-    end
-    return itemset.map{|i| i.id}
-  end
 
 end

@@ -1,4 +1,3 @@
-<!-- TODO braucht man die Unterscheidung Speed/Normal überhaupt noch?-->
 
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
@@ -11,7 +10,6 @@
 </div>
 
 
-<!-- TODO possible hack, should be changed-->
 <div>
   <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
 </div>
@@ -19,7 +17,7 @@
 
 <script>
     //variable for testsequence
-    var currentItemIndex = 0;
+    var currentItemIndex = -1;
     var preparation = true;
     var lastPage = false;
     var currentStudent = -1;
@@ -73,7 +71,7 @@
   function nextItem() {
       preparation = false;
       currentItemIndex++;
-      if(currentItemIndex < studentData.length){
+      if(currentItemIndex+1 < studentData.length){
           if (timedout)
               stopTest(timedout);
           else {
@@ -96,7 +94,9 @@
   /*Stop test, when all items are asked*/
   function stopTest() {
       lastPage = true;
-      $('#testEnviroment').html(itemView[studentData[0]]);
+      //TODO Momentan nur auf "eine" letzte Seite abfragbar. habe aber schon eine Idee wie man das lösen könnte
+      //Abtipptest kann jetzt auch theoretisch in der GenerischSpeed-Vorlage laufen. Schon getestet, aber noch nicht geändert, falls ich einen fehler gemacht habe
+      $('#testEnviroment').html(itemView[studentData[studentData.length-1]]);
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;

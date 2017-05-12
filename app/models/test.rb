@@ -17,17 +17,23 @@ class Test < ActiveRecord::Base
     self.archive ||= false
   end
 
+  #Todo neue Standard-Ziehmethode, wenn du die absegnest
   def draw_items(ability)
-    itemset = Array.new
-    (1..len).each  do
-      remaining = items - itemset
+    itemset = items.where("itemtype < ?", 0).order(:itemtype)
+    enditem = items.where("itemtype > ?", 0).order(:itemtype)
+    count = itemset.size + enditem.size
+    (count..len-1).each do
+      remaining = items - (itemset + enditem)
       itemset = itemset + [remaining.sample]
     end
+    itemset = itemset + enditem
     return itemset.map{|i| i.id}
   end
 
   def len_info
-    return "#{len} Items"
+    items.where(:itemtype => 0).size
+    return "#{len - items.where(:itemtype => 0).size} Items"
+    #TODO Schnacken bzgl der anzeige in test/_show da itempool != testlenght sein kann
   end
 
   def type_info

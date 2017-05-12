@@ -8,7 +8,7 @@
     <div class="form-group">
       <%= f.submit :class => "btn btn-primary" %>
 
-      <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
+      <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm(); return false;"%>
     </div>
 
 <% end %>

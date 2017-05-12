@@ -28,6 +28,7 @@
       </td>
       <td>
         <%= test.items.count %>
+        <!--TODO Missmatch mit länge des Tests, schon in rest.rb angemerkt-->
       </td>
     </tr>
   </table>
@@ -35,7 +36,7 @@
   <p class="lead">Items</p>
   <p>
     <% first = true %>
-    <% test.items.each do |i| %>
+    <% test.items.where(:itemtype => 0).each do |i| %>
         <% unless first %>
             <%= "," %>
         <% end %>

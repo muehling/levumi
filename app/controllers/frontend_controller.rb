@@ -1,10 +1,10 @@
 # -*- encoding : utf-8 -*-
-class FrontendController < ActionController::Base
-  #Festlegen des Allgemeinen Layout: siehe view/layouts/*
+class FrontendController < ApplicationController
 
+  skip_before_filter :check_login, :check_accept
 
   before_filter :check_student, except: [:welcome, :login]
-  #Logik überprüft. skip before filter kann raus, da application und frontend unabhängig => check student benötigt
+
   def welcome
     self.class.layout 'bareStudent'
     if params.has_key?(:page)
@@ -55,7 +55,6 @@ class FrontendController < ActionController::Base
 
   private
 
-  #kann nicht raus, siehe oben
   def check_student
     if session[:student_id].nil?
       redirect_to '/student', notice: "Bitte einloggen!"
