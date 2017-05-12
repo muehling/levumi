@@ -191,8 +191,12 @@
             data: dict
         });
         $('#itemText').html("");
+
         if (lastResults[currentStudent] < currentResult.split("1").length)
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
+        else if (lastResults[currentStudent] == -1)
+        //statisches bild für jetzt
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-normal-blau.jpg", size: "250")) %>");
         else
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");
         $('#status').html("Alle Items beantwortet. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
