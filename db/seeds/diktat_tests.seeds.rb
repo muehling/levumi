@@ -305,11 +305,11 @@ while i<items.size do
   i= i+2
 end
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, itemtype: 1, audiopath: "Anweisungen/20_geschafft.mp3", itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, audiopath: "Anweisungen/20_geschafft.mp3", itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Toll jetzt hast du es geschafft.<br/>Die Testergebnisse wurden gespeichert!
-  <br/>Zum Beenden des Testes drücke bitte die Eingabetaste.“<br/>
+  „Toll jetzt hast du es geschafft.
+  <br/>Zum Beenden des Programms drücke bitte die Eingabetaste.“<br/>
   <img style='width: 250px ' src='/assets/Levumi-jubelt.gif'/>
 </p>
 <br />
@@ -323,9 +323,9 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, itemtype: 1, audiopath: 
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[0]];
+    tempAudio.src = itemDataSound[studentData[studentData.length-1]];
     tempAudio.play();
-    currentResult = ',' + currentResult;
+    currentResult = currentResult + ',';
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
