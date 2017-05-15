@@ -1,4 +1,7 @@
 # -*- encoding : utf-8 -*-
+
+#TODO: Die eingegebenen Worte müssen gespeichert werden!
+
 class TestDictation < Test
 #Return lenghth and lead time
   def len_info

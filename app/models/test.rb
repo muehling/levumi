@@ -1,5 +1,6 @@
-#TODO: Teststruktur überdenken?
 # -*- encoding : utf-8 -*-
+
+#TODO-A: Teststruktur überdenken?
 
 require 'spreadsheet'
 
@@ -17,12 +18,24 @@ class Test < ActiveRecord::Base
     self.archive ||= false
   end
 
-  #Todo neue Standard-Ziehmethode, wenn du die absegnest
-  def draw_items(ability)
-    itemset = items.where("itemtype < ?", 0).order(:itemtype)
-    enditem = items.where("itemtype > ?", 0).order(:itemtype)
-    count = itemset.size + enditem.size
-    (count..len-1).each do
+  def content_items
+    self.items.where(itemtype: 0)
+  end
+
+  #TODO: Konsequent verwenden!
+  def intro_items
+    self.items.where("itemtype < ?", 0).order(:itemtype)
+  end
+
+  #TODO: Konsequent verwenden!
+  def outro_items
+    self.items.where("itemtype > ?", 0).order(:itemtype)
+  end
+
+  def draw_items()
+    itemset = intro_items
+    enditem = outro_items
+    len.times do
       remaining = items - (itemset + enditem)
       itemset = itemset + [remaining.sample]
     end
@@ -31,9 +44,7 @@ class Test < ActiveRecord::Base
   end
 
   def len_info
-    items.where(:itemtype => 0).size
-    return "#{len - items.where(:itemtype => 0).size} Items"
-    #TODO Schnacken bzgl der anzeige in test/_show da itempool != testlenght sein kann
+    return "#{len} Items"
   end
 
   def type_info

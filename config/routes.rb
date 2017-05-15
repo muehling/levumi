@@ -22,7 +22,7 @@ Rails.application.routes.draw do
   get 'static' => 'application#static'
   get 'export' => 'application#export'
 
-  #TODO: Scope "Frontend"
+  #TODO-A: Scope "Frontend"
   get 'student' => 'frontend#welcome'
   post 'frontend/login' => 'frontend#login'
   post 'frontend/logout' => 'frontend#logout'

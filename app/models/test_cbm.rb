@@ -1,6 +1,7 @@
 class TestCBM < TestSpeed
-#TODO: Umbenennen
-  def draw_items(ability)
+#TODO-A: Umbenennen
+
+  def draw_items()
     pools = items.map{|i| i.difficulty}.uniq
     itemset = Array.new
     (1..len).each  do
