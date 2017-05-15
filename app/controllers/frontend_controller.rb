@@ -35,7 +35,7 @@ class FrontendController < ApplicationController
   end
 
   #get all available measurements
-  # #TODO: Das sollte dann evtl. Measurements index übernehmen! Ggf. umbennen
+  # #TODO-A: Das sollte dann evtl. Measurements index übernehmen! Ggf. umbennen
   def index
     @measurements = @student.get_open_measurements
   end
