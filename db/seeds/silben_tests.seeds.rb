@@ -24,7 +24,7 @@ Mu
 
 cbmN0 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0")
 items.each do |i|
-  it = cbmN0.items.build(itemtext: i, difficulty: 0)
+  it = cbmN0.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -99,7 +99,7 @@ su
 
 cbmN1 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -178,7 +178,7 @@ Wu
 
 cbmN2a = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a")
 items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -250,7 +250,7 @@ Scho
 
 cbmN2b = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b")
 items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -381,7 +381,7 @@ Seu
 
 cbmN3 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3")
 items.each do |i|
-  it = cbmN3.items.build(itemtext: i, difficulty: 0)
+  it = cbmN3.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -529,7 +529,7 @@ tru
 
 cbmN4 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4")
 items.each do |i|
-  it = cbmN4.items.build(itemtext: i, difficulty: 0)
+  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 

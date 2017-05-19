@@ -1,5 +1,3 @@
-#TODO: Mediapath nutzen!
-
 class AddDataToItems < ActiveRecord::Migration
   def change
     add_column :items, :mediapath, :text

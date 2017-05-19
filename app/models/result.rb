@@ -24,7 +24,7 @@ class Result < ActiveRecord::Base
   def initialize_results()
     self.responses = Array.new
     self.extra_data = Hash.new
-    self.items = measurement.assessment.test.draw_items(0)
+    self.items = measurement.assessment.test.draw_items()
     self.responses[self.items.size-1] = nil
     update_total
   end

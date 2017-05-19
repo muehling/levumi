@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170512130355) do
+ActiveRecord::Schema.define(version: 20170205181337) do
 
   create_table "assessments", force: true do |t|
     t.integer  "group_id"
@@ -44,9 +44,8 @@ ActiveRecord::Schema.define(version: 20170512130355) do
     t.integer  "difficulty"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "audiopath"
+    t.text     "mediapath"
     t.text     "itemview"
-    t.integer  "item_type"
     t.integer  "itemtype"
   end
 
@@ -84,7 +83,6 @@ ActiveRecord::Schema.define(version: 20170512130355) do
     t.integer  "specific_needs"
     t.boolean  "migration"
     t.text     "login"
-    t.text     "password_digest"
   end
 
   create_table "tests", force: true do |t|

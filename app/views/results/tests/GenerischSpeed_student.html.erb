@@ -1,5 +1,3 @@
-<!-- TODO: Alles auf eine Vorlage -->
-
 <nav class="navbar">
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: Schüler: #{@student.name}: #{@measurement.assessment.test.short_name} bis zum #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
@@ -31,10 +29,10 @@
     <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
     <% end %>
     };
-    //Audiopath for displayed Items for preload
+    //Mediapath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= asset_path(i.audiopath)%>",
+    <%= i.id%>: "<%= asset_path(i.mediapath)%>",
     <%end %>
     };
 
@@ -43,6 +41,7 @@
         <%@result.items.each do |i|%>
         <%=i%>,
         <%end%>];
+
     //last result of testkind
     var lastResults = {
     <% @measurement.results.each do |r| %>
@@ -55,6 +54,7 @@
     var currentTimes = "";
     var stopwatch = null;
     var timedout=false;
+    //auch Tests ohne Zeitlimit brauchen eine Zeit, welche ist egal
     var workTime = <%= @measurement.assessment.test.time*1000 %>;
 
 
@@ -88,9 +88,7 @@
   /*Stop test, when all items are asked*/
   function stopTest() {
       lastPage = true;
-
-      //TODO Momentan nur auf "eine" letzte Seite abfragbar. habe aber schon eine Idee wie man das lösen könnte
-      //Abtipptest kann jetzt auch theoretisch in der GenerischSpeed-Vorlage laufen. Schon getestet, aber noch nicht geändert, falls ich einen fehler gemacht habe
+      //Momentan nur auf "eine" letzte Seite abfragbar
       $('#testEnviroment').html(itemView[studentData[studentData.length-1]]);
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
