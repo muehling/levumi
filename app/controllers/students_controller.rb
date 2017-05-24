@@ -4,10 +4,10 @@ class StudentsController < ApplicationController
   before_action :set_group
   before_action :set_student, only: [:show, :edit, :update, :destroy]
   before_filter :is_allowed
-
+ 
   # GET /students
   # GET /students.json
-  def index
+  def index 
     @students = Student.all
   end
 
@@ -18,8 +18,13 @@ class StudentsController < ApplicationController
     respond_to do |format|
       format.html {render 'show', layout: 'plain'}
       format.js {}
+      format.pdf do
+          render pdf: "result",
+          template: "students/show.pdf.erb"
+          #:locals =>  {:student => @student, :test => test.id, :results => val},
+          #:locals => { :student => params[:student], :test =>params[:test], :results =>params[:results]}
+      end
     end
-
   end
 
   # GET /students/new

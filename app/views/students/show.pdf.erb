@@ -1,0 +1,107 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+
+	<title> result</title>
+	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/cs.min.js"></script>
+	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/d3.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<%= wicked_pdf_stylesheet_link_tag 'c3' %>
+
+</head>
+<body>
+	<% @results.each do |key, val| %>
+	<div id="chart<%=key%>", width="1200" height="600" style="width: 600px; height: 300px"></div>
+
+	<% end %>
+
+
+
+<div id="chart1", width="1200" height="600" style="width: 600px; height: 300px"></div>
+<div id="chart2", width="1200" height="600" style="width: 600px; height: 300px"></div>
+
+	<script>
+    <% @results.each do |key, val| %>
+	    <% test = Test.find(key) %>
+	    <%= render file: 'students/_draw_graph.js.erb', :locals =>  {:student => @student, :test => test.id, 
+	    	:results => val}%>
+    <% end %>
+	</script>
+	<div>After<div>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>createdPDF
+	</title>
+
+	<script href="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/c3-rails-0.4.11/vendor/assets/stylesheets/c3.css" rel="stylesheet" type="text/css"></script>
+	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js" charset="utf-8"></script>
+	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js"></script>
+	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.min.js"></script>
+	<%= javascript_include_tag "http://code.jquery.com/jquery-1.10.0.min.js" %>
+	<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" %>
+	<%= wicked_pdf_javascript_include_tag 'd3.v3.min' %>
+	<%= wicked_pdf_javascript_include_tag 'c3.min.js' %>
+	
+	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/cs.min.js"></script>
+	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/d3.min.js"></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<%= wicked_pdf_stylesheet_link_tag 'c3' %>
+</head>
+
+<body>
+
+ <% @results.each do |key, val| %>
+  <% test = Test.find(key) %>
+  <% items = @student.getTestResults(key)%>
+  <p> <%= test.short_name%></p>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="h<%=key%>">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
+        <%= test.short_name%>
+        </a>
+      </h4>
+    </div>
+
+    <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
+      <div class="panel-body">
+
+    <div class="text-center" id="p<%=key%>">
+    "<p class='lead text-middle'><%= @student.name %> - " + test + "</p>"
+        </div>
+
+
+        <div id="chart<%=key%>" width="800" height="400" style="width: 800px; height: 400px"></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+<% end %>
+
+<div id="chart28" width="1200" height="600"></div>
+
+<div >   </div>
+<script>
+ 		
+		<% @results.each do |key, val| %>
+		<% test = Test.find(key) %>
+		<%= render file: 'students/_draw_graph.js.erb', :locals  => {:student => @student, :test => test.id, :results => val}%>
+    <%=test.id %>
+		<% end %>
+</script>
+
+</body>
+</html>
+
+
