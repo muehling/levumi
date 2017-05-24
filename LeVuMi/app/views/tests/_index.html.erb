@@ -1,0 +1,48 @@
+<table class="table table-striped">
+  <thead>
+  <th>
+    Name
+  </th>
+  <th>
+    Fach
+  </th>
+  <th>
+    Kategorie
+  </th>
+  <th>
+    Anzahl Assessments/Klassen
+  </th>
+  <th>
+    Anzahl Messungen/Messzeitpunkte
+  </th>
+  <th>
+    Anzahl Ergebnisse/Messungen
+  </th>
+  </thead>
+  <tbody>
+  <% @tests.order("subject ASC, construct ASC, name ASC, level ASC").each do |test| %>
+  <tr>
+    <td>
+      <%= link_to test_path(test.id, format: "xml") do %>
+          <%= test.short_name %>
+      <% end %>
+    </td>
+    <td>
+      <%= test.subject %>
+    </td>
+    <td>
+      <%= test.construct %>
+    </td>
+    <td>
+      <%= test.assessments.count %>
+    </td>
+    <td>
+      <%= Measurement.where(:assessment => Assessment.where(:test => test)).count %>
+    </td>
+    <td>
+      <%= Result.where(:measurement => Measurement.where(:assessment => Assessment.where(:test => test))).count %>
+    </td>
+  </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -1,0 +1,79 @@
+<% if @student.errors.any? %>
+    <div class="alert alert-danger">
+      <% @student.errors.full_messages.each do |message| %>
+          <%= message %><br/>
+      <% end %>
+    </div>
+<% end %>
+
+<%= form_for([@user, @group, @student], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
+
+  <div class="row">
+    <div class="col-xs-4">
+      <% if @student.errors[:name].any? %>
+          <div class="form-group has-error">
+      <% else %>
+          <div class="form-group">
+      <% end %>
+      <%= f.label :name, :class => "control-label" %>
+      <%= f.text_field :name, :class => "form-control input-sm", "aria-describedby" => "helpBlockN" %>
+      <span id="helpBlockN" class="help-block">Bitte nicht den vollständigen Namen verwenden!</span>
+      </div>
+    </div>
+
+    <div class="col-xs-3">
+      <div class="form-group">
+        <%= f.label :login, :class => "control-label" %>
+        <%= f.text_field :login, :class => "form-control input-sm", "aria-describedby" => "helpBlockL" %>
+        <span id="helpBlockL" class="help-block">Falls leer wird der Name/Code verwendet.</span>
+      </div>
+    </div>
+
+    <div class="col-xs-2">
+      <div class="form-group">
+        <%= f.label :gender, :class => "control-label" %>
+        <%= f.select(:gender, options_for_select([['', nil], ['männlich', true], ['weiblich', false]], @student.gender), {}, {:class => "form-control input-sm"}) %>
+      </div>
+    </div>
+
+    <div class="col-xs-3">
+      <div class="form-group">
+        <%= f.label :birthdate, :class => "control-label" %><br/>
+        <%= f.date_select :birthdate, {:order => [:month, :year], :include_blank => true, :start_year => 1990, :end_year => Date.today().year}, {:class => "form-control input-sm", :style => "display:inline-block;width:30%;"}%>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-3">
+        <div class="form-group">
+          <%= f.label :specific_needs, :class => "control-label" %>
+          <%= f.select(:specific_needs, options_for_select([['', nil], ['Keiner', 0], ['Lernen', 1], ['Geistige Entwicklung', 2], ['Anderer Förderbedarf', 3], ['Deutsch', 4]], @student.specific_needs), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockSPF"}) %>
+          <span id="helpBlockSPF" class="help-block">Diagnostizierter sonderpädagogischer Förderbedarf oder Erlernen der deutschen Sprache.</span>
+        </div>
+    </div>
+    <div class="col-xs-2">
+      <div class="form-group">
+        <%= f.label :migration, :class => "control-label" %>
+        <%= f.select(:migration, options_for_select([['', nil], ['Nein', false], ['Ja', true]], @student.migration), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockMG"}) %>
+        <span id="helpBlockMG" class="help-block">Falls Kind oder die Eltern im Ausland geboren.</span>
+      </div>
+    </div>  </div>
+
+  <div class="row">
+    <div class="col-xs-12">
+        <div class="form-group">
+          <%= f.submit :class => "btn btn-primary" %>
+
+          <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
+        </div>
+    </div>
+  </div>
+
+<% end %>
+
+<script>
+    function cancelForm() {
+        $('#studentForm').html("<%= escape_javascript(raw(link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true})) %>");
+    }
+</script>

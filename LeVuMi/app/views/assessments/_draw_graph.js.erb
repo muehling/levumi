@@ -1,0 +1,60 @@
+var chart = c3.generate({
+    bindto: '#chart',
+    data: {
+        x: 'x',
+        columns: [
+            ['x',
+                <% @assessment.measurements.each do |m| %>
+                '<%= m.date.to_date %>',
+                <% end %>
+            ],
+            <% @group.students.each do |student| %>
+            ['<%= student.name %>',
+                <% @assessment.measurements.each do |m| %>
+                <% r = m.results.find_by_student_id(student.id) %>
+                <% unless r.nil? %>
+                <%= r.score.nil? ? "null" : r.score %>
+                <% else %>
+                null
+                <% end %>,
+                <% end %>
+            ],
+            <% end %>
+        ]
+    },
+    axis: {
+        x: {
+            type: 'timeseries',
+            tick: {
+                fit: true,
+                format: "%d.%m%.%y"
+            },
+            label: {
+                text: 'Testzeitpunkte',
+                position: 'outer-left'
+            }
+        },
+        y: {
+            label: {
+                text: 'Anzahl richtiger Items',
+                position: 'outer-middle'
+            },
+            min: 1
+        }
+    },
+    line: {
+        connectNull: true
+    },
+    tooltip: {
+        contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
+            var res = "<table class='table table-condensed' style='background-color:white'><thead><th></th><th >Schüler/-in</th><th>Punkte</th><tbody>";
+            var i = 0;
+            d.sort(function(a, b){return b.value - a.value});
+            for (i = 0; i < d.length; i++)
+                if (d[i].value != null)
+                    res = res + "<tr><td><span class='glyphicon glyphicon-stop' style='color:" + color(d[i]) + "'></span></td><td>" + d[i].name + "</td><td>" + d[i].value + "</td></tr>";
+            res = res + "</tbody></table>";
+            return res;
+        }
+    }
+});

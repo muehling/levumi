@@ -1,0 +1,50 @@
+<div class="well userCard" id="group">
+
+  <div class="row">
+    <div class="col-sm-10">
+      <div id="userData">
+        <table class="table">
+          <thead>
+          <th>
+            Name
+          </th>
+          <th>
+            E-Mail
+          </th>
+          <th>
+            Schule
+          </th>
+          <th>
+            Klassen
+          </th>
+          </thead>
+          <tbody>
+          <tr>
+            <td>
+              <%= @user.name%>
+            </td>
+            <td>
+              <%= @user.email%>
+            </td>
+            <td>
+              <%= @user.school%>
+            </td>
+            <td>
+              <%= link_to @user.groups.size, user_groups_path(@user)%>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="col-sm-2">
+      <p class="lead text-right">
+        <%= link_to edit_user_path(@user) do %>
+            <span class="glyphicon glyphicon-pencil"></span>
+        <% end %>
+      </p>
+    </div>
+  </div>
+
+</div>
+

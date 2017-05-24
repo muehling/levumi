@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  student_id: 1
+  measurement_id: 1
+  result: MyText
+
+two:
+  student_id: 1
+  measurement_id: 1
+  result: MyText

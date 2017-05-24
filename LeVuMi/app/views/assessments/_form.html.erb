@@ -1,0 +1,31 @@
+<%= form_for([@user, @group, @assessment], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
+    <div class="form-group">
+        <%= label_tag "test", "Verfügbare Tests" %>
+        <%= select_tag "test", options_from_collection_for_select(@tests, "id", "long_name"), {:class => "form-control", :onchange => "selectChanged()"}%>
+    </div>
+    <div class="form-group">
+        <%= label_tag "", "Information" %>
+        <p class="form-control-static" id="info"><%= @tests.first.short_info if @tests.size > 0%></p>
+    </div>
+
+    <div class="form-group">
+        <%= f.submit :class => "btn btn-primary" %>
+        <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
+    </div>
+<% end %>
+
+<script>
+    function cancelForm() {
+        $('#newAssessment').html("<%= escape_javascript(link_to(raw("<div class='btn btn-default groupButton'><i>Neuer Test</i></div>"), new_user_group_assessment_path(@user, @group), :data => {:remote => true}))%>");
+    }
+    function selectChanged() {
+        var e = document.getElementById("test");
+        var val = e.options[e.selectedIndex].value;
+        var infos = [
+            <% @tests.each do |t| %>
+                "<%= raw(t.short_info)%>",
+            <% end %>
+        ];
+        $("#info").html(infos[val-1]);
+    }
+</script>

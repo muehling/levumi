@@ -1,0 +1,234 @@
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+</nav>
+
+<div class="container-fluid">
+  <div id="content">
+
+    <div id="alert">
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen.</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <% @measurement.results.each do |r| %>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>)">
+              <%= r.student.name %>
+            </div>
+          </div>
+      <% end %>
+    </div>
+
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="mainModalHeader"></h4>
+          </div>
+          <div class="modal-body" id="modalBody">
+            <br/>
+            <br/>
+            <br/>
+              <p class="text-center" style="font-size: 24px" id="pic">
+                <br/>
+                <br/>
+                <br/>
+              </p>
+              <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
+                Test
+              </p>
+            <p class="text-center" style="font-size: 24px" id="status">
+              <br/>
+              <br/>
+              <br/>
+            </p>
+            <br/>
+            <br/>
+            <br/>
+          </div>
+          <div class="modal-footer" style="text-align: center">
+            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="iButton" type="button" class="btn btn-block" onclick="window.close()">Messung beenden</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+
+<script>
+
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+
+        }
+    });
+
+    var currentStudent = -1;
+    var currentItemIndex = -1;
+    var currentResult = "";
+    var preparation = true;
+
+    var itemData = {
+        <% @measurement.assessment.test.items.each do |i| %>
+         <%= i.id%>: "<%= i.itemtext%>",
+        <% end %>
+    };
+
+    var students = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: "<%= r.student.name%>",
+        <% end %>
+    };
+
+    var studentData = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: [
+                  <% r.items.each do |i| %>
+                  <%= i %>,
+                  <% end %>
+            ],
+        <% end %>
+    };
+
+    var lastResults = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: <%= r.getPriorResult%>,
+        <% end %>
+    };
+
+    function setButtons(enabled) {
+      if (enabled) {
+          if (preparation) {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').removeClass("btn-success");
+              $('#sButton').removeClass("disabled");
+              $('#sButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').removeClass("btn-danger");
+          }
+          else {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').addClass("btn-danger");
+              $('#sButton').addClass("disabled");
+              $('#sButton').removeClass("btn-success");
+          }
+      }
+      else {
+          $('#cButton').addClass("disabled");
+          $('#cButton').removeClass("btn-success");
+          $('#iButton').addClass("disabled");
+          $('#iButton').removeClass("btn-danger");
+          $('#sButton').addClass("disabled");
+          $('#sButton').removeClass("btn-success");
+      }
+    }
+
+    function nextItem() {
+        currentItemIndex++;
+        if (currentItemIndex < studentData[currentStudent].length)
+            $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+        else
+            stopTest();
+    }
+
+    function prepareTest(student) {
+        currentStudent = student;
+         $('#mainModalHeader').html(students[student]);
+        $('#itemText').css('font-size', 96);
+        $('#itemText').html("Test");
+        $('#pic').html("<br/><br/><br/>");
+        $('#status').html("<br/><br/><br/>");
+        preparation = true;
+        $('#cButton').html("Schrift größer");
+        $('#iButton').html("Schrift kleiner");
+        setButtons(true);
+        $('#mainModal').modal('show');
+    }
+
+    function startTest() {
+        preparation = false;
+        $('#cButton').html("Richtig (Taste: 1)");
+        $('#iButton').html("Falsch (Taste: 0)");
+        setButtons(true);
+        currentItemIndex = -1;
+        nextItem();
+        currentResult = "";
+    }
+
+    function stopTest() {
+        var dict = {};
+        var trend = "";
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
+        $('#itemText').html("");
+        if (lastResults[currentStudent] < currentResult.split("1").length)
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
+        else
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");
+        $('#status').html("Alle Items beantwortet. " +  "<br/>Die Testergebnisse wurden gespeichert! <br/>Sie können das Testfenster nun schließen.");
+        $('#btn'+currentStudent).addClass('btn-success');
+        setButtons(false);
+    }
+
+    function cButtonClick() {
+        if (!$('#cButton').hasClass("disabled")) {
+            if (preparation) {
+                curSize=parseInt($('#itemText').css('font-size')) + 6;
+                $('#itemText').css('font-size', curSize);
+            }
+            else {
+                currentResult = currentResult + "1,";
+                nextItem();
+            }
+        }
+    }
+
+    function iButtonClick() {
+        if (!$('#iButton').hasClass("disabled")) {
+          if (preparation) {
+              curSize = parseInt($('#itemText').css('font-size')) - 6;
+              $('#itemText').css('font-size', curSize);
+          }
+          else {
+              currentResult = currentResult + "0,";
+              nextItem();
+          }
+        }
+    }
+
+    function sButtonClick() {
+        if (preparation) {
+            startTest();
+        }
+  }
+</script>
