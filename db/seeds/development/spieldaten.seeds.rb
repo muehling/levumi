@@ -41,7 +41,7 @@ m = a.measurements.build(date: Date.tomorrow)
 m.save
 
 t = TestSpeed.create(name: "Mathetest", len: 4, info: "Mathetest für die Grundschule, 1. Klasse", short_info:  "Mathetest für die Grundschule, 1. Klasse",
-                     subject: "Mathe", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+                     subject: "Mathematik", construct: "Lesen", archive: false, level: "Level 0", time: 60)
 i = t.items.build(itemtext: "4", difficulty: 0.1, itemtype:0)
 i.save
 i = t.items.build(itemtext: "3", difficulty: 0.4, itemtype:0)
@@ -153,7 +153,7 @@ Woerter/53_sind.mp3
 }
 
 dicN1 = TestDictation.create(name: "Wörter schreiben", info: "Diktiertest für die Grundschule", short_info: "Diktiertest für die Grundschule", len: items.size, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
-                             archive: false, student_access:true, level:"Level nicht bestimmt")
+                             archive: false, student_access:true, level:"")
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
 <audio id='audioItem'></audio>

@@ -111,7 +111,8 @@ Woerter/52_Verdeck.mp3
 Woerter/53_sind.mp3
 }
 
-dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level:"Level nicht bestimmt")
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level:"")
+
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
 <audio id='audioItem'></audio>
@@ -286,6 +287,7 @@ while i<items.size do
         }
         else if(event.keyCode == 13) {
             $(window).unbind('keyup');
+            actualAnswers = actualAnswers + tempAnswer.value;
             if(tempAnswer.value=='"+items[i]+"'){
                 currentResult = currentResult + '1,';
             }
@@ -340,5 +342,4 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
         }})
 </script>")
 it.save
-
 dicN1.save

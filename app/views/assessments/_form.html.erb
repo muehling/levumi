@@ -2,13 +2,16 @@
 
     <!-- nicht ganz neu und ein bisschen aus der indexseite vom Test geklaut, aber jetzt werden die anzulegenden Assessments schonmal in ihre Fächer eingeteilt
           => das sollte die Länge der Liste (im dropdown-feld) bei mehreren Fächern schonmal einkürzen. Die nächste Steigerung könnten auch, wie bei der Indexseite vom
-              Test, das Auswählen der Kategorien sein. Dann würde die Lehrer über das dropdown halt nur noch das level auswählen. Wollte jetzt aber erstmal gucken was du dazu sagst.
+              Test, das Auswählen der Kategorien (und/oder Namen?) sein. Dann würde die Lehrer über das dropdown halt nur noch das level auswählen. Wollte jetzt aber erstmal gucken was du dazu sagst.
+              Anmerkung: Ich habe jetzt im Nachhinein gemerkt, dass es immer den Mathetest wählt bis dieser weg ist. Dannach funktioniert alles wie es soll. Ich denke aber bei mehreren Mathetest
+                          würden diese zuerst erzeugt werden. bevor man wirklich wählen kann
     -->
+    <!--TODO überdenken wie man das Problem lösen kann-->
     <% subjects = @tests.collect{|t| t.subject}.uniq %>
     <ul id="tabs" class="nav nav-tabs" role="tablist">
       <% first = true %>
       <% subjects.sort.each do |s| %>
-          <li onclick="selectChanged()" role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
+          <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
           <% first = false %>
       <% end %>
     </ul>
@@ -31,9 +34,7 @@
         <%= f.submit :class => "btn btn-primary" %>
         <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
       </div>
-
     </div>
-
 <% end %>
 
 <script>
