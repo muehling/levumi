@@ -113,13 +113,13 @@ Woerter/53_sind.mp3
 
 dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level:"Level nicht bestimmt")
 
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
   Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
   wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
 </p>
 <br />
 <br />
@@ -127,8 +127,8 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "Anweisungen
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -149,20 +149,20 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "Anweisungen
         }})
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "Anweisungen/15_Erklärung.mp3", itemtype:-3,itemview:"
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/15_Erklaerung.mp3", itemtype:-3,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
   dass du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
 </p>
 <br />
 <br />
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -181,13 +181,13 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "Anweis
         }})
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "Anweisungen/16_ErklärungTeilB.mp3", itemtype:-2,  itemview:"
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-2,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du ein Wort falsch geschrieben hast, kannst du die Löschtaste benutzen und die Buchstaben löschen,
   damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste,
   dann lese ich dir noch einmal vor, was du schreiben sollst. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
 </p>
 <br />
 <br />
@@ -195,8 +195,8 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -216,11 +216,11 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
         }})
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "Anweisungen/19_ich_beginne.mp3", itemtype:-1, itemview:"
+it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/19_ich_beginne.mp3", itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun dir die Wörter zu diktieren.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
 </p>
 <br />
 <br />
@@ -228,8 +228,8 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "Anwei
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -256,7 +256,7 @@ it.save
 
 i=0
 while i<items.size do
-  it = dicN1.items.build(itemtext: items[i], mediapath:audios[i], difficulty: 0, itemtype:0, itemview:"
+  it = dicN1.items.build(itemtext: items[i], mediapath:"/audio/" + audios[i], difficulty: 0, itemtype:0, itemview:"
   <audio id='audioItem'></audio>
 <p align='center'>
   <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle'>
@@ -267,8 +267,8 @@ while i<items.size do
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -307,19 +307,18 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "Anweisungen/16_Fertig.mp3", itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anweisungen/16_Fertig.mp3", itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Toll jetzt hast du es geschafft.
-  <br/>Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
-  <img style='width: 250px ' src='/assets/Levumi-jubelt.gif'/>
+  „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
+  <img style='width: 250px ' src='/images/Levumi-jubelt.gif'/>
 </p>
 <br />
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Beenden: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Beenden: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>

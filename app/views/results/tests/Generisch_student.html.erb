@@ -32,7 +32,7 @@
     //Mediapath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= asset_path(i.mediapath)%>",
+    <%= i.id%>: "<%= i.mediapath%>",
     <%end %>
     };
 
@@ -56,6 +56,7 @@
     var timedout=false;
     //auch Tests ohne Zeitlimit brauchen eine Zeit, welche ist egal
     var workTime = <%= @measurement.assessment.test.time*1000 %>;
+    var actualAnswers = "";
 
 
 
@@ -96,7 +97,7 @@
       }
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+      dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1)+ "#"+ actualAnswers.substr(0, actualAnswers.length-1);
       //send data
       $.ajax({
           type: "PUT",

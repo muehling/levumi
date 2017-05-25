@@ -63,6 +63,14 @@ class Result < ActiveRecord::Base
     save
   end
 
+  #Parse a string of format "Hund,Tiir,Fisch,..." of student answers. Stored as text.
+  def add_answer(data)
+    unless data.nil?
+      self.extra_data["answer"] = data.split(',')
+    end
+    save
+  end
+
   #Create a string in the form of "0,1,0,1,..." that denotes the result for each item in the respective order. If includeNA is false, every NA response will be transformed to 0 in the result.
   #Used for exporting the results.
   def to_csv(includeNA)

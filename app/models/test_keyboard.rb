@@ -11,7 +11,7 @@ class TestKeyboard < Test
   end
 #Return which view should be chosen
   def view_info
-    return "GenerischSpeed_student"
+    return "Generisch_student"
   end
 
 end

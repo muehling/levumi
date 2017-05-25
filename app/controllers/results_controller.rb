@@ -45,7 +45,8 @@ class ResultsController < ApplicationController
         parts = results.split("#")
         unless @result.nil?
           @result.parse_csv(parts[1])
-          @result.add_times(parts[2]) if parts.length > 2               #Possible hack: Will this always be the case?
+          @result.add_times(parts[2])
+          @result.add_answer(parts[3]) if parts.length > 3               #Possible hack: Will this always be the case?
           render nothing: true
         end
       else        results = result_params

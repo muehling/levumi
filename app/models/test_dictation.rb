@@ -1,7 +1,5 @@
 # -*- encoding : utf-8 -*-
 
-#TODO: Die eingegebenen Worte müssen gespeichert werden!
-
 class TestDictation < Test
 #Return lenghth and lead time
   def len_info
@@ -13,7 +11,7 @@ class TestDictation < Test
   end
 #Return which view should be chosen
   def view_info
-    return "GenerischSpeed_student"
+    return "Generisch_student"
   end
 
 end
