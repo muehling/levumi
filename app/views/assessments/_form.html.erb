@@ -1,17 +1,39 @@
 <%= form_for([@user, @group, @assessment], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
-    <div class="form-group">
-        <%= label_tag "test", "Verfügbare Tests" %>
-        <%= select_tag "test", options_from_collection_for_select(@tests, "id", "long_name"), {:class => "form-control", :onchange => "selectChanged()"}%>
-    </div>
-    <div class="form-group">
-        <%= label_tag "", "Information" %>
-        <p class="form-control-static" id="info"><%= @tests.first.short_info if @tests.size > 0%></p>
-    </div>
 
-    <div class="form-group">
+    <!-- nicht ganz neu und ein bisschen aus der indexseite vom Test geklaut, aber jetzt werden die anzulegenden Assessments schonmal in ihre Fächer eingeteilt
+          => das sollte die Länge der Liste (im dropdown-feld) bei mehreren Fächern schonmal einkürzen. Die nächste Steigerung könnten auch, wie bei der Indexseite vom
+              Test, das Auswählen der Kategorien sein. Dann würde die Lehrer über das dropdown halt nur noch das level auswählen. Wollte jetzt aber erstmal gucken was du dazu sagst.
+    -->
+    <% subjects = @tests.collect{|t| t.subject}.uniq %>
+    <ul id="tabs" class="nav nav-tabs" role="tablist">
+      <% first = true %>
+      <% subjects.sort.each do |s| %>
+          <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
+          <% first = false %>
+      <% end %>
+    </ul>
+    <div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+      <% first = true %>
+      <% subjects.sort.each do |s| %>
+          <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s.parameterize%>">
+            <div class="form-group">
+              <%= label_tag "test", "Verfügbare Tests" %>
+              <%= select_tag "test", options_from_collection_for_select(@tests.select{|t| t.subject == s}, "id", "long_name"), {:class => "form-control", :onchange => "selectChanged()"}%>
+            </div>
+            <div class="form-group">
+              <%= label_tag "", "Information" %>
+              <p class="form-control-static" id="info"><%= @tests.first.short_info if @tests.size > 0%></p>
+            </div>
+          </div>
+          <% first = false %>
+      <%end%>
+      <div class="form-group">
         <%= f.submit :class => "btn btn-primary" %>
         <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
+      </div>
+
     </div>
+
 <% end %>
 
 <script>

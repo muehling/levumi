@@ -40,7 +40,22 @@ m.save
 m = a.measurements.build(date: Date.tomorrow)
 m.save
 
+t = TestSpeed.create(name: "Mathetest", len: 4, info: "Mathetest für die Grundschule, 1. Klasse", short_info:  "Mathetest für die Grundschule, 1. Klasse",
+                     subject: "Mathe", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+i = t.items.build(itemtext: "4", difficulty: 0.1, itemtype:0)
+i.save
+i = t.items.build(itemtext: "3", difficulty: 0.4, itemtype:0)
+i.save
+i = t.items.build(itemtext: "2", difficulty: 0.7, itemtype:0)
+i.save
+i = t.items.build(itemtext: "1", difficulty: 0.9, itemtype:0)
+i.save
 
+a = g.assessments.build(test_id: t.id)
+a.save
+
+m = a.measurements.build(date: Date.yesterday)
+m.save
 
 
 
