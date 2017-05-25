@@ -18,14 +18,16 @@
     function cancelForm() {
         $('#newAssessment').html("<%= escape_javascript(link_to(raw("<div class='btn btn-default groupButton'><i>Neuer Test</i></div>"), new_user_group_assessment_path(@user, @group), :data => {:remote => true}))%>");
     }
+    //Schleife ausgelagert. dann muss sie nicht bei jedem Wechsel in dem dropdownfeld durchlaufen werden
+    var infos = {
+    <% @tests.each do |t| %>
+    <%= t.id%>: "<%= raw(t.short_info)%>",
+    <% end %>
+    };
+    //hat vorher nicht funktioniert mit val-1 da value die id des tests zurückgibt => hash und dann im hash nach id suchen
     function selectChanged() {
         var e = document.getElementById("test");
-        var val = e.options[e.selectedIndex].value;
-        var infos = [
-            <% @tests.each do |t| %>
-                "<%= raw(t.short_info)%>",
-            <% end %>
-        ];
-        $("#info").html(infos[val-1]);
+        var selectedTestId = e.options[e.selectedIndex].value;
+        $('#info').html(infos[selectedTestId]);
     }
 </script>

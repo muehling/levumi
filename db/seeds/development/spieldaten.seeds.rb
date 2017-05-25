@@ -44,7 +44,7 @@ m.save
 
 
 
-t = TestKeyboard.create(name: "Tastaturschulung",len: 0, info: "Tastartur für die Grundschule, 1. Klasse", short_info:
+t = TestKeyboard.create(name: "Tastaturschulung",len: 0, info: "Apptipptest für die Grundschule, 1. Klasse", short_info:
     "Tastarturtest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Schreiben", archive: false, level: "Level 0", student_access:true, time: 0)
 i = t.items.build(itemtext: "Hallo", difficulty: 0.1, itemtype:-28, mediapath: "/audio/Anweisungen/1_Hallo_ich_bin_Levumi.mp3", itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit wir beginnen können.“<img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/></p><br /><br /><br /><footer><div align='center' style='font-family: fibel_nordregular;font-size:60px'>Weiter: Irgendeine Taste</div></footer><script>var tempAudio = (document.getElementById('audioItem'));tempAudio.src = itemDataSound[studentData[currentItemIndex]]; tempAudio.play(); currentResult = currentResult + ',';$(window).keyup(function (event) {$(window).unbind('keyup'); nextItem();})</script>")
 i.save
@@ -137,7 +137,7 @@ Woerter/43_Korb.mp3
 Woerter/53_sind.mp3
 }
 
-dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "Diktiertest für die Grundschule", short_info: "Diktiertest für die Grundschule", len: items.size, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
                              archive: false, student_access:true, level:"Level nicht bestimmt")
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
