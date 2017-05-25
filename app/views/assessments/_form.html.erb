@@ -8,7 +8,7 @@
     <ul id="tabs" class="nav nav-tabs" role="tablist">
       <% first = true %>
       <% subjects.sort.each do |s| %>
-          <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
+          <li onclick="selectChanged()" role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
           <% first = false %>
       <% end %>
     </ul>
@@ -22,7 +22,7 @@
             </div>
             <div class="form-group">
               <%= label_tag "", "Information" %>
-              <p class="form-control-static" id="info"><%= @tests.first.short_info if @tests.size > 0%></p>
+              <p class="form-control-static" id="info"><%= @tests.select{|t| t.subject == s}.first.short_info if @tests.size > 0%></p>
             </div>
           </div>
           <% first = false %>
