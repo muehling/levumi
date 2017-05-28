@@ -1,0 +1,180 @@
+<div class="container-fluid">
+  <div id="content">
+
+              <p style="font-family: 'fibel_nordregular'; font-size:96px" id="itemText" class="text-center">
+                Test
+              </p>
+
+            <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
+
+  </div>
+</div>
+
+
+
+<script>
+
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+
+        }
+    });
+
+    $('#mainModal').on('hidden.bs.modal', function () {
+       if (timeoutId != -1) {
+           window.clearTimeout(timeoutId);
+           timeoutId = -1;
+       }
+    })
+
+    var currentStudent = -1;
+    var currentItemIndex = -1;
+    var currentResult = "";
+    var preparation = true;
+    var timeoutId = -1;
+
+    var itemData = {
+        <% @measurement.assessment.test.items.each do |i| %>
+         <%= i.id%>: "<%= i.itemtext%>",
+        <% end %>
+    };
+
+    var students = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: "<%= r.student.name%>",
+        <% end %>
+    };
+
+    var studentData = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: [
+                  <% r.items.each do |i| %>
+                  <%= i %>,
+                  <% end %>
+            ],
+        <% end %>
+    };
+
+    function setButtons(enabled) {
+      if (enabled) {
+          if (preparation) {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').removeClass("btn-success");
+              $('#sButton').removeClass("disabled");
+              $('#sButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').removeClass("btn-danger");
+          }
+          else {
+              $('#cButton').removeClass("disabled");
+              $('#cButton').addClass("btn-success");
+              $('#iButton').removeClass("disabled");
+              $('#iButton').addClass("btn-danger");
+              $('#sButton').addClass("disabled");
+              $('#sButton').removeClass("btn-success");
+          }
+      }
+      else {
+          $('#cButton').addClass("disabled");
+          $('#cButton').removeClass("btn-success");
+          $('#iButton').addClass("disabled");
+          $('#iButton').removeClass("btn-danger");
+          $('#sButton').addClass("disabled");
+          $('#sButton').removeClass("btn-success");
+      }
+    }
+
+    function nextItem() {
+        currentItemIndex++;
+        if (currentItemIndex < studentData[currentStudent].length)
+            $('#itemText').html(itemData[studentData[currentStudent][currentItemIndex]]);
+        else
+            stopTest(false);
+    }
+
+    function prepareTest(student) {
+        currentStudent = student;
+         $('#mainModalHeader').html(students[student]);
+        $('#itemText').css('font-size', 96);
+        $('#itemText').html("Test");
+        preparation = true;
+        $('#cButton').html("Schrift größer");
+        $('#iButton').html("Schrift kleiner");
+        setButtons(true)
+        $('#mainModal').modal('show');
+    }
+
+    function startTest() {
+        preparation = false;
+        $('#cButton').html("Richtig (Taste: 1)");
+        $('#iButton').html("Falsch (Taste: 0)");
+        setButtons(true);
+        currentItemIndex = -1;
+        nextItem();
+        currentResult = "";
+        if (timeoutId != -1) {
+            window.clearTimeout(timeoutId);
+        }
+        timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> + 500, true);
+    }
+
+    function stopTest(timeout) {
+        var dict = {};
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1);
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
+        $('#itemText').css('font-size', 36);
+        if (timeout)
+            $('#itemText').html("Zeit abgelaufen. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+        else
+            $('#itemText').html("Alle Items beantwortet. Die Testergebnisse wurden gespeichert! <br/> Sie können das Testfenster nun schließen.");
+        $('#btn'+currentStudent).addClass('btn-success');
+        setButtons(false);
+    }
+
+    function cButtonClick() {
+        if (!$('#cButton').hasClass("disabled")) {
+            if (preparation) {
+                curSize=parseInt($('#itemText').css('font-size')) + 6;
+                $('#itemText').css('font-size', curSize);
+            }
+            else {
+                currentResult = currentResult + "1,"
+                nextItem();
+            }
+        }
+    }
+
+    function iButtonClick() {
+        if (!$('#iButton').hasClass("disabled")) {
+          if (preparation) {
+              curSize = parseInt($('#itemText').css('font-size')) - 6;
+              $('#itemText').css('font-size', curSize);
+          }
+          else {
+              currentResult = currentResult + "0,"
+              nextItem();
+          }
+        }
+    }
+
+    function sButtonClick() {
+        if (preparation) {
+            startTest();
+        }
+  }
+</script>

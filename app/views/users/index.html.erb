@@ -1,0 +1,50 @@
+<div class="well userCard" id="group">
+    <table class="table table-striped">
+      <thead>
+      <th>
+        ID
+      </th>
+      <th>
+        Benutzer
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Schule
+      </th>
+      <th>
+        Aktion
+      </th>
+      </thead>
+      <tbody>
+      <% @users.each do |user| %>
+          <tr>
+            <td>
+              <%= user.id %>
+            </td>
+            <td>
+              <%= link_to user.email, user_path(user) %>
+            </td>
+            <td>
+              <%= user.name %>
+            </td>
+            <td>
+              <%= user.school %>
+            </td>
+            <td>
+              <%= link_to edit_user_path(user) do %>
+                  <span class="glyphicon glyphicon-pencil"></span>
+              <% end %>
+              <% if user != @login %>
+                  <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                    <span class="glyphicon glyphicon-trash"></span>
+                  <% end %>
+              <% end %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+    <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
+</div>

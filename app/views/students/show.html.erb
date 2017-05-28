@@ -1,0 +1,153 @@
+<style>
+    @media print
+    {
+        .panel {page-break-after:always}
+    }
+    .c3-line-student {
+        stroke-width: 3px;
+    }
+    .c3-line-n25, .c3-line-n50, .c3-line-n75 {
+        stroke-dasharray: 10,10;
+    }
+</style>
+
+<% @results.each do |key, val| %>
+  <% test = Test.find(key) %>
+  <% items = @student.getTestResults(key)%>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="h<%=key%>">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
+          <%= @student.name %> - <%= test.short_name%>
+        </a>
+      </h4>
+    </div>
+
+    <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
+      <div class="panel-body">
+
+        <div id="chart<%=key%>">
+        </div>
+
+        <div id="table<%=key%>">
+
+        <p>
+          <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+          <% if val.size < 3 %>
+              -
+          <% else %>
+              <% first = true %>
+              <% test.items.each do |i| %>
+                  <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] > items["4th"] %>
+                      <% unless first %>
+                          <%= ", " %>
+                      <% end %>
+                      <% first = false %>
+                      <%= i.shorthand %>
+                  <% end %>
+              <% end %>
+              <% if first %> - <% end %>
+          <% end %>
+        </p>
+        <p>
+          <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+          <% if val.size < 3 %>
+              -
+          <% else %>
+              <% first = true %>
+              <% test.items.each do |i| %>
+                  <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] < items["1st"] %>
+                      <% unless first %>
+                          <%= ", " %>
+                      <% end %>
+                      <% first = false %>
+                      <%= i.shorthand %>
+                  <% end %>
+              <% end %>
+              <% if first %> - <% end %>
+          <% end %>
+        </p>
+
+        <table class="table table-striped">
+          <thead>
+          <th>
+            Zeitpunkt
+          </th>
+          <th>
+            Richtig gelöste Items
+          </th>
+          <th>
+            Falsch gelöste Items
+          </th>
+          <th>
+            Anzahl richtig gelöster Items
+          </th>
+          <th>
+            Anzahl falsch gelöster Items
+          </th>
+          <th>
+            Lösungswahrscheinlichkeit in %
+          </th>
+          </thead>
+          <tbody>
+            <% val.sort_by {|x| x.measurement.date}.each do |r| %>
+            <% unless r.score.nil? %>
+                <tr>
+                  <td>
+                    <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% for i in 0..r.items.size-1 do %>
+                        <% if r.responses[i] ==  1 %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(r.items[i]).shorthand %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% for i in 0..r.items.size-1 do%>
+                        <% if r.responses[i] ==  0 %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(r.items[i]).shorthand %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= r.count_1 %>
+                  </td>
+                  <td>
+                    <%= r.count_0 %>
+                  </td>
+                  <td>
+                    <%= (r.total * 100).round(1)%>
+                  </td>
+                </tr>
+            <% end %>
+            <% end %>
+          </tbody>
+        </table>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% end %>
+
+
+<script type="text/javascript" charset="utf-8">
+
+    <% @results.each do |key, val| %>
+    <% test = Test.find(key) %>
+    <%= render file: 'students/_draw_graph', :formats => [:js], :locals =>  {:student => @student, :test => test.id, :results => val}%>
+    <% end %>
+
+</script>
