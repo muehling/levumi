@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   def accept
     @login.tcaccept = DateTime.now
     @login.save
-    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von LeVuMi!"
+    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von Levumi!"
   end
 
   def static

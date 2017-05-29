@@ -170,7 +170,7 @@
     function prepareTest(student) {
         currentStudent = student;
          $('#mainModalHeader').html(students[student]);
-        $('#itemText').css('font-size', 96);
+        $('#itemText').css('font-size', 110);
         $('#itemText').html("Test");
         $('#pic').html("<br/><br/><br/>");
         $('#status').html("<br/><br/><br/>");
@@ -230,7 +230,7 @@
     function cButtonClick() {
         if (!$('#cButton').hasClass("disabled")) {
             if (preparation) {
-                curSize=parseInt($('#itemText').css('font-size')) + 6;
+                curSize=parseInt($('#itemText').css('font-size')) + 10;
                 $('#itemText').css('font-size', curSize);
             }
             else {
@@ -245,7 +245,7 @@
     function iButtonClick() {
         if (!$('#iButton').hasClass("disabled")) {
           if (preparation) {
-              curSize = parseInt($('#itemText').css('font-size')) - 6;
+              curSize = parseInt($('#itemText').css('font-size')) - 10;
               $('#itemText').css('font-size', curSize);
           }
           else {

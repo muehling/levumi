@@ -34,12 +34,12 @@ class Test < ActiveRecord::Base
 
   def draw_items()
     itemset = intro_items
-    enditem = outro_items
+    enditems = outro_items
     len.times do
-      remaining = items - (itemset + enditem)
+      remaining = items - (itemset + enditems)
       itemset = itemset + [remaining.sample]
     end
-    itemset = itemset + enditem
+    itemset = itemset + enditems
     return itemset.map{|i| i.id}
   end
 
@@ -48,19 +48,19 @@ class Test < ActiveRecord::Base
   end
 
   def type_info
-    return "Test"
+    return 'Test'
   end
 
   def view_info
-    return "Test"
+    return 'Test'
   end
 
   def long_name
-    return name + " - " + level + " (" + subject + " - " + construct + ")"
+    return name + ' - ' + level + ' (' + subject + ' - ' + construct + ')' + (archive ? ' - veraltet':'')
   end
 
   def short_name
-    return name + " - " + level + (archive ? " (veraltet)":"")
+    return name + ' - ' + level + (archive ? ' (veraltet)':'')
   end
 
   def export
@@ -88,7 +88,7 @@ class Test < ActiveRecord::Base
       end
     end
 
-    sheet = book.create_worksheet :name => "Alle Messungen"
+    sheet = book.create_worksheet :name => 'Alle Messungen'
     sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
     itemset = items.pluck(:id)
     sheet.row(0).concat itemset
@@ -107,11 +107,11 @@ class Test < ActiveRecord::Base
     measurements.sort_by { |a| a.date}.each do |m|
       if (m.assessment.group.export)
         sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).push "Datum"
+        sheet.row(0).push 'Datum'
         sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(1).push "Benutzer-Id"
+        sheet.row(1).push 'Benutzer-Id'
         sheet.row(1).push m.assessment.group.user.id
-        sheet.row(2).push "Klassen-Id"
+        sheet.row(2).push 'Klassen-Id'
         sheet.row(2).push m.assessment.group.id
 
         sheet.row(3).concat %w(Student)
@@ -126,7 +126,7 @@ class Test < ActiveRecord::Base
       end
     end
 
-    temp = Tempfile.new("LeVuMi")
+    temp = Tempfile.new('levumi')
     temp.close
     book.write temp.path
     return temp.path
