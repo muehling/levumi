@@ -5,12 +5,13 @@ class FrontendController < ApplicationController
 
   before_filter :check_student, except: [:welcome, :login]
 
+  layout 'plain'
+
   def welcome
-    self.class.layout 'bareStudent'
     if params.has_key?(:page)
       render params[:page]
     else
-      render 'welcome'
+      render 'welcome', layout: 'bareStudent'
     end
   end
 
@@ -20,7 +21,6 @@ class FrontendController < ApplicationController
     if s != nil
       session[:student_id] = s.id
       redirect_to '/frontend'
-      self.class.layout 'plain'
     else
       redirect_to '/student', notice: "Benutzername oder Password falsch!"
     end
