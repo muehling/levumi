@@ -53,8 +53,11 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
-            <li><%= link_to user_group_student_path(@user, @group, @student , format: 'pdf'), :title => "Alles ausdrucken" , :locals =>  {:student => @student, :test => test.id, :results => val, :key => key} do%>Alles<% end %></li>
-            <li><%= link_to '#', :title => "Nur Graph ausdrucken", :onclick => "print('#{key}','#{test.short_name}', false)" do%>Nur Graph<% end %></li>
+            <li><%= link_to user_group_student_path(@user, @group, @student , format: 'pdf'), :title => "Alles drucken"  do%>Alles<% end %></li>
+
+            <li><%= link_to user_group_student_path(@user, @group, @student , format: 'pdf', :without_table => true), :title => "Nur Graph",
+              :locals => {:det => "Nur Graph"} do %>Nur Graph<% end %>
+            </li>
           </ul>
         </div>
 

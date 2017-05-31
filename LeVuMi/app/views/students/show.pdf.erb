@@ -1,73 +1,64 @@
-<!--<!DOCTYPE html>
-<html>
-<head>
-
-	<title> result</title>
-	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/cs.min.js"></script>
-	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/d3.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<%= wicked_pdf_stylesheet_link_tag 'c3' %>
-
-</head>
-<body>
-	<% @results.each do |key, val| %>
-	<div id="chart<%=key%>", width="1200" height="600" style="width: 600px; height: 300px"></div>
-
-	<% end %>
-
-
-
-<div id="chart1", width="1200" height="600" style="width: 600px; height: 300px"></div>
-<div id="chart2", width="1200" height="600" style="width: 600px; height: 300px"></div>
-
-	<script>
-    <% @results.each do |key, val| %>
-	    <% test = Test.find(key) %>
-	    <%= render file: 'students/_draw_graph.js.erb', :locals =>  {:student => @student, :test => test.id, 
-	    	:results => val}%>
-    <% end %>
-	</script>
-	<div>After<div>
-</body>
-</html>
--->
-
 <!DOCTYPE html>
 <html>
 <head>
-	<title>createdPDF
-	</title>
+  <title>createdPDF
+  </title>
 
-	<script href="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/c3-rails-0.4.11/vendor/assets/stylesheets/c3.css" rel="stylesheet" type="text/css"></script>
-	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js" charset="utf-8"></script>
-	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js"></script>
-	<script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.min.js"></script>
-	<%= javascript_include_tag "http://code.jquery.com/jquery-1.10.0.min.js" %>
-	<%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" %>
-	<%= wicked_pdf_javascript_include_tag 'd3.v3.min' %>
-	<%= wicked_pdf_javascript_include_tag 'c3.min.js' %>
-	
-	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/cs.min.js"></script>
-	<script src="/home/levumi/levumi/LeVuMi/app/assets/javascripts/d3.min.js"></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-	<%= wicked_pdf_stylesheet_link_tag 'c3' %>
+  <!--<script href="/home/ibrahim/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/c3-0.4.11/c3.css" rel="stylesheet" type="text/css"></script>
+  <script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js" charset="utf-8"></script>
+  <script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.v3.min.js"></script>
+  <script src="/home/levumi/.rbenv/versions/2.4.0/lib/ruby/gems/2.4.0/gems/d3_rails-4.1.1/app/assets/javascripts/d3.min.js"></script>
+  -->
+  <%= javascript_include_tag "http://code.jquery.com/jquery-1.10.0.min.js" %>
+  <%= javascript_include_tag "http://code.jquery.com/ui/1.10.3/jquery-ui.min.js" %>
+  <%= wicked_pdf_javascript_include_tag 'd3.v3.min' %>
+  <%= wicked_pdf_javascript_include_tag 'c3.min.js' %>
+  
+  <!-- at word use the following path:
+  /home/levumi/levumi/LeVuMi/app instead of /home/ibrahim/ruby/...
+  -->
+  <script src="/home/ibrahim/ruby/levumi/LeVuMi/app/assets/javascripts/cs.min.js"></script>
+  <script src="/home/ibrahim/ruby/levumi/LeVuMi/app/assets/javascripts/d3.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <%= wicked_pdf_stylesheet_link_tag 'c3' %>
+  <style type="text/css">
+    td{
+      font-size: 10px;
+    } 
+     th, b{
+      font-size: 10px;
+    }
+    @media print
+    {
+        .panel {page-break-after:always}
+    }
+    .c3-line-student {
+        stroke-width: 3px;
+    }
+    .c3-line-n25, .c3-line-n50, .c3-line-n75 {
+        stroke-dasharray: 10,10;
+    }
+  </style>
 </head>
 
 <body>
-
-
-<!-- # <% @results.each do |key, val| %>-->
+ <% @results.each do |key, val| %>
   <% test = Test.find(key) %>
   <% items = @student.getTestResults(key)%>
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="h<%=key%>">
       <h4 class="panel-title">
         <a role="button" data-toggle="collapse" href="#c<%=key%>" aria-expanded="false" aria-controls="c<%=key%>">
-        <%= test.short_name%>
+        <%= @student.name %> - <%= test.short_name%>
+         <!--
+         <%= local_assigns[:with_table] %> - <%=  params[:with_table] %>       /  
+         <%= local_assigns[:greeting] %> - <%=  params[:greeting] %>   /
+        <% if local_assigns.has_key? :greeting %>
+          Headline: <%= greeting %>
+      <% end %> -->
+      
         </a>
       </h4>
     </div>
@@ -75,13 +66,9 @@
     <div id="c<%=key%>" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="h<%=key%>">
       <div class="panel-body">
 
-    <div class="text-center" id="p<%=key%>">
-    "<p class='lead text-middle'><%= @student.name %> - " + test + "</p>"
-        </div>
+        <!-- empty div to add the chart -->
+        <div id="chart<%=key%>" width="800" height="400"  style="width: 600px; height: 300px"></div>
 
-
-        <div id="chart<%=test.id%>"   width="1200" height="600">
-        </div>
 
         <div id="table<%=key%>">
 
@@ -127,7 +114,7 @@
           <th>
             Zeitpunkt
           </th>
-          <th>
+          <th >
             Richtig gelöste Items
           </th>
           <th>
@@ -190,22 +177,25 @@
         </table>
 
         </div>
-
+        <!-- 
+          If the variable without_table is set, thats mean that only the graph
+          should be shown, therefore the table will be deleted
+        -->
+        <script type="text/javascript">
+            <% if params.has_key? :without_table %>
+               $("#table<%=key%>").html("");
+            <% end %>
+        </script>
       </div>
     </div>
   </div>
-
-<% end %>
-
-<script>
- 		
-		<% @results.each do |key, val| %>
-		<% test = Test.find(key) %>
-		<%= render file: 'students/_draw_graph.js.erb', :locals  => {:student => @student, :test => test.id, :results => val}%>
-		<% end %>
-</script>
-
+  <% end %>
 </body>
 </html>
 
-
+<script>
+    <% @results.each do |key, val| %>
+    <% test = Test.find(key) %>
+    <%= render file: 'students/_draw_graph.js.erb', :locals  => {:student => @student, :test => test.id, :results => val}%>
+    <% end %>
+</script>

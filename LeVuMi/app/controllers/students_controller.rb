@@ -18,12 +18,13 @@ class StudentsController < ApplicationController
     respond_to do |format|
       format.html {render 'show', layout: 'plain'}
       format.js {}
-      format.pdf do
+      format.pdf { 
           render pdf: "result",
-          template: "students/show.pdf.erb"
-          #:locals =>  {:student => @student, :test => test.id, :results => val},
+          template: "students/show.pdf.erb",
+          encoding: 'utf-8'
+         #:locals =>  {:greeting => params[:with_table]}
           #:locals => { :student => params[:student], :test =>params[:test], :results =>params[:results]}
-      end
+      }
     end
   end
 
