@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
     if u != nil
       if u.authenticate(params[:password])
         session[:user_id] = u.id
+        session[:student_id] = nil
         @login = u
         news = News.new_items(u)
         u.last_login = Time.now
@@ -61,7 +62,7 @@ class ApplicationController < ActionController::Base
   def check_login
     if session[:user_id].nil? && session[:student_id].nil?
       redirect_to root_url, notice: "Bitte einloggen!"
-    elsif session[:user_id].nil?
+    elsif !session[:student_id].nil?
       @login = Student.find(session[:student_id])
      else
       @login = User.find(session[:user_id])
