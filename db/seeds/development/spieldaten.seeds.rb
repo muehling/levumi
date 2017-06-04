@@ -15,7 +15,43 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
-t = TestSpeed.create(name: "Lesetest", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+t = TestSpeed.create(name: "Lesetest", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", 
+	short_info:  "Lesetest für die Grundschule, 1. Klasse", subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+i = t.items.build(itemtext: "haha", difficulty: 0.1)
+i.save
+i = t.items.build(itemtext: "hoha", difficulty: 0.4)
+i.save
+i = t.items.build(itemtext: "huho", difficulty: 0.7)
+i.save
+i = t.items.build(itemtext: "laho", difficulty: 0.9)
+i.save
+
+a = g.assessments.build(test_id: t.id)
+a.save
+
+m = a.measurements.build(date: Date.yesterday)
+m.save
+r = m.results.build(student: Student.find(1), items: [1, 2], responses: [1,0], total: 0.5)
+r.save
+r = m.results.build(student: Student.find(2), items: [1, 2], responses:[0, 0], total: 0.0)
+r.save
+
+m = a.measurements.build(date: Date.today)
+m.save
+r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r.save
+
+m = a.measurements.build(date: Date.tomorrow)
+m.save
+r = m.results.build(student: Student.find(1), items: [1, 2], responses:[1, 0], total: 0.5)
+r.save
+r = m.results.build(student: Student.find(2), items: [1, 2], responses:[1, 1], total: 1.0)
+r.save
+
+
+
+t = TestSpeed.create(name: "Lesetest2", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", 
+	short_info:  "Lesetest für die Grundschule, 2. Klasse", subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 1", time: 60)
 i = t.items.build(itemtext: "haha", difficulty: 0.1)
 i.save
 i = t.items.build(itemtext: "hoha", difficulty: 0.4)
