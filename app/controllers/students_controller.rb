@@ -19,12 +19,10 @@ class StudentsController < ApplicationController
       format.html {render 'show', layout: 'plain'}
       format.js {}
       format.pdf { 
-          render pdf: "result",
+          render pdf: @student.name,
           template: "students/show.pdf.erb",
           encoding: 'utf-8'
-         #:locals =>  {:greeting => params[:with_table]}
-          #:locals => { :student => params[:student], :test =>params[:test], :results =>params[:results]}
-      }
+        }
     end
   end
 

@@ -28,7 +28,7 @@
     <div id="print" class="col-sm-12">
       <p id="head" class="lead text-right">
 
-        <%= link_to user_group_assessment_path(@user, @group, @assessment, format: 'pdf'),  :title => "Drucken" do %>
+        <%= link_to user_group_assessment_path(@user, @group, @assessment, format: 'pdf'),  :title => "Drucken" , target: '_blank' do %>
         <span class="glyphicon glyphicon-print"></span>
         <% end %>
 
