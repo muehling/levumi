@@ -67,7 +67,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    temp = Tempfile.new("LeVuMi")
+    temp = Tempfile.new("levumi")
     temp.close
     book.write temp.path
     return temp.path

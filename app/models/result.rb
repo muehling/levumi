@@ -24,7 +24,7 @@ class Result < ActiveRecord::Base
   def initialize_results()
     self.responses = Array.new
     self.extra_data = Hash.new
-    self.items = measurement.assessment.test.draw_items(0)
+    self.items = measurement.assessment.test.draw_items()
     self.responses[self.items.size-1] = nil
     update_total
   end
@@ -59,6 +59,14 @@ class Result < ActiveRecord::Base
     unless data.nil?
       vals = data.split(',')
       self.extra_data["times"] = vals.map{|x| x.to_i}
+    end
+    save
+  end
+
+  #Parse a string of format "Hund,Tiir,Fisch,..." of student answers. Stored as text.
+  def add_answer(data)
+    unless data.nil?
+      self.extra_data["answer"] = data.split(',')
     end
     save
   end

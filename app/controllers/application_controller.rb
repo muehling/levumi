@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   def accept
     @login.tcaccept = DateTime.now
     @login.save
-    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von LeVuMi!"
+    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von Levumi!"
   end
 
   def static
@@ -57,17 +57,20 @@ class ApplicationController < ActionController::Base
   end
 
   private
-
+  #check if user is logged in
   def check_login
-    if session[:user_id].nil?
+    if session[:user_id].nil? && session[:student_id].nil?
       redirect_to root_url, notice: "Bitte einloggen!"
+    elsif session[:user_id].nil?
+      @login = Student.find(session[:student_id])
      else
       @login = User.find(session[:user_id])
     end
   end
 
+  #check if user accepted the letter of agreement
   def check_accept
-    if @login.tcaccept.nil?
+    if @login.instance_of?(User) && @login.tcaccept.nil?
       render 'accept'
     end
   end

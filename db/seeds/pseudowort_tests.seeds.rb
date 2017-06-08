@@ -73,7 +73,7 @@ limi
 cbmN0 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0")
 
 items.each do |i|
-  it = cbmN0.items.build(itemtext: i, difficulty: 0)
+  it = cbmN0.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -261,7 +261,7 @@ lale
 cbmN1 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
 
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -405,7 +405,7 @@ jenu
 cbmN3a = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3a")
 
 items.each do |i|
-  it = cbmN3a.items.build(itemtext: i, difficulty: 0)
+  it = cbmN3a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -601,7 +601,7 @@ spüvi
 cbmN3b = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3b")
 
 items.each do |i|
-  it = cbmN3b.items.build(itemtext: i, difficulty: 0)
+  it = cbmN3b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -805,7 +805,7 @@ sprispre
 cbmN4 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4")
 
 items.each do |i|
-  it = cbmN4.items.build(itemtext: i, difficulty: 0)
+  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -937,7 +937,7 @@ reilau
 wenen
 }
 items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 cbmN2a.len = cbmN2a.len + items.size
@@ -979,7 +979,7 @@ derpo
 merrei
 }
 items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 1)
+  it = cbmN2a.items.build(itemtext: i, difficulty: 1, itemtype: 0)
   it.save
 end
 cbmN2a.len = cbmN2a.len + items.size
@@ -1105,7 +1105,7 @@ gaka
 gobu
 }
 items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 cbmN2b.len = cbmN2b.len + items.size
@@ -1143,7 +1143,7 @@ benscho
 genben
 }
 items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 1)
+  it = cbmN2b.items.build(itemtext: i, difficulty: 1, itemtype: 0)
   it.save
 end
 cbmN2b.len = cbmN2b.len + items.size

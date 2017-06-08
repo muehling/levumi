@@ -8,13 +8,14 @@
     <div class="form-group">
       <%= f.submit :class => "btn btn-primary" %>
 
-      <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
+      <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm(); return false;"%>
     </div>
 
 <% end %>
 
 <script>
     function cancelForm() {
-        $('#measurementForm').html("<%= escape_javascript(raw(link_to 'Neue Messung', new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true})) %>");
+        $('#measurementForm').html("<%= escape_javascript(raw(link_to 'Neue Messung', new_user_group_assessment_measurement_path(@user, @group, @assessment), :class => "btn btn-default", :data => {:remote => true})) %>"+
+            "<%=escape_javascript(raw(link_to "Neuer Messzeitpunkt in sieben Tagen", {:controller => "measurements", :action => "create", :assessment_id => @assessment, :measurement =>{:date =>Date.today+7}}, method: :post, :class => "btn btn-default", :data => {:remote => true}))%>");
     }
 </script>

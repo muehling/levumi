@@ -22,8 +22,9 @@ Rails.application.routes.draw do
   get 'static' => 'application#static'
   get 'export' => 'application#export'
 
-  get 'student' => 'frontend#welcome'
+  get 'schueler' => 'frontend#welcome'
   post 'frontend/login' => 'frontend#login'
+  post 'frontend/logout' => 'frontend#logout'
   get 'frontend' => 'frontend#index'
   get 'frontend/:id' => 'frontend#start'
 
@@ -81,4 +82,6 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
+
+
 end

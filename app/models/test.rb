@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 
+#TODO-A: Teststruktur überdenken?
+
 require 'spreadsheet'
 
 class Test < ActiveRecord::Base
@@ -10,17 +12,34 @@ class Test < ActiveRecord::Base
   validates_presence_of :subject
   validates_presence_of :construct
   validates_presence_of :level
+  after_create :set_defaults
 
-  def after_initialize
-    @archive ||= false
+  def set_defaults
+    self.archive ||= false
   end
 
-  def draw_items(ability)
-    itemset = Array.new
-    (1..len).each  do
-      remaining = items - itemset
+  def content_items
+    self.items.where(itemtype: 0)
+  end
+
+  #TODO: Konsequent verwenden!
+  def intro_items
+    self.items.where("itemtype < ?", 0).order(:itemtype)
+  end
+
+  #TODO: Konsequent verwenden!
+  def outro_items
+    self.items.where("itemtype > ?", 0).order(:itemtype)
+  end
+
+  def draw_items()
+    itemset = intro_items
+    enditems = outro_items
+    len.times do
+      remaining = items - (itemset + enditems)
       itemset = itemset + [remaining.sample]
     end
+    itemset = itemset + enditems
     return itemset.map{|i| i.id}
   end
 
@@ -29,19 +48,19 @@ class Test < ActiveRecord::Base
   end
 
   def type_info
-    return "Test"
+    return 'Test'
   end
 
   def view_info
-    return "Test"
+    return 'Test'
   end
 
   def long_name
-    return name + " - " + level + " (" + subject + " - " + construct + ")"
+    return name + ' - ' + level + ' (' + subject + ' - ' + construct + ')' + (archive ? ' - veraltet':'')
   end
 
   def short_name
-    return name + " - " + level + (archive ? " (veraltet)":"")
+    return name + ' - ' + level + (archive ? ' (veraltet)':'')
   end
 
   def export
@@ -69,7 +88,7 @@ class Test < ActiveRecord::Base
       end
     end
 
-    sheet = book.create_worksheet :name => "Alle Messungen"
+    sheet = book.create_worksheet :name => 'Alle Messungen'
     sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
     itemset = items.pluck(:id)
     sheet.row(0).concat itemset
@@ -88,11 +107,11 @@ class Test < ActiveRecord::Base
     measurements.sort_by { |a| a.date}.each do |m|
       if (m.assessment.group.export)
         sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).push "Datum"
+        sheet.row(0).push 'Datum'
         sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(1).push "Benutzer-Id"
+        sheet.row(1).push 'Benutzer-Id'
         sheet.row(1).push m.assessment.group.user.id
-        sheet.row(2).push "Klassen-Id"
+        sheet.row(2).push 'Klassen-Id'
         sheet.row(2).push m.assessment.group.id
 
         sheet.row(3).concat %w(Student)
@@ -107,7 +126,7 @@ class Test < ActiveRecord::Base
       end
     end
 
-    temp = Tempfile.new("LeVuMi")
+    temp = Tempfile.new('levumi')
     temp.close
     book.write temp.path
     return temp.path

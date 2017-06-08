@@ -1,3 +1,8 @@
+<p class="lead text-right">
+  <%= link_to user_group_students_path(@user, @group, :format => :text), :title => "Zugangsdaten der Klasse", :data => {:remote => true} do %>
+      <span class="glyphicon glyphicon-print"></span>
+  <% end %>
+</p>
 <table class="table table-striped">
   <thead>
   <th>
@@ -66,4 +71,3 @@
 <div id="studentForm">
   <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
 </div>
-

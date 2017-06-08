@@ -45,7 +45,7 @@ class MeasurementsController < ApplicationController
   def update
     respond_to do |format|
       if @measurement.update(measurement_params)
-        format.js { redirect_to [@user, @group, @assessment] }
+        format.js { render :index } #TODO ??
       else
         format.js { render :edit }
       end

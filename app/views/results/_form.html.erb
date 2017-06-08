@@ -57,29 +57,32 @@
             <%= form_tag(user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement), :method => :put, class: "form", :data => {:remote => true}) do %>
                   <% index = 0 %>
                   <% r.items.each do |i| %>
-                    <div class="form-group">
-                      <p class="lead">
-                        <%= Item.find(i).shorthand %>
-                      </p>
-                      <div class="radio">
-                        <label>
-                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '1', r.responses[index] == 1 %>Richtig<br/>
-                        </label>
+                    <% tempItem = Item.find(i) %>
+                    <% if tempItem.itemtype == 0 %>
+                      <div class="form-group">
+                        <p class="lead">
+                          <%= tempItem.shorthand %>
+                        </p>
+                        <div class="radio">
+                          <label>
+                            <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '1', r.responses[index] == 1 %>Richtig<br/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '0', r.responses[index] == 0 %>Falsch<br/>
+                          </label>
+                        </div>
+                        <div class="radio">
+                          <label>
+                            <%= radio_button_tag "results[#{r.student.id}[#{i}]]", 'NA', r.responses[index] == nil %><i>Nicht bearbeitet</i><br/>
+                          </label>
+                        </div>
                       </div>
-                      <div class="radio">
-                        <label>
-                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", '0', r.responses[index] == 0 %>Falsch<br/>
-                        </label>
-                      </div>
-                      <div class="radio">
-                        <label>
-                          <%= radio_button_tag "results[#{r.student.id}[#{i}]]", 'NA', r.responses[index] == nil %><i>Nicht bearbeitet</i><br/>
-                        </label>
-                      </div>
-                    </div>
-                    <br/>
+                      <br/>
+                    <% end %>
                     <% index = index + 1 %>
-                  <% end %>
+                  <%end%>
                 <%= submit_tag 'Speichern', :class => "btn btn-primary" %>
                 <%= link_to "Zurück",  [@user, @group, @assessment], :data => {:remote => true}%>
             <% end %>

@@ -1,15 +1,27 @@
 <div class="jumbotron">
-  <h1>LeVuMi</h1>
-  <h3>Zugang für Schüler/-innen</h3>
+  <h1><%= image_tag('Levumi-klein-blau.png', size: "120")%> Levumi  </h1>
+  <h3>Zugang für Schülerinnen und Schüler</h3>
   <br/>
+  <!--field for logincode-->
   <%= form_tag(url_for(:controller => 'frontend', :action => 'login'), :class => "form") do %>
       <p>
-        Hier bitte Zugangscode eingeben:
+        Gebe hier bitte deinen Zugangscode ein:
       </p>
       <div class="form-group">
         <label class="sr-only" for="login">Code</label>
-        <%= text_field_tag "login", nil, type: "text", class: "form-control", placeholder: "Code"%>
+        <%= text_field_tag "login", nil, type: "text",:autocomplete => :off , class: "form-control", placeholder: "Zugangscode"%>
       </div>
-      <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
+
+      <!-- Field for password
+      <p>
+        Hier bitte Passwort eingeben:
+      </p>
+      <div class="form-group">
+        <label class="sr-only" for="login">Passwort</label>
+        <%= text_field_tag "password", nil, type: "text",  class: "form-control", placeholder: "Passwort"%>
+      </div>
+      -->
+      <%= submit_tag 'Anmelden', :class => "btn btn-primary" %>
   <% end %>
+  <br/>
 </div>

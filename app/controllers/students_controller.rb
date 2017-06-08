@@ -4,11 +4,19 @@ class StudentsController < ApplicationController
   before_action :set_group
   before_action :set_student, only: [:show, :edit, :update, :destroy]
   before_filter :is_allowed
- 
+
   # GET /students
   # GET /students.json
-  def index 
-    @students = Student.all
+  def index
+    respond_to do |format|
+      format.js {}
+      format.html {}
+      format.text {
+        @students = Student.where(:group_id => @group.id)
+        @format = "plain"
+        render 'index', :formats => [:js], content_type: 'text/javascript'
+      }
+    end
   end
 
   # GET /students/1

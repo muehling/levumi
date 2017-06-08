@@ -2,9 +2,9 @@
   <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
 </nav>
 
+
 <div class="container-fluid">
   <div id="content">
-
     <div id="alert">
       <div class="alert alert-info alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -52,7 +52,7 @@
           </div>
           <div class="modal-footer" style="text-align: center">
             <button id="cButton" type="button" class="btn btn-success btn-lg disabled" onclick="cButtonClick()">Richtig (Taste: 1)</button>
-            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button>
+            <button id="sButton" type="button" class="btn btn-default disabled" onclick="sButtonClick()">Test starten</button> <!-- Startet den Test-->
             <button id="iButton" type="button" class="btn btn-danger btn-lg disabled" onclick="iButtonClick()">Falsch (Taste: 0)</button>
           </div>
         </div>
@@ -67,7 +67,6 @@
 
   </div>
 </div>
-
 
 
 <script>
@@ -171,7 +170,7 @@
     function prepareTest(student) {
         currentStudent = student;
          $('#mainModalHeader').html(students[student]);
-        $('#itemText').css('font-size', 96);
+        $('#itemText').css('font-size', 110);
         $('#itemText').html("Test");
         $('#pic').html("<br/><br/><br/>");
         $('#status').html("<br/><br/><br/>");
@@ -187,6 +186,7 @@
         $('#cButton').html("Richtig (Taste: 1)");
         $('#iButton').html("Falsch (Taste: 0)");
         setButtons(true);
+
         currentItemIndex = -1;
         currentResult = "";
         currentTimes = "";
@@ -214,6 +214,9 @@
         $('#itemText').html("");
         if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split("1").length)
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "250")) %>");
+        else if(lastResults[currentStudent] == -1)
+            //statisches bild für jetzt
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-normal-blau.jpg", size: "250")) %>");
         else
             $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "250")) %>");
         if (timeout)
@@ -227,7 +230,7 @@
     function cButtonClick() {
         if (!$('#cButton').hasClass("disabled")) {
             if (preparation) {
-                curSize=parseInt($('#itemText').css('font-size')) + 6;
+                curSize=parseInt($('#itemText').css('font-size')) + 10;
                 $('#itemText').css('font-size', curSize);
             }
             else {
@@ -242,7 +245,7 @@
     function iButtonClick() {
         if (!$('#iButton').hasClass("disabled")) {
           if (preparation) {
-              curSize = parseInt($('#itemText').css('font-size')) - 6;
+              curSize = parseInt($('#itemText').css('font-size')) - 10;
               $('#itemText').css('font-size', curSize);
           }
           else {

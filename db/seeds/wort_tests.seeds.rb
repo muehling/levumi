@@ -16,12 +16,37 @@ rase
 rosa
 Rose
 Rosi
+Limo
+Lama
+Resi
+Lose
+Ufo
+Ali
+Lilo
+Mimi
+Uli
+Mus
+Fifi
+Fimo
+Emil
+Lena
+Esel
+Ami
+Mia
+Leni
+Luna
+Lisa
+Lara
+Sara
+Nora
+rufe
+Ofen
 }
 
 cbmN1 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
 
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0)
+  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -58,13 +83,11 @@ reime
 Reise
 Rosen
 rufen
-Saum
 Sauna
 sause
 sehen
 Seife
 Ware
-Weiche
 Weile
 Auto
 Hupe
@@ -82,7 +105,7 @@ Tor
 cbmN2a = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a")
 
 items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 0)
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 
@@ -137,15 +160,61 @@ genug
 Glaube
 }
 
+groups = %i{
+1
+1
+1
+2
+3
+4
+5
+6
+7
+7
+8
+4
+9
+10
+11
+12
+13
+14
+15
+15
+16
+16
+17
+15
+17
+18
+18
+18
+11
+15
+15
+15
+19
+20
+21
+22
+23
+15
+24
+25
+26
+27
+28
+9
+}
+
 cbmN2b = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b")
 
-items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 0)
+items.size.times do |i|
+  it = cbmN2b.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0)
   it.save
 end
 
 cbmN2b.save
-
 
 
 
@@ -171,15 +240,12 @@ Nudel
 Scheine
 Scheune
 Schule
-Seuche
 außen
-Boje
 heißen
 jaulen
 Judo
 Juli
 Juni
-Koje
 reißen
 Soße
 Verkauf
@@ -213,15 +279,77 @@ quaken
 Qual
 quälen
 quer
-Quote
 Typ
-Type
+}
+
+groups = %i{
+1
+2
+1
+3
+1
+1
+2
+4
+2
+5
+6
+5
+5
+2
+5
+5
+6
+5
+2
+2
+2
+7
+8
+9
+10
+11
+11
+8
+12
+13
+14
+15
+16
+17
+17
+18
+5
+19
+19
+20
+21
+22
+5
+22
+21
+19
+22
+23
+16
+4
+24
+25
+8
+26
+26
+27
+27
+27
+28
+28
+29
 }
 
 cbmN3 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3")
 
-items.each do |i|
-  it = cbmN3.items.build(itemtext: i, difficulty: 0)
+items.size.times do |i|
+  it = cbmN3.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0)
   it.save
 end
 
@@ -272,8 +400,6 @@ Wurm
 Würmer
 Wurst
 Würste
-Borte
-Brote
 falsche
 Flasche
 Forst
@@ -283,16 +409,14 @@ Furcht
 Karte
 Kerze
 Knoten
-Knust
 Konto
 Korken
-Kragen
 Kreuze
 Krone
 Kunst
 plus
 Puls
-scherben
+Scherben
 schreiben
 Galopp
 Gipfel
@@ -301,7 +425,7 @@ Gipfel
 cbmN4 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4")
 
 items.each do |i|
-  it = cbmN4.items.build(itemtext: i, difficulty: 0)
+  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0)
   it.save
 end
 

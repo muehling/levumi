@@ -1,22 +1,36 @@
-<div class="jumbotron">
-  <h3>Die folgenden Tests stehen zur Verfügung:</h3>
+<% content_for :top do%>
+  <p class="navbar-brand">Angemeldet als: <%= @student.name %></p>
+  <div class = "navbar-right" style="padding-right: 15px">
+    <form class="navbar-form" method="post" action="<%=url_for(:controller => "frontend", :action => "logout")%>">
+      <%= token_tag nil %>
+      <button type="submit" class="btn btn-lg btn-default">Abmelden</button>
+    </form>
+  </div>
+<% end %>
+
+<div class="well">
+  <h3>Die folgenden Tests stehen für dich zur Verfügung:</h3>
   <br/>
-  <% @measurements.each do |m| %>
-      <div class="row">
-        <div class="col-sm-1">
-        </div>
-        <div class="col-sm-4">
-          <div id="groupName">
-            <p class="lead">
-              <%= m.assessment.test.name %>
+  <table class="table">
+  <% @measurements.sort_by(&:date).each do |m| %>
+        <tr>
+          <td>
+            <div id="groupName">
+              <p class="lead" style="font-size: 32px" >
+                <%= m.assessment.test.name + " (" + m.assessment.test.level + ")" %>
+              </p>
+            </div>
+          </td>
+          <td>
+            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success btn-lg">Jetzt starten!</button><% end %>
+          </td>
+          <td>
+            <p class="lead" style="font-size: 24px">
+              Möglich bis: <%=m.date.strftime("%d.%m.%y")%>
             </p>
-          </div>
-        </div>
-        <div class="col-sm-7">
-          <p class="lead">
-            <%= link_to url_for(controller: 'frontend', action: 'start', id: m.id) do%><button class="btn btn-success">Jetzt starten!</button><% end %>
-          </p>
-        </div>
-      </div>
+          </td>
+        </tr>
   <% end %>
+  </table>
+
 </div>

@@ -35,7 +35,7 @@
   <p class="lead">Items</p>
   <p>
     <% first = true %>
-    <% test.items.each do |i| %>
+    <% test.items.where(:itemtype => 0).each do |i| %>
         <% unless first %>
             <%= "," %>
         <% end %>
