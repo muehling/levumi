@@ -54,8 +54,11 @@
     var currentTimes = "";
     var stopwatch = null;
     var timedout=false;
-    //auch Tests ohne Zeitlimit brauchen eine Zeit, welche ist egal
-    var workTime = <%= @measurement.assessment.test.time*1000 %>;
+
+    <% if !@measurement.assessment.test.time.nil?%>
+      var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    <%end%>
+
     var actualAnswers = "";
 
 
@@ -69,7 +72,7 @@
       currentItemIndex++;
       if(currentItemIndex+1 < studentData.length){
           if (timedout)
-              stopTest(timedout);
+              stopTest();
           else {
               $('#testEnviroment').html(itemView[studentData[currentItemIndex]]);
               stopwatch = new Date();

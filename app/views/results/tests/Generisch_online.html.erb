@@ -1,0 +1,144 @@
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+</nav>
+
+
+<div class="container-fluid">
+  <div id="content">
+    <div id="alert">
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen. <br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <% @measurement.results.each do |r| %>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>)">
+              <%= r.student.name %>
+            </div>
+          </div>
+      <% end %>
+    </div>
+
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
+      <div class="modal-dialog modal-lg" id="testEnviroment">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="iButton" type="button" class="btn btn-block" onclick="window.close()">Messung beenden</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+
+
+    $('#mainModal').on('hidden.bs.modal', function () {
+       if (timeoutId != -1) {
+           window.clearTimeout(timeoutId);
+           timeoutId = -1;
+       }
+    })
+
+
+    var currentStudent = -1;
+    var currentItemIndex = 0;
+    var currentResult = "";
+    var currentTimes = "";
+    var stopwatch = null;
+    var timeoutId = -1;
+    var timedout = false;
+    <% if !@measurement.assessment.test.time.nil?%>
+      var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    <%end%>
+    var curSize=110;
+
+
+    var itemView = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= escape_javascript(raw i.itemview)%>",
+    <% end %>
+    };
+
+    var students = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: "<%= r.student.name%>",
+        <% end %>
+    };
+
+    var studentData = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: [
+                  <% r.items.each do |i| %>
+                  <%= i %>,
+                  <% end %>
+            ],
+        <% end %>
+    };
+
+    var lastResults = {
+        <% @measurement.results.each do |r| %>
+            <%= r.id%>: <%= r.getPriorResult%>,
+        <% end %>
+    };
+
+
+
+    function nextItem() {
+        currentItemIndex++;
+        if (currentItemIndex+1 < studentData[currentStudent].length) {
+            if(timedout){
+                stopTest()
+            }
+            else{
+                $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+                stopwatch = new Date();
+            }
+        }
+        else
+            stopTest();
+    }
+
+    function prepareTest(student) {
+        currentStudent = student;
+        currentItemIndex = 0;
+        currentResult = "";
+        currentTimes = "";
+        if (timeoutId != -1) {
+            window.clearTimeout(timeoutId);
+        }
+        $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+        $('#mainModalHeader').html(students[student]);
+        $('#mainModal').modal('show');
+    }
+
+    function timedOut() {
+        timedout = true;
+    }
+
+    function stopTest() {
+        $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+        if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+        }
+        var dict = {};
+        var trend = "";
+        dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
+        $.ajax({
+            type: "PUT",
+            url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+            data: dict
+        });
+    }
+
+
+
+</script>

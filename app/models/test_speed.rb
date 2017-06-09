@@ -10,7 +10,7 @@ class TestSpeed < Test
   end
 
   def view_info
-    return "TestSpeed"
+    return "Generisch"
   end
 
 end

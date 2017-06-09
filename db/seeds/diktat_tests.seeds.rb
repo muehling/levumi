@@ -292,7 +292,7 @@ while i<items.size do
         }
         else if(event.keyCode == 13) {
             $(window).unbind('keyup');
-            actualAnswers = actualAnswers + tempAnswer.value;
+            actualAnswers = actualAnswers + tempAnswer.value + ',';
             if(tempAnswer.value=='"+items[i]+"'){
                 currentResult = currentResult + '1,';
             }

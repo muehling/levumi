@@ -15,7 +15,7 @@ class TestsController < ApplicationController
 
   # GET /tests/1.xml
   def show
-    unless @login.hasCapability?("export")
+    unless @login.instance_of?(User) && @login.hasCapability?("export")
       redirect_to root_url
     end
     respond_to do |format|
@@ -57,7 +57,7 @@ class TestsController < ApplicationController
   end
 
   def is_allowed
-    unless @login.hasCapability?("test")
+    unless @login.instance_of?(User) && @login.hasCapability?("test")
       redirect_to root_url
       return false
     end

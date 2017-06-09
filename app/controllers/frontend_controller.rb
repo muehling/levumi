@@ -9,7 +9,7 @@ class FrontendController < ApplicationController
 
   def welcome
     if params.has_key?(:page)
-      render params[:page]
+      render params[:page], :layout => 'bareStudent'
     else
       render 'welcome', layout: 'bareStudent'
     end
@@ -17,12 +17,13 @@ class FrontendController < ApplicationController
 
   #Check logincode and redirect to next page
   def login
-    s = Student.find_by_login(params[:login])
+    s = Student.find_by_id(params[:login])
     if s != nil
       session[:student_id] = s.id
+      session[:user_id] = nil
       redirect_to '/frontend'
     else
-      redirect_to '/student', notice: "Benutzername oder Password falsch!"
+      redirect_to '/schueler', notice: "Benutzername oder Password falsch!"
     end
   end
 
@@ -30,8 +31,7 @@ class FrontendController < ApplicationController
   def logout
     session[:student_id] = nil
     @login = nil
-    self.class.layout 'bareStudent'
-    redirect_to '/student'
+    redirect_to '/schueler'
   end
 
   #get all available measurements
@@ -42,13 +42,15 @@ class FrontendController < ApplicationController
 
   #start Test
   def start
+    @currentUrl = request.path
+    puts request.path
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
     @result = @student.getCurrentResult(@measurement.id)
     if (@test.student_access) #...ggf mehr Tests
       render "results/tests/#{@test.view_info}"
     else
-      redirect_to '/student'
+      redirect_to '/schueler'
     end
   end
 
@@ -56,7 +58,7 @@ class FrontendController < ApplicationController
 
   def check_student
     if session[:student_id].nil?
-      redirect_to '/student', notice: "Bitte einloggen!"
+      redirect_to '/schueler', notice: "Bitte einloggen!"
     else
       @student = Student.find(session[:student_id])
     end

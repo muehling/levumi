@@ -122,7 +122,7 @@ class StudentsController < ApplicationController
     end
 
     def is_allowed
-      unless @login.hasCapability?("admin") || (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+      unless @login.instance_of?(User) && @login.hasCapability?("admin") || @login.instance_of?(User) && (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
         redirect_to root_url
       end
     end
