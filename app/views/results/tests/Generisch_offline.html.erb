@@ -8,17 +8,26 @@
 <div class="container-fluid">
   <div id="content">
       <h1><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></h1>
-      <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
+    <% if !@measurement.assessment.test.time.nil?%>
+        <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
+    <%end%>
       <% @measurement.results.each do |r| %>
-          <h4><%= r.student.name %></h4>
+        <h4><%= r.student.name %></h4>
+        <% items = []%>
+        <% r.items.each do |i| %>
+            <%tempItem = Item.find(i)%>
+            <% if(tempItem.itemtype == 0) %>
+                <%items = items + [tempItem.itemtext]%>
+            <%end%>
+        <%end%>
           <table style="font-family: 'fibel_nordregular'; font-size:48px" class="table table-bordered">
             <% index = 0 %>
-            <% (r.items.count / 5 + 1).times do %>
+            <% (items.count / 5 + 1).times do %>
                 <tr>
                   <% 5.times do %>
                       <td>
-                          <% if index < r.items.count %>
-                          <%= Item.find(r.items[index]).itemtext %>
+                          <% if index < items.count %>
+                          <%= items[index]%>
                            <% end %>
                           <% index = index + 1 %>
                       </td>

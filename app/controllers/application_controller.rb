@@ -50,7 +50,7 @@ class ApplicationController < ActionController::Base
   end
 
   def export
-    unless @login.hasCapability?("export")
+    unless @login.instance_of?(User) && @login.hasCapability?("export")
       redirect_to root_url
     end
     @tests = Test.all

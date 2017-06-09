@@ -10,7 +10,7 @@ class TestScreening < Test
   end
 
   def view_info
-    return "TestNormal"
+    return "Generisch"
   end
 
 end
