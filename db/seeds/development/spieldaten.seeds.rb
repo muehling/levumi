@@ -321,7 +321,7 @@ Woerter/53_sind.mp3
 }
 
 dicN1 = TestDictation.create(name: "Wörter schreiben", info: "Diktiertest für die Grundschule", short_info: "Diktiertest für die Grundschule", len: items.size, time: 60, subject: "Deutsch", construct: "Rechtschreibung",
-                             archive: false, student_access:true, level:"0")
+                             archive: false, student_access:true, level:"Level 0")
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
 <audio id='audioItem'></audio>
