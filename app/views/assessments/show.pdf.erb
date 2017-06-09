@@ -1,27 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title><%= @group.name %> - <%=@assessment.test.name %></title>
-<script src="<%= Dir.pwd %>/app/assets/javascripts/cs.min.js"></script>
-<script src="<%= Dir.pwd %>/app/assets/javascripts/d3.min.js"></script>
+<style>
+  .c3-axis {
+    font-size: 10pt;
+  }
+</style>
 
+<% content_for :title do%>
+  <%= @group.name %> - <%= @assessment.test.name %>
+<% end %>
 
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-<%= wicked_pdf_stylesheet_link_tag 'c3' %>
+<h3 class="text-center"> <%= @group.name %> - <%=@assessment.test.name %> </h3>
+<br/>
+<br/>
 
-</head>
-<body>
-	<h3 class="text-center"> <%= @group.name %> - <%=@assessment.test.name %> </h3>
-	<div id="chart" width="1600" height="800" style="width: 800px; height: 400px"></div>
+<div id="chart" style="width: 1122px; height: 561px"></div>
 
-	<script>
-		<%= render file: 'assessments/_draw_graph.js.erb'%>	
-	</script>
-
-
-</body>
-</html>
+<script>
+  <%= render file: 'assessments/_draw_graph.js.erb'%>
+</script>
 
 

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="<%= Dir.pwd %>/app/assets/javascripts/cs.min.js"></script>
+  <script src="<%= Dir.pwd %>/app/assets/javascripts/d3.min.js"></script>
+
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <%= wicked_pdf_stylesheet_link_tag 'c3' %>
+
+  <title><%= yield :title %>></title>
+</head>
+
+<body>
+  <%= yield %>
+</body>
+</html>

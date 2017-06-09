@@ -23,8 +23,10 @@ class StudentsController < ApplicationController
   # GET /students/1.json
   def show
     @results = @student.getResults
+    if params.has_key?(:test)
+      @results = {params[:test].to_i => @results[params[:test].to_i]}
+    end
     respond_to do |format|
-      format.html {render 'show', layout: 'plain'}
       format.js {}
       format.pdf { 
           render pdf: @student.name,
