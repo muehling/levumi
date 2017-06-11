@@ -29,9 +29,7 @@ class StudentsController < ApplicationController
     respond_to do |format|
       format.js {}
       format.pdf { 
-          render pdf: @student.name,
-          template: "students/show.pdf.erb",
-          encoding: 'utf-8'
+        render pdf: @student.name, template: "students/show.pdf.erb"
         }
     end
   end

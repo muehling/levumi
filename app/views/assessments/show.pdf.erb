@@ -5,12 +5,9 @@
 </style>
 
 <% content_for :title do%>
-  <%= @group.name %> - <%= @assessment.test.name %>
+  Klassenübersicht <%= @group.name %> - <%= @assessment.test.name %>
 <% end %>
 
-<h3 class="text-center"> <%= @group.name %> - <%=@assessment.test.name %> </h3>
-<br/>
-<br/>
 
 <div id="chart" style="width: 1122px; height: 561px"></div>
 
