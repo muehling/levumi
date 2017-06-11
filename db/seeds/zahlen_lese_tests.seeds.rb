@@ -68,7 +68,7 @@ it.save
   </div>
   <div class='modal-footer' style='text-align: center'>
     <button id='cButton' type='button' class='btn btn-success btn-lg' onclick='cButtonClick()'>Richtig (Taste: 1)</button>
-    <button id='sButton' type='button' class='btn btn-default disabled' onclick='sButtonClick()'>Test starten</button>
+    <button id='sButton' type='button' class='btn btn-default disabled'>Test starten</button>
     <button id='iButton' type='button' class='btn btn-danger btn-lg' onclick='iButtonClick()'>Falsch (Taste: 0)</button>
   </div>
 </div>
@@ -107,11 +107,6 @@ it.save
         currentTimes = currentTimes + stopwatch + ',';
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
-        nextItem();
-    }
-
-    function sButtonClick() {
-        timeoutId = window.setTimeout(stopTest, workTime, true);
         nextItem();
     }
 
@@ -244,7 +239,7 @@ it.save
   </div>
   <div class='modal-footer' style='text-align: center'>
     <button id='cButton' type='button' class='btn btn-success btn-lg' onclick='cButtonClick()'>Richtig (Taste: 1)</button>
-    <button id='sButton' type='button' class='btn btn-default disabled' onclick='sButtonClick()'>Test starten</button>
+    <button id='sButton' type='button' class='btn btn-default disabled'>Test starten</button>
     <button id='iButton' type='button' class='btn btn-danger btn-lg' onclick='iButtonClick()'>Falsch (Taste: 0)</button>
   </div>
 </div>
@@ -283,11 +278,6 @@ it.save
         currentTimes = currentTimes + stopwatch + ',';
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
-        nextItem();
-    }
-
-    function sButtonClick() {
-        timeoutId = window.setTimeout(stopTest, workTime, true);
         nextItem();
     }
 
@@ -420,7 +410,7 @@ it.save
   </div>
   <div class='modal-footer' style='text-align: center'>
     <button id='cButton' type='button' class='btn btn-success btn-lg' onclick='cButtonClick()'>Richtig (Taste: 1)</button>
-    <button id='sButton' type='button' class='btn btn-default disabled' onclick='sButtonClick()'>Test starten</button>
+    <button id='sButton' type='button' class='btn btn-default disabled'>Test starten</button>
     <button id='iButton' type='button' class='btn btn-danger btn-lg' onclick='iButtonClick()'>Falsch (Taste: 0)</button>
   </div>
 </div>
@@ -459,11 +449,6 @@ it.save
         currentTimes = currentTimes + stopwatch + ',';
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
-        nextItem();
-    }
-
-    function sButtonClick() {
-        timeoutId = window.setTimeout(stopTest, workTime, true);
         nextItem();
     }
 
@@ -595,7 +580,7 @@ it.save
   </div>
   <div class='modal-footer' style='text-align: center'>
     <button id='cButton' type='button' class='btn btn-success btn-lg' onclick='cButtonClick()'>Richtig (Taste: 1)</button>
-    <button id='sButton' type='button' class='btn btn-default disabled' onclick='sButtonClick()'>Test starten</button>
+    <button id='sButton' type='button' class='btn btn-default disabled'>Test starten</button>
     <button id='iButton' type='button' class='btn btn-danger btn-lg' onclick='iButtonClick()'>Falsch (Taste: 0)</button>
   </div>
 </div>
@@ -634,11 +619,6 @@ it.save
         currentTimes = currentTimes + stopwatch + ',';
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
-        nextItem();
-    }
-
-    function sButtonClick() {
-        timeoutId = window.setTimeout(stopTest, workTime, true);
         nextItem();
     }
 
