@@ -59,7 +59,7 @@ Woerter/28_Platz.mp3
 Woerter/47_Meer.mp3
 }
 
-dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 3600, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest")
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 3600, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
 
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"

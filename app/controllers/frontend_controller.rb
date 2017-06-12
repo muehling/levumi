@@ -22,7 +22,7 @@ class FrontendController < ApplicationController
       session[:student_id] = s.id
       redirect_to '/frontend'
     else
-      redirect_to '/student', notice: "Benutzername oder Password falsch!"
+      redirect_to '/schueler', notice: "Benutzername oder Password falsch!"
     end
   end
 
@@ -31,7 +31,7 @@ class FrontendController < ApplicationController
     session[:student_id] = nil
     @login = nil
     self.class.layout 'bareStudent'
-    redirect_to '/student'
+    redirect_to '/schueler'
   end
 
   #get all available measurements
@@ -48,7 +48,7 @@ class FrontendController < ApplicationController
     if (@test.student_access) #...ggf mehr Tests
       render "results/tests/#{@test.view_info}"
     else
-      redirect_to '/student'
+      redirect_to '/schueler'
     end
   end
 
@@ -56,7 +56,7 @@ class FrontendController < ApplicationController
 
   def check_student
     if session[:student_id].nil?
-      redirect_to '/student', notice: "Bitte einloggen!"
+      redirect_to '/schueler', notice: "Bitte einloggen!"
     else
       @student = Student.find(session[:student_id])
     end
