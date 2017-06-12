@@ -97,7 +97,9 @@
                 stopTest()
             }
             else{
+
                 $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+                $('#mainModalHeader').html(students[currentStudent]);
                 stopwatch = new Date();
             }
         }
@@ -124,6 +126,7 @@
 
     function stopTest() {
         $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+        $('#mainModalHeader').html(students[currentStudent]);
         if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;
