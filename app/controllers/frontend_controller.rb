@@ -22,7 +22,7 @@ class FrontendController < ApplicationController
       session[:student_id] = s.id
       redirect_to '/frontend'
     else
-      redirect_to '/schueler', notice: "Benutzername oder Password falsch!"
+      redirect_to '/schueler', notice: "Der Code ist falsch! Bitte prüfe nochmal genau ob du alles richtig eingegeben hast."
     end
   end
 
