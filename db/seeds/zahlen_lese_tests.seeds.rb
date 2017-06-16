@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-tN1 = TestSpeed.create(name: "Zahlen lesen", len: 11, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 1")
+tN1 = TestSpeed.create(name: "Zahlen lesen", len: 11, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 1", archive: false)
 
 it = tN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
@@ -171,7 +171,7 @@ it.save
 
 tN1.save
 
-tN2 = TestSpeed.create(name: "Zahlen lesen", len: 21, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 2")
+tN2 = TestSpeed.create(name: "Zahlen lesen", len: 21, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 2", archive: false)
 
 it = tN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
@@ -342,7 +342,7 @@ it.save
 
 tN2.save
 
-tN3 = TestSpeed.create(name: "Zahlen lesen", len: 80, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 3")
+tN3 = TestSpeed.create(name: "Zahlen lesen", len: 80, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 3", archive: false)
 
 it = tN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
@@ -512,7 +512,7 @@ it.save
 
 tN3.save
 
-tN4 = TestSpeed.create(name: "Zahlen lesen", len: 100, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 4")
+tN4 = TestSpeed.create(name: "Zahlen lesen", len: 100, info: "", short_info: "", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 4", archive: false)
 
 it = tN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
