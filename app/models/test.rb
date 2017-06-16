@@ -22,12 +22,10 @@ class Test < ActiveRecord::Base
     self.items.where(itemtype: 0).order(:id)
   end
 
-  #TODO: Konsequent verwenden!
   def intro_items
     self.items.where("itemtype < ?", 0).order(:itemtype)
   end
 
-  #TODO: Konsequent verwenden!
   def outro_items
     self.items.where("itemtype > ?", 0).order(:itemtype)
   end

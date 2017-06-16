@@ -9,7 +9,7 @@ class FrontendController < ApplicationController
 
   def welcome
     if params.has_key?(:page)
-      render params[:page]
+      render params[:page], :layout => 'bareStudent'
     else
       render 'welcome', layout: 'bareStudent'
     end
@@ -20,6 +20,7 @@ class FrontendController < ApplicationController
     s = Student.find_by_login(params[:login])
     if s != nil
       session[:student_id] = s.id
+      session[:user_id] = nil
       redirect_to '/frontend'
     else
       redirect_to '/schueler', notice: "Der Code ist falsch! Bitte prüfe genau, ob du alles richtig eingegeben hast."
@@ -30,7 +31,6 @@ class FrontendController < ApplicationController
   def logout
     session[:student_id] = nil
     @login = nil
-    self.class.layout 'bareStudent'
     redirect_to '/schueler'
   end
 
