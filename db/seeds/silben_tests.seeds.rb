@@ -22,7 +22,7 @@ mu
 Mu
 }
 
-cbmN0 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0")
+cbmN0 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0", archive: false)
 
 it = cbmN0.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
@@ -70,7 +70,6 @@ it = cbmN0.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
 </script>")
 it.save
 
-cbmN0 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0", archive: false)
 items.each do |i|
   it = cbmN0.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
@@ -262,7 +261,7 @@ Su
 su
 }
 
-cbmN1 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
+cbmN1 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", archive: false)
 it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -309,7 +308,6 @@ it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
 </script>")
 it.save
 
-cbmN1 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", archive: false)
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
@@ -435,6 +433,7 @@ cbmN1.save
 
 
 
+
 items = %w{
 da
 Da
@@ -503,7 +502,7 @@ wu
 Wu
 }
 
-cbmN2a = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a")
+cbmN2a = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", archive: false)
 it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -550,7 +549,6 @@ it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
 </script>")
 it.save
 
-cbmN2a = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", archive: false)
 items.each do |i|
   it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
@@ -737,7 +735,7 @@ scho
 Scho
 }
 
-cbmN2b = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b")
+cbmN2b = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", archive: false)
 it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -784,7 +782,6 @@ it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
 </script>")
 it.save
 
-cbmN2b = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", archive: false)
 items.each do |i|
   it = cbmN2b.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
@@ -1031,7 +1028,7 @@ seu
 Seu
 }
 
-cbmN3 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3")
+cbmN3 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3", archive: false)
 it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -1078,7 +1075,6 @@ it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
 </script>")
 it.save
 
-cbmN3 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3", archive: false)
 items.each do |i|
   it = cbmN3.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
@@ -1341,7 +1337,7 @@ Tru
 tru
 }
 
-cbmN4 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4")
+cbmN4 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", archive: false)
 it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -1388,7 +1384,6 @@ it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
 </script>")
 it.save
 
-cbmN4 = TestCBM.create(name: "Silben lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", archive: false)
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"
   <div class='modal-content'>
