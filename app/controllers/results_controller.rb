@@ -4,9 +4,8 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_action :set_result, only: :update #dadurch sollte theoretisch is_allowed_user überflüssig sein?
-  before_filter :is_allowed_update, only: :update
-  before_filter :is_allowed_user, except: :update
+  before_action :set_result, only: :update
+  before_filter :is_allowed
 
   # GET /results
   # GET /results.json
@@ -50,7 +49,10 @@ class ResultsController < ApplicationController
           render nothing: true
         end
       else
-        #TODO wofür ist das hier drin? ist das für den PDF ausdruck, wenn ja, warum brauch man da denn eine update Funktion? Da muss man sich doch nur die Daten holen und will keine verändern
+        #TODO wofür ist das hier drin? ist das für den PDF ausdruck, wenn ja, warum braucht man da denn eine update Funktion?
+        # Da muss man sich doch nur die Daten holen und will keine verändern. Und dann auch nur um sich die Result-IDs rauszuziehen?
+        #Das wird in der aktuellen Version von mir/uns eh schon immer vor update gemacht, wenn die result_params ein String sind
+        #Desweiteren wird r nie benutzt, vllt doch ein Artefakt/falsch gemergt? macht hier auf jeden fall keinen Sinn
         results = result_params
         unless results.nil?
           if results.is_a?(String)
@@ -67,6 +69,8 @@ class ResultsController < ApplicationController
               if val.is_a?(Hash)
                 r.parse_Hash(val)
               else
+                #TODO Die Methode parse_csv verhindet das bearbeiten/updaten der Response-Wert (Durch NoMethodError). Ich meine, dass war in meiner Version noch nicht so, sondern kam erst mit dem Merge rein...
+                #Ich bin mir aber gerade ziemlich unsicher, obwohl ich es getestet hatte, sonst hätte ich das nie so gepusht.
                 r.parse_csv(val)
                 stay = false
               end
@@ -121,19 +125,12 @@ class ResultsController < ApplicationController
       params[:results]
     end
 
-    def is_allowed_update
+    def is_allowed
       #check if user is allowed
+      #@result exists only before update => student can only update a result
       unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
           (@login.id == params[:user_id].to_i)) ||((@login.id == @result.student.id) && @login.instance_of?(Student))
         redirect_to root_url
       end
     end
-
-  #check if user is of type user, student is only allowed to update
-  def is_allowed_user
-    unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-        (@login.id == params[:user_id].to_i))
-      redirect_to root_url
-    end
-  end
 end

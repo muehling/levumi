@@ -57,8 +57,6 @@ a.save
 m = a.measurements.build(date: Date.yesterday)
 m.save
 
-
-
 t = TestKeyboard.create(name: "Tastaturschulung",len: 0, info: "Einführung in die Tastatur", short_info:
     "", subject: "Deutsch", construct: "Rechtschreibung", archive: false, level: "Level 0", student_access:true)
 i = t.items.build(itemtext: "Hallo", difficulty: 0.1, itemtype:-28, mediapath: "/audio/Anweisungen/1_Hallo_ich_bin_Levumi.mp3", itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit wir beginnen können.“<img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/></p><br /><br /><br /><footer><div align='center' style='font-family: fibel_nordregular;font-size:60px'>Weiter: Irgendeine Taste</div></footer><script>var tempAudio = (document.getElementById('audioItem'));tempAudio.src = itemDataSound[studentData[currentItemIndex]]; tempAudio.play(); currentResult = currentResult + ',';$(window).keyup(function (event) {$(window).unbind('keyup'); nextItem();})</script>")
@@ -122,9 +120,6 @@ i.save
 
 a = g.assessments.build(test_id: t.id)
 a.save
-
-m = a.measurements.build(date: Date.yesterday)
-m.save
 
 
 m = a.measurements.build(date: Date.today)
@@ -328,7 +323,7 @@ while i<items.size do
         }
         else if(event.keyCode == 13) {
             $(window).unbind('keyup');
-            actualAnswers = actualAnswers + tempAnswer.value;
+            actualAnswers = actualAnswers + tempAnswer.value + ',';
             if(tempAnswer.value=='"+items[i]+"'){
                 currentResult = currentResult + '1,';
             }
