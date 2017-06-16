@@ -49,7 +49,9 @@ class ResultsController < ApplicationController
           @result.add_answer(parts[3]) if parts.length > 3               #Possible hack: Will this always be the case?
           render nothing: true
         end
-      else        results = result_params
+      else
+        #TODO wofür ist das hier drin? ist das für den PDF ausdruck, wenn ja, warum brauch man da denn eine update Funktion? Da muss man sich doch nur die Daten holen und will keine verändern
+        results = result_params
         unless results.nil?
           if results.is_a?(String)
             parts = results.split("#")

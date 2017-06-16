@@ -9,12 +9,13 @@
 </div>
 
 
-<div>
-  <%= link_to url_for(controller: 'frontend') do%><button id="closeButton"></button><% end %>
-</div>
-
 
 <script>
+    //possible Hack
+    //=> Alternative: from login (welcome-view) until frontend Indexpage with window.location.replace();
+    window.location.hash="no-back-button";
+    window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
+    window.onhashchange=function(){window.location.hash="no-back-button";}
     //variable for testsequence
     var currentItemIndex = -1;
     var preparation = true;
@@ -22,6 +23,7 @@
     var currentStudent = -1;
     currentStudent = <%=@result.id%>;
     var currentResult ="";
+    var pathMainPage = '<%= request.base_url + url_for(controller: 'frontend')%>';
 
     //Views for displayed Items
     var itemView = {
@@ -54,8 +56,11 @@
     var currentTimes = "";
     var stopwatch = null;
     var timedout=false;
-    //auch Tests ohne Zeitlimit brauchen eine Zeit, welche ist egal
-    var workTime = <%= @measurement.assessment.test.time*1000 %>;
+
+    <% if !@measurement.assessment.test.time.nil?%>
+      var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    <%end%>
+
     var actualAnswers = "";
 
 

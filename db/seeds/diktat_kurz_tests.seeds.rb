@@ -291,7 +291,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
         else if (event.keyCode == 13 && lastPage) {
             $(window).unbind('keydown');
             $(window).unbind('keyup');
-            (document.getElementById('closeButton')).click();
+            window.location.replace(pathMainPage);
         }})
 </script>")
 it.save
