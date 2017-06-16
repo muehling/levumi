@@ -14,6 +14,13 @@ class AssessmentsController < ApplicationController
   # GET /assessments/1
   # GET /assessments/1.json
   def show
+    respond_to do |format|
+      format.html
+      format.js
+      format.pdf do 
+        render pdf: @group.name + "-" + @assessment.test.name, template: "assessments/show.pdf.erb", orientation: "landscape"
+      end
+    end
   end
 
   # GET /assessments/new

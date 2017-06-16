@@ -1,7 +1,10 @@
 class TestCBM < TestSpeed
 #TODO-A: Umbenennen
 
-  def draw_items()
+  def draw_items(first)
+    if first
+      return super
+    end
     itemset = intro_items
     introSize = itemset.size
     enditems = outro_items

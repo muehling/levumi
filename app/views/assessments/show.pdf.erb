@@ -1,0 +1,18 @@
+<style>
+  .c3-axis {
+    font-size: 10pt;
+  }
+</style>
+
+<% content_for :title do%>
+  Klassenübersicht <%= @group.name %> - <%= @assessment.test.name %>
+<% end %>
+
+
+<div id="chart" style="width: 1122px; height: 561px"></div>
+
+<script>
+  <%= render file: 'assessments/_draw_graph.js.erb'%>
+</script>
+
+

@@ -4,10 +4,10 @@
     <div class="col-sm-12">
       <p class="lead text-right">
         <%= link_to user_group_assessments_path(@user, @group), :title => "Zurück", :data => {:remote => true} do%>
-            <span class="glyphicon glyphicon-th"></span>
+        <span class="glyphicon glyphicon-th"></span>
         <% end %>
         <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Test Löschen", :method => :delete, :data => {:confirm => "Damit gehen alle Messungen des Tests in dieser Klasse verloren!\n\nSind Sie sicher?"} do %>
-            <span class="glyphicon glyphicon-trash"></span>
+        <span class="glyphicon glyphicon-trash"></span>
         <% end %>
       </p>
     </div>
@@ -23,18 +23,21 @@
 
   <div class = "row">
     <div id="print" class="col-sm-12">
-        <p id="head" class="lead text-right">
-          <%= link_to '#', :title => "Graph drucken", :onclick => "print()" do%>
-              <span class="glyphicon glyphicon-print"></span>
-          <% end %>
-            <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Graph neu laden", :data => {:remote => true} do%>
-                <span class="glyphicon glyphicon-refresh"></span>
-            <% end %>
-        </p>
-        <div id="chart">
-        </div>
+      <p id="head" class="lead text-right">
+
+        <%= link_to user_group_assessment_path(@user, @group, @assessment, format: 'pdf'),  :title => "Drucken" , target: '_blank' do %>
+        <span class="glyphicon glyphicon-print"></span>
+        <% end %>
+
+     <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Graph neu laden", :data => {:remote => true} do%>
+          <span class="glyphicon glyphicon-refresh"></span>
+        <% end %>       
+      
+      </p>
+      <div id="chart"></div>
     </div>
   </div>
+
 
   <div class = "row">
     <div class="col-sm-12">
@@ -46,23 +49,5 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-    <%= render file: 'assessments/_draw_graph'%>
-
-    function print() {
-        var old = document.body.innerHTML;
-        document.body.innerHTML = $("#print").html();
-        $("#print").removeClass("col-sm-12");
-        $("#head").html("<%= @group.name %> - <%=@assessment.test.name %>");
-        $("#head").removeClass("text-right");
-        $("#head").addClass("text-center");
-        var content = document.documentElement.outerHTML;
-        document.body.innerHTML = old;
-        printWindow = window.open();
-        printWindow.location = '';
-        printWindow.document.write(content);
-        printWindow.document.close();
-        printWindow.document.title =  "Druckansicht";
-        printWindow.focus();
-        <%= render file: 'assessments/_draw_graph'%>
-    };
+  <%= render file: 'assessments/_draw_graph'%>
 </script>

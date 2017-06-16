@@ -19,7 +19,7 @@ class Test < ActiveRecord::Base
   end
 
   def content_items
-    self.items.where(itemtype: 0)
+    self.items.where(itemtype: 0).order(:id)
   end
 
   def intro_items
@@ -30,12 +30,16 @@ class Test < ActiveRecord::Base
     self.items.where("itemtype > ?", 0).order(:itemtype)
   end
 
-  def draw_items()
+  def draw_items(first)
     itemset = intro_items
     enditems = outro_items
-    len.times do
-      remaining = items - (itemset + enditems)
-      itemset = itemset + [remaining.sample]
+    if first
+      itemset = itemset + content_items
+    else
+      len.times do
+        remaining = items - (itemset + enditems)
+        itemset = itemset + [remaining.sample]
+      end
     end
     itemset = itemset + enditems
     return itemset.map{|i| i.id}

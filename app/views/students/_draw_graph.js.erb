@@ -38,7 +38,7 @@ var chart<%=test%> = c3.generate({
                 null
                 <% end %>,
                 <% end %>
-            ],
+            ], 
             ['n50',
                 <% results.each do |r| %>
                 <% unless r.nil? %>
@@ -85,16 +85,5 @@ var chart<%=test%> = c3.generate({
     },
     legend: {
         hide: false
-    },
-    tooltip: {
-        contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-            var res = "<table class='table table-condensed table-striped' style='background-color:white'>";
-            res = res + "<tr><td>Schüler/-in</td><td>" + d[0].name + "</td></tr>";
-            res = res + "<tr><td>Punkte</td><td>" + d[0].value + "</td></tr>";
-            res = res + "<tr><td>Bisheriges Minimum</td><td>" + Math.min(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
-            res = res + "<tr><td>Bisheriges Maximum</td><td>" + Math.max(...chart<%=test%>.data.values('<%= student.name %>')) + "</td></tr>";
-            res = res + "</table>";
-            return res;
-        }
     }
 });

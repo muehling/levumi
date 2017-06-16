@@ -23,7 +23,7 @@ class FrontendController < ApplicationController
       session[:user_id] = nil
       redirect_to '/frontend'
     else
-      redirect_to '/schueler', notice: "Benutzername oder Password falsch!"
+      redirect_to '/schueler', notice: "Der Code ist falsch! Bitte prüfe genau, ob du alles richtig eingegeben hast."
     end
   end
 
@@ -42,8 +42,6 @@ class FrontendController < ApplicationController
 
   #start Test
   def start
-    @currentUrl = request.path
-    puts request.path
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
     @result = @student.getCurrentResult(@measurement.id)
