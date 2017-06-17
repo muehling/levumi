@@ -27,8 +27,8 @@ class ApplicationController < ActionController::Base
 
   def logout
     if(!session[:user_id].nil?)
-    session[:user_id] = nil
-    @login = nil
+      session[:user_id] = nil
+      @login = nil
     end
     redirect_to root_url
   end

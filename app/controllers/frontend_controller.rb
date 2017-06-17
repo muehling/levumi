@@ -30,8 +30,8 @@ class FrontendController < ApplicationController
   #Logout student
   def logout
     if(!session[:student_id].nil?)
-    session[:student_id] = nil
-    @login = nil
+      session[:student_id] = nil
+      @login = nil
     end
     redirect_to '/schueler'
   end
