@@ -60,7 +60,9 @@ class Student < ActiveRecord::Base
   end
 
   def to_a
-    return [id.to_s, name, group.id, group.name, group.user.id, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+    return [id.to_s, name, group.id, group.name, 
+      #group.user.id, 
+      get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
 
   def self.import(file, group)

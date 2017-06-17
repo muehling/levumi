@@ -135,4 +135,53 @@ class Test < ActiveRecord::Base
     book.write temp.path
     return temp.path
   end
+
+  def self.exportAll
+    measurements = Measurement.all
+    results = Result.all
+    students = Student.all
+    assessments = Assessment.all
+
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet name: 'items'
+    sheet1.row(0).concat Item.xls_headings
+    row = 1
+    tests = []
+
+    measurements.sort_by { |a| a.date}.each do |m|
+      if (m.assessment.group.export and Result.where(:measurement =>m).size > 0)
+        sheet = book.create_worksheet :name => "Messung #{m.id}"
+        sheet.row(0).push 'Datum'
+        sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
+        sheet.row(1).push 'Benutzer-Id'
+        sheet.row(1).push m.assessment.group.user.id
+        sheet.row(2).push 'Klassen-Id'
+        sheet.row(2).push m.assessment.group.id
+        test = m.assessment.test
+        sheet.row(3).push 'Test'
+        sheet.row(3).push test.name
+        sheet.row(4).concat %w(Student)
+        # save id of each test to show their items
+        tests = tests << test.id
+
+        items = m.assessment.test.items
+        itemset = items.pluck(:id)
+        sheet.row(4).concat itemset
+        i = 5
+        m.results.each do |r|
+          sheet.row(i).push r.student.id
+          sheet.row(i).concat r.to_a(itemset)
+          i = i+1
+        end
+      end
+    end
+
+    # get unique id's of tests to show the items once at the top of the sheet
+    sheet1.row(row).concat tests.uniq
+
+    temp = Tempfile.new('levumi')
+    temp.close
+    book.write temp.path
+    return temp.path
+  end
 end

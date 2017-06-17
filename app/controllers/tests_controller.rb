@@ -7,6 +7,14 @@ class TestsController < ApplicationController
   def index
     @tests = Test.where(:archive => false)
     @archive = Test.where(:archive => true)
+    unless @login.hasCapability?("export")
+      redirect_to root_url
+    end
+    @testtest = Test.new
+    respond_to do |format|
+      format.xml {
+       send_file Test.exportAll, filename: "test - Export.xls", type: "text/csv"}
+    end
   end
 
   # GET /tests/1/edit
