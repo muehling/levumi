@@ -55,13 +55,13 @@ class ResultsController < ApplicationController
           results.each do |id, val|
             r = @measurement.results.find_by_student_id(id)
             unless r.nil?
-              if val.is_a?(Hash)
-                r.parse_Hash(val)
-              else
-                #TODO Die Methode parse_csv verhindet das bearbeiten/updaten der Response-Wert (Durch NoMethodError). Ich meine, dass war in meiner Version noch nicht so, sondern kam erst mit dem Merge rein...
-                #Ich bin mir aber gerade ziemlich unsicher, obwohl ich es getestet hatte, sonst hätte ich das nie so gepusht.
+              puts val.class
+              puts "**********************************************************"
+              if val.is_a?(String)
                 r.parse_csv(val)
                 stay = false
+              else
+                r.parse_Hash(val)
               end
             end
           end
