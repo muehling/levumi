@@ -45,7 +45,7 @@ class ResultsController < ApplicationController
         @result = @measurement.results.find(labels[0].to_i)
         unless @result.nil?
           @result.parse_csv(parts[1])
-          @result.parse_data(labels[1, labels.length-1], parts[1, parts.length-1]) if parts.length > 2
+          @result.parse_data(labels[1, labels.length-1], parts[2, parts.length-1]) if parts.length > 2
           render nothing: true
         end
       else
