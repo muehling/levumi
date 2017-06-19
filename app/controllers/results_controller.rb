@@ -4,7 +4,6 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_action :set_result, only: :update
   before_filter :is_allowed
 
   # GET /results
@@ -40,26 +39,16 @@ class ResultsController < ApplicationController
     results = result_params
     unless results.nil?
       stay = true
-      if results.is_a?(String)                #Update comes from online testing
+      if results.is_a?(String)   #Update comes from online testing
         parts = results.split("#")
+        labels = parts[0].split(",")
+        @result = @measurement.results.find(labels[0].to_i)
         unless @result.nil?
           @result.parse_csv(parts[1])
-          @result.add_times(parts[2])
-          @result.add_answer(parts[3]) if parts.length > 3               #Possible hack: Will this always be the case?
+          @result.parse_data(labels[1, labels.length-1], parts[1, parts.length-1]) if parts.length > 2
           render nothing: true
         end
       else
-        #TODO wofür ist das hier drin? ist das für den PDF ausdruck, wenn ja, warum braucht man da denn eine update Funktion?
-        # Da muss man sich doch nur die Daten holen und will keine verändern. Und dann auch nur um sich die Result-IDs rauszuziehen?
-        #Das wird in der aktuellen Version von mir/uns eh schon immer vor update gemacht, wenn die result_params ein String sind
-        #Desweiteren wird r nie benutzt, vllt doch ein Artefakt/falsch gemergt? macht hier auf jeden fall keinen Sinn
-        results = result_params
-        unless results.nil?
-          if results.is_a?(String)
-            parts = results.split("#")
-            r = @measurement.results.find(parts[0].to_i)
-          end
-        end
         if results.has_key?("students")       #Update comes from editing form
           @measurement.update_students(results["students"])
         else
@@ -93,15 +82,6 @@ class ResultsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
-    def set_result
-      results = result_params
-      unless results.nil?
-        if results.is_a?(String)
-          parts = results.split("#")
-          @result = @measurement.results.find(parts[0].to_i)
-        end
-      end
-    end
 
     def set_measurement
       @measurement = Measurement.find(params[:measurement_id])
