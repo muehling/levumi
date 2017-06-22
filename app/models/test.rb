@@ -75,7 +75,7 @@ class Test < ActiveRecord::Base
     sheet = book.create_worksheet :name => 'Items'
     sheet.row(0).concat Item.xls_headings
     i = 1
-    items.each do |it|
+    content_items.each do |it|
       sheet.row(i).concat it.to_a
       i = i+1
     end
@@ -92,7 +92,7 @@ class Test < ActiveRecord::Base
 
     sheet = book.create_worksheet :name => 'Alle Messungen'
     sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
-    itemset = items.pluck(:id)
+    itemset = content_items.pluck(:id)
     sheet.row(0).concat itemset
     i = 1
     results.find_each do |r|
@@ -117,7 +117,7 @@ class Test < ActiveRecord::Base
         sheet.row(2).push m.assessment.group.id
 
         sheet.row(3).concat %w(Student)
-        itemset = items.pluck(:id)
+        itemset = content_items.pluck(:id)
         sheet.row(3).concat itemset
         i = 4
         m.results.each do |r|

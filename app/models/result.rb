@@ -4,9 +4,12 @@ class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement
 
-  serialize :items, Array
-  serialize :responses, Array
-  serialize :extra_data, Hash
+  serialize :items, Array         #Speichert die IDs der content_items die für diese Messung verwendet werden
+  serialize :responses, Array     #Speichert die 1/0 Ergebnisse zu den Items aus items
+  serialize :extra_data, Hash     #Speichert zusätzlicher Infos als Key/Value Paare. Feste Keys:
+                                  #-times: Reaktionszeiten
+                                  #-intro: Intro Items für den Test
+                                  #-outro: Outro Items für den Test
 
   #Calculate new running total of the fraction of correct items. Must be called everytime the responses change.
   #Not used from outside
