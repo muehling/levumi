@@ -36,7 +36,7 @@ class Result < ActiveRecord::Base
       if (labels[i] == "times")
         self.extra_data["times"] = vals.map{|x| x.to_i}
       else
-        self.extra_data[labels[i]] = vals
+        self.extra_data[labels[i]] = vals   # Problem: Leere Eingaben am Ende führen zu zu kurzem Feld.
       end
     end
     save
