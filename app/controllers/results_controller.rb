@@ -4,6 +4,7 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
+  before_action :set_result, only: :update
   before_filter :is_allowed
 
   # GET /results
@@ -42,7 +43,6 @@ class ResultsController < ApplicationController
       if results.is_a?(String)   #Update comes from online testing
         parts = results.split("#")
         labels = parts[0].split(",")
-        @result = @measurement.results.find(labels[0].to_i)
         unless @result.nil?
           @result.parse_csv(parts[1])
           @result.parse_data(labels[1, labels.length-1], parts[2, parts.length-1]) if parts.length > 2
@@ -55,8 +55,6 @@ class ResultsController < ApplicationController
           results.each do |id, val|
             r = @measurement.results.find_by_student_id(id)
             unless r.nil?
-              puts val.class
-              puts "**********************************************************"
               if val.is_a?(String)
                 r.parse_csv(val)
                 stay = false
@@ -82,6 +80,15 @@ class ResultsController < ApplicationController
 
   private
     # Use callbacks to share common setup or constraints between actions.
+    def set_result
+      results = result_params
+      unless results.nil?
+        if results.is_a?(String)
+          parts = results.split("#")
+          @result = @measurement.results.find(parts[0].to_i)
+        end
+      end
+    end
 
     def set_measurement
       @measurement = Measurement.find(params[:measurement_id])
@@ -98,7 +105,6 @@ class ResultsController < ApplicationController
     def set_group
       @group = Group.find(params[:group_id])
     end
-
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
