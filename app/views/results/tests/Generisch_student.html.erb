@@ -1,7 +1,7 @@
 <%if @measurement.assessment.test.student_access == true%>
 <%= render 'results/tests/studentEnv'%>
 <%elsif @measurement.assessment.test.student_access == false %>
-    <%=render 'results/tests/teacherEnv'%>
+    <%=render 'results/tests/userEnv'%>
 <%else%>
 <div style="font-family: 'fibel_nordregular'; font-size:96px" class="text-center"> Ooops, Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.</div>
 <%end%>
@@ -10,13 +10,19 @@
 <script>
 
     //variable for testsequence
-    var currentItemIndex = -1;
-    var preparation = true;
-    var lastPage = false;
-    var currentStudent = -1;
-    currentStudent = <%=@result.id%>;
-    var currentResult ="";
 
+
+    var currentResult ="";
+    //data for timeout
+    var timeoutId = -1;
+    var currentTimes = "";
+    var stopwatch = null;
+    var timedout=false;
+    var actualAnswers = "";
+
+    <% if !@measurement.assessment.test.time.nil?%>
+    var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    <%end%>
 
     //Views for displayed Items
     var itemView = {
@@ -32,17 +38,7 @@
     };
 
     //Order of Items from resultobject
-    var studentData = [
-        <%@result.extra_data["intro"].each do |i|%>
-        <%=i%>,
-        <%end%>
-        <%@result.items.each do |i|%>
-        <%=i%>,
-        <%end%>
-        <%@result.extra_data["outro"].each do |i|%>
-        <%=i%>,
-        <%end%>
-    ];
+
 
     //last result of testkind
     var lastResults = {
@@ -51,26 +47,11 @@
     <% end %>
     };
 
-    //data for timeout
-    var timeoutId = -1;
-    var currentTimes = "";
-    var stopwatch = null;
-    var timedout=false;
-
-    <% if !@measurement.assessment.test.time.nil?%>
-      var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
-    <%end%>
-
-    var actualAnswers = "";
-
-
-
-
-  $('#closeButton').hide();
 
   /*Changes current content of Html-elements based on currentItemIndex*/
   function nextItem() {
       currentItemIndex++;
+      <%if @measurement.assessment.test.student_access == true%>
       if(currentItemIndex+1 < studentData.length){
           if (timedout)
               stopTest();
@@ -82,6 +63,22 @@
       else {
           stopTest();
       }
+      <%elsif @measurement.assessment.test.student_access == false %>
+      if (currentItemIndex+1 < studentData[currentStudent].length) {
+          if(timedout){
+              stopTest()
+          }
+          else{
+              $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+              $('#mainModalHeader').html(students[currentStudent]);
+              stopwatch = new Date();
+          }
+      }
+      else
+          stopTest();
+      <%else%>
+      alert(" Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.")
+      <%end%>
   }
 
     /*Set flag for time-out, no aprupt end*/
@@ -92,9 +89,13 @@
 
   /*Stop test, when all items are asked*/
   function stopTest() {
-      lastPage = true;
-      //Momentan nur auf "eine" letzte Seite abfragbar
+
+      <%if @measurement.assessment.test.student_access == true%>
       $('#testEnviroment').html(itemView[studentData[studentData.length-1]]);
+      <%else%>
+      $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+      $('#mainModalHeader').html(students[currentStudent]);
+      <%end%>
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;
@@ -103,17 +104,25 @@
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
       dict["results"] = currentStudent + ",times,answers#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1)+ "#"+ actualAnswers.substr(0, actualAnswers.length-1);
       //send data
+      <%if @measurement.assessment.test.student_access == true%>
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict
       });
+      <%else%>
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+          data: dict
+      });
+      <%end%>
   }
 
     /*Variable for preload*/
     var progress = 0;
     var loaded = 0;
-    var soundLength = studentData.length;
+    var soundLength = Object.keys(itemDataSound).length;
     // start preloading all the intro audio files
     for (var i in studentData) {
         preloadAudio(itemDataSound[studentData[i]]);
@@ -146,8 +155,9 @@
             // all have loaded do something
             $('#myProgress').hide();
             $('#myBar').hide();
+            <%if @measurement.assessment.test.student_access == true%>
             nextItem();
-
+            <%end%>
         }
     }
 </script>

@@ -35,3 +35,45 @@
 
   </div>
 </div>
+
+<script>
+  var curSize =110;
+  var currentStudent = -1;
+  var currentItemIndex = 0;
+
+  var studentData = {
+  <% @measurement.results.each do |r| %>
+  <%= r.id%>: [
+      <%r.extra_data["intro"].each do |i|%>
+      <%=i%>,
+      <%end%>
+      <% r.items.each do |i| %>
+      <%= i %>,
+      <% end %>
+      <%r.extra_data["outro"].each do |i|%>
+      <%=i%>,
+      <%end%>
+  ],
+  <% end %>
+  };
+
+  var students = {
+  <% @measurement.results.each do |r| %>
+  <%= r.id%>: "<%= r.student.name%>",
+  <% end %>
+  };
+
+  function prepareTest(student) {
+      currentStudent = student;
+      currentItemIndex = 0;
+      currentResult = "";
+      currentTimes = "";
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+      }
+      $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+      $('#mainModalHeader').html(students[student]);
+      $('#mainModal').modal('show');
+  }
+
+</script>

@@ -284,7 +284,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
             tempAudio.currentTime = 0;
             tempAudio.play();
         }
-        else if (event.keyCode == 13 && lastPage) {
+        else if (event.keyCode == 13) {
             $(window).unbind('keydown');
             $(window).unbind('keyup');
             window.location.replace(pathMainPage);

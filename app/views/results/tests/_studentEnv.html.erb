@@ -16,4 +16,19 @@
     window.onhashchange=function(){window.location.hash="no-back-button";};
 
     var pathMainPage = '<%= request.base_url + url_for(controller: 'frontend')%>';
+    var currentItemIndex = -1;
+    var currentStudent = -1;
+    currentStudent = <%=@result.id%>;
+
+    var studentData = [
+        <%@result.extra_data["intro"].each do |i|%>
+        <%=i%>,
+        <%end%>
+        <%@result.items.each do |i|%>
+        <%=i%>,
+        <%end%>
+        <%@result.extra_data["outro"].each do |i|%>
+        <%=i%>,
+        <%end%>
+    ];
 </script>

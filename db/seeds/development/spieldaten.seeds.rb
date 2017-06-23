@@ -16,7 +16,7 @@ s = g.students.build(name: "Eva")
 s.save
 
 t = TestSpeed.create(name: "Lesetest", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse",
-                     subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+                     subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60, student_access: false)
 i = t.items.build(itemtext: "haha", difficulty: 0.1, itemtype:0)
 i.save
 i = t.items.build(itemtext: "hoha", difficulty: 0.4, itemtype:0)
@@ -41,7 +41,7 @@ m = a.measurements.build(date: Date.tomorrow)
 m.save
 
 t = TestSpeed.create(name: "Mathetest", len: 4, info: "Mathetest für die Grundschule, 1. Klasse", short_info:  "Mathetest für die Grundschule, 1. Klasse",
-                     subject: "Mathematik", construct: "Lesen", archive: false, level: "Level 0", time: 60)
+                     subject: "Mathematik", construct: "Lesen", archive: false, level: "Level 0", time: 60,student_access: false)
 i = t.items.build(itemtext: "4", difficulty: 0.1, itemtype:0)
 i.save
 i = t.items.build(itemtext: "3", difficulty: 0.4, itemtype:0)
@@ -115,7 +115,7 @@ i = t.items.build(itemtext: "Abtippaufgabe Quitten", difficulty: 0.9, itemtype:-
 i.save
 i = t.items.build(itemtext: "Abtippaufgabe Bäume", difficulty: 0.8, itemtype:-1, mediapath: "/audio/Anweisungen/15_LEVUMI_pflueckt.mp3",itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Levumi plückt Quitten von den <span style='background-color:#FFFF00'>Bäumen</span>.“<img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/><br /><img style='float: left; width: 150px;margin-left: 125px' src='/images/headphones.png'/><br /><br /><img style='float: left; width: 150px;margin-left: 125px' src='/images/tastartur.png'/><input style='font-family: fibel_nordregular; font-size:96px;margin-right:250px' id='answer' type='text' class='text-center' align='middle'></p><br /><br /><footer><table align='center'><tr><th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th><th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th></tr></table></footer><script>var tempAudio = (document.getElementById('audioItem')); tempAudio.src = itemDataSound[studentData[currentItemIndex]];tempAudio.play();var tempAnswer = (document.getElementById('answer'));tempAnswer.focus();$(tempAnswer).css('border','0px').css('border-bottom', 'black solid 1px').attr('maxlength', '16').attr('size','16');$(window).keyup(function (event) {if(event.keyCode==37){tempAudio.pause();tempAudio.currentTime = 0;tempAudio.play();} else if(event.keyCode == 13 && tempAnswer.value == 'Bäumen') {$(window).unbind('keyup');nextItem();}}); $(tempAnswer).keydown(function (event) {var key = event.charCode || event.keyCode;if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {event.preventDefault();}})</script>");
 i.save
-i = t.items.build(itemtext: "Geschafft", difficulty: 0.1, itemtype:0, mediapath: "/audio/Anweisungen/16_Fertig.mp3",itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br /><img style='width: 250px ' src='/images/Levumi-jubelt.gif'/></p><br /><br /><footer><table align='center'><tr><th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th><th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th></tr></table></footer><script>var tempAudio = (document.getElementById('audioItem')); tempAudio.src = itemDataSound[studentData[currentItemIndex]]; tempAudio.play(); currentResult = currentResult + '1,'; $(window).keyup(function (event) {if(event.keyCode==37){tempAudio.pause(); tempAudio.currentTime = 0; tempAudio.play();}else if(event.keyCode == 13 && lastPage) {$(window).unbind('keydown');$(window).unbind('keyup');window.location.replace(pathMainPage);}})</script>")
+i = t.items.build(itemtext: "Geschafft", difficulty: 0.1, itemtype:0, mediapath: "/audio/Anweisungen/16_Fertig.mp3",itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br /><img style='width: 250px ' src='/images/Levumi-jubelt.gif'/></p><br /><br /><footer><table align='center'><tr><th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th><th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th></tr></table></footer><script>var tempAudio = (document.getElementById('audioItem')); tempAudio.src = itemDataSound[studentData[currentItemIndex]]; tempAudio.play(); currentResult = currentResult + '1,'; $(window).keyup(function (event) {if(event.keyCode==37){tempAudio.pause(); tempAudio.currentTime = 0; tempAudio.play();}else if(event.keyCode == 13) {$(window).unbind('keydown');$(window).unbind('keyup');window.location.replace(pathMainPage);}})</script>")
 i.save
 
 a = g.assessments.build(test_id: t.id)
@@ -367,7 +367,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
             tempAudio.currentTime = 0;
             tempAudio.play();
         }
-        else if (event.keyCode == 13 && lastPage) {
+        else if (event.keyCode == 13) {
             $(window).unbind('keydown');
             $(window).unbind('keyup');
             window.location.replace(pathMainPage);
