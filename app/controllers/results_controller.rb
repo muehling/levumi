@@ -114,8 +114,8 @@ class ResultsController < ApplicationController
     def is_allowed
       #check if user is allowed
       #@result exists only before update => student can only update a result
-      unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-          (@login.id == params[:user_id].to_i)) ||((@login.id == @result.student.id) && @login.instance_of?(Student))
+      unless (@login_user.instance_of?(User) && @login_user.hasCapability?("admin")) || (@login_user.instance_of?(User) && params.has_key?(:user_id) &&
+          (@login_user.id == params[:user_id].to_i)) ||((@login_student.id == @result.student.id) && @login_student.instance_of?(Student))
         redirect_to root_url
       end
     end

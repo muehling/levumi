@@ -5,12 +5,15 @@ class TestCBM < TestSpeed
     if first
       return super
     end
-    pools = items.map{|i| i.difficulty}.uniq
     itemset = Array.new
-    (1..len).each  do
-      remaining = items - itemset
+    introitems = intro_items
+    enditems = outro_items
+
+    pools = items.map{|i| i.difficulty}.uniq
+    len.times  do
+      remaining = items - (itemset + introitems +  enditems)
       i = remaining.sample
-      if (itemset.size > 0)
+      if ((itemset.size) > 0)
         count = 0
         while (count < 500) & ((i.itemtext.first.downcase == itemset.last.itemtext.first.downcase) |
                                (i.itemtext.first + itemset.last.itemtext.first == 'bd') |
@@ -22,7 +25,7 @@ class TestCBM < TestSpeed
       end
       itemset = itemset + [i]
     end
-    return itemset.map{|i| i.id}
+    return [introitems.map{|i| i.id}, itemset.map{|i| i.id}, outroitems.map{|i| i.id}]
   end
 
 end

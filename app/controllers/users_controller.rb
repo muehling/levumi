@@ -14,12 +14,12 @@ class UsersController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        unless @login.instance_of?(User) && @login.hasCapability?("user") || (@user.id == @login.id)
+        unless @login_user.instance_of?(User) && @login_user.hasCapability?("user") || (@user.id == @login_user.id)
           redirect_to root_url
         end
       }
       format.xml {
-        unless @login.instance_of?(User) && @login.hasCapability?("export")
+        unless @login_user.instance_of?(User) && @login_user.hasCapability?("export")
           redirect_to root_url
         end
         send_file @user.export, filename: @user.name + " - Export.xls", type: "text/csv"
@@ -56,7 +56,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html {
-          if @login.id != @user.id
+          if @login_user.id != @user.id
             redirect_to users_path
           else
             redirect_to @user
@@ -89,7 +89,7 @@ class UsersController < ApplicationController
     end
 
   def is_allowed
-    unless @login.instance_of?(User) && @login.hasCapability?("user") ||@login.instance_of?(User) && (params.has_key?(:id) && (@login.id == params[:id].to_i))
+    unless @login_user.instance_of?(User) && @login_user.hasCapability?("user") ||@login_user.instance_of?(User) && (params.has_key?(:id) && (@login_user.id == params[:id].to_i))
       redirect_to root_url
     end
   end

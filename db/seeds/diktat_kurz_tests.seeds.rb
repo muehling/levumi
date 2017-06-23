@@ -85,7 +85,6 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[currentItemIndex]];
     tempAudio.play();
-    currentResult = currentResult + ',';
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
@@ -119,7 +118,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 <script>
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[currentItemIndex]];
-    tempAudio.play(); currentResult = currentResult + ',';
+    tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
@@ -156,7 +155,6 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[currentItemIndex]];
     tempAudio.play();
-    currentResult = currentResult + ',';
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
@@ -191,7 +189,6 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audi
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[currentItemIndex]];
     tempAudio.play();
-    currentResult = currentResult + ',';
     $(window).keyup(function (event) {
         if(event.keyCode==37){tempAudio.pause();
         tempAudio.currentTime = 0;
@@ -281,7 +278,6 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[studentData.length-1]];
     tempAudio.play();
-    currentResult = currentResult + ',';
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();

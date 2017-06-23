@@ -83,7 +83,7 @@ class AssessmentsController < ApplicationController
     end
 
     def is_allowed
-      unless @login.instance_of?(User) && @login.hasCapability?("admin") || @login.instance_of?(User) && (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+      unless @login_user.instance_of?(User) && @login_user.hasCapability?("admin") || @login_user.instance_of?(User) && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
         redirect_to root_url
       end
     end
