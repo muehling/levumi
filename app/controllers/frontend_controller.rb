@@ -21,6 +21,7 @@ class FrontendController < ApplicationController
     if s != nil
       session[:student_id] = s.id
       session[:user_id] = nil
+      @login_user = nil
       redirect_to '/frontend'
     else
       redirect_to '/schueler', notice: "Der Code ist falsch! Bitte prüfe genau, ob du alles richtig eingegeben hast."
