@@ -142,14 +142,58 @@ class Test < ActiveRecord::Base
     students = Student.all
     assessments = Assessment.all
 
-    book = Spreadsheet::Workbook.new
+    book = Spreadsheet::Workbook.new  
     sheet1 = book.create_worksheet name: 'items'
     sheet1.row(0).concat Item.xls_headings
     row = 1
     tests = []
 
+
+    sheets = {}
+    assessments.sort_by { |a| a.created_at}.each do |ass|
+      test = ass.test
+      if !sheets.key? test.name
+        sheet = book.create_worksheet :name => "#{test.name}"
+        sheet.row(0).push "Student"
+        sheet.row(0).concat test.items.pluck(:id)
+        sheets[test.name] = sheet
+      end
+    end
+
+    
+    measurements.sort_by{|a| a.date}.each do |m|
+      if (m.assessment.group.export and Result.where(:measurement =>m).size > 0)
+        test = m.assessment.test
+        sheet = sheets[test.name]
+        row = sheet.last_row_index + 1
+        sheet.row(row).push "Datum"
+        sheet.row(row).push m.date.to_date.strftime("%d.%m.%Y")
+        sheet.row(row).push " "
+        sheet.row(row).push "Klassen-Id"
+        sheet.row(row).push m.assessment.group.id
+        sheet.row(row).push " "
+        sheet.row(row).push "Test"
+        sheet.row(row).push test.name
+        sheet.row(row).push test.short_info
+        sheet.row(row).push "Level"
+        sheet.row(row).push test.level
+        row = row + 1
+        sheet.row(row).push " "
+        sheet.row(row).concat test.items.pluck(:id)
+        row = row + 1 
+        itemset = test.items.pluck(:id)
+        m.results.each do |r|
+          sheet.row(row).push r.student.id
+          sheet.row(row).concat r.to_a(itemset)
+          row = row + 1
+        end
+      end
+    end
+
+=begin    testnames = []
     measurements.sort_by { |a| a.date}.each do |m|
       if (m.assessment.group.export and Result.where(:measurement =>m).size > 0)
+        test = m.assessment.test
         sheet = book.create_worksheet :name => "Messung #{m.id}"
         sheet.row(0).push 'Datum'
         sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
@@ -157,7 +201,6 @@ class Test < ActiveRecord::Base
         sheet.row(1).push m.assessment.group.user.id
         sheet.row(2).push 'Klassen-Id'
         sheet.row(2).push m.assessment.group.id
-        test = m.assessment.test
         sheet.row(3).push 'Test'
         sheet.row(3).push test.name
         sheet.row(4).concat %w(Student)
@@ -178,7 +221,7 @@ class Test < ActiveRecord::Base
 
     # get unique id's of tests to show the items once at the top of the sheet
     sheet1.row(row).concat tests.uniq
-
+=end
     temp = Tempfile.new('levumi')
     temp.close
     book.write temp.path
