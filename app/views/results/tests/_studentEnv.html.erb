@@ -20,15 +20,16 @@
     var currentStudent = -1;
     currentStudent = <%=@result.id%>;
 
-    var studentData = [
+    var studentData = {
+        <%=@result.id%>: [
         <%@result.extra_data["intro"].each do |i|%>
         <%=i%>,
         <%end%>
-        <%@result.items.each do |i|%>
-        <%=i%>,
-        <%end%>
+        <%@result.items.each do |i| %>
+        <%= i %>,
+        <% end %>
         <%@result.extra_data["outro"].each do |i|%>
         <%=i%>,
         <%end%>
-    ];
+    ]};
 </script>

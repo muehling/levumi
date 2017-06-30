@@ -51,19 +51,6 @@
   /*Changes current content of Html-elements based on currentItemIndex*/
   function nextItem() {
       currentItemIndex++;
-      <%if @measurement.assessment.test.student_access == true%>
-      if(currentItemIndex+1 < studentData.length){
-          if (timedout)
-              stopTest();
-          else {
-              $('#testEnviroment').html(itemView[studentData[currentItemIndex]]);
-              stopwatch = new Date();
-          }
-      }
-      else {
-          stopTest();
-      }
-      <%elsif @measurement.assessment.test.student_access == false %>
       if (currentItemIndex+1 < studentData[currentStudent].length) {
           if(timedout){
               stopTest()
@@ -76,9 +63,6 @@
       }
       else
           stopTest();
-      <%else%>
-      alert(" Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.")
-      <%end%>
   }
 
     /*Set flag for time-out, no aprupt end*/
@@ -89,11 +73,8 @@
 
   /*Stop test, when all items are asked*/
   function stopTest() {
-
-      <%if @measurement.assessment.test.student_access == true%>
-      $('#testEnviroment').html(itemView[studentData[studentData.length-1]]);
-      <%else%>
       $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+      <%if @measurement.assessment.test.student_access == false%>
       $('#mainModalHeader').html(students[currentStudent]);
       <%end%>
       if (timeoutId != -1) {
@@ -124,8 +105,12 @@
     var loaded = 0;
     var soundLength = Object.keys(itemDataSound).length;
     // start preloading all the intro audio files
-    for (var i in studentData) {
-        preloadAudio(itemDataSound[studentData[i]]);
+    if(Object.keys(studentData).length > 0) {
+        var audioArray = Object.values(studentData)[0];
+
+
+    for (var i in audioArray) {
+        preloadAudio(itemDataSound[audioArray[i]]);
 
     }
 
@@ -159,6 +144,7 @@
             nextItem();
             <%end%>
         }
+    }
     }
 </script>
 

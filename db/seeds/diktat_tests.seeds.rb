@@ -135,7 +135,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -169,7 +169,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -205,7 +205,7 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -239,7 +239,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audi
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){tempAudio.pause();
@@ -277,7 +277,7 @@ while i<items.size do
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
     tempAudio.play();
     var tempAnswer = (document.getElementById('answer'));
     tempAnswer.focus();
@@ -328,7 +328,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[studentData.length-1]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
