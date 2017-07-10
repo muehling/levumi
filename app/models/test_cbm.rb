@@ -6,12 +6,9 @@ class TestCBM < TestSpeed
       return super
     end
     itemset = Array.new
-    introitems = intro_items
-    enditems = outro_items
-
     pools = items.map{|i| i.difficulty}.uniq
     len.times  do
-      remaining = items - (itemset + introitems +  enditems)
+      remaining = content_items - itemset
       i = remaining.sample
       if ((itemset.size) > 0)
         count = 0
@@ -25,7 +22,7 @@ class TestCBM < TestSpeed
       end
       itemset = itemset + [i]
     end
-    return [introitems.map{|i| i.id}, itemset.map{|i| i.id}, outroitems.map{|i| i.id}]
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
 end

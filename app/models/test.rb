@@ -32,17 +32,15 @@ class Test < ActiveRecord::Base
 
   def draw_items(first)
     itemset = Array.new
-    introitems = intro_items
-    outroitems = outro_items
     if first
-      itemset = itemset + content_items
+      itemset = content_items
     else
       len.times do
-        remaining = items - (itemset + introitems + outroitems)
+        remaining = content_items - itemset
         itemset = itemset + [remaining.sample]
       end
     end
-    return [introitems.map{|i| i.id}, itemset.map{|i| i.id}, outroitems.map{|i| i.id}]
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
   def len_info
