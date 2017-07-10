@@ -20,9 +20,9 @@
     var timedout=false;
     var actualAnswers = "";
 
-    <% if !@measurement.assessment.test.time.nil?%>
+    <% if !@measurement.assessment.test.time.nil? %>
     var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
-    <%end%>
+    <% end %>
 
     //Views for displayed Items
     var itemView = {
