@@ -1,9 +1,9 @@
 <%if @measurement.assessment.test.student_access == true%>
-<%= render 'results/tests/studentEnv'%>
+    <%= render 'results/tests/studentEnv'%>
 <%elsif @measurement.assessment.test.student_access == false %>
     <%=render 'results/tests/userEnv'%>
 <%else%>
-<div style="font-family: 'fibel_nordregular'; font-size:96px" class="text-center"> Ooops, Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.</div>
+    <div style="font-family: 'fibel_nordregular'; font-size:96px" class="text-center"> Ooops, Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.</div>
 <%end%>
 
 
@@ -20,9 +20,9 @@
     var timedout=false;
     var actualAnswers = "";
 
-    <% if !@measurement.assessment.test.time.nil?%>
+    <% if !@measurement.assessment.test.time.nil? %>
     var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
-    <%end%>
+    <% end %>
 
     //Views for displayed Items
     var itemView = {
