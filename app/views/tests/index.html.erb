@@ -6,7 +6,7 @@
       <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
       <% first = false %>
 <% end %>
-  <% if @archive.size > 0 && @login_user.instance_of?(User) && @login_user.hasCapability?("test") %>
+  <% if @archive.size > 0 && !@login_user.nil? && @login_user.hasCapability?("test") %>
       <li role="presentation"><a href="#archive" aria-controls="archive" role="tab" data-toggle="tab">Archiv</a></li>
   <% end %>
 </ul>
@@ -54,12 +54,12 @@
                                   <div id="c<%=test.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=test.id %>">
                                     <div class="panel-body">
                                       <p class="lead text-right">
-                                        <% if @login_user.instance_of?(User) && @login_user.hasCapability?("export") %>
+                                        <% if !@login_user.nil? && @login_user.hasCapability?("export") %>
                                             <%= link_to test_path(test, format: "xml"), :title => "Datenexport" do %>
                                                 <span class="glyphicon glyphicon-save"></span>
                                             <% end %>
                                         <% end %>
-                                        <% if @login_user.instance_of?(User) && @login_user.hasCapability?("test") %>
+                                        <% if !@login_user.nil? && @login_user.hasCapability?("test") %>
                                             <%= link_to edit_test_path(test), :title => "Bearbeiten", :data => {:remote => true} do %>
                                                 <span class="glyphicon glyphicon-pencil"></span>
                                             <% end %>
@@ -86,7 +86,7 @@
     </div>
      <% first = false %>
   <% end %>
-  <% if @login_user.instance_of?(User) && @login_user.hasCapability?("test") %>
+  <% if !@login_user.nil? && @login_user.hasCapability?("test") %>
       <div role="tabpanel" class="tab-pane" id="archive">
         <% @archive.each do |t| %>
             <div class="panel panel-default">
@@ -100,12 +100,12 @@
               <div id="c<%=t.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=t.id %>">
                 <div class="panel-body">
                   <p class="lead text-right">
-                    <% if @login_user.instance_of?(User) && @login_user.hasCapability?("export") %>
+                    <% if !@login_user.nil? && @login_user.hasCapability?("export") %>
                         <%= link_to test_path(t, format: "xml"), :title => "Datenexport" do %>
                             <span class="glyphicon glyphicon-save"></span>
                         <% end %>
                     <% end %>
-                    <% if @login_user.instance_of?(User) && @login_user.hasCapability?("test") %>
+                    <% if !@login_user.nil? && @login_user.hasCapability?("test") %>
                         <%= link_to edit_test_path(t), :title => "Bearbeiten", :data => {:remote => true} do %>
                             <span class="glyphicon glyphicon-pencil"></span>
                         <% end %>

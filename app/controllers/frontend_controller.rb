@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ApplicationController
 
-  skip_before_filter :check_login, :check_accept
+  skip_before_action :check_login, :check_accept
 
-  before_filter :check_student, except: [:welcome, :login]
+  before_action :check_student, except: [:welcome, :login]
 
   layout 'plain'
 

@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :check_login, except: [:welcome, :login]
-  before_filter :check_accept, except: [:welcome, :login, :accept, :static, :logout]
+  before_action :check_login, except: [:welcome, :login]
+  before_action :check_accept, except: [:welcome, :login, :accept, :static, :logout]
 
   def login
     u = User.find_by_email(params[:email])
@@ -53,7 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def export
-    unless @login_user.instance_of?(User) && @login_user.hasCapability?("export")
+    unless !@login_user.nil? && @login_user.hasCapability?("export")
       redirect_to root_url
     end
     @tests = Test.all
@@ -74,7 +74,7 @@ class ApplicationController < ActionController::Base
 
   #check if user accepted the letter of agreement
   def check_accept
-    if @login_user.instance_of?(User) && @login_user.tcaccept.nil?
+    if !@login_user.nil? && @login_user.tcaccept.nil?
       render 'accept'
     end
   end

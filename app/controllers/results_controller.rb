@@ -5,7 +5,7 @@ class ResultsController < ApplicationController
   before_action :set_user
   before_action :set_group
   before_action :set_result, only: :update
-  before_filter :is_allowed
+  before_action :is_allowed
 
   # GET /results
   # GET /results.json
@@ -114,8 +114,8 @@ class ResultsController < ApplicationController
     def is_allowed
       #check if user is allowed
       #@result exists only before update => student can only update a result
-      unless (@login_user.instance_of?(User) && @login_user.hasCapability?("admin")) || (@login_user.instance_of?(User) && params.has_key?(:user_id) &&
-          (@login_user.id == params[:user_id].to_i)) ||((@login_student.id == @result.student.id) && @login_student.instance_of?(Student))
+      unless (!@login_user.nil? && @login_user.hasCapability?("admin")) || (!@login_user.nil? && params.has_key?(:user_id) &&
+          (@login_user.id == params[:user_id].to_i)) ||((@login_student.id == @result.student.id) && !@login_student.nil?)
         redirect_to root_url
       end
     end
