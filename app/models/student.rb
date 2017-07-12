@@ -148,14 +148,20 @@ class Student < ActiveRecord::Base
     m = Measurement.
         where(:assessment => a).
         where("date >?", Date.today)
+    #only return measurements which has a result object
     r = Result.
         where(:measurement => m).
-        where(:student_id => self.id).
-        where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
+        where(:student_id => self.id)
+    result = []
+    r.each do |temp|
+      result = result + m.where(:id => temp.measurement_id)
+    end
+    #only return measurements which has not updated
+    r.where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
     r.each do |temp|
      m = m.where.not(:id => temp.measurement_id)
     end
-    return m.nil? ? [] : m
+    return m.nil? ? [] : result
   end
 
   #get current result objekt of student
