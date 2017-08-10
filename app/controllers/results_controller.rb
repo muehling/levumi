@@ -5,7 +5,7 @@ class ResultsController < ApplicationController
   before_action :set_user
   before_action :set_group
   before_action :set_result, only: :update
-  before_filter :is_allowed
+  before_action :is_allowed
 
   # GET /results
   # GET /results.json
@@ -40,39 +40,26 @@ class ResultsController < ApplicationController
     results = result_params
     unless results.nil?
       stay = true
-      if results.is_a?(String)                #Update comes from online testing
+      if results.is_a?(String)   #Update comes from online testing
         parts = results.split("#")
+        labels = parts[0].split(",")
         unless @result.nil?
           @result.parse_csv(parts[1])
-          @result.add_times(parts[2])
-          @result.add_answer(parts[3]) if parts.length > 3               #Possible hack: Will this always be the case?
+          @result.parse_data(labels[1, labels.length-1], parts[2, parts.length-1]) if parts.length > 2
           render nothing: true
         end
       else
-        #TODO wofür ist das hier drin? ist das für den PDF ausdruck, wenn ja, warum braucht man da denn eine update Funktion?
-        # Da muss man sich doch nur die Daten holen und will keine verändern. Und dann auch nur um sich die Result-IDs rauszuziehen?
-        #Das wird in der aktuellen Version von mir/uns eh schon immer vor update gemacht, wenn die result_params ein String sind
-        #Desweiteren wird r nie benutzt, vllt doch ein Artefakt/falsch gemergt? macht hier auf jeden fall keinen Sinn
-        results = result_params
-        unless results.nil?
-          if results.is_a?(String)
-            parts = results.split("#")
-            r = @measurement.results.find(parts[0].to_i)
-          end
-        end
         if results.has_key?("students")       #Update comes from editing form
           @measurement.update_students(results["students"])
         else
           results.each do |id, val|
             r = @measurement.results.find_by_student_id(id)
             unless r.nil?
-              if val.is_a?(Hash)
-                r.parse_Hash(val)
-              else
-                #TODO Die Methode parse_csv verhindet das bearbeiten/updaten der Response-Wert (Durch NoMethodError). Ich meine, dass war in meiner Version noch nicht so, sondern kam erst mit dem Merge rein...
-                #Ich bin mir aber gerade ziemlich unsicher, obwohl ich es getestet hatte, sonst hätte ich das nie so gepusht.
+              if val.is_a?(String)
                 r.parse_csv(val)
                 stay = false
+              else
+                r.parse_Hash(val)
               end
             end
           end
@@ -119,7 +106,6 @@ class ResultsController < ApplicationController
       @group = Group.find(params[:group_id])
     end
 
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
       params[:results]
@@ -128,8 +114,8 @@ class ResultsController < ApplicationController
     def is_allowed
       #check if user is allowed
       #@result exists only before update => student can only update a result
-      unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-          (@login.id == params[:user_id].to_i)) ||((@login.id == @result.student.id) && @login.instance_of?(Student))
+      unless (!@login_user.nil? && @login_user.hasCapability?("admin")) || (!@login_user.nil? && params.has_key?(:user_id) &&
+          (@login_user.id == params[:user_id].to_i)) ||((@login_student.id == @result.student.id) && !@login_student.nil?)
         redirect_to root_url
       end
     end

@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
-  before_filter :is_allowed, only: [:edit, :update, :destroy, :new]
+  before_action :is_allowed, only: [:edit, :update, :destroy, :new]
 
   # GET /tests
   def index
@@ -15,7 +15,7 @@ class TestsController < ApplicationController
 
   # GET /tests/1.xml
   def show
-    unless @login.instance_of?(User) && @login.hasCapability?("export")
+    unless !@login_user.nil? && @login_user.hasCapability?("export")
       redirect_to root_url
     end
     respond_to do |format|
@@ -57,7 +57,7 @@ class TestsController < ApplicationController
   end
 
   def is_allowed
-    unless @login.instance_of?(User) && @login.hasCapability?("test")
+    unless !@login_user.nil? && @login_user.hasCapability?("test")
       redirect_to root_url
       return false
     end

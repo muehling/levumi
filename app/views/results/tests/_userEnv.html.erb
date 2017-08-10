@@ -1,0 +1,79 @@
+<nav class="navbar">
+  <p class="navbar-brand"><%= "Klasse #{@measurement.assessment.group.name}: #{@measurement.assessment.test.short_name} am #{@measurement.date.to_date.strftime("%d.%m.%Y")}" %></p>
+</nav>
+
+
+<div class="container-fluid">
+  <div id="content">
+    <div id="alert">
+      <div class="alert alert-info alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <p id="notice">Nach dem Klick auf einen Namen haben Sie Gelegenheit, die Schriftgröße für den Test individuell anzupassen. <br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!</p>
+      </div>
+    </div>
+
+    <div class="row">
+      <% @measurement.results.each do |r| %>
+          <div class="col-md-4 col-sm-6 col-xs-12">
+            <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>)">
+              <%= r.student.name %>
+            </div>
+          </div>
+      <% end %>
+    </div>
+
+    <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
+      <div class="modal-dialog modal-lg" id="testEnviroment">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12">
+        <button id="iButton" type="button" class="btn btn-block" onclick="window.close()">Messung beenden</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  var curSize =110;
+  var currentStudent = -1;
+  var currentItemIndex = 0;
+
+  var studentData = {
+  <% @measurement.results.each do |r| %>
+  <%= r.id%>: [
+      <%r.extra_data["intro"].each do |i|%>
+      <%=i%>,
+      <%end%>
+      <% r.items.each do |i| %>
+      <%= i %>,
+      <% end %>
+      <%r.extra_data["outro"].each do |i|%>
+      <%=i%>,
+      <%end%>
+  ],
+  <% end %>
+  };
+
+  var students = {
+  <% @measurement.results.each do |r| %>
+  <%= r.id%>: "<%= r.student.name%>",
+  <% end %>
+  };
+
+  function prepareTest(student) {
+      currentStudent = student;
+      currentItemIndex = 0;
+      currentResult = "";
+      currentTimes = "";
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+      }
+      $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+      $('#mainModalHeader').html(students[student]);
+      $('#mainModal').modal('show');
+  }
+
+</script>

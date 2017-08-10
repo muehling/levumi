@@ -4,9 +4,12 @@ class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement
 
-  serialize :items, Array
-  serialize :responses, Array
-  serialize :extra_data, Hash
+  serialize :items, Array         #Speichert die IDs der content_items die für diese Messung verwendet werden
+  serialize :responses, Array     #Speichert die 1/0 Ergebnisse zu den Items aus items
+  serialize :extra_data, Hash     #Speichert zusätzlicher Infos als Key/Value Paare. Feste Keys:
+                                  #-times: Reaktionszeiten
+                                  #-intro: Intro Items für den Test
+                                  #-outro: Outro Items für den Test
 
   #Calculate new running total of the fraction of correct items. Must be called everytime the responses change.
   #Not used from outside
@@ -24,9 +27,25 @@ class Result < ActiveRecord::Base
   def initialize_results()
     self.responses = Array.new
     self.extra_data = Hash.new
-    self.items = measurement.assessment.test.draw_items(self.getPriorResult == -1)
+    drawed_items = measurement.assessment.test.draw_items(self.getPriorResult == -1)
+    self.extra_data["intro"] = drawed_items[0]
+    self.items = drawed_items[1]
+    self.extra_data["outro"] = drawed_items[2]
     self.responses[self.items.size-1] = nil
     update_total
+  end
+
+  #Parses a String or additional data in the form "a,b,c" where each entry denotes the data for an item. The data is stored under the labels given in "labels" also in the form "x,y,z".
+  def parse_data(labels, data)
+    labels.length.times do |i|
+      vals = data[i].split(',')
+      if (labels[i] == "times")
+        self.extra_data["times"] = vals.map{|x| x.to_i}
+      else
+        self.extra_data[labels[i]] = vals   # Problem: Leere Eingaben am Ende führen zu zu kurzem Feld.
+      end
+    end
+    save
   end
 
   #Parses a string of results in the form "1,0,1,1,..." where each 0/1 denotes the result of an item.
@@ -52,23 +71,6 @@ class Result < ActiveRecord::Base
       responses[p] = (r == "1" ? 1 : (r == "0" ? 0 : nil)) unless p.nil?
     end
     update_total
-  end
-
-  #Parse a string of format "12,34,200,..." of reaction times. Stored as integer.
-  def add_times(data)
-    unless data.nil?
-      vals = data.split(',')
-      self.extra_data["times"] = vals.map{|x| x.to_i}
-    end
-    save
-  end
-
-  #Parse a string of format "Hund,Tiir,Fisch,..." of student answers. Stored as text.
-  def add_answer(data)
-    unless data.nil?
-      self.extra_data["answer"] = data.split(',')
-    end
-    save
   end
 
   #Create a string in the form of "0,1,0,1,..." that denotes the result for each item in the respective order. If includeNA is false, every NA response will be transformed to 0 in the result.

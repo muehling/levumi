@@ -23,8 +23,8 @@
 
     <div class="collapse navbar-collapse" id="navbar-collapse-main">
       <ul class="nav navbar-nav navbar-left">
-        <li><%= link_to "Meine Klassen", user_groups_path(@login)%></li>
-        <li><%= link_to("Meine Daten", user_path(@login))%></li>
+        <li><%= link_to "Meine Klassen", user_groups_path(@login_user)%></li>
+        <li><%= link_to("Meine Daten", user_path(@login_user))%></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informationen<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -55,15 +55,15 @@
         <%= token_tag nil %>
         <button type="submit" class="btn btn-default">Ausloggen</button>
       </form>
-      <% unless @login.instance_of?(User) && @login.isRegularUser? %>
+      <% unless !@login_user.nil? && @login_user.isRegularUser? %>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">System<span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <% if @login.instance_of?(User) && @login.hasCapability?("user") %>
+            <% if !@login_user.nil? && @login_user.hasCapability?("user") %>
                 <li><%= link_to("Benutzerverwaltung", users_path)%></li>
             <% end %>
-            <% if @login.instance_of?(User) && @login.hasCapability?("export") %>
+            <% if !@login_user.nil? && @login_user.hasCapability?("export") %>
                 <li><%= link_to("Datenexport",  url_for(:controller => "application", :action => "export"))%></li>
             <% end %>
           </ul>

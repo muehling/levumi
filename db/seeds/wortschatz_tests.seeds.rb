@@ -111,7 +111,7 @@ wo
 Woche
 }
 
-cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", archive: false)
+cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", archive: false, student_access: false)
 
 it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
@@ -515,7 +515,7 @@ zwei
 }
 
 
-cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", archive: false)
+cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", archive: false, student_access: false)
 
 it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>

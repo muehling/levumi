@@ -4,7 +4,7 @@ class MeasurementsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_filter :is_allowed
+  before_action :is_allowed
 
   # GET /measurements
   # GET /measurements.json
@@ -85,7 +85,7 @@ class MeasurementsController < ApplicationController
     end
 
     def is_allowed
-      unless @login.instance_of?(User) && @login.hasCapability?("admin") || @login.instance_of?(User) && (params.has_key?(:user_id) && (@login.id == params[:user_id].to_i))
+      unless !@login_user.nil? && @login_user.hasCapability?("admin") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
         redirect_to root_url
       end
     end

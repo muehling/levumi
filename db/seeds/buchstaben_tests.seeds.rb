@@ -48,7 +48,7 @@ Sch
 G
 }
 
-cbmN1 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1",archive: false)
+cbmN1 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", archive: false,  student_access: false)
 it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>
   <div class='modal-header'>
@@ -275,7 +275,7 @@ Eu
 Ü
 }
 
-cbmN2 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2", archive: false)
+cbmN2 = TestScreening.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2", archive: false, student_access: false)
 
 it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
 <div class='modal-content'>

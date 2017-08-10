@@ -155,7 +155,17 @@ class Student < ActiveRecord::Base
     r.each do |temp|
      m = m.where.not(:id => temp.measurement_id)
     end
-    return m.nil? ? [] : m
+    #TODO-Morten ist gerade nur die schnelle Lösung. Ändere ich bei zeiten wieder zur schöneren + wahrscheinlich .select{}, da Array kein .where hat
+    # der Datenbankabruf muss nicht zweimal passieren
+    #return only Measurements, which has a resultobjekt
+    r = Result.
+        where(:measurement => m).
+        where(:student_id => self.id)
+    result = []
+    r.each do |temp|
+      result = result + m.where(:id => temp.measurement_id)
+    end
+    return result.nil? ? [] : result
   end
 
   #get current result objekt of student

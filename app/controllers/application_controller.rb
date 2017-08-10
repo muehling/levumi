@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_filter :check_login, except: [:welcome, :login]
-  before_filter :check_accept, except: [:welcome, :login, :accept, :static, :logout]
+  before_action :check_login, except: [:welcome, :login]
+  before_action :check_accept, except: [:welcome, :login, :accept, :static, :logout]
 
   def login
     u = User.find_by_email(params[:email])
@@ -12,7 +12,8 @@ class ApplicationController < ActionController::Base
       if u.authenticate(params[:password])
         session[:user_id] = u.id
         session[:student_id] = nil
-        @login = u
+        @login_student = nil
+        @login_user = u
         news = News.new_items(u)
         u.last_login = Time.now
         u.save
@@ -27,8 +28,8 @@ class ApplicationController < ActionController::Base
 
   def logout
     if(!session[:user_id].nil?)
-    session[:user_id] = nil
-    @login = nil
+      session[:user_id] = nil
+      @login_user = nil
     end
     redirect_to root_url
   end
@@ -42,9 +43,9 @@ class ApplicationController < ActionController::Base
   end
 
   def accept
-    @login.tcaccept = DateTime.now
-    @login.save
-    redirect_to user_groups_path(@login), notice: "Viel Spaß bei der Benutzung von Levumi!"
+    @login_user.tcaccept = DateTime.now
+    @login_user.save
+    redirect_to user_groups_path(@login_user), notice: "Viel Spaß bei der Benutzung von Levumi!"
   end
 
   def static
@@ -52,7 +53,7 @@ class ApplicationController < ActionController::Base
   end
 
   def export
-    unless @login.instance_of?(User) && @login.hasCapability?("export")
+    unless !@login_user.nil? && @login_user.hasCapability?("export")
       redirect_to root_url
     end
     @tests = Test.all
@@ -65,15 +66,15 @@ class ApplicationController < ActionController::Base
     if session[:user_id].nil? && session[:student_id].nil?
       redirect_to root_url, notice: "Bitte einloggen!"
     elsif !session[:student_id].nil?
-      @login = Student.find(session[:student_id])
+      @login_student = Student.find(session[:student_id])
      else
-      @login = User.find(session[:user_id])
+      @login_user = User.find(session[:user_id])
     end
   end
 
   #check if user accepted the letter of agreement
   def check_accept
-    if @login.instance_of?(User) && @login.tcaccept.nil?
+    if !@login_user.nil? && @login_user.tcaccept.nil?
       render 'accept'
     end
   end
