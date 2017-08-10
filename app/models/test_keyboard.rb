@@ -9,10 +9,7 @@ class TestKeyboard < Test
   def type_info
     return "Tastaturschulung"
   end
-#Return which view should be chosen
-  def view_info
-    return "Generisch_student"
-  end
+
 
 end
 

@@ -52,7 +52,7 @@ class Test < ActiveRecord::Base
   end
 
   def view_info
-    return 'Test'
+    return 'Generisch'
   end
 
   def long_name
