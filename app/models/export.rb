@@ -158,7 +158,8 @@ class Export
   		"Zahlenlesen Niveaustufe 4" => "ZL4_",
   		"Lesetest Level 0" => "LT0_",
   		"Lesetest Level 1" => "LT1_",
-  		"Mathetest Level 0" => "MT0_"
+  		"Mathetest Level 0" => "MT0_",
+  		"Sinnentnehmendes Lesen Level 1" => "SEL1_"
   	}
   	return testcodes[t].nil? ? " " : testcodes[t]
   end

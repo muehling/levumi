@@ -257,7 +257,7 @@ end
 
 it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"</br></br></br></br></br></br>
 								<div class='text-center'>
-									<img style='width: 250px; ' src='/images/Levumi-jubelt.gif'/>
+									<img style='width: 250px; ' src='/images/Levumi-normal-blau.jpg'/>
 							</div>
 								<br><br>
 								<div class='row text-center'>
