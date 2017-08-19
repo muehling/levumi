@@ -10,13 +10,13 @@ class TestsController < ApplicationController
     unless @login.hasCapability?("export")
       redirect_to root_url
     end
-    @testtest = Test.new
     respond_to do |format|
+      format.html
       format.xml {
-       send_file Test.exportAll, filename: "test - Export.xls", type: "text/csv"}
+       send_file Test.exportAll, filename: "all measurements - Export.xls", type: "text/csv"}
     end
   end
-
+ 
   # GET /tests/1/edit
   def edit
   end

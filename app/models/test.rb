@@ -82,28 +82,24 @@ class Test < ActiveRecord::Base
       i = i+1
     end
 
-    sheet = book.create_worksheet :name => 'SuS'
+    sheet = book.create_worksheet :name => 'Alle Messungen - RZ'   #Without Reaktionszeiten
+    sheetRZ = book.create_worksheet :name => 'Alle Messungen + RZ' #With Reaktionszeiten
     sheet.row(0).concat Student.xls_headings
-    i = 1
-    students.find_each do |s|
-      if (s.group.export)
-        sheet.row(i).concat s.to_a
-        i = i+1
-      end
-    end
-
-    sheet = book.create_worksheet :name => 'Alle Messungen'
-    sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
+    sheet.row(0).push "Messzeitpunkt"
+    sheetRZ.row(0).concat Student.xls_headings
+    sheetRZ.row(0).push "Messzeitpunkt"
     itemset = items.pluck(:id)
     sheet.row(0).concat itemset
+    sheetRZ.row(0).concat itemset
     i = 1
     results.find_each do |r|
       if (r.measurement.assessment.group.export)
-        sheet.row(i).push r.student.id
+        sheet.row(i).concat r.student.to_a 
         sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(i).push r.measurement.assessment.group.id
-        sheet.row(i).push r.measurement.assessment.group.user.id
-        sheet.row(i).concat r.to_a(itemset)
+        sheet.row(i).concat r.to_a(itemset).map! { |x| x == '' ? "" : (x.to_i > 0 ? x = 1 : x = 0)}
+        sheetRZ.row(i).concat r.student.to_a 
+        sheetRZ.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
+        sheetRZ.row(i).concat r.to_a(itemset)
         i = i+1
       end
     end
@@ -111,19 +107,14 @@ class Test < ActiveRecord::Base
     measurements.sort_by { |a| a.date}.each do |m|
       if (m.assessment.group.export)
         sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).push 'Datum'
-        sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(1).push 'Benutzer-Id'
-        sheet.row(1).push m.assessment.group.user.id
-        sheet.row(2).push 'Klassen-Id'
-        sheet.row(2).push m.assessment.group.id
-
-        sheet.row(3).concat %w(Student)
+        sheet.row(0).concat Student.xls_headings
+        sheet.row(0).push "Messzeitpunkt"
         itemset = items.pluck(:id)
-        sheet.row(3).concat itemset
-        i = 4
+        sheet.row(0).concat itemset
+        i = 1
         m.results.each do |r|
-          sheet.row(i).push r.student.id
+          sheet.row(i).concat r.student.to_a
+          sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
           sheet.row(i).concat r.to_a(itemset)
           i = i+1
         end
@@ -138,93 +129,8 @@ class Test < ActiveRecord::Base
 
   def self.exportAll
     measurements = Measurement.all
-    results = Result.all
-    students = Student.all
     assessments = Assessment.all
-
-    book = Spreadsheet::Workbook.new  
-    sheet1 = book.create_worksheet name: 'items'
-    sheet1.row(0).concat Item.xls_headings
-    row = 1
-    tests = []
-
-
-    sheets = {}
-    assessments.sort_by { |a| a.created_at}.each do |ass|
-      test = ass.test
-      if !sheets.key? test.name
-        sheet = book.create_worksheet :name => "#{test.name}"
-        sheet.row(0).push "Student"
-        sheet.row(0).concat test.items.pluck(:id)
-        sheets[test.name] = sheet
-      end
-    end
-
-    
-    measurements.sort_by{|a| a.date}.each do |m|
-      if (m.assessment.group.export and Result.where(:measurement =>m).size > 0)
-        test = m.assessment.test
-        sheet = sheets[test.name]
-        row = sheet.last_row_index + 1
-        sheet.row(row).push "Datum"
-        sheet.row(row).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(row).push " "
-        sheet.row(row).push "Klassen-Id"
-        sheet.row(row).push m.assessment.group.id
-        sheet.row(row).push " "
-        sheet.row(row).push "Test"
-        sheet.row(row).push test.name
-        sheet.row(row).push test.short_info
-        sheet.row(row).push "Level"
-        sheet.row(row).push test.level
-        row = row + 1
-        sheet.row(row).push " "
-        sheet.row(row).concat test.items.pluck(:id)
-        row = row + 1 
-        itemset = test.items.pluck(:id)
-        m.results.each do |r|
-          sheet.row(row).push r.student.id
-          sheet.row(row).concat r.to_a(itemset)
-          row = row + 1
-        end
-      end
-    end
-
-=begin    testnames = []
-    measurements.sort_by { |a| a.date}.each do |m|
-      if (m.assessment.group.export and Result.where(:measurement =>m).size > 0)
-        test = m.assessment.test
-        sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).push 'Datum'
-        sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(1).push 'Benutzer-Id'
-        sheet.row(1).push m.assessment.group.user.id
-        sheet.row(2).push 'Klassen-Id'
-        sheet.row(2).push m.assessment.group.id
-        sheet.row(3).push 'Test'
-        sheet.row(3).push test.name
-        sheet.row(4).concat %w(Student)
-        # save id of each test to show their items
-        tests = tests << test.id
-
-        items = m.assessment.test.items
-        itemset = items.pluck(:id)
-        sheet.row(4).concat itemset
-        i = 5
-        m.results.each do |r|
-          sheet.row(i).push r.student.id
-          sheet.row(i).concat r.to_a(itemset)
-          i = i+1
-        end
-      end
-    end
-
-    # get unique id's of tests to show the items once at the top of the sheet
-    sheet1.row(row).concat tests.uniq
-=end
-    temp = Tempfile.new('levumi')
-    temp.close
-    book.write temp.path
-    return temp.path
+    @export = Export.new
+    @export.exportData(assessments, measurements)
   end
 end

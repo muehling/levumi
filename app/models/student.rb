@@ -60,9 +60,7 @@ class Student < ActiveRecord::Base
   end
 
   def to_a
-    return [id.to_s, name, group.id, group.name, 
-      #group.user.id, 
-      get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+    return [id.to_s, name, group.id, group.name, group.user.id, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
 
   def self.import(file, group)
@@ -152,12 +150,17 @@ class Student < ActiveRecord::Base
         where("date >?", Date.today)
     r = Result.
         where(:measurement => m).
-        where(:student_id => self.id).
-        where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
+            where(:student_id => self.id)
+    result = []
+    r.each do |temp|
+      result = result + m.where(:id => temp.measurement_id)
+    end
+    #only return measurements which has not updated
+    r.where('responses LIKE ? OR responses LIKE ?', '%1%', '%0%')
     r.each do |temp|
      m = m.where.not(:id => temp.measurement_id)
     end
-    return m.nil? ? [] : m
+    return m.nil? ? [] : result
   end
 
   #get current result objekt of student
