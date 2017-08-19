@@ -7,7 +7,7 @@ class TestsController < ApplicationController
   def index
     @tests = Test.where(:archive => false)
     @archive = Test.where(:archive => true)
-    unless @login.hasCapability?("export")
+    unless @login_user.hasCapability?("export")
       redirect_to root_url
     end
     respond_to do |format|
