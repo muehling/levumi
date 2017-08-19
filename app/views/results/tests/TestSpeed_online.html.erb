@@ -205,7 +205,7 @@
         var dict = {};
         var trend = "";
         dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-        dict["results"] = currentStudent + "#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
+        dict["results"] = currentStudent + ",times#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
         $.ajax({
             type: "PUT",
             url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",

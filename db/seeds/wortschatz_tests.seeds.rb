@@ -111,7 +111,7 @@ wo
 Woche
 }
 
-cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2")
+cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -354,7 +354,7 @@ zwei
 }
 
 
-cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4")
+cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0)

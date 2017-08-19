@@ -1,31 +1,70 @@
-<%= form_for([@user, @group, @assessment], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
-    <div class="form-group">
-        <%= label_tag "test", "Verfügbare Tests" %>
-        <%= select_tag "test", options_from_collection_for_select(@tests, "id", "long_name"), {:class => "form-control", :onchange => "selectChanged()"}%>
-    </div>
-    <div class="form-group">
-        <%= label_tag "", "Information" %>
-        <p class="form-control-static" id="info"><%= @tests.first.short_info if @tests.size > 0%></p>
-    </div>
 
-    <div class="form-group">
-        <%= f.submit :class => "btn btn-primary" %>
-        <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
-    </div>
-<% end %>
+
+<% subjects = @tests.collect{|t| t.subject}.uniq %>
+<ul id="tabs" class="nav nav-tabs" role="tablist">
+  <% first = true %>
+  <% subjects.sort.each do |s| %>
+      <li role="presentation" <% if first %> class="active" <%end %>><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
+      <% first = false %>
+  <% end %>
+</ul>
+<div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+  <% first = true %>
+  <% subjects.sort.each do |s| %>
+      <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s.parameterize%>">
+        <% categories = @tests.select{|t| t.subject == s}.collect { |t| t.construct }.uniq %>
+        <ul id="tabs" class="nav nav-pills" role="tablist">
+          <% first = true %>
+          <% categories.sort.each do |c| %>
+              <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= (s+c).parameterize%>" aria-controls="<%= (s+c).parameterize%>" role="tab" data-toggle="tab"><%= c%></a></li>
+              <% first = false %>
+          <% end %>
+        </ul>
+        <div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+          <% first = true %>
+          <% categories.sort.each do |c| %>
+              <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= (s+c).parameterize%>">
+                <%= form_for([@user, @group, @assessment], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
+                    <div class="form-group">
+                      <br/>
+                      <%= label_tag "test", "Verfügbare Tests" %>
+                      <%= select_tag "test", options_from_collection_for_select(@tests.select{|t| t.subject == s && t.construct ==c}, "id", "long_name"), {:class => "form-control", :onchange => "selectChanged()"}%>
+                    </div>
+                    <div class="form-group">
+                      <%= label_tag "", "Information" %>
+                      <p class="form-control-static" id="info"><%= @tests.select{|t| t.subject == s && t.construct ==c}.first.short_info if @tests.select{|t| t.subject == s && t.construct ==c}.size > 0%></p>
+                    </div>
+                    <div class="form-group">
+                      <%= f.submit :class => "btn btn-primary" %>
+                      <button type="button" class="btn btn-default" onclick="cancelForm()">Abbrechen</button>
+                    </div>
+                <% end %>
+              </div>
+              <% first = false %>
+          <%end%>
+        </div>
+      </div>
+
+      <% first = false %>
+  <%end%>
+</div>
+
 
 <script>
     function cancelForm() {
         $('#newAssessment').html("<%= escape_javascript(link_to(raw("<div class='btn btn-default groupButton'><i>Neuer Test</i></div>"), new_user_group_assessment_path(@user, @group), :data => {:remote => true}))%>");
     }
+
+    var infos = {
+    <% @tests.each do |t| %>
+    <%= t.id%>: "<%= raw(t.short_info)%>",
+    <% end %>
+    };
+
     function selectChanged() {
         var e = document.getElementById("test");
         var val = e.options[e.selectedIndex].value;
-        var infos = [
-            <% @tests.each do |t| %>
-                "<%= raw(t.short_info)%>",
-            <% end %>
-        ];
-        $("#info").html(infos[val-1]);
+        $("#info").html(infos[val]);
     }
+
 </script>

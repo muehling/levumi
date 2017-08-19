@@ -70,7 +70,7 @@ milu
 limi
 }
 
-cbmN0 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0")
+cbmN0 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 0", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN0.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -258,7 +258,7 @@ faro
 lale
 }
 
-cbmN1 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1")
+cbmN1 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -266,6 +266,343 @@ items.each do |i|
 end
 
 cbmN1.save
+
+
+cbmN2a = TestCBM.create(name: "Pseudowörter lesen", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", archive: false, student_access: false)
+
+items = %w{
+dofen
+pofen
+dodau
+reidel
+waho
+weda
+delei
+teisen
+laupa
+daudel
+tausau
+detei
+pader
+saupi
+wuwei
+dara
+rauho
+wetei
+dusau
+heiho
+weiha
+rahei
+hauwu
+teitau
+wepa
+dado
+pawa
+hauha
+daufer
+rauwei
+haunen
+hupo
+dudel
+heiha
+saulei
+eidel
+wadau
+wamen
+haura
+teisei
+teidu
+wupi
+teifen
+heiwa
+menen
+durau
+reiwu
+leilau
+weipo
+wulau
+rauwa
+pihau
+laulen
+wawu
+heidau
+wadu
+teiha
+eirei
+poder
+teimer
+halei
+pawei
+depa
+hopi
+wapi
+dauha
+pafen
+huwa
+leihei
+huda
+pahau
+weido
+heifen
+haulen
+dohau
+seiwei
+weisau
+leiwe
+dupi
+weipi
+wuwa
+hurau
+ratei
+hupi
+weipa
+hauhen
+pilau
+rawu
+laudel
+welen
+hura
+wuda
+datau
+hoder
+laumer
+huhei
+pihei
+wapa
+parau
+padau
+dode
+reien
+heira
+lauhu
+leisau
+humer
+teilei
+duwu
+wemer
+reihau
+weiwa
+reipa
+hudu
+heisau
+wuhei
+pahen
+reilau
+wenen
+}
+items.each do |i|
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
+  it.save
+end
+cbmN2a.len = cbmN2a.len + items.size
+
+items = %w{
+hensei
+enmer
+lenrei
+lenho
+ender
+mermen
+mentau
+delsau
+lensen
+merpo
+lentau
+hendau
+seiei
+fenha
+deldu
+mendel
+fenpi
+senra
+derde
+derda
+sendu
+deldo
+ferha
+nende
+derho
+derdo
+mertau
+dellei
+senhau
+mensei
+nenrau
+ferwa
+derpo
+merrei
+}
+items.each do |i|
+  it = cbmN2a.items.build(itemtext: i, difficulty: 1, itemtype: 0)
+  it.save
+end
+cbmN2a.len = cbmN2a.len + items.size
+
+cbmN2a.save
+
+
+
+
+cbmN2b = TestCBM.create(name: "Pseudowörter lesen", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", archive: false, student_access: false)
+
+items = %w{
+schuku
+keber
+keschau
+kuscho
+gibo
+baku
+kuke
+gacher
+kicha
+bicher
+goga
+boscha
+gika
+kusche
+gibu
+bischa
+bakau
+gischau
+kebu
+schaubi
+schebo
+kischau
+goschau
+scheibo
+schagi
+gaba
+schobel
+schogi
+schekau
+schaba
+gische
+scheigo
+schoschu
+scheka
+gischu
+giber
+schubo
+bagel
+scheigel
+koki
+schuba
+gobi
+boke
+kigi
+guschu
+schacha
+schokau
+keka
+scheber
+kiku
+kigu
+scheischo
+kecha
+scheichi
+schegi
+bochen
+bobel
+bachi
+basche
+gigo
+kaucher
+bugi
+gike
+kigo
+kauki
+goscho
+boka
+schochi
+bachen
+kagu
+kuchi
+bogi
+gasche
+schauben
+schoga
+schuscho
+kauba
+schoku
+scheku
+bugu
+kasche
+schesche
+schecha
+kuschei
+gober
+schugel
+kauchi
+schasche
+gaschau
+schescha
+bigel
+kogen
+kokau
+kiber
+schebi
+schaugo
+schoka
+gugo
+kuga
+bober
+bascho
+schauber
+buba
+bokau
+schego
+bochi
+gabo
+bische
+kauko
+gaka
+gobu
+}
+items.each do |i|
+  it = cbmN2b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
+  it.save
+end
+cbmN2b.len = cbmN2b.len + items.size
+
+items = %w{
+gelgu
+berbo
+gelcha
+genki
+belkau
+belchen
+benschau
+gengo
+gelsche
+bensche
+bengi
+gelgen
+gengu
+berko
+benko
+belgel
+berscha
+belbo
+genschei
+berschei
+belscho
+berku
+berscho
+belke
+bergi
+bercha
+berbu
+gelka
+benscho
+genben
+}
+items.each do |i|
+  it = cbmN2b.items.build(itemtext: i, difficulty: 1, itemtype: 0)
+  it.save
+end
+cbmN2b.len = cbmN2b.len + items.size
+
+cbmN2b.save
 
 
 
@@ -402,7 +739,7 @@ jemo
 jenu
 }
 
-cbmN3a = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3a")
+cbmN3a = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3a", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN3a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -598,7 +935,7 @@ zöstä
 spüvi
 }
 
-cbmN3b = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3b")
+cbmN3b = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3b", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN3b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -802,7 +1139,7 @@ glutra
 sprispre
 }
 
-cbmN4 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4")
+cbmN4 = TestCBM.create(name: "Pseudowörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", archive: false, student_access: false)
 
 items.each do |i|
   it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0)
@@ -814,338 +1151,3 @@ cbmN4.save
 
 
 
-cbmN2a = TestCBM.create(name: "Pseudowörter lesen", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a")
-
-items = %w{
-dofen
-pofen
-dodau
-reidel
-waho
-weda
-delei
-teisen
-laupa
-daudel
-tausau
-detei
-pader
-saupi
-wuwei
-dara
-rauho
-wetei
-dusau
-heiho
-weiha
-rahei
-hauwu
-teitau
-wepa
-dado
-pawa
-hauha
-daufer
-rauwei
-haunen
-hupo
-dudel
-heiha
-saulei
-eidel
-wadau
-wamen
-haura
-teisei
-teidu
-wupi
-teifen
-heiwa
-menen
-durau
-reiwu
-leilau
-weipo
-wulau
-rauwa
-pihau
-laulen
-wawu
-heidau
-wadu
-teiha
-eirei
-poder
-teimer
-halei
-pawei
-depa
-hopi
-wapi
-dauha
-pafen
-huwa
-leihei
-huda
-pahau
-weido
-heifen
-haulen
-dohau
-seiwei
-weisau
-leiwe
-dupi
-weipi
-wuwa
-hurau
-ratei
-hupi
-weipa
-hauhen
-pilau
-rawu
-laudel
-welen
-hura
-wuda
-datau
-hoder
-laumer
-huhei
-pihei
-wapa
-parau
-padau
-dode
-reien
-heira
-lauhu
-leisau
-humer
-teilei
-duwu
-wemer
-reihau
-weiwa
-reipa
-hudu
-heisau
-wuhei
-pahen
-reilau
-wenen
-}
-items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0)
-  it.save
-end
-cbmN2a.len = cbmN2a.len + items.size
-
-items = %w{
-hensei
-enmer
-lenrei
-lenho
-ender
-mermen
-mentau
-delsau
-lensen
-merpo
-lentau
-hendau
-seiei
-fenha
-deldu
-mendel
-fenpi
-senra
-derde
-derda
-sendu
-deldo
-ferha
-nende
-derho
-derdo
-mertau
-dellei
-senhau
-mensei
-nenrau
-ferwa
-derpo
-merrei
-}
-items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 1, itemtype: 0)
-  it.save
-end
-cbmN2a.len = cbmN2a.len + items.size
-
-cbmN2a.save
-
-
-
-
-cbmN2b = TestCBM.create(name: "Pseudowörter lesen", len: 0, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b")
-
-items = %w{
-schuku
-keber
-keschau
-kuscho
-gibo
-baku
-kuke
-gacher
-kicha
-bicher
-goga
-boscha
-gika
-kusche
-gibu
-bischa
-bakau
-gischau
-kebu
-schaubi
-schebo
-kischau
-goschau
-scheibo
-schagi
-gaba
-schobel
-schogi
-schekau
-schaba
-gische
-scheigo
-schoschu
-scheka
-gischu
-giber
-schubo
-bagel
-scheigel
-koki
-schuba
-gobi
-boke
-kigi
-guschu
-schacha
-schokau
-keka
-scheber
-kiku
-kigu
-scheischo
-kecha
-scheichi
-schegi
-bochen
-bobel
-bachi
-basche
-gigo
-kaucher
-bugi
-gike
-kigo
-kauki
-goscho
-boka
-schochi
-bachen
-kagu
-kuchi
-bogi
-gasche
-schauben
-schoga
-schuscho
-kauba
-schoku
-scheku
-bugu
-kasche
-schesche
-schecha
-kuschei
-gober
-schugel
-kauchi
-schasche
-gaschau
-schescha
-bigel
-kogen
-kokau
-kiber
-schebi
-schaugo
-schoka
-gugo
-kuga
-bober
-bascho
-schauber
-buba
-bokau
-schego
-bochi
-gabo
-bische
-kauko
-gaka
-gobu
-}
-items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 0, itemtype: 0)
-  it.save
-end
-cbmN2b.len = cbmN2b.len + items.size
-
-items = %w{
-gelgu
-berbo
-gelcha
-genki
-belkau
-belchen
-benschau
-gengo
-gelsche
-bensche
-bengi
-gelgen
-gengu
-berko
-benko
-belgel
-berscha
-belbo
-genschei
-berschei
-belscho
-berku
-berscho
-belke
-bergi
-bercha
-berbu
-gelka
-benscho
-genben
-}
-items.each do |i|
-  it = cbmN2b.items.build(itemtext: i, difficulty: 1, itemtype: 0)
-  it.save
-end
-cbmN2b.len = cbmN2b.len + items.size
-
-cbmN2b.save

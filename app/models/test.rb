@@ -22,29 +22,25 @@ class Test < ActiveRecord::Base
     self.items.where(itemtype: 0).order(:id)
   end
 
-  #TODO: Konsequent verwenden!
   def intro_items
     self.items.where("itemtype < ?", 0).order(:itemtype)
   end
 
-  #TODO: Konsequent verwenden!
   def outro_items
     self.items.where("itemtype > ?", 0).order(:itemtype)
   end
 
   def draw_items(first)
-    itemset = intro_items
-    enditems = outro_items
+    itemset = Array.new
     if first
-      itemset = itemset + content_items
+      itemset = content_items
     else
       len.times do
-        remaining = items - (itemset + enditems)
+        remaining = content_items - itemset
         itemset = itemset + [remaining.sample]
       end
     end
-    itemset = itemset + enditems
-    return itemset.map{|i| i.id}
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
   def len_info
@@ -77,7 +73,7 @@ class Test < ActiveRecord::Base
     sheet = book.create_worksheet :name => 'Items'
     sheet.row(0).concat Item.xls_headings
     i = 1
-    items.each do |it|
+    content_items.each do |it|
       sheet.row(i).concat it.to_a
       i = i+1
     end

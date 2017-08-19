@@ -1,180 +1,31 @@
 <!--Diese Seite ist nur für Arbeitszwecke bzw. bessere Veranschaulichungszwecke.-->
 
 
-<!--Natürlich alle Itemviews in " " gepackt, damits ein string ist-->
-<!--Beispiel Itemview für intro vom Diktat-->
-<audio id='audioItem' src='/assets/Anweisungen/15_Hallo.mp3'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
-  Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
-  wie du kannst! Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit du beginnen kannst.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
-</p>
-<br />
-<br />
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: Irgendeine Taste</div></th>
-    </tr>
-  </table>
-</footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
     tempAudio.play();
-    currentResult = currentResult + ',';
+    shiftKey = false;
+    //Lösung für Großbuchstabentaste abgefragt:
+    //- toggle Varibalenwert
+    //- wenn shift gedrückt shiftKey = true, wenn nicht gedrückt oder shift losgelassen shiftKey = false
+    $(window).keydown(function (event) {
+        if (event.keyCode == 16) {
+            shiftKey = true;
+        }
+    });
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
             tempAudio.play();
         }
-        else {
-            $(window).unbind('keyup');
-            nextItem();
-        }})
-</script>
-
-
-
-<!--Beispiel itemView für ein abzufragendes Wort vom Diktat-->
-<audio id='audioItem' src='Audiopfad im Projekt'></audio>
-<p align='center'>
-  <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle'>
-</p>
-<br />
-<br />
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
-    </tr>
-  </table>
-</footer>
-<script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.play();
-    var tempAnswer = (document.getElementById('answer'));
-    tempAnswer.focus();
-    $(window).keyup(function (event) {
-        if(event.keyCode==37){
-            tempAudio.pause();
-            tempAudio.currentTime = 0;
-            tempAudio.play();
+        //Zurücksetzen auf false bei loslassen
+        else if(event.keyCode == 16) {
+            shiftKey = false;
         }
-        else if(event.keyCode == 13) {
+        else if(shiftKey && event.keyCode>= 65 && event.keyCode<=90) {
             $(window).unbind('keyup');
-            if(tempAnswer.value=='Abzufragende Wort'){
-                currentResult = currentResult + '1,';
-            }
-            else {
-                currentResult = currentResult + '0,';
-            };
-            stopwatch = new Date() - stopwatch;
-            currentTimes = currentTimes + stopwatch + ',';
-            nextItem();
-        }});
-    $(tempAnswer).keydown(function (event) {
-        var key = event.charCode || event.keyCode;
-        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
-            event.preventDefault();
-        }});
-</script>
-
-<!-- itemView für ein beispiel vom Abtipptest-->
-<audio id='audioItem' src='/assets/Anweisungen/13_AbtippaufgabeSatz.mp3'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Im <span style='background-color:#FFFF00'>Garten</span> sind große Apfelbäume und Quittenbäume.“
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
-  <img style='float: left; width: 150px;margin-left: 125px' src='/assets/headphones.png'/>
-  <br />
-  <br />
-  <img style='float: left; width: 150px;margin-left: 125px;margin-top: 50px' src='/assets/tastartur.png'/>
-  <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle'>
-</p>
-<br />
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
-    </tr>
-  </table>
-</footer>
-<script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.play();
-    var tempAnswer = (document.getElementById('answer'));
-    tempAnswer.focus();
-    $(tempAnswer).css('border','0px').css('border-bottom', 'black solid 1px').attr('maxlength', '16').attr('size','16');
-    currentResult = currentResult + ',';
-    $(window).keyup(function (event) {if(event.keyCode==37){
-        tempAudio.pause();
-        tempAudio.currentTime = 0;
-        tempAudio.play();
-    } else if(event.keyCode == 13 && tempAnswer.value == 'Garten') {
-        $(window).unbind('keyup');
-        nextItem();
-    }});
-    $(tempAnswer).keydown(function (event) {
-        var key = event.charCode || event.keyCode;
-        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
-            event.preventDefault();
-        }})
-</script>
-
-<!--itemview für ein gesplitetetes Item vom Abtipptest-->
-<audio id='audioItem' src='/assets/Anweisungen/6_Umlaute4.mp3'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  "Bitte ergänze jetzt für mich die fehlenden Umlaute."
-  <img style='float: right; width: 250px ' src='/assets/Levumi-normal-blau.jpg'/>
-  <img style='float: left; width: 150px;margin-left: 125px' src='/assets/headphones.png'/>
-  <br />
-  <br />
-  <img style='float: left; width: 150px;margin-left: 125px;margin-top: 50px' src='/assets/tastartur.png'/>
-</p>
-<p style='font-family: fibel_nordregular; font-size:96px' type='text' class='text-center' align='middle'>
-  B<span style='background-color:#FFFF00'>ä</span>ume
-</p>
-<p style='font-family: fibel_nordregular; font-size:96px' type='text' class='text-center' align='middle'>
-  B<input style='font-family: fibel_nordregular;padding-bottom: 10px; line-height: 50px; width: 50px; font-size:96px' id='answer' type='text' class='text-center' align='middle'>ume
-</p>
-<br />
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/assets/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/assets/Tastatur_EingabetasteAlleine.png'/></span></div></th>
-    </tr>
-  </table>
-</footer>
-<script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.play();
-    var tempAnswer = (document.getElementById('answer'));
-    tempAnswer.focus();
-    $(tempAnswer).css('border','0px').css('border-bottom', 'black solid 1px').attr('maxlength', '1').attr('size','1').val('');;
-    currentResult = currentResult + ',';
-    $(window).keyup(function (event) {if(event.keyCode==37){
-        tempAudio.pause();
-        tempAudio.currentTime = 0;
-        tempAudio.play();
-    } else if(event.keyCode == 13 && tempAnswer.value == 'Garten') {
-        $(window).unbind('keyup');
-        nextItem();
-    }})
-</script>
-
-
-
-
-
-
-
-
+            $(window).unbind('keydown');
+            nextItem();}});
+</script>;
