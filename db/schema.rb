@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205181337) do
+ActiveRecord::Schema.define(version: 20170815162249) do
 
   create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
@@ -46,6 +46,15 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.text     "mediapath"
     t.text     "itemview"
     t.integer  "itemtype"
+  end
+
+  create_table "materials", force: :cascade do |t|
+    t.text     "subject"
+    t.text     "construct"
+    t.text     "block"
+    t.text     "exercisetype"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "measurements", force: :cascade do |t|

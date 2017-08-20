@@ -114,13 +114,13 @@ Woerter/53_sind.mp3
 dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 1200, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
 
 
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-4, itemview:"
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-5, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
   Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
   wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
-  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -150,12 +150,12 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
 </script>")
 
 
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/15_Erklaerung.mp3", itemtype:-3,itemview:"
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/15_Erklaerung.mp3", itemtype:-4,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
   dass du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
-  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -184,13 +184,13 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 it.save
 
 
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-2,  itemview:"
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-3,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du ein Wort falsch geschrieben hast, kannst du die Löschtaste benutzen und die Buchstaben löschen,
   damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste,
-  dann lese ich dir noch einmal vor, was du schreiben sollst. Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
-  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
+  dann lese ich dir noch einmal vor, was du schreiben sollst.“
+  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -219,12 +219,44 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
 </script>")
 it.save
 
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-2,  itemview:"
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
+  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+</p>
+<br />
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempAudio.play();
+        }else if(event.keyCode == 13) {
+            $(window).unbind('keyup');
+            nextItem();
+        }})
+</script>")
+it.save
 
 it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/19_ich_beginne.mp3", itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun dir die Wörter zu diktieren.“
-  <img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/>
+  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />

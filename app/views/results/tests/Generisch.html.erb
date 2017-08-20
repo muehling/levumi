@@ -57,7 +57,9 @@
           }
           else{
               $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+              <%if @measurement.assessment.test.student_access == false%>
               $('#mainModalHeader').html(students[currentStudent]);
+              <%end%>
               stopwatch = new Date();
           }
       }
