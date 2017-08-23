@@ -1,0 +1,15 @@
+<div id="ma<%= material.id %>">
+  <div class="panel-body">
+    <p class="lead">Beschreibung des Aufgabentyps</p>
+    <p>
+      <%= raw(material.exerciseinfo) %>
+    </p>
+    <hr>
+    <p class="lead">Download Bereich</p>
+    <p>
+      <% material.data.each do |ma| %>
+          <%= link_to ma, asset_path(ma)%>,
+      <%end%>
+    </p>
+  </div>
+</div>

@@ -25,6 +25,7 @@
       <ul class="nav navbar-nav navbar-left">
         <li><%= link_to "Meine Klassen", user_groups_path(@login_user)%></li>
         <li><%= link_to("Meine Daten", user_path(@login_user))%></li>
+        <li><%= link_to "Fördermaterial", materials_path%></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Informationen<span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -46,8 +47,6 @@
             <li><%= link_to "Druckvorlage A3: Levumi normal", asset_path("A3 Levumi normal.pdf")%></li>
             <li><%= link_to "Druckvorlage A3: Levumi jubelt", asset_path("A3 Levumi jubelt.pdf")%></li>
             <li><%= link_to "Druckvorlage A3: Levumi liest", asset_path("A3 Levumi liest.pdf")%></li>
-            <li role="separator" class="divider"></li>
-            <li><%= link_to "Fördermateiral", asset_path("Foerderaufgaben.zip")%></li>
           </ul>
         </li>
       </ul>

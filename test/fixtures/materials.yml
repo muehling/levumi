@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  subject: MyText
+  construct: MyText
+  block: MyText
+  exercisetype: MyText
+
+two:
+  subject: MyText
+  construct: MyText
+  block: MyText
+  exercisetype: MyText

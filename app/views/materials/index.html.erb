@@ -1,0 +1,87 @@
+<p id="notice"><%= notice %></p>
+<% subjects = @materials.uniq.pluck(:subject) %>
+
+<ul id="tabs" class="nav nav-tabs" role="tablist">
+  <% first = true %>
+  <% subjects.sort.each do |s| %>
+      <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= s.parameterize%>" aria-controls="<%= s.parameterize%>" role="tab" data-toggle="tab"><%= s%></a></li>
+      <% first = false %>
+  <% end %>
+</ul>
+
+<div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+  <% first = true %>
+  <% subjects.sort.each do |s| %>
+      <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= s.parameterize%>">
+        <% categories = @materials.select{|ma| ma.subject == s}.collect { |ma| ma.construct }.uniq %>
+        <ul id="tabs" class="nav nav-pills" role="tablist">
+          <% first = true %>
+          <% categories.sort.each do |c| %>
+              <li role="presentation" <% if first %> class="active" <%end %> ><a href="#<%= (s+c).parameterize%>" aria-controls="<%= (s+c).parameterize%>" role="tab" data-toggle="tab"><%= c%></a></li>
+              <% first = false %>
+          <% end %>
+        </ul>
+        <div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">
+          <% first = true %>
+          <% categories.sort.each do |c| %>
+              <div role="tabpanel" class="tab-pane <% if first %>active<% end %>" id="<%= (s+c).parameterize%>">
+                <% @materials.where(:subject => s, :construct => c).uniq.pluck(:block).each do |ma| %>
+
+                    <div class="panel panel-default">
+                      <div class="panel-heading" role="tab" id="h<%=(s+c+ma).parameterize %>">
+                        <h4 class="panel-title">
+                          <a role="button" data-toggle="collapse" href="#c<%=(s+c+ma).parameterize %>" aria-expanded="false" aria-controls="c<%=(s+c+ma).parameterize %>">
+                            <%= ma %>
+                          </a>
+                        </h4>
+                      </div>
+                      <div id="c<%=(s+c+ma).parameterize %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=(s+c+ma).parameterize %>">
+                        </p>
+                        <div class="panel-body">
+                          <p class="lead">Beschreibung des Förderbausteins</p>
+                          <p>
+                            <%= raw @materials.where(:subject => s, :construct => c, :block => ma).uniq.pluck(:blockinfo).first%>
+                          </p>
+                          <% @materials.where(:subject => s, :construct => c, :block => ma).order(:exercisetype).each do |material| %>
+                              <div class="panel panel-default">
+                                <div class="panel-heading" role="tab" id="h<%=(s+c+ma).parameterize %>">
+                                  <h4 class="panel-title">
+                                    <a role="button" data-toggle="collapse" href="#c<%=material.id %>" aria-expanded="false" aria-controls="c<%=material.id %>">
+                                      <%= material.exercisetype %>
+                                    </a>
+                                  </h4>
+                                </div>
+                                <div id="c<%=material.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=material.id %>">
+                                  <div class="panel-body">
+                                    <p class="lead text-right">
+                                      <% if !@login_user.nil? && @login_user.hasCapability?("test") %>
+                                          <%= link_to edit_material_path(material), :title => "Bearbeiten", :data => {:remote => true} do %>
+                                              <span class="glyphicon glyphicon-pencil"></span>
+                                          <% end %>
+                                          <%= link_to material_path(material), :title => "Löschen", :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
+                                              <span class="glyphicon glyphicon-trash"></span>
+                                          <% end %>
+                                      <% end %>
+                                    </p>
+                                    <%= render(file: 'materials/_show', :locals =>  {:material => material})%>
+                                  </div>
+                                </div>
+                              </div>
+                          <%end %>
+                        </div>
+                      </div>
+                    </div>
+
+                <%end%>
+              </div>
+              <% first = false %>
+          <%end%>
+        </div>
+      </div>
+      <% first = false %>
+  <%end%>
+</div>
+
+
+<hr>
+<%= link_to "Gesamtes Fördermaterial herunterladen", asset_path("Arbeitsblaetter Levumi.zip")%>
