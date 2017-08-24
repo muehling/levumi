@@ -118,8 +118,8 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
-  Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
-  wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
+ Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
+ wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
   <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
@@ -148,13 +148,13 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
             nextItem();
         }})
 </script>")
-
+it.save
 
 it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/15_Erklaerung.mp3", itemtype:-4,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
-  dass du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
+ das du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
   <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
@@ -187,9 +187,8 @@ it.save
 it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-3,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Wenn du ein Wort falsch geschrieben hast, kannst du die Löschtaste benutzen und die Buchstaben löschen,
-  damit du das Wort noch einmal schreiben kannst. Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste,
-  dann lese ich dir noch einmal vor, was du schreiben sollst.“
+  „Wenn du einen Buchstaben oder ein Wort löschen möchtest, benutze die Löschtaste.
+Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese ich dir noch einmal vor, was du schreiben sollst.“
   <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
@@ -218,7 +217,6 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
         }})
 </script>")
 it.save
-
 it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-2,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
@@ -255,7 +253,7 @@ it.save
 it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/19_ich_beginne.mp3", itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Ich beginne nun dir die Wörter zu diktieren.“
+  „Ich beginne nun, dir die Wörter zu diktieren.“
   <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />

@@ -7,6 +7,7 @@ require 'spreadsheet'
 class Test < ActiveRecord::Base
   has_many :items, :dependent => :destroy
   has_many :assessments, :dependent => :destroy
+  has_and_belongs_to_many :materials
 
   validates_presence_of :name
   validates_presence_of :subject
