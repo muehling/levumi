@@ -25,8 +25,8 @@ class User < ActiveRecord::Base
   def self.get_assessment_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT user_id, COUNT(*) as Anzahl
-      FROM Users JOIN Groups ON user_id = Users.id
-        JOIN Assessments ON group_id = Groups.id
+      FROM users JOIN groups ON user_id = users.id
+        JOIN assessments ON group_id = groups.id
       WHERE export = 't'
       GROUP BY user_id;")
     ids = temp.map{|x| x["user_id"]}
@@ -38,9 +38,9 @@ class User < ActiveRecord::Base
   def self.get_measurement_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT user_id, COUNT(*) as Anzahl
-      FROM Users JOIN Groups ON user_id = Users.id
-        JOIN Assessments ON group_id = Groups.id
-        JOIN Measurements ON assessment_id = Assessments.id
+      FROM users JOIN groups ON user_id = users.id
+        JOIN assessments ON group_id = groups.id
+        JOIN measurements ON assessment_id = assessments.id
       WHERE export = 't'
       GROUP BY user_id;
      ")
@@ -53,10 +53,10 @@ class User < ActiveRecord::Base
   def self.get_result_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT user_id, COUNT(*) as Anzahl
-      FROM Users JOIN Groups ON user_id = Users.id
-        JOIN Assessments ON group_id = Groups.id
-        JOIN Measurements ON assessment_id = Assessments.id
-        JOIN Results ON measurement_id = Results.id
+      FROM users JOIN groups ON user_id = users.id
+        JOIN assessments ON group_id = groups.id
+        JOIN measurements ON assessment_id = assessments.id
+        JOIN results ON measurement_id = results.id
         WHERE export = 't'
         GROUP BY user_id;
     ")

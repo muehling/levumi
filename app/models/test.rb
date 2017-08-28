@@ -71,8 +71,8 @@ class Test < ActiveRecord::Base
   def self.get_assessment_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT test_id, COUNT(*) as Anzahl
-      FROM Tests JOIN Assessments ON Tests.id = test_id
-        JOIN Groups ON Groups.id = group_id
+      FROM tests JOIN assessments ON tests.id = test_id
+        JOIN groups ON groups.id = group_id
       WHERE export = 't'
       GROUP BY test_id;
     ")
@@ -85,8 +85,8 @@ class Test < ActiveRecord::Base
   def self.get_measurement_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT test_id, COUNT(*) as Anzahl
-      FROM Measurements JOIN Assessments ON Assessments.id = assessment_id
-        JOIN Groups ON Groups.id = group_id
+      FROM measurements JOIN assessments ON assessments.id = assessment_id
+        JOIN groups ON groups.id = group_id
       WHERE export = 't'
       GROUP BY test_id;
     ")
@@ -99,9 +99,9 @@ class Test < ActiveRecord::Base
   def self.get_result_count
     temp = ActiveRecord::Base.connection.execute("
       SELECT test_id, COUNT(*) as Anzahl
-      FROM Results JOIN Measurements ON Measurements.id = measurement_id
-        JOIN Assessments ON Assessments.id = assessment_id
-        JOIN Groups ON Groups.id = group_id
+      FROM results JOIN measurements ON measurements.id = measurement_id
+        JOIN assessments ON assessments.id = assessment_id
+        JOIN groups ON groups.id = group_id
       WHERE export = 't'
       GROUP BY test_id;
     ")

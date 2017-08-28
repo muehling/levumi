@@ -126,20 +126,20 @@ class Result < ActiveRecord::Base
     sheet = book.create_worksheet name: 'Messungen'
 
     statement = "
-      SELECT Results.id,Results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, Assessments.group_id, user_id, email, test_id, subject, construct, Tests.name, level, items, responses, extra_data, date
-      FROM Results JOIN Measurements ON Measurements.id = measurement_id
-        JOIN Students ON Students.id = student_id
-        JOIN Assessments ON Assessments.id = assessment_id
-        JOIN Tests ON Tests.id = test_id
-        JOIN Groups ON Groups.id = Assessments.group_id
-        JOIN Users ON Users.id = user_id
+      SELECT results.id,results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, assessments.group_id, user_id, email, test_id, subject, construct, tests.name, level, items, responses, extra_data, date
+      FROM results JOIN measurements ON measurements.id = measurement_id
+        JOIN students ON students.id = student_id
+        JOIN assessments ON assessments.id = assessment_id
+        JOIN tests ON tests.id = test_id
+        JOIN groups ON groups.id = assessments.group_id
+        JOIN users ON users.id = user_id
       WHERE export = 't'
     "
     unless test.nil?
-      statement = statement + " AND Tests.id = #{test}"
+      statement = statement + " AND tests.id = #{test}"
     end
     unless user.nil?
-      statement = statement + " AND Users.id = #{user}"
+      statement = statement + " AND users.id = #{user}"
     end
     statement = statement + ";"
     temp = ActiveRecord::Base.connection.execute(statement)
