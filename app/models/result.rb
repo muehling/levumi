@@ -155,7 +155,7 @@ class Result < ActiveRecord::Base
       end
       i = 0
       items.each do |item|
-        sheet.row(r).concat([item, itembank[item], responses[i], (extra.nil? ? nil : extra["times"][i]), i+1, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[19].to_date.strftime("%d.%m.%Y")])
+        sheet.row(r).concat([item, itembank[item], responses[i], (extra.nil? ? nil : extra["times"][i]), i+1, row["results.id"], row["results.student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["assessments.group.id"], row["user_id"], row["email"], row["tests.id"], row["subject"], row["construct"], row["tests.name"], row["level"], row["date"].to_date.strftime("%d.%m.%Y")])
         r = r + 1
         i = i + 1
       end

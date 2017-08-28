@@ -56,7 +56,7 @@ class User < ActiveRecord::Base
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id
         JOIN measurements ON assessment_id = assessments.id
-        JOIN results ON measurement_id = results.id
+        JOIN results ON measurement_id = measurements.id
         WHERE export = 1
         GROUP BY user_id;
     ")
