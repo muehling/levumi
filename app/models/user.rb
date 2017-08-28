@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
 
   #Count number of assessments for each user by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
   def self.get_assessment_count
-    temp = ActiveRecord::Base.connection.execute("
+    temp = ActiveRecord::Base.connection.exec_query("
       SELECT user_id, COUNT(*) as Anzahl
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id
@@ -36,7 +36,7 @@ class User < ActiveRecord::Base
 
   #Count number of measurements for each user by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
   def self.get_measurement_count
-    temp = ActiveRecord::Base.connection.execute("
+    temp = ActiveRecord::Base.connection.exec_query("
       SELECT user_id, COUNT(*) as Anzahl
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id
@@ -51,7 +51,7 @@ class User < ActiveRecord::Base
 
   #Count number of results for each user by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
   def self.get_result_count
-    temp = ActiveRecord::Base.connection.execute("
+    temp = ActiveRecord::Base.connection.exec_query("
       SELECT user_id, COUNT(*) as Anzahl
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id

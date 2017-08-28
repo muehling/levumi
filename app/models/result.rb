@@ -142,7 +142,7 @@ class Result < ActiveRecord::Base
       statement = statement + " AND users.id = #{user}"
     end
     statement = statement + ";"
-    temp = ActiveRecord::Base.connection.execute(statement)
+    temp = ActiveRecord::Base.connection.exec_query(statement)
     itembank = Hash[Item.all.pluck(:id, :shorthand)]
     sheet.row(0).concat("Item,Itemtext,Ergebnis,Reaktionszeit,Position in Messreihe,Messung_id,Kind_id,Geburtstag,Geschlecht,Foerderbedarf,Migrationshintergrund,Messzeitpunkt_id,Erhebung_id,Klasse_id,Benutzer_id,Benutzermail,Test,Fach,Testname,Konstrukt,Level,Datum".split(','))
     r = 1
