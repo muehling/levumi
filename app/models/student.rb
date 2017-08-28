@@ -55,10 +55,6 @@ class Student < ActiveRecord::Base
     end
   end
 
-  def self.xls_headings
-    return %w{ID Code Klassen-Id Klassen-Name Benutzer-Id Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
-  end
-
   def to_a
     return [id.to_s, name, group.id, group.name, group.user.id, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
@@ -173,4 +169,5 @@ class Student < ActiveRecord::Base
     r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
     return r.nil? ? [] : r
   end
+
 end

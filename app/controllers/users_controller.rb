@@ -14,15 +14,16 @@ class UsersController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        unless !@login_user.nil? && @login_user.hasCapability?("user") || (@user.id == @login_user.id)
+        if @login_user.nil? || (!@login_user.hasCapability?("user") && (@user.id != @login_user.id))
           redirect_to root_url
         end
       }
       format.xml {
-        unless !@login_user.nil? && @login_user.hasCapability?("export")
+        if @login_user.nil? || (!@login_user.hasCapability?("export") && (@user.id != @login_user.id))
           redirect_to root_url
+        else
+          send_file Result.to_xls(nil, @user.id), filename: @user.name + " - Export.xls", type: "text/csv"
         end
-        send_file @user.export, filename: @user.name + " - Export.xls", type: "text/csv"
       }
     end
   end

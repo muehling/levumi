@@ -107,23 +107,6 @@ class Result < ActiveRecord::Base
     return (responses - [0, 1]).size
   end
 
-  #Create an array representation of the results.
-  #Temporary hack: If extra_data contain "times" then export the times instead of the 1/0 values.
-  #Used for exporting to XLS
-  def to_a(itemset)
-    res = []
-    itemset.each do |i|
-      val = responses[items.index(i)]
-      if extra_data.has_key?('times')
-        time = extra_data['times'][items.index(i)].nil? ? nil : extra_data['times'][items.index(i)].to_i
-        res = res + [time.nil? ? '' : (val == 1 ? time : -1*time)]
-      else
-        res = res + [val.nil? ? '' :val]
-      end
-    end
-    return res
-  end
-
   #Get the results of the most recent prior measurement of the same assessment.
   #Used for generating student feedback after a measurement.
   def getPriorResult()
@@ -135,6 +118,51 @@ class Result < ActiveRecord::Base
       t = res.score
       return t.nil? ? 0 : t
     end
+  end
 
+  #Returns an array representation of every Result object together with information about tests, users, assessment and measurement. User for exporting everything as one large file.
+  def self.to_xls(test, user)
+    book = Spreadsheet::Workbook.new
+    sheet = book.create_worksheet name: 'Messungen'
+
+    statement = "
+      SELECT Results.id,Results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, Assessments.group_id, user_id, email, test_id, subject, construct, Tests.name, level, items, responses, extra_data, date
+      FROM Results JOIN Measurements ON Measurements.id = measurement_id
+        JOIN Students ON Students.id = student_id
+        JOIN Assessments ON Assessments.id = assessment_id
+        JOIN Tests ON Tests.id = test_id
+        JOIN Groups ON Groups.id = Assessments.group_id
+        JOIN Users ON Users.id = user_id
+      WHERE export = 't'
+    "
+    unless test.nil?
+      statement = statement + " AND Tests.id = #{test}"
+    end
+    unless user.nil?
+      statement = statement + " AND Users.id = #{user}"
+    end
+    statement = statement + ";"
+    temp = ActiveRecord::Base.connection.execute(statement)
+    itembank = Hash[Item.all.pluck(:id, :shorthand)]
+    sheet.row(0).concat("Item,Itemtext,Ergebnis,Reaktionszeit,Position in Messreihe,Messung_id,Kind_id,Geburtstag,Geschlecht,Foerderbedarf,Migrationshintergrund,Messzeitpunkt_id,Erhebung_id,Klasse_id,Benutzer_id,Benutzermail,Test,Fach,Testname,Konstrukt,Level,Datum".split(','))
+    r = 1
+    temp.each do |row|
+      items = YAML.load(row["items"])
+      responses = YAML.load(row["responses"])
+      extra = nil
+      unless row["extra_data"].nil?
+        extra = YAML.load(row["extra_data"])
+      end
+      i = 0
+      items.each do |item|
+        sheet.row(r).concat([item, itembank[item], responses[i], (extra.nil? ? nil : extra["times"][i]), i+1, row[0], row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10], row[11], row[12], row[13], row[14], row[15], row[19].to_date.strftime("%d.%m.%Y")])
+        r = r + 1
+        i = i + 1
+      end
+    end
+    temp = Tempfile.new('levumi')
+    temp.close
+    book.write temp.path
+    return temp.path
   end
 end

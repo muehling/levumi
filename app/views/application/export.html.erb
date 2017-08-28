@@ -1,6 +1,7 @@
 <ul id="tabs" class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#tests" aria-controls="tests" role="tab" data-toggle="tab">Nach Tests</a></li>
     <li role="presentation"><a href="#users" aria-controls="users" role="tab" data-toggle="tab">Nach Nutzern</a></li>
+    <li><%= link_to "Alle Messungen", tests_path(format: :xml)%></li>
 </ul>
 
 <div class="tab-content" style="border-left: 1px solid #e3e3e3; border-right: 1px solid #e3e3e3; border-bottom: 1px solid #e3e3e3; border-radius: 0 0 4px 4px; padding: 19px;">

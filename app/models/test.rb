@@ -63,70 +63,50 @@ class Test < ActiveRecord::Base
     return name + ' - ' + level + (archive ? ' (veraltet)':'')
   end
 
-  def export
-    measurements = Measurement.where(:assessment => Assessment.where(:test => self))
-    results = Result.where(:measurement => measurements)
-    students = Student.where(:id => results.uniq.pluck(:student_id))
-
-    book = Spreadsheet::Workbook.new
-
-    sheet = book.create_worksheet :name => 'Items'
-    sheet.row(0).concat Item.xls_headings
-    i = 1
-    content_items.each do |it|
-      sheet.row(i).concat it.to_a
-      i = i+1
-    end
-
-    sheet = book.create_worksheet :name => 'Alle Messungen - RZ'   #Without Reaktionszeiten
-    sheetRZ = book.create_worksheet :name => 'Alle Messungen + RZ' #With Reaktionszeiten
-    sheet.row(0).concat Student.xls_headings
-    sheet.row(0).push "Messzeitpunkt"
-    sheetRZ.row(0).concat Student.xls_headings
-    sheetRZ.row(0).push "Messzeitpunkt"
-    itemset = items.pluck(:id)
-    sheet.row(0).concat itemset
-    sheetRZ.row(0).concat itemset
-    i = 1
-    results.find_each do |r|
-      if (r.measurement.assessment.group.export)
-        sheet.row(i).concat r.student.to_a 
-        sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(i).concat r.to_a(itemset).map! { |x| x == '' ? "" : (x.to_i > 0 ? x = 1 : x = 0)}
-        sheetRZ.row(i).concat r.student.to_a 
-        sheetRZ.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
-        sheetRZ.row(i).concat r.to_a(itemset)
-        i = i+1
-      end
-    end
-
-    measurements.sort_by { |a| a.date}.each do |m|
-      if (m.assessment.group.export)
-        sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).concat Student.xls_headings
-        sheet.row(0).push "Messzeitpunkt"
-        itemset = items.pluck(:id)
-        sheet.row(0).concat itemset
-        i = 1
-        m.results.each do |r|
-          sheet.row(i).concat r.student.to_a
-          sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
-          sheet.row(i).concat r.to_a(itemset)
-          i = i+1
-        end
-      end
-    end
-
-    temp = Tempfile.new('levumi')
-    temp.close
-    book.write temp.path
-    return temp.path
+  def toCode
+    name.split(' ').map{|w| w.slice(0, 2)}.join + level.last
   end
 
-  def self.exportAll
-    measurements = Measurement.all
-    assessments = Assessment.all
-    @export = Export.new
-    @export.exportData(assessments, measurements)
+  #Count number of assessments for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_assessment_count
+    temp = ActiveRecord::Base.connection.execute("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM Tests JOIN Assessments ON Tests.id = test_id
+        JOIN Groups ON Groups.id = group_id
+      WHERE export = 't'
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
+  end
+
+  #Count number of measurements for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_measurement_count
+    temp = ActiveRecord::Base.connection.execute("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM Measurements JOIN Assessments ON Assessments.id = assessment_id
+        JOIN Groups ON Groups.id = group_id
+      WHERE export = 't'
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
+  end
+
+  #Count number of results for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_result_count
+    temp = ActiveRecord::Base.connection.execute("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM Results JOIN Measurements ON Measurements.id = measurement_id
+        JOIN Assessments ON Assessments.id = assessment_id
+        JOIN Groups ON Groups.id = group_id
+      WHERE export = 't'
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
   end
 end
