@@ -1,6 +1,6 @@
 class MaterialsController < ApplicationController
   before_action :set_material, only: [:show, :edit, :update, :destroy]
-
+  before_action :is_allowed
   # GET /materials
   # GET /materials.json
   def index
@@ -47,5 +47,11 @@ class MaterialsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def material_params
       params.require(:material).permit(:subject, :construct, :block, :exercisetype, :exerciseinfo, :blockinfo)
+    end
+
+    def is_allowed
+      unless !@login_user.nil? && @login_user.hasCapability?("admin") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
+        redirect_to root_url
+      end
     end
 end

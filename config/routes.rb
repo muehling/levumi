@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 Rails.application.routes.draw do
 
-  resources :materials
   root 'application#welcome'
 
   resources :users do
@@ -28,6 +27,8 @@ Rails.application.routes.draw do
   post 'frontend/logout' => 'frontend#logout'
   get 'frontend' => 'frontend#index'
   get 'frontend/:id' => 'frontend#start'
+
+  resources :materials
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

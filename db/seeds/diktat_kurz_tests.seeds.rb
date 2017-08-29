@@ -30,39 +30,39 @@ Meer
 }
 
 audios =%w{
-Woerter/1_Leine.mp3
-Woerter/17_Zug.mp3
-Woerter/22_spüren.mp3
-Woerter/42_winzig.mp3
-Woerter/2_Teller.mp3
-Woerter/6_Truhe.mp3
-Woerter/9_fliegen.mp3
-Woerter/50_dort.mp3
-Woerter/23_Adventskranz.mp3
-Woerter/26_Fahne.mp3
-Woerter/19_bissig.mp3
-Woerter/18_Läuse.mp3
-Woerter/46_Nationalmannschaft.mp3
-Woerter/30_Moor.mp3
-Woerter/48_Bäche.mp3
-Woerter/36_Strahl.mp3
-Woerter/35_Stärke.mp3
-Woerter/52_Verdeck.mp3
-Woerter/45_Video.mp3
-Woerter/5_Zecke.mp3
-Woerter/24_Kilo.mp3
-Woerter/53_sind.mp3
-Woerter/41_Sieb.mp3
-Woerter/25_seht.mp3
-Woerter/37_sonnt.mp3
-Woerter/28_Platz.mp3
-Woerter/47_Meer.mp3
+Woerter/33a.mp3
+Woerter/49a.mp3
+Woerter/54a.mp3
+Woerter/74a.mp3
+Woerter/34a.mp3
+Woerter/38a.mp3
+Woerter/41a.mp3
+Woerter/82a.mp3
+Woerter/55a.mp3
+Woerter/58a.mp3
+Woerter/51a.mp3
+Woerter/50a.mp3
+Woerter/78a.mp3
+Woerter/62a.mp3
+Woerter/80a.mp3
+Woerter/68a.mp3
+Woerter/67a.mp3
+Woerter/84a.mp3
+Woerter/77a.mp3
+Woerter/37a.mp3
+Woerter/56a.mp3
+Woerter/85a.mp3
+Woerter/73a.mp3
+Woerter/57a.mp3
+Woerter/69a.mp3
+Woerter/60a.mp3
+Woerter/79a.mp3
 }
 
 dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 3600, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
 
 
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/15_Hallo.mp3", itemtype:-5, itemview:"
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/23b.mp3", itemtype:-5, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
@@ -98,7 +98,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/15_Erklaerung.mp3", itemtype:-4,itemview:"
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/24a.mp3", itemtype:-4,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
@@ -132,7 +132,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 it.save
 
 
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-3,  itemview:"
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/25a.mp3", itemtype:-3,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du einen Buchstaben oder ein Wort löschen möchtest, benutze die Löschtaste.
@@ -165,7 +165,7 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
         }})
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/16_ErklaerungTeilB.mp3", itemtype:-2,  itemview:"
+it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Anweisungen/29a.mp3", itemtype:-2,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
@@ -198,7 +198,7 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/19_ich_beginne.mp3", itemtype:-1, itemview:"
+it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/32c.mp3", itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun, dir die Wörter zu diktieren.“
@@ -289,7 +289,7 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anweisungen/16_Fertig.mp3", itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anweisungen/86b.mp3", itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>

@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 20170824160239) do
     t.datetime "updated_at",   null: false
   end
 
-  create_table "materials_tests_joins", id: false, force: :cascade do |t|
+  create_table "materials_tests", id: false, force: :cascade do |t|
     t.integer "material_id"
     t.integer "test_id"
   end
