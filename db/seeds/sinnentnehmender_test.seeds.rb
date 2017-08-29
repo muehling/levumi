@@ -764,35 +764,35 @@ items_n2_k2 = %w{
 }
 
 item_alternatives_n2_k2 = [
-	%w{	schnell	rosa	dumm	weich	}
-	%w{	kalt	warm	blau	lang	}
-	%w{	hell	dunkel	lila	traurig	}
-	%w{	heimlich	wund	langsam	lieb	}
-	%w{	blau	bitter	lau	leicht	}
-	%w{	tief	schwer	gelb	falsch	}
-	%w{	eng	hell	langsam	tief	}
-	%w{	rosa	allein	hell	leer	}
-	%w{	kalt	faul	falsch	sicher	}
-	%w{	kalten	tollen	nassen	runden	}
-	%w{	weiche	scharfe	schlaue	tiefe	}
-	%w{	kluge	lange	kranke	liebe	}
-	%w{	schwache	leere	arme	blinde	}
-	%w{	schlauen	faulen	kleinen	klugen	}
-	%w{	dunklen	breiten	schweren	runden	}
-	%w{	harte	graue	schlaue	giftige	}
-	%w{	kauft	rennt	besucht	macht	}
-	%w{	hebt	rennt	wartet	wirft	}
-	%w{	rennen	grillen	schwimmen	wohnen	}
-	%w{	dusche	lese	finde	bade	}
-	%w{	arbeiten	legen	rutschen	leben	}
-	%w{	sehe	tobe	lache	male	}
-	%w{	reise	tauche	liege	lerne	}
-	%w{	taucht	sucht	glaubt	trinkt	}
-	%w{	geht	schwimmt	fegt	ruft	}
-	%w{	fallen	bitten	glauben	baden	}
-	%w{	baden	klauen	leiden	laufen	}
-	%w{	feilt	leiht	heilt	hebt	}
-	%w{	singt	weint	freut	sieht	}
+	%w{	schnell	rosa	dumm	weich	},
+	%w{	kalt	warm	blau	lang	},
+	%w{	hell	dunkel	lila	traurig	},
+	%w{	heimlich	wund	langsam	lieb	},
+	%w{	blau	bitter	lau	leicht	},
+	%w{	tief	schwer	gelb	falsch	},
+	%w{	eng	hell	langsam	tief	},
+	%w{	rosa	allein	hell	leer	},
+	%w{	kalt	faul	falsch	sicher	},
+	%w{	kalten	tollen	nassen	runden	},
+	%w{	weiche	scharfe	schlaue	tiefe	},
+	%w{	kluge	lange	kranke	liebe	},
+	%w{	schwache	leere	arme	blinde	},
+	%w{	schlauen	faulen	kleinen	klugen	},
+	%w{	dunklen	breiten	schweren	runden	},
+	%w{	harte	graue	schlaue	giftige	},
+	%w{	kauft	rennt	besucht	macht	},
+	%w{	hebt	rennt	wartet	wirft	},
+	%w{	rennen	grillen	schwimmen	wohnen	},
+	%w{	dusche	lese	finde	bade	},
+	%w{	arbeiten	legen	rutschen	leben	},
+	%w{	sehe	tobe	lache	male	},
+	%w{	reise	tauche	liege	lerne	},
+	%w{	taucht	sucht	glaubt	trinkt	},
+	%w{	geht	schwimmt	fegt	ruft	},
+	%w{	fallen	bitten	glauben	baden	},
+	%w{	baden	klauen	leiden	laufen	},
+	%w{	feilt	leiht	heilt	hebt	},
+	%w{	singt	weint	freut	sieht	},
 	%w{	reisen	freuen	werfen	reiten	}
 ]
 
