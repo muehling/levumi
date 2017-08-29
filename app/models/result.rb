@@ -126,7 +126,7 @@ class Result < ActiveRecord::Base
     sheet = book.create_worksheet name: 'Messungen'
 
     statement = "
-      SELECT results.id,results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, assessments.group_id, user_id, email, test_id, subject, construct, tests.name, level, items, responses, extra_data, date
+      SELECT results.id,results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, assessments.group_id, users.name, test_id, items, responses, extra_data, date
       FROM results JOIN measurements ON measurements.id = measurement_id
         JOIN students ON students.id = student_id
         JOIN assessments ON assessments.id = assessment_id
@@ -144,7 +144,8 @@ class Result < ActiveRecord::Base
     statement = statement + ";"
     temp = ActiveRecord::Base.connection.exec_query(statement)
     itembank = Hash[Item.all.pluck(:id, :shorthand)]
-    sheet.row(0).concat("Item,Itemtext,Ergebnis,Reaktionszeit,Position in Messreihe,Messung_id,Kind_id,Geburtstag,Geschlecht,Foerderbedarf,Migrationshintergrund,Messzeitpunkt_id,Erhebung_id,Klasse_id,Benutzer_id,Benutzermail,Test,Fach,Testname,Konstrukt,Level,Datum".split(','))
+    testbank = Hash[Test.all.pluck(:id), Test.all.map{|t| [t.long_name, t.code]}]
+    sheet.row(0).concat("Item,Itemtext,Ergebnis,Reaktionszeit,Position in Messreihe,Messung_id,Kind_id,Geburtstag,Geschlecht,Foerderbedarf,Migrationshintergrund,Messzeitpunkt_id,Erhebung_id,Klasse_id,Benutzer,Testcode,Testname,Datum".split(','))
     r = 1
     temp.each do |row|
       items = YAML.load(row["items"])
@@ -155,7 +156,7 @@ class Result < ActiveRecord::Base
       end
       i = 0
       items.each do |item|
-        sheet.row(r).concat([item, itembank[item], responses[i], (extra.nil? ? nil : extra["times"][i]), i+1, row["results.id"], row["results.student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["assessments.group.id"], row["user_id"], row["email"], row["tests.id"], row["subject"], row["construct"], row["tests.name"], row["level"], row["date"].to_date.strftime("%d.%m.%Y")])
+        sheet.row(r).concat([item, itembank[item], responses[i], ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]][0], testbank[row["test_id"]][1], row["date"].to_date.strftime("%d.%m.%Y")])
         r = r + 1
         i = i + 1
       end

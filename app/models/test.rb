@@ -63,7 +63,7 @@ class Test < ActiveRecord::Base
     return name + ' - ' + level + (archive ? ' (veraltet)':'')
   end
 
-  def toCode
+  def code
     name.split(' ').map{|w| w.slice(0, 2)}.join + level.last
   end
 
