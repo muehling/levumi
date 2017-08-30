@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   get 'frontend' => 'frontend#index'
   get 'frontend/:id' => 'frontend#start'
 
+  resources :materials
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

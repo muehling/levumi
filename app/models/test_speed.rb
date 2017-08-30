@@ -9,8 +9,4 @@ class TestSpeed < Test
     return "Speed-Test"
   end
 
-  def view_info
-    return "TestSpeed"
-  end
-
 end

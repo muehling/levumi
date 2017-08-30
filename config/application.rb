@@ -24,6 +24,8 @@ module Levumi
     config.i18n.default_locale = :de
     config.assets.paths << Rails.root.join("app", "assets", "fonts")
     config.assets.paths << Rails.root.join("app", "assets", "files")
+    config.assets.paths << Rails.root.join("app", "assets", "foerdermaterial/AB_Levumi_doc")
+    config.assets.paths << Rails.root.join("app", "assets", "foerdermaterial/AB_Levumi_pdf")
     config.action_view.field_error_proc = Proc.new { |html_tag, instance|
       html_tag
     }
