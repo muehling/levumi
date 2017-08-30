@@ -59,16 +59,16 @@ Woerter/60a.mp3
 Woerter/79a.mp3
 }
 
-dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 3600, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
 
 
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anweisungen/23b.mp3", itemtype:-5, itemview:"
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/23b.mp3", itemtype:-5, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
  Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
  wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
-  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -89,21 +89,27 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Anwe
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }
         else {
             $(window).unbind('keyup');
             nextItem();
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Anweisungen/24a.mp3", itemtype:-4,itemview:"
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/24a.mp3", itemtype:-4,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
  das du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
-  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -123,21 +129,27 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
             nextItem();
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
 
 
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Anweisungen/25a.mp3", itemtype:-3,  itemview:"
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/25a.mp3", itemtype:-3,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du einen Buchstaben oder ein Wort löschen möchtest, benutze die Löschtaste.
 Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese ich dir noch einmal vor, was du schreiben sollst.“
-  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -158,18 +170,24 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
             nextItem();
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Anweisungen/29a.mp3", itemtype:-2,  itemview:"
+it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/29a.mp3", itemtype:-2,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
-  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -190,19 +208,25 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/An
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
             nextItem();
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Anweisungen/32c.mp3", itemtype:-1, itemview:"
+it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/32c.mp3", itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun, dir die Wörter zu diktieren.“
-  <img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -222,6 +246,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audi
     $(window).keyup(function (event) {
         if(event.keyCode==37){tempAudio.pause();
         tempAudio.currentTime = 0;
+        tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
         tempAudio.play();
         }
         else if(event.keyCode == 13) {
@@ -231,13 +256,18 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audi
             }
             timeoutId = window.setTimeout(timedOut, workTime + 500);
             nextItem();
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
 
 i=0
 while i<items.size do
-  it = dicN1.items.build(itemtext: items[i], mediapath:"/audio/" + audios[i], difficulty: 0, itemtype:0, itemview:"
+  it = dicN1.items.build(itemtext: items[i], mediapath:"/audio/Diktiertest/" + audios[i], difficulty: 0, itemtype:0, itemview:"
   <audio id='audioItem'></audio>
 <p align='center'>
   <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle'>
@@ -289,11 +319,11 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anweisungen/86b.mp3", itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/86b.mp3", itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
-  <img style='width: 250px ' src='/images/Levumi-jubelt.gif'/>
+  <img id='talkingLevumi' style='width: 250px ' src='/images/Levumi-jubelt.gif'/>
 </p>
 <br />
 <footer>
@@ -312,13 +342,19 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Anwei
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/Levumi-jubelt.gif';
             tempAudio.play();
         }
         else if (event.keyCode == 13) {
             $(window).unbind('keydown');
             $(window).unbind('keyup');
             window.location.replace(pathMainPage);
-        }})
+        }});
+     var tempLevumiPic = (document.getElementById('talkingLevumi'));
+     tempAudio.addEventListener('ended', function()
+     {
+          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+     });
 </script>")
 it.save
 dicN1.save
