@@ -1,4 +1,4 @@
-class TestCBM < TestSpeed
+class TestCBM < Test
 #TODO-A: Umbenennen
 
   def draw_items(first)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170824160239) do
+ActiveRecord::Schema.define(version: 20170830193201) do
 
   create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
@@ -116,6 +116,7 @@ ActiveRecord::Schema.define(version: 20170824160239) do
     t.text     "answers"
     t.boolean  "student_access"
     t.boolean  "archive"
+    t.text     "type_info"
   end
 
   create_table "users", force: :cascade do |t|

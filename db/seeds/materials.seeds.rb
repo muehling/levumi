@@ -156,3 +156,8 @@ Die Kinder lesen in Partnerarbeit einen vorher bestimmten Text. Dabei überprüf
  Dabei wird der Text mehrmals gelesen, bis die Leseleistung dem Ziel entspricht. ",
                         data: ["FB 6_Tandem lesen_Vorlage.docx", "FB 6_Tandem lesen.pdf"])
 mat16.save
+
+mat17 = Material.create(subject: "Deutsch", construct: "Leseflüssigkeit", block: "Sammlung FB 1 bis FB 6", exercisetype: "Gesamtes Fördermaterial", blockinfo:
+    "Hier steht Ihnen das gesamte Fördermaterial in Form einer zip-Datei zur Verfügung.",
+                        data: ["Arbeitsblaetter Levumi.zip"])
+mat17.save

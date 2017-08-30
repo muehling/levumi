@@ -45,12 +45,13 @@ class Test < ActiveRecord::Base
   end
 
   def len_info
-    return "#{len} Items"
+    if time.nil?
+      return "#{len} Items"
+    else
+      return "#{time} Sekunden, max. #{len} Items"
+    end
   end
 
-  def type_info
-    return 'Test'
-  end
 
   def view_info
     return 'Generisch'
