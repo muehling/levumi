@@ -15,6 +15,9 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
+u = User.create(name: "Ibo", email: "test1@test.com", password: "123", password_confirmation: "123", capabilities: "admin")
+u = User.create(name: "Alex", email: "test2@test.com", password: "123", password_confirmation: "123", capabilities: "admin")
+
 t = TestSpeed.create(name: "Lesetest", len: 4, info: "Lesetest für die Grundschule, 1. Klasse", short_info:  "Lesetest für die Grundschule, 1. Klasse",
                      subject: "Deutsch", construct: "Lesen", archive: false, level: "Level 0", time: 60, student_access: false)
 it = t.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"
@@ -386,6 +389,214 @@ a.save
 m = a.measurements.build(date: Date.yesterday)
 m.save
 
+
+# Sinnentnehmendes Test ...
+items = %w{
+	Augen
+	Bett
+	Bilder
+	Beine
+	runde
+	Haus
+	Schuhe
+	Tür
+	Schwester
+	Büro
+	Wasser
+	Vogel
+	Enten
+	Blumen
+	Freunde
+	Hase
+	Schere
+	Baby
+	Sonne
+	Frösche
+	Biene
+}
+
+# The alternatives to write on the buttons
+item_alternatives = [
+	%w{	Bücher	Augen	Finger	Autos	},
+	%w{	Tisch	Bett	Käfig	Bild	},
+	%w{	Bisse	Bilder	Luft	Kälte	},
+	%w{	Beine	Daumen	Kamel	Bücher	},
+	%w{	runde	lange	blaue	warme	},
+	%w{	Haus	Hemd	Heft	Beet	},
+	%w{	Truhe	Schlüssel	Schuhe	Natur	},
+	%w{	Brücke	Flasche	Tür	Tafel	},
+	%w{	Hütte	Dusche	Schwester	Qual	},
+	%w{	Spaß	Juni	Maß	Büro	},
+	%w{	Tuch	Bett	Löwen	Wasser	},
+	%w{	Vogel	Hund	Verein	Vater	},
+	%w{	Enten	Bären	Häuser	Haare	},
+	%w{	Blumen	Spechte	Jungen	Stühle	},
+	%w{	Stifte	Freunde	Schuhe	Lichter	},
+	%w{	Sand	Hase	Rock	Zahn	},
+	%w{	Pizza	Schere	Zwiebel	Stirn	},
+	%w{	Päckchen	Radio	Baby	Rätsel	},
+	%w{	Uhr	Wiese	Sonne	Puppe	},
+	%w{	Zähne	Pilze	Früchte	Frösche	},
+	%w{	Blume	Rinde	Nase	Biene	}
+]
+
+# Sentence part to set before the gap
+before_gap_part = %w{
+	Ein\ Gesicht\ hat\ zwei
+	Mein\ Papa\ schläft\ im
+	Lasse\ zeichnet\ schöne
+	Ein\ Lama\ hat\ vier
+	Ein\ Apfel\ ist\ eine
+	Meine\ Freundin\ zieht\ in\ ein\ neues
+	Ich\ binde\ mir\ die
+	Papa\ schließt\ abends\ die
+	Jutta\ geht\ mit\ ihrer\
+	Mein\ Papa\ arbeitet\ in\ einem
+	Die\ Boje\ schwimmt\ auf\ dem
+	Der
+	Die
+	Die
+	Die
+	Der
+	Die
+	Das
+	Die
+	Die
+	Die
+}
+
+after_gap_part = %w{
+	.
+	.
+	.
+	.
+	Frucht.
+	um.
+	zu.
+	ab.
+	einkaufen.
+	.
+	.
+	fliegt\ zu\ seinem\ Nest.
+	quaken\ auf\ dem\ See.
+	blühen\ auf\ der\ Wiese.
+	machen\ viel\ Unsinn.\
+	rennt\ über\ die\ Wiese.
+	schneidet\ das\ Papier.\
+	schreit\ nach\ seiner\ Mutter.
+	scheint\ jeden\ Tag.\
+	überqueren\ die\ Straße.\
+	sitzt\ auf\ einer\ Blüte.
+	fliegt\ zu\ seinem\ Nest.
+}
+
+
+
+t = TestDictation.create(name: "Sinnentnehmendes Lesen", len: 21, info: "Sinnentnehmendes Test für die Grundschule, 3. Klasse", short_info: "Sinnentnehmendes Lesen für die Grundschule, 3. Klasse",
+					subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "Level 1", time: 480)
+i = 0
+while i<items.size do
+	it = t.items.build(itemtext: items[i], difficulty: 1, itemtype: 0, itemview: "</br></br></br></br></br></br>
+								<br><br>
+								<div class='row text-center'>
+										<div><label class='control-label' style='font-size: 60px'>" + before_gap_part[i] + " &nbsp</label>
+										<label id='answer' class='control-label' style='color:#3498db; font-size: 60px'>...........</label>
+										<label class='control-label' style='font-size: 60px'>  &nbsp" + after_gap_part[i] + "</label></div>
+								</div>
+
+								<br><br>
+								<div class='row' id='rowButtons' >
+									<div class='col-lg-1 col-md-offset-4' >
+										<div class ='row'>
+											<button id='button0' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][0] +"</button>
+										</div>
+									</div>
+									<div class='col-lg-1' >
+										<div class ='row'>
+											<button id='button1' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][1] +"</button>
+										</div>
+									</div>
+									<div class='col-lg-1' >
+										<div class ='row'>
+											<button id='button2' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][2] +"</button>
+										</div>
+									</div>
+									<div class='col-lg-1' >
+										<div class ='row'>
+											<button id='button3' style='font-size: 30px' type='button' class='btn btn-default btn-block'>"+ item_alternatives[i][3] +"</button>
+										</div>
+									</div>
+								</div>
+								<br><br><br><br>
+								<div class='row text-center'>
+
+									<div class='col-md-4 col-md-offset-4'>
+											<button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>next</span></button>
+									</div>
+								</div>
+
+								<script>
+							        $('button').click(function(){
+							        	if(this.id == 'next'){
+							        		nextClicked();
+							        	}
+							        	else{
+								        	buttonClicked(this.id);
+							        	}
+							        });
+									function buttonClicked(buttonID){
+								      var text = $('#'+buttonID).text();
+								      $('#answer').html('<u>'+text+'</u>');
+								    }
+								    function nextClicked() {
+							        		var tempAnswer = document.getElementById('answer');
+								            actualAnswers = actualAnswers + tempAnswer.textContent;
+								            if(tempAnswer.textContent=='"+items[i]+"'){
+								                currentResult = currentResult + '1,';
+								            }
+								            else {
+								                currentResult = currentResult + '0,';
+								            };
+								            stopwatch = new Date() - stopwatch;
+								            currentTimes = currentTimes + stopwatch + ',';
+								            nextItem();
+							        };
+								</script>")
+	it.save
+	i = i+1
+end
+
+it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"</br></br></br></br></br></br>
+								<div class='text-center'>
+									<img style='width: 250px; ' src='/images/Levumi-normal-blau.jpg'/>
+							</div>
+								<br><br>
+								<br><br>
+								<div class='row text-center'>
+
+									<div class='col-md-4 col-md-offset-4'>
+											<button id='geschafft' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>Geschafft</span></button>
+									</div>
+								</div>
+								<script>
+								$('#geschafft').click(function(){
+										window.location.replace(pathMainPage);
+									});
+								</script>
+								")
+it.save
+
+
+a = g.assessments.build(test_id: t.id)
+a.save
+
+m = a.measurements.build(date: Date.today)
+m.save
+
+
+
+
+
 t = TestKeyboard.create(name: "Tastaturschulung",len: 1, info: "Einführung in die Tastatur", short_info:
     "", subject: "Deutsch", construct: "Rechtschreibung", archive: false, level: "Level 0", student_access:true)
 i = t.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-31, mediapath: "/audio/Anweisungen/1_Hallo_ich_bin_Levumi.mp3", itemview:"<audio id='audioItem'></audio><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>„Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben. Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. Bitte drücke jetzt irgendeine Taste auf der Tastatur, damit wir beginnen können.“<img style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/></p><br /><br /><br /><footer><div align='center' style='font-family: fibel_nordregular;font-size:60px'>Weiter: Irgendeine Taste</div></footer><script>var tempAudio = (document.getElementById('audioItem'));tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]]; tempAudio.play(); $(window).keyup(function (event) {$(window).unbind('keyup'); nextItem();})</script>")
@@ -472,7 +683,6 @@ Keller
 winzig
 Korb
 sind
-
 }
 
 audios = %w{

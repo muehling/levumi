@@ -1,3 +1,9 @@
+<%
+  assessments = User.get_assessment_count
+  measurements = User.get_measurement_count
+  results = User.get_result_count
+%>
+
 <table class="table table-striped">
   <thead>
   <th>
@@ -22,13 +28,13 @@
       <% end %>
     </td>
     <td>
-      <%= Assessment.where(:group => Group.where(:user => user)).count %>
+      <%= assessments.has_key?(user.id) ? assessments[user.id] : 0 %>
     </td>
     <td>
-      <%= Measurement.where(:assessment => Assessment.where(:group => Group.where(:user => user))).count %>
+      <%= measurements.has_key?(user.id) ? measurements[user.id] : 0%>
     </td>
     <td>
-      <%= Result.where(:measurement => Measurement.where(:assessment => Assessment.where(:group => Group.where(:user => user)))).count %>
+      <%= results.has_key?(user.id) ? results[user.id] : 0%>
     </td>
   </tr>
   <% end %>
