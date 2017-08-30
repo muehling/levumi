@@ -9,9 +9,6 @@ class TestDictation < Test
   def type_info
     return "Diktat"
   end
-#Return which view should be chosen
-  def view_info
-    return "Generisch_student"
-  end
+
 
 end

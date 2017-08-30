@@ -9,8 +9,5 @@ class TestScreening < Test
     return "Screening"
   end
 
-  def view_info
-    return "TestNormal"
-  end
 
 end

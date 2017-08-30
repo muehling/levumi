@@ -1,0 +1,152 @@
+<%if @measurement.assessment.test.student_access == true%>
+    <%= render 'results/tests/studentEnv'%>
+<%elsif @measurement.assessment.test.student_access == false %>
+    <%=render 'results/tests/userEnv'%>
+<%else%>
+    <div style="font-family: 'fibel_nordregular'; font-size:96px" class="text-center"> Ooops, Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.</div>
+<%end%>
+
+
+<script>
+
+    //variable for testsequence
+
+
+    var currentResult ="";
+    //data for timeout
+    var timeoutId = -1;
+    var currentTimes = "";
+    var stopwatch = null;
+    var timedout=false;
+    var actualAnswers = "";
+
+    <% if !@measurement.assessment.test.time.nil? %>
+    var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    <% end %>
+
+    //Views for displayed Items
+    var itemView = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
+    <% end %>
+    };
+    //Mediapath for displayed Items for preload
+    var itemDataSound = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= i.mediapath%>",
+    <%end %>
+    };
+
+    //Order of Items from resultobject
+
+
+    //last result of testkind
+    var lastResults = {
+    <% @measurement.results.each do |r| %>
+    <%= r.id%>: <%= r.getPriorResult%>,
+    <% end %>
+    };
+
+
+  /*Changes current content of Html-elements based on currentItemIndex*/
+  function nextItem() {
+      currentItemIndex++;
+      if (currentItemIndex+1 < studentData[currentStudent].length) {
+          if(timedout){
+              stopTest()
+          }
+          else{
+              $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
+              <%if @measurement.assessment.test.student_access == false%>
+              $('#mainModalHeader').html(students[currentStudent]);
+              <%end%>
+              stopwatch = new Date();
+          }
+      }
+      else
+          stopTest();
+  }
+
+    /*Set flag for time-out, no aprupt end*/
+    function timedOut() {
+        timedout =true;
+    }
+
+
+  /*Stop test, when all items are asked*/
+  function stopTest() {
+      $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+      <%if @measurement.assessment.test.student_access == false%>
+      $('#mainModalHeader').html(students[currentStudent]);
+      <%end%>
+      if (timeoutId != -1) {
+          window.clearTimeout(timeoutId);
+          timeoutId = -1;
+      }
+      var dict = {};
+      dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
+      dict["results"] = currentStudent + ",times,answers#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1)+ "#"+ actualAnswers.substr(0, actualAnswers.length-1);
+      //send data
+      <%if @measurement.assessment.test.student_access == true%>
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+          data: dict
+      });
+      <%else%>
+      $.ajax({
+          type: "PUT",
+          url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+          data: dict
+      });
+      <%end%>
+  }
+
+    /*Variable for preload*/
+    var progress = 0;
+    var loaded = 0;
+    var soundLength = Object.keys(itemDataSound).length;
+    // start preloading all the intro audio files
+    if(Object.keys(studentData).length > 0) {
+        var audioArray = Object.values(studentData)[0];
+
+
+    for (var i in audioArray) {
+        preloadAudio(itemDataSound[audioArray[i]]);
+
+    }
+
+
+    function preloadAudio(url) {
+        var audio = new Audio();
+        // once this file loads, it will call loadedAudio()
+        // the file will be kept by the browser as cache
+        if(url =="") {
+            loadedAudio()
+        }
+        else {
+            audio.addEventListener('canplaythrough', loadedAudio, false);
+            audio.src = url;
+        }
+    }
+
+    function loadedAudio() {
+        // this will be called every time an audio file is loaded
+        // we keep track of the loaded files vs the requested files
+
+        loaded++;
+        progress = ((loaded *100) / (soundLength));
+        var elem = document.getElementById("myBar");
+        elem.style.width = progress +'%';
+        if (loaded == soundLength){
+            // all have loaded do something
+            $('#myProgress').hide();
+            $('#myBar').hide();
+            <%if @measurement.assessment.test.student_access == true%>
+            nextItem();
+            <%end%>
+        }
+    }
+    }
+</script>
+

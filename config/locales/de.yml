@@ -234,3 +234,9 @@ de:
         subject: Fach
         level: Niveau
         construct: Konstrukt
+      material:
+        block: Förderblockbezeichnung
+        exercisetype: Aufgabentyp
+        subject: Fach
+        construct: Konstrukt
+        exerciseinfo: Aufgabenbeschreibung
