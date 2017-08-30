@@ -7,20 +7,31 @@ class TestsController < ApplicationController
   def index
     @tests = Test.where(:archive => false)
     @archive = Test.where(:archive => true)
+    respond_to do |format|
+      format.html {}
+      format.xml {
+        unless @login_user.hasCapability?("export")
+          redirect_to root_url
+        else
+          send_file Result.to_xls(nil, nil), filename: "Alle Messungen.csv", type: "text/csv"
+        end
+      }
+    end
   end
-
+ 
   # GET /tests/1/edit
   def edit
   end
 
   # GET /tests/1.xml
   def show
-    unless !@login_user.nil? && @login_user.hasCapability?("export")
-      redirect_to root_url
-    end
     respond_to do |format|
       format.xml {
-        send_file @test.export, filename: @test.long_name + " - Export.xls", type: "text/csv"}
+        unless !@login_user.nil? && @login_user.hasCapability?("export")
+          redirect_to root_url
+        end
+        send_file Result.to_xls(@test.id, nil), filename: @test.long_name + " - Export.csv", type: "text/csv"
+      }
     end
   end
 

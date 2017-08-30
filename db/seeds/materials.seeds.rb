@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 
-mat1 = Material.create(subject: "Deutsch", construct: "Leseflüssigkeit", block: "FB 1 - Vorläuferfähigkeiten", blockinfo: "
-Vorläuferfähigkeiten des Schriftspracherwerbs werden in der Regel im Kindergartenalter angebahnt und entwickeln sich mit dem Grundschuleintritt fort.
+mat1 = Material.create(subject: "Deutsch", construct: "Leseflüssigkeit", block: "FB 1 - Vorläuferfähigkeiten", blockinfo:
+ "Vorläuferfähigkeiten des Schriftspracherwerbs werden in der Regel im Kindergartenalter angebahnt und entwickeln sich mit dem Grundschuleintritt fort.
  Die phonologische Bewusstheit gilt als eine der wichtigsten Voraussetzungen für den Leseerwerb. Typische Übungsaufgaben zur phonologischen Bewusstheit
  finden auf mündlich oder bildlicher Ebene statt. Beispiele sind das Finden von Reimwörtern, das Segmentieren von Wörtern in Silben und das Identifizieren
  von gleichen Anlauten. Diese Übungen werden früh sowohl mündlich, als auch nur auf Bildebene.An dieser Stelle möchten wir auf die kostenlosen Arbeitsmaterialien
  des Bildungsservers Berlin-Brandenburg verweisen. Unter dem nachfolgenden Link finden Sie ein Arbeitsheft für Schülerinnen und Schüler sowie ein Begleitheft
- für Lehrkräfte mit Aufgaben zur phonologischen Bewusstheit (Schülerheft S.4-12). <a href='http://bildungsserver.berlin-brandenburg.de/unterricht/lernstandsanalysen-vergleichsarb/ilea/ilea1/'></a>")
+ für Lehrkräfte mit Aufgaben zur phonologischen Bewusstheit (Schülerheft S.4-12). <a href='http://bildungsserver.berlin-brandenburg.de/unterricht/lernstandsanalysen-vergleichsarb/ilea/ilea1/'>Bildungsserver</a>")
 mat1.save
 
 
