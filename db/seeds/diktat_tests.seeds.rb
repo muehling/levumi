@@ -1,117 +1,117 @@
 # -*- encoding : utf-8 -*-
 items = %w{
-Leine
-Teller
-spülen
+Fahne
 Flug
+Keller
+Kilo
+Korb
+Läuse
+Mäuse
+Platz
+Sahne
+sonnt
+spüren
+Teller
 Zecke
-Truhe
-stärken
-backt
-fliegen
-Versteck
-fließen
-Satz
 über
-Tee
+backt
+Beine
+Decke
+dort
 einer
+Feld
+fliegen
+geht
 Geld
 Zug
-Läuse
-bissig
-packt
-geht
-spüren
-Adventskranz
-Kilo
+Truhe
+Tee
+spülen
 seht
-Fahne
 See
-Platz
-Kino
-Moor
-Sahne
-kommt
-Keller
-Decke
-Stärke
-Strahl
-sonnt
-Kräne
-Beine
-Mäuse
+packt
 Sieb
-winzig
-Korb
-Weihnachtsbaum
-Video
-Nationalmannschaft
-Meer
-Bäche
-Strähne
-dort
-Feld
-Verdeck
 sind
+Satz
+kommt
+Kino
+Leine
+Meer
+Strahl
+Moor
+Verdeck
+Stärke
+winzig
+Bäche
+Kräne
+bissig
+fließen
+stärken
+Strähne
+Versteck
+Video
+Weihnachtsbaum
+Adventskranz
+Nationalmannschaft
 }
 
 audios =%w{
-Woerter/33a.mp3
-Woerter/34a.mp3
-Woerter/35a.mp3
+Woerter/58a.mp3
 Woerter/36a.mp3
+Woerter/65a.mp3
+Woerter/56a.mp3
+Woerter/75a.mp3
+Woerter/50a.mp3
+Woerter/72a.mp3
+Woerter/60a.mp3
+Woerter/63a.mp3
+Woerter/69a.mp3
+Woerter/54a.mp3
+Woerter/34a.mp3
 Woerter/37a.mp3
-Woerter/38a.mp3
-Woerter/39a.mp3
-Woerter/40a.mp3
-Woerter/41a.mp3
-Woerter/42a.mp3
-Woerter/43a.mp3
-Woerter/44a.mp3
 Woerter/45a.mp3
-Woerter/46a.mp3
+Woerter/40a.mp3
+Woerter/71a.mp3
+Woerter/66a.mp3
+Woerter/82a.mp3
 Woerter/47a.mp3
+Woerter/83a.mp3
+Woerter/41a.mp3
+Woerter/53a.mp3
 Woerter/48a.mp3
 Woerter/49a.mp3
-Woerter/50a.mp3
-Woerter/51a.mp3
-Woerter/52a.mp3
-Woerter/53a.mp3
-Woerter/54a.mp3
-Woerter/55a.mp3
-Woerter/56a.mp3
+Woerter/38a.mp3
+Woerter/46a.mp3
+Woerter/35a.mp3
 Woerter/57a.mp3
-Woerter/58a.mp3
 Woerter/59a.mp3
-Woerter/60a.mp3
-Woerter/61a.mp3
-Woerter/62a.mp3
-Woerter/63a.mp3
-Woerter/64a.mp3
-Woerter/65a.mp3
-Woerter/66a.mp3
-Woerter/67a.mp3
-Woerter/68a.mp3
-Woerter/69a.mp3
-Woerter/70a.mp3
-Woerter/71a.mp3
-Woerter/72a.mp3
+Woerter/52a.mp3
 Woerter/73a.mp3
-Woerter/74a.mp3
-Woerter/75a.mp3
-Woerter/76a.mp3
-Woerter/77a.mp3
-Woerter/78a.mp3
-Woerter/79a.mp3
-Woerter/80a.mp3
-Woerter/81a.mp3
-Woerter/82a.mp3
-Woerter/83a.mp3
-Woerter/84a.mp3
 Woerter/85a.mp3
+Woerter/44a.mp3
+Woerter/64a.mp3
+Woerter/61a.mp3
+Woerter/33a.mp3
+Woerter/79a.mp3
+Woerter/68a.mp3
+Woerter/62a.mp3
+Woerter/84a.mp3
+Woerter/67a.mp3
+Woerter/74a.mp3
+Woerter/80a.mp3
+Woerter/70a.mp3
+Woerter/51a.mp3
+Woerter/43a.mp3
+Woerter/39a.mp3
+Woerter/81a.mp3
+Woerter/42a.mp3
+Woerter/77a.mp3
+Woerter/76a.mp3
+Woerter/55a.mp3
+Woerter/78a.mp3
 }
 
-dicN1 = Test.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
 
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-5, itemview:"
@@ -371,7 +371,7 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/87a.mp3","/audio/Diktiertest/Anweisungen/88c.mp3","/audio/Diktiertest/Anweisungen/86b.mp3","/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/87a.mp3","/audio/Diktiertest/Anweisungen/88c.mp3","/audio/Diktiertest/Anweisungen/86b.mp3","/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p id='evaluation' style='font-family: fibel_nordregular; font-size:60px' class='text-center'></p>
 <br />
@@ -409,7 +409,7 @@ it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios
         soundFlag =1;
     }
     else if(lastResults[currentStudent] == -1){
-        $('#evaluation').html('„Das hast du Toll gemacht!“');
+        $('#evaluation').html('„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“');
         tempPic.src = '/images/Levumi-normal-blau.jpg';
         tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][2];
         soundFlag =2;
@@ -440,9 +440,8 @@ it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios
             tempAudio.play();
         }
         else if(event.keyCode == 13) {
-            stopwatch = new Date() - stopwatch;
-            currentTimes = currentTimes + stopwatch + ',';
-            nextItem();
+            $(window).unbind('keyup');
+            window.location.replace(pathMainPage);
         }});
 
     var tempLevumiPic = (document.getElementById('talkingLevumi'));
@@ -451,41 +450,4 @@ it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios
     });")
 it.save
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:2, itemview:"
-<audio id='audioItem'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
-  <img id='talkingLevumi' style='width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
-</p>
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Beenden: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
-    </tr>
-  </table>
-</footer>
-<script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][0];
-    tempAudio.play();
-    $(window).keyup(function (event) {
-        if(event.keyCode==37){
-            tempAudio.pause();
-            tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
-            tempAudio.play();
-        }
-        else if (event.keyCode == 13) {
-            $(window).unbind('keyup');
-            window.location.replace(pathMainPage);
-        }});
-     var tempLevumiPic = (document.getElementById('talkingLevumi'));
-     tempAudio.addEventListener('ended', function()
-     {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
-     });
-</script>")
-it.save
 dicN1.save

@@ -319,7 +319,7 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/87a.mp3","/audio/Diktiertest/Anweisungen/88c.mp3","/audio/Diktiertest/Anweisungen/86b.mp3","/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/87a.mp3","/audio/Diktiertest/Anweisungen/88c.mp3","/audio/Diktiertest/Anweisungen/86b.mp3","/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:1, itemview:"
 <audio id='audioItem'></audio>
 <p id='evaluation' style='font-family: fibel_nordregular; font-size:60px' class='text-center'></p>
 <br />
@@ -357,7 +357,7 @@ it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios
         soundFlag =1;
     }
     else if(lastResults[currentStudent] == -1){
-        $('#evaluation').html('„Das hast du Toll gemacht!“');
+        $('#evaluation').html('„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“');
         tempPic.src = '/images/Levumi-normal-blau.jpg';
         tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][2];
         soundFlag =2;
@@ -388,52 +388,13 @@ it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios
             tempAudio.play();
         }
         else if(event.keyCode == 13) {
-            stopwatch = new Date() - stopwatch;
-            currentTimes = currentTimes + stopwatch + ',';
-            nextItem();
+            $(window).unbind('keyup');
+            window.location.replace(pathMainPage);
         }});
 
     var tempLevumiPic = (document.getElementById('talkingLevumi'));
     tempAudio.addEventListener('ended', function() {
         tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
     });")
-it.save
-
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:2, itemview:"
-<audio id='audioItem'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
-  <img id='talkingLevumi' style='width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
-</p>
-<br />
-<footer>
-  <table align='center'>
-    <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Beenden: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
-    </tr>
-  </table>
-</footer>
-<script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][0];
-    tempAudio.play();
-    $(window).keyup(function (event) {
-        if(event.keyCode==37){
-            tempAudio.pause();
-            tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
-            tempAudio.play();
-        }
-        else if (event.keyCode == 13) {
-            $(window).unbind('keyup');
-            window.location.replace(pathMainPage);
-        }});
-     var tempLevumiPic = (document.getElementById('talkingLevumi'));
-     tempAudio.addEventListener('ended', function()
-     {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
-     });
-</script>")
 it.save
 dicN1.save
