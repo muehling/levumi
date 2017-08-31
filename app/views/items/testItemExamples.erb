@@ -1,31 +1,37 @@
-<!--Diese Seite ist nur für Arbeitszwecke bzw. bessere Veranschaulichungszwecke.-->
-
-
+<div class='modal-content'>
+  <div class='modal-header'>
+    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+    <h4 class='modal-title' id='mainModalHeader'></h4>
+  </div>
+  <div class='modal-body' id='modalBody'>
+    <br/>
+    <br/>
+    <br/>
+    <p style='font-family: fibel_nordregular; font-size:96px' id='itemText' class='text-center'>
+      Test
+    </p>
+    <br/>
+    <br/>
+    <br/>
+  </div>
+  <div class='modal-footer' style='text-align: center'>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+  </div>
+</div>
 <script>
-    var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentItemIndex]];
-    tempAudio.play();
-    shiftKey = false;
-    //Lösung für Großbuchstabentaste abgefragt:
-    //- toggle Varibalenwert
-    //- wenn shift gedrückt shiftKey = true, wenn nicht gedrückt oder shift losgelassen shiftKey = false
-    $(window).keydown(function (event) {
-        if (event.keyCode == 16) {
-            shiftKey = true;
-        }
-    });
-    $(window).keyup(function (event) {
-        if(event.keyCode==37){
-            tempAudio.pause();
-            tempAudio.currentTime = 0;
-            tempAudio.play();
-        }
-        //Zurücksetzen auf false bei loslassen
-        else if(event.keyCode == 16) {
-            shiftKey = false;
-        }
-        else if(shiftKey && event.keyCode>= 65 && event.keyCode<=90) {
-            $(window).unbind('keyup');
-            $(window).unbind('keydown');
-            nextItem();}});
-</script>;
+    var tempText = (document.getElementById('itemText'));
+    function cButtonClick() {
+        curSize=parseInt(tempText.style.fontSize) + 10;
+        tempText.style.fontSize = curSize + 'px';
+    }
+    function iButtonClick() {
+        curSize = parseInt(tempText.style.fontSize) - 10;
+        tempText.style.fontSize = curSize + 'px';
+    }
+    function sButtonClick() {
+        currentResult = currentResult + '0,';
+        nextItem();
+    }
+</script>

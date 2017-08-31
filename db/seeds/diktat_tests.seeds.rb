@@ -114,7 +114,7 @@ Woerter/85a.mp3
 dicN1 = Test.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
 
 
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/23b.mp3", itemtype:-5, itemview:"
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-5, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
@@ -135,7 +135,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Dikt
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -156,7 +156,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: "/audio/Dikt
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/24a.mp3", itemtype:-4,itemview:"
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/24a.mp3"]}, itemtype:-4,itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
@@ -175,7 +175,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -196,7 +196,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: "/audio
 it.save
 
 
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/25a.mp3", itemtype:-3,  itemview:"
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/25a.mp3"]}, itemtype:-3,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du einen Buchstaben oder ein Wort löschen möchtest, benutze die Löschtaste.
@@ -216,7 +216,7 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -235,7 +235,7 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
      });
 </script>")
 it.save
-it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/29a.mp3", itemtype:-2,  itemview:"
+it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/29a.mp3"]}, itemtype:-2,  itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
@@ -254,7 +254,7 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Di
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
@@ -274,7 +274,7 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: "/audio/Di
 </script>")
 it.save
 
-it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/32c.mp3", itemtype:-1, itemview:"
+it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/32c.mp3"]}, itemtype:-1, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun, dir die Wörter zu diktieren.“
@@ -293,7 +293,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: "/audi
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){tempAudio.pause();
@@ -319,7 +319,7 @@ it.save
 
 i=0
 while i<items.size do
-  it = dicN1.items.build(itemtext: items[i], mediapath:"/audio/Diktiertest/" + audios[i], difficulty: 0, itemtype:0, itemview:"
+  it = dicN1.items.build(itemtext: items[i], mediapath:{"audios"=>["/audio/Diktiertest/" + audios[i]]}, difficulty: 0, itemtype:0, itemview:"
   <audio id='audioItem'></audio>
 <p align='center'>
   <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle'>
@@ -337,7 +337,7 @@ while i<items.size do
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     var tempAnswer = (document.getElementById('answer'));
     tempAnswer.focus();
@@ -371,11 +371,91 @@ while i<items.size do
   i= i+1
 end
 
-it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Diktiertest/Anweisungen/86b.mp3", itemtype:1, itemview:"
+it = dicN1.items.build(itemtext: "Bewertung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/87a.mp3","/audio/Diktiertest/Anweisungen/88c.mp3","/audio/Diktiertest/Anweisungen/86b.mp3","/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:1, itemview:"
+<audio id='audioItem'></audio>
+<p id='evaluation' style='font-family: fibel_nordregular; font-size:60px' class='text-center'></p>
+<br />
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'><img align='middle' id='talkingLevumi' style='width: 250px '/></p>
+<br />
+<br />
+<footer>
+  <table align='center'><tr><th><div style='font-family: fibel_nordregular;font-size:60px'>
+    Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span>
+    /&nbsp;&nbsp;
+  </div>
+  </th>
+    <th>
+      <div style='font-family: fibel_nordregular;font-size:60px'>
+        Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span>
+      </div>
+    </th>
+  </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    var tempPic = (document.getElementById('talkingLevumi'));
+    var soundFlag = 0;
+    if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length){
+        $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“');
+        tempPic.src = '/images/Levumi-jubelt.gif';
+        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+        soundFlag =0;
+    }
+    else if(lastResults[currentStudent] >= 0 && lastResults[currentStudent] == currentResult.split('1').length){
+        $('#evaluation').html('„Du hast genauso viele Wörter richtig geschrieben, wie beim letzten Mal.“');
+        tempPic.src = '/images/LeVuMi_Sprechen.gif';
+        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][1];
+        soundFlag =1;
+    }
+    else if(lastResults[currentStudent] == -1){
+        $('#evaluation').html('„Das hast du Toll gemacht!“');
+        tempPic.src = '/images/Levumi-normal-blau.jpg';
+        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][2];
+        soundFlag =2;
+    }
+    else{
+        $('#evaluation').html('„Beim letzten Mal hast du mehr Wörter richtig geschrieben.“');
+        tempPic.src = '/images/Levumi-weiterlesen.gif';
+        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][3];
+        soundFlag =3;
+    }
+
+
+    tempAudio.play();
+    currentResult = currentResult + '1,';
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            if(soundFlag==0)
+                tempLevumiPic.src ='/images/Levumi-jubelt.gif';
+            else if(soundFlag==1)
+                tempPic.src = '/images/Levumi-normal-blau.jpg';
+            else if(soundFlag==2)
+                tempPic.src = '/images/LeVuMi_Sprechen.gif';
+            else
+                tempPic.src = '/images/Levumi-weiterlesen.gif';
+
+            tempAudio.play();
+        }
+        else if(event.keyCode == 13) {
+            stopwatch = new Date() - stopwatch;
+            currentTimes = currentTimes + stopwatch + ',';
+            nextItem();
+        }});
+
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+    });")
+it.save
+
+it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/86b.mp3"]}, itemtype:2, itemview:"
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Nun bist du fertig, drücke zum Schluss die Eingabetaste.“<br/>
-  <img id='talkingLevumi' style='width: 250px ' src='/images/Levumi-jubelt.gif'/>
+  <img id='talkingLevumi' style='width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <footer>
@@ -388,17 +468,16 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: "/audio/Dikti
 </footer>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
-    tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]];
+    tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][0];
     tempAudio.play();
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/Levumi-jubelt.gif';
+            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }
         else if (event.keyCode == 13) {
-            $(window).unbind('keydown');
             $(window).unbind('keyup');
             window.location.replace(pathMainPage);
         }});

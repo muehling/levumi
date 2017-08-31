@@ -5,6 +5,7 @@ class Item < ActiveRecord::Base
   validates_presence_of :itemtext
 
   before_save :check_shorthand
+  serialize :mediapath, Hash
 
   def self.xls_headings
     return %w{ID Kurztext}

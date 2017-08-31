@@ -6,7 +6,6 @@
     <div style="font-family: 'fibel_nordregular'; font-size:96px" class="text-center"> Ooops, Hier scheint etwas nicht zu stimmen. Bitte melden Sie sich bei uns.</div>
 <%end%>
 
-
 <script>
 
     //variable for testsequence
@@ -30,10 +29,11 @@
     <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
     <% end %>
     };
+
     //Mediapath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= i.mediapath%>",
+    <%= i.id%>: <%=raw i.mediapath["audios"]%>,
     <%end %>
     };
 
@@ -105,19 +105,22 @@
     /*Variable for preload*/
     var progress = 0;
     var loaded = 0;
-    var soundLength = Object.keys(itemDataSound).length;
+    var soundLength = 0;
     // start preloading all the intro audio files
     if(Object.keys(studentData).length > 0) {
         var audioArray = Object.values(studentData)[0];
 
 
-    for (var i in audioArray) {
-        preloadAudio(itemDataSound[audioArray[i]]);
-
+        for (var i in audioArray) {
+            for(var j in itemDataSound[audioArray[i]]){
+                preloadAudio(itemDataSound[audioArray[i]][j]);
+            }
+        }
     }
 
 
     function preloadAudio(url) {
+        soundLength = soundLength + 1;
         var audio = new Audio();
         // once this file loads, it will call loadedAudio()
         // the file will be kept by the browser as cache
@@ -146,7 +149,6 @@
             nextItem();
             <%end%>
         }
-    }
     }
 </script>
 

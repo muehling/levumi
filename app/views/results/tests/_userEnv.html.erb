@@ -65,12 +65,15 @@
 
   function prepareTest(student) {
       currentStudent = student;
+
       currentItemIndex = 0;
       currentResult = "";
       currentTimes = "";
+
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
       }
+
       $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
       $('#mainModalHeader').html(students[student]);
       $('#mainModal').modal('show');
