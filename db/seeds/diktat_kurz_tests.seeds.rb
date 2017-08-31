@@ -371,7 +371,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
 
 
     tempAudio.play();
-    currentResult = currentResult + '1,';
+    currentResult = currentResult + '0,';
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();
