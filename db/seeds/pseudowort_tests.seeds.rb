@@ -120,6 +120,7 @@ it = cbmN0.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -467,6 +468,7 @@ it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -946,6 +948,7 @@ it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -1405,6 +1408,7 @@ it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -1707,6 +1711,7 @@ it = cbmN3a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -2061,6 +2066,7 @@ it = cbmN3b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     function sButtonClick() {
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
+        timeoutId = window.setTimeout(timedOut, workTime);
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
@@ -2423,6 +2429,7 @@ it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();
+        timeoutId = window.setTimeout(timedOut, workTime);
     }
     $('#mainModalHeader').html(students[currentStudent]);
 </script>")

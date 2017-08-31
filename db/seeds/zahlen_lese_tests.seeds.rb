@@ -51,6 +51,7 @@ it = tN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemvi
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();
+        timeoutId = window.setTimeout(timedOut, workTime);
     }
     $('#mainModalHeader').html(students[currentStudent]);
 </script>")
@@ -231,6 +232,7 @@ it = tN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemvi
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();
+        timeoutId = window.setTimeout(timedOut, workTime);
     }
     $('#mainModalHeader').html(students[currentStudent]);
 </script>")
@@ -411,6 +413,7 @@ it = tN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemvi
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();
+        timeoutId = window.setTimeout(timedOut, workTime);
     }
     $('#mainModalHeader').html(students[currentStudent]);
 </script>")
@@ -590,6 +593,7 @@ it = tN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemvi
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();
+        timeoutId = window.setTimeout(timedOut, workTime);
     }
     $('#mainModalHeader').html(students[currentStudent]);
 </script>")

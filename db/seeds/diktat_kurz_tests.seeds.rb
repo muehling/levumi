@@ -254,7 +254,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audi
             if (timeoutId != -1) {
                 window.clearTimeout(timeoutId);
             }
-            timeoutId = window.setTimeout(timedOut, workTime + 500);
+            timeoutId = window.setTimeout(timedOut, workTime);
             nextItem();
         }});
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
@@ -347,25 +347,25 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
     if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length){
         $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“');
         tempPic.src = '/images/Levumi-jubelt.gif';
-        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+        tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][0];
         soundFlag =0;
     }
     else if(lastResults[currentStudent] >= 0 && lastResults[currentStudent] == currentResult.split('1').length){
         $('#evaluation').html('„Du hast genauso viele Wörter richtig geschrieben, wie beim letzten Mal.“');
         tempPic.src = '/images/LeVuMi_Sprechen.gif';
-        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][1];
+        tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][1];
         soundFlag =1;
     }
     else if(lastResults[currentStudent] == -1){
         $('#evaluation').html('„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“');
         tempPic.src = '/images/Levumi-normal-blau.jpg';
-        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][2];
+        tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][2];
         soundFlag =2;
     }
     else{
         $('#evaluation').html('„Beim letzten Mal hast du mehr Wörter richtig geschrieben.“');
         tempPic.src = '/images/Levumi-weiterlesen.gif';
-        tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][3];
+        tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][3];
         soundFlag =3;
     }
 
