@@ -362,7 +362,7 @@ while i<items.size do
         }});
     $(tempAnswer).keydown(function (event) {
         var key = event.charCode || event.keyCode;
-        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
+        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27||key ==188) {
             event.preventDefault();
         }});
 </script>"

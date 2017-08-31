@@ -57,9 +57,6 @@
           }
           else{
               $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
-              <%if @measurement.assessment.test.student_access == false%>
-              $('#mainModalHeader').html(students[currentStudent]);
-              <%end%>
               stopwatch = new Date();
           }
       }
@@ -76,9 +73,6 @@
   /*Stop test, when all items are asked*/
   function stopTest() {
       $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
-      <%if @measurement.assessment.test.student_access == false%>
-      $('#mainModalHeader').html(students[currentStudent]);
-      <%end%>
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;

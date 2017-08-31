@@ -42,31 +42,39 @@ it = cbmN0.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -131,7 +139,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -187,15 +195,11 @@ it = cbmN0.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
 cbmN0.save
-
-cbmN0.save
-
-
-
 
 
 items = %w{
@@ -280,31 +284,39 @@ it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -369,7 +381,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -425,6 +437,7 @@ it = cbmN1.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -520,31 +533,39 @@ it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -609,7 +630,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -665,6 +686,7 @@ it = cbmN2a.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -753,31 +775,39 @@ it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, ite
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -842,7 +872,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -898,6 +928,7 @@ it = cbmN2b.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -1046,31 +1077,39 @@ it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -1135,7 +1174,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -1191,6 +1230,7 @@ it = cbmN3.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -1355,31 +1395,39 @@ it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, item
     <br/>
   </div>
   <div class='modal-footer' style='text-align: center'>
-    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer</button>
+    <button id='cButton' type='button' class='btn btn-default btn-lg' onclick='cButtonClick()'>Schrift größer (Taste: 1)</button>
     <button id='sButton' type='button' class='btn btn-success' onclick='sButtonClick()'>Test starten</button>
-    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner</button>
+    <button id='iButton' type='button' class='btn btn-default btn-lg' onclick='iButtonClick()'>Schrift kleiner (Taste: 0)</button>
   </div>
 </div>
-
-
 <script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                iButtonClick();
+                break;
+        }
+    });
     var tempText = (document.getElementById('itemText'));
     function cButtonClick() {
         curSize=parseInt(tempText.style.fontSize) + 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function iButtonClick() {
         curSize = parseInt(tempText.style.fontSize) - 10;
         tempText.style.fontSize = curSize + 'px';
     }
-
     function sButtonClick() {
-        timeoutId = window.setTimeout(timedOut, workTime +500, true);
         currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
@@ -1444,7 +1492,7 @@ items.each do |i|
         $(window).unbind('keydown');
         nextItem();
     }
-
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
   it.save
 end
@@ -1500,6 +1548,7 @@ it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
 
     tempStudentButton.classList.add('btn-success')
+    $('#mainModalHeader').html(students[currentStudent]);
 </script>")
 it.save
 
