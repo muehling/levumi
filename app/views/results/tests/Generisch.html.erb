@@ -79,15 +79,16 @@
       }
       var dict = {};
       dict["authenticty_token"] = "<%= Rails.configuration.secret_token%>";
-      dict["results"] = currentStudent + ",times,answers#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1)+ "#"+ actualAnswers.substr(0, actualAnswers.length-1);
       //send data
       <%if @measurement.assessment.test.student_access == true%>
+      dict["results"] = currentStudent + ",times,answers#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1)+ "#"+ actualAnswers.substr(0, actualAnswers.length-1);
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict
       });
       <%else%>
+      dict["results"] = currentStudent + ",times#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
