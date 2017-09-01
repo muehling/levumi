@@ -68,7 +68,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>[
   „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
  Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
  wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
-  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -76,8 +76,8 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>[
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -89,7 +89,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>[
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
+            tempLevumiPic.src ='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }
         else {
@@ -99,7 +99,7 @@ it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>[
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
      tempAudio.addEventListener('ended', function()
      {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+          tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
      });
 </script>")
 it.save
@@ -109,15 +109,15 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audio
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Zuerst lese ich dir einen Satz vor. Danach diktiere ich dir das Wort aus dem Satz,
  das du schreiben sollst. Dann schreibst du das Wort auf der Tastatur.“
-  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -129,7 +129,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audio
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
+            tempLevumiPic.src ='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
@@ -138,7 +138,7 @@ it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audio
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
      tempAudio.addEventListener('ended', function()
      {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+          tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
      });
 </script>")
 it.save
@@ -149,7 +149,7 @@ it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath:
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Wenn du einen Buchstaben oder ein Wort löschen möchtest, benutze die Löschtaste.
 Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese ich dir noch einmal vor, was du schreiben sollst.“
-  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -157,8 +157,8 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -170,7 +170,7 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
+            tempLevumiPic.src ='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
@@ -179,7 +179,7 @@ Wenn du das Wort nicht verstanden hast, drücke die linke Pfeiltaste, dann lese 
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
      tempAudio.addEventListener('ended', function()
      {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+          tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
      });
 </script>")
 it.save
@@ -187,7 +187,7 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Achte ganz genau darauf, ob ein Wort groß oder klein geschrieben wird.“
-  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -195,8 +195,8 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -208,7 +208,7 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=
         if(event.keyCode==37){
             tempAudio.pause();
             tempAudio.currentTime = 0;
-            tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
+            tempLevumiPic.src ='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }else if(event.keyCode == 13) {
             $(window).unbind('keyup');
@@ -217,7 +217,7 @@ it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
      tempAudio.addEventListener('ended', function()
      {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+          tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
      });
 </script>")
 it.save
@@ -226,7 +226,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audi
 <audio id='audioItem'></audio>
 <p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
   „Ich beginne nun, dir die Wörter zu diktieren.“
-  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/LeVuMi_SprechenBlinzeln.gif'/>
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif'/>
 </p>
 <br />
 <br />
@@ -234,8 +234,8 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audi
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -246,7 +246,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audi
     $(window).keyup(function (event) {
         if(event.keyCode==37){tempAudio.pause();
         tempAudio.currentTime = 0;
-        tempLevumiPic.src ='/images/LeVuMi_SprechenBlinzeln.gif';
+        tempLevumiPic.src ='/images/multiple_used/LeVuMi_SprechenBlinzeln.gif';
         tempAudio.play();
         }
         else if(event.keyCode == 13) {
@@ -260,7 +260,7 @@ it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audi
      var tempLevumiPic = (document.getElementById('talkingLevumi'));
      tempAudio.addEventListener('ended', function()
      {
-          tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+          tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
      });
 </script>")
 it.save
@@ -278,8 +278,8 @@ while i<items.size do
 <footer>
   <table align='center'>
     <tr>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
-      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span></div></th>
     </tr>
   </table>
 </footer>
@@ -328,13 +328,13 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
 <br />
 <footer>
   <table align='center'><tr><th><div style='font-family: fibel_nordregular;font-size:60px'>
-    Nochmal anhören: <span><img style='width: 50px' src='/images/Tastatur_PfeilLinks.png'/></span>
+    Nochmal anhören: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_PfeilLinks.png'/></span>
     /&nbsp;&nbsp;
   </div>
   </th>
     <th>
       <div style='font-family: fibel_nordregular;font-size:60px'>
-        Weiter: <span><img style='width: 50px' src='/images/Tastatur_EingabetasteAlleine.png'/></span>
+        Weiter: <span><img style='width: 50px' src='/images/multiple_used/Tastatur_EingabetasteAlleine.png'/></span>
       </div>
     </th>
   </tr>
@@ -344,27 +344,27 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
     var tempAudio = (document.getElementById('audioItem'));
     var tempPic = (document.getElementById('talkingLevumi'));
     var soundFlag = 0;
-    if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length){
+    if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length-1){
         $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“');
-        tempPic.src = '/images/Levumi-jubelt.gif';
+        tempPic.src = '/images/multiple_used/Levumi-jubelt.gif';
         tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][0];
         soundFlag =0;
     }
-    else if(lastResults[currentStudent] >= 0 && lastResults[currentStudent] == currentResult.split('1').length){
+    else if(lastResults[currentStudent] >= 0 && lastResults[currentStudent] == currentResult.split('1').length-1){
         $('#evaluation').html('„Du hast genauso viele Wörter richtig geschrieben, wie beim letzten Mal.“');
-        tempPic.src = '/images/LeVuMi_Sprechen.gif';
+        tempPic.src = '/images/multiple_used/LeVuMi_Sprechen.gif';
         tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][1];
         soundFlag =1;
     }
     else if(lastResults[currentStudent] == -1){
         $('#evaluation').html('„Nun bist du fertig, drücke zum Schluss die Eingabetaste.“');
-        tempPic.src = '/images/Levumi-normal-blau.jpg';
+        tempPic.src = '/images/multiple_used/LeVuMi_Sprechen.gif';
         tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][2];
         soundFlag =2;
     }
     else{
         $('#evaluation').html('„Beim letzten Mal hast du mehr Wörter richtig geschrieben.“');
-        tempPic.src = '/images/Levumi-weiterlesen.gif';
+        tempPic.src = '/images/multiple_used/Levumi-weiterlesen.gif';
         tempAudio.src = itemDataSound[studentData[currentStudent][studentData[currentStudent].length-1]][3];
         soundFlag =3;
     }
@@ -377,13 +377,13 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
             tempAudio.pause();
             tempAudio.currentTime = 0;
             if(soundFlag==0)
-                tempLevumiPic.src ='/images/Levumi-jubelt.gif';
+                tempLevumiPic.src ='/images/multiple_used/Levumi-jubelt.gif';
             else if(soundFlag==1)
-                tempPic.src = '/images/Levumi-normal-blau.jpg';
+                tempPic.src = '/images/multiple_used/LeVuMi_Sprechen.gif';
             else if(soundFlag==2)
-                tempPic.src = '/images/LeVuMi_Sprechen.gif';
+                tempPic.src = '/images/multiple_used/LeVuMi_Sprechen.gif';
             else
-                tempPic.src = '/images/Levumi-weiterlesen.gif';
+                tempPic.src = '/images/multiple_used/Levumi-weiterlesen.gif';
 
             tempAudio.play();
         }
@@ -394,7 +394,7 @@ it = dicN1.items.build(itemtext: "Ende", difficulty: 0, mediapath: {"audios"=>["
 
     var tempLevumiPic = (document.getElementById('talkingLevumi'));
     tempAudio.addEventListener('ended', function() {
-        tempLevumiPic.src ='/images/Levumi-normal-blau.jpg';
+        tempLevumiPic.src ='/images/multiple_used/Levumi-normal-blau.jpg';
     });")
 it.save
 dicN1.save
