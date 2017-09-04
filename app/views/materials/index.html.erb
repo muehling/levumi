@@ -51,7 +51,7 @@
                             <%= raw @materials.where(:subject => s, :construct => c, :block => ma).uniq.pluck(:blockinfo).first%>
                           </p>
                           <% @materials.where(:subject => s, :construct => c, :block => ma).order(:exercisetype).each do |material| %>
-                              <% unless material.data.empty? %>
+                              <% unless material.data.nil? || material.data.empty? %>
                                 <div class="panel panel-default">
                                   <div class="panel-heading" role="tab" id="h<%=(s+c+ma).parameterize %>">
                                     <h4 class="panel-title">
