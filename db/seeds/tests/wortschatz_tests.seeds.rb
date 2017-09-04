@@ -273,11 +273,11 @@ it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
     var tempStudentButton = (document.getElementById('btn'+ currentStudent));
 
     if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length)
-        tempPic.src = '/images/multiple_used/Levumi-jubelt.gif';
+        tempPic.src = '/images/shared/Levumi-jubelt.gif';
     else if(lastResults[currentStudent] == -1)
-        tempPic.src = '/images/multiple_used/Levumi-normal-blau.jpg';
+        tempPic.src = '/images/shared/Levumi-normal-blau.jpg';
     else
-        tempPic.src = '/images/multiple_used/Levumi-weiterlesen.gif';
+        tempPic.src = '/images/shared/Levumi-weiterlesen.gif';
 
     if (timedout)
         tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
@@ -687,11 +687,11 @@ it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"
     var tempStudentButton = (document.getElementById('btn'+ currentStudent));
 
     if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length)
-        tempPic.src = '/images/multiple_used/Levumi-jubelt.gif';
+        tempPic.src = '/images/shared/Levumi-jubelt.gif';
     else if(lastResults[currentStudent] == -1)
-        tempPic.src = '/images/multiple_used/Levumi-normal-blau.jpg';
+        tempPic.src = '/images/shared/Levumi-normal-blau.jpg';
     else
-        tempPic.src = '/images/multiple_used/Levumi-weiterlesen.gif';
+        tempPic.src = '/images/shared/Levumi-weiterlesen.gif';
 
     if (timedout)
         tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
