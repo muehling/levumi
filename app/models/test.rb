@@ -75,7 +75,8 @@ class Test < ActiveRecord::Base
       SELECT test_id, COUNT(*) as Anzahl
       FROM tests JOIN assessments ON tests.id = test_id
         JOIN groups ON groups.id = group_id
-      WHERE export = 1
+        JOIN users ON users.id = user_id
+      WHERE export = 1 AND account_type = 0
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}
@@ -89,7 +90,8 @@ class Test < ActiveRecord::Base
       SELECT test_id, COUNT(*) as Anzahl
       FROM measurements JOIN assessments ON assessments.id = assessment_id
         JOIN groups ON groups.id = group_id
-      WHERE export = 1
+        JOIN users ON users.id = user_id
+      WHERE export = 1 AND account_type = 0
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}
@@ -104,7 +106,8 @@ class Test < ActiveRecord::Base
       FROM results JOIN measurements ON measurements.id = measurement_id
         JOIN assessments ON assessments.id = assessment_id
         JOIN groups ON groups.id = group_id
-      WHERE export = 1
+        JOIN users ON users.id = user_id
+      WHERE export = 1 AND account_type = 0
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}

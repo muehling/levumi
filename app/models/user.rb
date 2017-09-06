@@ -17,6 +17,15 @@ class User < ActiveRecord::Base
     return capabilities.nil? || capabilities.blank?
   end
 
+  #Festlegung:
+  #0 -> Lehrkraft (=> Daten werden exportiert)
+  #1 -> Forscher (=> Kann eigene Daten exportieren)
+  #2 -> Privat/System
+  def isResearcher?
+    return account_type == 1
+  end
+
+
   def create_test_group
     self.groups.create(:name => "Testklasse", :export => false, :archive => false, :demo => true)
   end
@@ -27,7 +36,7 @@ class User < ActiveRecord::Base
       SELECT user_id, COUNT(*) as Anzahl
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id
-      WHERE export = 1
+      WHERE export = 1 AND account_type = 0
       GROUP BY user_id;")
     ids = temp.map{|x| x["user_id"]}
     count = temp.map{|x| x["Anzahl"]}
@@ -41,7 +50,7 @@ class User < ActiveRecord::Base
       FROM users JOIN groups ON user_id = users.id
         JOIN assessments ON group_id = groups.id
         JOIN measurements ON assessment_id = assessments.id
-      WHERE export = 1
+      WHERE export = 1 AND account_type = 0
       GROUP BY user_id;
      ")
     ids = temp.map{|x| x["user_id"]}
@@ -57,7 +66,7 @@ class User < ActiveRecord::Base
         JOIN assessments ON group_id = groups.id
         JOIN measurements ON assessment_id = assessments.id
         JOIN results ON measurement_id = measurements.id
-        WHERE export = 1
+        WHERE export = 1 AND account_type = 0
         GROUP BY user_id;
     ")
     ids = temp.map{|x| x["user_id"]}

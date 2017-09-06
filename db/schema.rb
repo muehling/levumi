@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170830193201) do
+ActiveRecord::Schema.define(version: 20170906094853) do
 
   create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(version: 20170830193201) do
     t.text     "capabilities"
     t.datetime "tcaccept"
     t.datetime "last_login"
+    t.integer  "account_type"
   end
 
 end
