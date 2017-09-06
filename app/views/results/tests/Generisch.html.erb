@@ -23,12 +23,7 @@
     var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
     <% end %>
 
-    //Views for displayed Items
-    var itemView = {
-    <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
-    <% end %>
-    };
+
 
     //Mediapath for displayed Items for preload
     var itemDataSound = {
@@ -57,7 +52,6 @@
           }
           else{
               $('#testEnviroment').html(itemView[studentData[currentStudent][currentItemIndex]]);
-              stopwatch = new Date();
           }
       }
       else
@@ -72,7 +66,12 @@
 
   /*Stop test, when all items are asked*/
   function stopTest() {
+      <%if @measurement.assessment.test.student_access == true%>
       $('#testEnviroment').html(itemView[studentData[currentStudent][studentData[currentStudent].length - 1]]);
+      <%else%>
+      $('#testEnviroment').html("<%= escape_javascript(render 'items/endItemUser') %>");
+      <%end%>
+
       if (timeoutId != -1) {
           window.clearTimeout(timeoutId);
           timeoutId = -1;

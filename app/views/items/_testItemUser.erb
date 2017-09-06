@@ -1,0 +1,60 @@
+<div class='modal-content'>
+  <div class='modal-header'>
+    <button type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button>
+    <h4 class='modal-title' id='mainModalHeader'></h4>
+  </div>
+  <div class='modal-body' id='modalBody'>
+    <br/>
+    <br/>
+    <br/>
+    <p style='font-family: fibel_nordregular; font-size:96px' id='itemText' class='text-center'></p>
+    <br/>
+    <br/>
+    <br/>
+  </div>
+  <div class='modal-footer' style='text-align: center'>
+    <button id='cButton' type='button' class='btn btn-success btn-lg' onclick='cButtonClick()'>Richtig (Taste: 1)</button>
+    <button id='sButton' type='button' class='btn btn-default disabled'>Test starten</button>
+    <button id='iButton' type='button' class='btn btn-danger btn-lg' onclick='iButtonClick()'>Falsch (Taste: 0)</button>
+  </div>
+</div>
+
+
+<script>
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                $(window).unbind('keydown');
+                cButtonClick();
+                break;
+            case 48:
+            case 96:
+                $(window).unbind('keydown');
+                iButtonClick();
+                break;
+
+        }
+    });
+
+    $('#itemText').html(itemTextHash[studentData[currentStudent][currentItemIndex]]);
+    var tempText = (document.getElementById('itemText'));
+    tempText.style.fontSize = curSize + 'px';
+
+    function cButtonClick() {
+        stopwatch = new Date() - stopwatch;
+        currentTimes = currentTimes + stopwatch + ',';
+        currentResult = currentResult + '1,';
+        $(window).unbind('keydown');
+        nextItem();
+    }
+
+    function iButtonClick() {
+        stopwatch = new Date() - stopwatch;
+        currentTimes = currentTimes + stopwatch + ',';
+        currentResult = currentResult + '0,';
+        $(window).unbind('keydown');
+        nextItem();
+    }
+    $('#mainModalHeader').html(students[currentStudent]);
+</script>

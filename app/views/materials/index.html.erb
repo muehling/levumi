@@ -62,7 +62,7 @@
                                 <div id="c<%=material.id %>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=material.id %>">
                                   <div class="panel-body">
                                     <p class="lead text-right">
-                                      <% if !@login_user.nil? && @login_user.hasCapability?("admin") %>
+                                      <% if !@login_user.nil? && @login_user.hasCapability?("test") %>
                                           <%= link_to edit_material_path(material), :title => "Bearbeiten", :data => {:remote => true} do %>
                                               <span class="glyphicon glyphicon-pencil"></span>
                                           <% end %>
