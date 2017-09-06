@@ -1,6 +1,7 @@
 class MaterialsController < ApplicationController
   before_action :set_material, only: [:show, :edit, :update, :destroy]
-  before_action :is_allowed
+  before_action :is_allowed, only: [:edit, :update, :destroy, :new]
+
   # GET /materials
   # GET /materials.json
   def index
@@ -50,7 +51,7 @@ class MaterialsController < ApplicationController
     end
 
     def is_allowed
-      unless !@login_user.nil? && @login_user.hasCapability?("admin") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
+      unless !@login_user.nil? && @login_user.hasCapability?("test") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
         redirect_to root_url
       end
     end
