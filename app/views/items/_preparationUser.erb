@@ -45,6 +45,9 @@
     function sButtonClick() {
         currentResult = currentResult + 'NA,';
         $(window).unbind('keydown');
+        if(workTime!=-1) {
+            timeoutId = window.setTimeout(timedOut, workTime);
+        }
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);
