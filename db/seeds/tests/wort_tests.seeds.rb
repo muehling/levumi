@@ -45,15 +45,15 @@ Lora
 
 cbmN1 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN1.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN1.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN1.save
@@ -110,15 +110,15 @@ Meise
 
 cbmN2a = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN2a.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN2a.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN2a.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN2a.save
@@ -217,15 +217,15 @@ groups = %i{
 
 cbmN2b = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.size.times do |i|
-  it = cbmN2b.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN2b.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN2b.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN2b.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN2b.save
@@ -362,15 +362,15 @@ groups = %i{
 
 cbmN3 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.size.times do |i|
-  it = cbmN3.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN3.items.build(itemtext: items[i], difficulty: groups[i], itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN3.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN3.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN3.save
@@ -443,15 +443,15 @@ Gelder
 
 cbmN4 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN4.save

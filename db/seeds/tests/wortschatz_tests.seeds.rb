@@ -113,15 +113,15 @@ gerade
 
 cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN2.save
@@ -362,15 +362,15 @@ wenn
 
 cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
 
-it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN4.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN4.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN4.save

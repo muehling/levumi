@@ -49,15 +49,15 @@ G
 }
 
 cbmN1 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", archive: false, type_info:"Screening",  student_access: false)
-it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN1.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN1.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN1.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 cbmN1.save
@@ -140,15 +140,15 @@ Eu
 
 cbmN2 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2", type_info:"Screening", archive: false, student_access: false)
 
-it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/preparationUser")
+it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
 
 items.each do |i|
-  it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/testItemUser")
+  it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
   it.save
 end
 
-it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/endItemUser")
+it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
 it.save
 
 
