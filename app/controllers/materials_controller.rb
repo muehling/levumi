@@ -51,7 +51,7 @@ class MaterialsController < ApplicationController
     end
 
     def is_allowed
-      unless !@login_user.nil? && @login_user.hasCapability?("test") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
+      unless !@login_user.nil? && @login_user.hasCapability?("test")
         redirect_to root_url
       end
     end
