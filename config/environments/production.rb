@@ -34,7 +34,7 @@ Rails.application.configure do
   config.assets.precompile += %w( *.eot *.svg *.ttf *.woff *.otf c3.css)
 
   # Generate digests for assets URLs.
-  config.assets.digest = false
+  config.assets.digest = true
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
