@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
-  before_action :check_login, except: [:welcome, :login]
-  before_action :check_accept, except: [:welcome, :login, :accept, :static, :logout]
+  before_action :check_login, except: [:welcome, :login, :signup]
+  before_action :check_accept, except: [:welcome, :login, :signup, :accept, :static, :logout]
 
   def login
     u = User.find_by_email(params[:email])
