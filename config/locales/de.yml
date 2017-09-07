@@ -216,10 +216,11 @@ de:
       measurement: Messzeitpunkt
     attributes:
       user:
-        school: Schule
+        school: Schule/Institution
         email: E-Mail
         password: Passwort
         password_confirmation: Passwort-Bestätigung
+        account_type: Kontotyp
       student:
         name: Name/Code
         birthdate: Geburtsdatum

@@ -1,0 +1,25 @@
+<div class="jumbotron">
+  <h1><%= image_tag('Levumi-klein-blau.png', size: "120")%> Levumi  </h1>
+  <h3>Lernverlaufs-Monitoring</h3>
+  <br/>
+  <%= form_tag(url_for(:controller => 'application', :action => 'signup'), :class => "form") do %>
+      <div class="form-group">
+        <label class="sr-only" for="email">Email-Adresse</label>
+        <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+      </div>
+      <div class="form-group">
+        <label class="sr-only" for="email">Name</label>
+        <%= text_field_tag "name", nil, type: "text", class: "form-control", placeholder: "Name"%>
+      </div>
+      <div class="form-group">
+        <label>
+          <%= radio_button_tag "account_type", '0', true %>Lehrkraft<br/>
+        </label>
+        <label>
+          <%= radio_button_tag "account_type", '2', false %>Privatperson<br/>
+        </label>
+      </div>
+
+      <%= submit_tag 'Registrieren', :class => "btn btn-primary" %>
+  <% end %>
+</div>

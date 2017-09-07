@@ -7,14 +7,45 @@ class User < ActiveRecord::Base
   validates_presence_of :email
   validates_uniqueness_of :email
 
+  validates_presence_of :name
+
   after_create :create_test_group
 
+  #Liste aktuell verwendeter Capabilities:
+  #admin -> darf/sieht alles
+  #user -> Sieht "Benutzerverwaltung"
+  #export -> Sieht "Datenexport"
   def hasCapability?(cap)
     return !isRegularUser? && (capabilities.include?(cap) || capabilities.include?("admin"))
   end
 
+  #Keine speziellen Capabilities als shortcut
   def isRegularUser?
     return capabilities.nil? || capabilities.blank?
+  end
+
+  #Festlegung:
+  #0 -> Lehrkraft (=> Daten werden exportiert)
+  #1 -> Forscher (=> Kann eigene Daten exportieren)
+  #2 -> Privat/System
+  def isResearcher?
+    return account_type == 1
+  end
+
+  #Festlegung:
+  #0 - Normaler "aktiver" Account
+  #1 - Neuer Account, noch nicht benutzt
+  #2 - Alter Account, schon lange nicht mehr benutzt (> 3 Monate kein Login)
+  def status
+    if tcaccept.nil?
+      return 1
+    else
+      if last_login.nil? || last_login < 3.months.ago
+        return 2
+      else
+        return 0
+      end
+    end
   end
 
   def create_test_group
