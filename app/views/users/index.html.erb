@@ -1,6 +1,7 @@
 <div class="well userCard" id="group">
   <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
-    <table class="table table-striped">
+
+    <table class="table">
       <thead>
       <th>
         ID
@@ -22,8 +23,9 @@
       </th>
       </thead>
       <tbody>
-      <% @users.each do |user| %>
-          <tr>
+      <% @users.sort{|a,b| a.status == 1 ? -1 : b.status == 1 ? 1 : a.status <=> b.status}.each do |user| %>
+      <% status = user.status %>
+          <tr <% if status == 1 %> class="bg-success" <% end %> <% if status == 2 %> class="bg-danger" <% end %> >
             <td>
               <%= user.id %>
             </td>

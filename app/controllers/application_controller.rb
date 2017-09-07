@@ -19,10 +19,10 @@ class ApplicationController < ActionController::Base
         u.save
         redirect_to user_groups_path(u), notice: news.empty? ? "Eingeloggt als #{u.email}" : news.join("<br/><br/>")
       else
-        redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
+        redirect_to root_url, notice: 'Benutzername oder Passwort falsch!'
       end
     else
-      redirect_to root_url, notice: "Benutzername oder Passwort falsch!"
+      redirect_to root_url, notice: 'Benutzername oder Passwort falsch!'
     end
   end
 
@@ -42,10 +42,29 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def signup
+    password = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+    @user = User.new(email: params[:email], name: params[:name], account_type: params[:account_type], password: password, password_confirmation: password)
+    if (@user.account_type == 0 || @user.account_type == 1) && @user.save  #To prevent possible attacks by entering invalid account types in the post request
+      UserMailer.registered(@user.email, @user.name, password).deliver_later
+      render 'registered', layout: 'bare'
+    else
+      error = ''
+      unless @user.errors['name'].blank?
+        error = "Name darf nicht leer sein!"
+      end
+      unless @user.errors['email'].blank?
+        error = 'E-Mail Adresse ungültig oder bereits registriert!'
+      end
+      flash['notice'] = error
+      render 'signup', layout: 'bare'
+    end
+  end
+
   def accept
     @login_user.tcaccept = DateTime.now
     @login_user.save
-    redirect_to user_groups_path(@login_user), notice: "Viel Spaß bei der Benutzung von Levumi!"
+    redirect_to user_groups_path(@login_user), notice: 'Viel Spaß bei der Benutzung von Levumi!'
   end
 
   def static
@@ -53,7 +72,7 @@ class ApplicationController < ActionController::Base
   end
 
   def export
-    unless !@login_user.nil? && @login_user.hasCapability?("export")
+    unless !@login_user.nil? && @login_user.hasCapability?('export')
       redirect_to root_url
     end
     @tests = Test.all
@@ -64,7 +83,7 @@ class ApplicationController < ActionController::Base
   #check if user is logged in
   def check_login
     if session[:user_id].nil? && session[:student_id].nil?
-      redirect_to root_url, notice: "Bitte einloggen!"
+      redirect_to root_url, notice: 'Bitte einloggen!'
     elsif !session[:student_id].nil?
       @login_student = Student.find(session[:student_id])
      else

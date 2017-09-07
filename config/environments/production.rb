@@ -34,13 +34,23 @@ Rails.application.configure do
   config.assets.precompile += %w( *.eot *.svg *.ttf *.woff *.otf c3.css)
 
   # Generate digests for assets URLs.
-  config.assets.digest = true
+  config.assets.digest = false
 
   # `config.assets.precompile` and `config.assets.version` have moved to config/initializers/assets.rb
 
   # Specifies the header that your server uses for sending files.
   # config.action_dispatch.x_sendfile_header = "X-Sendfile" # for apache
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
+
+  config.action_mailer.delivery_method = :sendmail
+  # Defaults to:
+  config.action_mailer.sendmail_settings = {
+      location: '/usr/sbin/sendmail',
+      arguments: '-i -f noreply@levumi.de'
+  }
+  config.action_mailer.perform_deliveries = true
+
+  config.action_mailer.default_options = {from: 'noreply@levumi.de'}
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   # config.force_ssl = true
