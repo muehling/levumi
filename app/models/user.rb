@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
   #1 - Neuer Account, noch nicht benutzt
   #2 - Alter Account, schon lange nicht mehr benutzt (> 3 Monate kein Login)
   def status
-    if tcaccept.nil?
+    if tcaccept.nil? || last_login.nil?
       return 1
     else
       if last_login < 3.months.ago
