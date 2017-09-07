@@ -23,7 +23,7 @@
       </th>
       </thead>
       <tbody>
-      <% @users.sort{|a,b| a.status == 1 ? -1 : b.status == 1 ? 1 : a.status <=> b.status}.each do |user| %>
+      <% @users.sort{|a,b| if a.status == b.status then b.id <=> a.id else a.status == 1 ? -1 : b.status == 1 ? 1 : a.status <=> b.status end}.each do |user| %>
       <% status = user.status %>
           <tr <% if status == 1 %> class="bg-success" <% end %> <% if status == 2 %> class="bg-danger" <% end %> >
             <td>
