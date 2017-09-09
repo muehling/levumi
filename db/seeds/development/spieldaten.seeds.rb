@@ -62,203 +62,219 @@ a.save
 m = a.measurements.build(date: Date.yesterday)
 m.save
 
+items = %w{1 2 3 4 5 6 7 8 9}
 
-# Sinnentnehmendes Test ...
-items = %w{
-	Augen
-	Bett
-	Bilder
-	Beine
-	runde
-	Haus
-	Schuhe
-	Tür
-	Schwester
-	Büro
-	Wasser
-	Vogel
-	Enten
-	Blumen
-	Freunde
-	Hase
-	Schere
-	Baby
-	Sonne
-	Frösche
-	Biene
-}
+t = TestDictation.create(name: "Mathetest NL1", len: 9, info: "Mathetest Numbers Line für die Grundschule, 3. Klasse", short_info: "Mathetest Numbers Line für die Grundschule, 3. Klasse",
+					subject: "Mathematik", construct: "Mathetest NL", student_access:true, archive: false, level: "Level 1", time: 60)
+items.each do |it|
+	item = t.items.build(itemtext: it, difficulty: 1, itemtype: 0, itemview:"
+					<div class='text-center'>
+							<button type='button' id='buttonTrigger' class='btn btn-default'>Show Line0</button>
+					</div>
+					
 
-# The alternatives to write on the buttons
-item_alternatives = [
-	%w{	Bücher	Augen	Finger	Autos	},
-	%w{	Tisch	Bett	Käfig	Bild	},
-	%w{	Bisse	Bilder	Luft	Kälte	},
-	%w{	Beine	Daumen	Kamel	Bücher	},
-	%w{	runde	lange	blaue	warme	},
-	%w{	Haus	Hemd	Heft	Beet	},
-	%w{	Truhe	Schlüssel	Schuhe	Natur	},
-	%w{	Brücke	Flasche	Tür	Tafel	},
-	%w{	Hütte	Dusche	Schwester	Qual	},
-	%w{	Spaß	Juni	Maß	Büro	},
-	%w{	Tuch	Bett	Löwen	Wasser	},
-	%w{	Vogel	Hund	Verein	Vater	},
-	%w{	Enten	Bären	Häuser	Haare	},
-	%w{	Blumen	Spechte	Jungen	Stühle	},
-	%w{	Stifte	Freunde	Schuhe	Lichter	},
-	%w{	Sand	Hase	Rock	Zahn	},
-	%w{	Pizza	Schere	Zwiebel	Stirn	},
-	%w{	Päckchen	Radio	Baby	Rätsel	},
-	%w{	Uhr	Wiese	Sonne	Puppe	},
-	%w{	Zähne	Pilze	Früchte	Frösche	},
-	%w{	Blume	Rinde	Nase	Biene	}
-]
-
-# Sentence part to set before the gap
-before_gap_part = %w{
-	Ein\ Gesicht\ hat\ zwei
-	Mein\ Papa\ schläft\ im
-	Lasse\ zeichnet\ schöne
-	Ein\ Lama\ hat\ vier
-	Ein\ Apfel\ ist\ eine
-	Meine\ Freundin\ zieht\ in\ ein\ neues
-	Ich\ binde\ mir\ die
-	Papa\ schließt\ abends\ die
-	Jutta\ geht\ mit\ ihrer\ 
-	Mein\ Papa\ arbeitet\ in\ einem
-	Die\ Boje\ schwimmt\ auf\ dem
-	Der
-	Die
-	Die
-	Die
-	Der
-	Die
-	Das
-	Die
-	Die
-	Die
-}
-
-after_gap_part = %w{
-	.
-	.
-	.
-	.
-	Frucht.
-	um.
-	zu.
-	ab.
-	einkaufen.
-	.
-	.
-	fliegt\ zu\ seinem\ Nest.
-	quaken\ auf\ dem\ See.
-	blühen\ auf\ der\ Wiese.
-	machen\ viel\ Unsinn.\ 
-	rennt\ über\ die\ Wiese.
-	schneidet\ das\ Papier.\ 
-	schreit\ nach\ seiner\ Mutter.
-	scheint\ jeden\ Tag.\ 
-	überqueren\ die\ Straße.\ 
-	sitzt\ auf\ einer\ Blüte.
-	fliegt\ zu\ seinem\ Nest.
-}
+														<script type='text/javascript'> 
+															$('#buttonTrigger').click(function(){
+																		prepare(30);
+															}); 	
+															  var askedNumber =50;
+															  alert(30);
+															  var canvas = document.createElement('canvas');
+															    canvas.setAttribute('id', 'canvas');
+															    canvas.width = 800;
+															    canvas.height = 400;
+															    canvas.addEventListener('click', prepare, false);
+															    document.getElementById('testEnviroment').appendChild(canvas);
+															  var canvas = document.getElementById('canvas');
+															  var ctx = canvas.getContext('2d');
+															  var w = canvas.width;
+															  var h = canvas.height;
+															  var toleranceValue = 5;
+															  var lineWidth = 10; // Needed for drawing
+															  var lengthOfLine = 100;
+															  var interval = w / lengthOfLine;
+															  var currentAnswer=[];
+															  var answer = 0;
 
 
-
-t = TestDictation.create(name: "Sinnentnehmendes Lesen", len: 21, info: "Sinnentnehmendes Test für die Grundschule, 3. Klasse", short_info: "Sinnentnehmendes Lesen für die Grundschule, 3. Klasse",
-					subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "Level 1", time: 480)
-i = 0
-while i<items.size do
-	it = t.items.build(itemtext: items[i], difficulty: 1, itemtype: 0, itemview: "</br></br></br></br></br></br>
-								<br><br>
-								<div class='row text-center'>
-										<div><label class='control-label' style='font-size: 60px'>" + before_gap_part[i] + " &nbsp</label>
-										<label id='answer' class='control-label' style='color:#3498db; font-size: 60px'>...........</label>
-										<label class='control-label' style='font-size: 60px'>  &nbsp" + after_gap_part[i] + "</label></div>
-								</div>
-
-								<br><br>
-								<div class='row' id='rowButtons' >
-									<div class='col-lg-1 col-md-offset-4' >
-										<div class ='row'>
-											<button id='button0' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][0] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button1' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][1] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button2' style='font-size: 30px' type='button' class='btn btn-default btn-block'>" + item_alternatives[i][2] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button3' style='font-size: 30px' type='button' class='btn btn-default btn-block'>"+ item_alternatives[i][3] +"</button>
-										</div>
-									</div>
-								</div>
-								<br><br><br><br>
-								<div class='row text-center'>
-								
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>next</span></button>
-									</div>
-								</div>
-								
-								<script>
-							        $('button').click(function(){
-							        	if(this.id == 'next'){
-							        		nextClicked();
-							        	}
-							        	else{
-								        	buttonClicked(this.id);
-							        	}
-							        });
-									function buttonClicked(buttonID){
-								      var text = $('#'+buttonID).text();
-								      $('#answer').html('<u>'+text+'</u>');
-								    }
-								    function nextClicked() {
-							        		var tempAnswer = document.getElementById('answer');
-								            actualAnswers = actualAnswers + tempAnswer.textContent;
-								            if(tempAnswer.textContent=='"+items[i]+"'){
-								                currentResult = currentResult + '1,';
-								            }
-								            else {
-								                currentResult = currentResult + '0,';
-								            };
-								            stopwatch = new Date() - stopwatch;
-								            currentTimes = currentTimes + stopwatch + ',';
-								            nextItem();
-							        };
-								</script>")
-	it.save
-	i = i+1
+															  // Prepare the layout 
+															  function prepare(number){
+															  	alert('hi');
+															    var q = '<div class=\'row\' id=\'question\'>Trage die Zahl '+number+' ein</div>';
+														    	
+															    $('#testEnviroment').append(q);
+															  };
+														</script>
+					")
+	item.save
 end
 
-it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"</br></br></br></br></br></br>
-								<div class='text-center'>
-									<img style='width: 250px; ' src='/images/Levumi-normal-blau.jpg'/>
-							</div>
-								<br><br>
-								<br><br>
-								<div class='row text-center'>
-								
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='geschafft' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>Geschafft</span></button>
-									</div>
-								</div>
-								<script>
-								$('#geschafft').click(function(){
-										window.location.replace(pathMainPage);
-									});
-								</script>
-								")
-it.save
+a = g.assessments.build(test_id: t.id)
+a.save
 
+m = a.measurements.build(date: Date.today)
+m.save
+
+
+
+items = %w{1 2 3 4 5 6 7 8 9}
+
+t = TestDictation.create(name: "Mathetest NL2", len: 9, info: "Mathetest Numbers Line für die Grundschule, 3. Klasse", short_info: "Mathetest Numbers Line für die Grundschule, 3. Klasse",
+					subject: "Mathematik", construct: "Mathetest NL", student_access:true, archive: false, level: "Level 1", time: 60)
+items.each do |it|
+	item = t.items.build(itemtext: it, difficulty: 1, itemtype: 0, itemview:"
+					<div class='text-center'>
+							<button type='button' id='buttonTrigger' class='btn btn-default'>Show Line</button>
+					</div>
+
+														
+														<script type='text/javascript'> 
+															
+														  var askedNumber =50;
+														  alert(30);
+														  console.log('first 0');
+														//  var q = '<div class=\'row\' id=\'question\'>Trage die Zahl '+number+' ein</div>';
+														    	console.log('first after q');
+															    //$('#testEnviroment').append(q);
+															    //$('#question').addClass('text-center');
+															    //$('#question').css({'font-size':'30px', 'margin':'20px'});
+															    //console.log('first');
+														</script>
+					")
+	item.save
+end
+
+a = g.assessments.build(test_id: t.id)
+a.save
+
+m = a.measurements.build(date: Date.today)
+m.save
+
+
+items = %w{1 2 3 4 5 6 7 8 9}
+
+t = TestDictation.create(name: "Mathetest NL3", len: 9, info: "Mathetest Numbers Line für die Grundschule, 3. Klasse", short_info: "Mathetest Numbers Line für die Grundschule, 3. Klasse",
+					subject: "Mathematik", construct: "Mathetest NL", student_access:true, archive: false, level: "Level 1", time: 60)
+items.each do |it|
+	item = t.items.build(itemtext: it, difficulty: 1, itemtype: 0, itemview:"
+		<div class='text-center'>
+							<div class='row text-center' id='question' style='font-size: 30px; margin: 20px;''>Trage die Zahl "+it+" ein</div>
+		<div id='divNumbersLine' class='row'>
+				<div id='numbersLine' class='col-md-4'>
+					<canvas id='canvas' width='800' height='400'></canvas>
+				</div>
+		</div>
+		<div id='divButton' class='text-center'>
+			<button id='checkButton' type='button' class='btn btn-default'>Check the Result</button>
+		</div>
+		<div id='result'>
+		</div>
+			<div class='row text-center'>					
+				<div class='col-md-4 col-md-offset-4'>
+						<button id='weiter' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Weiter</span></button>
+				</div>
+			</div>
+		</div>
+
+		<script type='text/javascript'>
+		
+		var canvas = document.getElementById('canvas');
+		  var canvas = document.getElementById('canvas');
+		  var ctx = canvas.getContext('2d');
+		  var w = canvas.width;
+		  var h = canvas.height;
+		  var toleranceValue = 5;
+		  var lineWidth = 10; // Needed for drawing
+		  var lengthOfLine = 100;
+		  var interval = w / lengthOfLine;
+		  var currentAnswer=[];
+		  var answer = 0;
+		  var askedNumber= "+it+";
+
+		  var d = document.getElementById('testEnviroment');
+			d.className = 'text-center'	;
+
+	    ctx.fillRect(0,h/2,w ,lineWidth);
+	    // first vertical line
+	    ctx.fillRect(0,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+	    // second vertical line
+	    ctx.fillRect(w-lineWidth,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+	    // Numbers on both sides
+	    ctx.font = '20px Arial black';
+	    ctx.fillText('0', 0, h/2 - 4*lineWidth);
+	    ctx.fillText(lengthOfLine, w - 40, h/2 - 4*lineWidth);
+
+	    $('#canvas').click(function (e){
+	    	$('testEnviroment').addClass('text-center');
+		    var x = e.offsetX;
+		    var y = e.offsetY;
+		    if((y >= h/2 - 2*lineWidth) && (y <= h/2 + 2*lineWidth)){
+		      answer = (x-x%interval)/interval;
+		      if(x%interval <= interval/2)
+		        showResult( answer , x, h);
+		      else 
+		        showResult( answer = answer + 1, x, h);
+		    }
+		  });
+
+
+		  $('#checkButton').click(function(){
+		  	if(answer >= parseInt(askedNumber) - toleranceValue && answer <= parseInt(askedNumber) + toleranceValue)
+            	$('#result').text(' True Asked: ' + askedNumber + ' Clicked: '+ answer);
+            else
+            	$('#result').text(' False Asked: ' + askedNumber + ' Clicked: '+ answer);
+		  });
+
+		  function drawLines(){
+		    //horizontal line
+		    ctx.fillRect(0,h/2,w ,lineWidth);
+		    // first vertical line
+		    ctx.fillRect(0,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+		    // second vertical line
+		    ctx.fillRect(w-lineWidth,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+		    // Numbers on both sides
+		    ctx.font = '20px Arial black';
+		    ctx.fillText('0', 0, h/2 - 4*lineWidth);
+		    ctx.fillText(lengthOfLine, w - 40, h/2 - 4*lineWidth);
+		  }
+
+		  function showResult(answer, x,h){
+		    document.getElementById('result').innerHTML = 'Clicked: ' + answer  + ' ...';
+		    if (currentAnswer.length > 0){
+		      ctx.clearRect(currentAnswer[0],currentAnswer[1],currentAnswer[2],currentAnswer[3]);
+		      ctx.fillStyle = 'black';
+		      drawLines();
+		    }
+		    ctx.fillStyle = 'red';
+		    var rect = [x, h/2 - 3*lineWidth , 3, 7*lineWidth];
+		    currentAnswer = rect;
+		    ctx.fillRect(rect[0],rect[1],rect[2],rect[3]);
+		  }
+
+	        $('#weiter').click(function(){
+			        		nextClicked();
+			        });		
+		
+	    function nextClicked() {
+	            actualAnswers = actualAnswers + answer;
+	           	console.log(actualAnswers);
+	            if(answer >= parseInt(askedNumber) - toleranceValue && answer <= parseInt(askedNumber) + toleranceValue){
+	                currentResult = currentResult + '1,';
+	            }
+	            else {
+	                currentResult = currentResult + '0,';
+	            };
+	            console.log('answer saved');
+	            stopwatch = new Date() - stopwatch;
+	            currentTimes = currentTimes + stopwatch + ',';
+	            nextItem();
+        };
+
+
+
+	</script>")
+	item.save
+end
 
 a = g.assessments.build(test_id: t.id)
 a.save
@@ -607,3 +623,4 @@ m.save
 
 m = a.measurements.build(date: Date.tomorrow)
 m.save
+

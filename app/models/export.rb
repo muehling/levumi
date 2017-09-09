@@ -159,7 +159,8 @@ class Export
   		"Lesetest Level 0" => "LT0_",
   		"Lesetest Level 1" => "LT1_",
   		"Mathetest Level 0" => "MT0_",
-  		"Sinnentnehmendes Lesen Level 1" => "SEL1_"
+  		"Sinnentnehmendes Lesen N2" => "SEL2_",
+  		"Sinnentnehmendes Lesen N4" => "SEL4_"
   	}
   	return testcodes[t].nil? ? " " : testcodes[t]
   end
