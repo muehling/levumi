@@ -1,0 +1,49 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Wenn du dich auf der Tastatur vertippt hast, benutze die Löschtaste. Auf dem Bild siehst du, wo du die Taste findest.
+  Bitte drücke jetzt die Löschtaste.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <img style='width: 650px;margin-left: 125px' src='/images/Abtipptest/Tastatur_Backspace.png'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+          /&nbsp;&nbsp;
+        </div>
+      </th>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Weiter: <span><img style='width: 100px' src='/images/Abtipptest/Tastatur_BackspaceAlleine.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode == 8) {
+            $(window).unbind('keyup');
+            nextItem();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>
+

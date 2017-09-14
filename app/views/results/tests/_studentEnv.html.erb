@@ -19,12 +19,8 @@
     var currentItemIndex = -1;
     var currentStudent = -1;
     currentStudent = <%=@result.id%>;
-    //Views for displayed Items
-    var itemView = {
-    <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%=escape_javascript(raw i.itemview)%>",
-    <% end %>
-    };
+
+
 
     var studentData = {
         <%=@result.id%>: [

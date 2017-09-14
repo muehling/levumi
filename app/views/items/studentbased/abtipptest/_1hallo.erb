@@ -1,0 +1,27 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Hallo ich bin Levumi. Ich möchte heute mit dir üben, auf der Tastatur von einem Computer zu schreiben.
+  Bitte höre mir ganz genau zu, damit du weisst, was du tun sollst. Bitte drücke jetzt irgendeine Taste auf der Tastatur,
+  damit wir beginnen können.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+</p>
+<br />
+<br />
+<br />
+<footer>
+  <div align='center' style='font-family: fibel_nordregular;font-size:60px'>
+    Weiter: Irgendeine Taste
+  </div>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {$(window).unbind('keyup');
+    nextItem();
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>

@@ -1,0 +1,56 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Hier siehst du auf dem Bild einen Kopfhörer. Immer, wenn du den Kopfhörer siehst, musst du gut zuhören,
+  damit du genau weißt, was du tun sollst.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <img style='width: 150px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+          /&nbsp;&nbsp;
+        </div>
+      </th>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37 && soundFlag != 0){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode == 13) {
+            $(window).unbind('keyup');
+            nextItem();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    var soundFlag = 0;
+    tempAudio.addEventListener('ended', function() {
+        if(soundFlag == 0){
+            tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][1];
+            tempAudio.play();
+            soundFlag=1;
+        }
+        else{
+            tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+        }
+    });
+</script>

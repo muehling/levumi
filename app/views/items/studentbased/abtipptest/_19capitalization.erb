@@ -1,0 +1,58 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Um ein Wort großzuschreiben, muss man zwei Tasten gleichzeitig drücken: Am besten benutzt du dafür deine beiden Zeigefinger.
+  Drücke jetzt ganz links auf der Tastatur, die Taste mit dem Pfeil, der nach oben zeigt und eine Buchstabentaste.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <img style='width: 650px;margin-left: 125px' src='/images/Abtipptest/Tastatur_Großschreiben.png'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+          /&nbsp;&nbsp;
+        </div>
+      </th>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Weiter: <span><img style='width: 50px' src='/images/Abtipptest/Tastatur_shift_einzeln.png'/></span>+ Buchstabentaste
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    var shiftKey = false;
+    $(window).keydown(function (event) {
+        if (event.keyCode == 16) {
+            shiftKey = true;
+        }
+    });
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode == 16) {
+            shiftKey = false;
+        }
+        else if(shiftKey&&event.keyCode>= 65 && event.keyCode<=90) {
+            $(window).unbind('keyup');
+            $(window).unbind('keydown');
+            nextItem();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>

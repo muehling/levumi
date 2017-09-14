@@ -33,9 +33,19 @@
     <%end %>
     };
 
-    //Order of Items from resultobject
+    //Views for displayed Items
+    var itemTextHash = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%=i.itemtext%>",
+    <% end %>
+    };
 
-
+    //Views for displayed Items
+    var itemView = {
+    <% @measurement.assessment.test.items.each do |i| %>
+    <%= i.id%>: "<%= escape_javascript(render i.itemview)%>",
+    <% end %>
+    };
     //last result of testkind
     var lastResults = {
     <% @measurement.results.each do |r| %>

@@ -1,0 +1,49 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Super, du hast es geschafft, drücke zum Schluss die Eingabetaste.“
+  <br />
+  <img id='talkingLevumi' style='width: 250px ' src='/images/shared/Levumi-jubelt.gif'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+          /&nbsp;&nbsp;
+        </div>
+      </th>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:60px'>
+          Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    currentResult = currentResult + '1,';
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/Levumi-jubelt.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode == 13) {
+            $(window).unbind('keydown');
+            $(window).unbind('keyup');
+            window.location.replace(pathMainPage);
+        }
+    });
+    var soundFlag = 0;
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>
