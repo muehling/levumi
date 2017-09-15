@@ -1,6 +1,12 @@
 </br></br></br></br></br></br>
 <div class='text-center'>
-  <p class='text-center' style='font-size: 24px' id='pic'>
+  <p class='text-center'>
+    <img id='pic' style='width: 250px;'/>
+    <br/>
+    <br/>
+    <br/>
+  </p>
+  <p class='text-center' style='font-size: 24px' id='status'>
     <br/>
     <br/>
     <br/>
@@ -18,4 +24,19 @@
   $('#geschafft').click(function(){
     window.location.replace(pathMainPage);
   });
+
+  currentResult = currentResult + 'NA,';
+  var tempPic = (document.getElementById('pic'));
+  var tempStatus = (document.getElementById('status'));
+  if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length)
+      tempPic.src = '/images/shared/Levumi-jubelt.gif';
+  else if(lastResults[currentStudent] == -1)
+      tempPic.src = '/images/shared/Levumi-normal-blau.jpg';
+  else
+      tempPic.src = '/images/shared/Levumi-weiterlesen.gif';
+  if (timedout)
+      tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
+  else
+      tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
+  tempStudentButton.classList.add('btn-success');
 </script>
