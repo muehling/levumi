@@ -21,7 +21,7 @@
     var workTime = -1;
 
     <% if !@measurement.assessment.test.time.nil? %>
-    var workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+    workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
     <% end %>
 
 
@@ -109,7 +109,11 @@
     // start preloading all the intro audio files
     if(Object.keys(studentData).length > 0) {
         var audioArray = Object.values(studentData)[0];
-
+        for (var i in audioArray) {
+            for(var j in itemDataSound[audioArray[i]]){
+                soundLength = soundLength + 1;
+            }
+        }
 
         for (var i in audioArray) {
             for(var j in itemDataSound[audioArray[i]]){
@@ -120,7 +124,6 @@
 
 
     function preloadAudio(url) {
-        soundLength = soundLength + 1;
         var audio = new Audio();
         // once this file loads, it will call loadedAudio()
         // the file will be kept by the browser as cache
@@ -147,8 +150,10 @@
             $('#myBar').hide();
             <%if @measurement.assessment.test.student_access == true%>
             nextItem();
+            //alert("loaded ist:" + loaded + " und soundlength ist: " + soundLength)
             <%end%>
         }
     }
+
 </script>
 
