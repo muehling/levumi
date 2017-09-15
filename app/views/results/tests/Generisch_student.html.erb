@@ -48,6 +48,10 @@
     };
 
 
+    function startTest(){
+      timeoutId = window.setTimeout(stopTest, <%= @measurement.assessment.test.time*1000 %> , true);
+    }
+
   /*Changes current content of Html-elements based on currentItemIndex*/
   function nextItem() {
       currentItemIndex++;
@@ -98,6 +102,12 @@
           data: dict
       });
       <%end%>
+      if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split("1").length)
+            $("#pic").html("<%= escape_javascript(image_tag("Levumi-jubelt.gif", size: "400")) %>");
+      else if(lastResults[currentStudent] == -1)
+          $("#pic").html("<%= escape_javascript(image_tag("Levumi-normal-blau.jpg", size: "400")) %>");
+      else
+          $("#pic").html("<%= escape_javascript(image_tag("Levumi-weiterlesen.gif", size: "400")) %>");
   }
 
     /*Variable for preload*/
