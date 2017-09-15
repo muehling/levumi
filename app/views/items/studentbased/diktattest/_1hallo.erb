@@ -1,0 +1,44 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Hallo, ich bin Levumi, heute möchte ich gerne wissen, wie gut du schon schreiben kannst.
+  Einige Wörter sind leicht, andere Wörter sind schwer. Bitte konzentriere dich und schreibe so gut,
+  wie du kannst! Bitte drücke jetzt die Eingabetaste, damit du beginnen kannst.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+</p>
+<br />
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+    </tr>
+  </table>
+</footer>
+<button style='font-family: fibel_nordregular; font-size:40px' id="iButton" type="button" class="btn btn-block" onclick="interruptMeasurement()">Messung abbrechen</button>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode==13) {
+            $(window).unbind('keyup');
+            nextItem();
+        }});
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function()
+    {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+    function interruptMeasurement () {
+        $(window).unbind('keyup');
+        window.location.replace(pathMainPage);
+    }
+</script>

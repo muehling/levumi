@@ -1,16 +1,16 @@
-class TestCBM < TestSpeed
+class TestCBM < Test
 #TODO-A: Umbenennen
 
-  def draw_items()
-    itemset = intro_items
-    introSize = itemset.size
-    enditems = outro_items
-
+  def draw_items(first)
+    if first
+      return super
+    end
+    itemset = Array.new
     pools = items.map{|i| i.difficulty}.uniq
     len.times  do
-      remaining = items - (itemset + enditems)
+      remaining = content_items - itemset
       i = remaining.sample
-      if ((itemset.size - introSize) > 0)
+      if ((itemset.size) > 0)
         count = 0
         while (count < 500) & ((i.itemtext.first.downcase == itemset.last.itemtext.first.downcase) |
                                (i.itemtext.first + itemset.last.itemtext.first == 'bd') |
@@ -22,8 +22,7 @@ class TestCBM < TestSpeed
       end
       itemset = itemset + [i]
     end
-    itemset = itemset + enditems
-    return itemset.map{|i| i.id}
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
 end

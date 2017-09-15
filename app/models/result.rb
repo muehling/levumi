@@ -4,9 +4,12 @@ class Result < ActiveRecord::Base
   belongs_to :student
   belongs_to :measurement
 
-  serialize :items, Array
-  serialize :responses, Array
-  serialize :extra_data, Hash
+  serialize :items, Array         #Speichert die IDs der content_items die für diese Messung verwendet werden
+  serialize :responses, Array     #Speichert die 1/0 Ergebnisse zu den Items aus items
+  serialize :extra_data, Hash     #Speichert zusätzlicher Infos als Key/Value Paare. Feste Keys:
+                                  #-times: Reaktionszeiten
+                                  #-intro: Intro Items für den Test
+                                  #-outro: Outro Items für den Test
 
   #Calculate new running total of the fraction of correct items. Must be called everytime the responses change.
   #Not used from outside
@@ -24,9 +27,25 @@ class Result < ActiveRecord::Base
   def initialize_results()
     self.responses = Array.new
     self.extra_data = Hash.new
-    self.items = measurement.assessment.test.draw_items()
+    drawed_items = measurement.assessment.test.draw_items(self.getPriorResult == -1)
+    self.extra_data["intro"] = drawed_items[0]
+    self.items = drawed_items[1]
+    self.extra_data["outro"] = drawed_items[2]
     self.responses[self.items.size-1] = nil
     update_total
+  end
+
+  #Parses a String or additional data in the form "a,b,c" where each entry denotes the data for an item. The data is stored under the labels given in "labels" also in the form "x,y,z".
+  def parse_data(labels, data)
+    labels.length.times do |i|
+      vals = data[i].split(',')
+      if (labels[i] == "times")
+        self.extra_data["times"] = vals.map{|x| x.to_i}
+      else
+        self.extra_data[labels[i]] = vals   # Problem: Leere Eingaben am Ende führen zu zu kurzem Feld.
+      end
+    end
+    save
   end
 
   #Parses a string of results in the form "1,0,1,1,..." where each 0/1 denotes the result of an item.
@@ -52,23 +71,6 @@ class Result < ActiveRecord::Base
       responses[p] = (r == "1" ? 1 : (r == "0" ? 0 : nil)) unless p.nil?
     end
     update_total
-  end
-
-  #Parse a string of format "12,34,200,..." of reaction times. Stored as integer.
-  def add_times(data)
-    unless data.nil?
-      vals = data.split(',')
-      self.extra_data["times"] = vals.map{|x| x.to_i}
-    end
-    save
-  end
-
-  #Parse a string of format "Hund,Tiir,Fisch,..." of student answers. Stored as text.
-  def add_answer(data)
-    unless data.nil?
-      self.extra_data["answer"] = data.split(',')
-    end
-    save
   end
 
   #Create a string in the form of "0,1,0,1,..." that denotes the result for each item in the respective order. If includeNA is false, every NA response will be transformed to 0 in the result.
@@ -105,23 +107,6 @@ class Result < ActiveRecord::Base
     return (responses - [0, 1]).size
   end
 
-  #Create an array representation of the results.
-  #Temporary hack: If extra_data contain "times" then export the times instead of the 1/0 values.
-  #Used for exporting to XLS
-  def to_a(itemset)
-    res = []
-    itemset.each do |i|
-      val = responses[items.index(i)]
-      if extra_data.has_key?('times')
-        time = extra_data['times'][items.index(i)].nil? ? nil : extra_data['times'][items.index(i)].to_i
-        res = res + [time.nil? ? '' : (val == 1 ? time : -1*time)]
-      else
-        res = res + [val.nil? ? '' :val]
-      end
-    end
-    return res
-  end
-
   #Get the results of the most recent prior measurement of the same assessment.
   #Used for generating student feedback after a measurement.
   def getPriorResult()
@@ -133,6 +118,58 @@ class Result < ActiveRecord::Base
       t = res.score
       return t.nil? ? 0 : t
     end
+  end
 
+  #Returns an array representation of every Result object together with information about tests, users, assessment and measurement. User for exporting everything as one large file.
+  def self.to_xls(test, user)
+    file = Tempfile.new('levumi')
+
+    #book = Spreadsheet::Workbook.new
+    #sheet = book.create_worksheet name: 'Messungen'
+
+    statement = "
+      SELECT results.id,results.student_id, birthdate, gender, specific_needs, migration, measurement_id, assessment_id, assessments.group_id, users.name, test_id, items, responses, extra_data, date
+      FROM results JOIN measurements ON measurements.id = measurement_id
+        JOIN students ON students.id = student_id
+        JOIN assessments ON assessments.id = assessment_id
+        JOIN tests ON tests.id = test_id
+        JOIN groups ON groups.id = assessments.group_id
+        JOIN users ON users.id = user_id
+      WHERE export = 1
+    "
+    unless test.nil?
+      statement = statement + " AND tests.id = #{test}"
+    end
+    unless user.nil?
+      statement = statement + " AND users.id = #{user}"
+    end
+    statement = statement + ";"
+    temp = ActiveRecord::Base.connection.exec_query(statement)
+    itembank = Hash[Item.all.pluck(:id, :shorthand)]
+    testbank = Hash[Test.all.pluck(:id), Test.all.map{|t| t.long_name}]
+    file.write("Item;Itemtext;Ergebnis;Reaktionszeit;Position in Messreihe;Messung_id;Kind_id;Geburtstag;Geschlecht;Foerderbedarf;Migrationshintergrund;Messzeitpunkt_id;Erhebung_id;Klasse_id;Benutzer;Testname;Datum\n")
+    r = 1
+    temp.each do |row|
+      items = YAML.load(row["items"])
+      responses = YAML.load(row["responses"])
+      if responses[0].nil?
+        next
+      end
+      extra = nil
+      unless row["extra_data"].nil?
+        extra = YAML.load(row["extra_data"])
+      end
+      i = 0
+      items.each do |item|
+        file.write([item, itembank[item], responses[i], ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]], row["date"].to_date.strftime("%d.%m.%Y")].join(";"))
+        file.write("\n")
+        r = r + 1
+        i = i + 1
+      end
+    end
+    #temp = Tempfile.new('levumi')
+    file.close
+    #book.write temp.path
+    return file.path
   end
 end

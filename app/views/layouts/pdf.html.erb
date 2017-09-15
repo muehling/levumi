@@ -10,10 +10,12 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <%= wicked_pdf_stylesheet_link_tag 'c3' %>
 
-  <title><%= yield :title %>></title>
+  <title>PDF Druck </title>
 </head>
 
 <body>
+  <h3><%= wicked_pdf_image_tag 'Levumi-klein-blau.png', width: 45, height: 45 %> Levumi <%= yield :title %></h3>
+  <br/>
   <%= yield %>
 </body>
 </html>

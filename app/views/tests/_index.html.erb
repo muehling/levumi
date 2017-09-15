@@ -1,3 +1,9 @@
+<%
+  assessments = Test.get_assessment_count
+  measurements = Test.get_measurement_count
+  results = Test.get_result_count
+%>
+
 <table class="table table-striped">
   <thead>
   <th>
@@ -18,7 +24,7 @@
   <th>
     Anzahl Ergebnisse/Messungen
   </th>
-  </thead>
+  </thead> 
   <tbody>
   <% @tests.order("subject ASC, construct ASC, name ASC, level ASC").each do |test| %>
   <tr>
@@ -34,13 +40,13 @@
       <%= test.construct %>
     </td>
     <td>
-      <%= test.assessments.count %>
+      <%= assessments.has_key?(test.id) ? assessments[test.id] : 0 %>
     </td>
     <td>
-      <%= Measurement.where(:assessment => Assessment.where(:test => test)).count %>
+      <%= measurements.has_key?(test.id) ? measurements[test.id] : 0%>
     </td>
     <td>
-      <%= Result.where(:measurement => Measurement.where(:assessment => Assessment.where(:test => test))).count %>
+      <%= results.has_key?(test.id) ? results[test.id] : 0%>
     </td>
   </tr>
   <% end %>

@@ -1,5 +1,5 @@
 <% content_for :title do%>
-  <%= @student.name%>
+  Schüleransicht <%= @student.name%>
 <% end %>
 
 <style type="text/css">
@@ -23,14 +23,6 @@
   }
 
 </style>
-
-<div class = "row">
-  <div class="col-sm-12">
-    <p class="lead text-center">
-      <%= @student.name %>
-    </p>
-  </div>
-</div>
 
 <% @results.each do |key, val| %>
     <%= render partial: 'students/overview', formats: ['html'], locals: {:key => key, :val => val, :online => false, :without_table => params.has_key?(:without_table)}%>

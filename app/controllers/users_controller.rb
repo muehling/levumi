@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_filter :is_allowed, except: [:show]
+  before_action :is_allowed, except: [:show]
 
   # GET /users
   # GET /users.json
@@ -14,15 +14,16 @@ class UsersController < ApplicationController
   def show
     respond_to do |format|
       format.html {
-        unless @login.instance_of?(User) && @login.hasCapability?("user") || (@user.id == @login.id)
+        if @login_user.nil? || (!@login_user.hasCapability?("user") && (@user.id != @login_user.id))
           redirect_to root_url
         end
       }
       format.xml {
-        unless @login.instance_of?(User) && @login.hasCapability?("export")
+        if @login_user.nil? || (!@login_user.hasCapability?("export") && (@user.id != @login_user.id))
           redirect_to root_url
+        else
+          send_file Result.to_xls(nil, @user.id), filename: @user.name + " - Export.csv", type: "text/csv"
         end
-        send_file @user.export, filename: @user.name + " - Export.xls", type: "text/csv"
       }
     end
   end
@@ -56,7 +57,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.update(user_params)
         format.html {
-          if @login.id != @user.id
+          if @login_user.id != @user.id
             redirect_to users_path
           else
             redirect_to @user
@@ -85,11 +86,11 @@ class UsersController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_params
-      params.require(:user).permit(:email, :name, :school, :password, :password_confirmation)
+      params.require(:user).permit(:email, :name, :school, :password, :password_confirmation, :account_type)
     end
 
   def is_allowed
-    unless @login.instance_of?(User) && @login.hasCapability?("user") ||@login.instance_of?(User) && (params.has_key?(:id) && (@login.id == params[:id].to_i))
+    unless !@login_user.nil? && @login_user.hasCapability?("user") ||!@login_user.nil? && (params.has_key?(:id) && (@login_user.id == params[:id].to_i))
       redirect_to root_url
     end
   end

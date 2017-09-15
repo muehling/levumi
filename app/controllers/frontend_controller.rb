@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class FrontendController < ApplicationController
 
-  skip_before_filter :check_login, :check_accept
+  skip_before_action :check_login, :check_accept
 
-  before_filter :check_student, except: [:welcome, :login]
+  before_action :check_student, except: [:welcome, :login]
 
   layout 'plain'
 
@@ -21,16 +21,19 @@ class FrontendController < ApplicationController
     if s != nil
       session[:student_id] = s.id
       session[:user_id] = nil
+      @login_user = nil
       redirect_to '/frontend'
     else
-      redirect_to '/schueler', notice: "Benutzername oder Password falsch!"
+      redirect_to '/schueler', notice: "Der Code ist falsch! Bitte prüfe genau, ob du alles richtig eingegeben hast."
     end
   end
 
   #Logout student
   def logout
-    session[:student_id] = nil
-    @login = nil
+    if(!session[:student_id].nil?)
+      session[:student_id] = nil
+      @login_student = nil
+    end
     redirect_to '/schueler'
   end
 
@@ -42,8 +45,6 @@ class FrontendController < ApplicationController
 
   #start Test
   def start
-    @currentUrl = request.path
-    puts request.path
     @measurement = Measurement.find(params[:id])
     @test = @measurement.assessment.test
     @result = @student.getCurrentResult(@measurement.id)

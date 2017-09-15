@@ -1,17 +1,20 @@
-# -*- encoding : utf-8 -*-
-
 class TestDictation < Test
-#Return lenghth and lead time
-  def len_info
-    return "#{time} Sekunden, max. #{len} Items"
-  end
-#Return type info
-  def type_info
-    return "Diktat"
-  end
-#Return which view should be chosen
-  def view_info
-    return "Generisch_student"
+
+  def draw_items(first)
+    itemset = Array.new
+    firstthirty = content_items.take(30)
+    count = 0
+    len.times do
+      if(count<30)
+        remaining = firstthirty - itemset
+        itemset = itemset + [remaining.sample]
+        count = count + 1
+      else
+        remaining = content_items - itemset
+        itemset = itemset + [remaining.sample]
+      end
+    end
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
 end

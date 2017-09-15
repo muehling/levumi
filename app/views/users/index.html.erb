@@ -1,5 +1,7 @@
 <div class="well userCard" id="group">
-    <table class="table table-striped">
+  <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
+
+    <table class="table">
       <thead>
       <th>
         ID
@@ -11,15 +13,19 @@
         Name
       </th>
       <th>
-        Schule
+        Kontotyp
+      </th>
+      <th>
+        Schule/Institution
       </th>
       <th>
         Aktion
       </th>
       </thead>
       <tbody>
-      <% @users.each do |user| %>
-          <tr>
+      <% @users.sort{|a,b| if a.status == b.status then b.id <=> a.id else a.status == 1 ? -1 : b.status == 1 ? 1 : a.status <=> b.status end}.each do |user| %>
+      <% status = user.status %>
+          <tr <% if status == 1 %> class="bg-success" <% end %> <% if status == 2 %> class="bg-danger" <% end %> >
             <td>
               <%= user.id %>
             </td>
@@ -30,13 +36,16 @@
               <%= user.name %>
             </td>
             <td>
+              <%= user.account_type == 0 ? "Lehrkraft" : user.account_type == 1 ? "Forscher" : "Sonstiges (Privat/System/...)" %>
+            </td>
+            <td>
               <%= user.school %>
             </td>
             <td>
               <%= link_to edit_user_path(user) do %>
                   <span class="glyphicon glyphicon-pencil"></span>
               <% end %>
-              <% if user != @login %>
+              <% if user != @login_user %>
                   <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
                     <span class="glyphicon glyphicon-trash"></span>
                   <% end %>
@@ -46,5 +55,4 @@
       <% end %>
       </tbody>
     </table>
-    <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
 </div>

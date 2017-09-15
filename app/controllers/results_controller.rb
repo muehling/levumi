@@ -4,9 +4,8 @@ class ResultsController < ApplicationController
   before_action :set_assessment
   before_action :set_user
   before_action :set_group
-  before_action :set_result, only: :update #dadurch sollte theoretisch is_allowed_user überflüssig sein?
-  before_filter :is_allowed_update, only: :update
-  before_filter :is_allowed_user, except: :update
+  before_action :set_result, only: :update
+  before_action :is_allowed
 
   # GET /results
   # GET /results.json
@@ -41,32 +40,26 @@ class ResultsController < ApplicationController
     results = result_params
     unless results.nil?
       stay = true
-      if results.is_a?(String)                #Update comes from online testing
+      if results.is_a?(String)   #Update comes from online testing
         parts = results.split("#")
+        labels = parts[0].split(",")
         unless @result.nil?
           @result.parse_csv(parts[1])
-          @result.add_times(parts[2])
-          @result.add_answer(parts[3]) if parts.length > 3               #Possible hack: Will this always be the case?
+          @result.parse_data(labels[1, labels.length-1], parts[2, parts.length-1]) if parts.length > 2
           render nothing: true
         end
-      else        results = result_params
-        unless results.nil?
-          if results.is_a?(String)
-            parts = results.split("#")
-            r = @measurement.results.find(parts[0].to_i)
-          end
-        end
+      else
         if results.has_key?("students")       #Update comes from editing form
           @measurement.update_students(results["students"])
         else
           results.each do |id, val|
             r = @measurement.results.find_by_student_id(id)
             unless r.nil?
-              if val.is_a?(Hash)
-                r.parse_Hash(val)
-              else
+              if val.is_a?(String)
                 r.parse_csv(val)
                 stay = false
+              else
+                r.parse_Hash(val)
               end
             end
           end
@@ -113,25 +106,17 @@ class ResultsController < ApplicationController
       @group = Group.find(params[:group_id])
     end
 
-
     # Never trust parameters from the scary internet, only allow the white list through.
     def result_params
       params[:results]
     end
 
-    def is_allowed_update
+    def is_allowed
       #check if user is allowed
-      unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-          (@login.id == params[:user_id].to_i)) ||((@login.id == @result.student.id) && @login.instance_of?(Student))
+      #@result exists only before update => student can only update a result
+      unless (!@login_user.nil? && @login_user.hasCapability?("admin")) || (!@login_user.nil? && params.has_key?(:user_id) &&
+          (@login_user.id == params[:user_id].to_i)) ||((@login_student.id == @result.student.id) && !@login_student.nil?)
         redirect_to root_url
       end
     end
-
-  #check if user is of type user, student is only allowed to update
-  def is_allowed_user
-    unless (@login.instance_of?(User) && @login.hasCapability?("admin")) || (@login.instance_of?(User) && params.has_key?(:user_id) &&
-        (@login.id == params[:user_id].to_i))
-      redirect_to root_url
-    end
-  end
 end
