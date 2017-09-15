@@ -24,7 +24,6 @@
     <div class="collapse navbar-collapse" id="navbar-collapse-main">
       <ul class="nav navbar-nav navbar-left">
         <li><%= link_to "Meine Klassen", user_groups_path(@login_user)%></li>
-        <li><%= link_to("Meine Daten", user_path(@login_user))%></li>
         <li><%= link_to "Fördermaterial", materials_path%></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Weiteres Material<span class="caret"></span></a>
@@ -55,24 +54,25 @@
         <%= token_tag nil %>
         <button type="submit" class="btn btn-default">Ausloggen</button>
       </form>
-      <% unless @login_user.nil? || @login_user.isRegularUser? %>
       <ul class="nav navbar-nav navbar-right">
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">System<span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <% if @login_user.hasCapability?("user") %>
-                <li><%= link_to("Benutzerverwaltung", users_path)%></li>
-            <% end %>
-            <% if @login_user.hasCapability?("research") %>
-                <li><%= link_to("Eigene Messungen exportieren", user_path(@login_user, format: "xml"))%></li>
-            <% end %>
-            <% if @login_user.hasCapability?("export") %>
-                <li><%= link_to("Datenexport",  url_for(:controller => "application", :action => "export"))%></li>
-            <% end %>
-          </ul>
-        </li>
+        <li><%= link_to("Meine Daten", user_path(@login_user))%></li>
+        <% if @login_user.isResearcher? %>
+            <li><%= link_to("Messungen exportieren", user_path(@login_user, format: "xml"))%></li>
+        <% end %>
+        <% unless @login_user.nil? || @login_user.isRegularUser? %>
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">System<span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <% if @login_user.hasCapability?("user") %>
+                  <li><%= link_to("Benutzerverwaltung", users_path)%></li>
+              <% end %>
+              <% if @login_user.hasCapability?("export") %>
+                  <li><%= link_to("Datenexport",  url_for(:controller => "application", :action => "export"))%></li>
+              <% end %>
+            </ul>
+          </li>
+        <% end %>
       </ul>
-      <% end %>
     </div>
   </div>
 </nav>
