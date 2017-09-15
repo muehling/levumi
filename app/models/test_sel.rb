@@ -1,4 +1,4 @@
-class TestSEL < TestDictation
+class TestSEL < Test
   # Fuer sinnentnehmendes Lesen SEL
 
   def draw_items(first)

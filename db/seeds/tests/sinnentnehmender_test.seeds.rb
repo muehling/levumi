@@ -65,135 +65,134 @@ items_n4 = %w{
 	mit
 	Büro
 }
-before_gap_part_n4 = %w{
-Ein\ Gesicht\ hat\ zwei
-Meine\ Schwester\ lernt\ immer
-\
-Die
-Der\ Kuchen
-\
-Die
-Meine\ Freundin\ zieht\ in\ ein\ neues
-Wir\ können
-Ich\ putze\ meine\ Zähne,
-Ich
-Das
-Ich\ habe\ eine\ gute\ Note,
-Die\ Polizei\ nimmt
-Das
-\
-Lukas
-Meine\ Mama\ schläft\ im
-Diesen\ Stift\ habe\ ich
-Die\ Sonne
-\
-Ein\ Apfel\ ist\ eine
-Die
-Durch\ meine\ Brille\ kann\ ich
-Der
-\
-Lisa\ erzählt\ einen
-\
-Ein\ Lama\ hat\ vier
-Im\ Wald
-Abends\ bin\ ich\ oft
-Paul\ hat
-Die
-Wir\ spielen
-Meine\ Oma
-Ich\ binde\ mir\ die
-Deine\ Freundin
-Du\ kletterst
-Lasse\ zeichnet\ schöne
-\
-Die\ Limo\ ist
-Die
-Jutta\ geht\ mit\ ihrer
-Der
-Die
-\
-Das\ Geschenk\ ist
-Das\ Mädchen
-Die
-\
-Du
-Die\ Boje\ schwimmt\ auf\ dem
-Mein\ Papa\ kauft\ ein
-Jutta\ mag\ kein\ Obst\ essen,
-Eine\ Nadel\ ist
-Die\ Möwe\ kann\ fliegen,
-Paula
-Der
-Papa\ schließt\ abends\ die
-Das\ Auto\ zieht\ das\ andere\ Auto\ nur
-Mein\ Papa\ arbeitet\ in\ einem
-}
+before_gap_part_n4 = [
+		"Ein Gesicht hat zwei",
+		"Meine Schwester lernt immer",
+		" ",
+		"Die",
+		"Der Kuchen",
+		" ",
+		"Die",
+		"Meine Freundin zieht in ein neues",
+		"Wir können",
+		"Ich putze meine Zähne,",
+		"Ich",
+		"Das",
+		"Ich habe eine gute Note,",
+		"Die Polizei nimmt",
+		"Das",
+		" ",
+		"Lukas",
+		"Meine Mama schläft im",
+		"Diesen Stift habe ich",
+		"Die Sonne",
+		" ",
+		"Ein Apfel ist eine",
+		"Die",
+		"Durch meine Brille kann ich",
+		"Der",
+		" ",
+		"Lisa erzählt einen",
+		" ",
+		"Ein Lama hat vier",
+		"Im Wald",
+		"Abends bin ich oft",
+		"Paul hat",
+		"Die",
+		"Wir spielen",
+		"Meine Oma",
+		"Ich binde mir die",
+		"Deine Freundin",
+		"Du kletterst",
+		"Lasse zeichnet schöne",
+		" ",
+		"Die Limo ist",
+		"Die",
+		"Jutta geht mit ihrer",
+		"Der",
+		"Die",
+		" ",
+		"Das Geschenk ist",
+		"Das Mädchen",
+		"Die",
+		" ",
+		"Du",
+		"Die Boje schwimmt auf dem",
+		"Mein Papa kauft ein",
+		"Jutta mag kein Obst essen,",
+		"Eine Nadel ist",
+		"Die Möwe kann fliegen,",
+		"Paula",
+		"Der",
+		"Papa schließt abends die",
+		"Das Auto zieht das andere Auto nur",
+		"Mein Papa arbeitet in einem"
+]
 
 
-after_gap_part_n4 = %w{
-.
-.
-ich\ fertig\ bin,\ melde\ ich\ mich\ bei\ dir.
-blühen\ auf\ der\ Wiese.
-uns\ allen\ gut.
-dem\ Schloss\ wohnt\ ein\ Geist.
-schneidet\ das\ Papier.
-um.
-dem\ schlechten\ Wetter\ nicht\ zu\ euch\ kommen.
-ich\ ins\ Bett\ gehe.
-bei\ meiner\ Familie.
-Auto\ rast\ die\ Straße\ entlang.
-Sina\ leider\ nicht.
-Räuber\ fest.
-schreit\ nach\ seiner\ Mutter.
-den\ Kissen\ liegt\ mein\ Heft.
-mit\ Frida\ über\ den\ Urlaub.
-.
-meinem\ Opa.
-oft\ im\ Sommer.
-wir\ umgezogen\ sind,\ kaufen\ Mama\ und\ Papa\ neue\ Möbel.
-Frucht.
-machen\ viel\ Unsinn.
-sehen.
-fliegt\ zu\ seinem\ Nest.
-zu\ suchen,\ frage\ ich\ lieber\ meine\ Mama.
-Witz.
-das\ Fernglas\ sehe\ ich\ einen\ Turm.
-.
-wir\ Blätter.
-.
-einen\ Stift\ noch\ ein\ Heft.
-scheint\ jeden\ Tag.
-dem\ Tisch.
-samstags\ immer\ aus.
-zu.
-ein\ großes\ Brot.
-den\ Stamm.
-.
-Wasser\ friert,\ wird\ es\ zu\ Eis.
-.
-springen\ über\ die\ Straße.
-einkaufen.
-Mann\ schimpft\ laut.
-sitzt\ auf\ einer\ Blüte.
-meine\ Mama\ den\ Zaun\ streicht,\ spiele\ ich\ im\ Garten.
-meine\ Schwester.
-die\ Suppe.
-quaken\ auf\ dem\ See.
-dem\ Platz\ sitzen\ viele\ Leute.
-noch\ das\ Gewitter\ ab.
-.
-Auto.
-Kirschen.
-.
-sie\ ein\ Vogel\ ist.
-mir\ ein\ Geschenk.
-rennt\ über\ das\ Feld.
-ab.
-Mühe.
-.
-}
-
+after_gap_part_n4 = [
+		".",
+		".",
+		"ich fertig bin, melde ich mich bei dir.",
+		"blühen auf der Wiese.",
+		"uns allen gut.",
+		"dem Schloss wohnt ein Geist.",
+		"schneidet das Papier.",
+		"um.",
+		"dem schlechten Wetter nicht zu euch kommen.",
+		"ich ins Bett gehe.",
+		"bei meiner Familie.",
+		"Auto rast die Straße entlang.",
+		"Sina leider nicht.",
+		"Räuber fest.",
+		"schreit nach seiner Mutter.",
+		"den Kissen liegt mein Heft.",
+		"mit Frida über den Urlaub.",
+		".",
+		"meinem Opa.",
+		"oft im Sommer.",
+		"wir umgezogen sind, kaufen Mama und Papa neue Möbel.",
+		"Frucht.",
+		"machen viel Unsinn.",
+		"sehen.",
+		"fliegt zu seinem Nest.",
+		"zu suchen, frage ich lieber meine Mama.",
+		"Witz.",
+		"das Fernglas sehe ich einen Turm.",
+		".",
+		"wir Blätter.",
+		".",
+		"einen Stift noch ein Heft.",
+		"scheint jeden Tag.",
+		"dem Tisch.",
+		"samstags immer aus.",
+		"zu.",
+		"ein großes Brot.",
+		"den Stamm.",
+		".",
+		"Wasser friert, wird es zu Eis.",
+		".",
+		"springen über die Straße.",
+		"einkaufen.",
+		"Mann schimpft laut.",
+		"sitzt auf einer Blüte.",
+		"meine Mama den Zaun streicht, spiele ich im Garten.",
+		"meine Schwester.",
+		"die Suppe.",
+		"quaken auf dem See.",
+		"dem Platz sitzen viele Leute.",
+		"noch das Gewitter ab.",
+		".",
+		"Auto.",
+		"Kirschen.",
+		".",
+		"sie ein Vogel ist.",
+		"mir ein Geschenk.",
+		"rennt über das Feld.",
+		"ab.",
+		"Mühe.",
+		"."
+]
 
 item_alternatives_n4 = [
 		%w{ Augen  Bücher  Autos  Finger  },
@@ -324,168 +323,17 @@ categories_n4 = %W{
 
 t = TestSEL.create(name: "Sinnentnehmendes Lesen",  info: "Sinnentnehmendes Lesen N4", short_info: "Sinnentnehmendes Lesen N4",len: 63, time: 480, subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "N4")
 
-i = t.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview:
-		"
-	<h1 style='font-size:70px; font-weight: bold;' class='text-center'>Beispiel</h1>
-	<p style='font-family: fibel_nordregular; font-size:40px' class='text-center'>
-		<br>Welches Wort passt? Klicke das richtige Wort an.<br>
-		<strong>Tipp:</strong> Wenn du ein falsches Wort angeklickt hast, kannst du danach ein anderes Wort auswählen.
-	<img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/></p>
-	<br /><br /><br />
-		</br></br></br></br></br></br>
-		<div class='row text-center'>
-				<div><label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'> Mit einem &nbsp</label>
-				<label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
-				<label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>  &nbsp kann man fahren.</label></div>
-		</div>
-		<br><br>
-		<div class='row' id='rowButtons' >
-			<div class='col-lg-1 col-md-offset-4' >
-				<div class ='row'>
-					<button id='button0' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Auge</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button1' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Essen</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button2' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Sonntag</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button3' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Auto</button>
-				</div>
-			</div>
-		</div>
-		<br><br><br><br>
-		<div class='text-center' id='clickWeiter' style='font-size:30px; font-family:fibel_nordregular;'>
-		</div><br><br>
-		<div class='row text-center' id='weiter'>
-
-			<div class='col-md-4 col-md-offset-4'>
-					<button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Jetzt starten!</span></button>
-			</div>
-		</div>
-		<script>
-	        $('button').click(function(){
-	        	if(this.id == 'next'){
-	        		startTest();
-	        		nextItem();
-	        	}
-	        	else{
-		        	buttonClicked(this.id);
-	        	}
-	        });
-			function buttonClicked(buttonID){
-		      var text = $('#'+buttonID).text();
-		      $('#answer').html(text);
-		      document.getElementById('clickWeiter').innerHTML = '<p>Keine Fragen mehr? Dann starte den Test.</p>';
-		    };
-		</script>")
+i = t.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview: "items/studentbased/sinnentnehmender_lesetest/1hallo")
 i.save
 
 i = 0
 while i<items_n4.size do
-	it = t.items.build(itemtext: items_n4[i], difficulty: categories_n4[i], itemtype: 0, itemview: "
-								<div >
-									<img style='float: right; width: 250px' src='/images/Levumi-normal-blau.jpg'>
-								</div>
-								<br><br><br><br>
-								</br></br></br></br></br></br>
-								<div class='row text-center'>
-										<div><label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>" + before_gap_part_n4[i] + " &nbsp</label>
-										<label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
-										<label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>  &nbsp" + after_gap_part_n4[i] + "</label></div>
-								</div>
-								<br><br>
-								<div class='row' id='rowButtons' >
-									<div class='col-lg-1 col-md-offset-4' >
-										<div class ='row'>
-											<button id='button0' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n4[i][0] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button1' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n4[i][1] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button2' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n4[i][2] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button3' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>"+ item_alternatives_n4[i][3] +"</button>
-										</div>
-									</div>
-								</div>
-								<br><br><br><br>
-								<div class='row text-center'>
-
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='next' type='button' class='btn btn-lg btn-success btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Weiter</span></button>
-									</div>
-								</div>
-
-								<script>
-							        $('button').click(function(){
-							        	if(this.id == 'next'){
-							        		nextClicked();
-							        	}
-							        	else{
-								        	buttonClicked(this.id);
-							        	}
-							        });
-									function buttonClicked(buttonID){
-								      var text = $('#'+buttonID).text();
-								      $('#answer').html(text);
-								    }
-								    function nextClicked() {
-							        		var tempAnswer = document.getElementById('answer');
-								            actualAnswers = actualAnswers + tempAnswer.textContent;
-								            if(tempAnswer.textContent=='"+items_n4[i]+"'){
-								                currentResult = currentResult + '1,';
-								            }
-								            else {
-								                currentResult = currentResult + '0,';
-								            };
-								            stopwatch = new Date() - stopwatch;
-								            currentTimes = currentTimes + stopwatch + ',';
-								            nextItem();
-							        };
-								</script>")
+	it = t.items.build(itemtext: before_gap_part_n4[i] + "{" + item_alternatives_n4[i].join(",") + "}" + after_gap_part_n4[i], shorthand: items_n4[i], difficulty: categories_n4[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent_n4")
 	it.save
 	i = i+1
 end
 
-it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"
-						</br></br></br></br></br></br>
-								<div class='text-center'>
-									<p class='text-center' style='font-size: 24px' id='pic'>
-						                <br/>
-						                <br/>
-						                <br/>
-						              </p>
-								</div>
-								<br><br>
-								<br><br>
-								<div class='row text-center'>
-
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='geschafft' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>Geschafft</span></button>
-									</div>
-								</div>
-								<script>
-								$('#geschafft').click(function(){
-										window.location.replace(pathMainPage);
-									});
-								</script>
-								")
+it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"items/studentbased/sinnentnehmender_lesetest/3ende")
 it.save
 t.save
 
@@ -633,143 +481,142 @@ item_alternatives_n2 = [
 ]
 
 
-before_gap_part_n2 = %w{
-Ich
-Die\ Sonne\ scheint
-Am
-Mama\ holt\ meinen
-Morgens\ wird\ es
-Wir\ essen\ den
-In\ meiner
-Lisa\ geht\ in\ die
-Im\ Wald
-In\ der
-Ich
-Leon\ rennt
-Eine\ Frau\ gewinnt\ ein
-Wir
-Mein\ Papa\ hat\ einen
-Das\ Kanu\ schwimmt\ auf\ dem
-Am
-Ich\ gebe\ ihr\ einen
-Die
-Im\ Winter\ sind\ die\ Tage
-Ein\ Huhn\ legt
-Meine\ Oma
-Enten\ essen\ gerne
-\
-Der\ Wolf\ hat
-Ich\ fahre\ auf\ einem
-Anna
-Wir\ reisen\ mit\ einer
-Eine\ Frau\ rodelt\ den
-Ich
-Wir\ machen\ eine
-Oft\ sind\ Esel
-Der\ Bauer\ hat\ drei
-Sonntags\ muss\ Bello\ immer
-Die\ Kinder\ legen\ ihre
-Der\ Kuli\ schreibt
-Sie\ kommt\ auf\ den
-Lina\ und\ Frida
-In\ der\ Klasse\ kichern\ wir
-Wir\ lesen\ ein
-Die
-Susi\ wirft\ den
-Meere\ sind
-Ich\ laufe\ auf\ dem
-Tom
-Ali\ sucht
-Wir\ fahren\ auf\ dem
-Lea\ und\ Lara\ sind
-Lino
-Die
-Ich\ schaue\ einen
-Marie\ hat\ einen
-Die
-Peter\ findet\ seinen
-Ich\ trage\ eine
-Wir\ laufen\ den
-Lisa
-Ich\ trinke\ meine
-Anton
-Ich\ warte\ auf\ meinen
-Tina\ gibt\ mir\ eine
-Der\ Mann\ rennt\ gegen\ die
-Ein
-Olaf\ liegt\ auf\ dem
-Die\ Kinder
-Ich\ wasche\ mich\ mit
-}
-
-after_gap_part_n2 = %w{
-in\ der\ Schule.
-.
-sind\ wir\ fertig
-ab.
-.
-auf.
-sind\ bunte\ Bilder.
-.
-Tiere.
-sind\ Kekse.
-Mama\ ein\ Bild.
-.
-.
-zu\ dem\ Lager.
-Tag.
-.
-gehe\ ich\ ins\ Bett.
-ab.
-sind\ laut.
-.
-.
-mich\ immer\ sonntags.
-.
-sind\ an\ jedem\ Auto.
-Krallen.
-.
-an\ der\ roten\ Ampel.
-Bahn.
-hinunter.
-gerne\ im\ See.
-.
-.
-.
-.
-ab.
-.
-nach
-im\ Wald.
-.
-.
-fahren\ langsam.
-weg.
-.
-.
-traurig\ aus.
-.
-.
-Kinder.
-eine\ Limo.
-schauen\ ein\ Bild\ an.
-.
-Traum.
-blinkt\ gelb.
-wieder.
-Hose.
-ab.
-eine\ Lupe\ auf.
-.
-Ina.
-.
-Tasse.
-.
-hat\ eine\ Hupe.
-.
-im\ Wasser.
-.
-}
+before_gap_part_n2 = [
+    "Ich",
+    "Die Sonne scheint",
+    "Am",
+    "Mama holt meinen",
+    "Morgens wird es",
+    "Wir essen den",
+    "In meiner",
+    "Lisa geht in die",
+    "Im Wald",
+    "In der",
+    "Ich",
+    "Leon rennt",
+    "Eine Frau gewinnt ein",
+    "Wir",
+    "Mein Papa hat einen",
+    "Das Kanu schwimmt auf dem",
+    "Am",
+    "Ich gebe ihr einen",
+    "Die",
+    "Im Winter sind die Tage",
+    "Ein Huhn legt",
+    "Meine Oma",
+    "Enten essen gerne",
+    " ",
+    "Der Wolf hat",
+    "Ich fahre auf einem",
+    "Anna",
+    "Wir reisen mit einer",
+    "Eine Frau rodelt den",
+    "Ich",
+    "Wir machen eine",
+    "Oft sind Esel",
+    "Der Bauer hat drei",
+    "Sonntags muss Bello immer",
+    "Die Kinder legen ihre",
+    "Der Kuli schreibt",
+    "Sie kommt auf den",
+    "Lina und Frida",
+    "In der Klasse kichern wir",
+    "Wir lesen ein",
+    "Die",
+    "Susi wirft den",
+    "Meere sind",
+    "Ich laufe auf dem",
+    "Tom",
+    "Ali sucht",
+    "Wir fahren auf dem",
+    "Lea und Lara sind",
+    "Lino",
+    "Die",
+    "Ich schaue einen",
+    "Marie hat einen",
+    "Die",
+    "Peter findet seinen",
+    "Ich trage eine",
+    "Wir laufen den",
+    "Lisa",
+    "Ich trinke meine",
+    "Anton",
+    "Ich warte auf meinen",
+    "Tina gibt mir eine",
+    "Der Mann rennt gegen die",
+    "Ein",
+    "Olaf liegt auf dem",
+    "Die Kinder",
+    "Ich wasche mich mit",
+]
+after_gap_part_n2 = [
+    "in der Schule.",
+    ".",
+    "sind wir fertig",
+    "ab.",
+    ".",
+    "auf.",
+    "sind bunte Bilder.",
+    ".",
+    "Tiere.",
+    "sind Kekse.",
+    "Mama ein Bild.",
+    ".",
+    ".",
+    "zu dem Lager.",
+    "Tag.",
+    ".",
+    "gehe ich ins Bett.",
+    "ab.",
+    "sind laut.",
+    ".",
+    ".",
+    "mich immer sonntags.",
+    ".",
+    "sind an jedem Auto.",
+    "Krallen.",
+    ".",
+    "an der roten Ampel.",
+    "Bahn.",
+    "hinunter.",
+    "gerne im See.",
+    ".",
+    ".",
+    ".",
+    ".",
+    "ab.",
+    ".",
+    "nach",
+    "im Wald.",
+    ".",
+    ".",
+    "fahren langsam.",
+    "weg.",
+    ".",
+    ".",
+    "traurig aus.",
+    ".",
+    ".",
+    "Kinder.",
+    "eine Limo.",
+    "schauen ein Bild an.",
+    ".",
+    "Traum.",
+    "blinkt gelb.",
+    "wieder.",
+    "Hose.",
+    "ab.",
+    "eine Lupe auf.",
+    ".",
+    "Ina.",
+    ".",
+    "Tasse.",
+    ".",
+    "hat eine Hupe.",
+    ".",
+    "im Wasser.",
+    "."
+]
 
 categories_n2 = %w{
 	2
@@ -844,163 +691,15 @@ categories_n2 = %w{
 
 tN2 = TestSEL.create(name: "Sinnentnehmendes Lesen", len: 68, info: "Sinnentnehmendes Lesen N2", short_info: "Sinnentnehmendes Lesen N2",
 										 subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "N2", time: 480)
-i = tN2.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview:
-		"
-	<h1 style='font-size:70px; font-weight: bold;' class='text-center'>Beispiel</h1>
-	<p style='font-family: fibel_nordregular; font-size:40px' class='text-center'>
-		<br>Welches Wort passt? Klicke das richtige Wort an.<br>
-		<strong>Tipp:</strong> Wenn du ein falsches Wort angeklickt hast, kannst du danach ein anderes Wort auswählen.
-	<img style='float: right; width: 250px ' src='/images/Levumi-normal-blau.jpg'/></p>
-	<br /><br /><br />
-		</br></br></br></br></br></br>
-		<div class='row text-center'>
-				<div><label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'> Mit einem &nbsp</label>
-				<label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
-				<label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>  &nbsp kann man fahren.</label></div>
-		</div>
-		<br><br>
-		<div class='row' id='rowButtons' >
-			<div class='col-lg-1 col-md-offset-4' >
-				<div class ='row'>
-					<button id='button0' style='font-size: 30px; font-family: fibel_nordregular; font-weight: bold;' type='button' class='btn btn-default btn-block'>Auge</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button1' style='font-size: 30px; font-family: fibel_nordregular; font-weight: bold;' type='button' class='btn btn-default btn-block'>Essen</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button2' style='font-size: 30px; font-family: fibel_nordregular; font-weight: bold;' type='button' class='btn btn-default btn-block'>Sonntag</button>
-				</div>
-			</div>
-			<div class='col-lg-1' >
-				<div class ='row'>
-					<button id='button3' style='font-size: 30px; font-family: fibel_nordregular; font-weight: bold;' type='button' class='btn btn-default btn-block'>Auto</button>
-				</div>
-			</div>
-		</div>
-		<br><br><br><br>
-		<div class='text-center' id='clickWeiter' style='font-size:30px; font-family:fibel_nordregular;'>
-		</div><br><br>
-		<div class='row text-center' id='weiter'>
-
-			<div class='col-md-4 col-md-offset-4'>
-					<button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Jetzt starten!</span></button>
-			</div>
-		</div>
-		<script>
-	        $('button').click(function(){
-	        	if(this.id == 'next'){
-	        		startTest();
-	        		nextItem();
-	        	}
-	        	else{
-		        	buttonClicked(this.id);
-	        	}
-	        });
-			function buttonClicked(buttonID){
-		      var text = $('#'+buttonID).text();
-		      $('#answer').html(text);
-		      document.getElementById('clickWeiter').innerHTML = '<p>Keine Fragen mehr? Dann starte den Test.</p>';
-		    };
-		</script>")
+i = tN2.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview: "items/studentbased/sinnentnehmender_lesetest/1hallo")
 i.save
 
 i = 0
 while i<items_n2.size do
-	it = tN2.items.build(itemtext: items_n2[i], difficulty: categories_n2[i], itemtype: 0, itemview: "
-								</br></br></br></br>
-								<div class='row text-center'>
-										<div>
-											<img style='float: right; width: 250px' src='/images/Levumi-normal-blau.jpg'>
-											<label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>" + before_gap_part_n2[i] + " &nbsp</label>
-											<label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
-											<label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>  &nbsp" + after_gap_part_n2[i] +"</label>
-										</div>
-								</div>
-								<br><br>
-								<div class='row' id='rowButtons' >
-									<div class='col-lg-1 col-md-offset-4' >
-										<div class ='row'>
-											<button id='button0' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n2[i][0] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button1' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n2[i][1] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button2' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>" + item_alternatives_n2[i][2] +"</button>
-										</div>
-									</div>
-									<div class='col-lg-1' >
-										<div class ='row'>
-											<button id='button3' style='font-size: 30px; font-family: fibel_nordregular;' type='button' class='btn btn-default btn-block'>"+ item_alternatives_n2[i][3] +"</button>
-										</div>
-									</div>
-								</div>
-								<br><br><br><br>
-								<div class='row text-center'>
-
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='next' type='button' class='btn btn-lg btn-success btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Weiter</span></button>
-									</div>
-								</div>
-
-								<script>
-							        $('button').click(function(){
-							        	if(this.id == 'next'){
-							        		nextClicked();
-							        	}
-							        	else{
-								        	buttonClicked(this.id);
-							        	}
-							        });
-									function buttonClicked(buttonID){
-								      var text = $('#'+buttonID).text();
-								      $('#answer').html(text);
-								    }
-								    function nextClicked() {
-							        		var tempAnswer = document.getElementById('answer');
-								            actualAnswers = actualAnswers + tempAnswer.textContent;
-								            if(tempAnswer.textContent=='"+items_n2[i]+"'){
-								                currentResult = currentResult + '1,';
-								            }
-								            else {
-								                currentResult = currentResult + '0,';
-								            };
-								            stopwatch = new Date() - stopwatch;
-								            currentTimes = currentTimes + stopwatch + ',';
-								            nextItem();
-							        };
-								</script>")
+	it = tN2.items.build(itemtext: before_gap_part_n2[i] + "{" + item_alternatives_n2[i].join(",") + "}" + after_gap_part_n2[i], shorthand: items_n2[i], difficulty: categories_n2[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent_n2")
 	it.save
 	i = i+1
 end
-it = tN2.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"</br></br></br></br></br></br>
-								<div class='text-center'>
-									<div class='text-center'>
-									<p class='text-center' style='font-size: 24px' id='pic'>
-						                <br/>
-						                <br/>
-						                <br/>
-						              </p>
-								</div>
-							</div>
-								<br><br>
-								<div class='row text-center'>
-									<div class='col-md-4 col-md-offset-4'>
-											<button id='geschafft' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px'>Geschafft</span></button>
-									</div>
-								</div>
-								<script>
-								$('#geschafft').click(function(){
-										window.location.replace(pathMainPage);
-									});
-								</script>")
+it = tN2.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"items/studentbased/sinnentnehmender_lesetest/3ende")
 it.save
 tN2.save

@@ -43,7 +43,7 @@
     //Views for displayed Items
     var itemView = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: "<%= escape_javascript(render i.itemview)%>",
+    <%= i.id%>: "<%= escape_javascript render(i.itemview, item: i)%>",
     <% end %>
     };
     //last result of testkind

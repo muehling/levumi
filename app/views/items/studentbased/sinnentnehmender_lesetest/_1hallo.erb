@@ -1,0 +1,60 @@
+<h1 style='font-size:70px; font-weight: bold;' class='text-center'>Beispiel</h1>
+<p style='font-family: fibel_nordregular; font-size:40px' class='text-center'>
+  <br>Welches Wort passt? Klicke das richtige Wort an.<br>
+  <strong>Tipp:</strong> Wenn du ein falsches Wort angeklickt hast, kannst du danach ein anderes Wort auswählen.
+  <img style='float: right; width: 250px ' src='/images/shared/Levumi-normal-blau.jpg'/></p>
+<br /><br /><br />
+</br></br></br></br></br></br>
+<div class='row text-center'>
+  <div><label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'> Mit einem &nbsp</label>
+    <label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
+    <label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>  &nbsp kann man fahren.</label></div>
+</div>
+<br><br>
+<div class='row' id='rowButtons' >
+  <div class='col-lg-1 col-md-offset-4' >
+    <div class ='row'>
+      <button id='button0' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Auge</button>
+    </div>
+  </div>
+  <div class='col-lg-1' >
+    <div class ='row'>
+      <button id='button1' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Essen</button>
+    </div>
+  </div>
+  <div class='col-lg-1' >
+    <div class ='row'>
+      <button id='button2' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Sonntag</button>
+    </div>
+  </div>
+  <div class='col-lg-1' >
+    <div class ='row'>
+      <button id='button3' style='font-size: 30px; font-family: fibel_nordregular;font-weight: bold;' type='button' class='btn btn-default btn-block'>Auto</button>
+    </div>
+  </div>
+</div>
+<br><br><br><br>
+<div class='text-center' id='clickWeiter' style='font-size:30px; font-family:fibel_nordregular;'>
+</div><br><br>
+<div class='row text-center' id='weiter'>
+
+  <div class='col-md-4 col-md-offset-4'>
+    <button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Jetzt starten!</span></button>
+  </div>
+</div>
+<script>
+  $('button').click(function(){
+    if(this.id == 'next'){
+      startTest();
+      nextItem();
+    }
+    else{
+      buttonClicked(this.id);
+    }
+  });
+  function buttonClicked(buttonID){
+    var text = $('#'+buttonID).text();
+    $('#answer').html(text);
+    document.getElementById('clickWeiter').innerHTML = '<p>Keine Fragen mehr? Dann starte den Test.</p>';
+  };
+</script>
