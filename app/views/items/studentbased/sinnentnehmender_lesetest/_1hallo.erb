@@ -45,7 +45,10 @@
 <script>
   $('button').click(function(){
     if(this.id == 'next'){
-      nextItem();
+        if(workTime!=-1) {
+            timeoutId = window.setTimeout(timedOut, workTime);
+        }
+        nextItem();
     }
     else{
       buttonClicked(this.id);
