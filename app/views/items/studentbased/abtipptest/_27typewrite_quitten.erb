@@ -1,13 +1,19 @@
 <audio id='audioItem'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+<p style='font-family: fibel_nordregular; margin-left: 150px; font-size:60px' class='text-center'>
   „Levumi pflückt <span style='background-color:#FFFF00'>Quitten</span> von den Bäumen.“
   <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
   <br />
-  <img style='float: left; width: 150px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
+</p>
+<p style="font-size:38px">
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
   <br />
   <br />
-  <img style='float: left; width: 150px;margin-left: 125px' src='/images/Abtipptest/tastartur.png'/>
-  <input style='font-family: fibel_nordregular; font-size:96px;margin-right:250px' id='answer' type='text' class='text-center' align='middle'/>
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/tastartur.png'/>
+  <br />
+  <br />
+</p>
+<p style="text-align: center">
+  <input style='font-family: fibel_nordregular; width: 930px; text-align: center; font-size:96px' id='answer' type='text' >
 </p>
 <br />
 <br />
@@ -15,14 +21,14 @@
   <table align='center'>
     <tr>
       <th>
-        <div style='font-family: fibel_nordregular;font-size:60px'>
-          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Nochmal anhören: <span><img style='width: 40px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
           /&nbsp;&nbsp;
         </div>
       </th>
       <th>
-        <div style='font-family: fibel_nordregular;font-size:60px'>
-          Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Weiter: <span><img style='width: 40px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
         </div>
       </th>
     </tr>
@@ -33,7 +39,7 @@
     tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
     tempAudio.play();
     var tempAnswer = (document.getElementById('answer'));
-    tempAnswer.focus();$(tempAnswer).css('border','0px').css('border-bottom', 'black solid 1px').attr('maxlength', '16').attr('size','16');
+    tempAnswer.focus();$(tempAnswer).css('border','0px').css('outline', 0).css('border-bottom', 'black solid 1px').attr('maxlength', '16').attr('size','16');
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();

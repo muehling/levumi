@@ -1,11 +1,12 @@
 <audio id='audioItem'></audio>
-<p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
-  <img style='float: left; width: 150px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
+<p style="font-size:38px">
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
   <br />
   <br />
-  <img style='float: left; width: 150px;margin-left: 125px' src='/images/Abtipptest/tastartur.png'/>
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/tastartur.png'/>
+  <br />
 </p>
-<p style='font-family: fibel_nordregular; font-size:96px;margin-right:280px' type='text' class='text-center' align='middle'>
+<p style='font-family: fibel_nordregular; font-size:96px;margin-right:250px' type='text' class='text-center' align='middle'>
   sü<span style='background-color:#FFFF00'>ß</span>
 </p>
 <p style='font-family: fibel_nordregular; font-size:96px' type='text' class='text-center' align='middle'>
@@ -17,14 +18,14 @@
   <table align='center'>
     <tr>
       <th>
-        <div style='font-family: fibel_nordregular;font-size:60px'>
-          Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Nochmal anhören: <span><img style='width: 40px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
           /&nbsp;&nbsp;
         </div>
       </th>
       <th>
-        <div style='font-family: fibel_nordregular;font-size:60px'>
-          Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Weiter: <span><img style='width: 40px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
         </div>
       </th>
     </tr>
@@ -36,7 +37,7 @@
     tempAudio.play();
     var tempAnswer = (document.getElementById('answer'));
     tempAnswer.focus();
-    $(tempAnswer).css('border','0px').css('border-bottom', 'black solid 1px').attr('maxlength', '1').attr('size','1').val('');
+    $(tempAnswer).css('border','0px').css('outline', 0).css('border-bottom', 'black solid 1px').attr('maxlength', '1').attr('size','1').val('');
     $(window).keyup(function (event) {
         if(event.keyCode==37){
             tempAudio.pause();

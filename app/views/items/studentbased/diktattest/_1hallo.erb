@@ -16,6 +16,7 @@
     </tr>
   </table>
 </footer>
+<button style='font-family: fibel_nordregular; font-size:40px' id="iButton" type="button" class="btn btn-block" onclick="interruptMeasurement()">Messung abbrechen</button>
 <script>
     var tempAudio = (document.getElementById('audioItem'));
     tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
@@ -27,7 +28,7 @@
             tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
             tempAudio.play();
         }
-        else {
+        else if(event.keyCode==13) {
             $(window).unbind('keyup');
             nextItem();
         }});
@@ -36,4 +37,8 @@
     {
         tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
     });
+    function interruptMeasurement () {
+        $(window).unbind('keyup');
+        window.location.replace(pathMainPage);
+    }
 </script>
