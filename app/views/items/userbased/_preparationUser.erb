@@ -43,11 +43,11 @@
         tempText.style.fontSize = curSize + 'px';
     }
     function sButtonClick() {
-        currentResult = currentResult + 'NA,';
         $(window).unbind('keydown');
         if(workTime!=-1) {
             timeoutId = window.setTimeout(timedOut, workTime);
         }
+        stopwatch = new Date();
         nextItem();
     }
     $('#mainModalHeader').html(students[currentStudent]);

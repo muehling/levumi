@@ -60,15 +60,15 @@
   }
   function nextClicked() {
     var tempAnswer = document.getElementById('answer');
-    actualAnswers = actualAnswers + tempAnswer.textContent;
+    actualAnswers = actualAnswers + tempAnswer.textContent + ',';
     if(tempAnswer.textContent=='<%= item.shorthand%>'){
       currentResult = currentResult + '1,';
     }
     else {
       currentResult = currentResult + '0,';
     };
-    stopwatch = new Date() - stopwatch;
-    currentTimes = currentTimes + stopwatch + ',';
+    currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+    stopwatch = new Date();
     nextItem();
   };
 </script>
