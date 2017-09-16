@@ -328,7 +328,7 @@ i.save
 
 i = 0
 while i<items_n4.size do
-	it = t.items.build(itemtext: before_gap_part_n4[i] + "{" + item_alternatives_n4[i].join(",") + "}" + after_gap_part_n4[i], shorthand: items_n4[i], difficulty: categories_n4[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent_n4")
+	it = t.items.build(itemtext: before_gap_part_n4[i] + "{" + item_alternatives_n4[i].join(",") + "}" + after_gap_part_n4[i], shorthand: items_n4[i], difficulty: categories_n4[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent")
 	it.save
 	i = i+1
 end
@@ -696,7 +696,7 @@ i.save
 
 i = 0
 while i<items_n2.size do
-	it = tN2.items.build(itemtext: before_gap_part_n2[i] + "{" + item_alternatives_n2[i].join(",") + "}" + after_gap_part_n2[i], shorthand: items_n2[i], difficulty: categories_n2[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent_n2")
+	it = tN2.items.build(itemtext: before_gap_part_n2[i] + "{" + item_alternatives_n2[i].join(",") + "}" + after_gap_part_n2[i], shorthand: items_n2[i], difficulty: categories_n2[i], itemtype: 0, itemview: "items/studentbased/sinnentnehmender_lesetest/2testItemStudent")
 	it.save
 	i = i+1
 end

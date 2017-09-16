@@ -13,10 +13,8 @@ STDOUT.puts "Enter password for admin:"
 pw = STDIN.gets.strip
 STDOUT.puts "Re-enter password for admin:"
 pwc = STDIN.gets.strip
-STDOUT.puts "Enter name for admin:"
-name = STDIN.gets.strip.downcase
 
-u = User.create(email: email, password: pw, password_confirmation: pwc, name: name, capabilities:"admin")
+u = User.create(email: email, password: pw, password_confirmation: pwc, name: "Administrator", capabilities:"admin")
 if u.save
   STDOUT.puts "Admin account created!"
 else
