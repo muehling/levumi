@@ -16,20 +16,18 @@
     var timeoutId = -1;
     var currentTimes = "";
     var stopwatch = null;
-    var timedout=false;
+    var timedout = false;
     var actualAnswers = "";
     var workTime = -1;
 
     <% if !@measurement.assessment.test.time.nil? %>
-    workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
+      workTime = <%= @measurement.assessment.test.time * 1000 %> + 500;
     <% end %>
-
-
 
     //Mediapath for displayed Items for preload
     var itemDataSound = {
     <% @measurement.assessment.test.items.each do |i| %>
-    <%= i.id%>: <%=raw i.mediapath["audios"]%>,
+      <%= i.id%>: <%=raw i.mediapath["audios"]%>,
     <%end %>
     };
 
