@@ -1,5 +1,5 @@
 #Updatetet alle Views der Items von allen lehrerseitigen Tests
-active_tests = Test.where(:archive => false).where.not(:name => ['Sinnentnehmendes Lesen', 'Wörter schreiben', 'Tastaturschulung'])
+active_tests = Test.where(:archive => false, :student_access => false)
 items_to_update_all= Item.where(:test_id => active_tests)
 
 i = 0
