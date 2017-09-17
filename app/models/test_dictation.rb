@@ -1,6 +1,9 @@
 class TestDictation < Test
 
   def draw_items(first)
+    if first
+      return super
+    end
     itemset = Array.new
     firstthirty = content_items.take(30)
     count = 0
@@ -16,5 +19,4 @@ class TestDictation < Test
     end
     return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
-
 end

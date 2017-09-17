@@ -61,21 +61,21 @@ Woerter/79a.mp3
 
 dicN1 = Test.create(name: "Wörter schreiben", info: "", type_info:"Diktiertest", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
 
-
-it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-5, itemview:"items/studentbased/diktattest/1hallo")
+it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-7, itemview:"items/studentbased/diktattest/1hallo")
 it.save
-
-it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/24a.mp3"]}, itemtype:-4,itemview:"items/studentbased/diktattest/2explanation")
+it = dicN1.items.build(itemtext: "Erklärung", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/24a.mp3"]}, itemtype:-6,itemview:"items/studentbased/diktattest/2explanation")
 it.save
-
-
-it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/25a.mp3"]}, itemtype:-3,  itemview:"items/studentbased/diktattest/3delete_and_audio")
+it = dicN1.items.build(itemtext: "Löschen und Audio", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/25a.mp3"]}, itemtype:-5,  itemview:"items/studentbased/diktattest/3delete_and_audio")
 it.save
-it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/29a.mp3","/audio/Diktiertest/Anweisungen/30b.mp3"]}, itemtype:-2,  itemview:"items/studentbased/diktattest/4hint")
+it = dicN1.items.build(itemtext: "Hinweis", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/29a.mp3","/audio/Diktiertest/Anweisungen/30b.mp3"]}, itemtype:-4,  itemview:"items/studentbased/diktattest/4hint")
 it.save
-
+it = dicN1.items.build(itemtext: "Beispiel", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/31b1.mp3"]}, itemtype:-3,  itemview:"items/studentbased/diktattest/5example")
+it.save
+it = dicN1.items.build(itemtext: "Beispiele", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/31b2.mp3","/audio/Diktiertest/Anweisungen/31b3.mp3"]}, itemtype:-2,  itemview:"items/studentbased/diktattest/6examples")
+it.save
 it = dicN1.items.build(itemtext: "Ich beginne", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/32c.mp3"]}, itemtype:-1, itemview:"items/studentbased/diktattest/7startItem")
 it.save
+
 
 i=0
 while i<items.size do
