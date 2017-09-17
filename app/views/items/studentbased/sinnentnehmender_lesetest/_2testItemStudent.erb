@@ -3,15 +3,16 @@
   after_gap = item.itemtext.split("}")[1]
   alternatives = item.itemtext.split("{")[1].split("}")[0].split(",")
 %>
-</br></br></br></br>
+<div>
+  <img style='float: right; width: 250px' src='/images/shared/Levumi-normal-blau.jpg'>
+</div>
+<br><br><br><br>
+</br></br></br></br></br></br>
 <div class='row text-center'>
   <div>
-    <img style='float: right; width: 250px' src='/images/shared/Levumi-normal-blau.jpg'>
-    <div>
-      <label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'><%= before_gap %>&nbsp</label>
-      <label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
-      <label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'> &nbsp<%= after_gap %></label>
-    </div>
+    <label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'><%= before_gap %>&nbsp</label>
+    <label id='answer' class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'>...........</label>
+    <label class='control-label' style='font-size: 60px; font-family: fibel_nordregular;'> &nbsp<%= after_gap %></label>
   </div>
 </div>
 <br><br>
@@ -60,15 +61,15 @@
   }
   function nextClicked() {
     var tempAnswer = document.getElementById('answer');
-    actualAnswers = actualAnswers + tempAnswer.textContent;
+    actualAnswers = actualAnswers + tempAnswer.textContent + ',';
     if(tempAnswer.textContent=='<%= item.shorthand%>'){
       currentResult = currentResult + '1,';
     }
     else {
       currentResult = currentResult + '0,';
     };
-    stopwatch = new Date() - stopwatch;
-    currentTimes = currentTimes + stopwatch + ',';
+    currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+    stopwatch = new Date();
     nextItem();
   };
 </script>

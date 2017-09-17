@@ -33,7 +33,6 @@
                 $(window).unbind('keydown');
                 iButtonClick();
                 break;
-
         }
     });
 
@@ -42,16 +41,16 @@
     tempText.style.fontSize = curSize + 'px';
 
     function cButtonClick() {
-        stopwatch = new Date() - stopwatch;
-        currentTimes = currentTimes + stopwatch + ',';
+        currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+        stopwatch = new Date();
         currentResult = currentResult + '1,';
         $(window).unbind('keydown');
         nextItem();
     }
 
     function iButtonClick() {
-        stopwatch = new Date() - stopwatch;
-        currentTimes = currentTimes + stopwatch + ',';
+        currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+        stopwatch = new Date();
         currentResult = currentResult + '0,';
         $(window).unbind('keydown');
         nextItem();

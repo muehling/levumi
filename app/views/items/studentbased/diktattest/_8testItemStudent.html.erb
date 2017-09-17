@@ -34,8 +34,8 @@
             else {
                 currentResult = currentResult + '0,';
             };
-            stopwatch = new Date() - stopwatch;
-            currentTimes = currentTimes + stopwatch + ',';
+            currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+            stopwatch = new Date();
             nextItem();
         }});
     $(tempAnswer).keydown(function (event) {

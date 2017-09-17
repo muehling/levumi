@@ -30,6 +30,7 @@
                 window.clearTimeout(timeoutId);
             }
             timeoutId = window.setTimeout(timedOut, workTime);
+            stopwatch = new Date();
             nextItem();
         }});
     var tempLevumiPic = (document.getElementById('talkingLevumi'));
