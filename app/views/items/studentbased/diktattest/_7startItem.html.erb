@@ -29,8 +29,10 @@
             if (timeoutId != -1) {
                 window.clearTimeout(timeoutId);
             }
-            timeoutId = window.setTimeout(timedOut, workTime);
-            stopwatch = new Date();
+            if(workTime!=-1) {
+                timeoutId = window.setTimeout(timedOut, workTime);
+                stopwatch = new Date();
+            }
             nextItem();
         }});
     var tempLevumiPic = (document.getElementById('talkingLevumi'));

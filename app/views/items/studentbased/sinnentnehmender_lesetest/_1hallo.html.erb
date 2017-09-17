@@ -45,8 +45,10 @@
 <script>
   $('button').click(function(){
     if(this.id == 'next'){
-      timeoutId = window.setTimeout(timedOut, workTime);
-      stopwatch = new Date();
+        if(workTime!=-1) {
+            timeoutId = window.setTimeout(timedOut, workTime);
+            stopwatch = new Date();
+        }
       nextItem();
     }
     else{
