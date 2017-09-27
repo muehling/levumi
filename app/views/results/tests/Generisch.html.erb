@@ -88,7 +88,9 @@
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
-          data: dict
+          data: dict,
+          error: $('#state').html("Speichern fehlgeschlagen!"),
+          success: $('#state').html("Speichern erfolgreich!")
       });
       <%else%>
       dict["results"] = currentStudent + ",times#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
