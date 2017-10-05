@@ -13,7 +13,14 @@ class TestsController < ApplicationController
         unless @login_user.hasCapability?("export")
           redirect_to root_url
         else
-          send_file Result.to_xls(nil, nil), filename: "Alle Messungen.csv", type: "text/csv"
+          send_file Result.to_xls(nil, nil), filename: "Alle Messungen.xls", type: "application/xml"
+        end
+      }
+      format.text {
+        unless @login_user.hasCapability?("export")
+          redirect_to root_url
+        else
+          send_file Result.to_csv(nil, nil), filename: "Alle Messungen.csv", type: "text/csv"
         end
       }
     end
@@ -25,12 +32,15 @@ class TestsController < ApplicationController
 
   # GET /tests/1.xml
   def show
+    unless !@login_user.nil? && @login_user.hasCapability?("export")
+      redirect_to root_url
+    end
     respond_to do |format|
       format.xml {
-        unless !@login_user.nil? && @login_user.hasCapability?("export")
-          redirect_to root_url
-        end
-        send_file Result.to_xls(@test.id, nil), filename: @test.long_name + " - Export.csv", type: "text/csv"
+        send_file Result.to_xls(@test.id, nil), filename: @test.long_name + " - Export.xls", type: "application/xml"
+      }
+      format.text {
+        send_file Result.to_csv(@test.id, nil), filename: @test.long_name + " - Export.csv", type: "text/csv"
       }
     end
   end

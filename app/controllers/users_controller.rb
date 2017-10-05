@@ -22,7 +22,14 @@ class UsersController < ApplicationController
         if @login_user.nil? || (!@login_user.hasCapability?("export") && (@user.id != @login_user.id))
           redirect_to root_url
         else
-          send_file Result.to_xls(nil, @user.id), filename: @user.name + " - Export.csv", type: "text/csv"
+          send_file Result.to_xls(nil, @user.id), filename: @user.name + " - Export.csv", type: "application/xml"
+        end
+      }
+      format.text {
+        if @login_user.nil? || (!@login_user.hasCapability?("export") && (@user.id != @login_user.id))
+          redirect_to root_url
+        else
+          send_file Result.to_csv(nil, @user.id), filename: @user.name + " - Export.csv", type: "text/csv"
         end
       }
     end

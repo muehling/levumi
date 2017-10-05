@@ -29,9 +29,16 @@
   <% @tests.order("subject ASC, construct ASC, name ASC, level ASC").each do |test| %>
   <tr>
     <td>
-      <%= link_to test_path(test.id, format: "xml") do %>
+      <div class="dropdown">
+        <p class="dropdown-toggle"  id="dropdownMenu_t<%= test.id%>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= test.short_name %>
-      <% end %>
+          <span class="caret"></span>
+        </p>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu_t<%= test.id%>">
+          <li><%= link_to "XLS", test_path(test.id, format: "xml") %></li>
+          <li><%= link_to "CSV", test_path(test.id, format: "txt") %></li>
+        </ul>
+      </div>
     </td>
     <td>
       <%= test.subject %>
