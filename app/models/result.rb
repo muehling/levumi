@@ -285,7 +285,7 @@ class Result < ActiveRecord::Base
         JOIN tests ON tests.id = test_id
         JOIN groups ON groups.id = assessments.group_id
         JOIN users ON users.id = user_id
-      WHERE export = 1
+      WHERE export = 1 and tests.archive = 0
     "
 
     unless test.nil?
