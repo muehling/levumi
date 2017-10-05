@@ -212,7 +212,7 @@ class Result < ActiveRecord::Base
     rowAlle = 1
 
     # Get items of each test without redundancy. Needed to put many assessments in one sheet
-    tests = test.nil? ? Test.all : [Test.find(test)]
+    tests = test.nil? ? Test.where(archive: false) : [Test.find(test)]
 
     tests.each do |t|
       name = t.name
