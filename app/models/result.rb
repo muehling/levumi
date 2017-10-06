@@ -8,6 +8,7 @@ class Result < ActiveRecord::Base
   serialize :responses, Array     #Speichert die 1/0 Ergebnisse zu den Items aus items
   serialize :extra_data, Hash     #Speichert zusätzlicher Infos als Key/Value Paare. Feste Keys:
                                   #-times: Reaktionszeiten
+                                  #-answers: Die von den Kindern gegebenen Antworten
                                   #-intro: Intro Items für den Test
                                   #-outro: Outro Items für den Test
 
@@ -27,10 +28,10 @@ class Result < ActiveRecord::Base
   def initialize_results()
     self.responses = Array.new
     self.extra_data = Hash.new
-    drawed_items = measurement.assessment.test.draw_items(self.getPriorResult == -1)
-    self.extra_data["intro"] = drawed_items[0]
-    self.items = drawed_items[1]
-    self.extra_data["outro"] = drawed_items[2]
+    drawn_items = measurement.assessment.test.draw_items(self.getPriorResult == -1)
+    self.extra_data["intro"] = drawn_items[0]
+    self.items = drawn_items[1]
+    self.extra_data["outro"] = drawn_items[2]
     self.responses[self.items.size-1] = nil
     update_total
   end
@@ -164,7 +165,7 @@ class Result < ActiveRecord::Base
 
     itembank = Hash[Item.all.pluck(:id, :shorthand)]
     testbank = Hash[Test.all.pluck(:id), Test.all.map{|t| t.long_name}]
-    file.write("Item;Itemtext;Ergebnis;Reaktionszeit;Position in Messreihe;Messung_id;Kind_id;Geburtstag;Geschlecht;Foerderbedarf;Migrationshintergrund;Messzeitpunkt_id;Erhebung_id;Klasse_id;Benutzer;Testname;Datum\n")
+    file.write("Item;Itemtext;Ergebnis;Antwort;Reaktionszeit;Position in Messreihe;Messung_id;Kind_id;Geburtstag;Geschlecht;Foerderbedarf;Migrationshintergrund;Messzeitpunkt_id;Erhebung_id;Klasse_id;Benutzer;Testname;Datum\n")
 
     r = 1
     temp.each do |row|
@@ -179,7 +180,7 @@ class Result < ActiveRecord::Base
       end
       i = 0
       items.each do |item|
-        file.write([item, itembank[item], responses[i], ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]], row["date"].to_date.strftime("%d.%m.%Y")].join(";"))
+        file.write([item, itembank[item], responses[i], ((extra.nil? || extra["answers"].nil?) ? nil : extra["times"][i]), ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]], row["date"].to_date.strftime("%d.%m.%Y")].join(";"))
         file.write("\n")
         r = r + 1
         i = i + 1
