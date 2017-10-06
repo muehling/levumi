@@ -81,7 +81,7 @@ class Result < ActiveRecord::Base
   end
 
   #Create an array representation of the results.
-  #TIf extra_data contain "times" then export the times instead of the 1/0 values.
+  #If extra_data contain "times" then export the times instead of the 1/0 values.
   #Used for exporting to XLS
   def to_a(itemset)
     res = []
@@ -180,7 +180,7 @@ class Result < ActiveRecord::Base
       end
       i = 0
       items.each do |item|
-        file.write([item, itembank[item], responses[i], ((extra.nil? || extra["answers"].nil?) ? nil : extra["times"][i]), ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]], row["date"].to_date.strftime("%d.%m.%Y")].join(";"))
+        file.write([item, itembank[item], responses[i], ((extra.nil? || extra["answers"].nil?) ? nil : extra["answers"][i]), ((extra.nil? || extra["times"].nil?) ? nil : extra["times"][i]), i+1, row["id"], row["student_id"], row["birthdate"], row["gender"], row["specific_needs"], row["migration"], row["measurement_id"], row["assessment_id"], row["group_id"], row["name"], testbank[row["tests_id"]], row["date"].to_date.strftime("%d.%m.%Y")].join(";"))
         file.write("\n")
         r = r + 1
         i = i + 1
