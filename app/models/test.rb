@@ -36,7 +36,7 @@ class Test < ActiveRecord::Base
     if first
       itemset = content_items
     else
-      len.times do
+      content_items.length.times do   # Don't use len to avoid items start and end items (itemtype > 0 or itemtype <0) 
         remaining = content_items - itemset
         itemset = itemset + [remaining.sample]
       end

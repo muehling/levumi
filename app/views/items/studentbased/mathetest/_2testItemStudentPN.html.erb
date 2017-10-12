@@ -1,0 +1,81 @@
+<% 
+  asked = item.shorthand 
+  toleranceValue = item.difficulty
+  lengthOfLine = item.itemtext
+%>
+<div class='row text-center' id='question' style='font-size: 30px; margin: 20px'>
+      Welche Zahle stellt die rote Linie dar?
+  </div><br><br>
+  <div class="text-center">
+    <canvas id='canvas' width='750' height='400'></canvas>
+  </div>
+  <br><br>
+
+  <div class="row text-center">
+    <p style="font-size: 30px; font-family: fibel_nordregular;">Die rote Linie ist die Zahl:</p> <br>
+     <input type="text" name="result" id="result"> <br><br>
+  </div>
+
+<div class='row text-center'>         
+  <div class='col-md-4 col-md-offset-4'>
+    <button id='weiter' type='button' class='btn btn-lg btn-primary'><span style='font-size: 30px; font-family: fibel_nordregular;'>Weiter</span></button>
+  </div>
+</div>
+
+<script type="text/javascript">
+  
+  var askedNumber = parseInt(<%= asked %>);  
+  var canvas = document.getElementById('canvas');
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width;
+  var h = canvas.height;
+  var toleranceValue = <%= toleranceValue %>;
+  var lineWidth = 10; // Needed for drawing
+  var lengthOfLine = parseInt(<%= lengthOfLine %>);
+  var interval = w / lengthOfLine;
+  var currentAnswer=[];
+  var answer = 0;
+  drawLines();
+
+/*  function checkResult(){
+    answer = parseInt($('#result').val());
+    if(answer >= parseInt(askedNumber) - toleranceValue && answer <= parseInt(askedNumber) + toleranceValue)
+      $('#resultText').text(" True Asked: " + askedNumber + " Clicked: "+ answer);
+    else
+      $('#resultText').text(" False Asked: " + askedNumber + " Clicked: "+ answer);
+  }
+*/
+
+  function drawLines(){
+    //horizontal line
+    ctx.fillRect(0,h/2,w ,lineWidth);
+    // first vertical line
+    ctx.fillRect(0,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+    // second vertical line
+    ctx.fillRect(w-lineWidth,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+    // Numbers on both sides
+    ctx.font = '20px Arial black';
+    ctx.fillText('0', 0, h/2 - 4*lineWidth);
+    ctx.fillText(lengthOfLine, w - 40, h/2 - 4*lineWidth);
+    var positionOfRandomNumber = askedNumber * interval;
+    ctx.fillStyle = 'red';
+    var rect = [positionOfRandomNumber, h/2 - 3*lineWidth , 3, 7*lineWidth];
+    currentAnswer = rect;
+    ctx.fillRect(rect[0],rect[1],rect[2],rect[3]);
+  }
+
+  $('#weiter').click(function(){
+    answer = parseInt($('#result').val());
+    actualAnswers = actualAnswers + answer + ',';
+    if(answer >= parseInt(askedNumber) - toleranceValue && answer <= parseInt(askedNumber) + toleranceValue){
+      currentResult = currentResult + '1,';
+      }
+    else {
+      currentResult = currentResult + '0,';
+    };
+    stopwatch = new Date() - stopwatch;
+    currentTimes = currentTimes + stopwatch + ',';
+    nextItem();
+  });
+ 
+</script>
