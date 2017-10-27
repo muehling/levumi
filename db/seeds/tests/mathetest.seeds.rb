@@ -1,33 +1,26 @@
-# Number to position for numbers 0 to 100
+
+
+
+
+# Number to position for numbers 0 to 10
 
 items = %w{
-22
-59
-98
-53
-45
 9
-86
-84
-15
-13
+2
+1
 5
-27
-32
-77
-67
-61
-40
-91
-73
-36
+7
+6
+4
+8
+3
 }
-toleranceValue = 5 # It means 5 on the left and 5 on the right side (totally 10)
-lineLength = 100
+toleranceValue = 1 # It means 5 on the left and 5 on the right side (totally 10)
+lineLength = 10
 
-math = Test.create(name: "Mathetest NP", info:"Number to position 0-100", len: 22, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "3")
+math = Test.create(name: "Position finden ", info:"Number to position 0-10", len: 11, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 1 (0-10)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1hallo")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 10, itemview: "items/studentbased/mathetest/1hallo")
 it.save
 
 i=0
@@ -40,6 +33,9 @@ end
 it = math.items.build(itemtext: "Ende", itemtype: 1, itemview: "items/studentbased/mathetest/3ende") 
 it.save
 math.save
+
+
+
 
 
 
@@ -70,9 +66,9 @@ items= %w{
 toleranceValue = 1 ;
 lineLength = 20;
 
-math = Test.create(name: "Mathetest NP", info:"Number to position 0-20", len: 21, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "2")
+math = Test.create(name: "Position finden ", info:"Number to position 0-20", len: 21, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 2 (0-20)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1hallo")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 20, itemview: "items/studentbased/mathetest/1halloNP")
 it.save
 
 i=0
@@ -87,25 +83,40 @@ it.save
 math.save
 
 
-# Number to position for numbers 0 to 10
+
+
+
+
+# Number to position for numbers 0 to 100
 
 items = %w{
+22
+59
+98
+53
+45
 9
-2
-1
+86
+84
+15
+13
 5
-7
-6
-4
-8
-3
+27
+32
+77
+67
+61
+40
+91
+73
+36
 }
-toleranceValue = 1 # It means 5 on the left and 5 on the right side (totally 10)
-lineLength = 10
+toleranceValue = 5 # It means 5 on the left and 5 on the right side (totally 10)
+lineLength = 100
 
-math = Test.create(name: "Mathetest NP", info:"Number to position 0-10", len: 11, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "1")
+math = Test.create(name: "Position finden ", info:"Number to position 0-100", len: 22, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 3 (0-100)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1hallo")
+it = math.items.build(itemtext: "Hallo", shorthand: 100, itemtype: -1, itemview: "items/studentbased/mathetest/1halloNP")
 it.save
 
 i=0
@@ -118,7 +129,6 @@ end
 it = math.items.build(itemtext: "Ende", itemtype: 1, itemview: "items/studentbased/mathetest/3ende") 
 it.save
 math.save
-
 
 
 
@@ -152,9 +162,9 @@ items = %w{
 toleranceValue = 1 # It means 5 on the left and 5 on the right side (totally 10)
 lineLength = 10
 
-math = Test.create(name: "Mathetest PN", info:"Position to number 0-10", len: 11, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "1")
+math = Test.create(name: "Zahl finden ", info:"Position to number 0-10", len: 11, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 1 (0-10)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1halloPN")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 10, itemview: "items/studentbased/mathetest/1halloPN")
 it.save
 
 i=0
@@ -196,9 +206,9 @@ items= %w{
 toleranceValue = 1 ;
 lineLength = 20;
 
-math = Test.create(name: "Mathetest PN", info:"Position to number 0-20", len: 21, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "2")
+math = Test.create(name: "Zahl finden ", info:"Position to number 0-20", len: 21, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 2 (0-20)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1halloPN")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 20, itemview: "items/studentbased/mathetest/1halloPN")
 it.save
 
 i=0
@@ -242,9 +252,9 @@ items = %w{
 toleranceValue = 5 # It means 5 on the left and 5 on the right side (totally 10)
 lineLength = 100
 
-math = Test.create(name: "Mathetest PN", info:"Position to number 0-100", len: 22, time: 180, subject: "Mathematik", construct: "Mathetest", student_access: true, archive: false, level: "3")
+math = Test.create(name: "Zahl finden ", info:"Position to number 0-100", len: 22, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 3 (0-100)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, itemview: "items/studentbased/mathetest/1halloPN")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 100, itemview: "items/studentbased/mathetest/1halloPN")
 it.save
 
 i=0
