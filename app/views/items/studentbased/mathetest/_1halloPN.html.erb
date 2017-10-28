@@ -83,7 +83,7 @@
      });
 
 	function weiter(){
-		if(lengthOfLine==100  && (isNaN($('#result').val()) || $('#result').val() == '')){
+		if(lengthOfLine==100  && (isNaN($('#result').val()) || $('#result').val() == '' || $('#result').val().replace(/\s/g,'').length == 0 )){
 		document.getElementById('hinweis').innerHTML =  'Bitte eine Zahl schreiben.';
 		}
 		else if(clicked  == true){

@@ -20,7 +20,7 @@ lineLength = 10
 
 math = Test.create(name: "Position finden ", info:"Number to position 0-10", len: 11, time: 180, subject: "Mathematik", construct: "Zahlenstrahl", student_access: true, archive: false, level: "Niveaustufe 1 (0-10)")
 
-it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 10, itemview: "items/studentbased/mathetest/1hallo")
+it = math.items.build(itemtext: "Hallo", itemtype: -1, shorthand: 10, itemview: "items/studentbased/mathetest/1halloNP")
 it.save
 
 i=0
