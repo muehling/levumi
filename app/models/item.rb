@@ -8,7 +8,7 @@ class Item < ActiveRecord::Base
   before_create :initialize_mediapath
   serialize :mediapath, Hash
 
-  def self.xls_headings
+  def self.table_headings
     return %w{ID Kurztext}
   end
 

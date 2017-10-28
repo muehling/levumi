@@ -23,9 +23,16 @@
   <% @users.order("name ASC").each do |user| %>
   <tr>
     <td>
-      <%= link_to user_path(user.id, format: "xml") do %>
+      <div class="dropdown">
+        <p class="dropdown-toggle"  id="dropdownMenu_u<%= user.id%>" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
           <%= user.name %>
-      <% end %>
+          <span class="caret"></span>
+        </p>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu_u<%= user.id%>">
+          <li><%= link_to "XLS", user_path(user.id, format: "xml") %></li>
+          <li><%= link_to "CSV", user_path(user.id, format: "txt") %></li>
+        </ul>
+      </div>
     </td>
     <td>
       <%= assessments.has_key?(user.id) ? assessments[user.id] : 0 %>
