@@ -5,6 +5,7 @@ source 'https://rubygems.org'
 gem 'rails', '5.0.1'
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
+
 gem 'mysql2', '~> 0.3.13'
 
 # Use SCSS for stylesheets
@@ -59,3 +60,4 @@ gem 'spreadsheet'
 
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+
