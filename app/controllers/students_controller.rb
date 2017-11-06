@@ -11,9 +11,12 @@ class StudentsController < ApplicationController
     respond_to do |format|
       format.js {}
       format.html {}
+      @students = Student.where(:group_id => @group.id)
+      format.pdf {
+        render pdf: "Zugangsdaten der Klasse #{@group.name}",
+        template: "students/index.pdf.erb"
+      }
       format.text {
-        @students = Student.where(:group_id => @group.id)
-        @format = "plain"
         render 'index', :formats => [:js], content_type: 'text/javascript'
       }
     end

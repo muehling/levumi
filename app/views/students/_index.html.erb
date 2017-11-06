@@ -1,5 +1,5 @@
 <p class="lead text-right">
-  <%= link_to user_group_students_path(@user, @group, :format => :text), :title => "Zugangsdaten der Klasse", :data => {:remote => true} do %>
+  <%= link_to user_group_students_path(@user, @group, :format => :pdf), :title => "Zugangsdaten der Klasse", :target => "blank" do %>
       <span class="glyphicon glyphicon-print"></span>
   <% end %>
 </p>

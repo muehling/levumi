@@ -1,14 +1,5 @@
-<% if @format == 'plain' %>
-testWindow = window.open();
-content = testWindow.document;
-testWindow.location = '';
-content.title = "Schülerübersicht";
-content.write("<%= escape_javascript(render file: "students/code_list.html.erb",  layout: 'layouts/plain') %>");
-content.close();
-<% else %>
 $('#students').html("<%= escape_javascript(render 'index')%>");
 $('#tabs a:last').tab('show');
-<% end %>
 
 
 
