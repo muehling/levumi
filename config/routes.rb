@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   post 'login' => 'application#login'
   post 'logout' => 'application#logout'
   post 'accept' => 'application#accept'
+  post 'signup' => 'application#signup'
   get 'static' => 'application#static'
   get 'export' => 'application#export'
 
@@ -27,6 +28,8 @@ Rails.application.routes.draw do
   post 'frontend/logout' => 'frontend#logout'
   get 'frontend' => 'frontend#index'
   get 'frontend/:id' => 'frontend#start'
+
+  resources :materials
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

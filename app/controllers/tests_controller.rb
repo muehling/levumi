@@ -1,26 +1,47 @@
 # -*- encoding : utf-8 -*-
 class TestsController < ApplicationController
   before_action :set_test, only: [:show, :edit, :update, :destroy]
-  before_filter :is_allowed, only: [:edit, :update, :destroy, :new]
+  before_action :is_allowed, only: [:edit, :update, :destroy, :new]
 
   # GET /tests
   def index
     @tests = Test.where(:archive => false)
     @archive = Test.where(:archive => true)
+    respond_to do |format|
+      format.html {}
+      format.xml {
+        unless @login_user.hasCapability?("export")
+          redirect_to root_url
+        else
+          send_file Result.to_xls(nil, nil), filename: "Alle Messungen.xls", type: "application/vnd.ms-excel"
+        end
+      }
+      format.text {
+        unless @login_user.hasCapability?("export")
+          redirect_to root_url
+        else
+          send_file Result.to_csv(nil, nil), filename: "Alle Messungen.csv", type: "text/csv"
+        end
+      }
+    end
   end
-
+ 
   # GET /tests/1/edit
   def edit
   end
 
   # GET /tests/1.xml
   def show
-    unless @login.hasCapability?("export")
+    unless !@login_user.nil? && @login_user.hasCapability?("export")
       redirect_to root_url
     end
     respond_to do |format|
       format.xml {
-        send_file @test.export, filename: @test.long_name + " - Export.xls", type: "text/csv"}
+        send_file Result.to_xls(@test.id, nil), filename: @test.long_name + " - Export.xls", type: "application/vnd.ms-excel"
+      }
+      format.text {
+        send_file Result.to_csv(@test.id, nil), filename: @test.long_name + " - Export.csv", type: "text/csv"
+      }
     end
   end
 
@@ -57,10 +78,8 @@ class TestsController < ApplicationController
   end
 
   def is_allowed
-    unless @login.hasCapability?("test")
+    unless !@login_user.nil? && @login_user.hasCapability?("test")
       redirect_to root_url
-      return false
     end
-    return true
   end
 end

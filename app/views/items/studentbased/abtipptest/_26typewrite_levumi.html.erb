@@ -1,0 +1,66 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; margin-left: 150px; font-size:60px' class='text-center'>
+  „<span style='background-color:#FFFF00'>Levumi</span> pflückt Quitten von den Bäumen.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+</p>
+<p style="font-size:38px">
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/headphones.png'/>
+  <br />
+  <br />
+  <img style='float: left; width: 120px;margin-left: 125px' src='/images/Abtipptest/tastartur.png'/>
+  <br />
+  <br />
+</p>
+<p style="text-align: center">
+  <input style='font-family: fibel_nordregular; width: 930px; text-align: center; font-size:96px' id='answer' type='text' >
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Nochmal anhören: <span><img style='width: 40px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+          /&nbsp;&nbsp;
+        </div>
+      </th>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Weiter: <span><img style='width: 40px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    var tempAnswer = (document.getElementById('answer'));
+    tempAnswer.focus();
+    $(tempAnswer).css('border','0px').css('outline', 0).css('border-bottom', 'black solid 1px').attr('maxlength', '16').attr('size','16');
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+            tempAudio.play();
+        }
+        else if(event.keyCode == 13 && tempAnswer.value == 'Levumi') {
+            $(window).unbind('keyup');
+            nextItem();
+        }
+    });
+    $(tempAnswer).keydown(function (event) {
+        var key = event.charCode || event.keyCode;
+        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27) {
+            event.preventDefault();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>

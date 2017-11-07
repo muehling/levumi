@@ -55,7 +55,7 @@ class Student < ActiveRecord::Base
     end
   end
 
-  def self.xls_headings
+  def self.table_headings
     return %w{ID Code Klassen-Id Klassen-Name Benutzer-Id Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
   end
 
@@ -155,7 +155,17 @@ class Student < ActiveRecord::Base
     r.each do |temp|
      m = m.where.not(:id => temp.measurement_id)
     end
-    return m.nil? ? [] : m
+    #TODO-Morten ist gerade nur die schnelle Lösung. Ändere ich bei zeiten wieder zur schöneren + wahrscheinlich .select{}, da Array kein .where hat
+    # der Datenbankabruf muss nicht zweimal passieren
+    #return only Measurements, which has a resultobjekt
+    r = Result.
+        where(:measurement => m).
+        where(:student_id => self.id)
+    result = []
+    r.each do |temp|
+      result = result + m.where(:id => temp.measurement_id)
+    end
+	return result.nil? ? [] : result
   end
 
   #get current result objekt of student
@@ -163,4 +173,5 @@ class Student < ActiveRecord::Base
     r = Result.where(:student_id => self.id, :measurement_id => measurement_id).first
     return r.nil? ? [] : r
   end
+
 end

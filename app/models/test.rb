@@ -7,6 +7,7 @@ require 'spreadsheet'
 class Test < ActiveRecord::Base
   has_many :items, :dependent => :destroy
   has_many :assessments, :dependent => :destroy
+  has_and_belongs_to_many :materials
 
   validates_presence_of :name
   validates_presence_of :subject
@@ -22,41 +23,38 @@ class Test < ActiveRecord::Base
     self.items.where(itemtype: 0).order(:id)
   end
 
-  #TODO: Konsequent verwenden!
   def intro_items
     self.items.where("itemtype < ?", 0).order(:itemtype)
   end
 
-  #TODO: Konsequent verwenden!
   def outro_items
     self.items.where("itemtype > ?", 0).order(:itemtype)
   end
 
   def draw_items(first)
-    itemset = intro_items
-    enditems = outro_items
+    itemset = Array.new
     if first
-      itemset = itemset + content_items
+      itemset = content_items
     else
-      len.times do
-        remaining = items - (itemset + enditems)
+      content_items.length.times do   # Don't use len to avoid items start and end items (itemtype > 0 or itemtype <0) 
+        remaining = content_items - itemset
         itemset = itemset + [remaining.sample]
       end
     end
-    itemset = itemset + enditems
-    return itemset.map{|i| i.id}
+    return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
   end
 
   def len_info
-    return "#{len} Items"
+    if time.nil?
+      return "#{len} Items"
+    else
+      return "#{time} Sekunden, max. #{len} Items"
+    end
   end
 
-  def type_info
-    return 'Test'
-  end
 
   def view_info
-    return 'Test'
+    return 'Generisch'
   end
 
   def long_name
@@ -67,72 +65,53 @@ class Test < ActiveRecord::Base
     return name + ' - ' + level + (archive ? ' (veraltet)':'')
   end
 
-  def export
-    measurements = Measurement.where(:assessment => Assessment.where(:test => self))
-    results = Result.where(:measurement => measurements)
-    students = Student.where(:id => results.uniq.pluck(:student_id))
+  def code
+    name.split(' ').map{|w| w.slice(0, 2)}.join + level.last
+  end
 
-    book = Spreadsheet::Workbook.new
+  #Count number of assessments for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_assessment_count
+    temp = ActiveRecord::Base.connection.exec_query("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM tests JOIN assessments ON tests.id = test_id
+        JOIN groups ON groups.id = group_id
+        JOIN users ON users.id = user_id
+      WHERE export = 1
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
+  end
 
-    sheet = book.create_worksheet :name => 'Items'
-    sheet.row(0).concat Item.xls_headings
-    i = 1
-    items.each do |it|
-      sheet.row(i).concat it.to_a
-      i = i+1
-    end
+  #Count number of measurements for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_measurement_count
+    temp = ActiveRecord::Base.connection.exec_query("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM measurements JOIN assessments ON assessments.id = assessment_id
+        JOIN groups ON groups.id = group_id
+        JOIN users ON users.id = user_id
+      WHERE export = 1
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
+  end
 
-    sheet = book.create_worksheet :name => 'SuS'
-    sheet.row(0).concat Student.xls_headings
-    i = 1
-    students.find_each do |s|
-      if (s.group.export)
-        sheet.row(i).concat s.to_a
-        i = i+1
-      end
-    end
-
-    sheet = book.create_worksheet :name => 'Alle Messungen'
-    sheet.row(0).concat %w(Schüler/in Messzeitpunkt Klassen-Id Benutzer-Id)
-    itemset = items.pluck(:id)
-    sheet.row(0).concat itemset
-    i = 1
-    results.find_each do |r|
-      if (r.measurement.assessment.group.export)
-        sheet.row(i).push r.student.id
-        sheet.row(i).push r.measurement.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(i).push r.measurement.assessment.group.id
-        sheet.row(i).push r.measurement.assessment.group.user.id
-        sheet.row(i).concat r.to_a(itemset)
-        i = i+1
-      end
-    end
-
-    measurements.sort_by { |a| a.date}.each do |m|
-      if (m.assessment.group.export)
-        sheet = book.create_worksheet :name => "Messung #{m.id}"
-        sheet.row(0).push 'Datum'
-        sheet.row(0).push m.date.to_date.strftime("%d.%m.%Y")
-        sheet.row(1).push 'Benutzer-Id'
-        sheet.row(1).push m.assessment.group.user.id
-        sheet.row(2).push 'Klassen-Id'
-        sheet.row(2).push m.assessment.group.id
-
-        sheet.row(3).concat %w(Student)
-        itemset = items.pluck(:id)
-        sheet.row(3).concat itemset
-        i = 4
-        m.results.each do |r|
-          sheet.row(i).push r.student.id
-          sheet.row(i).concat r.to_a(itemset)
-          i = i+1
-        end
-      end
-    end
-
-    temp = Tempfile.new('levumi')
-    temp.close
-    book.write temp.path
-    return temp.path
+  #Count number of results for each test by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
+  def self.get_result_count
+    temp = ActiveRecord::Base.connection.exec_query("
+      SELECT test_id, COUNT(*) as Anzahl
+      FROM results JOIN measurements ON measurements.id = measurement_id
+        JOIN assessments ON assessments.id = assessment_id
+        JOIN groups ON groups.id = group_id
+        JOIN users ON users.id = user_id
+      WHERE export = 1
+      GROUP BY test_id;
+    ")
+    ids = temp.map{|x| x["test_id"]}
+    count = temp.map{|x| x["Anzahl"]}
+    return Hash[ids.zip(count)]
   end
 end

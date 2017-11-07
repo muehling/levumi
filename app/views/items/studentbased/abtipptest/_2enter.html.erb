@@ -1,0 +1,35 @@
+<audio id='audioItem' ></audio>
+<p style='font-family: fibel_nordregular; font-size:50px' class='text-center'>
+  „Um zur nächsten Aufgabe zu kommen, drücke die Eingabetaste. Auf dem Bild siehst du, wo du sie findest. Probiere sie jetzt aus.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <img style='width: 550px;margin-left: 125px' src='/images/Abtipptest/Tastatur_Eingabetaste.png'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Weiter: <span><img style='width: 40px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode == 13) {
+            $(window).unbind('keyup');
+            nextItem();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>

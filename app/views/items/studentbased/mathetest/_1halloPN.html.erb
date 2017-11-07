@@ -1,0 +1,100 @@
+<% 
+  lengthOfLine = item.shorthand
+%>
+<h1 style='font-size:70px; font-weight: bold;' class='text-center'>Beispiel</h1>
+
+<div class='row text-center' id='question' style='font-size: 30px; margin: 20px'>
+      Welche Zahl stellt die rote Linie dar?
+  </div>
+<div id='divNumbersLine' class='row text-center'>
+    <canvas id='canvas' width='750' height='150'></canvas>
+</div>
+
+  <div class="row text-center">
+    <p style="font-size: 30px; font-family: fibel_nordregular;">Die rote Linie ist die Zahl:
+        <input type="text" name="result" id="result"> 
+     </p>
+  </div>
+  <div class="text-center">
+    <% digits =  lengthOfLine.to_i - 1 %>
+    <% if (lengthOfLine.to_i <= 22) %>
+    	<%= puts "lengthOfLine" %>
+    	<%= puts lengthOfLine %>
+      <script type="text/javascript">
+        $('#result').attr('readonly', true);
+      </script>
+      <% (1..digits).each do |x| %>
+          <button id="<%= x %>" type="button" class="btn btn-lg btn-primary"><%= x %></button>
+          <% if x == digits/2 %>
+              <br>
+          <% end %>    
+      <% end %>
+    <% end %>
+  </div>
+<div class='row text-center' id='weiter'>
+<p id="hinweis" class="text-center" style="font-size: 25px; font-family: fibel_nordregular;"></p><br>
+  <div class='col-md-4 col-md-offset-4'>
+    <button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px; font-family: fibel_nordregular;'>Jetzt starten!</span></button>
+  </div>
+</div>
+
+<script type='text/javascript'>
+	var canvas = document.getElementById('canvas');
+	var ctx = canvas.getContext('2d');
+	var w = canvas.width - 50;
+	var h = canvas.height;
+	var toleranceValue = 0;
+	var lineWidth = 10; // Needed for drawing
+	var lengthOfLine = parseInt(<%= lengthOfLine %>);
+	var interval = w / lengthOfLine;
+	var currentAnswer=[];
+	var answer = 0;
+	var askedNumber= parseInt(<%= lengthOfLine %>)/5;
+	var clicked  = false;
+	if(lengthOfLine==100) clicked= true;
+
+	$('#result').focus();
+
+	ctx.fillRect(0,h/2,w ,lineWidth);
+	// first vertical line
+	ctx.fillRect(0,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+	// second vertical line
+	ctx.fillRect(w-lineWidth,((h/2) - (3*lineWidth)), lineWidth, 7 * lineWidth);
+	// Numbers on both sides
+	ctx.font = '20px Arial black';
+	ctx.fillText('0', 0, h/2 - 4*lineWidth);
+	ctx.fillText(lengthOfLine, w - 20, h/2 - 4*lineWidth);
+
+    var positionOfRandomNumber = askedNumber * interval;
+    ctx.fillStyle = 'red';
+    var rect = [positionOfRandomNumber, h/2 - 3*lineWidth , 7, 7*lineWidth];
+    currentAnswer = rect;
+    ctx.fillRect(rect[0],rect[1],rect[2],rect[3]);
+
+     $('button').click(function (event){
+     	if (event.target.id == "next"){
+     		weiter();
+     	}
+     else {
+     		document.getElementById('hinweis').innerHTML =  "Keine Fragen mehr? Dann starte den Test.";
+         	document.getElementById('result').value = event.target.id;    
+        	 clicked = true;
+     	}
+     });
+
+	function weiter(){
+		if(lengthOfLine==100  && (isNaN($('#result').val()) || $('#result').val() == '' || $('#result').val().replace(/\s/g,'').length == 0 )){
+		document.getElementById('hinweis').innerHTML =  'Bitte eine Zahl schreiben.';
+		}
+		else if(clicked  == true){
+			if(workTime!=-1) {
+	            timeoutId = window.setTimeout(timedOut, workTime);
+	            stopwatch = new Date();
+	        }
+	      nextItem();
+		}else{
+			document.getElementById('hinweis').innerHTML =  "Du musst ein Button klicken";
+		}
+	}		
+
+</script>

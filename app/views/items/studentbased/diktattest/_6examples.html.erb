@@ -1,0 +1,73 @@
+<audio id='audioItem'></audio>
+<p  id="itemText" style='font-family: fibel_nordregular; font-size:60px' class='text-center'>
+  „Das erste Beispiel lautet: ...“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <br />
+  <br />
+</p>
+
+<p align='center'>
+  <input style='font-family: fibel_nordregular; font-size:96px' id='answer' type='text' class='text-center' align='middle', disabled="true">
+</p>
+<br />
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Nochmal anhören: <span><img style='width: 50px' src='/images/shared/Tastatur_PfeilLinks.png'/></span> /&nbsp;&nbsp;</div></th>
+      <th><div style='font-family: fibel_nordregular;font-size:60px'>Weiter: <span><img style='width: 50px' src='/images/shared/Tastatur_EingabetasteAlleine.png'/></span></div></th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    soundFlag=0;
+    var tempAnswer = (document.getElementById('answer'));
+    tempAnswer.focus();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempAnswer.value = "";
+            tempAudio.play();
+            var tempLevumiPic = (document.getElementById('talkingLevumi'));
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+        }
+        else if(event.keyCode == 13 && soundFlag==0 && tempAnswer.value=="Blume") {
+            tempAudio.pause();
+            tempAudio.currentTime = 0;
+            tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][1];
+            soundFlag=1;
+            $('#itemText').html("Das zweite Beispiel lautet: ..." +
+                "<img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>  <br /> <br /> <br />");
+            tempAudio.play();
+            tempAnswer.value = "";
+            var tempLevumiPic = (document.getElementById('talkingLevumi'));
+            tempLevumiPic.src ='/images/shared/LeVuMi_SprechenBlinzeln.gif';
+        }
+        else if(event.keyCode == 13 && soundFlag==1 && tempAnswer.value=="Baum") {
+            $(window).unbind('keyup');
+            nextItem();
+        }});
+    $(tempAnswer).keydown(function (event) {
+        var key = event.charCode || event.keyCode;
+        if (key == 37||key == 38||key == 39||key == 40||key == 32||key ==27||key ==188) {
+            event.preventDefault();
+        }});
+
+    tempAudio.addEventListener('ended', function() {
+        var tempLevumiPic = (document.getElementById('talkingLevumi'));
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+        if(soundFlag==0) {
+            tempAnswer.value = "Blume";
+        }
+        else {
+            tempAnswer.value = "Baum";
+        }
+
+    });
+</script>

@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -11,23 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170205181337) do
+ActiveRecord::Schema.define(version: 20170906094853) do
 
-  create_table "assessments", force: true do |t|
+  create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
     t.integer  "test_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "faqs", force: true do |t|
+  create_table "faqs", force: :cascade do |t|
     t.text     "question"
     t.text     "response"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "groups", force: true do |t|
+  create_table "groups", force: :cascade do |t|
     t.text     "name"
     t.integer  "user_id"
     t.datetime "created_at"
@@ -37,7 +36,7 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.boolean  "demo"
   end
 
-  create_table "items", force: true do |t|
+  create_table "items", force: :cascade do |t|
     t.integer  "test_id"
     t.text     "shorthand"
     t.text     "itemtext"
@@ -49,20 +48,37 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.integer  "itemtype"
   end
 
-  create_table "measurements", force: true do |t|
+  create_table "materials", force: :cascade do |t|
+    t.text     "subject"
+    t.text     "construct"
+    t.text     "block"
+    t.text     "exercisetype"
+    t.text     "blockinfo"
+    t.text     "exerciseinfo"
+    t.text     "data"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "materials_tests", id: false, force: :cascade do |t|
+    t.integer "material_id"
+    t.integer "test_id"
+  end
+
+  create_table "measurements", force: :cascade do |t|
     t.integer  "assessment_id"
     t.datetime "date"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "news", force: true do |t|
+  create_table "news", force: :cascade do |t|
     t.text     "text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "results", force: true do |t|
+  create_table "results", force: :cascade do |t|
     t.integer  "student_id"
     t.integer  "measurement_id"
     t.text     "items"
@@ -73,7 +89,7 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.text     "extra_data"
   end
 
-  create_table "students", force: true do |t|
+  create_table "students", force: :cascade do |t|
     t.text     "name"
     t.integer  "group_id"
     t.datetime "created_at"
@@ -85,7 +101,7 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.text     "login"
   end
 
-  create_table "tests", force: true do |t|
+  create_table "tests", force: :cascade do |t|
     t.text     "name"
     t.text     "info"
     t.integer  "len"
@@ -100,9 +116,10 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.text     "answers"
     t.boolean  "student_access"
     t.boolean  "archive"
+    t.text     "type_info"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.text     "email"
     t.text     "password_digest"
     t.text     "name"
@@ -112,6 +129,7 @@ ActiveRecord::Schema.define(version: 20170205181337) do
     t.text     "capabilities"
     t.datetime "tcaccept"
     t.datetime "last_login"
+    t.integer  "account_type"
   end
 
 end

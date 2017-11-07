@@ -1,0 +1,36 @@
+<audio id='audioItem'></audio>
+<p style='font-family: fibel_nordregular; font-size:50px' class='text-center'>
+  „Wenn du noch einmal hören möchtest, was du tun sollst, drücke die linke Pfeiltaste. Sieh mal, diese Taste ist unten
+  rechts auf der Tastatur. Bitte drücke jetzt die linke Pfeiltaste.“
+  <img id='talkingLevumi' style='float: right; width: 250px ' src='/images/shared/LeVuMi_SprechenBlinzeln.gif'/>
+  <br />
+  <img style='width: 550px;margin-left: 125px' src='/images/Abtipptest/Tastatur_Pfeil.png'/>
+</p>
+<br />
+<br />
+<footer>
+  <table align='center'>
+    <tr>
+      <th>
+        <div style='font-family: fibel_nordregular;font-size:50px'>
+          Weiter: <span><img style='width: 40px' src='/images/shared/Tastatur_PfeilLinks.png'/></span>
+        </div>
+      </th>
+    </tr>
+  </table>
+</footer>
+<script>
+    var tempAudio = (document.getElementById('audioItem'));
+    tempAudio.src = itemDataSound[studentData[currentStudent][currentItemIndex]][0];
+    tempAudio.play();
+    $(window).keyup(function (event) {
+        if(event.keyCode==37){
+            $(window).unbind('keyup');
+            nextItem();
+        }
+    });
+    var tempLevumiPic = (document.getElementById('talkingLevumi'));
+    tempAudio.addEventListener('ended', function() {
+        tempLevumiPic.src ='/images/shared/Levumi-normal-blau.jpg';
+    });
+</script>
