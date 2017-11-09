@@ -39,7 +39,7 @@ class Result < ActiveRecord::Base
   #Parses a String or additional data in the form "a,b,c" where each entry denotes the data for an item. The data is stored under the labels given in "labels" also in the form "x,y,z".
   def parse_data(labels, data)
     labels.length.times do |i|
-      vals = data[i].split(/(,)/).delete_if{ |e| e == ","}   #Keep empty parts as well
+      vals = (data[i] + ",").split(/(,)/).delete_if{ |e| e == ","}   #Keep empty parts as well, especially also if the last entry is empty.
       if (labels[i] == "times")
         self.extra_data["times"] = vals.map{|x| x.to_i}
       else
