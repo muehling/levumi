@@ -1,6 +1,32 @@
 <div class="well userCard" id="group">
   <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
 
+  <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#compose" aria-expanded="false" aria-controls="compose">
+    Nachricht an Benutzer
+  </button>
+  <div class="collapse" id="compose">
+    <div class="well">
+      <%= form_tag(user_path(@login_user), :method => :put) do %>
+        <textarea class="form-control" rows="3" name="text"></textarea>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" name="teacher" value="1">
+            Lehrkräfte
+          </label>
+          <label>
+            <input type="checkbox" name="researcher" value="1">
+            Forscher
+          </label>
+          <label>
+            <input type="checkbox" name="other" value="1">
+            Sonstige
+          </label>
+        </div>
+        <%= submit_tag 'Abschicken', :class => "btn btn-primary" %>
+      <% end %>
+    </div>
+  </div>
+
     <table class="table">
       <thead>
       <th>

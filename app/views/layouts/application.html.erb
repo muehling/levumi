@@ -45,10 +45,10 @@
             <li role="separator" class="divider"></li>
             <li><%= link_to "Lehrerhandbuch", asset_path("LEVUMI_Lehrerhandbuch.pdf")%></li>
             <li><%= link_to "Hinweise Schülerzugang", asset_path("Nutzungshinweise_Schülerzugang.pdf")%></li>
-            <li role="separator" class="divider"></li>
             <li><%= link_to "Hilfe + Häufige Fragen", url_for(:controller => "application", :action => "static", :page => "help")%></li>
-            <li><%= link_to "Impressum", url_for(:controller => "application", :action => "static", :page => "imprint")%></li>
+            <li role="separator" class="divider"></li>
             <li><%= link_to "Datenschutzerklärung", url_for(:controller => "application", :action => "static", :page => "privacy")%></li>
+            <li><%= link_to "Impressum", url_for(:controller => "application", :action => "static", :page => "imprint")%></li>
           </ul>
         </li>
       </ul>
