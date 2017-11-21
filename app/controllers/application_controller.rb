@@ -49,7 +49,7 @@ class ApplicationController < ActionController::Base
   def signup
     password = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
     @user = User.new(email: params[:email], name: params[:name], account_type: params[:account_type], password: password, password_confirmation: password)
-    if (@user.account_type == 0 || @user.account_type == 2) && @user.save  #To prevent possible attacks by entering invalid account types in the post request
+    if @user.save
       UserMailer.registered(@user.email, @user.name, password).deliver_later
       render 'registered', layout: 'bare'
     else

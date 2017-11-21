@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
 
+  validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
+
   after_create :create_test_group
 
   #Liste aktuell verwendeter Capabilities:
