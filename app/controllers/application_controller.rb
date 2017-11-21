@@ -17,7 +17,11 @@ class ApplicationController < ActionController::Base
         news = News.new_items(u)
         u.last_login = Time.now
         u.save
-        redirect_to user_groups_path(u), notice: news.empty? ? "Eingeloggt als #{u.email}" : news.join("<br/><br/>")
+        if u.complete?
+          redirect_to user_groups_path(u), notice: news.empty? ? "Eingeloggt als #{u.email}" : news.join("<br/><br/>")
+        else
+          redirect_to edit_user_path(u), notice: "Eingeloggt als #{u.email} <br/> Bitte vervollständigen Sie noch Ihre persönlichen Daten, Sie helfen uns damit bei der wissenschaftlichen Begleitung von Levumi!" +  (news.empty? ? "" : "<br/>" + news.join("<br/><br/>"))
+        end
       else
         redirect_to root_url, notice: 'Benutzername oder Passwort falsch!'
       end
@@ -64,7 +68,7 @@ class ApplicationController < ActionController::Base
   def accept
     @login_user.tcaccept = DateTime.now
     @login_user.save
-    redirect_to user_groups_path(@login_user), notice: 'Viel Spaß bei der Benutzung von Levumi!'
+    redirect_to edit_user_path(@login_user), notice: 'Viel Spaß bei der Benutzung von Levumi! <br/> Bitte vervollständigen Sie noch Ihre persönlichen Daten, Sie helfen uns damit bei der wissenschaftlichen Begleitung von Levumi!'
   end
 
   def static

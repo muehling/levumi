@@ -48,6 +48,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def complete?
+    return !state.nil? && (account_type == 2 || (!school.nil? && !school.blank?)) && (account_type > 0 || !occupation.nil?)
+  end
+
   def create_test_group
     self.groups.create(:name => "Testklasse", :export => false, :archive => false, :demo => true)
   end
