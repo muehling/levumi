@@ -90,15 +90,18 @@
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict,
-          error: $('#state').html("Speichern fehlgeschlagen!"),
-          success: $('#state').html("Speichern erfolgreich!")
+          error: function() {$('#state').html("Speichern fehlgeschlagen!");},
+          success: function() {$('#state').html("Speichern erfolgreich!");}
       });
       <%else%>
       dict["results"] = currentStudent + ",times#" + currentResult.substr(0, currentResult.length-1) + "#" + currentTimes.substr(0, currentTimes.length-1);
       $.ajax({
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
-          data: dict
+          data: dict,
+          timeout: 5000,
+          success: function() {$('#btn'+ currentStudent).addClass('btn-success'); $('#error').addClass('hidden');},
+          error: function() {$('#error').removeClass('hidden');}
       });
       <%end%>
   }

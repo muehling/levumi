@@ -12,6 +12,13 @@
           <%if (!@measurement.assessment.test.time.nil?)%><br/> Die Zeit von <%= @measurement.assessment.test.time %> Sekunden läuft dann kurz nach dem Klick auf "Test starten" los!<%end%></p>
       </div>
     </div>
+    <div id="error" class="hidden">
+      <div class="alert alert-danger">
+        <p>Speichern fehlgeschlagen!<br/>
+          Bitte überprüfen Sie die Internetverbindung. Falls das Problem weiterhin besteht, kontaktieren Sie uns bitte!<br/>
+          Sie können den Test erneut durchführen.</p>
+      </div>
+    </div>
 
     <div class="row">
       <% @measurement.results.each do |r| %>
