@@ -47,16 +47,28 @@ class ApplicationController < ActionController::Base
   end
 
   def signup
+    if params["name"].blank? || params["email"].blank? || params["state"].blank?
+      flash['notice'] = "Bitte füllen Sie alle Felder aus!"
+      render 'signup', layout: 'bare' and return
+    end
+    if params["account_type"] == "0" && (params["school"].blank? || params["occupation"].blank?)
+      flash['notice'] = "Bitte füllen Sie alle Felder aus!"
+      render 'signup', layout: 'bare' and return
+    end
+    if params["account_type"] == "1" && (params["school"].blank?)
+      flash['notice'] = "Bitte füllen Sie alle Felder aus!"
+      render 'signup', layout: 'bare' and return
+    end
     password = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
     @user = User.new(email: params[:email], name: params[:name], account_type: params[:account_type], password: password, password_confirmation: password)
+    @user.school = params["school"] if params.has_key?("school")
+    @user.occupation = params["occupation"] if params.has_key?("occupation")
+    @user.state = params["state"] if params.has_key?("state")
     if @user.save
       UserMailer.registered(@user.email, @user.name, password).deliver_later
       render 'registered', layout: 'bare'
     else
       error = ''
-      unless @user.errors['name'].blank?
-        error = "Name darf nicht leer sein!"
-      end
       unless @user.errors['email'].blank?
         error = 'E-Mail Adresse ungültig oder bereits registriert!'
       end

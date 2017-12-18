@@ -222,7 +222,7 @@ de:
         password_confirmation: Passwort-Bestätigung
         account_type: Kontotyp
         state: Bundesland
-        occupation: Angestellt als
+        occupation: Tätigkeit
       student:
         name: Name/Code
         birthdate: Geburtsdatum
