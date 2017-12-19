@@ -90,7 +90,17 @@
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
           data: dict,
-          error: function() {$('#state').html("Speichern fehlgeschlagen!");},
+          timeout: 2000,
+          error: function() {       //Resend data once
+            $.ajax({
+              type: "PUT",
+              url: "<%= user_group_assessment_measurement_results_path(@student.group.user, @student.group, @measurement.assessment, @measurement)%>",
+              data: dict,
+              timeout: 3000,
+              error: function() {$('#state').html("Speichern fehlgeschlagen!");},
+              success: function() {$('#state').html("Speichern erfolgreich!");}
+            });
+          },
           success: function() {$('#state').html("Speichern erfolgreich!");}
       });
       <%else%>
@@ -99,9 +109,18 @@
           type: "PUT",
           url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
           data: dict,
-          timeout: 5000,
+          timeout: 2000,
           success: function() {$('#btn'+ currentStudent).addClass('btn-success'); $('#error').addClass('hidden');},
-          error: function() {$('#error').removeClass('hidden');}
+          error: function() {   //Resend data once
+            $.ajax({
+              type: "PUT",
+              url: "<%= user_group_assessment_measurement_results_path(@user, @group, @assessment, @measurement)%>",
+              data: dict,
+              timeout: 3000,
+              success: function() {$('#btn'+ currentStudent).addClass('btn-success'); $('#error').addClass('hidden');},
+              error: function() {$('#error').removeClass('hidden');}
+            });
+          }
       });
       <%end%>
   }
