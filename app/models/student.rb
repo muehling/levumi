@@ -159,7 +159,7 @@ class Student < ActiveRecord::Base
     #only return measurements which are not worked and out of date
     m = Measurement.
         where(:assessment => a).
-        where("date >?", Date.today)
+        where("date > ?", Date.yesterday)
     r = Result.
         where(:measurement => m).
         where(:student_id => self.id).

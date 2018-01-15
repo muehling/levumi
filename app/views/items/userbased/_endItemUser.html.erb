@@ -31,7 +31,6 @@
 <script>
     var tempPic = (document.getElementById('pic'));
     var tempStatus = (document.getElementById('status'));
-    var tempStudentButton = (document.getElementById('btn'+ currentStudent));
     if (lastResults[currentStudent] >= 0 && lastResults[currentStudent] < currentResult.split('1').length)
         tempPic.src = '/images/shared/Levumi-jubelt.gif';
     else if(lastResults[currentStudent] == -1)
@@ -39,9 +38,8 @@
     else
         tempPic.src = '/images/shared/Levumi-weiterlesen.gif';
     if (timedout)
-        tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
+        tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster nun schließen.';
     else
-        tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster nun schließen.';
-    tempStudentButton.classList.add('btn-success');
+        tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster nun schließen.';
     $('#mainModalHeader').html(students[currentStudent]);
 </script>

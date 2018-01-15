@@ -46,7 +46,7 @@ class ResultsController < ApplicationController
         unless @result.nil?
           @result.parse_csv(parts[1])
           @result.parse_data(labels[1, labels.length-1], parts[2, parts.length-1]) if parts.length > 2
-          render nothing: true
+          head 200
         end
       else
         if results.has_key?("students")       #Update comes from editing form

@@ -221,6 +221,8 @@ de:
         password: Passwort
         password_confirmation: Passwort-Bestätigung
         account_type: Kontotyp
+        state: Bundesland
+        occupation: Tätigkeit
       student:
         name: Name/Code
         birthdate: Geburtsdatum

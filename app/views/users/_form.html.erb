@@ -1,4 +1,4 @@
-<%= form_for(@user, :html => {:class => "form"}) do |f| %>
+<%= form_for(@user, html: {class: "form"}) do |f| %>
     <% if @user.errors.any? %>
         <div class="alert alert-danger">
             <% @user.errors.full_messages.each do |message| %>
@@ -8,26 +8,34 @@
     <% end %>
 
     <div class="form-group">
-      <%= f.label :name, :class => "control-label" %><br>
-      <%= f.text_field :name, :class => "form-control" %>
+      <%= f.label :name, class: "control-label" %><br>
+      <%= f.text_field :name, class: "form-control" %>
     </div>
     <div class="form-group">
-      <%= f.label :email, :class => "control-label" %><br>
-      <%= f.text_field :email, :class => "form-control" %>
+      <%= f.label :email, class: "control-label" %><br>
+      <%= f.text_field :email, class: "form-control" %>
     </div>
-    <% if @login_user.hasCapability?("user") || @user.account_type != 2 %>
+    <% if @user.account_type != 2 %>
       <div class="form-group">
-        <%= f.label :school, :class => "control-label" %><br>
-        <%= f.text_field :school, :class => "form-control" %>
+        <%= f.label :school, class: "control-label" %><br>
+        <%= f.text_field :school, class: "form-control" %>
+      </div>
+      <div class="form-group">
+        <%= f.label :occupation, class: "control-label" %><br>
+        <%= f.select(:occupation, occupation, {}, {class: "form-control"}) %>
       </div>
     <% end %>
     <div class="form-group">
-      <%= f.label :password, :class => "control-label" %><br>
-      <%= f.password_field :password, :class => "form-control" %>
+      <%= f.label :state, class: "control-label" %><br>
+      <%= f.select(:state, federal_states, {}, {class: "form-control"}) %>
     </div>
     <div class="form-group">
-      <%= f.label :password_confirmation, :class => "control-label" %><br>
-      <%= f.password_field :password_confirmation, :class => "form-control" %>
+      <%= f.label :password, class: "control-label" %><br>
+      <%= f.password_field :password, class: "form-control" %>
+    </div>
+    <div class="form-group">
+      <%= f.label :password_confirmation, class: "control-label" %><br>
+      <%= f.password_field :password_confirmation, class: "form-control" %>
     </div>
     <% if @login_user.hasCapability?("user") %>
       <div class="form-group">
