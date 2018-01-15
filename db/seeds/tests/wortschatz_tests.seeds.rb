@@ -111,7 +111,7 @@ er
 gerade
 }
 
-cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN2 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "SW2", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 2", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -360,7 +360,7 @@ wenn
 }
 
 
-cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN4 = TestCBM.create(name: "Sichtwortschatz", len: items.size, info: "", short_info: "SW4", time: 60, subject: "Deutsch", construct: "Wortschatz", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save

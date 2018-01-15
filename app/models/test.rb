@@ -33,10 +33,10 @@ class Test < ActiveRecord::Base
 
   def draw_items(first)
     itemset = Array.new
-    if first
+    if first                          #Erste Ziehung: Feste Reihenfolge (nach ID in Datenbank)
       itemset = content_items
     else
-      content_items.length.times do   # Don't use len to avoid items start and end items (itemtype > 0 or itemtype <0) 
+      content_items.length.times do   # Folgende Ziehungen: Zufällig permutieren
         remaining = content_items - itemset
         itemset = itemset + [remaining.sample]
       end
@@ -76,7 +76,7 @@ class Test < ActiveRecord::Base
       FROM tests JOIN assessments ON tests.id = test_id
         JOIN groups ON groups.id = group_id
         JOIN users ON users.id = user_id
-      WHERE export = 1
+      WHERE export = \"t\"
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}
@@ -91,7 +91,7 @@ class Test < ActiveRecord::Base
       FROM measurements JOIN assessments ON assessments.id = assessment_id
         JOIN groups ON groups.id = group_id
         JOIN users ON users.id = user_id
-      WHERE export = 1
+      WHERE export = \"t\"
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}
@@ -107,7 +107,7 @@ class Test < ActiveRecord::Base
         JOIN assessments ON assessments.id = assessment_id
         JOIN groups ON groups.id = group_id
         JOIN users ON users.id = user_id
-      WHERE export = 1
+      WHERE export = \"t\"
       GROUP BY test_id;
     ")
     ids = temp.map{|x| x["test_id"]}

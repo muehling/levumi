@@ -41,6 +41,18 @@ class Student < ActiveRecord::Base
     return self[:migration].nil? ? (raw ? "nicht erfasst" : "<i>nicht erfasst</i>") : (self[:migration] ? "Ja" : "Nein")
   end
 
+  def get_account_type(val)
+    if val.nil?
+      return "nicht erfasst"
+    else
+      return case val
+        when 0 then "Lehrkraft"
+        when 1 then "Forscher"
+        when 2 then "Privat/System"
+      end
+    end
+  end
+
 
   #####################
 
@@ -56,11 +68,11 @@ class Student < ActiveRecord::Base
   end
 
   def self.table_headings
-    return %w{ID Code Klassen-Id Klassen-Name Benutzer-Id Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
+    return %w{Kind-ID Code Klassen-Id Klassen-Name Benutzer-Id Benutzertyp Geschlecht Geburtsdatum Förderbedarf Migrationshintergrund}
   end
 
   def to_a
-    return [id.to_s, name, group.id, group.name, group.user.id, get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
+    return [id.to_s, name, group.id, group.name, group.user.id, get_account_type(group.user.account_type), get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
 
   def self.import(file, group)

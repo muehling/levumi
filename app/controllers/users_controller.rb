@@ -22,7 +22,7 @@ class UsersController < ApplicationController
         if @login_user.nil? || (!@login_user.hasCapability?("export") && (@user.id != @login_user.id))
           redirect_to root_url
         else
-          send_file Result.to_xls(nil, @user.id), filename: @user.name + " - Export.csv", type: "application/vnd.ms-excel"
+          send_file Result.to_xls(@user.id), filename: @user.name+" " +Time.now.to_date.strftime("%d-%m-%y")+ ".xls", type: "application/vnd.ms-excel"
         end
       }
       format.text {
@@ -48,7 +48,6 @@ class UsersController < ApplicationController
   # POST /users.json
   def create
     @user = User.new(user_params)
-
     respond_to do |format|
       if @user.save
         format.html { redirect_to users_url, notice: 'Benutzer wurde angelegt.' }
@@ -62,16 +61,37 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     respond_to do |format|
-      if @user.update(user_params)
+      if params.has_key?('text') && @login_user.id == @user.id       #Send mail to all users
         format.html {
-          if @login_user.id != @user.id
-            redirect_to users_path
-          else
-            redirect_to @user
+          if params.has_key?('teacher')
+            User.where(account_type: 0).each do |u|
+              UserMailer.notify(u.email, u.name, params['text']).deliver_later
+            end
           end
+          if params.has_key?('researcher')
+            User.where(account_type: 1).each do |u|
+              UserMailer.notify(u.email, u.name, params['text']).deliver_later
+            end
+          end
+          if params.has_key?('other')
+            User.where(account_type: 2).each do |u|
+              UserMailer.notify(u.email, u.name, params['text']).deliver_later
+            end
+          end
+          redirect_to users_url, notice: 'Nachricht wurde verschickt.'
         }
       else
-        format.html { render :edit }
+        if @user.update(user_params)
+          format.html {
+            if @login_user.id != @user.id
+              redirect_to users_path
+            else
+              redirect_to @user
+            end
+          }
+        else
+          format.html { render :edit }
+        end
       end
     end
   end
