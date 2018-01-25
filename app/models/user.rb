@@ -102,5 +102,3 @@ class User < ActiveRecord::Base
     return Hash[ids.zip(count)]
   end
 end
-
-

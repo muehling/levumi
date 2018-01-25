@@ -12,6 +12,7 @@ class Item < ActiveRecord::Base
     return %w{ID Kurztext Kategorie}
   end
 
+  #TODO difficulty in category umbenennen
   def to_a
     return [id.to_s, shorthand, self.difficulty.nil? ? "": self.difficulty]
   end
