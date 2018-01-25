@@ -151,7 +151,7 @@ class Result < ActiveRecord::Base
         JOIN tests ON tests.id = test_id
         JOIN groups ON groups.id = assessments.group_id
         JOIN users ON users.id = user_id
-      WHERE export = \"t\"
+      WHERE export = 1
     "
 
     unless test.nil?
@@ -275,7 +275,7 @@ class Result < ActiveRecord::Base
           end
         end
         # Find the abbreviation of the test to write it with item ids, like SEL_2343
-        abbrev = Test.where(:name => testname.split(" - ")[0], :level => testname.split(" - ")[1]).select(:short_info).first.short_info
+        abbrev = Test.where(:name => testname.split(" - ")[0], :level => testname.split(" - ")[1]).select(:shorthand).first.shorthand
         abbrev.nil? ? abbrev = testname : ""
         arr = arr.map{|x| x.to_s.prepend(abbrev + "_")} 
         sheets[key].row(0).concat arr
@@ -291,7 +291,7 @@ class Result < ActiveRecord::Base
         JOIN tests ON tests.id = test_id
         JOIN groups ON groups.id = assessments.group_id
         JOIN users ON users.id = user_id
-      WHERE export = \"t\" and tests.archive = \"f\" 
+      WHERE export = 1 and tests.archive = 0
     "
 
     unless user.nil?
@@ -364,7 +364,7 @@ class Result < ActiveRecord::Base
       SELECT measurements.id FROM measurements 
       JOIN assessments on assessments.id=measurements.assessment_id
       JOIN groups on assessments.group_id = groups.id
-      WHERE assessments.test_id = #{test} AND export=\"t\"
+      WHERE assessments.test_id = #{test} AND export=1
       ORDER BY date ASC;")
 
     idStudents = [] # save ids of students in the current test
@@ -413,7 +413,7 @@ class Result < ActiveRecord::Base
             sheet.row(0).concat Student.table_headings
             sheet.row(0).push "Messzeitpunkt"
             sheet.row(0).push " "
-            sheet.row(0).concat itemset_ids.map{|x| x.to_s.prepend(Test.where(:id => test).first.short_info + "_")}
+            sheet.row(0).concat itemset_ids.map{|x| x.to_s.prepend(Test.where(:id => test).first.shorthand + "_")}
           elsif correspondingMZP < currentSheetNumber || correspondingMZP > currentSheetNumber 
             sheet = sheets[correspondingMZP]
             currentSheetNumber = correspondingMZP

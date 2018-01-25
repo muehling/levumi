@@ -48,7 +48,7 @@ Sch
 G
 }
 
-cbmN1 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "BE1", subject: "Deutsch", construct: "Leseflüssigkeit", 
+cbmN1 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", shorthand: "BE1", subject: "Deutsch", construct: "Leseflüssigkeit", 
 	level: "Niveaustufe 1", archive: false, type_info:"Screening",  student_access: false)
 it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -139,7 +139,7 @@ Eu
 Ü
 }
 
-cbmN2 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", short_info: "BE2", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2", type_info:"Screening", archive: false, student_access: false)
+cbmN2 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", shorthand: "BE2", subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2", type_info:"Screening", archive: false, student_access: false)
 
 it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save

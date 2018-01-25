@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 
-tN1 = Test.create(name: "Zahlen lesen", len: 11, info: "", short_info: "ZL1", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 1",type_info:"Speed-Test", archive: false, student_access: false)
+tN1 = Test.create(name: "Zahlen lesen", len: 11, info: "", shorthand: "ZL1", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 1",type_info:"Speed-Test", archive: false, student_access: false)
 
 it = tN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -16,7 +16,7 @@ it.save
 
 tN1.save
 
-tN2 = Test.create(name: "Zahlen lesen", len: 21, info: "", short_info: "ZL2", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 2", type_info:"Speed-Test", archive: false, student_access: false)
+tN2 = Test.create(name: "Zahlen lesen", len: 21, info: "", shorthand: "ZL2", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 2", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = tN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -32,7 +32,7 @@ it.save
 
 tN2.save
 
-tN3 = Test.create(name: "Zahlen lesen", len: 80, info: "", short_info: "ZL3", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 3", type_info:"Speed-Test", archive: false, student_access: false)
+tN3 = Test.create(name: "Zahlen lesen", len: 80, info: "", shorthand: "ZL3", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 3", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = tN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -47,7 +47,7 @@ it.save
 
 tN3.save
 
-tN4 = Test.create(name: "Zahlen lesen", len: 100, info: "", short_info: "ZL4", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
+tN4 = Test.create(name: "Zahlen lesen", len: 100, info: "", shorthand: "ZL4", time: 60, subject: "Mathematik", construct: "Zahlen lesen", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = tN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
