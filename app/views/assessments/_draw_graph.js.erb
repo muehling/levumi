@@ -8,14 +8,16 @@ var chart = c3.generate({
                 '<%= m.date.to_date %>',
                 <% end %>
             ],
+            <% max = 1 %>
             <% @group.students.each do |student| %>
             ['<%= student.name %>',
                 <% @assessment.measurements.each do |m| %>
                 <% r = m.results.find_by_student_id(student.id) %>
-                <% unless r.nil? %>
-                <%= r.score.nil? ? "null" : r.score %>
-                <% else %>
+                <% if r.nil? || r.score.nil?  %>
                 null
+                <% else %>
+                <% max = r.score if r.score > max %>
+                <%= r.score %>
                 <% end %>,
                 <% end %>
             ],
@@ -39,7 +41,8 @@ var chart = c3.generate({
                 text: 'Anzahl richtiger Items',
                 position: 'outer-middle'
             },
-            min: 1
+            min: 1,
+            max: <%= max %>
         }
     },
     line: {
