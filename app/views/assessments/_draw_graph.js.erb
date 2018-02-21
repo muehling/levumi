@@ -47,13 +47,29 @@ var chart = c3.generate({
     },
     tooltip: {
         contents: function (d, defaultTitleFormat, defaultValueFormat, color) {
-            var res = "<table class='table table-condensed' style='background-color:white'><thead><th></th><th >Schüler/-in</th><th>Punkte</th><tbody>";
-            var i = 0;
-            d.sort(function(a, b){return b.value - a.value});
-            for (i = 0; i < d.length; i++)
-                if (d[i].value != null)
-                    res = res + "<tr><td><span class='glyphicon glyphicon-stop' style='color:" + color(d[i]) + "'></span></td><td>" + d[i].name + "</td><td>" + d[i].value + "</td></tr>";
-            res = res + "</tbody></table>";
+            var res = "<table border=0><tr>";
+            d.sort(function (a, b) {
+                return b.value - a.value
+            });
+            var s = 0;
+            while (s < d.length) {
+                res = res + "<td valign='top'><table class='table table-condensed' style='background-color:white'><thead><th></th>";
+                if (s == 0)
+                    res = res + "<th>Schüler/-in</th><th>Punkte</th><tbody>";
+                else
+                    res = res + "<th>&nbsp;</th><th>&nbsp;</th><tbody>";
+                var i = 0;
+                for (i = 0; i < 10; i++) {
+                    while (s < d.length && d[s].value == null)
+                      s++;
+                    if (s < d.length) {
+                        res = res + "<tr><td><span class='glyphicon glyphicon-stop' style='color:" + color(d[s]) + "'></span></td><td>" + d[s].name + "</td><td>" + d[s].value + "</td></tr>";
+                        s++;
+                    }
+                }
+                res = res + "</tbody></table></td>";
+            }
+            res = res + "</tr></table>";
             return res;
         }
     }

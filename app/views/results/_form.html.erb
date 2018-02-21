@@ -120,7 +120,7 @@
             <% (@group.students - @measurement.students).each do |s| %>
                 <div class="checkbox">
                   <label>
-                    <%= check_box_tag "results[students[#{s.name}]]", s.id, false %> <%= "#{s.name}}" %><br/>
+                    <%= check_box_tag "results[students[#{s.name}]]", s.id, false %> <%= "#{s.name}" %><br/>
                   </label>
                 </div>
             <% end %>
