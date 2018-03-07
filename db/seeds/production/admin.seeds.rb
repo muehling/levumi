@@ -14,7 +14,7 @@ pw = STDIN.gets.strip
 STDOUT.puts "Re-enter password for admin:"
 pwc = STDIN.gets.strip
 
-u = User.create(email: email, password: pw, password_confirmation: pwc, name: "Administrator", capabilities:"admin")
+u = User.create(email: email, password: pw, password_confirmation: pwc, name: "Administrator", capabilities:"admin", state:15, account_type: 2)
 if u.save
   STDOUT.puts "Admin account created!"
 else

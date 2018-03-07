@@ -9,8 +9,13 @@
   th, b{
     font-size: 10px;
   }
+  thead { display: table-header-group }
+  tfoot { display: table-row-group }
+  tr { page-break-inside: avoid }
 
-  .panel {page-break-after:always}
+
+
+  .panel {page-break-after:auto}
 
   .c3-line-student {
     stroke-width: 3px;
@@ -34,3 +39,4 @@
     <%= render file: 'students/_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
   <% end %>
 </script>
+
