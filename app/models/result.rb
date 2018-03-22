@@ -207,7 +207,7 @@ class Result < ActiveRecord::Base
     itemSets = {} # contains test names as keys and 2d-array as a value. Each array contains the items of a level
     row = 1
     rowAlle = 1
-
+    test_abbrev = {} # Contains shortnames of tests as key and shorthands as values
 
     # Get all tests to export
     #Joined with assessents to select just tests with results, also avoid empty tests
@@ -223,6 +223,7 @@ class Result < ActiveRecord::Base
     # Create one sheet for each test
     tests.each do |t|
       name = t.name
+      test_abbrev[t.short_name] = t.shorthand.nil? ? "": t.shorthand
       sheet = nil
       unless sheets.key? name
         sheet = book.create_worksheet name: t.name
@@ -274,10 +275,7 @@ class Result < ActiveRecord::Base
             testname = k;
           end
         end
-        # Find the abbreviation of the test to write it with item ids, like SEL_2343
-        abbrev = Test.where(:name => testname.split(" - ")[0], :level => testname.split(" - ")[1]).select(:shorthand).first.shorthand
-        abbrev.nil? ? abbrev = testname : ""
-        arr = arr.map{|x| x.to_s.prepend(abbrev + "_")} 
+        arr = arr.map{|x| x.to_s.prepend(test_abbrev[testname] + "_")} 
         sheets[key].row(0).concat arr
         sheets[key].row(0).push " "
       end
