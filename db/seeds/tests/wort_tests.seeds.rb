@@ -43,7 +43,7 @@ Mia
 Lora
 }
 
-cbmN1 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN1 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", shorthand: "WL1", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 1", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN1.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -108,7 +108,7 @@ lesen
 Meise
 }
 
-cbmN2a = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN2a = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", shorthand: "WL2a", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2a", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN2a.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -215,7 +215,7 @@ groups = %i{
 17
 }
 
-cbmN2b = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN2b = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", shorthand: "WL2b", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 2b", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN2b.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -360,7 +360,7 @@ groups = %i{
 14
 }
 
-cbmN3 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN3 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", shorthand: "WL3", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 3", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN3.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save
@@ -441,7 +441,7 @@ Kunst
 Gelder
 }
 
-cbmN4 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", short_info: "(c) Dr. Diehl ISER, Uni-Rostock", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
+cbmN4 = TestCBM.create(name: "Wörter lesen", len: items.size, info: "(c) Dr. Diehl ISER, Uni-Rostock", shorthand: "WL4", time: 60, subject: "Deutsch", construct: "Leseflüssigkeit", level: "Niveaustufe 4", type_info:"Speed-Test", archive: false, student_access: false)
 
 it = cbmN4.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save

@@ -39,11 +39,11 @@ class Result < ActiveRecord::Base
   #Parses a String or additional data in the form "a,b,c" where each entry denotes the data for an item. The data is stored under the labels given in "labels" also in the form "x,y,z".
   def parse_data(labels, data)
     labels.length.times do |i|
-      vals = data[i].split(',')
+      vals = (data[i] + ",").split(/(,)/).delete_if{ |e| e == ","}   #Keep empty parts as well, especially also if the last entry is empty.
       if (labels[i] == "times")
         self.extra_data["times"] = vals.map{|x| x.to_i}
       else
-        self.extra_data[labels[i]] = vals   # Problem: Leere Eingaben am Ende führen zu zu kurzem Feld.
+        self.extra_data[labels[i]] = vals
       end
     end
     save
@@ -193,17 +193,13 @@ class Result < ActiveRecord::Base
 
   #TODO: Aus Klasse Export übernommen und angepasst. Geht teilweise vielleicht auch noch kürzer.
   #Creates an XLS file containing a SPSS-friendly spreadsheet representation of a set of results objects. Information about students is also included.
-  #To restrict the export to a single test or a single user pass either a test id or user id as parameter. Use nil to indicate every test/every user.
-  def self.to_xls(test, user)
+  #To restrict the export to a single user pass user id as parameter. Use nil to indicate every user. 
+  # For a specific test use to_xls_test
+  def self.to_xls(user)
     book = Spreadsheet::Workbook.new
     sheet1 = book.create_worksheet name: 'Items'
     sheetAlle = book.create_worksheet name: 'Alle Messungen - RZ'         #Without Reaktionszeiten
     sheetAlleRZ = book.create_worksheet name: 'Alle Messungen + RZ'  #With Reaktionszeiten
-
-    sheetAlle.row(0).concat Student.table_headings
-    sheetAlle.row(0).push "Messzeitpunkt"
-    sheetAlleRZ.row(0).concat Student.table_headings
-    sheetAlleRZ.row(0).push "Messzeitpunkt"
     sheet1.row(0).concat Item.table_headings
 
     sheets = {} # contains all sheets, e.g. "Lesetest", "Mathetest" and so on.
@@ -211,12 +207,23 @@ class Result < ActiveRecord::Base
     itemSets = {} # contains test names as keys and 2d-array as a value. Each array contains the items of a level
     row = 1
     rowAlle = 1
+    test_abbrev = {} # Contains shortnames of tests as key and shorthands as values
 
-    # Get items of each test without redundancy. Needed to put many assessments in one sheet
-    tests = test.nil? ? Test.where(archive: false) : [Test.find(test)]
+    # Get all tests to export
+    #Joined with assessents to select just tests with results, also avoid empty tests
+    tests = 
+      unless user.nil?  # select just tests of user, not all tests
+          Test.joins("inner join assessments on assessments.test_id=tests.id 
+            inner join groups on groups.id=assessments.group_id 
+            inner join users on groups.user_id=#{user}")
+      else
+          Test.where(archive: false).joins(:assessments) 
+      end
 
+    # Create one sheet for each test
     tests.each do |t|
       name = t.name
+      test_abbrev[t.short_name] = t.shorthand.nil? ? "": t.shorthand
       sheet = nil
       unless sheets.key? name
         sheet = book.create_worksheet name: t.name
@@ -227,7 +234,7 @@ class Result < ActiveRecord::Base
 
       ids = t.items.where(itemtype: 0).pluck(:id)
 
-      #To avoid the redundancy the items of each test will be saved. The level or test can't help us, because
+      # To avoid the redundancy the items of each test will be saved. The level or test can't help us, because
       # one level in the same test could have different items-group
       if allItems.key?(t.short_name)
         unless allItems[t.short_name].include?([ids])
@@ -262,22 +269,18 @@ class Result < ActiveRecord::Base
       value.each do |a|
         testname = ''
         arr = a.flatten
+        # Get test name and level
         allItems.each do |k,v|
           if v.include? arr
             testname = k;
           end
         end
-        arr = arr.map{|x| x.to_s.prepend(testname)} #Evtl. anders?
+        arr = arr.map{|x| x.to_s.prepend(test_abbrev[testname] + "_")} 
         sheets[key].row(0).concat arr
         sheets[key].row(0).push " "
-        sheetAlle.row(0).concat arr
-        sheetAlle.row(0).push " "
-        sheetAlleRZ.row(0).concat arr
-        sheetAlleRZ.row(0).push " "
       end
       row = row + 1
     end
-
     statement = "
       SELECT results.id, test_id, tests.name, date, student_id
       FROM results JOIN measurements ON measurements.id = measurement_id
@@ -289,54 +292,162 @@ class Result < ActiveRecord::Base
       WHERE export = 1 and tests.archive = 0
     "
 
-    unless test.nil?
-      statement = statement + " AND tests.id = #{test}"
-    end
     unless user.nil?
       statement = statement + " AND users.id = #{user}"
     end
     statement = statement + ";"
     temp = ActiveRecord::Base.connection.exec_query(statement)
-
     temp.each do |r|
       test = r["name"]
-      sheet = sheets[test]
-      row = sheet.last_row_index + 1
       itemset = Test.find(r["test_id"]).items.where(itemtype: 0).pluck(:id)
+      res = Result.find(r["id"]).to_a(itemset)
 
-      # Needed just for the sheet 'Alle Messungen'
-      indexOfArrayAll = itemSets.values.flatten(1).index([itemset])
-      rightColumnAll = indexOfArrayAll + itemSets.values.flatten(1).first(indexOfArrayAll).flatten.size + Student.table_headings.length
+      if res.any?(&:present?) 
+        sheet = sheets[test]
+        row = sheet.last_row_index + 1
 
-      # get the right index to put values under the corresponding column
-      indexOfArray = itemSets[test].index([itemset])  # get index of the corresponding items array
-      rightColumn = indexOfArray + itemSets[test].first(indexOfArray).flatten.size  # length of all preceeded arrays plus number of blanks between each two sets
+        # get the right index to put values under the corresponding column
+        indexOfArray = itemSets[test].index([itemset])  # get index of the corresponding items array
+        proceeded = itemSets[test].first(indexOfArray).flatten.size # length of all preceeded arrays
+        rightColumn = indexOfArray + proceeded + 11   # number of blanks between each two sets + length of proceeded arrays + 11 (first 11 columns of data like id, klasse, etc.) 
 
-      s = Student.find(r["student_id"]).to_a
-      d = r["date"].to_date.strftime("%d.%m.%Y")
-      res = Result.find(r["id"])
+        s = Student.find(r["student_id"]).to_a
+        d = r["date"].to_date.strftime("%d.%m.%Y")
+        sheet.row(row).concat s
+        sheet.row(row).push d
+        sheet.row(row)[rightColumn] = " "
+        sheet.row(row).concat res
+        row = row +1
+      end
+    end
+  
+    globalRow = 0
+    sheets.each do |name, sheet|
+      sheet.each do |row|
+        sheetAlleRZ.insert_row globalRow, row
+        if(row[0] == "Kind-ID" || row[0].blank?)
+          sheetAlle.insert_row globalRow, row
+        else
+          sheetAlle.insert_row globalRow, row[0,12]
+          sheetAlle.row(globalRow).concat row.drop(12).map { |x| x.blank? ? "" : (x.to_i > 0 ? x = 1 : x = 0)}
+        end
+        globalRow = globalRow + 1
+      end
+      sheetAlleRZ.insert_row globalRow, [' ']
+      sheetAlle.insert_row globalRow, [' ']
+      globalRow = globalRow +1
+    end
+    
+    temp = Tempfile.new('levumi')
+    temp.close
+    book.write temp.path
+    return temp.path
+  end
 
-      sheet.row(row).concat s
-      sheet.row(row).push d
-      sheet.row(row).push "  "
-      sheet.row(row)[rightColumn] = " "
-      sheet.row(row).concat res.to_a(itemset)
-      row = row +1
-      # Print results in the first sheet 'Alle Messungen'
-      sheetAlle.row(rowAlle).concat s
-      sheetAlle.row(rowAlle).push d
-      sheetAlle.row(rowAlle)[rightColumnAll] = " "
-      sheetAlle.row(rowAlle).concat res.to_a(itemset).map! { |x| x == '' ? "" : (x.to_i > 0 ? x = 1 : x = 0)}
-      sheetAlleRZ.row(rowAlle).concat s
-      sheetAlleRZ.row(rowAlle).push d
-      sheetAlleRZ.row(rowAlle)[rightColumnAll] = " "
-      sheetAlleRZ.row(rowAlle).concat res.to_a(itemset)
-      rowAlle = rowAlle + 1
+
+
+  # This method craetes the "Nach Test" sheets 
+  # notice: the sheets of MZP do not have students who attended that MZP, but
+  # students who attend for the first time, perhaps a student firstly attended at MZP 5, however the result should be shown in MZP1
+  def self.to_xls_test(test)
+    book = Spreadsheet::Workbook.new
+    sheet1 = book.create_worksheet name: 'Items'
+    sheetAlle = book.create_worksheet name: 'Alle Messungen - RZ'         #Without Reaktionszeiten
+    sheetAlleRZ = book.create_worksheet name: 'Alle Messungen + RZ'  #With Reaktionszeiten
+    sheets = {}  # hash to save all sheets to print them at the end in sheetAlleRZ and sheetAlle
+
+    sheet1.row(0).concat Item.table_headings
+    # Get all measurements of a specific test
+    measurements = ActiveRecord::Base.connection.exec_query("
+      SELECT measurements.id FROM measurements 
+      JOIN assessments on assessments.id=measurements.assessment_id
+      JOIN groups on assessments.group_id = groups.id
+      WHERE assessments.test_id = #{test} AND export=1
+      ORDER BY date ASC;")
+
+    idStudents = [] # save ids of students in the current test
+    studentIDToSheet = [] # to get the index of next sheet of a specific student
+                          # It helps to assignt the result to the corresponding MZP
+
+    # loop over each measurement to create a sheet and print all results
+    sheetNumber = 0     # continuous value, needed for writing the number of the sheet 
+    itemset = Item.where(:test_id => test).where(itemtype: 0)
+    # Print items to items sheet
+    i = 1
+    itemset.each do |it|
+      sheet1.row(i).concat it.to_a
+      i += 1
+    end 
+    itemset_ids = itemset.pluck(:id)
+    measurements.each do |r|
+      id = r["id"]
+      res = Result.where(:measurement_id => id)
+      firstResult = true    # new measurement?
+      sheet = nil    # to be accessible out of the loop, not assigned now
+                     # Best case: every measurement has its own sheet wheen all students attend every measurement
+                     # BUT, when a student comes later, the sheet should be correspondingly changed!!!
+      currentSheetNumber = -1 # needed by changing the sheet
+      i = 1
+      res.each do |result| 
+        responses_of_result = result.to_a(itemset_ids)  # Needed to exclude measurements with no results
+          # The sheet will be firstly created after detecting real results
+          # Sometimes there is results but they are empty
+        if responses_of_result.any?(&:present?)
+          studentID = result.student_id 
+          unless idStudents.include? studentID
+            idStudents << studentID
+            studentIDToSheet << 1
+          end 
+          indexOfID = idStudents.index(studentID)
+          correspondingMZP = studentIDToSheet[indexOfID]
+
+          # change current sheet only if the result should be in another sheet
+          # NOTE: This occurs only in case of a student started later
+          if correspondingMZP > sheetNumber
+            sheetNumber +=1
+            sheet = book.create_worksheet :name => "MZP #{sheetNumber}"
+            sheets[sheetNumber] = sheet
+            currentSheetNumber = sheetNumber
+            sheet.row(0).concat Student.table_headings
+            sheet.row(0).push "Messzeitpunkt"
+            sheet.row(0).push " "
+            sheet.row(0).concat itemset_ids.map{|x| x.to_s.prepend(Test.where(:id => test).first.shorthand + "_")}
+          elsif correspondingMZP < currentSheetNumber || correspondingMZP > currentSheetNumber 
+            sheet = sheets[correspondingMZP]
+            currentSheetNumber = correspondingMZP
+            i = sheet.last_row_index + 1
+          end
+          studentIDToSheet[indexOfID] += 1  # increment, so that next result should be in the next MZP-sheet 
+          sheet.row(i).concat result.student.to_a 
+          sheet.row(i).push result.measurement.date.to_date.strftime("%d.%m.%Y")
+          sheet.row(i).push " "
+          sheet.row(i).concat responses_of_result
+          i = i+1
+        end
+      end
+    end
+
+    # add results to sheetAlle and sheetAlleRZ
+    global_row = 0
+    sheets.each do |name, sheet|
+      sheet.each do |row|
+        sheetAlleRZ.insert_row global_row, row
+        if(row[0]=="Kind-ID" || row[0].blank?)
+          sheetAlle.insert_row global_row, row
+        else
+          sheetAlle.insert_row global_row, row[0,12]
+          sheetAlle.row(global_row).concat row.drop(12).map { |x| x.blank? ? "" : (x.to_i > 0 ? x = 1 : x = 0)}
+        end
+        global_row = global_row + 1
+      end
+      sheetAlleRZ.insert_row global_row, [" "]
+      sheetAlle.insert_row global_row, [" "]
+      global_row = global_row + 1
     end
 
     temp = Tempfile.new('levumi')
     temp.close
     book.write temp.path
-    return temp.path
+    return temp.path 
   end
 end

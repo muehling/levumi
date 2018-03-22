@@ -111,7 +111,7 @@ Woerter/55a.mp3
 Woerter/78a.mp3
 }
 
-dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", short_info: "", len: items.size, time: 900, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
+dicN1 = TestDictation.create(name: "Wörter schreiben", info: "", shorthand: "WS1", len: items.size, time: 900, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Level 1", archive: false)
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-7, itemview:"items/studentbased/diktattest/1hallo")
 it.save

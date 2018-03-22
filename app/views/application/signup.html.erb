@@ -2,24 +2,161 @@
   <h1><%= image_tag('Levumi-klein-blau.png', size: "120")%> Levumi  </h1>
   <h3>Lernverlaufs-Monitoring</h3>
   <br/>
-  <%= form_tag(url_for(:controller => 'application', :action => 'signup'), :class => "form") do %>
-      <div class="form-group">
-        <label class="sr-only" for="email">Email-Adresse</label>
-        <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingOne">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+            Ich bin Lehrkraft
+          </a>
+        </h4>
       </div>
-      <div class="form-group">
-        <label class="sr-only" for="email">Name</label>
-        <%= text_field_tag "name", nil, type: "text", class: "form-control", placeholder: "Name"%>
+      <div id="collapseOne" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingOne">
+        <div class="panel-body">
+          <%= form_tag(url_for(:controller => 'application', :action => 'signup'), :class => "form") do %>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Email-Adresse</label>
+                    <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <label class="sr-only" for="school">Tätigkeit</label>
+                    <%= select_tag("occupation", options_for_select(occupation), {prompt: "Tätigkeit...", class: "form-control"}) %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Name</label>
+                    <%= text_field_tag "name", nil, type: "text", class: "form-control", placeholder: "Name"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <label class="sr-only" for="state">Bundesland</label>
+                    <%= select_tag("state", options_for_select(federal_states), {prompt: "Bundesland", class: "form-control"}) %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="school">Schule</label>
+                    <%= text_field_tag "school", nil, type: "text", class: "form-control", placeholder: "Schule" %>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <%= hidden_field_tag("account_type", "0")%>
+                  <%= submit_tag 'Registrieren', :class => "btn btn-primary" %>
+                </div>
+              </div>
+          <% end %>
+        </div>
       </div>
-      <div class="form-group">
-        <label>
-          <%= radio_button_tag "account_type", '0', true %>Lehrkraft<br/>
-        </label>
-        <label>
-          <%= radio_button_tag "account_type", '2', false %>Privatperson<br/>
-        </label>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingTwo">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+            Ich bin Forscher_in
+          </a>
+        </h4>
       </div>
+      <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
+        <div class="panel-body">
+          <%= form_tag(url_for(:controller => 'application', :action => 'signup'), :class => "form") do %>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Email-Adresse</label>
+                    <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <label class="sr-only" for="state">Bundesland</label>
+                    <%= select_tag("state", options_for_select(federal_states), {prompt: "Bundesland", class: "form-control"}) %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Name</label>
+                    <%= text_field_tag "name", nil, type: "text", class: "form-control", placeholder: "Name"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="school">Institution</label>
+                    <%= text_field_tag "school", nil, type: "text", class: "form-control", placeholder: "Institution" %>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <%= hidden_field_tag("account_type", "1")%>
+                  <%= submit_tag 'Registrieren', :class => "btn btn-primary" %>
+                </div>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+    <div class="panel panel-default">
+      <div class="panel-heading" role="tab" id="headingThree">
+        <h4 class="panel-title">
+          <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+            Ich bin Elternteil/Privatperson
+          </a>
+        </h4>
+      </div>
+      <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
+        <div class="panel-body">
+          <%= form_tag(url_for(:controller => 'application', :action => 'signup'), :class => "form") do %>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Email-Adresse</label>
+                    <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <div class="form-group">
+                    <label class="sr-only" for="state">Bundesland</label>
+                    <%= select_tag("state", options_for_select(federal_states), {prompt: "Bundesland", class: "form-control"}) %>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-xs-5">
+                  <div class="form-group">
+                    <label class="sr-only" for="email">Name</label>
+                    <%= text_field_tag "name", nil, type: "text", class: "form-control", placeholder: "Name"%>
+                  </div>
+                </div>
+                <div class="col-xs-4">
+                  <%= hidden_field_tag("account_type", "2")%>
+                  <%= submit_tag 'Registrieren', :class => "btn btn-primary" %>
+                </div>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <p style="font-size: 14px">
+    Auszug aus der Datenschutzerklärung: <br/>
+    Levumi ist eine universitäre und kostenlose Plattform zur Lernverlaufsmessung, die in einem Forschungsverbund entwickelt wird.<br/>
+    Ihre Daten werden lediglich in anonymisierter Form für wissenschaftliche Zwecke ausgewertet. Wir möchten damit die Nutzung wissenschaftlich auswerten und die Nutzung verbessern.<br/>
+    Ihr Namen und ihre E-Mail Adresse werden nicht ausgewertet und dienen lediglich dazu, Sie in seltenen Fällen kontaktieren zu können, etwa bezüglich wichtiger Informationen oder weil wir Sie um Mithilfe bei unserer Forschung bitten möchten.<br/>
+    Es erfolgt <b>keine Weitergabe von Daten an Dritte</b>.
+  </p>
 
-      <%= submit_tag 'Registrieren', :class => "btn btn-primary" %>
-  <% end %>
 </div>

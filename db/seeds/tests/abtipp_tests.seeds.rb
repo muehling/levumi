@@ -1,5 +1,5 @@
-tipN0 = Test.create(name: "Tastaturschulung",len: 1, info: "Einführung in die Tastatur", short_info:
-    "Einführung in die Tastatur", subject: "Deutsch", type_info:"Tastaturschulung", construct: "Rechtschreibung", archive: false, level: "Level 0", student_access:true)
+tipN0 = Test.create(name: "Tastaturschulung",len: 1, info: "Einführung in die Tastatur", 
+	shorthand: "TS0", subject: "Deutsch", type_info:"Tastaturschulung", construct: "Rechtschreibung", archive: false, level: "Level 0", student_access:true)
 it = tipN0.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-28, mediapath: {"audios"=>["/audio/Abtipptest/Anweisungen/1a.mp3"]}, itemview:"items/studentbased/abtipptest/1hallo")
 it.save
 it = tipN0.items.build(itemtext: "Eingabetaste", difficulty: 0, itemtype:-27, mediapath: {"audios"=>["/audio/Abtipptest/Anweisungen/2a.mp3"]},itemview:"items/studentbased/abtipptest/2enter")

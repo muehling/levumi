@@ -59,7 +59,7 @@ Woerter/60a.mp3
 Woerter/79a.mp3
 }
 
-dicN1 = Test.create(name: "Wörter schreiben", info: "", type_info:"Diktiertest", short_info: "", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
+dicN1 = Test.create(name: "Wörter schreiben", info: "", type_info:"Diktiertest", shorthand: "WSK", len: items.size, time: 2400, subject: "Deutsch", construct: "Rechtschreibung", student_access:true, level: "Kurztest", archive: false)
 
 it = dicN1.items.build(itemtext: "Hallo", difficulty: 0, mediapath: {"audios"=>["/audio/Diktiertest/Anweisungen/23b.mp3"]}, itemtype:-7, itemview:"items/studentbased/diktattest/1hallo")
 it.save

@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
 
+  validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
+
   after_create :create_test_group
 
   #Liste aktuell verwendeter Capabilities:
@@ -46,6 +48,10 @@ class User < ActiveRecord::Base
         return 0
       end
     end
+  end
+
+  def complete?
+    return !state.nil? && (account_type == 2 || (!school.nil? && !school.blank?)) && (account_type > 0 || !occupation.nil?)
   end
 
   def create_test_group

@@ -9,11 +9,12 @@ class Item < ActiveRecord::Base
   serialize :mediapath, Hash
 
   def self.table_headings
-    return %w{ID Kurztext}
+    return %w{ID Kurztext Kategorie}
   end
 
+  #TODO difficulty in category umbenennen
   def to_a
-    return [id.to_s, shorthand]
+    return [id.to_s, shorthand, self.difficulty.nil? ? "": self.difficulty]
   end
 
   private
