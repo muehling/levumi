@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180125094454) do
+ActiveRecord::Schema.define(version: 20180506125803) do
 
   create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 20180125094454) do
     t.boolean  "archive"
     t.text     "type_info"
     t.string   "shorthand"
+    t.string   "evaluation_view"
   end
 
   create_table "users", force: :cascade do |t|

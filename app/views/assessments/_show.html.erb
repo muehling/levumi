@@ -29,11 +29,13 @@
             <span class="glyphicon glyphicon-print"></span>
         <% end %>
 
+        <!--TODO maybe not used, sollte dann auch nicht da sein-->
         <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Graph neu laden", :data => {:remote => true} do%>
             <span class="glyphicon glyphicon-refresh"></span>
         <% end %>
 
       </p>
+      <!-- maybe not used=> empty element/no _assessment_draw_graph.js.erb for the test-->
       <div id="chart"></div>
     </div>
   </div>
@@ -48,6 +50,7 @@
   </div>
 </div>
 
+<!--TODO hier muss das richtige gerendert werden-->
 <script type="text/javascript" charset="utf-8">
-    <%= render file: 'assessments/_draw_graph'%>
+    <%= render file: 'tests/generic_views/standard/_assessment_draw_graph'%>
 </script>

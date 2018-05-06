@@ -1,0 +1,74 @@
+<table class="table table-striped">
+  <thead>
+  <th>
+    <%if @assessment.test.student_access%>
+        Verfügbar bis
+    <% else %>
+        Testung am
+    <% end %>
+  </th>
+
+  <%if !@assessment.test.student_access%>
+      <th>
+        Durchführen
+      </th>
+  <% end %>
+
+  <th>
+    Anzahl Ergebnisse
+  </th>
+  <th>
+    Durchschnitt richtig gelöster Items
+  </th>
+  <th>
+  </th>
+  </thead>
+  <tbody>
+  <% @assessment.measurements.sort_by { |a| a.date}.each do |measurement| %>
+      <tr>
+        <td>
+          <%= measurement.date.to_date.strftime("%d.%m.%Y") %>
+        </td>
+
+        <%if !@assessment.test.student_access%>
+            <td>
+
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :html),
+                          :title => "Messung online durchführen", :data => {:remote => true} do %>
+                  <span class="glyphicon glyphicon-expand"></span>
+              <% end %>
+              <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text),
+                          :title => "Messung offline durchführen", :data => {:remote => true} do %>
+                  <span class="glyphicon glyphicon-print"></span>
+              <% end %>
+            </td>
+        <%end%>
+
+        <td>
+          <% if measurement.results.count > 0 %>
+              <%= link_to edit_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement), :title => "Ergebnisse bearbeiten", :data => {:remote => true} do %>
+                  <%= measurement.real_results %>
+              <% end %>
+          <% else %>
+              --
+          <% end %>
+        </td>
+        <td>
+          <% if measurement.real_results > 0 %>
+              <%= measurement.average %>
+          <% else %>
+              --
+          <% end %>
+        </td>
+        <td>
+          <%= link_to edit_user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Messung bearbeiten", :data => {:remote => true} do %>
+              <span class="glyphicon glyphicon-pencil"></span>
+          <% end %>
+          <%= link_to user_group_assessment_measurement_path(@user, @group, @assessment, measurement), :title => "Löschen", :method => :delete, :data => {:remote => true, :confirm => "Damit gehen alle Ergebnisse dieser Messung verloren!\n\nSind Sie sicher?"} do %>
+              <span class="glyphicon glyphicon-trash"></span>
+          <% end %>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>

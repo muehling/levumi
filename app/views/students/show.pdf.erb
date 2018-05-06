@@ -29,6 +29,7 @@
 
 </style>
 
+<!--TODO hier müssen immer die richtigen Sachen gerendert werden-->
 <% @results.each do |key, val| %>
     <%= render partial: 'students/overview', formats: ['html'], locals: {:key => key, :val => val, :online => false, :without_table => params.has_key?(:without_table)}%>
 <% end %>
@@ -36,7 +37,7 @@
 <script>
   <% @results.each do |key, val| %>
     <% test = Test.find(key) %>
-    <%= render file: 'students/_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
+    <%= render file: 'tests/generic_views/standard/_student_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
   <% end %>
 </script>
 

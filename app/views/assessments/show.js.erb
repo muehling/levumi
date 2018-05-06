@@ -1,6 +1,1 @@
-//support old Tests with empty evaluation view/set attribut only for a special evaluation
-<% if @assessment.test.evaluation_view.nil?|| @assessment.test.evaluation_view.blank?%>
-  $('#tests').html("<%= escape_javascript(render('tests/evaluation_views/standard'))%>");
-<%else%>
-  $('#tests').html("<%= escape_javascript(render(@assessment.test.evaluation_view))%>");
-<%end%>
+$('#tests').html("<%= escape_javascript(render(file: 'assessments/_show', :formats => [:html]))%>");

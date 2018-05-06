@@ -32,9 +32,10 @@
     </div>
   </div>
 
-<% @results.each do |key, val| %>
-  <%= render partial: 'students/overview', locals: {:key => key, :val => val, :online => true, :without_table => false}%>
-<% end %>
+  <% @results.each do |key, val| %>
+    <%= render partial: 'students/overview', locals: {:key => key, :val => val, :online => true, :without_table => false}%>
+  <% end %>
+
 
 </div>
 
@@ -44,11 +45,14 @@
         $('#students').html("<%= escape_javascript(render 'index') %>");
     };
 
+    //TODO variert Create graphs for evaluations
     <% @results.each do |key, val| %>
-      <% test = Test.find(key) %>
-      <%= render file: 'students/_draw_graph', locals: {:student => @student, :test => test.id, :results => val}%>
+    <% test = Test.find(key) %>
+    <%= render file: 'tests/generic_views/standard/_student_draw_graph', locals: {:student => @student, :test => test.id, :results => val}%>
     <% end %>
 
+
+    //TODO-Andreas, wenn ich das richtig sehe brauchen wir die Funktion durch den PDF-Export doch gar nicht mehr oder?
     function print(id, test, details) {
         var old = document.body.innerHTML;
         document.body.innerHTML = $("#c" + id).html();
@@ -68,8 +72,10 @@
         printWindow.focus();
         <% @results.each do |key, val| %>
         <% test = Test.find(key) %>
-        <%= render file: 'students/_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
+        //Create graphs for evaluations
+        <%= render file: 'tests/generic_views/standard/_student_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
         <% end %>
     };
+
 
 </script>

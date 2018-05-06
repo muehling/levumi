@@ -1,5 +1,5 @@
 class AddEvaluationViewToTests < ActiveRecord::Migration[5.0]
   def change
-    add_column :tests, :evaluation_view, :string
+    add_column :tests, :generic_views, :text
   end
 end

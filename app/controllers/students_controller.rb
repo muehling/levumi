@@ -27,11 +27,13 @@ class StudentsController < ApplicationController
   def show
     @results = @student.getResults
     if params.has_key?(:test)
+      @assessment = Assessment.find_by_test_id(params[:test].to_i)
       @results = {params[:test].to_i => @results[params[:test].to_i]}
     end
     respond_to do |format|
       format.js {}
-      format.pdf { 
+      format.pdf {
+
         render pdf: @student.name, template: "students/show.pdf.erb"
         }
     end
