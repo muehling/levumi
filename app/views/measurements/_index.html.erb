@@ -3,8 +3,13 @@
       <p>Achtung: Für diesen Test muss der Schülerzugang verwendet werden!</p>
     </div>
 <% end %>
+<%if @assessment.test.generic_views["assessment_bottomPart"].nil? || @assessment.test.generic_views["assessment_bottomPart"].blank?%>
+    <%= render 'tests/generic_views/standard/assessment_show_table'%>
+<%else%>
+    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment_bottomPart"]%>
+<%end%>
 
-<%=render 'tests/generic_views/standard/assessment_show_table'%>
+
 
 <div id="measurementForm">
   <%if @assessment.test.archive %>

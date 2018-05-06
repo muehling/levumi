@@ -9,10 +9,12 @@
 <% end %>
 
 
-<div id="chart" style="width: 1122px; height: 561px"></div>
+<div id="upperPart" style="width: 1122px; height: 561px"></div>
 
-<script>
-  <%= render file: 'tests/generic_views/standard/_assessment_draw_graph.js.erb'%>
+<script >
+  <%if @assessment.test.generic_views["assessment_upperPart"].nil? || @assessment.test.generic_views["assessment_upperPart"].blank?%>
+    <%= render 'tests/generic_views/standard/assessment_draw_graph.js.erb'%>
+  <%else%>
+    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment_upperPart"]%>
+  <%end%>
 </script>
-
-

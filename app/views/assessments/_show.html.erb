@@ -36,7 +36,7 @@
 
       </p>
       <!-- maybe not used=> empty element/no _assessment_draw_graph.js.erb for the test-->
-      <div id="chart"></div>
+      <div id="upperPart"></div>
     </div>
   </div>
 
@@ -50,7 +50,10 @@
   </div>
 </div>
 
-<!--TODO hier muss das richtige gerendert werden-->
 <script type="text/javascript" charset="utf-8">
-    <%= render file: 'tests/generic_views/standard/_assessment_draw_graph'%>
+    <%if @assessment.test.generic_views["assessment_upperPart"].nil? || @assessment.test.generic_views["assessment_upperPart"].blank?%>
+      <%= render 'tests/generic_views/standard/assessment_draw_graph.js.erb'%>
+    <%else%>
+      <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment_upperPart"]%>
+    <%end%>
 </script>

@@ -13,7 +13,11 @@
     </div>
     <div style="" aria-expanded="false" id="cSimple" class="panel-collapse collapse" role="tabpanel" aria-labelledby="hSimple">
       <div class="panel-body">
-        <%= render 'tests/generic_views/standard/result_direct_edit_mask'%>
+        <%if @assessment.test.generic_views["result_edit_direct"].nil? || @assessment.test.generic_views["result_edit_direct"].blank?%>
+            <%= render 'tests/generic_views/standard/result_direct_edit_mask'%>
+        <%else%>
+            <%= render 'tests/generic_views/' + @assessment.test.generic_views["result_edit_direct"]%>
+        <%end%>
       </div>
     </div>
     </div>
@@ -29,7 +33,11 @@
         </div>
         <div id="c<%=r.id%>" class="panel-collapse collapse" role="tabpanel" aria-labelledby="h<%=r.id%>">
           <div class="panel-body">
-            <%= render 'tests/generic_views/standard/result_student_edit_mask',result: r%>
+            <%if @assessment.test.generic_views["result_edit_student"].nil? || @assessment.test.generic_views["result_edit_student"].blank?%>
+                <%= render 'tests/generic_views/standard/result_student_edit_mask', result: r%>
+            <%else%>
+                <%= render 'tests/generic_views/' + @assessment.test.generic_views["result_edit_student"], result: r%>
+            <%end%>
           </div>
         </div>
       </div>

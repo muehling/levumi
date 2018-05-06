@@ -45,37 +45,14 @@
         $('#students').html("<%= escape_javascript(render 'index') %>");
     };
 
-    //TODO variert Create graphs for evaluations
     <% @results.each do |key, val| %>
-    <% test = Test.find(key) %>
-    <%= render file: 'tests/generic_views/standard/_student_draw_graph', locals: {:student => @student, :test => test.id, :results => val}%>
+      <% test = Test.find(key) %>
+      <%if test.generic_views["student_upperPart"].nil? || test.generic_views["student_upperPart"].blank?%>
+        <%= render file: 'tests/generic_views/standard/student_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
+      <%else%>
+        <%= render file: 'tests/generic_views/' + test.generic_views["student_upperPart"], locals: {:student => @student, :test => test.id, :results => val}%>
+      <%end%>
     <% end %>
-
-
-    //TODO-Andreas, wenn ich das richtig sehe brauchen wir die Funktion durch den PDF-Export doch gar nicht mehr oder?
-    function print(id, test, details) {
-        var old = document.body.innerHTML;
-        document.body.innerHTML = $("#c" + id).html();
-        if (!details)
-            $("#table" + id).html("");
-        $("#p" + id).html("<p class='lead text-middle'><%= @student.name %> - " + test + "</p>");
-        $("#p" + id).removeClass("dropdown");
-        $("#p" + id).removeClass("text-right");
-        $("#p" + id).addClass("text-center");
-        var content = document.documentElement.outerHTML;
-        document.body.innerHTML = old;
-        printWindow = window.open();
-        printWindow.location = '';
-        printWindow.document.write(content);
-        printWindow.document.close();
-        printWindow.document.title =  "Druckansicht";
-        printWindow.focus();
-        <% @results.each do |key, val| %>
-        <% test = Test.find(key) %>
-        //Create graphs for evaluations
-        <%= render file: 'tests/generic_views/standard/_student_draw_graph', :locals =>  {:student => @student, :test => test.id, :results => val}%>
-        <% end %>
-    };
 
 
 </script>

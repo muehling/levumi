@@ -17,7 +17,6 @@ class AssessmentsController < ApplicationController
     respond_to do |format|
       format.js
       format.pdf do
-
         render pdf: @group.name + "-" + @assessment.test.name, template: "assessments/show.pdf.erb", orientation: "landscape"
       end
     end

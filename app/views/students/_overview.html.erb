@@ -26,11 +26,14 @@
         </div>
       <% end %>
 
-      <!-- maybe not used=> empty element/no _student_draw_graph.js.erb for the test-->
-      <div id="chart<%=key%>" style="width: 100%" >
+      <!-- maybe not used=> empty element/no student_draw_graph.js.erb for the test-->
+      <div id="upperPart<%=key%>" style="width: 100%" >
       </div>
-
-      <%= render 'tests/generic_views/standard/student_overview_table', key: key, val:val, without_table:without_table%>
+      <%if test.generic_views["student_bottomPart"].nil? || test.generic_views["student_bottomPart"].blank?%>
+          <%= render 'tests/generic_views/standard/student_overview_table', key: key, val:val, without_table:without_table, test:test, items:items%>
+      <%else%>
+          <%= render 'tests/generic_views/' + test.generic_views["student_bottomPart"], key: key, val:val, without_table:without_table, test:test,items:items%>
+      <%end%>
     </div>
   </div>
 </div>

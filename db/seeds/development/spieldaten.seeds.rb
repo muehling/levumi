@@ -6,8 +6,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-
-u = User.create(name: "Herr Soundso", email: "test@test.com", password: "123", password_confirmation: "123", capabilities: "admin")
+u = User.create(name: "Herr Soundso", email: "test@test.com", password: "123", password_confirmation: "123", capabilities: "admin", state:15, account_type: 2)
 g = u.groups.build(name: "10a")
 g.save
 s = g.students.build(name: "Adam")
@@ -15,6 +14,31 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
-u = User.create(name: "Ibo", email: "test1@test.com", password: "123", password_confirmation: "123", capabilities: "admin")
-u = User.create(name: "Alex", email: "test2@test.com", password: "123", password_confirmation: "123", capabilities: "admin")
 
+items = %w{
+m
+r
+s
+n
+Ü
+}
+
+cbmN2 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", shorthand: "BE2", subject: "Deutsch",
+                    construct: "Leseflüssigkeit", level: "Niveaustufe 2", type_info:"Screening", archive: false, student_access: false,
+                    generic_views: {"assessment_upperPart"=>'standard/assessment_draw_graph.js.erb',"assessment_bottomPart"=>'standard/assessment_show_table',
+                                    "student_upperPart"=>'standard/student_draw_graph.js.erb',"student_bottomPart"=>'standard/student_overview_table',
+                                    "result_edit_direct"=>'standard/result_direct_edit_mask',"result_edit_student"=>'standard/result_student_edit_mask'})
+
+it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
+it.save
+
+items.each do |i|
+  it = cbmN2.items.build(itemtext: i, difficulty: 0, itemtype: 0, itemview:"items/userbased/testItemUser")
+  it.save
+end
+
+it = cbmN2.items.build(itemtext: "Ende", difficulty: 0, itemtype:1, itemview:"items/userbased/endItemUser")
+it.save
+
+
+cbmN2.save

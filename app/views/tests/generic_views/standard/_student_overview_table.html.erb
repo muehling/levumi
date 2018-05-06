@@ -1,9 +1,8 @@
-<% unless local_assigns[:without_table] %>
-    <div id="table<%=local_assigns[:key]%>">
-
+<% unless without_table %>
+    <div id="table<%=key%>">
       <p>
         <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
-        <% if local_assigns[:val].size < 3 %>
+        <% if val.size < 3 %>
             -
         <% else %>
             <% first = true %>
@@ -21,7 +20,7 @@
       </p>
       <p>
         <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
-        <% if local_assigns[:val].size < 3 %>
+        <% if val.size < 3 %>
             -
         <% else %>
             <% first = true %>
@@ -61,7 +60,7 @@
         </th>
         </thead>
         <tbody>
-        <% local_assigns[:val].sort_by {|x| x.measurement.date}.each do |r| %>
+        <% val.sort_by {|x| x.measurement.date}.each do |r| %>
             <% unless r.score.nil? %>
                 <tr>
                   <td>

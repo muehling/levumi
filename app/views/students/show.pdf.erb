@@ -15,7 +15,10 @@
 
 
 
-  .panel {page-break-after:auto}
+  .panel {
+    page-break-after:auto;
+    page-break-inside:avoid
+  }
 
   .c3-line-student {
     stroke-width: 3px;
@@ -29,15 +32,19 @@
 
 </style>
 
-<!--TODO hier müssen immer die richtigen Sachen gerendert werden-->
 <% @results.each do |key, val| %>
+
     <%= render partial: 'students/overview', formats: ['html'], locals: {:key => key, :val => val, :online => false, :without_table => params.has_key?(:without_table)}%>
 <% end %>
 
 <script>
   <% @results.each do |key, val| %>
     <% test = Test.find(key) %>
-    <%= render file: 'tests/generic_views/standard/_student_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
+    <%if test.generic_views["student_upperPart"].nil? || test.generic_views["student_upperPart"].blank?%>
+      <%= render file: 'tests/generic_views/standard/student_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
+    <%else%>
+      <%= render file: 'tests/generic_views/' + test.generic_views["student_upperPart"], locals: {:student => @student, :test => test.id, :results => val}%>
+    <%end%>
   <% end %>
 </script>
 
