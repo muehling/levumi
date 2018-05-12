@@ -1,0 +1,216 @@
+<% if online %>
+  <div class="dropdown text-right" id="p<%=key%>">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPrint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="glyphicon glyphicon-print" style="color:#337AB7"></span>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
+      <li><%= link_to "Alles", user_group_student_path(@user, @group, @student , format: 'pdf', :test => key), :target => "_blank"%></li>
+      <li><%= link_to "Nur Graph", user_group_student_path(@user, @group, @student , format: 'pdf', :without_table => true, :test => key), :target => "_blank"%></li>
+    </ul>
+  </div>
+<% end %>
+
+<div id="chart<%=key%>" style="width: 100%" >
+</div>
+
+<script type="text/javascript" charset="utf-8">
+    var chart<%=key%> = c3.generate({
+        bindto: '#chart<%=key%>',
+        data: {
+            x: 'x',
+            columns: [
+                ['x',
+                    <% results.each do |r| %>
+                    '<%= r.measurement.date.to_date %>',
+                    <% end %>
+                ],
+                ['student',
+                    <% max = 0 %>
+                    <% results.each do |r| %>
+                    <%if !r.measurement.max.nil? && r.measurement.max > max %>
+                    <% max = r.measurement.max %>
+                    <% end %>
+                    <% unless r.nil? %>
+                    <%= r.score.nil? ? "null" : r.score %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n75',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.max.nil? ? "null" : r.measurement.third_quart %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n25',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.min.nil? ? "null" : r.measurement.first_quart %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n50',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.average.nil? ? "null" : r.measurement.median %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ]
+            ],
+            names: {
+                student: '<%= @student.name %>',
+                n75: '75% Niveau der Klasse',
+                n25: '25% Niveau der Klasse',
+                n50: '50% Niveau der Klasse'
+            },
+        },
+        color: {
+            pattern: ['#46B8DA', '#5CB85C', '#D9534F', '#F0AD4E']
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    fit: true,
+                    format: "%e %b %y"
+                },
+                label: {
+                    text: 'Testzeitpunkte',
+                    position: 'outer-left'
+                }
+            },
+            y: {
+                label: {
+                    text: 'Anzahl richtiger Items',
+                    position: 'outer-middle'
+                },
+                min: 1,
+                max: <%= max %>
+            }
+        },
+        line: {
+            connectNull: true
+        },
+        legend: {
+            hide: false
+        }
+    });
+</script>
+
+<% unless without_table %>
+    <div id="table<%=key%>">
+      <p>
+        <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+        <% if results.size < 3 %>
+            -
+        <% else %>
+            <% first = true %>
+            <% test.items.each do |i| %>
+                <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] > items["4th"] %>
+                    <% unless first %>
+                        <%= ", " %>
+                    <% end %>
+                    <% first = false %>
+                    <%= i.shorthand %>
+                <% end %>
+            <% end %>
+            <% if first %> - <% end %>
+        <% end %>
+      </p>
+      <p>
+        <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+        <% if results.size < 3 %>
+            -
+        <% else %>
+            <% first = true %>
+            <% test.items.each do |i| %>
+                <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] < items["1st"] %>
+                    <% unless first %>
+                        <%= ", " %>
+                    <% end %>
+                    <% first = false %>
+                    <%= i.shorthand %>
+                <% end %>
+            <% end %>
+            <% if first %> - <% end %>
+        <% end %>
+      </p>
+
+
+      <table class="table table-striped">
+        <thead>
+        <th>
+          Zeitpunkt
+        </th>
+        <th>
+          Richtig gelöste Items
+        </th>
+        <th>
+          Falsch gelöste Items
+        </th>
+        <th>
+          Anzahl richtig gelöster Items
+        </th>
+        <th>
+          Anzahl falsch gelöster Items
+        </th>
+        <th>
+          Lösungswahrscheinlichkeit in %
+        </th>
+        </thead>
+        <tbody>
+        <% results.sort_by {|x| x.measurement.date}.each do |r| %>
+            <% unless r.score.nil? %>
+                <tr>
+                  <td>
+                    <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% for i in 0..r.items.size-1 do %>
+                        <% if r.responses[i] ==  1 %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(r.items[i]).shorthand %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% first = true %>
+                    <% for i in 0..r.items.size-1 do%>
+                        <% if r.responses[i] ==  0 %>
+                            <% unless first %>
+                                <%= ", " %>
+                            <% end %>
+                            <% first = false %>
+                            <%= Item.find(r.items[i]).shorthand %>
+                        <% end %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <%= r.count_1 %>
+                  </td>
+                  <td>
+                    <%= r.count_0 %>
+                  </td>
+                  <td>
+                    <%= (r.total * 100).round(1)%>
+                  </td>
+                </tr>
+            <% end %>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+<%end%>
