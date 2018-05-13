@@ -1,5 +1,23 @@
+<p id="head" class="lead text-right">
+
+
+
+  <%= link_to user_group_assessment_path(@user, @group, @assessment, format: 'pdf'),  :title => "Drucken" , target: '_blank' do %>
+    <span class="glyphicon glyphicon-print"></span>
+  <% end %>
+
+  <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Graph neu laden", :data => {:remote => true} do%>
+    <span class="glyphicon glyphicon-refresh"></span>
+  <% end %>
+
+</p>
+
+<div id="chart"></div>
+
+<script type="text/javascript" charset="utf-8">
+
 var chart = c3.generate({
-    bindto: '#upperPart',
+    bindto: '#chart',
     data: {
         x: 'x',
         columns: [
@@ -77,3 +95,5 @@ var chart = c3.generate({
         }
     }
 });
+
+</script>

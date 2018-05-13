@@ -25,9 +25,7 @@ n
 
 cbmN2 = Test.create(name: "Buchstaben erkennen", len: items.size, info: "", shorthand: "BE2", subject: "Deutsch",
                     construct: "Leseflüssigkeit", level: "Niveaustufe 2", type_info:"Screening", archive: false, student_access: false,
-                    generic_views: {"assessment_upperPart"=>'standard/assessment_draw_graph.js.erb',"assessment_bottomPart"=>'standard/assessment_show_table',
-                                    "student_upperPart"=>'standard/student_draw_graph.js.erb',"student_bottomPart"=>'standard/student_overview_table',
-                                    "result_edit_direct"=>'standard/result_direct_edit_mask',"result_edit_student"=>'standard/result_student_edit_mask'})
+                    generic_views: {"assessment"=>'standard/graph.html.erb', "student"=>'standard/student_overview.html.erb'})
 
 it = cbmN2.items.build(itemtext: "Preparation", difficulty: 0, itemtype:-1, itemview:"items/userbased/preparationUser")
 it.save

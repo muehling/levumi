@@ -8,13 +8,10 @@
   Klassenübersicht <%= @group.name %> - <%= @assessment.test.name %>
 <% end %>
 
-
-<div id="upperPart" style="width: 1122px; height: 561px"></div>
-
 <script >
-  <%if @assessment.test.generic_views["assessment_upperPart"].nil? || @assessment.test.generic_views["assessment_upperPart"].blank?%>
-    <%= render 'tests/generic_views/standard/assessment_draw_graph.js.erb'%>
+  <%if @assessment.test.generic_views["assessment"].nil? || @assessment.test.generic_views["assessment"].blank?%>
+    <%= render 'tests/generic_views/standard/assessment_graph.html.erb'%>
   <%else%>
-    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment_upperPart"]%>
+    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment"]%>
   <%end%>
 </script>

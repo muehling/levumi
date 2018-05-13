@@ -45,14 +45,4 @@
         $('#students').html("<%= escape_javascript(render 'index') %>");
     };
 
-    <% @results.each do |key, val| %>
-      <% test = Test.find(key) %>
-      <%if test.generic_views["student_upperPart"].nil? || test.generic_views["student_upperPart"].blank?%>
-        <%= render file: 'tests/generic_views/standard/student_draw_graph.js.erb', locals: {:student => @student, :test => test.id, :results => val}%>
-      <%else%>
-        <%= render file: 'tests/generic_views/' + test.generic_views["student_upperPart"], locals: {:student => @student, :test => test.id, :results => val}%>
-      <%end%>
-    <% end %>
-
-
 </script>
