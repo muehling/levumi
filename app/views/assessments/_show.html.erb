@@ -25,9 +25,9 @@
     <div id="print" class="col-sm-12">
 
       <%if @assessment.test.generic_views["assessment"].nil? || @assessment.test.generic_views["assessment"].blank?%>
-        <%= render 'tests/generic_views/standard/assessment_graph.html.erb'%>
+        <%= render 'tests/generic_views/standard/assessment_graph',online: true%>
       <%else%>
-        <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment"]%>
+        <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment"] ,online: true%>
       <%end%>
 
     </div>

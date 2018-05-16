@@ -12,6 +12,9 @@ Rails.application.routes.draw do
       end
       resources :students
     end
+    member do
+      get :delete
+    end
   end
 
   resources :tests

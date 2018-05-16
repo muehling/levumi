@@ -1,7 +1,8 @@
 <div class="well userCard" id="group">
   <div class = "row">
-    <div class = "col-sm-3">
+    <div class = "col-sm-5">
       <%= render 'form' %>
     </div>
+    <%=link_to "Benutzer löschen", delete_user_path(@user, reallyDelete:false), class:"btn btn-danger", style: "float:right" %>
   </div>
 </div>

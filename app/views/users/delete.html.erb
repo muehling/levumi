@@ -1,0 +1,13 @@
+<div class="well userCard" id="group">
+  <h2>Löschen des Profils</h2>
+  <p style="font-size: 21px">Sind Sie sich sicher, dass Sie ihr Profil auf Levumi löschen möchten? Dies bedeutet für Sie:</p>
+  <ul style="font-size: 18px">
+    <li>Punkt 1</li>
+    <li>Punkt 2</li>
+    <li>Punkt 3</li>
+  </ul>
+  <br/>
+  <br/>
+  <%= link_to "Abbrechen", :back , class: "btn btn-primary"%>
+  <%= link_to "Benutzer löschen", delete_user_path(@user, reallyDelete:true) , class: "btn btn-danger pull-right"%>
+</div>

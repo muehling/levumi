@@ -8,10 +8,9 @@
   Klassenübersicht <%= @group.name %> - <%= @assessment.test.name %>
 <% end %>
 
-<script >
-  <%if @assessment.test.generic_views["assessment"].nil? || @assessment.test.generic_views["assessment"].blank?%>
-    <%= render 'tests/generic_views/standard/assessment_graph.html.erb'%>
-  <%else%>
-    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment"]%>
-  <%end%>
-</script>
+
+<%if @assessment.test.generic_views["assessment"].nil? || @assessment.test.generic_views["assessment"].blank?%>
+    <%= render file: 'tests/generic_views/standard/_assessment_graph.html.erb',locals:{online: false}%>
+<%else%>
+    <%= render 'tests/generic_views/' + @assessment.test.generic_views["assessment"] ,online: false%>
+<%end%>

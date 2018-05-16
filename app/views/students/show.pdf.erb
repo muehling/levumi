@@ -33,7 +33,6 @@
 </style>
 
 <% @results.each do |key, val| %>
-
     <%= render partial: 'students/overview', formats: ['html'], locals: {:key => key, :val => val, :online => false, :without_table => params.has_key?(:without_table)}%>
 <% end %>
 

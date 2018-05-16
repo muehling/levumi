@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :delete]
   before_action :is_allowed, except: [:show]
 
   # GET /users
@@ -105,6 +105,22 @@ class UsersController < ApplicationController
     end
   end
 
+  def delete
+    respond_to do |format|
+      format.html{
+        if params[:reallyDelete] == "true"
+          @user.delete
+          if !session[:user_id].nil?
+            session[:user_id] = nil
+            @login_user = nil
+          end
+          redirect_to root_url, notice: 'Ihr Benutzer wurde erfolgreich gelöscht.'
+        end
+      }
+    end
+
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user
@@ -117,7 +133,7 @@ class UsersController < ApplicationController
     end
 
   def is_allowed
-    unless !@login_user.nil? && @login_user.hasCapability?("user") ||!@login_user.nil? && (params.has_key?(:id) && (@login_user.id == params[:id].to_i))
+    unless  !@login_user.nil? && @login_user.removed.nil? && (@login_user.hasCapability?("user") || params.has_key?(:id) && (@login_user.id == params[:id].to_i))
       redirect_to root_url
     end
   end

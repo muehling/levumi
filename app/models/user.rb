@@ -9,7 +9,7 @@ class User < ActiveRecord::Base
 
   validates_presence_of :name
 
-  validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
+  validates_numericality_of :account_type, greater_than_or_equal_to: -1, less_than_or_equal_to: 2
 
   after_create :create_test_group
 
@@ -58,6 +58,21 @@ class User < ActiveRecord::Base
     self.groups.create(:name => "Testklasse", :export => false, :archive => false, :demo => true)
   end
 
+
+  def delete
+    self.email= User.generate_slug(42)
+    self.name = User.generate_slug(8)
+    self.school= nil
+    self.capabilities= nil
+    self.tcaccept= nil
+    self.account_type = -1
+    self.state = nil
+    self.occupation = nil
+    self.removed = true
+    self.save
+  end
+
+
   #Count number of assessments for each user by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
   def self.get_assessment_count
     temp = ActiveRecord::Base.connection.exec_query("
@@ -101,4 +116,10 @@ class User < ActiveRecord::Base
     count = temp.map{|x| x["Anzahl"]}
     return Hash[ids.zip(count)]
   end
+
+  def self.generate_slug(count)
+    Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..count].to_s
+  end
+
+
 end

@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
   def login
     u = User.find_by_email(params[:email])
-    if u != nil
+    if u != nil && u.removed.nil?
       if u.authenticate(params[:password])
         session[:user_id] = u.id
         session[:student_id] = nil
@@ -109,7 +109,7 @@ class ApplicationController < ActionController::Base
 
   #check if user accepted the letter of agreement
   def check_accept
-    if !@login_user.nil? && @login_user.tcaccept.nil?
+    if !@login_user.nil? && @login_user.removed.nil? && @login_user.tcaccept.nil?
       render 'accept'
     end
   end

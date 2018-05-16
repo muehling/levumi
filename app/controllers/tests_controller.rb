@@ -78,7 +78,7 @@ class TestsController < ApplicationController
   end
 
   def is_allowed
-    unless !@login_user.nil? && @login_user.hasCapability?("test")
+    unless !@login_user.nil? && @login_user.removed.nil? && @login_user.hasCapability?("test")
       redirect_to root_url
     end
   end
