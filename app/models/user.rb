@@ -62,13 +62,10 @@ class User < ActiveRecord::Base
   def delete
     self.email= User.generate_slug(42)
     self.name = User.generate_slug(8)
-    self.school= nil
-    self.capabilities= nil
-    self.tcaccept= nil
     self.account_type = -1
-    self.state = nil
-    self.occupation = nil
-    self.removed = true
+    self.tcaccept=nil
+    self.created_at=DateTime.now
+    self.last_login=DateTime.now
     self.save
   end
 
