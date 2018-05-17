@@ -20,6 +20,7 @@
       </p>
     </div>
   </div>
+  <button onclick="generatePDF()">test</button>
 
   <div class = "row">
     <div id="print" class="col-sm-12">
@@ -43,3 +44,11 @@
   </div>
 </div>
 
+<script>
+  function generatePDF() {
+      var doc = new jsPDF()
+
+      doc.text('Hello world!', 10, 10)
+      doc.save('a4.pdf')
+  }
+</script>
