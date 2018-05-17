@@ -62,13 +62,16 @@ class User < ActiveRecord::Base
   def delete
     self.email= User.generate_slug(42)
     self.name = User.generate_slug(8)
+    self.school= nil
+    self.tcaccept= DateTime.now
+    self.last_login=nil
+    self.capabilities=nil
     self.account_type = -1
-    self.tcaccept=nil
-    self.created_at=DateTime.now
-    self.last_login=DateTime.now
+    self.state =nil
+    self.occupation =nil
+    self.created_at= DateTime.now
     self.save
   end
-
 
   #Count number of assessments for each user by a direct SQL query, to save time. Returns a hash that maps test ids to counts.
   def self.get_assessment_count
