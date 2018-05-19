@@ -256,7 +256,7 @@
       canvas<%=key%> = document.getElementById("canvas<%=key%>");
       //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
       //temporary resize of svg, otherwise canvas and png is as big as svg
-      chart<%=key%>.resize({width:700, height:360});
+      chart<%=key%>.resize({width:700, height:300});
       canvg(canvas<%=key%>, $('#svgFor<%=key%>')[0].outerHTML.trim());
       chart<%=key%>.resize({height:320});
       chart<%=key%>.resize();
@@ -288,7 +288,7 @@
               },
               {image: data,
                   width: 480,
-                  height: 260,
+                  height: 250,
                   margin: [0,15,0,0]
               }],
           styles: {
