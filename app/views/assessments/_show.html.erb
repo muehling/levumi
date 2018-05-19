@@ -83,7 +83,7 @@
         canvas = document.getElementById("canvas");
         //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
         //temporary cange of size for snapshot
-        chart.resize({width:750, height:280});
+        chart.resize({width:940, height:350});
         //get svg
         canvg(canvas, $('#svgOfAssessement')[0].outerHTML.trim());
         chart.resize({height:320});
@@ -116,6 +116,8 @@
                 },
                 {
                     image: data,
+                    width: 700,
+                    height: 260,
                     margin: [0, 80, 0, 0]
                 }
             ]
