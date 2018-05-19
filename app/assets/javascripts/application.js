@@ -13,6 +13,13 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
+//Import client-side encryption
 //= require sjcl
-//= require jspdf
+//Draw SVG to Canvas
+//= require rgbcolor
+//= require StackBlur
+//= require canvg
+//Create clientside PDF
+//= require pdfmake.min
+//= require vfs-fonts
 //= require_tree .

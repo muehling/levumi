@@ -45,4 +45,120 @@
         $('#students').html("<%= escape_javascript(render 'index') %>");
     };
 
+    var levumiPic=""
+    //Getting the Levumi picture "data:image/png... "-reprensaentation
+    function getDataUri(url, callback) {
+        var image = new Image();
+
+        image.onload = function () {
+            var canvas = document.createElement('canvas');
+            canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+            canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+            canvas.getContext('2d').drawImage(this, 0, 0);
+
+            // Get raw image data
+            callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+            // ... or get as Data URI
+            callback(canvas.toDataURL('image/png'));
+        };
+
+        image.src = url;
+    }
+    getDataUri('/images/shared/Levumi-normal-blau.jpg', function(dataUri) {
+        // Do whatever you'd like with the Data URI!
+        levumiPic = dataUri
+    });
+    //Generate table for pdf-export
+    function generateTable(docDefinition, key) {
+        //headers
+        var header= [
+            {text:"Zeitpunkt", alignment:'center', fontSize:11, bold:true},
+            {text:"Richtig gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true, width:20},
+            {},
+            {text:"Falsch gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true},
+            {},
+            {text:"Anzahl richtig gelöster Items", alignment:'center', fontSize:11,bold:true},
+            {text:"Anzahl falsch gelöster Items",  alignment:'center', fontSize:11,bold:true},
+            {text:"Lösungs- wahrschein- lichkeit in %", alignment:'center', fontSize:11, bold:true}
+        ];
+        //get a JSON-Representation of Table and parse it to pdfmake-representation
+        var tableJSON = tableToJson($('#table'+key).get(0));
+        var fullTable = createDataBody(tableJSON);
+        fullTable[0] = header
+
+
+        var table = [
+            {
+                table: {
+                    widths: [65,45,45, 45, 45, 60, 60, 60],
+                    body: fullTable
+                },
+                margin: [0,20,0,0] ,
+                layout: {
+                    fillColor: function (i, node) {
+                        return (i === 0) ? '#1f94b7' : null;
+                    }
+                }
+            }
+        ];
+        //optional styles
+        var tableStyle = {}
+
+        docDefinition["content"] = docDefinition["content"].concat(table)
+        docDefinition["styles"] = $.extend({},docDefinition["styles"] , tableStyle);
+    }
+    function tableToJson(table) {
+        var data = [];
+        // first row needs to be headers
+        var headers = [];
+        for (var i=0; i<table.rows[0].cells.length; i++) {
+            headers[i] = table.rows[0].cells[i].innerHTML.trim();
+        }
+        data.push(headers);
+        // go through cells
+        for (var i=1; i<table.rows.length; i++) {
+            var tableRow = table.rows[i];
+            var rowData = {};
+            for (var j=0; j<tableRow.cells.length; j++) {
+                rowData[ headers[j] ] = tableRow.cells[j].innerHTML.trim();
+            }
+            data.push(rowData);
+        }
+        return data;
+    }
+    //Parse JSON-representation of Table in pdfmake-representation
+    function createDataBody(table) {
+        var data = [];
+        $.each(table, function(i, row){
+            var temp = [];
+            count = 0
+            if(i==0){}
+            else {
+                $.each(row, function(j, cell){
+                    //count 1 and 3 are colums for showing (in-)correct items
+                    if(count == 1||count == 3){
+                        temp[count]= {text:cell, colSpan:2, fontSize:10};
+                        count = count + 1;
+                        temp[count]={};
+                    }
+                    //count 5,6,7 are only one number and looks better centered
+                    else if(count == 5||count == 6||count == 7){
+                        temp[count]= {text:cell, alignment: 'center', fontSize:10};
+                    }
+                    else{
+                        temp[count]= {text:cell, fontSize:10};
+                    }
+
+                    count++;
+                });
+            }
+            data[i] = temp;
+            temp = []
+        });
+        return data
+    }
+
+
 </script>

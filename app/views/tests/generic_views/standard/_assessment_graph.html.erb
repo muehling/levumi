@@ -1,11 +1,13 @@
+<!-- Imitate a link-->
+<style>
+  .myHover:hover{
+    cursor: pointer;
+  }
+</style>
 <% if online %>
 <p id="head" class="lead text-right">
-
-
-
-  <%= link_to user_group_assessment_path(@user, @group, @assessment, format: 'pdf'),  :title => "Drucken" , target: '_blank' do %>
-    <span class="glyphicon glyphicon-print"></span>
-  <% end %>
+  <!-- Imitate a link-->
+  <span class="glyphicon glyphicon-print myHover" onclick="generatePDF()" style="color: #337ab7"></span>
 
   <%= link_to user_group_assessment_path(@user, @group, @assessment), :title => "Graph neu laden", :data => {:remote => true} do%>
     <span class="glyphicon glyphicon-refresh"></span>
@@ -17,8 +19,11 @@
 <div id="chart"></div>
 
 <script type="text/javascript" charset="utf-8">
-
+//create a chart(svg-element) with attribute id
 var chart = c3.generate({
+    oninit: function() {
+        this.svg.attr('id', 'svgOfAssessement')
+    },
     bindto: '#chart',
     data: {
         x: 'x',

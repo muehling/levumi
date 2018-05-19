@@ -60,3 +60,4 @@ gem 'spreadsheet'
 
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
+gem 'canvgjs'

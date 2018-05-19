@@ -20,7 +20,6 @@
       </p>
     </div>
   </div>
-  <button onclick="generatePDF()">test</button>
 
   <div class = "row">
     <div id="print" class="col-sm-12">
@@ -43,12 +42,91 @@
     </div>
   </div>
 </div>
+<canvas id="canvas" style="display: none"></canvas>
 
 <script>
-  function generatePDF() {
-      var doc = new jsPDF()
+    var levumiPic=""
+    //Getting the Levumi picture "data:image/png... "-reprensaentation
+    function getDataUri(url, callback) {
+        var image = new Image();
 
-      doc.text('Hello world!', 10, 10)
-      doc.save('a4.pdf')
-  }
+        image.onload = function () {
+            var canvas = document.createElement('canvas');
+            canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+            canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+
+            canvas.getContext('2d').drawImage(this, 0, 0);
+
+            // Get raw image data
+            callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
+
+            // ... or get as Data URI
+            callback(canvas.toDataURL('image/png'));
+        };
+
+        image.src = url;
+    }
+    getDataUri('/images/shared/Levumi-normal-blau.jpg', function(dataUri) {
+        // Do whatever you'd like with the Data URI!
+        levumiPic = dataUri
+    });
+    //Generate the pdf
+    function generatePDF() {
+        //Bugfix canvg
+        d3.selectAll("path").attr("fill", "none");
+        d3.selectAll(".tick line, path.domain").attr("stroke", "black");
+        d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
+        d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
+        //Convert SVG to PNG
+        canvas = document.getElementById("canvas");
+        //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
+        //temporary cange of size for snapshot
+        chart.resize({width:750, height:280});
+        //get svg
+        canvg(canvas, $('#svgOfAssessement')[0].outerHTML.trim());
+        chart.resize({height:320});
+        chart.resize();
+        //get Imagelink
+          //welches Interessanter "sauberer/klarer" ist als beim export...
+        var data = canvas.toDataURL("image/png");
+        //create PDF-page
+        var docDefinition = {
+            pageSize: 'A4',
+            pageOrientation: 'landscape',
+            pageMargins: [24, 25, 24, 23],
+            content: [
+                {
+                    columns:[
+                        {
+                            width:'auto',
+                            stack:[
+                                {image: levumiPic,
+                                    width: 40
+                                }
+                            ]
+                        },
+                        {text:
+                            'Levumi Klassenübersicht <%=@group.name%> - <%= @assessment.test.name%>',
+                            fontSize: 15,
+                            margin: [0, 10, 0, 0]
+                        }
+                    ]
+                },
+                {
+                    image: data,
+                    margin: [0, 80, 0, 0]
+                }
+            ]
+        }
+        //open PDF in new window
+            //Alternativen:
+                //print the PDF
+                  //  pdfMake.createPdf(docDefinition).print();
+                // download the PDF
+                 //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+        pdfMake.createPdf(docDefinition).open();
+
+    }
 </script>

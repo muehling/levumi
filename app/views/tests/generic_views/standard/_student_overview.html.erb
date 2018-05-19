@@ -1,3 +1,4 @@
+<% test = Test.find(key)%>
 <% if online %>
   <div class="dropdown text-right" id="p<%=key%>">
     <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPrint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -5,17 +6,34 @@
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
-      <li><%= link_to "Alles", user_group_student_path(@user, @group, @student , format: 'pdf', :test => key), :target => "_blank"%></li>
-      <li><%= link_to "Nur Graph", user_group_student_path(@user, @group, @student , format: 'pdf', :without_table => true, :test => key), :target => "_blank"%></li>
+      <!-- Imitate a link-->
+      <li onclick="generatePDF<%=key%>(true, <%=key%>)"  style="padding: 3px 20px">Alles</li>
+      <li onclick="generatePDF<%=key%>(false, <%=key%>)" style="padding: 3px 20px">Nur Graph</li>
     </ul>
   </div>
 <% end %>
 
-<div id="chart<%=key%>" style="width: 100%" >
+<!-- Imitate a link-->
+<style>
+  li:hover{
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+</style>
+
+<div id="chart<%=key%>"  >
 </div>
+<!--Canvas for drawing the svg-graph-->
+<canvas id="canvas<%=key%>" style="display: none"></canvas>
+
+
 
 <script type="text/javascript" charset="utf-8">
+  //Create a graph (svg-object)
     var chart<%=key%> = c3.generate({
+        oninit: function() {
+            this.svg.attr('id', 'svgFor<%=key%>')
+        },
         bindto: '#chart<%=key%>',
         data: {
             x: 'x',
@@ -107,7 +125,7 @@
 </script>
 
 <% unless without_table %>
-    <div id="table<%=key%>">
+    <div>
       <p>
         <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
         <% if results.size < 3 %>
@@ -146,7 +164,7 @@
       </p>
 
 
-      <table class="table table-striped">
+      <table class="table table-striped" id="table<%=key%>">
         <thead>
         <th>
           Zeitpunkt
@@ -175,28 +193,40 @@
                     <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
                   </td>
                   <td>
-                    <% first = true %>
-                    <% for i in 0..r.items.size-1 do %>
-                        <% if r.responses[i] ==  1 %>
-                            <% unless first %>
-                                <%= ", " %>
-                            <% end %>
-                            <% first = false %>
-                            <%= Item.find(r.items[i]).shorthand %>
+                    <!--Show Items as a clean String without unnessesary withspace-->
+                      <!--whitespace in this part not removable with .trim()-->
+                    <%temp=""%>
+                    <%count =0 %>
+                    <% r.items.each_with_index do |item, i| %>
+                        <%if r.items[i+1].nil?||count==r.count_1-1%>
+                            <% if r.responses[i] ==  1 %>
+                                <%count =count+1 %>
+                              <%temp = temp + Item.find(r.items[i]).shorthand%>
+                            <%end%>
+                        <%else%>
+                            <% if r.responses[i] ==  1 %>
+                                <%temp = temp + Item.find(r.items[i]).shorthand + ", "%>
+                            <%end%>
                         <% end %>
                     <% end %>
+                    <%=temp%>
                   </td>
                   <td>
-                    <% first = true %>
-                    <% for i in 0..r.items.size-1 do%>
-                        <% if r.responses[i] ==  0 %>
-                            <% unless first %>
-                                <%= ", " %>
-                            <% end %>
-                            <% first = false %>
-                            <%= Item.find(r.items[i]).shorthand %>
+                    <%temp=""%>
+                    <%count =0 %>
+                    <% r.items.each_with_index do |item, i| %>
+                        <%if r.items[i+1].nil?||count==r.count_0-1%>
+                            <% if r.responses[i] ==  0 %>
+                                <%count =count+1 %>
+                                <%temp = temp + Item.find(r.items[i]).shorthand%>
+                            <%end%>
+                        <%else%>
+                            <% if r.responses[i] ==  0 %>
+                                <%temp = temp + Item.find(r.items[i]).shorthand + ", "%>
+                            <%end%>
                         <% end %>
                     <% end %>
+                    <%=temp%>
                   </td>
                   <td>
                     <%= r.count_1 %>
@@ -214,3 +244,81 @@
       </table>
     </div>
 <%end%>
+<script>
+
+  //generate pdf
+  function generatePDF<%=key%>(withTable, key) {
+      d3.selectAll("path").attr("fill", "none");
+      d3.selectAll(".tick line, path.domain").attr("stroke", "black");
+      d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
+      d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
+      d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
+      d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
+      //Convert SVG to PNG
+      canvas<%=key%> = document.getElementById("canvas<%=key%>");
+      //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
+      //temporary resize of svg, otherwise canvas and png is as big as svg
+      chart<%=key%>.resize({width:580, height:280});
+      canvg(canvas<%=key%>, $('#svgFor<%=key%>')[0].outerHTML.trim());
+      chart<%=key%>.resize({height:320});
+      chart<%=key%>.resize();
+      var data = canvas<%=key%>.toDataURL("image/png");
+      //build pdf-content
+      var docDefinition = {
+          pageSize: 'A4',
+          content: [
+              {
+                  columns:[
+                      {
+                          width:'auto',
+                          stack:[
+                              {image: levumiPic,
+                                  width: 40
+                              }
+                          ]
+                      },
+                      {text:
+                          'Levumi Schüleransicht <%=@student.name%>',
+                          fontSize: 15,
+                          margin: [0, 10, 0, 0]
+                      }
+                  ]
+              },
+              {text:
+                  '<%=test.name%> - <%=test.level%>',
+                  style: 'subheader'
+              },
+              {image: data,
+                  width: 480,
+                  margin: [0,15,0,0]
+              }],
+          styles: {
+              subheader: {
+                  fontSize: 13,
+                  margin: [50, 0, 5, 5]
+              }
+          }
+      };
+
+      if(withTable){
+          generateTable(docDefinition, key);
+      }
+      //open PDF in new window
+      //Alternativen:
+      //print the PDF
+      //  pdfMake.createPdf(docDefinition).print();
+      // download the PDF
+      //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+      pdfMake.createPdf(docDefinition).open();
+
+  }
+
+
+
+
+
+</script>
+
+
+
+
