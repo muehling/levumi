@@ -193,8 +193,6 @@
                     <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
                   </td>
                   <td>
-                    <!--Show Items as a clean String without unnessesary withspace-->
-                      <!--whitespace in this part not removable with .trim()-->
                     <%temp=""%>
                     <%count =0 %>
                     <% r.items.each_with_index do |item, i| %>
