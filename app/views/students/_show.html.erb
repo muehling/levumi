@@ -5,6 +5,10 @@
     .c3-line-n25, .c3-line-n50, .c3-line-n75 {
         stroke-dasharray: 10,10;
     }
+    /*Imitate a link*/
+    .myHover:hover{
+      cursor: pointer;
+    }
 </style>
 
 <div class="groupCard">
@@ -12,10 +16,8 @@
   <div class="row">
     <div class="col-sm-12">
       <p class="lead text-right">
-
-      <%= link_to user_group_student_path(@user, @group, @student, format: 'pdf') , :title => "Alles drucken", :target => "_blank" do%>
-          <span class="glyphicon glyphicon-print"></span>
-      <% end %>
+        <!-- Imitate a link-->
+        <span class="glyphicon glyphicon-print myHover" onclick="generatePDF()" style="color: #337ab7", title="Alles drucken"></span>
 
         <%= link_to '#', :title => "Zurück", :onclick => "cancel()" do%>
             <span class="glyphicon glyphicon-th"></span>
@@ -31,135 +33,249 @@
       </p>
     </div>
   </div>
-
+  <button id="test" onclick="generateAll()">TEst</button>
+  <!--Canvas for drawing the svg-graph-->
+  <canvas id="drawingArea" style="display: none"></canvas>
+  <%keyList = []%>
   <% @results.each do |key, val| %>
     <%= render partial: 'students/overview', locals: {:key => key, :val => val, :online => true, :without_table => false}%>
+      <% keyList = keyList + [key]%>
   <% end %>
+  <% keyList = keyList.uniq%>
 
 
 </div>
 
 <script type="text/javascript" charset="utf-8">
+  var keyList = {
+      <%keyList.each do |key|%>
+        <%test = Test.find(key)%>
+        <%= key%>: '<%=test.name%> - <%=test.level%>',
+      <%end%>
+  }
 
-    function cancel() {
-        $('#students').html("<%= escape_javascript(render 'index') %>");
-    };
+  function cancel() {
+      $('#students').html("<%= escape_javascript(render 'index') %>");
+  };
 
-    var levumiPic=""
-    //Getting the Levumi picture "data:image/png... "-reprensaentation
-    function getDataUri(url, callback) {
-        var image = new Image();
+  var levumiPic=""
+  //Getting the Levumi picture "data:image/png... "-reprensaentation
+  function getDataUri(url, callback) {
+      var image = new Image();
 
-        image.onload = function () {
-            var canvas = document.createElement('canvas');
-            canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-            canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
+      image.onload = function () {
+          var canvas = document.createElement('canvas');
+          canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
+          canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
 
-            canvas.getContext('2d').drawImage(this, 0, 0);
-
-            // Get raw image data
-            callback(canvas.toDataURL('image/png').replace(/^data:image\/(png|jpg);base64,/, ''));
-
-            // ... or get as Data URI
-            callback(canvas.toDataURL('image/png'));
-        };
-
-        image.src = url;
-    }
-    getDataUri('/images/shared/Levumi-normal-blau.jpg', function(dataUri) {
-        // Do whatever you'd like with the Data URI!
-        levumiPic = dataUri
-    });
-    //Generate table for pdf-export
-    function generateTable(docDefinition, key) {
-        //headers
-        var header= [
-            {text:"Zeitpunkt", alignment:'center', fontSize:11, bold:true},
-            {text:"Richtig gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true, width:20},
-            {},
-            {text:"Falsch gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true},
-            {},
-            {text:"Anzahl richtig gelöster Items", alignment:'center', fontSize:11,bold:true},
-            {text:"Anzahl falsch gelöster Items",  alignment:'center', fontSize:11,bold:true},
-            {text:"Lösungs- wahrschein- lichkeit in %", alignment:'center', fontSize:11, bold:true}
-        ];
-        //get a JSON-Representation of Table and parse it to pdfmake-representation
-        var tableJSON = tableToJson($('#table'+key).get(0));
-        var fullTable = createDataBody(tableJSON);
-        fullTable[0] = header
+          canvas.getContext('2d').drawImage(this, 0, 0);
 
 
-        var table = [
-            {
-                table: {
-                    widths: [65,45,45, 45, 45, 60, 60, 60],
-                    body: fullTable,
-                    dontBreakRows: true
-                },
-                margin: [0,20,0,0] ,
-                layout: {
-                    fillColor: function (i, node) {
-                        return (i === 0) ? '#46B8DA' : null;
-                    }
-                }
-            }
-        ];
-        //optional styles
-        var tableStyle = {}
 
-        docDefinition["content"] = docDefinition["content"].concat(table)
-        docDefinition["styles"] = $.extend({},docDefinition["styles"] , tableStyle);
-    }
-    function tableToJson(table) {
-        var data = [];
-        // first row needs to be headers
-        var headers = [];
-        for (var i=0; i<table.rows[0].cells.length; i++) {
-            headers[i] = table.rows[0].cells[i].innerHTML.trim();
-        }
-        data.push(headers);
-        // go through cells
-        for (var i=1; i<table.rows.length; i++) {
-            var tableRow = table.rows[i];
-            var rowData = {};
-            for (var j=0; j<tableRow.cells.length; j++) {
-                rowData[ headers[j] ] = tableRow.cells[j].innerHTML.trim();
-            }
-            data.push(rowData);
-        }
-        return data;
-    }
-    //Parse JSON-representation of Table in pdfmake-representation
-    function createDataBody(table) {
-        var data = [];
-        $.each(table, function(i, row){
-            var temp = [];
-            count = 0
-            if(i==0){}
-            else {
-                $.each(row, function(j, cell){
-                    //count 1 and 3 are colums for showing (in-)correct items
-                    if(count == 1||count == 3){
-                        temp[count]= {text:cell, colSpan:2, fontSize:10};
-                        count = count + 1;
-                        temp[count]={};
-                    }
-                    //count 5,6,7 are only one number and looks better centered
-                    else if(count == 5||count == 6||count == 7){
-                        temp[count]= {text:cell, alignment: 'center', fontSize:10};
-                    }
-                    else{
-                        temp[count]= {text:cell, fontSize:10};
-                    }
+          // ... or get as Data URI
+          callback(canvas.toDataURL('image/png'));
+      };
 
-                    count++;
-                });
-            }
-            data[i] = temp;
-            temp = []
-        });
-        return data
-    }
+      image.src = url;
+  }
+  getDataUri('/images/shared/Levumi-normal-blau.jpg', function(dataUri) {
+      // Do whatever you'd like with the Data URI!
+      levumiPic = dataUri
+  });
+  //Genrate a PDF with all Tests
+  function generateAll(){
+      var docDefinition = {
+          pageSize: 'A4',
+          content: [
+              {
+                  columns:[
+                      {
+                          width:'auto',
+                          stack:[
+                              {image: levumiPic,
+                                  width: 40
+                              }
+                          ]
+                      },
+                      {text:
+                          'Levumi Schüleransicht <%=@student.name%>',
+                          fontSize: 15,
+                          margin: [0, 10, 0, 0]
+                      }
+                  ]
+              }],
+          styles: {
+              subheader: {
+                  fontSize: 13,
+                  margin: [50, 0, 5, 5]
+              }
+          }
+      };
+      keyArray = Object.keys(keyList);
+      keyArrayLength = Object.keys(keyList).length
+      var count = 0
+      while (count<keyArrayLength){
+          generateGraph(docDefinition, keyArray[count])
+          if(count+1 == keyArrayLength){
+              generateTable(docDefinition, keyArray[count], false)
+          }
+          else{
+              generateTable(docDefinition, keyArray[count], true)
+          }
+          count = count+1;
+      }
+
+      //open PDF in new window
+      //Alternativen:
+      //print the PDF
+      //  pdfMake.createPdf(docDefinition).print();
+      // download the PDF
+      //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+      pdfMake.createPdf(docDefinition).open();
+
+  }
+  //Genrate Picture (generate all)
+  function generateGraph(docDefinition, key) {
+      d3.selectAll("path").attr("fill", "none");
+      d3.selectAll(".tick line, path.domain").attr("stroke", "black");
+      d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
+      d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
+      d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
+      d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
+      //Convert SVG to PNG
+      canvas = document.getElementById("drawingArea");
+      //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
+      //temporary resize of svg, otherwise canvas and png is as big as svg
+      eval("chart"+key).resize({width:700, height:300});
+      canvg(canvas, $('#svgFor' + key)[0].outerHTML.trim());
+      eval("chart"+key).resize({height:320});
+      eval("chart"+key).resize();
+      var data = canvas.toDataURL("image/png");
+
+      graph = [
+          {text:
+              keyList[key],
+              style: 'subheader'
+          },
+          {image: data,
+              width: 480,
+              height: 250,
+              margin: [0,15,0,0]
+          }
+      ]
+      docDefinition["content"] = docDefinition["content"].concat(graph)
+  }
+  //Generate table for pdf-export
+  function generateTable(docDefinition, key, pageBreak) {
+      //headers
+      var header= [
+          {text:"Zeitpunkt", alignment:'center', fontSize:11, bold:true},
+          {text:"Richtig gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true, width:20},
+          {},
+          {text:"Falsch gelöste Items", alignment:'center',colSpan: 2, fontSize:11, bold:true},
+          {},
+          {text:"Anzahl richtig gelöster Items", alignment:'center', fontSize:11,bold:true},
+          {text:"Anzahl falsch gelöster Items",  alignment:'center', fontSize:11,bold:true},
+          {text:"Lösungs- wahrschein- lichkeit in %", alignment:'center', fontSize:11, bold:true}
+      ];
+      //get a JSON-Representation of Table and parse it to pdfmake-representation
+      var tableJSON = tableToJson($('#table'+key).get(0));
+      var fullTable = createDataBody(tableJSON);
+      fullTable[0] = header
+
+      if(pageBreak){
+          var table = [
+              {
+                  table: {
+                      widths: [65,45,45, 45, 45, 60, 60, 60],
+                      body: fullTable,
+                      dontBreakRows: true
+                  },
+                  pageBreak: 'after',
+                  margin: [0,20,0,0] ,
+                  layout: {
+                      fillColor: function (i, node) {
+                          return (i === 0) ? '#46B8DA' : null;
+                      }
+                  }
+              }
+          ];
+      }
+      else{
+          var table = [
+              {
+                  table: {
+                      widths: [65,45,45, 45, 45, 60, 60, 60],
+                      body: fullTable,
+                      dontBreakRows: true
+                  },
+                  margin: [0,20,0,0] ,
+                  layout: {
+                      fillColor: function (i, node) {
+                          return (i === 0) ? '#46B8DA' : null;
+                      }
+                  }
+              }
+          ];
+      }
+
+      //optional styles
+      var tableStyle = {}
+
+      docDefinition["content"] = docDefinition["content"].concat(table)
+      docDefinition["styles"] = $.extend({},docDefinition["styles"] , tableStyle);
+  }
+  function tableToJson(table) {
+      var data = [];
+      // first row needs to be headers
+      var headers = [];
+      for (var i=0; i<table.rows[0].cells.length; i++) {
+          headers[i] = table.rows[0].cells[i].innerHTML.trim();
+      }
+      data.push(headers);
+      // go through cells
+      for (var i=1; i<table.rows.length; i++) {
+          var tableRow = table.rows[i];
+          var rowData = {};
+          for (var j=0; j<tableRow.cells.length; j++) {
+              rowData[ headers[j] ] = tableRow.cells[j].innerHTML.trim();
+          }
+          data.push(rowData);
+      }
+      return data;
+  }
+  //Parse JSON-representation of Table in pdfmake-representation
+  function createDataBody(table) {
+      var data = [];
+      $.each(table, function(i, row){
+          var temp = [];
+          var count = 0
+          if(i==0){}
+          else {
+              $.each(row, function(j, cell){
+                  //count 1 and 3 are colums for showing (in-)correct items
+                  if(count == 1||count == 3){
+                      temp[count]= {text:cell, colSpan:2, fontSize:10};
+                      count = count + 1;
+                      temp[count]={};
+                  }
+                  //count 5,6,7 are only one number and looks better centered
+                  else if(count == 5||count == 6||count == 7){
+                      temp[count]= {text:cell, alignment: 'center', fontSize:10};
+                  }
+                  else{
+                      temp[count]= {text:cell, fontSize:10};
+                  }
+
+                  count++;
+              });
+          }
+          data[i] = temp;
+          temp = []
+      });
+      return data
+  }
+
 
 
 </script>

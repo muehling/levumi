@@ -7,8 +7,8 @@
     </button>
     <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
       <!-- Imitate a link-->
-      <li onclick="generatePDF<%=key%>(true, <%=key%>)"  style="padding: 3px 20px">Alles</li>
-      <li onclick="generatePDF<%=key%>(false, <%=key%>)" style="padding: 3px 20px">Nur Graph</li>
+      <li onclick="generatePDF(true, <%=key%>)"  style="padding: 3px 20px">Alles</li>
+      <li onclick="generatePDF(false, <%=key%>)" style="padding: 3px 20px">Nur Graph</li>
     </ul>
   </div>
 <% end %>
@@ -23,8 +23,7 @@
 
 <div id="chart<%=key%>"  >
 </div>
-<!--Canvas for drawing the svg-graph-->
-<canvas id="canvas<%=key%>" style="display: none"></canvas>
+
 
 
 
@@ -243,79 +242,73 @@
     </div>
 <%end%>
 <script>
+    //generate pdf
+    function generatePDF(withTable, key) {
+        d3.selectAll("path").attr("fill", "none");
+        d3.selectAll(".tick line, path.domain").attr("stroke", "black");
+        d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
+        d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
+        //Convert SVG to PNG
+        canvas = document.getElementById("drawingArea");
+        //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
+        //temporary resize of svg, otherwise canvas and png is as big as svg
+        eval("chart"+key).resize({width:700, height:300});
+        canvg(canvas, $('#svgFor' + key)[0].outerHTML.trim());
+        eval("chart"+key).resize({height:320});
+        eval("chart"+key).resize();
+        var data = canvas.toDataURL("image/png");
+        //build pdf-content
+        var docDefinition = {
+            pageSize: 'A4',
+            content: [
+                {
+                    columns:[
+                        {
+                            width:'auto',
+                            stack:[
+                                {image: levumiPic,
+                                    width: 40
+                                }
+                            ]
+                        },
+                        {text:
+                            'Levumi Schüleransicht <%=@student.name%>',
+                            fontSize: 15,
+                            margin: [0, 10, 0, 0]
+                        }
+                    ]
+                },
+                {text:
+                    '<%=test.name%> - <%=test.level%>',
+                    style: 'subheader'
+                },
+                {image: data,
+                    width: 480,
+                    height: 250,
+                    margin: [0,15,0,0]
+                }],
+            styles: {
+                subheader: {
+                    fontSize: 13,
+                    margin: [50, 0, 5, 5]
+                }
+            }
+        };
 
-  //generate pdf
-  function generatePDF<%=key%>(withTable, key) {
-      d3.selectAll("path").attr("fill", "none");
-      d3.selectAll(".tick line, path.domain").attr("stroke", "black");
-      d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
-      d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
-      d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
-      d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
-      //Convert SVG to PNG
-      canvas<%=key%> = document.getElementById("canvas<%=key%>");
-      //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
-      //temporary resize of svg, otherwise canvas and png is as big as svg
-      chart<%=key%>.resize({width:700, height:300});
-      canvg(canvas<%=key%>, $('#svgFor<%=key%>')[0].outerHTML.trim());
-      chart<%=key%>.resize({height:320});
-      chart<%=key%>.resize();
-      var data = canvas<%=key%>.toDataURL("image/png");
-      //build pdf-content
-      var docDefinition = {
-          pageSize: 'A4',
-          content: [
-              {
-                  columns:[
-                      {
-                          width:'auto',
-                          stack:[
-                              {image: levumiPic,
-                                  width: 40
-                              }
-                          ]
-                      },
-                      {text:
-                          'Levumi Schüleransicht <%=@student.name%>',
-                          fontSize: 15,
-                          margin: [0, 10, 0, 0]
-                      }
-                  ]
-              },
-              {text:
-                  '<%=test.name%> - <%=test.level%>',
-                  style: 'subheader'
-              },
-              {image: data,
-                  width: 480,
-                  height: 250,
-                  margin: [0,15,0,0]
-              }],
-          styles: {
-              subheader: {
-                  fontSize: 13,
-                  margin: [50, 0, 5, 5]
-              }
-          }
-      };
+        if(withTable){
+            generateTable(docDefinition, key, false);
+        }
+        //open PDF in new window
+        //Alternativen:
+        //print the PDF
+        //  pdfMake.createPdf(docDefinition).print();
+        // download the PDF
+        //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
+        pdfMake.createPdf(docDefinition).open();
 
-      if(withTable){
-          generateTable(docDefinition, key);
-      }
-      //open PDF in new window
-      //Alternativen:
-      //print the PDF
-      //  pdfMake.createPdf(docDefinition).print();
-      // download the PDF
-      //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
-      pdfMake.createPdf(docDefinition).open();
-
-  }
-
-
-
-
-
+    }
 </script>
 
 
