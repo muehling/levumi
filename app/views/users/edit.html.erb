@@ -3,6 +3,27 @@
     <div class = "col-sm-5">
       <%= render 'form' %>
     </div>
-    <%=link_to "Benutzer löschen", delete_user_path(@user, reallyDelete:false), class:"btn btn-danger", style: "float:right" %>
+  </div>
+  <div class = "row">
+    <div class = "col-sm-12">
+      <div id="delete">
+        <%=link_to "Benutzer löschen", '#', onclick: "securityCheck();", class:"btn btn-danger pull-right" %>
+      </div>
+    </div>
   </div>
 </div>
+
+<script>
+    function securityCheck() {
+        $('#delete').html("<h2>Löschen des Profils</h2>" +
+            "<p class='lead'>Sind Sie sich sicher, dass Sie ihr Profil auf Levumi löschen möchten?<br/>" +
+            "Es werden dadurch alle von Ihnen angelegten Klassen inklusive aller Messungen gelöscht!<br/>" +
+            "Diese Aktion kann nicht rückgängig gemacht werden!</p>" +
+            "<%= escape_javascript(raw(link_to 'Abbrechen', '#', onclick: 'cancelForm();', class: 'btn btn-default'))%>" +
+            "<%= escape_javascript(raw(link_to 'Benutzer löschen', user_path(@user), method: :delete, data: {confirm: 'Profil jetzt löschen?'}, class: 'btn btn-danger pull-right'))%>");
+    }
+
+    function cancelForm() {
+        $('#delete').html("<%= escape_javascript(raw(link_to 'Benutzer löschen', '#', onclick: 'securityCheck();', class:'btn btn-danger'))%>");
+    }
+</script>

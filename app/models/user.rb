@@ -38,14 +38,19 @@ class User < ActiveRecord::Base
   #0 - Normaler "aktiver" Account
   #1 - Neuer Account, noch nicht benutzt
   #2 - Alter Account, schon lange nicht mehr benutzt (> 3 Monate kein Login)
+  # -1 - Account wurde gelöscht
   def status
     if tcaccept.nil?
       return 1
     else
-      if last_login.nil? || last_login < 3.months.ago
-        return 2
+      if account_type == -1
+        return -1
       else
-        return 0
+        if last_login.nil? || last_login < 3.months.ago
+          return 2
+        else
+          return 0
+        end
       end
     end
   end
@@ -58,7 +63,7 @@ class User < ActiveRecord::Base
     self.groups.create(:name => "Testklasse", :export => false, :archive => false, :demo => true)
   end
 
-
+  #Persönliche Daten der Lehrkraft löschen, in Account kann nicht mehr eingeloggt werden.
   def delete
     self.email= User.generate_slug(42)
     self.name = User.generate_slug(8)

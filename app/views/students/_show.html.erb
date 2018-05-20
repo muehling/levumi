@@ -17,7 +17,7 @@
     <div class="col-sm-12">
       <p class="lead text-right">
         <!-- Imitate a link-->
-        <span class="glyphicon glyphicon-print myHover" onclick="generatePDF()" style="color: #337ab7", title="Alles drucken"></span>
+        <span class="glyphicon glyphicon-print myHover" onclick="generateAll()" style="color: #337ab7", title="Alles drucken"></span>
 
         <%= link_to '#', :title => "Zurück", :onclick => "cancel()" do%>
             <span class="glyphicon glyphicon-th"></span>
@@ -33,7 +33,7 @@
       </p>
     </div>
   </div>
-  <button id="test" onclick="generateAll()">TEst</button>
+
   <!--Canvas for drawing the svg-graph-->
   <canvas id="drawingArea" style="display: none"></canvas>
   <%keyList = []%>

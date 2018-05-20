@@ -32,10 +32,6 @@ class StudentsController < ApplicationController
     end
     respond_to do |format|
       format.js {}
-      format.pdf {
-
-        render pdf: @student.name, template: "students/show.pdf.erb"
-        }
     end
   end
 
@@ -125,7 +121,7 @@ class StudentsController < ApplicationController
     end
 
     def is_allowed
-      unless !@login_user.nil? && @login_user.account_type!=-1 && (@login_user.hasCapability?("admin") || params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
+      unless !@login_user.nil? && @login_user.hasCapability?("admin") || !@login_user.nil? && (params.has_key?(:user_id) && (@login_user.id == params[:user_id].to_i))
         redirect_to root_url
       end
     end

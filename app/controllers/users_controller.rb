@@ -99,26 +99,26 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.json
   def destroy
-    @user.destroy
-    respond_to do |format|
-      format.html { redirect_to users_url, notice: 'Benutzer wurde gelöscht.' }
+    backend = true
+    if (@user.account_type == -1) || (@user.id != session[:user_id])
+      @user.destroy    #Löschen im Backend => Final löschen
+    else
+      @user.delete     #Löschen als User => Daten löschen, Einloggen verhindern
+      backend = false
     end
-  end
-
-  def delete
     respond_to do |format|
-      format.html{
-        if params[:reallyDelete] == "true"
-          @user.delete
+      format.html {
+        if backend
+          redirect_to users_url, notice: 'Benutzer wurde gelöscht.'
+        else
           if !session[:user_id].nil?
             session[:user_id] = nil
             @login_user = nil
           end
-          redirect_to root_url, notice: 'Ihr Benutzer wurde erfolgreich gelöscht.'
+          redirect_to root_url, notice: 'Ihr Benutzer wurde erfolgreich gelöscht. Vielen Dank, dass Sie Levumi verwendet haben.'
         end
       }
     end
-
   end
 
   private
@@ -133,7 +133,7 @@ class UsersController < ApplicationController
     end
 
   def is_allowed
-    unless  !@login_user.nil? && @login_user.account_type!=-1&&(@login_user.hasCapability?("user") || params.has_key?(:id) && (@login_user.id == params[:id].to_i))
+    unless !@login_user.nil? && @login_user.hasCapability?("user") ||!@login_user.nil? && (params.has_key?(:id) && (@login_user.id == params[:id].to_i))
       redirect_to root_url
     end
   end
