@@ -11,8 +11,8 @@
       <p>
         Die vollständige Datenschutzerklärung sowie eine Vorlage für einen Elternbrief finden Sie oben im Menü.
       </p>
-      <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form") do %>
-          <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary" %>
+      <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form", id:"acceptForm") do %>
+          <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary", id:"acceptButton" %>
       <% end %>
 
     </div>
@@ -20,3 +20,41 @@
 </div>
 
 
+<script>
+    <%if @login_user.tcaccept.nil?%>
+    var students = {
+        <%@groups.each do |group| %>
+        '<%=group.id%>': {
+            <%group.students.each do |s|%>
+            '<%=s.id%>': '<%=s.name%>',
+            <%end%>
+        },
+        <%end%>
+    }
+    sessionStorage['students'] = JSON.stringify(students);
+    <%end%>
+
+    //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
+    $(function() {
+        $('#acceptButton').click(function (e) {
+            e.preventDefault();
+            sessionStorage['encryptKey']= $('#user_password').val();
+            var students = JSON.parse(sessionStorage['students']);
+            var encryptedStudents = {}
+            Object.keys(students).forEach(function(keyGroup) {
+                encryptedStudents[keyGroup] = {}
+                Object.keys(students[keyGroup]).forEach(function(keyStudent) {
+                    encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+                });
+            });
+            jQuery.ajax({
+                type: "PUT",
+                url: "<%= multiUpdate_user_path(@login_user) %>",
+                data: {students: encryptedStudents}
+            })
+            $('#acceptForm').submit();
+
+        })
+    });
+
+</script>

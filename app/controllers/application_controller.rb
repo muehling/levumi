@@ -110,6 +110,7 @@ class ApplicationController < ActionController::Base
   #check if user accepted the letter of agreement
   def check_accept
     if !@login_user.nil? && @login_user.tcaccept.nil?
+      @groups = @login_user.groups
       render 'accept'
     end
   end
