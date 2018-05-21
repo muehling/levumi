@@ -57,7 +57,7 @@
     </div>
 <% end %>
 <script>
-    <%if first_login_after_Change%>
+    <%if @user.first_login_after_change.nil?||!@user.first_login_after_change%>
     var students = {
         <%@groups.each do |group| %>
         '<%=group.id%>': {
