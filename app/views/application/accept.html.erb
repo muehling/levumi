@@ -38,7 +38,6 @@
     $(function() {
         $('#acceptButton').click(function (e) {
             e.preventDefault();
-            sessionStorage['encryptKey']= $('#user_password').val();
             var students = JSON.parse(sessionStorage['students']);
             var encryptedStudents = {}
             Object.keys(students).forEach(function(keyGroup) {
