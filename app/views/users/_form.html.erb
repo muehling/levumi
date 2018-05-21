@@ -56,22 +56,27 @@
       <% end %>
     </div>
 <% end %>
-
+<button onclick="test()">hallo</button>
 <script>
-    //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
 
+    //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
     function saveKey() {
-        //alert("hallo")
-/*
         if($('#user_password').val()==$('#user_password_confirmation').val()){
-            sessionStorage.setItem('encryptKey', $('#user_password').val());
-            pw1 = sjcl.encrypt(sessionStorage.getItem('encryptKey'), $('#user_password').val());
+            sessionStorage['encryptKey']= $('#user_password').val();
+            var students = JSON.parse(sessionStorage['students']);
+            var encryptedStudents = {}
+            Object.keys(students).forEach(function(keyGroup) {
+                encryptedStudents[keyGroup] = {}
+                Object.keys(students[keyGroup]).forEach(function(keyStudent) {
+                    encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+                });
+            });
             jQuery.ajax({
                 type: "PUT",
-                url: "<= user_path(@user) %>" + ".html",
-                data: {"authenticity_token":token, "user": {"name": $('#user_name').val(), "email": $('#user_email').val(),
-                    "state": $('#user_state').val(), "password": pw1, "password_confirmation": pw1,"account_type": $('input[name="user[account_type]"]:checked').val()}}
-            });
-        }*/
+                url: "<%= multiUpdate_user_path(@user) %>",
+                data: {students: encryptedStudents}
+            })
+
+        }
     }
 </script>

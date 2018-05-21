@@ -50,4 +50,15 @@
 
 
   </div>
-
+  <script>
+    var students = {
+        <%@groups.each do |group| %>
+          '<%=group.id%>': {
+              <%group.students.each do |s|%>
+                '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+              <%end%>
+          },
+        <%end%>
+    }
+    sessionStorage['students'] = JSON.stringify(students);
+  </script>

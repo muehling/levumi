@@ -19,6 +19,7 @@
 <div id="chart"></div>
 
 <script type="text/javascript" charset="utf-8">
+    var students = JSON.parse(sessionStorage['students']);
 //create a chart(svg-element) with attribute id
 var chart = c3.generate({
     oninit: function() {
@@ -35,7 +36,7 @@ var chart = c3.generate({
             ],
             <% max = 1 %>
             <% @group.students.each do |student| %>
-            ['<%= student.name %>',
+            [students["<%=@group.id%>"][<%=student.id%>],
                 <% @assessment.measurements.each do |m| %>
                 <% r = m.results.find_by_student_id(student.id) %>
                 <% if r.nil? || r.score.nil?  %>

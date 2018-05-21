@@ -84,7 +84,7 @@
                 ]
             ],
             names: {
-                student: '<%= @student.name %>',
+                student: studentsCrypt['<%=@group.id%>'][<%=@student.id%>],
                 n75: '75% Niveau der Klasse',
                 n25: '25% Niveau der Klasse',
                 n50: '50% Niveau der Klasse'
@@ -274,7 +274,7 @@
                             ]
                         },
                         {text:
-                            'Levumi Schüleransicht <%=@student.name%>',
+                            'Levumi Schüleransicht '+studentsCrypt['<%=@group.id%>'][<%=@student.id%>],
                             fontSize: 15,
                             margin: [0, 10, 0, 0]
                         }

@@ -26,8 +26,7 @@
               <tbody>
               <% @measurement.results.each do |r| %>
                   <tr>
-                    <td>
-                      <%= "#{r.student.name}"  %>
+                    <td id="<%= r.student.id%>">
                     </td>
                     <td>
                       <%= text_field_tag "results[#{r.student.id}]", r.to_csv(true), class: "form-control", placeholder: "z.B. 1,0,0,NA"%>
@@ -47,8 +46,7 @@
         <div class="panel panel-default">
         <div class="panel-heading" role="tab" id="h<%=r.id%>">
           <h4 class="panel-title">
-            <a role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded="false" aria-controls="c<%=r.id%>">
-              <%= "#{r.student.name}" %>
+            <a id="<%=r.student.id%>Panel" role="button" data-toggle="collapse" data-parent="#accordion" href="#c<%=r.id%>" aria-expanded="false" aria-controls="c<%=r.id%>">
             </a>
           </h4>
         </div>
@@ -132,3 +130,10 @@
   </div>
 
 </div>
+
+<script>
+    Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+        $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
+        $('#'+ keyStudent + "Panel").html(studentsCrypt["<%=@group.id%>"][keyStudent])
+    });
+</script>

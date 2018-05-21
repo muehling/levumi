@@ -28,8 +28,7 @@
 
   <div class = "row">
     <div class="col-sm-12">
-      <p class="lead text-center">
-        <%= @student.name %>
+      <p class="lead text-center" id="<%=@student.id%>">
       </p>
     </div>
   </div>
@@ -47,7 +46,9 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-  var keyList = {
+    var studentsCrypt = JSON.parse(sessionStorage['students']);
+    $('#' + <%=@student.id%>).html(studentsCrypt['<%=@group.id%>'][<%=@student.id%>])
+    var keyList = {
       <%keyList.each do |key|%>
         <%test = Test.find(key)%>
         <%= key%>: '<%=test.name%> - <%=test.level%>',
@@ -98,7 +99,7 @@
                           ]
                       },
                       {text:
-                          'Levumi Schüleransicht <%=@student.name%>',
+                          'Levumi Schüleransicht ' + studentsCrypt['<%=@group.id%>'][<%=@student.id%>],
                           fontSize: 15,
                           margin: [0, 10, 0, 0]
                       }

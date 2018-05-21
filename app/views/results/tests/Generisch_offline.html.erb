@@ -43,4 +43,9 @@
     $(document).ready(function() {
         window.print();
     });
+
+    var studentsCrypt = JSON.parse(sessionStorage['students']);
+    Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+        $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
+    });
 </script>

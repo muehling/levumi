@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :delete]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :multiUpdate]
   before_action :is_allowed, except: [:show]
 
   # GET /users
@@ -119,6 +119,16 @@ class UsersController < ApplicationController
         end
       }
     end
+  end
+  def multiUpdate
+    params[:students].each do |keyGroup, valueGroup|
+      valueGroup.each do |keyStudent, valueStudent|
+        s = Student.find(keyStudent)
+        s.name = valueStudent
+        s.save
+      end
+    end
+    redirect_to @user
   end
 
   private

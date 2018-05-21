@@ -13,6 +13,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require bootstrap-sprockets
+//Import client-side encryption
+//= require sjcl
 //Draw SVG to Canvas
 //= require rgbcolor
 //= require StackBlur

@@ -25,7 +25,7 @@
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
             <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>)">
-              <%= r.student.name %>
+              <div id="<%=r.student.id%>"></div>
             </div>
           </div>
       <% end %>
@@ -49,6 +49,10 @@
   var curSize =110;
   var currentStudent = -1;
   var currentItemIndex = 0;
+  var studentsCrypt = JSON.parse(sessionStorage['students']);
+  Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+      $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
+  });
 
   //TODO Aufpassen muss noch weg
   //- Schüler holen und dann verschlüssen und daraufhin ein objekt erzeugen in welchem die drin sind

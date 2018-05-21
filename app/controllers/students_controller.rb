@@ -70,6 +70,7 @@ class StudentsController < ApplicationController
       if success
         format.html { redirect_to user_group_students_path(@user, @group), notice: flash.now[:notice] }
         format.js {
+          @newStudent = @student
           @student = Student.new
         }
       else

@@ -50,12 +50,13 @@
         <%= f.select(:migration, options_for_select([['', nil], ['Nein', false], ['Ja', true]], @student.migration), {}, {:class => "form-control input-sm", "aria-describedby" => "helpBlockMG"}) %>
         <span id="helpBlockMG" class="help-block">Falls Kind oder die Eltern im Ausland geboren.</span>
       </div>
-    </div>  </div>
+    </div>
+  </div>
 
   <div class="row">
     <div class="col-xs-12">
         <div class="form-group">
-          <%= f.submit :class => "btn btn-primary" %>
+          <%= f.submit :class => "btn btn-primary" , id:"createStudent"%>
 
           <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
         </div>
@@ -65,7 +66,17 @@
 <% end %>
 
 <script>
+    var newStudent = "";
     function cancelForm() {
         $('#studentForm').html("<%= escape_javascript(raw(link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true})) %>");
     }
+    $(function() {
+        $('#createStudent').click(function (e) {
+            e.preventDefault();
+            newStudent = $('#student_name').val();
+            $('#student_name').val(sjcl.encrypt(sessionStorage['encryptKey'], $('#student_name').val()))
+            $('#new_student').submit();
+
+        })
+    });
 </script>

@@ -11,7 +11,7 @@
         <label class="sr-only" for="email">Passwort</label>
         <%= text_field_tag "password", nil, type: "password", class: "form-control", placeholder: "Passwort"%>
       </div>
-      <%= submit_tag 'Einloggen', :class => "btn btn-primary" %>
+      <%= submit_tag 'Einloggen', :class => "btn btn-primary", onclick:"saveKey()" %>
   <% end %>
   <br/>
   <p>
@@ -25,3 +25,9 @@
     Erlauben Sie bitte außerdem Cookies und Popups für diese Seite!
   </p>
 </div>
+
+<script>
+  function saveKey() {
+      sessionStorage.setItem('encryptKey', $('#password').val());
+  }
+</script>
