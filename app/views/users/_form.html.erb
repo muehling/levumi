@@ -58,6 +58,18 @@
 <% end %>
 <button onclick="test()">hallo</button>
 <script>
+    <%if first_login_after_Change%>
+    var students = {
+        <%@groups.each do |group| %>
+        '<%=group.id%>': {
+            <%group.students.each do |s|%>
+            '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+            <%end%>
+        },
+        <%end%>
+    }
+    sessionStorage['students'] = JSON.stringify(students);
+    <%end%>
 
     //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
     function saveKey() {
