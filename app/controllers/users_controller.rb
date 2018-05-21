@@ -42,6 +42,8 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
+    #hier gegebenenfalls auch nur, wenn das Flag (z.B. first_login_after_Change nil/false), sonst nicht nötig
+    @groups = @user.groups
   end
 
   # POST /users

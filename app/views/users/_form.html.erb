@@ -62,7 +62,7 @@
         <%@groups.each do |group| %>
         '<%=group.id%>': {
             <%group.students.each do |s|%>
-            '<%=s.id%>': '<%=raw s.name%>',
+            '<%=s.id%>': '<%=s.name%>',
             <%end%>
         },
         <%end%>
