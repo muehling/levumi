@@ -1,8 +1,7 @@
-<%if @newStudent.nil? ||!@newStudent.blank%>
-alert("hallo")
+<%if @newStudent.nil? ||@newStudent.blank?%>
 <%else%>
   var studentsCrypt = JSON.parse(sessionStorage['students']);
-  studentsCrypt["<%=@group.id%>"]["<%=@newStudent.id%>"] = newStudent
+  studentsCrypt["<%=@group.id%>"]["<%=@newStudent.id%>"] = newStudent;
   sessionStorage['students'] = JSON.stringify(studentsCrypt);
 <%end%>
 $('#students').html("<%= escape_javascript(render 'index')%>");

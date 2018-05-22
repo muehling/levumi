@@ -23,7 +23,7 @@
 <script>
     <%if @login_user.tcaccept.nil?%>
     var students = {
-        <%@groups.each do |group| %>
+        <%@login_user.groups.each do |group| %>
         '<%=group.id%>': {
             <%group.students.each do |s|%>
             '<%=s.id%>': '<%=s.name%>',
@@ -34,7 +34,6 @@
     sessionStorage['students'] = JSON.stringify(students);
     <%end%>
 
-    //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
     $(function() {
         $('#acceptButton').click(function (e) {
             e.preventDefault();

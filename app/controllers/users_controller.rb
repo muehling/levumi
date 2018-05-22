@@ -123,9 +123,6 @@ class UsersController < ApplicationController
     end
   end
   def multiUpdate
-    if(!@user.first_login_after_change||@user.first_login_after_change.nil?)
-      @user.first_login_after_change = true
-    end
     params[:students].each do |keyGroup, valueGroup|
       valueGroup.each do |keyStudent, valueStudent|
         s = Student.find(keyStudent)

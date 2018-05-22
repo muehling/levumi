@@ -57,20 +57,6 @@
     </div>
 <% end %>
 <script>
-    <%if @user.first_login_after_change.nil?||!@user.first_login_after_change%>
-    var students = {
-        <%@groups.each do |group| %>
-        '<%=group.id%>': {
-            <%group.students.each do |s|%>
-            '<%=s.id%>': '<%=s.name%>',
-            <%end%>
-        },
-        <%end%>
-    }
-    sessionStorage['students'] = JSON.stringify(students);
-    <%end%>
-
-    //TODO alle meine Schüler laden und dann updaten/Einzelupdate?
     function saveKey() {
         if($('#user_password').val()==$('#user_password_confirmation').val()){
             sessionStorage['encryptKey']= $('#user_password').val();
