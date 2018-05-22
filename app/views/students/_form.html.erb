@@ -74,7 +74,7 @@
         $('#createStudent').click(function (e) {
             e.preventDefault();
             newStudent = $('#student_name').val();
-            $('#student_name').val(sjcl.encrypt(sessionStorage['encryptKey'], $('#student_name').val()))
+            $('#student_name').val(sjcl.encrypt(sessionStorage['encryptKey'], $('#student_name').val()));
             $('#new_student').submit();
 
         })
