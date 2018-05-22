@@ -51,25 +51,28 @@
 
   </div>
   <script>
-    var students = {
         <%if @user.id !=@login_user.id%>
-        <%@groups.each do |group| %>
-        '<%=group.id%>': {
-            <%group.students.each do |s|%>
-            '<%=s.id%>': "Kind" +'<%= s.id%>',
-            <%end%>
-        },
-        <%end%>
+          var students = {
+              <%@groups.each do |group| %>
+              '<%=group.id%>': {
+                  <%group.students.each do |s|%>
+                  '<%=s.id%>': "Kind" +'<%= s.id%>',
+                  <%end%>
+              },
+              <%end%>
+          }
+          //Don't overide my own students
+        sessionStorage['foreignStudents'] = JSON.stringify(students);
         <%else%>
-        <%@groups.each do |group| %>
-        '<%=group.id%>': {
-            <%group.students.each do |s|%>
-            '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+        var students = {
+            <%@groups.each do |group| %>
+            '<%=group.id%>': {
+                <%group.students.each do |s|%>
+                '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+                <%end%>
+            },
             <%end%>
-        },
+        }
+        sessionStorage['students'] = JSON.stringify(students);
         <%end%>
-        <%end%>
-
-    }
-    sessionStorage['students'] = JSON.stringify(students);
   </script>

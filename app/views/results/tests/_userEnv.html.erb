@@ -30,6 +30,15 @@
       <% end %>
     </div>
 
+    <script>
+        //Initialisation needed before model and his content is rendered
+        <%if @user.id !=@login_user.id %>
+        var studentsCrypt = JSON.parse(sessionStorage['foreignStudents']);
+        <%else%>
+        var studentsCrypt = JSON.parse(sessionStorage['students']);
+        <%end%>
+    </script>
+    
     <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
       <div class="modal-dialog modal-lg" id="testEnviroment">
       </div>
@@ -47,8 +56,6 @@
 <script>
   var curSize =110;
   var currentStudent = -1;
-  var currentItemIndex = 0;
-  var studentsCrypt = JSON.parse(sessionStorage['students']);
   Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
       $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
   });

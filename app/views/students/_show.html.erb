@@ -10,7 +10,14 @@
       cursor: pointer;
     }
 </style>
-
+<script>
+  //Initialisation needed before 'students/overview' is rendered
+    <%if @user.id !=@login_user.id %>
+      var studentsCrypt = JSON.parse(sessionStorage['foreignStudents']);
+    <%else%>
+      var studentsCrypt = JSON.parse(sessionStorage['students']);
+    <%end%>
+</script>
 <div class="groupCard">
 
   <div class="row">
@@ -46,7 +53,6 @@
 </div>
 
 <script type="text/javascript" charset="utf-8">
-    var studentsCrypt = JSON.parse(sessionStorage['students']);
     $('#' + <%=@student.id%>).html(studentsCrypt['<%=@group.id%>'][<%=@student.id%>])
     var keyList = {
       <%keyList.each do |key|%>

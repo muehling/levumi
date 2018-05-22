@@ -1,5 +1,5 @@
 <% content_for :top do%>
-  <p class="navbar-brand">Angemeldet als: <%= @student.name %></p>
+  <p class="navbar-brand">Angemeldet als: <%= @student.login%></p>
   <div class = "navbar-right" style="padding-right: 15px">
     <form class="navbar-form" method="post" action="<%=url_for(:controller => "frontend", :action => "logout")%>">
       <%= token_tag nil %>
