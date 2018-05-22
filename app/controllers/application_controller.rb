@@ -14,6 +14,7 @@ class ApplicationController < ActionController::Base
         session[:student_id] = nil
         @login_student = nil
         @login_user = u
+        @user = u
         news = News.new_items(u)
         u.last_login = Time.now
         u.save

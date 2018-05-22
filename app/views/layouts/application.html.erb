@@ -102,3 +102,39 @@
 
 </body>
 </html>
+
+<script>
+  <%if !@login_user.tcaccept.nil?%>
+    <%if !@user.nil?&& @user.id !=@login_user.id%>
+        if(typeof sessionStorage['foreignStudents'] === 'undefined'||sessionStorage['foreignStudents'] === null){
+            var students = {
+                <%@user.groups.each do |group| %>
+                '<%=group.id%>': {
+                    <%group.students.each do |s|%>
+                    '<%=s.id%>': "Kind" +'<%= s.id%>',
+                    <%end%>
+                },
+                <%end%>
+            }
+            //Don't overide my own students
+            sessionStorage['foreignStudents'] = JSON.stringify(students);
+        }
+    <%else%>
+      if(typeof sessionStorage['foreignStudents'] !== 'undefined'||sessionStorage['foreignStudents'] !== null){
+          sessionStorage.removeItem('forgeinStudents');
+      }
+      if(typeof sessionStorage['students'] === 'undefined'||sessionStorage['students'] === null){
+          var students = {
+              <%@login_user.groups.each do |group| %>
+              '<%=group.id%>': {
+                  <%group.students.each do |s|%>
+                  '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+                  <%end%>
+              },
+              <%end%>
+          }
+          sessionStorage['students'] = JSON.stringify(students);
+      }
+    <%end%>
+  <%end%>
+</script>
