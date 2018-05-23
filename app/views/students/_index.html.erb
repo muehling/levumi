@@ -31,7 +31,7 @@
   </th>
   </thead>
   <tbody>
-  <% @group.students.sort_by { |a| a.name}.each do |student| %>
+  <% @group.students.sort_by { |a| a.id}.each do |student| %>
       <tr>
         <td id ='<%= student.id %>'>
         </td>
@@ -71,11 +71,7 @@
   <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
 </div>
 <script>
-    <%if @user.id !=@login_user.id%>
-      var students = JSON.parse(sessionStorage['foreignStudents']);
-    <%else%>
-      var students = JSON.parse(sessionStorage['students']);
-    <%end%>
+    var students = JSON.parse(sessionStorage['students']);
 
     Object.keys(students["<%=@group.id%>"]).forEach(function(keyStudent) {
         $('#'+ keyStudent).html(students["<%=@group.id%>"][keyStudent])

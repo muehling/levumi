@@ -19,11 +19,8 @@
 <div id="chart"></div>
 
 <script type="text/javascript" charset="utf-8">
-    <%if @user.id !=@login_user.id%>
-    var students = JSON.parse(sessionStorage['foreignStudents']);
-    <%else%>
     var students = JSON.parse(sessionStorage['students']);
-    <%end%>
+
 //create a chart(svg-element) with attribute id
 var chart = c3.generate({
     oninit: function() {

@@ -32,11 +32,7 @@
 
     <script>
         //Initialisation needed before model and his content is rendered
-        <%if @user.id !=@login_user.id %>
-        var studentsCrypt = JSON.parse(sessionStorage['foreignStudents']);
-        <%else%>
         var studentsCrypt = JSON.parse(sessionStorage['students']);
-        <%end%>
     </script>
     
     <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">

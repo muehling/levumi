@@ -12,11 +12,7 @@
 </style>
 <script>
   //Initialisation needed before 'students/overview' is rendered
-    <%if @user.id !=@login_user.id %>
-      var studentsCrypt = JSON.parse(sessionStorage['foreignStudents']);
-    <%else%>
-      var studentsCrypt = JSON.parse(sessionStorage['students']);
-    <%end%>
+  var studentsCrypt = JSON.parse(sessionStorage['students']);
 </script>
 <div class="groupCard">
 
