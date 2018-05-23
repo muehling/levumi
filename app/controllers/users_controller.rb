@@ -126,7 +126,7 @@ class UsersController < ApplicationController
     params[:students].each do |keyGroup, valueGroup|
       valueGroup.each do |keyStudent, valueStudent|
         s = Student.find(keyStudent)
-        if s.group.user.id != @user.id
+        if s.group.user.id != @login_user.id
           if(!session[:user_id].nil?)
             session[:user_id] = nil
             @login_user = nil
