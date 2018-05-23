@@ -132,12 +132,13 @@ class UsersController < ApplicationController
             @login_user = nil
           end
           redirect_to root_url
+        else
+          s.name = valueStudent
+          s.save
+          redirect_to @user
         end
-        s.name = valueStudent
-        s.save
       end
     end
-    redirect_to @user
   end
 
   private
