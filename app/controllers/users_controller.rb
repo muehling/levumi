@@ -122,6 +122,7 @@ class UsersController < ApplicationController
       }
     end
   end
+
   def multiUpdate
     params[:students].each do |keyGroup, valueGroup|
       valueGroup.each do |keyStudent, valueStudent|

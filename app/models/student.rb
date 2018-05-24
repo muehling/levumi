@@ -75,25 +75,6 @@ class Student < ActiveRecord::Base
     return [id.to_s, name, group.id, group.name, group.user.id, get_account_type(group.user.account_type), get_gender(true), get_birthdate(true), get_specific_needs(true), get_migration(true)]
   end
 
-  def self.import(file, group)
-    spreadsheet = open_spreadsheet(file)
-    header = spreadsheet.row(1)
-    header.each{|h| h.downcase!}
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      student = group.students.build(name: row["name"])
-      student.save!
-    end
-  end
-
-  def self.open_spreadsheet(file)
-    case File.extname(file.original_filename)
-      when ".csv" then Roo::CSV.new(file.path)
-      when ".xls" then Roo::Excel.new(file.path, file_warning: :ignore)
-      else raise "Unknown file type: #{file.original_filename}"
-    end
-  end
-
   def getResults
     tests = Hash.new()
     items = Hash.new()

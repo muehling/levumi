@@ -3,7 +3,7 @@
       <span class="glyphicon glyphicon-print"></span>
   <% end %>
 </p>
-<table class="table table-striped">
+<table id="table" class="table table-striped">
   <thead>
   <th>
     Schüler/-in
@@ -76,5 +76,30 @@
     Object.keys(students["<%=@group.id%>"]).forEach(function(keyStudent) {
         $('#'+ keyStudent).html(students["<%=@group.id%>"][keyStudent])
     });
+
+    function sort() {
+        var table, rows, switched, shouldSwitch, i, a, b;
+        table = document.getElementById("table");
+        switched = true;
+        while (switched) {
+            switched = false;
+            rows = table.getElementsByTagName("TR");
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                a = rows[i].getElementsByTagName("TD")[0];
+                b = rows[i + 1].getElementsByTagName("TD")[0];
+                if (a.innerHTML.toLowerCase() > b.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
+            }
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switched = true;
+            }
+        }
+    }
+    sort();
+
 
 </script>

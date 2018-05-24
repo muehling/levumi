@@ -1,1 +1,4 @@
+var studentsCrypt = JSON.parse(sessionStorage['students']);
+studentsCrypt["<%=@group.id%>"]["<%=@student.id%>"] = student;
+sessionStorage['students'] = JSON.stringify(studentsCrypt);
 $('#students').html("<%= escape_javascript(render 'index')%>");

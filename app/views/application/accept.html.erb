@@ -14,7 +14,6 @@
       <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form", id:"acceptForm") do %>
           <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary", id:"acceptButton" %>
       <% end %>
-
     </div>
   </div>
 </div>
@@ -51,7 +50,6 @@
                 data: {students: encryptedStudents}
             })
             $('#acceptForm').submit();
-
         })
     });
 

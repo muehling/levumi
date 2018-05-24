@@ -47,17 +47,10 @@ gem 'sshkit-sudo'
 
 gem 'bootstrap-sass', '~> 3.3.5'
 
-gem 'roo', '~> 2.0.0'
-gem 'roo-xls'
-gem 'iconv', '~> 1.0.3'
-
 gem 'magic_encoding'
 
 gem 'seedbank'
 gem 'spreadsheet'
 
 # Print html to pdf
-
-gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary'
 gem 'canvgjs'
