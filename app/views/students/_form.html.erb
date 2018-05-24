@@ -66,6 +66,8 @@
 <% end %>
 
 <script>
+  var student = ""
+  student = '<%=@student.id%>'
     var newStudent = "";
     function cancelForm() {
         $('#studentForm').html("<%= escape_javascript(raw(link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true})) %>");
@@ -75,7 +77,13 @@
             e.preventDefault();
             newStudent = $('#student_name').val();
             $('#student_name').val(sjcl.encrypt(sessionStorage['encryptKey'], $('#student_name').val()));
-            $('#new_student').submit();
+            if($( "#new_student" ).length) {
+                $('#new_student').submit();
+            }
+            else {
+                $('#edit_student_' + student).submit();
+
+            }
 
         })
     });

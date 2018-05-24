@@ -1,1 +1,5 @@
 $('#students').html("<%= escape_javascript(render 'index')%>");
+var studentsCrypt = JSON.parse(sessionStorage['students']);
+studentsCrypt["<%=@group.id%>"]["<%=@student.id%>"] = newStudent;
+sessionStorage['students'] = JSON.stringify(studentsCrypt);
+$('#<%=@student.id%>').html(newStudent)
