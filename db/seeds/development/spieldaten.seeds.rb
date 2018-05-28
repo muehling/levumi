@@ -14,6 +14,13 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 
+g = u.groups.build(name: "10b")
+g.save
+s = g.students.build(name: "Adam")
+s.save
+s = g.students.build(name: "Eva")
+s.save
+
 
 items = %w{
 m

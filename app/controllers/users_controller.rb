@@ -141,7 +141,7 @@ class UsersController < ApplicationController
         end
       end
     end
-    redirect_to @user
+    head :ok
   end
 
   private
