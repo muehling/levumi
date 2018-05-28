@@ -57,18 +57,19 @@
         $('#acceptButton').click(function (e) {
             e.preventDefault();
             var students = JSON.parse(sessionStorage['students']);
-            var encryptedStudents = {}
+            var encryptedStudents = {};
             Object.keys(students).forEach(function(keyGroup) {
-                encryptedStudents[keyGroup] = {}
+                encryptedStudents[keyGroup] = {};
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
                     encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
                 });
             });
+            alert(encryptedStudents);
             jQuery.ajax({
                 type: "PUT",
                 url: "<%= multiUpdate_user_path(@login_user) %>",
                 data: {students: encryptedStudents}
-            })
+            });
             $('#acceptForm').submit();
         })
     });
