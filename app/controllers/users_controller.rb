@@ -140,8 +140,8 @@ class UsersController < ApplicationController
           s.save
         end
       end
-      redirect_to @user
     end
+    redirect_to @user
   end
 
   private
