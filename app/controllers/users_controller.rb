@@ -136,8 +136,10 @@ class UsersController < ApplicationController
           end
           redirect_to root_url
         else
-          s.name = valueStudent
-          s.save
+          unless (s.name.starts_with?('{')) #Keine Doppelverschlüsselung
+            s.name = valueStudent
+            s.save
+          end
         end
       end
     end
