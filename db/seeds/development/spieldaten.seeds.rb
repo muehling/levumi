@@ -6,7 +6,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
-u = User.create(name: "Herr Soundso", email: "test@test1.com", password: "123", password_confirmation: "123", capabilities: "", state:15, account_type: 2)
+u = User.create(name: "Herr Soundso", email: "test@test.com", password: "123", password_confirmation: "123", capabilities: "", state:15, account_type: 2)
 g = u.groups.build(name: "10a")
 g.save
 s = g.students.build(name: "Adam")
@@ -40,10 +40,19 @@ it.save
 
 cbmN2.save
 
-u = User.create(name: "Herr Soundso", email: "test@test.com", password: "123", password_confirmation: "123", capabilities: "admin", state:15, account_type: 2)
+u = User.create(name: "Herr Soundso", email: "test@test1.com", password: "123", password_confirmation: "123", capabilities: "admin", state:15, account_type: 2)
 g = u.groups.build(name: "10a")
 g.save
 s = g.students.build(name: "{\"iv\":\"l5n+MUbxlNTsQaIWHbAT2Q==\",\"v\":1,\"iter\":10000,\"ks\":128,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"Vb38an0XMIM=\",\"ct\":\"qhDoyMct3hhlo1I+\"}")
 s.save
 s = g.students.build(name: "Eva")
+s.save
+
+
+u = User.create(name: "Herr Soundso", email: "test@test2.com", password: "123", password_confirmation: "123", capabilities: "admin", state:15, account_type: 2)
+g = u.groups.build(name: "10a")
+g.save
+s = g.students.build(name: "{\"iv\":\"l5n+MUbxlNTsQaIWHbAT2Q==\",\"v\":1,\"iter\":10000,\"ks\":128,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"Vb38an0XMIM=\",\"ct\":\"qhDoyMct3hhlo1I+\"}")
+s.save
+s = g.students.build(name: "{\"iv\":\"bw7/NWyCd0zmwe4QuT4jCA==\",\"v\":1,\"iter\":10000,\"ks\":128,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"CHl/NqFo+dg=\",\"ct\":\"X3UKNEhEEAtokXo=\"}")
 s.save
