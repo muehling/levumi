@@ -138,10 +138,10 @@ class UsersController < ApplicationController
         else
           s.name = valueStudent
           s.save
-          redirect_to @user
         end
       end
     end
+    redirect_to @user
   end
 
   private
