@@ -64,7 +64,6 @@
                     encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
                 });
             });
-            alert(encryptedStudents);
             jQuery.ajax({
                 type: "PUT",
                 url: "<%= multiUpdate_user_path(@login_user) %>",
