@@ -40,13 +40,10 @@
 
     Object.keys(students).forEach(function(keyGroup) {
         Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-            console.log(keyStudent)
-            console.log(students[keyGroup][keyStudent][0]!="{")
             if(students[keyGroup][keyStudent][0]!= "{"){
             }
             else{
                 students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent])
-
             }
         });
     });
