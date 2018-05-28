@@ -68,8 +68,7 @@
             jQuery.ajax({
                 type: "PUT",
                 url: "<%= multiUpdate_user_path(@login_user) %>",
-                data: {students: encryptedStudents},
-                success: function(result) {alert(result);}
+                data: {students: encryptedStudents}
             });
             $('#acceptForm').submit();
         })
