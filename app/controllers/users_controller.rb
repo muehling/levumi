@@ -3,6 +3,8 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :multiUpdate]
   before_action :is_allowed, except: [:show]
 
+  skip_before_action :check_accept, only: [:multiUpdate] #temporaer wegen Racecondition?!
+
   # GET /users
   # GET /users.json
   def index
