@@ -48,29 +48,19 @@ class StudentsController < ApplicationController
   # POST /students.json
   def create
     @student = Student.new
-    if student_params.has_key?(:file)
-      begin
-        success = true
-        Student.import(student_params[:file], @group)
-        flash.now[:notice] = "Schülerdaten erfolgreich importiert."
-      rescue
-        success = false
-        flash.now[:notice] = "Fehler beim Importieren der Schülerdaten!"
-      end
-    else
-      @student = @group.students.new(student_params)
-      success = @student.save
-      unless success
-        @student.destroy
-        @group.reload
-      end
+
+    @student = @group.students.new(student_params)
+    success = @student.save
+    unless success
+      @student.destroy
+      @group.reload
     end
 
     respond_to do |format|
       if success
         format.html { redirect_to user_group_students_path(@user, @group), notice: flash.now[:notice] }
         format.js {
-          @newStudent = @student
+          @newStudent = @student #Nötig für Einfügen des neuen Student in den Browser-Hash
           @student = Student.new
         }
       else

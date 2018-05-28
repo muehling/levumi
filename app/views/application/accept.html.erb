@@ -5,23 +5,29 @@
   <div id="content">
     <div class="jumbotron">
       <h2>Einverständnis</h2>
-      <p>
-        Hiermit bestätige ich, dass ich für alle Daten, die ich von Schülern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Eltern, Schulleiter, ggf. Betreuungslehrkaft) einhole.
+      <% if @login_user.id < 519 #temporaer...alte User sehen das. %>
+        <p class="text-justify">
+          Wir haben unsere Datenschutzerklärung angepasst und den Datenschutz in Levumi verbessert! Bitte stimmen Sie den neuen Nutzungsbedingungen zu:
+        </p>
+      <% end %>
+      <p class="text-justify">
+        Ich bin damit einverstanden, dass meine Daten gemäß der <%= link_to "Datenschutzerklärung", url_for(:controller => "application", :action => "static", :page => "privacy")%> im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
+        Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben, Sie können Ihre Daten jederzeit löschen!
       </p>
-      <p>
-        Die vollständige Datenschutzerklärung sowie eine Vorlage für einen Elternbrief finden Sie oben im Menü.
+      <p class="text-justify">
+        Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Eltern, Schulleiter, ggf. Betreuungslehrkaft) einhole.
+        Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für einen <%= link_to "Elternbrief", asset_path("Elternbrief.docx")%> finden Sie oben im Menü.
       </p>
       <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form", id:"acceptForm") do %>
           <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary", id:"acceptButton" %>
       <% end %>
-
     </div>
   </div>
 </div>
 
 
 <script>
-    <%if @login_user.tcaccept.nil?%>
+    <%if @login_user.tcaccept.nil? #alles auch temporaer - umcodierung nach einloggen%>
     var students = {
         <%@login_user.groups.each do |group| %>
         '<%=group.id%>': {
@@ -51,7 +57,6 @@
                 data: {students: encryptedStudents}
             })
             $('#acceptForm').submit();
-
         })
     });
 

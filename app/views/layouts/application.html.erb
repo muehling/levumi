@@ -85,6 +85,38 @@
   </div>
 </nav>
 
+<script>
+    <%if !@login_user.tcaccept.nil?%>
+      <%if !@user.nil? && @user.id != @login_user.id%>
+        sessionStorage['studentsOwn'] = "false";
+        var students = {
+            <%@user.groups.each do |group| %>
+            '<%=group.id%>': {
+                <%group.students.each do |s|%>
+                '<%=s.id%>': "Kind" +'<%= s.id%>',
+                <%end%>
+            },
+            <%end%>
+        }
+        //Don't overide my own students
+        sessionStorage['students'] = JSON.stringify(students);
+      <%else%>
+        if(typeof sessionStorage['students'] === 'undefined'||sessionStorage['students'] === null ||sessionStorage['studentsOwn'] == "false" ){
+            var students = {
+                <%@login_user.groups.each do |group| %>
+                '<%=group.id%>': {
+                    <%group.students.each do |s|%>
+                    '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+                    <%end%>
+                },
+                <%end%>
+            }
+            sessionStorage['studentsOwn'] = "true";
+            sessionStorage['students'] = JSON.stringify(students);
+        }
+      <%end%>
+    <%end%>
+</script>
 
 <div class="container-fluid">
   <div id="content">
@@ -102,36 +134,3 @@
 
 </body>
 </html>
-
-<script>
-  <%if !@login_user.tcaccept.nil?%>
-    <%if !@user.nil?&& @user.id !=@login_user.id%>
-        sessionStorage['studentsOwn'] = "false";
-        var students = {
-          <%@user.groups.each do |group| %>
-            '<%=group.id%>': {
-                <%group.students.each do |s|%>
-                  '<%=s.id%>': "Kind" +'<%= s.id%>',
-                <%end%>
-            },
-          <%end%>
-        }
-            //Don't overide my own students
-        sessionStorage['students'] = JSON.stringify(students);
-    <%else%>
-      if(typeof sessionStorage['students'] === 'undefined'||sessionStorage['students'] === null ||sessionStorage['studentsOwn'] == "false" ){
-          var students = {
-              <%@login_user.groups.each do |group| %>
-              '<%=group.id%>': {
-                  <%group.students.each do |s|%>
-                  '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
-                  <%end%>
-              },
-              <%end%>
-          }
-          sessionStorage['studentsOwn'] = "true";
-          sessionStorage['students'] = JSON.stringify(students);
-      }
-    <%end%>
-  <%end%>
-</script>

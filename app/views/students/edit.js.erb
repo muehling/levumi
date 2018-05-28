@@ -1,3 +1,2 @@
 $('#studentForm').html("<%= escape_javascript(render 'form') %>");
 $('#student_name').val(sjcl.decrypt(sessionStorage['encryptKey'], $('#student_name').val()));
-

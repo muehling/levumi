@@ -6,7 +6,7 @@
     </div>
 <% end %>
 
-<%= form_for([@user, @group, @student], :html => {:class => "form"}, :data => {:remote => true}) do |f| %>
+<%= form_for([@user, @group, @student], html: {id: "student_form", class: "form"}, data: {remote: true}) do |f| %>
 
   <div class="row">
     <div class="col-xs-4">
@@ -17,7 +17,7 @@
       <% end %>
       <%= f.label :name, :class => "control-label" %>
       <%= f.text_field :name, :class => "form-control input-sm", "aria-describedby" => "helpBlockN" %>
-      <span id="helpBlockN" class="help-block">Bitte nicht den vollständigen Namen verwenden!</span>
+      <span id="helpBlockN" class="help-block">Wird nur verschlüsselt auf dem Server gespeichert!</span>
       </div>
     </div>
 
@@ -56,7 +56,7 @@
   <div class="row">
     <div class="col-xs-12">
         <div class="form-group">
-          <%= f.submit :class => "btn btn-primary" , id:"createStudent"%>
+          <%= f.submit :class => "btn btn-primary" , id:"submitStudent"%>
 
           <%= link_to "Abbrechen", '#', :class => "btn btn-default", :onclick => "cancelForm()"%>
         </div>
@@ -66,25 +66,17 @@
 <% end %>
 
 <script>
-  var student = ""
-  student = '<%=@student.id%>'
-    var newStudent = "";
+    var student = "";
+
     function cancelForm() {
         $('#studentForm').html("<%= escape_javascript(raw(link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true})) %>");
     }
     $(function() {
-        $('#createStudent').click(function (e) {
+        $('#submitStudent').click(function (e) {
             e.preventDefault();
-            newStudent = $('#student_name').val();
+            student = $('#student_name').val();
             $('#student_name').val(sjcl.encrypt(sessionStorage['encryptKey'], $('#student_name').val()));
-            if($( "#new_student" ).length) {
-                $('#new_student').submit();
-            }
-            else {
-                $('#edit_student_' + student).submit();
-
-            }
-
+            $('#student_form').submit();
         })
     });
 </script>
