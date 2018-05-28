@@ -41,3 +41,9 @@ it.save
 cbmN2.save
 
 u = User.create(name: "Herr Soundso", email: "test@test.com", password: "123", password_confirmation: "123", capabilities: "admin", state:15, account_type: 2)
+g = u.groups.build(name: "10a")
+g.save
+s = g.students.build(name: "{\"iv\":\"l5n+MUbxlNTsQaIWHbAT2Q==\",\"v\":1,\"iter\":10000,\"ks\":128,\"ts\":64,\"mode\":\"ccm\",\"adata\":\"\",\"cipher\":\"aes\",\"salt\":\"Vb38an0XMIM=\",\"ct\":\"qhDoyMct3hhlo1I+\"}")
+s.save
+s = g.students.build(name: "Eva")
+s.save
