@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :multiUpdate]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :multi_update]
   before_action :is_allowed, except: [:show]
 
-  skip_before_action :check_accept, only: [:multiUpdate] #temporaer wegen Racecondition?!
+  skip_before_action :check_accept, only: [:multi_update] #temporaer wegen Racecondition?!
 
   # GET /users
   # GET /users.json
@@ -125,7 +125,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def multiUpdate
+  def multi_update
     params[:students].each do |keyGroup, valueGroup|
       valueGroup.each do |keyStudent, valueStudent|
         s = Student.find(keyStudent)

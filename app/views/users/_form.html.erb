@@ -48,7 +48,7 @@
       </div>
     <% end %>
     <div class="form-group">
-      <%= f.submit :class => "btn btn-primary", onclick: "saveKey();"%>
+      <%= f.submit :class => "btn btn-primary", id:"submitButton"%>
       <% if @user.id.nil? || (@login_user.id != @user.id) %>
         <%= link_to "Abbrechen", users_path, :class => "btn btn-default"%>
       <% else %>
@@ -57,22 +57,26 @@
     </div>
 <% end %>
 <script>
-    function saveKey() {
-        if($('#user_password').val()==$('#user_password_confirmation').val()){
-            sessionStorage['encryptKey']= $('#user_password').val();
-            var students = JSON.parse(sessionStorage['students']);
-            var encryptedStudents = {}
-            Object.keys(students).forEach(function(keyGroup) {
-                encryptedStudents[keyGroup] = {}
-                Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-                    encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+    $(function() {
+        $('#submitButton').click(function (e) {
+            e.preventDefault();
+            if($('#user_password').val()==$('#user_password_confirmation').val()){
+                sessionStorage['encryptKey']= $('#user_password').val();
+                var students = JSON.parse(sessionStorage['students']);
+                var encryptedStudents = {}
+                Object.keys(students).forEach(function(keyGroup) {
+                    encryptedStudents[keyGroup] = {}
+                    Object.keys(students[keyGroup]).forEach(function(keyStudent) {
+                        encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+                    });
                 });
-            });
-            jQuery.ajax({
-                type: "PUT",
-                url: "<%= multiUpdate_user_path(@user) %>",
-                data: {students: encryptedStudents}
-            })
-        }
-    }
+                jQuery.ajax({
+                    type: "PUT",
+                    url: "<%= multi_update_user_path(@user) %>",
+                    data: {students: encryptedStudents}
+                })
+            }
+            $('#edit_user_' + '<%=@user.id%>').submit();
+        });
+    });
 </script>

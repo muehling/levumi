@@ -14,7 +14,7 @@ Rails.application.routes.draw do
       end
     end
     member do
-      put :multiUpdate
+      put :multi_update
     end
   end
 
