@@ -126,22 +126,26 @@ class UsersController < ApplicationController
   end
 
   def multi_update
-    params[:students].each do |keyGroup, valueGroup|
-      valueGroup.each do |keyStudent, valueStudent|
-        s = Student.find(keyStudent)
-        if s.group.user.id != @login_user.id
-          if(!session[:user_id].nil?)
-            session[:user_id] = nil
-            @login_user = nil
+    if params.has_key?(:students)
+      params[:students].each do |keyGroup, valueGroup|
+        valueGroup.each do |keyStudent, valueStudent|
+          s = Student.find(keyStudent)
+          if s.group.user.id != @login_user.id
+            if(!session[:user_id].nil?)
+              session[:user_id] = nil
+              @login_user = nil
+            end
+            redirect_to root_url
+          else
+            s.name = valueStudent
+            s.save
           end
-          redirect_to root_url
-        else
-          s.name = valueStudent
-          s.save
         end
       end
+      head :ok
+    else
+      head :ok
     end
-    head :ok
   end
 
   private
