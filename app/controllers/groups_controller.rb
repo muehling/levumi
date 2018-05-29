@@ -3,10 +3,14 @@ class GroupsController < ApplicationController
   before_action :set_user
   before_action :set_group, only: [:show, :edit, :update, :destroy]
   before_action :is_allowed
-
   # GET /groups
   # GET /groups.json
   def index
+    if params.has_key?(:destroyed)
+      @destroyed_group = params[:destroyed]
+    else
+      @destroyed_group = ""
+    end
     @groups = @user.groups
   end
 
@@ -62,10 +66,13 @@ class GroupsController < ApplicationController
   # DELETE /groups/1.json
   def destroy
     unless @group.demo
+      destroyed_group = @group.id
       @group.destroy
     end
     respond_to do |format|
-      format.html { redirect_to user_groups_url(@user), notice: 'Klasse wurde gelöscht.' }
+      format.html {
+        redirect_to user_groups_url(@user, destroyed: destroyed_group), notice: 'Klasse wurde gelöscht.'
+      }
     end
   end
 

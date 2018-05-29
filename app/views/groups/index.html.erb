@@ -1,4 +1,5 @@
-  <ul id="tabs" class="nav nav-tabs" role="tablist">
+
+<ul id="tabs" class="nav nav-tabs" role="tablist">
     <li role="presentation" class="active"><a href="#active" aria-controls="active" role="tab" data-toggle="tab">Aktuell</a></li>
     <li role="presentation"><a href="#archive" aria-controls="archive" role="tab" data-toggle="tab">Archiv</a></li>
   </ul>
@@ -50,3 +51,12 @@
 
 
   </div>
+<script>
+    var destroyGroup = '<%=@destroyed_group%>'
+    if(destroyGroup){
+        studentsCrypt = JSON.parse(sessionStorage['students']);
+        delete studentsCrypt[destroyGroup];
+        sessionStorage['students'] = JSON.stringify(studentsCrypt);
+    }
+
+</script>
