@@ -71,6 +71,7 @@ class GroupsController < ApplicationController
     end
     respond_to do |format|
       format.html {
+        #destroyed_group in params to get it in index<- lost as instance-variable
         redirect_to user_groups_url(@user, destroyed: destroyed_group), notice: 'Klasse wurde gelöscht.'
       }
     end
