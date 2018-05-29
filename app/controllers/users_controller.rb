@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :multiUpdate]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :multi_update]
   before_action :is_allowed, except: [:show]
 
-  skip_before_action :check_accept, only: [:multiUpdate]
+  skip_before_action :check_accept, only: [:multi_update]
 
   # GET /users
   # GET /users.json
@@ -127,6 +127,7 @@ class UsersController < ApplicationController
 
   def multi_update
     if params.has_key?(:students)
+      puts("hallo")
       params[:students].each do |keyGroup, valueGroup|
         valueGroup.each do |keyStudent, valueStudent|
           s = Student.find(keyStudent)
