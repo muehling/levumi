@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
-  before_action :set_user, only: [:show, :edit, :update, :destroy, :multi_update]
+  before_action :set_user, only: [:show, :edit, :update, :destroy, :multiUpdate]
   before_action :is_allowed, except: [:show]
 
-  skip_before_action :check_accept, only: [:multi_update] #temporaer wegen Racecondition?!
+  skip_before_action :check_accept, only: [:multiUpdate]
 
   # GET /users
   # GET /users.json

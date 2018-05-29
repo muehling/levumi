@@ -85,6 +85,7 @@ class StudentsController < ApplicationController
   # DELETE /students/1
   # DELETE /students/1.json
   def destroy
+    @destroyedId = @student.id
     @student.destroy
     respond_to do |format|
       format.js
