@@ -73,10 +73,16 @@
                 jQuery.ajax({
                     type: "PUT",
                     url: "<%= multi_update_user_path(@user) %>",
-                    data: {students: encryptedStudents}
+                    data: {students: encryptedStudents},
+                    success: function(result) {$('#edit_user_' + '<%=@user.id%>').submit();}
+
                 })
             }
-            $('#edit_user_' + '<%=@user.id%>').submit();
+            else {
+                //let backend handle Error
+                $('#edit_user_' + '<%=@user.id%>').submit();
+            }
+            return false;
         });
     });
 </script>
