@@ -127,7 +127,6 @@ class UsersController < ApplicationController
 
   def multi_update
     if params.has_key?(:students)
-      puts("hallo")
       params[:students].each do |keyGroup, valueGroup|
         valueGroup.each do |keyStudent, valueStudent|
           s = Student.find(keyStudent)
