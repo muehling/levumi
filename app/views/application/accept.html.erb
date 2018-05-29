@@ -68,7 +68,7 @@
                 type: "PUT",
                 url: "<%= multiUpdate_user_path(@login_user) %>",
                 data: {students: encryptedStudents},
-                success: function(result) {alert("Test"); $('#acceptForm').submit();}
+                success: function(result) {$('#acceptForm').submit();}
             });
             return false;
         })
