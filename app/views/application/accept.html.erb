@@ -66,11 +66,12 @@
             });
             jQuery.ajax({
                 type: "PUT",
-                url: "<%= multi_update_user_path(@login_user) %>",
+                url: "<%= multiUpdate_user_path(@login_user) %>",
                 data: {students: encryptedStudents},
-                success: function() {$('#acceptForm').submit();}
+                success: function(result) {$('#acceptForm').submit();}
             });
-        });
+            return false;
+        })
     });
 
 </script>
