@@ -1,7 +1,13 @@
+<style>
+
+  /*Imitate a link*/
+  .myHover:hover{
+    cursor: pointer;
+  }
+</style>
+
 <p class="lead text-right">
-  <%= link_to user_group_students_path(@user, @group, :format => :pdf), :title => "Zugangsdaten der Klasse", :target => "blank" do %>
-      <span class="glyphicon glyphicon-print"></span>
-  <% end %>
+  <span class="glyphicon glyphicon-print myHover" style="color: #337ab7" title="Zugangsdaten der Klasse" onclick="printStudentsData()"></span>
 </p>
 <table id="table" class="table table-striped">
   <thead>
@@ -31,7 +37,14 @@
   </th>
   </thead>
   <tbody>
+  <script>
+    var studentsIdLoginPair = {}
+  </script>
   <% @group.students.sort_by { |a| a.id}.each do |student| %>
+      <script>
+        //catch secretly id,login pair <- For printing access data
+          studentsIdLoginPair['<%= student.id %>'] = "<%= student.login %>";
+      </script>
       <tr>
         <td id ='<%= student.id %>'>
         </td>
@@ -71,6 +84,7 @@
   <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
 </div>
 <script>
+
     var students = JSON.parse(sessionStorage['students']);
     if("<%=@group.id%>" in students){
         Object.keys(students["<%=@group.id%>"]).forEach(function(keyStudent) {
@@ -78,7 +92,7 @@
         });
     }
     else{
-        students["<%=@group.id%>"] = {}
+        students["<%=@group.id%>"] = {};
         sessionStorage['students'] = JSON.stringify(students);
     }
 
@@ -104,7 +118,115 @@
             }
         }
     }
-    sort();
+    //
+    $(document).ready(function () {
+        sort();
+    });
 
 
+    function printStudentsData() {
+        var docDefinition = {
+            pageSize: 'A4',
+            content: [
+                {
+                    columns:[
+                        {
+                            width:'auto',
+                            stack:[
+                                {image: levumiPic,
+                                    width: 40
+                                }
+                            ]
+                        },
+                        {text:
+                        'Levumi Zugangsdaten der Klasse - <%=@group.name%>',
+                            fontSize: 15,
+                            margin: [0, 10, 0, 0]
+                        }
+                    ]
+                }
+            ],
+            styles: {
+                subheader: {
+                    fontSize: 13,
+                    margin: [50, 0, 5, 5]
+                }
+            }
+        };
+        generateTable( docDefinition);
+        pdfMake.createPdf(docDefinition).open();
+    }
+    
+    function generateTable(docDefinition) {
+        var tableToGenerate = [
+            [
+                {text:"Name", alignment:'center', fontSize:11, bold:true},
+                {text:"Zugangscode", alignment:'center', fontSize:11, bold:true},
+                {text:"Name", alignment:'center', fontSize:11, bold:true},
+                {text:"Zugangscode", alignment:'center', fontSize:11, bold:true},
+                {text:"Name", alignment:'center', fontSize:11, bold:true},
+                {text:"Zugangscode", alignment:'center', fontSize:11, bold:true}
+            ]
+            ];
+        var count=0;
+        table = document.getElementById("table");
+        rows = table.getElementsByTagName("TR");
+        var temp = [];
+        for (i = 1; i < rows.length; i++) {
+            id = rows[i].getElementsByTagName("TD")[0].id;
+            temp = temp.concat(
+                [
+                    {text:students["<%=@group.id%>"][id], alignment:'center', fontSize:11},
+                    {text:studentsIdLoginPair[id], alignment:'center', fontSize:11}
+                ]
+            );
+            if(count%3 ==2){
+                tableToGenerate = tableToGenerate.concat([temp]);
+                temp = [];
+            }
+            count = count +1;
+        }
+        //Fill table and add last line, whenn needed
+        if(count%3 !=0){
+            if(count%3==1){
+                temp = temp.concat(
+                    [
+                        {text:"-", alignment:'center', fontSize:11},
+                        {text:"-", alignment:'center', fontSize:11},
+                        {text:"-", alignment:'center', fontSize:11},
+                        {text:"-", alignment:'center', fontSize:11}
+                    ]
+                );
+
+            }
+            else{
+                temp = temp.concat(
+                    [
+                        {text:"-", alignment:'center', fontSize:11},
+                        {text:"-", alignment:'center', fontSize:11}
+                    ]
+                );
+            }
+            tableToGenerate = tableToGenerate.concat([temp]);
+        }
+
+
+        var table = [
+            {
+                table: {
+                    widths: [85,70,85, 70, 85, 70],
+                    body: tableToGenerate,
+                    dontBreakRows: true
+                },
+                margin: [0,20,0,0] ,
+                layout: {
+                    fillColor: function (i, node) {
+                        return (i === 0) ? '#46B8DA' : null;
+                    }
+                }
+            }
+        ];
+        docDefinition["content"] = docDefinition["content"].concat(table)
+    }
+    
 </script>

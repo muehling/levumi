@@ -41,5 +41,5 @@
         tempStatus.innerHTML = 'Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster nun schließen.';
     else
         tempStatus.innerHTML = 'Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster nun schließen.';
-    $('#mainModalHeader').html(studentsCrypt["<%=@group.id%>"][currentStudent]);
+    $('#mainModalHeader').html(studentsCrypt["<%=@group.id%>"][realCurrentStudent]);
 </script>

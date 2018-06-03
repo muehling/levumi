@@ -20,7 +20,7 @@
     <div class="col-sm-12">
       <p class="lead text-right">
         <!-- Imitate a link-->
-        <span class="glyphicon glyphicon-print myHover" onclick="generateAll()" style="color: #337ab7", title="Alles drucken"></span>
+        <span class="glyphicon glyphicon-print myHover" onclick="generateAll()" style="color: #337ab7" title="Alles drucken"></span>
 
         <%= link_to '#', :title => "Zurück", :onclick => "cancel()" do%>
             <span class="glyphicon glyphicon-th"></span>
@@ -61,30 +61,6 @@
       $('#students').html("<%= escape_javascript(render 'index') %>");
   };
 
-  var levumiPic=""
-  //Getting the Levumi picture "data:image/png... "-reprensaentation
-  function getDataUri(url, callback) {
-      var image = new Image();
-
-      image.onload = function () {
-          var canvas = document.createElement('canvas');
-          canvas.width = this.naturalWidth; // or 'width' if you want a special/scaled size
-          canvas.height = this.naturalHeight; // or 'height' if you want a special/scaled size
-
-          canvas.getContext('2d').drawImage(this, 0, 0);
-
-
-
-          // ... or get as Data URI
-          callback(canvas.toDataURL('image/png'));
-      };
-
-      image.src = url;
-  }
-  getDataUri('/images/shared/Levumi-normal-blau.jpg', function(dataUri) {
-      // Do whatever you'd like with the Data URI!
-      levumiPic = dataUri
-  });
   //Genrate a PDF with all Tests
   function generateAll(){
       var docDefinition = {

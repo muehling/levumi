@@ -12,7 +12,7 @@
         <h3><%= "Zeit pro Schüler/-in: #{@measurement.assessment.test.time} Sekunden" %></h3>
     <%end%>
       <% @measurement.results.each do |r| %>
-        <h4><%= r.student.name %></h4>
+        <h4><div id="<%=r.student_id%>"></div></h4>
         <% items = []%>
         <% r.items.each do |i| %>
             <%tempItem = Item.find(i)%>
@@ -45,7 +45,9 @@
     });
 
     var studentsCrypt = JSON.parse(sessionStorage['students']);
-    Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
-        $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
-    });
+    if("<%=@group.id%>" in studentsCrypt){
+        Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+            $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
+        });
+    }
 </script>

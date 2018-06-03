@@ -23,17 +23,13 @@
     <div class="row">
       <% @measurement.results.each do |r| %>
           <div class="col-md-4 col-sm-6 col-xs-12">
-            <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>)">
-              <div id="<%=r.student.id%>"></div>
+            <div class="btn btn-default groupButton <% unless r.responses[0].nil? %> btn-success<% end %>" id="btn<%=r.id%>" onclick="prepareTest(<%=r.id%>, <%=r.student_id%>)">
+              <div id="<%=r.student_id%>"></div>
             </div>
           </div>
       <% end %>
     </div>
 
-    <script>
-        //Initialisation needed before model and his content is rendered
-        var studentsCrypt = JSON.parse(sessionStorage['students']);
-    </script>
     
     <div class="modal fade" id="mainModal" tabindex="-1" role="dialog" aria-labelledby="mainModalHeader">
       <div class="modal-dialog modal-lg" id="testEnviroment">
@@ -52,10 +48,19 @@
 <script>
   var curSize =110;
   var currentStudent = -1;
-  Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
-      $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
-  });
+  //Needed for displaying names in modal
+  var realCurrentStudent=-1;
+  var studentsCrypt = JSON.parse(sessionStorage['students']);
 
+  //Enough to prevent possible race condition?
+  $(document).ready(function () {
+      //check first if class exist in hash
+      if("<%=@group.id%>" in studentsCrypt){
+          Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+              $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
+          });
+      }
+  })
 
   var studentData = {
   <% @measurement.results.each do |r| %>
@@ -80,8 +85,9 @@
   <% end %>
   };
 
-  function prepareTest(student) {
+  function prepareTest(student, realStudent) {
       currentStudent = student;
+      realCurrentStudent = realStudent;
       timedout = false;
       var curSize =110;
 

@@ -166,7 +166,9 @@
         loaded++;
         progress = ((loaded *100) / (soundLength));
         var elem = document.getElementById("myBar");
-        elem.style.width = progress +'%';
+        if(elem != null){
+            elem.style.width = progress +'%';
+        }
         if (loaded == soundLength){
             // all have loaded do something
             $('#myProgress').hide();
