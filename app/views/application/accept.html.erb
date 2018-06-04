@@ -56,6 +56,7 @@
     $(function() {
         $('#acceptButton').click(function (e) {
             e.preventDefault();
+            $('#acceptButton').addClass("disabled")
             var students = JSON.parse(sessionStorage['students']);
             var encryptedStudents = {};
             Object.keys(students).forEach(function(keyGroup) {
