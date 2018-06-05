@@ -47,9 +47,7 @@
             //verschlüsselter Schüler -> entschlüsselt diesen einmal, damit er wieder neu verschlüsselt werden kann
             else{
                 try{
-                    if (students[keyGroup][keyStudent][0]!= "{"){
-                        students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
-                    }
+                    students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
                 }
                 catch (e){
                     console.log("Entschlüsselung fehlgeschlagen");
@@ -78,13 +76,7 @@
                 encryptedStudents[keyGroup] = {};
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
                     //Prevent double encryption
-                    try{
-                        sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
-                        encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
-                    }
-                    catch (e){
-                        encryptedStudents[keyGroup][keyStudent] = students[keyGroup][keyStudent];
-                    }
+                    encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
 
                 });
             });
