@@ -136,7 +136,6 @@ class UsersController < ApplicationController
               @login_user = nil
             end
             redirect_to root_url
-            return
           else
             s.name = valueStudent
             s.save

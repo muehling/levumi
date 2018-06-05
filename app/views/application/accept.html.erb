@@ -76,7 +76,7 @@
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
                     //Prevent double encryption
                     try{
-                        sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
+                        sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);  //Löst evtl. Exception aus => Fallback.
                         encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
                     }
                     catch (e){

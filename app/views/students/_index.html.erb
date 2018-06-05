@@ -69,7 +69,7 @@
           <% end %>
         </td>
         <td>
-          <%if@user.id ==@login_user.id%>
+          <%if false && @user.id == @login_user.id%>
               <%= link_to edit_user_group_student_path(@user, @group, student), :data => {:remote => true} do %>
                   <span class="glyphicon glyphicon-pencil"></span>
               <% end %>
@@ -82,7 +82,7 @@
   <% end %>
   </tbody>
 </table>
-<%if@user.id ==@login_user.id%>
+<%if false && @user.id == @login_user.id%>
     <div id="studentForm">
       <%= link_to "Schüler/-in hinzufügen", new_user_group_student_path(@user, @group), :class => "btn btn-default", :data => {:remote => true} %>
     </div>
