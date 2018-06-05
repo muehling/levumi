@@ -63,7 +63,7 @@
                 }
                 catch (e){
                     console.log("Entschlüsselung fehlgeschlagen");
-                    console.error(e.toString())
+                    console.error(e.toString());
                     if(keyGroup in encryptionProblem){
                         encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
                     }
@@ -87,7 +87,13 @@
             Object.keys(students).forEach(function(keyGroup) {
                 encryptedStudents[keyGroup] = {};
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-                    encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
+                    //Prevent double encryption
+                    if(students[keyGroup][keyStudent][0]=="{"){
+                        encryptedStudents[keyGroup][keyStudent] = students[keyGroup][keyStudent]
+                    }
+                    else{
+                        encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
+                    }
                 });
             });
             jQuery.ajax({

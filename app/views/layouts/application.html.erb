@@ -89,7 +89,7 @@
     function tryDecrypt(key, name, id) {
         var student = "";
         try{
-            student =  sjcl.decrypt(key, name);
+            student = sjcl.decrypt(key, name);
         }
         catch(e){
             console.error(e.toString())

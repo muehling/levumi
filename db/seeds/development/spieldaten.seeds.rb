@@ -27,7 +27,7 @@ s.save
 s = g.students.build(name: "Eva")
 s.save
 50.times do
-  s = g.students.build(name: "Morten" + count.to_s)
+  s = g.students.build(name: "Test" + count.to_s)
   s.save
   count = count -1
 end
