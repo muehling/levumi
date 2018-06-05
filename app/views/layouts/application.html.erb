@@ -92,6 +92,7 @@
             student =  sjcl.decrypt(key, name);
         }
         catch(e){
+            console.error(e.toString())
             console.log("Entschlüsselung fehlgeschlagen")
             student = "Kind" + id;
         }

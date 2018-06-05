@@ -51,6 +51,7 @@
                 }
                 catch (e){
                     console.log("Entschlüsselung fehlgeschlagen");
+                    console.error(e.toString())
                     if(keyGroup in encryptionProblem){
                         encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
                     }
