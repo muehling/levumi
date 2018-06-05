@@ -86,6 +86,19 @@
 </nav>
 
 <script>
+    function tryDecrypt(key, name, id) {
+        var student = "";
+        try{
+            console.log(key + "\n" + name)
+            student =  sjcl.decrypt(key, name);
+        }
+        catch(e){
+            console.log("Entschlüsselung fehlgeschlagen")
+            student = "Kind" + id;
+        }
+        return student;
+    }
+
     <%if !@login_user.tcaccept.nil?%>
       <%if !@user.nil? && @user.id != @login_user.id%>
         sessionStorage['studentsOwn'] = "false";
@@ -106,7 +119,7 @@
                 <%@login_user.groups.each do |group| %>
                 '<%=group.id%>': {
                     <%group.students.each do |s|%>
-                    '<%=s.id%>': sjcl.decrypt(sessionStorage['encryptKey'], '<%=raw s.name%>'),
+                    '<%=s.id%>': tryDecrypt(sessionStorage['encryptKey'], '<%=raw s.name%>', '<%=s.id%>'),
                     <%end%>
                 },
                 <%end%>
