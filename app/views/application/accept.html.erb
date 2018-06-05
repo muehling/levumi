@@ -51,7 +51,6 @@
                 }
                 catch (e){
                     console.log("Entschlüsselung fehlgeschlagen");
-                    console.log(sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]))
                     if(keyGroup in encryptionProblem){
                         encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
                     }
@@ -75,9 +74,7 @@
             Object.keys(students).forEach(function(keyGroup) {
                 encryptedStudents[keyGroup] = {};
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-                    //Prevent double encryption
                     encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
-
                 });
             });
             jQuery.ajax({

@@ -89,7 +89,6 @@
     function tryDecrypt(key, name, id) {
         var student = "";
         try{
-            console.log(key + "\n" + name)
             student =  sjcl.decrypt(key, name);
         }
         catch(e){
