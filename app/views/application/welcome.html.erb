@@ -27,7 +27,8 @@
 </div>
 
 <script>
-  function saveKey() {
-      sessionStorage.setItem('encryptKey', $('#password').val());
-  }
+    sessionStorage.clear();
+    function saveKey() {
+        sessionStorage.setItem('encryptKey', $('#password').val());
+    }
 </script>
