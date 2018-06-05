@@ -38,11 +38,23 @@
         <%end%>
     };
     encryptionProblem = {};
+    var tempStudent = "";
     //Daten liegen gemischt (un-)verschlüsselt vor - temporaer
     Object.keys(students).forEach(function(keyGroup) {
         Object.keys(students[keyGroup]).forEach(function(keyStudent) {
             //unverschlüsselter Schueler -> mache nichts
             if(students[keyGroup][keyStudent][0]!= "{"){
+                try{
+                    tempStudent = sjcl.codec.utf8String.toBits(students[keyGroup][keyStudent]);
+                    tempStudent = sjcl.codec.utf8String.fromBits(tempStudent);
+                    if(students[keyGroup][keyStudent] != tempStudent){
+                        console.log("Ungleich nach Konvertierung")
+                    }
+                }
+                catch (e){
+                    console.error(e.toString());
+                    console.log("Konvertiung fehlgeschlagen")
+                }
             }
             //verschlüsselter Schüler -> entschlüsselt diesen einmal, damit er wieder neu verschlüsselt werden kann
             else{
