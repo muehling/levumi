@@ -38,11 +38,23 @@
         <%end%>
     };
     encryptionProblem = {};
+    var tempStudent = "";
     //Daten liegen gemischt (un-)verschlüsselt vor - temporaer
     Object.keys(students).forEach(function(keyGroup) {
         Object.keys(students[keyGroup]).forEach(function(keyStudent) {
             //unverschlüsselter Schueler -> mache nichts
             if(students[keyGroup][keyStudent][0]!= "{"){
+                try{
+                    tempStudent = sjcl.codec.utf8String.toBits(students[keyGroup][keyStudent]);
+                    tempStudent = sjcl.codec.utf8String.fromBits(tempStudent);
+                    if(students[keyGroup][keyStudent] != tempStudent){
+                        console.log("Ungleich nach Konvertierung")
+                    }
+                }
+                catch (e){
+                    console.error(e.toString());
+                    console.log("Konvertiung fehlgeschlagen")
+                }
             }
             //verschlüsselter Schüler -> entschlüsselt diesen einmal, damit er wieder neu verschlüsselt werden kann
             else{
@@ -50,12 +62,18 @@
                     students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
                 }
                 catch (e){
-                    console.log("Entschlüsselung fehlgeschlagen");
-                    if(keyGroup in encryptionProblem){
-                        encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
+                    try{
+                        students[keyGroup][keyStudent] = sjcl.decrypt("",students[keyGroup][keyStudent]);
                     }
-                    else {
-                        encryptionProblem[keyGroup]  =[keyStudent];
+                    catch (e){
+                        console.log("Entschlüsselung fehlgeschlagen");
+                        console.error(e.toString());
+                        if(keyGroup in encryptionProblem){
+                            encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
+                        }
+                        else {
+                            encryptionProblem[keyGroup]  =[keyStudent];
+                        }
                     }
                 }
             }
@@ -75,14 +93,12 @@
                 encryptedStudents[keyGroup] = {};
                 Object.keys(students[keyGroup]).forEach(function(keyStudent) {
                     //Prevent double encryption
-                    try{
-                        sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);  //Löst evtl. Exception aus => Fallback.
+                    if(students[keyGroup][keyStudent][0]=="{"){
+                        encryptedStudents[keyGroup][keyStudent] = students[keyGroup][keyStudent]
+                    }
+                    else{
                         encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent]);
                     }
-                    catch (e){
-                        encryptedStudents[keyGroup][keyStudent] = students[keyGroup][keyStudent];
-                    }
-
                 });
             });
             jQuery.ajax({
@@ -94,7 +110,6 @@
             Object.keys(encryptionProblem).forEach(function(keyGroup) {
                 var count = 0;
                 while (count< encryptionProblem[keyGroup].length){
-                    console.log(encryptionProblem[keyGroup][count]);
                     students[keyGroup][encryptionProblem[keyGroup][count]] = "Kind" + encryptionProblem[keyGroup][count];
                     count = count+1;
                 }
