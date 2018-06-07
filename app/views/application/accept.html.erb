@@ -62,13 +62,18 @@
                     students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
                 }
                 catch (e){
-                    console.log("Entschlüsselung fehlgeschlagen");
-                    console.error(e.toString());
-                    if(keyGroup in encryptionProblem){
-                        encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
+                    try{
+                        students[keyGroup][keyStudent] = sjcl.decrypt("",students[keyGroup][keyStudent]);
                     }
-                    else {
-                        encryptionProblem[keyGroup]  =[keyStudent];
+                    catch (e){
+                        console.log("Entschlüsselung fehlgeschlagen");
+                        console.error(e.toString());
+                        if(keyGroup in encryptionProblem){
+                            encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
+                        }
+                        else {
+                            encryptionProblem[keyGroup]  =[keyStudent];
+                        }
                     }
                 }
             }
