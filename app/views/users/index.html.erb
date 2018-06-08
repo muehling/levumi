@@ -1,12 +1,12 @@
 <div class="well userCard" id="group">
-  <%= link_to "Benutzer hinzufügen", new_user_path, :class => "btn btn-default" %>
+  <%= link_to "Benutzer hinzufügen", new_user_path, class: 'btn btn-default' %>
 
   <button class="btn btn-default" type="button" data-toggle="collapse" data-target="#compose" aria-expanded="false" aria-controls="compose">
     Nachricht an Benutzer
   </button>
   <div class="collapse" id="compose">
     <div class="well">
-      <%= form_tag(user_path(@login_user), :method => :put) do %>
+      <%= form_tag(user_path(@login_user), method: :put) do %>
         <textarea class="form-control" rows="3" name="text"></textarea>
         <div class="checkbox">
           <label>
@@ -22,7 +22,7 @@
             Sonstige
           </label>
         </div>
-        <%= submit_tag 'Abschicken', :class => "btn btn-primary" %>
+        <%= submit_tag 'Abschicken', class: 'btn btn-primary' %>
       <% end %>
     </div>
   </div>
@@ -53,31 +53,7 @@
       <% @users.each do |user| %>
         <% if user.status == 1 %>
           <tr class="bg-success">
-            <td>
-              <%= user.id %>
-            </td>
-            <td>
-              <%= link_to user.email, user_path(user) %>
-            </td>
-            <td>
-              <%= user.name %>
-            </td>
-            <td>
-              <%= user.account_type == 0 ? "Lehrkraft" : user.account_type == 1 ? "Forscher" : "Sonstiges (Privat/System/...)" %>
-            </td>
-            <td>
-              <%= user.school %>
-            </td>
-            <td>
-              <%= link_to edit_user_path(user) do %>
-                <span class="glyphicon glyphicon-pencil"></span>
-              <% end %>
-              <% if user != @login_user %>
-                <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                  <span class="glyphicon glyphicon-trash"></span>
-                <% end %>
-              <% end %>
-            </td>
+            <%= render 'user_row', user: user%>
           </tr>
         <% end %>
       <% end %>
@@ -86,31 +62,7 @@
       <% @users.each do |user| %>
         <% if user.status == 2 %>
           <tr class="bg-warning">
-            <td>
-              <%= user.id %>
-            </td>
-            <td>
-              <%= link_to user.email, user_path(user) %>
-            </td>
-            <td>
-              <%= user.name %>
-            </td>
-            <td>
-              <%= user.account_type == 0 ? "Lehrkraft" : user.account_type == 1 ? "Forscher" : "Sonstiges (Privat/System/...)" %>
-            </td>
-            <td>
-              <%= user.school %>
-            </td>
-            <td>
-              <%= link_to edit_user_path(user) do %>
-                <span class="glyphicon glyphicon-pencil"></span>
-              <% end %>
-              <% if user != @login_user %>
-                <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                  <span class="glyphicon glyphicon-trash"></span>
-                <% end %>
-              <% end %>
-            </td>
+            <%= render 'user_row', user: user%>
           </tr>
         <% end %>
       <% end %>
@@ -119,31 +71,7 @@
       <% @users.each do |user| %>
         <% if user.status == -1 %>
           <tr class="bg-danger">
-            <td>
-              <%= user.id %>
-            </td>
-            <td>
-              <%= link_to user.email, user_path(user) %>
-            </td>
-            <td>
-              -
-            </td>
-            <td>
-              -
-            </td>
-            <td>
-              -
-            </td>
-            <td>
-              <%= link_to edit_user_path(user) do %>
-                <span class="glyphicon glyphicon-pencil"></span>
-              <% end %>
-              <% if user != @login_user %>
-                <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                  <span class="glyphicon glyphicon-trash"></span>
-                <% end %>
-              <% end %>
-            </td>
+            <%= render 'user_row', user: user%>
           </tr>
         <% end %>
       <% end %>
@@ -152,31 +80,7 @@
       <% @users.each do |user| %>
         <% if user.status == 0 %>
           <tr>
-            <td>
-              <%= user.id %>
-            </td>
-            <td>
-              <%= link_to user.email, user_path(user) %>
-            </td>
-            <td>
-              <%= user.name %>
-            </td>
-            <td>
-              <%= user.account_type == 0 ? "Lehrkraft" : user.account_type == 1 ? "Forscher" : "Sonstiges (Privat/System/...)" %>
-            </td>
-            <td>
-              <%= user.school %>
-            </td>
-            <td>
-              <%= link_to edit_user_path(user) do %>
-                <span class="glyphicon glyphicon-pencil"></span>
-              <% end %>
-              <% if user != @login_user %>
-                <%= link_to user_path(user), :method => :delete, :data => {:confirm => "Sind Sie sicher?"} do %>
-                  <span class="glyphicon glyphicon-trash"></span>
-                <% end %>
-              <% end %>
-            </td>
+            <%= render 'user_row', user: user%>
           </tr>
         <% end %>
       <% end %>

@@ -125,7 +125,7 @@ class UsersController < ApplicationController
     end
   end
 
-  def multi_update
+  def multi_update                                     #TODO Gehört eigentlich in Student...
     if params.has_key?(:students)
       params[:students].each do |keyGroup, valueGroup|
         valueGroup.each do |keyStudent, valueStudent|
