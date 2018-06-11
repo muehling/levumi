@@ -1,0 +1,115 @@
+<% 
+  variables = item.itemtext.split(",")
+  correctAnswer = variables[4]
+  possibleAnswers = variables[0,4]
+  position_of_gap = possibleAnswers.index("-")
+  possibleAnswers.delete("-")
+%>
+
+<div class="py-5">
+  <div class="container">
+         <img style='float: right; width: 150px ' src='/images/shared/Levumi-normal-blau.jpg'/>
+    <div class="row">
+      <div class="col-md-12">
+        <h1  class="text-center" style="font-family: fibel_nordregular; font-size: 45px">
+        <strong>Die fehlende Zahl ist:</strong>
+        </h1> 
+      </div>
+    </div>
+  </div>
+</div><br><br><br>
+<div class="py-5">
+  <div class="container">
+    <div class="row text-center" id="divAnswers">
+      <div class="col-md-3"  id="option1">
+        <label class='control-label' style='font-size: 60px;' ><%= possibleAnswers[0].insert(-4, ' ')%></label>
+      </div>
+      <div class="col-md-3"  id="option2">
+        <label class='control-label' style='font-size: 60px;' ><%= possibleAnswers[1].insert(-4,' ')%></label>
+      </div>
+      <div class="col-md-3"  id="option3">
+        <label class='control-label' style='font-size: 60px;' ><%= possibleAnswers[2].insert(-4,' ')%></label>
+      </div>
+    </div>
+  </div>
+</div><br><br>
+  <div class="text-center">
+      <% digits =  9 %>
+      <script type="text/javascript">
+        $('#result').attr('readonly', true);
+      </script>
+      <% (0..digits).each do |x| %>
+          <button id="<%= x %>" type="button" class="btn btn-lg btn-primary"><%= x %></button>    
+      <% end %>
+  </div><br><br>
+  <div class="row">
+  </div>  
+  <div class="py-5">
+    <div class="container">
+      <div class="row text-center">
+        <button class="btn btn-warning btn-lg" id="delete">
+          <span class="glyphicon glyphicon-delete" "></span> Löschen
+        </button>
+      </div>
+    </div>
+    <br><br><br>
+  </div>
+  <div id="hinweis" class="row text-center" style="font-size: 30px;">
+    
+  </div>
+  <div class="py-5">
+    <div class="container">
+      <div class="row text-right col-lg-offset-8">
+          <button class="btn btn-success btn-lg btn-block text-center" id="weiter" >Weiter</button>
+      </div>
+    </div>
+  </div>
+
+
+<script type="text/javascript">
+  var result = "";
+  var entered = false;
+  var position_of_gap = parseInt(<%= position_of_gap %>);
+  if(position_of_gap == 0){
+    $("#divAnswers").prepend("<div class=\"col-md-3\"><input style=\"font-size:50px; width:100%; \" type=\"text\" name=\"result\" id=\"answer\" readonly></div>");
+  }else{
+    $("#option" + position_of_gap).after("<div class=\"col-md-3\"><input style=\"font-size:50px; width:100%;\" type=\"text\" name=\"result\" id=\"answer\" readonly></div>");
+  }
+  $('#answer').focus();
+  $('button').click(function(event){
+    if(event.target.id == "delete"){
+      result = result.slice(0,-1);
+      var ans = document.getElementById("answer");
+      ans.value = result;
+      if(result.length == 0) entered = false;
+    }else if(event.target.id == "weiter"){
+      if(entered){
+        nextClicked();
+      }else{
+        $("#hinweis").html("<p>Du musst eine Zahl eingeben</p>");
+      }
+    }else{
+      entered = true;
+      $("#hinweis").html('');
+      var answer = event.target.id;
+      result += answer;
+      var ans= document.getElementById("answer");
+      ans.value = result;
+    }
+  });
+
+  function nextClicked() {
+    entered = true;
+    var tempAnswer = document.getElementById('answer');
+    actualAnswers = actualAnswers + tempAnswer.value + ',';
+    if(tempAnswer.value=='<%= item.shorthand%>'){
+      currentResult = currentResult + '1,';
+    }
+    else {
+      currentResult = currentResult + '0,';
+    };
+    currentTimes = currentTimes + (new Date() - stopwatch) + ',';
+    stopwatch = new Date();
+    nextItem();
+  };
+</script>
