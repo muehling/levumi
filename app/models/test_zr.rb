@@ -41,6 +41,8 @@ class TestZR < Test
 		return [intro_items.map{|i| i.id}, itemset.map{|i| i.id}, outro_items.map{|i| i.id}]
 	end
 
+  private
+
     def firstdraw_items
       self.items.where("difficulty > ?", 2).order(:id)
     end
