@@ -132,7 +132,8 @@
 </div>
 
 <script>
-    Object.keys(studentsCrypt["<%=@group.id%>"]).forEach(function(keyStudent) {
+    var studentsCrypt = JSON.parse(sessionStorage['students']);
+    Object.keys(studentsCrypt[<%=@group.id%>]).forEach(function(keyStudent) {
         $('#'+ keyStudent).html(studentsCrypt["<%=@group.id%>"][keyStudent])
         $('#'+ keyStudent + "Panel").html(studentsCrypt["<%=@group.id%>"][keyStudent])
     });
