@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :multi_update]
-  before_action :is_allowed, except: [:show, :update]
+  before_action :is_allowed, except: [:show]
 
   skip_before_action :check_accept, only: [:multi_update]
 
@@ -63,9 +63,6 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
-    if @login_user.nil? || @user.nil? || (@login_user.id != @user.id)
-      redirect_to root_url
-    end
     respond_to do |format|
       if params.has_key?('text') && @login_user.id == @user.id       #Send mail to all users
         format.html {

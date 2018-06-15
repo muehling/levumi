@@ -33,10 +33,12 @@
       <%= f.label :password, class: "control-label" %><br>
       <%= f.password_field :password, class: "form-control" %>
     </div>
+  <%if @login_user == @user%>
     <div class="form-group">
       <%= f.label :password_confirmation, class: "control-label" %><br>
       <%= f.password_field :password_confirmation, class: "form-control" %>
     </div>
+  <% end %>
     <% if @login_user.hasCapability?("user") %>
       <div class="form-group">
         <%= f.radio_button :account_type, 0 %>
