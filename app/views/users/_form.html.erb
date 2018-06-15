@@ -56,33 +56,35 @@
       <% end %>
     </div>
 <% end %>
-<script>
-    $(function() {
-        $('#submitButton').click(function (e) {
-            e.preventDefault();
-            if($('#user_password').val()==$('#user_password_confirmation').val()){
-                sessionStorage['encryptKey']= $('#user_password').val();
-                var students = JSON.parse(sessionStorage['students']);
-                var encryptedStudents = {}
-                Object.keys(students).forEach(function(keyGroup) {
-                    encryptedStudents[keyGroup] = {}
-                    Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-                        encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+<%if @login_user==@user%>
+    <script>
+        $(function() {
+            $('#submitButton').click(function (e) {
+                e.preventDefault();
+                if($('#user_password').val()!="" & $('#user_password').val()==$('#user_password_confirmation').val()){
+                    sessionStorage['encryptKey']= $('#user_password').val();
+                    var students = JSON.parse(sessionStorage['students']);
+                    var encryptedStudents = {}
+                    Object.keys(students).forEach(function(keyGroup) {
+                        encryptedStudents[keyGroup] = {}
+                        Object.keys(students[keyGroup]).forEach(function(keyStudent) {
+                            encryptedStudents[keyGroup][keyStudent] = sjcl.encrypt(sessionStorage['encryptKey'], students[keyGroup][keyStudent])
+                        });
                     });
-                });
-                jQuery.ajax({
-                    type: "PUT",
-                    url: "<%= multi_update_user_path(@user) %>",
-                    data: {students: encryptedStudents},
-                    success: function(result) {$('#edit_user_' + '<%=@user.id%>').submit();}
+                    jQuery.ajax({
+                        type: "PUT",
+                        url: "<%= multi_update_user_path(@user) %>",
+                        data: {students: encryptedStudents},
+                        success: function(result) {$('#edit_user_' + '<%=@user.id%>').submit();}
 
-                })
-            }
-            else {
-                //let backend handle Error
-                $('#edit_user_' + '<%=@user.id%>').submit();
-            }
-            return false;
+                    })
+                }
+                else {
+                    //let backend handle Error
+                    $('#edit_user_' + '<%=@user.id%>').submit();
+                }
+                return false;
+            });
         });
-    });
-</script>
+    </script>
+<%end%>
