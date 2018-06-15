@@ -1,0 +1,107 @@
+ <div class="py-5">
+   <div class="container">
+     <div class="row text-center">
+       <div class="col-md-12">
+         <h1 class="display-1" style="font-size: 55px">
+            <strong>Beispiel</strong>
+            <img style='float: right; width: 150px ' src='/images/shared/Levumi-normal-blau.jpg'/>
+         </h1>
+       </div>
+     </div>
+   </div>
+ </div>
+ <div class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h2 contenteditable="true" class="text-center" style="font-size: 35px">Welche Zahl passt? Vervollständige die Zahlenreihe.<br><br>
+        Nutze nur die blauen Zahlen!<br>
+        Tipp: Wenn du eine falsche Zahl angeklickt hast, dann klicke auf Löschen.</h2> 
+      </div>
+    </div>
+  </div>
+</div><br><br>
+<div class="py-5">
+  <div class="container">
+    <div class="row text-center" id="divAnswers">
+      <div class="col-md-3"  id="option1">
+        <label class='control-label' style='font-size: 50px; ' >56 600 </label>
+      </div>
+      <div class="col-md-3"  id="option2">
+        <label class='control-label' style='font-size: 50px; ' >56 610 </label>
+      </div>
+      <div class="col-md-3"  id="option3">
+        <label class='control-label' style='font-size: 50px; ' >56 630</label>
+      </div>
+    </div>
+  </div>
+</div><br>
+  <div class="text-center">
+      <% digits =  9 %>
+      <script type="text/javascript">
+        $('#result').attr('readonly', true);
+      </script>
+      <% (0..digits).each do |x| %>
+          <button id="<%= x %>" type="button" class="btn btn-lg btn-primary"><%= x %></button>    
+      <% end %>
+  </div><br><br>
+  <div class="py-5">
+    <div class="container">
+      <div class="row text-center">
+        <button class="btn btn-warning btn-lg" id="delete">
+          <span class="glyphicon glyphicon-delete"></span> Löschen
+        </button>
+      </div>
+    </div><br>
+  <div class="row text-center" id="hinweis" style="font-size:30px;" >
+  </div>  
+    <br><br>
+  </div>
+
+
+
+
+ <div class='col-md-4 col-md-offset-4'>
+    <button id='next' type='button' class='btn btn-lg btn-primary btn-block'><span style='font-size: 40px;'>Jetzt starten!</span></button>
+  </div>
+
+<style type="text/css">
+  h2 {
+    font-family: fibel_nordregular;
+  }
+</style>
+<script>
+
+  $("#option2").after("<div class=\"col-md-3\"><input style=\"font-size:50px; width:100%;\" type=\"text\" name=\"result\" id=\"answer\" readonly></div>");
+  $("#answer").focus();
+  var result = "";
+  var entered = false;
+  $('button').click(function(){
+    if(this.id == "delete"){
+      result = result.slice(0,-1);
+      var ans = document.getElementById("answer");
+      ans.value = result;
+      if(result.length == 0){
+        entered = false;
+      }
+    }else if(this.id == "next"){
+        if(entered){
+          if(workTime!=-1) {
+              timeoutId = window.setTimeout(timedOut, workTime);
+              stopwatch = new Date();
+          }
+          nextItem();
+        }else{
+          $('#hinweis').html("<p>Du musst eine Zahl eingeben!</p>");
+        }
+    }else{
+      entered = true;
+      $('#hinweis').html("");
+      var answer = this.id;
+      result += answer;
+      var ans= document.getElementById("answer");
+      ans.value = result;
+    }
+  });
+  screen.orientation.lock('landscape');
+</script>

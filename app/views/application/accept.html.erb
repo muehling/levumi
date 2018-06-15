@@ -4,22 +4,34 @@
 <div class="container-fluid">
   <div id="content">
     <div class="jumbotron">
-      <h2>Einverständnis</h2>
-      <% if @login_user.id < 519 #temporaer...alte User sehen das. %>
+      <% unless [1, 8, 38, 95, 119, 120, 137, 156, 157, 178, 183, 200, 204, 208, 213, 240, 251, 267, 274, 289, 291, 292, 293, 295, 297, 299, 300, 322, 323, 337, 340, 341, 348, 349, 356, 371, 375, 384, 393, 394, 395, 405, 408, 430, 431, 432, 433, 441, 451, 452, 457, 463, 465, 473, 481, 487, 502, 505, 516, 519, 520, 522, 523, 524, 526].index(@login_user.id).nil? #Temporär %>
+
         <p class="text-justify">
-          Wir haben unsere Datenschutzerklärung angepasst und den Datenschutz in Levumi verbessert! Bitte stimmen Sie den neuen Nutzungsbedingungen zu:
+          Aufgrund eines Fehlers in Levumi wurden Ihnen in letzter Zeit nicht immer die richtigen Kindernamen angezeigt oder die Seite funktionierte überhaupt nicht.
+          Wir hoffen das Problem nun behoben zu haben und werden ihren Account jetzt wiederherstellen.
+          Falls es dabei zu Problemen kommt oder die Seite danach immer noch nicht wie gehabt funktioniert, kontaktieren Sie uns bitte!<br/>
+          Wir bitten die Unanehmlichkeiten zu entschuldigen und wünschen Ihnen weiterhin viel Spaß mit Levumi!
+        </p>
+
+      <% else %>
+
+        <h2>Einverständnis</h2>
+        <% if @login_user.id < 519 #temporaer...alte User sehen das. %>
+          <p class="text-justify">
+            Wir haben unsere Datenschutzerklärung angepasst und den Datenschutz in Levumi verbessert! Bitte stimmen Sie den neuen Nutzungsbedingungen zu:
+          </p>
+        <% end %>
+        <p class="text-justify">
+          Ich bin damit einverstanden, dass meine Daten gemäß der <%= link_to "Datenschutzerklärung", url_for(controller: 'application', action: 'static', page: 'privacy')%> im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
+          Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben, Sie können Ihre Daten jederzeit löschen!
+        </p>
+        <p class="text-justify">
+          Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Eltern, Schulleiter, ggf. Betreuungslehrkaft) einhole.
+          Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für einen <%= link_to 'Elternbrief', asset_path('Elternbrief.docx')%> finden Sie oben im Menü.
         </p>
       <% end %>
-      <p class="text-justify">
-        Ich bin damit einverstanden, dass meine Daten gemäß der <%= link_to "Datenschutzerklärung", url_for(:controller => "application", :action => "static", :page => "privacy")%> im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
-        Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben, Sie können Ihre Daten jederzeit löschen!
-      </p>
-      <p class="text-justify">
-        Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Eltern, Schulleiter, ggf. Betreuungslehrkaft) einhole.
-        Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für einen <%= link_to "Elternbrief", asset_path("Elternbrief.docx")%> finden Sie oben im Menü.
-      </p>
-      <%= form_tag(url_for(:controller => 'application', :action => 'accept'), :class => "form", id:"acceptForm") do %>
-          <%= submit_tag 'Bestätigen und Weiter', :class => "btn btn-primary", id:"acceptButton" %>
+      <%= form_tag(url_for(controller: 'application', action: 'accept'), class: 'form', id: 'acceptForm') do %>
+        <%= submit_tag 'Bestätigen und Weiter', class: 'btn btn-primary', id: 'acceptButton' %>
       <% end %>
     </div>
   </div>
@@ -43,36 +55,23 @@
     Object.keys(students).forEach(function(keyGroup) {
         Object.keys(students[keyGroup]).forEach(function(keyStudent) {
             //unverschlüsselter Schueler -> mache nichts
-            if(students[keyGroup][keyStudent][0]!= "{"){
-                try{
-                    tempStudent = sjcl.codec.utf8String.toBits(students[keyGroup][keyStudent]);
-                    tempStudent = sjcl.codec.utf8String.fromBits(tempStudent);
-                    if(students[keyGroup][keyStudent] != tempStudent){
-                        console.log("Ungleich nach Konvertierung")
-                    }
-                }
-                catch (e){
-                    console.error(e.toString());
-                    console.log("Konvertiung fehlgeschlagen")
-                }
-            }
+            if(students[keyGroup][keyStudent][0] == "{") {
             //verschlüsselter Schüler -> entschlüsselt diesen einmal, damit er wieder neu verschlüsselt werden kann
-            else{
-                try{
+                try {
                     students[keyGroup][keyStudent] = sjcl.decrypt(sessionStorage['encryptKey'],students[keyGroup][keyStudent]);
                 }
-                catch (e){
-                    try{
+                catch (e) {
+                    try {
                         students[keyGroup][keyStudent] = sjcl.decrypt("",students[keyGroup][keyStudent]);
                     }
-                    catch (e){
+                    catch (e) {
                         console.log("Entschlüsselung fehlgeschlagen");
                         console.error(e.toString());
-                        if(keyGroup in encryptionProblem){
+                        if(keyGroup in encryptionProblem) {
                             encryptionProblem[keyGroup] = encryptionProblem[keyGroup] + [keyStudent];
                         }
                         else {
-                            encryptionProblem[keyGroup]  =[keyStudent];
+                            encryptionProblem[keyGroup] = [keyStudent];
                         }
                     }
                 }
@@ -107,6 +106,8 @@
                 data: {students: encryptedStudents},
                 success: function(result) {$('#acceptForm').submit();}
             });
+
+            //Redundant, wird sowieso bei der nächsten Seite überschrieben
             Object.keys(encryptionProblem).forEach(function(keyGroup) {
                 var count = 0;
                 while (count< encryptionProblem[keyGroup].length){

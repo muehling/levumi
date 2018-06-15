@@ -18,11 +18,11 @@ class ApplicationController < ActionController::Base
         news = News.new_items(u)
         u.last_login = Time.now
         u.save
-        if u.complete?
+        #if u.complete?
           redirect_to user_groups_path(u), notice: news.empty? ? "Eingeloggt als #{u.email}" : news.join("<br/><br/>")
-        else
-          redirect_to edit_user_path(u), notice: "Eingeloggt als #{u.email} <br/> Bitte vervollständigen Sie noch Ihre persönlichen Daten, Sie helfen uns damit bei der wissenschaftlichen Begleitung von Levumi!" +  (news.empty? ? "" : "<br/>" + news.join("<br/><br/>"))
-        end
+        #else
+        #  redirect_to edit_user_path(u), notice: "Eingeloggt als #{u.email} <br/> Bitte vervollständigen Sie noch Ihre persönlichen Daten, Sie helfen uns damit bei der wissenschaftlichen Begleitung von Levumi!" +  (news.empty? ? "" : "<br/>" + news.join("<br/><br/>"))
+        #end
       else
         redirect_to root_url, notice: 'Benutzername oder Passwort falsch!'
       end
@@ -61,6 +61,10 @@ class ApplicationController < ActionController::Base
       render 'signup', layout: 'bare' and return
     end
     password = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+    u = User.find_by_email(params[:email])
+    unless u.nil? || u.account_type != -1     #Versuch, sich mit einem alten Account erneut zu registrieren => alten Account löschen.
+      u.destroy                               #TODO: Doch lieber "Fallback User" für Daten
+    end
     @user = User.new(email: params[:email], name: params[:name], account_type: params[:account_type], password: password, password_confirmation: password)
     @user.school = params["school"] if params.has_key?("school")
     @user.occupation = params["occupation"] if params.has_key?("occupation")
@@ -81,7 +85,7 @@ class ApplicationController < ActionController::Base
   def accept
     @login_user.tcaccept = DateTime.now
     @login_user.save
-    redirect_to edit_user_path(@login_user), notice: 'Viel Spaß bei der Benutzung von Levumi!'
+    redirect_to user_groups_path(@login_user), notice: 'Viel Spaß bei der Benutzung von Levumi!'
   end
 
   def static

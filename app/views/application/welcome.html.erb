@@ -1,21 +1,21 @@
 <div class="jumbotron">
-  <h1><%= image_tag('Levumi-klein-blau.png', size: "120")%> Levumi  </h1>
+  <h1><%= image_tag('Levumi-klein-blau.png', size: '120')%> Levumi  </h1>
   <h3>Lernverlaufs-Monitoring</h3>
   <br/>
-  <%= form_tag(url_for(:controller => 'application', :action => 'login'), :class => "form", id:"loginForm") do %>
+  <%= form_tag(url_for(controller: 'application', action: 'login'), class: 'form', id: 'loginForm') do %>
       <div class="form-group">
         <label class="sr-only" for="email">Email-Adresse</label>
-        <%= text_field_tag "email", nil, type: "email", class: "form-control", placeholder: "E-Mail Adresse"%>
+        <%= text_field_tag 'email', nil, type: 'email', class: 'form-control', placeholder: 'E-Mail Adresse'%>
       </div>
       <div class="form-group">
         <label class="sr-only" for="password">Passwort</label>
-        <%= text_field_tag "password", nil, type: "password", class: "form-control", placeholder: "Passwort"%>
+        <%= text_field_tag 'password', nil, type: 'password', class: 'form-control', id: 'password', placeholder: 'Passwort'%>
       </div>
-      <%= submit_tag 'Einloggen', :class => "btn btn-primary", id:"submitButton" %>
+      <%= submit_tag 'Einloggen', class: 'btn btn-primary', id: 'submitButton' %>
   <% end %>
   <br/>
   <p>
-    Falls Sie einen Account anlegen möchten, klicken Sie bitte <%= link_to "hier", url_for(:controller => "application", :action => "welcome", :page=>"signup")%>.
+    Falls Sie einen Account anlegen möchten, klicken Sie bitte <%= link_to 'hier', url_for(controller: 'application', action: 'welcome', page: 'signup')%>.
   <br/>
     Informationsvideos über unsere Plattform finden Sie <a href="https://www.youtube.com/watch?v=-F5cPsnC9IA">hier</a>
   </p>
@@ -35,6 +35,4 @@
             $('#loginForm').submit();
         })
     });
-
-
 </script>

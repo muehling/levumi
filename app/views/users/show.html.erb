@@ -12,7 +12,7 @@
             E-Mail
           </th>
           <th>
-            Schule
+            Schule/Institution
           </th>
           <th>
             Klassen
@@ -27,7 +27,7 @@
               <%= @user.email%>
             </td>
             <td>
-              <%= @user.school%>
+              <%= if @user.account_type < 2 then @user.school else "-" end%>
             </td>
             <td>
               <%= link_to @user.groups.size, user_groups_path(@user)%>
