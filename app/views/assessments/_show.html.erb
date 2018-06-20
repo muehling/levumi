@@ -57,14 +57,13 @@
         //Convert SVG to PNG
         canvas = document.getElementById("canvas");
         //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
-        //temporary cange of size for snapshot
+        //temporary change of size for snapshot
         chart.resize({width:940, height:350});
         //get svg
         canvg(canvas, $('#svgOfAssessement')[0].outerHTML.trim());
         chart.resize({height:320});
         chart.resize();
-        //get Imagelink
-          //welches Interessanter "sauberer/klarer" ist als beim export...
+
         var data = canvas.toDataURL("image/png");
         //create PDF-page
         var docDefinition = {
