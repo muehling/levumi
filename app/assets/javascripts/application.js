@@ -20,6 +20,4 @@
 //= require StackBlur
 //= require canvg
 //Create clientside PDF
-//= require pdfmake
-//= require vfs-fonts
 //= require_tree .
