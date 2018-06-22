@@ -19,5 +19,4 @@
 //= require rgbcolor
 //= require StackBlur
 //= require canvg
-//Create clientside PDF
 //= require_tree .
