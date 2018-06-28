@@ -108,9 +108,10 @@
       //Alternativen:
       //print the PDF
       //  pdfMake.createPdf(docDefinition).print();
+      //open PDF in viewer
+      //pdfMake.createPdf(docDefinition).open();
       // download the PDF
-      //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
-      pdfMake.createPdf(docDefinition).open();
+      pdfMake.createPdf(docDefinition).download('Schüleransicht ' + studentsCrypt['<%=@group.id%>'][<%=@student.id%>]+' - Komplett.pdf');
 
   }
   //Genrate Picture (generate all)

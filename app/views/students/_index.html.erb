@@ -158,7 +158,8 @@
             }
         };
         generateTable( docDefinition);
-        pdfMake.createPdf(docDefinition).open();
+        // download the PDF
+        pdfMake.createPdf(docDefinition).download('Zugangsdaten der Klasse - <%=@group.name%>.pdf');
     }
     
     function generateTable(docDefinition) {

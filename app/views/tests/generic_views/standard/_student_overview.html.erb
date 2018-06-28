@@ -304,9 +304,10 @@
         //Alternativen:
         //print the PDF
         //  pdfMake.createPdf(docDefinition).print();
+        //open PDF in viewer
+        //pdfMake.createPdf(docDefinition).open();
         // download the PDF
-        //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
-        pdfMake.createPdf(docDefinition).open();
+        pdfMake.createPdf(docDefinition).download('Schüleransicht von '+studentsCrypt['<%=@group.id%>'][<%=@student.id%>]+' - <%=test.name%>.pdf');
 
     }
 </script>

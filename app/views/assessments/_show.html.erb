@@ -100,9 +100,10 @@
             //Alternativen:
                 //print the PDF
                   //  pdfMake.createPdf(docDefinition).print();
-                // download the PDF
-                 //   pdfMake.createPdf(docDefinition).download('optionalName.pdf');
-        pdfMake.createPdf(docDefinition).open();
+                //open pdfviewer
+                  //  pdfMake.createPdf(docDefinition).open();
+        // download the PDF
+        pdfMake.createPdf(docDefinition).download('Klassenübersicht der <%=@group.name%> - <%= @assessment.test.name%>.pdf');
 
     }
 </script>
