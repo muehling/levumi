@@ -86,6 +86,10 @@ class Result < ActiveRecord::Base
   def to_a(itemset)
     res = []
     itemset.each do |i|
+      if items.index(i).nil? 
+        res = res + ['']
+        next
+      end
       val = responses[items.index(i)]
       if extra_data.has_key?('times')
         time = extra_data['times'][items.index(i)].nil? ? nil : extra_data['times'][items.index(i)].to_i
