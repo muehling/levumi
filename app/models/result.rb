@@ -86,7 +86,7 @@ class Result < ActiveRecord::Base
   def to_a(itemset)
     res = []
     itemset.each do |i|
-      if items.index(i).nil? 
+      if items.index(i).nil?   #Bugfix für Zahlenreihentest - immer ok?
         res = res + ['']
         next
       end
