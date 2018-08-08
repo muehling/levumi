@@ -198,7 +198,6 @@ jetzt
 Katze
 fallen
 Bruder
-euer
 größer
 kommen
 also
@@ -233,7 +232,6 @@ Uhr
 gefällt
 Bäume
 hören
-sieht
 die
 gefallen
 Hund
@@ -273,7 +271,7 @@ wachen
 Wald
 schlafen
 als
-Bürder
+Brüder
 rennen
 muss
 nie

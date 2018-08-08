@@ -182,7 +182,6 @@ dei
 mer
 dau
 Pa
-tei
 do
 }
 
@@ -251,7 +250,7 @@ ben
 gu
 schei
 ba
-kau
+Kau
 cha
 Ko
 schu
