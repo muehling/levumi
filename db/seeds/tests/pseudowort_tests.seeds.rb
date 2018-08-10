@@ -357,7 +357,6 @@ merpo
 dodau
 reipa
 poder
-halei
 welen
 dara
 hupo
