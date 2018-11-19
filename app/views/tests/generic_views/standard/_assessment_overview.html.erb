@@ -68,8 +68,12 @@ var chart = c3.generate({
                 text: 'Anzahl richtiger Items',
                 position: 'outer-middle'
             },
-            min: 1,
-            max: <%= max %>
+            min: 0,
+            max: <%= max.nonzero? || 1  %>,
+            tick: {
+                format: function(x) { return x % 1 === 0 ? x : ''; }
+            },
+            padding: {top: 0, bottom: 20}
         }
     },
     line: {

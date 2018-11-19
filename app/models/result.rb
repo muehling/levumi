@@ -12,6 +12,19 @@ class Result < ActiveRecord::Base
                                   #-intro: Intro Items für den Test
                                   #-outro: Outro Items für den Test
 
+  after_update :check_result
+
+  #Check if special treatment is needed for the result.
+  def check_result
+    #Turn off/on callback to prevent loop
+    #Alternativ: self.update_column(:extra_data, self.measurement.assessment.test.check_result(self))
+    #             and returning whole extra_data-hash in check_result
+    Result.skip_callback(:update, :after, :check_result)
+    self.measurement.assessment.test.check_result(self)
+    save
+    Result.set_callback(:update, :after, :check_result)
+  end
+
   #Calculate new running total of the fraction of correct items. Must be called everytime the responses change.
   #Not used from outside
   def update_total
@@ -20,7 +33,10 @@ class Result < ActiveRecord::Base
     else
       self.total = responses.map{|x| x == nil ? 0:x}.sum.to_f/(responses - [nil]).size
     end
+    #Turn off/on callback to prevent "double"-call of check_result
+    Result.skip_callback(:update, :after, :check_result)
     save
+    Result.set_callback(:update, :after, :check_result)
   end
 
   #Create an empty set of results, but already draw the items that will be used.
@@ -141,6 +157,7 @@ class Result < ActiveRecord::Base
       return t.nil? ? 0 : t
     end
   end
+
 
   #Creates a csv file containing a "Big table" representation of a set of results objects. Additional information about test, student, group, and user is also included.
   #To restrict the export to a single test or a single user pass either a test id or user id as parameter. Use nil to indicate every test/every user.
@@ -454,4 +471,8 @@ class Result < ActiveRecord::Base
     book.write temp.path
     return temp.path 
   end
+
+
+
+
 end
