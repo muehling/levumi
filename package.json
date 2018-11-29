@@ -1,0 +1,15 @@
+{
+  "name": "Levumi2",
+  "private": true,
+  "dependencies": {
+    "@rails/webpacker": "3.5",
+    "bootstrap-vue": "^2.0.0-rc.11",
+    "vue": "^2.5.17",
+    "vue-loader": "14.2.2",
+    "vue-style-loader": "^4.1.2",
+    "vue-template-compiler": "^2.5.17"
+  },
+  "devDependencies": {
+    "webpack-dev-server": "2.11.2"
+  }
+}
