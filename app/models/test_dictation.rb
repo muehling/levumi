@@ -36,7 +36,7 @@ class TestDictation < Test
       result.extra_data["principle"] = {"psError" => 0,"psCount" => 0,"mpError" => 0,"mpCount" => 0,"wbError" => 0,"wbCount" =>0,"pbError" => 0,"pbCount" =>0}
     end
     #Alternativ:
-    #return result.extra_data
+    return result.extra_data
   end
 
 

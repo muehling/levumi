@@ -123,7 +123,7 @@ class Test < ActiveRecord::Base
 
   def check_result(result)
     #Alternativ:
-    #return result.extra_data
+    return result.extra_data
   end
 
 end
