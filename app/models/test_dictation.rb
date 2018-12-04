@@ -29,12 +29,14 @@ class TestDictation < Test
       items.each do |i|
         tested_item_texts += [i.itemtext]
       end
+
       #Example: result.extra_data["principle"]={"psError" => 5,"psCount" => 35,"mpError" => 4,"mpCount" => 23,"wbError" => 4,"wbCount" =>5,"pbError" => 6,"pbCount" =>13}
       result.extra_data["principle"]= check_principles(tested_item_texts, answers)
     else
       result.extra_data["principle"] = {"psError" => 0,"psCount" => 0,"mpError" => 0,"mpCount" => 0,"wbError" => 0,"wbCount" =>0,"pbError" => 0,"pbCount" =>0}
     end
-
+    #Alternativ:
+    #return result.extra_data
   end
 
 
