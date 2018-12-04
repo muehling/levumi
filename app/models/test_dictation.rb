@@ -1,3 +1,4 @@
+class TestDictation < Test
 
   def draw_items(first)
     if first
