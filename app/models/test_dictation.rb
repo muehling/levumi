@@ -21,16 +21,22 @@ class TestDictation < Test
   end
 
   def check_result(result)
-    answers = result.extra_data["answers"]
-    #watch out for big id-array. otherwise the runtime could be bad -> sort_by
-    items = Item.where(id:result.items.first(answers.length)).sort_by{ |u| result.items.first(answers.length).index(u.id) }
-    tested_item_texts =[]
-    items.each do |i|
-      tested_item_texts += [i.itemtext]
+    if result.extra_data.has_key?("answers")
+      answers = result.extra_data["answers"]
+      #watch out for big id-array. otherwise the runtime could be bad -> sort_by
+      items = Item.where(id:result.items.first(answers.length)).sort_by{ |u| result.items.first(answers.length).index(u.id) }
+      tested_item_texts =[]
+      items.each do |i|
+        tested_item_texts += [i.itemtext]
+      end
+
+      #Example: result.extra_data["principle"]={"psError" => 5,"psCount" => 35,"mpError" => 4,"mpCount" => 23,"wbError" => 4,"wbCount" =>5,"pbError" => 6,"pbCount" =>13}
+      result.extra_data["principle"]= check_principles(tested_item_texts, answers)
+    else
+      result.extra_data["principle"] = {"psError" => 0,"psCount" => 0,"mpError" => 0,"mpCount" => 0,"wbError" => 0,"wbCount" =>0,"pbError" => 0,"pbCount" =>0}
     end
-    check_principles(tested_item_texts, answers)
-    #Example: result.extra_data["principle"]={"psError" => 5,"psCount" => 35,"mpError" => 4,"mpCount" => 23,"wbError" => 4,"wbCount" =>5,"pbError" => 6,"pbCount" =>13}
-    result.extra_data["principle"]= check_principles(tested_item_texts, answers)
+    #Alternativ:
+    return result.extra_data
   end
 
 

@@ -16,13 +16,7 @@ class Result < ActiveRecord::Base
 
   #Check if special treatment is needed for the result.
   def check_result
-    #Turn off/on callback to prevent loop
-    #Alternativ: self.update_column(:extra_data, self.measurement.assessment.test.check_result(self))
-    #             and returning whole extra_data-hash in check_result
-    Result.skip_callback(:update, :after, :check_result)
-    self.measurement.assessment.test.check_result(self)
-    save
-    Result.set_callback(:update, :after, :check_result)
+    self.update_column(:extra_data, self.measurement.assessment.test.check_result(self))
   end
 
   #Calculate new running total of the fraction of correct items. Must be called everytime the responses change.
