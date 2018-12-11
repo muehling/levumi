@@ -1,4 +1,10 @@
-<div id='hello'>
+<% props = {
+    message: @groups.first.label
+}.to_json
+%>
+
+<div id='levumi' data="<%= props %>">
+  <menubar></menubar>
   <b-alert show dismissible>{{message}}</b-alert>
-  <app></app>
+  <groups></groups>
 </div>

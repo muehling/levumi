@@ -34,7 +34,8 @@
 
 
 import Vue from 'vue/dist/vue.esm'
-import App from '../app.vue'
+import Menubar from './backend/menubar.vue'
+import Groups from './backend/groups.vue'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -44,11 +45,11 @@ Vue.use(BootstrapVue);
 
 document.addEventListener('DOMContentLoaded', () => {
    const app = new Vue({
-   el: '#hello',
+   el: '#levumi',
        data: {
        message: "Can you say hello?"
    },
-   components: { App }
+   components: { Menubar, Groups }
   })
 });
 
