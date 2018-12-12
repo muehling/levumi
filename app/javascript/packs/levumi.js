@@ -34,8 +34,8 @@
 
 
 import Vue from 'vue/dist/vue.esm'
-import Menubar from './backend/menubar.vue'
-import Groups from './backend/groups.vue'
+import BackendMenubar from './backend/backend-menubar.vue'
+import BackendGroup from './backend/backend-group.vue'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -44,13 +44,15 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 Vue.use(BootstrapVue);
 
 document.addEventListener('DOMContentLoaded', () => {
-   const app = new Vue({
-   el: '#levumi',
-       data: {
-       message: "Can you say hello?"
-   },
-   components: { Menubar, Groups }
-  })
+    const element = document.getElementById('levumi');
+    const props = JSON.parse(element.getAttribute('data'));
+    if (element != null && props != null) {
+        const backend = new Vue({
+            el: '#levumi',
+            data: props,
+            components: {BackendMenubar, BackendGroup}
+        });
+    }
 });
 
 

@@ -1,10 +1,23 @@
-<% props = {
-    message: @groups.first.label
-}.to_json
+<%
+  data = {
+      groups: @groups
+  }
 %>
 
-<div id='levumi' data="<%= props %>">
-  <menubar></menubar>
-  <b-alert show dismissible>{{message}}</b-alert>
-  <groups></groups>
+<script>
+console.log("<%= data.to_json%>");
+</script>
+
+<div id='levumi' data="<%= data.to_json%>">
+  <backend-menubar></backend-menubar>
+    <b-container fluid>
+      <b-row class="justify-content-md-center">
+          <backend-group
+            v-for="group in groups"
+            v-bind:key="group.id"
+            v-bind:title="group.label"
+            v-bind:size="group.size"
+          ></backend-group>
+      </b-row>
+    </b-container>
 </div>

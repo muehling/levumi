@@ -1,5 +1,5 @@
 <template>
-    <div id="menubar">
+    <div id="backend-menubar">
         <b-navbar toggleable="md" type="light" variant="faded">
 
             <b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
@@ -45,9 +45,9 @@
     </div>
 </template>
 
-< script >
+<script>
 export default {
-    name: ""
+    name: "backend-menubar"
 }
 </script>
 
