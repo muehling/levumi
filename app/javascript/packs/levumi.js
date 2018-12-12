@@ -34,7 +34,8 @@
 
 
 import Vue from 'vue/dist/vue.esm'
-import BackendGroup from './backend/backend-group.vue'
+import GroupCard from './backend/group-card.vue'
+import GroupTab from './backend/group-tab.vue'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -49,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const backend = new Vue({
             el: '#levumi',
             data: props,
-            components: {BackendGroup}
+            components: {GroupCard, GroupTab}
         });
     }
 });

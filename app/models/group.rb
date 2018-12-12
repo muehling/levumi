@@ -6,6 +6,7 @@ class Group < ApplicationRecord
   def as_json(options={})
     json = super(except: [:created_at, :updated_at, :user_id])
     json["size"] = size
+    json["students"] = students.all.to_json
     json
   end
 

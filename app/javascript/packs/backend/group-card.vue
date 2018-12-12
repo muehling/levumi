@@ -11,7 +11,7 @@ export default {
         title: String,
         size: Number
     },
-    name: "backend-group"
+    name: "group-card"
 }
 </script>
 

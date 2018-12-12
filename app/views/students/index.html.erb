@@ -1,7 +1,6 @@
 <%
   data = {
-      groups: @groups,
-      students: @students
+      groups: @groups
   }
 %>
 
@@ -11,7 +10,19 @@ console.log("<%= data.to_json%>");
 
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>
-      <b-row class="justify-content-md-center">Reiter</b-row>
-      <b-row class="justify-content-md-center">Tabelle</b-row>
+      <b-row>
+        <b-tabs>
+          <b-tab
+            v-for="(group, index) in groups"
+            v-bind:key="group.id"
+            v-bind:title="group.label"
+            v-bind:class="{active:index == 0}"
+          >
+            <group-tab
+                v-bind:students="JSON.parse(groups[index].students)"
+            ></group-tab>
+          </b-tab>
+        </b-tabs>
+      </b-row>
     </b-container>
 </div>
