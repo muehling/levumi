@@ -1,0 +1,17 @@
+<%
+  data = {
+      groups: @groups,
+      students: @students
+  }
+%>
+
+<script>
+console.log("<%= data.to_json%>");
+</script>
+
+<div id='levumi' data="<%= data.to_json%>">
+    <b-container fluid>
+      <b-row class="justify-content-md-center">Reiter</b-row>
+      <b-row class="justify-content-md-center">Tabelle</b-row>
+    </b-container>
+</div>

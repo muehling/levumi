@@ -10,6 +10,51 @@
   </head>
 
   <body>
-    <%= yield %>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#"><img src="favicon.ico" alt="Levumi" width="48" height="48"/>Levumi</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Start</a>
+        </li>
+        <li class="nav-item">
+          <%= link_to "Klassenbuch", students_path, class: "nav-link"%>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Material</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Testinfo</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Hilfe
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+            <a class="dropdown-item" href="#">Handbuch</a>
+            <a class="dropdown-item" href="#">Videos</a>
+            <a class="dropdown-item" href="#">Blog</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Profil
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
+            <a class="dropdown-item" href="#">Meine Daten</a>
+            <a class="dropdown-item" href="#">Ausloggen</a>
+          </div>
+        </li>
+      </ul>
+
+  </nav>
+
+  <%= yield %>
   </body>
 </html>

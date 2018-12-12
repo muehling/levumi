@@ -34,7 +34,6 @@
 
 
 import Vue from 'vue/dist/vue.esm'
-import BackendMenubar from './backend/backend-menubar.vue'
 import BackendGroup from './backend/backend-group.vue'
 
 import BootstrapVue from 'bootstrap-vue'
@@ -50,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const backend = new Vue({
             el: '#levumi',
             data: props,
-            components: {BackendMenubar, BackendGroup}
+            components: {BackendGroup}
         });
     }
 });

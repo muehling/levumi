@@ -9,7 +9,6 @@ console.log("<%= data.to_json%>");
 </script>
 
 <div id='levumi' data="<%= data.to_json%>">
-  <backend-menubar></backend-menubar>
     <b-container fluid>
       <b-row class="justify-content-md-center">
           <backend-group
@@ -19,5 +18,7 @@ console.log("<%= data.to_json%>");
             v-bind:size="group.size"
           ></backend-group>
       </b-row>
+      <b-row class="justify-content-md-center">Testinfo</b-row>
+      <b-row class="justify-content-md-center">Klasseninfo</b-row>
     </b-container>
 </div>
