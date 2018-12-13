@@ -1,15 +1,8 @@
 <%
   data = {
-      groups: @groups,
-      archive: @archive
+      groups: @groups
   }
 %>
-
-<script>
-    function set_archive(id, value) {
-        alert("Test");
-    }
-</script>
 
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>

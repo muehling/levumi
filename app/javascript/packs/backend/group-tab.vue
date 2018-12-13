@@ -4,12 +4,13 @@
          <b-table hover :items="students" :fields="['name', 'login']"></b-table>
          <i class="fas fa-user-plus"></i> Schüler_in hinzufügen
          <i class="fas fa-edit"></i> Klasse bearbeiten
-         <a href="#" v-on:click="set_archive(group.id, true);"><i class="fas fa-file-export"></i> Klasse in Archiv verschieben</a>
+         <a :href="'/groups/' + group.id" data-method="put" data-remote="true" data-params="group[archive]=1"><i class="fas fa-file-export"></i> Klasse in Archiv verschieben</a>
          <i class="fas fa-trash"></i> Klasse löschen
      </div>
 
     <div v-else>
-        <a href="#" v-on:click="set_archive(group.id, false);"><i class="fas fa-file-import"></i> Klasse aus dem Archiv holen</a>
+        <p>Schüler_innen: {{students.length}}</p>
+        <a :href="'/groups/' + group.id" data-method="put" data-remote="true" data-params="group[archive]=0"><i class="fas fa-file-import"></i> Klasse aus dem Archiv holen</a>
     </div>
 
 </template>
@@ -19,17 +20,6 @@
         props: {
             group: Object,
             students: Array
-        },
-        methods: {
-            set_archive: function(id, value) {
-                Rails.ajax({
-                    url: "/groups/" + id,
-                    type: "GET",
-                    success: function(data) {
-                        console.log(data);
-                    }
-                });
-            }
         },
         name: "group-tab"
     }

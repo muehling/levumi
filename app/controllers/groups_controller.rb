@@ -5,13 +5,13 @@ class GroupsController < ApplicationController
     @groups = @user.groups.all
   end
 
-  #POST /groups/:id
+  #PUT /groups/:id
   def update
     g = @user.groups.find(params[:id])
     unless g.nil?
       g.update_attributes(params.require(:group).permit(:label, :archive))
     end
-    redirect_to :students
+    @groups = @user.groups.all
   end
 
   #POST /groups.html
