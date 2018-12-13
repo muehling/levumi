@@ -1,7 +1,7 @@
 class StudentsController < ApplicationController
 
   def index
-    @groups = User.find(1).groups.all
-    @students = Student.where(group: @groups).all
+    @groups = @user.groups.all
+    @group = @user.groups.new
   end
 end

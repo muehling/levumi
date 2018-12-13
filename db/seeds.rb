@@ -6,6 +6,7 @@ if Rails.env.development?
       x.students.create(name: "Student #{i*5 + j}")
     end
   end
+  u.groups.create(label: "Ein langer Klassenbezeichner", archive: true)
   u.save
 elsif Rails.env.production?
 

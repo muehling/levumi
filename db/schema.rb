@@ -15,12 +15,14 @@ ActiveRecord::Schema.define(version: 2018_11_29_165128) do
   create_table "groups", force: :cascade do |t|
     t.string "label"
     t.integer "user_id"
+    t.boolean "archive", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "students", force: :cascade do |t|
     t.string "name"
+    t.string "login"
     t.integer "group_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

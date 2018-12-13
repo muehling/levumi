@@ -3,5 +3,6 @@ Rails.application.routes.draw do
   root 'groups#index'
 
   resources :students
+  resources :groups
 
 end

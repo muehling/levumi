@@ -1,28 +1,69 @@
 <%
   data = {
-      groups: @groups
+      groups: @groups,
+      archive: @archive
   }
 %>
 
 <script>
-console.log("<%= data.to_json%>");
+    function set_archive(id, value) {
+        alert("Test");
+    }
 </script>
 
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>
       <b-row>
-        <b-tabs>
+        <b-tabs pills>
+
+          <!-- Neue Klasse anlegen -->
+          <b-tab>
+            <template slot="title">
+              <i class="fas fa-folder-plus"></i>
+            </template>
+            <%= render 'groups/form' %>
+          </b-tab>
+
+          <!-- Alle Klassen als Tabs anzeigen -->
           <b-tab
             v-for="(group, index) in groups"
+            v-if="group.archive == false"
             v-bind:key="group.id"
             v-bind:title="group.label"
-            v-bind:class="{active:index == 0}"
+            v-bind:class="{ active: (index == 0) }"
           >
             <group-tab
+                v-bind:group="group"
                 v-bind:students="JSON.parse(groups[index].students)"
             ></group-tab>
           </b-tab>
+
+          <!-- Klassenarchiv -->
+          <b-tab>
+            <template slot="title">
+               <em>Klassenarchiv</em>
+            </template>
+
+            <b-card no-body>
+              <b-tabs pills card vertical>
+                <b-tab
+                  v-for="(group, index) in groups"
+                  v-if="group.archive == true"
+                  v-bind:key="group.id"
+                  v-bind:title="group.label"
+                >
+                  <group-tab
+                    v-bind:group="group"
+                    v-bind:students="JSON.parse(groups[index].students)"
+                  ></group-tab>
+                </b-tab>
+              </b-tabs>
+            </b-card>
+
+          </b-tab>
+
         </b-tabs>
       </b-row>
     </b-container>
 </div>
+
