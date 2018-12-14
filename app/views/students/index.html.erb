@@ -23,16 +23,17 @@
             v-if="group.archive == false"
             v-bind:key="group.id"
             v-bind:title="group.label"
-            v-bind:class="{ active: (index == 0) }"
+            v-bind:active="index == 0"
           >
             <group-tab
-                v-bind:group="group"
+                v-bind:groups="groups"
+                v-bind:index="index"
                 v-bind:students="JSON.parse(groups[index].students)"
             ></group-tab>
           </b-tab>
 
           <!-- Klassenarchiv -->
-          <b-tab>
+          <b-tab key="100">
             <template slot="title">
                <em>Klassenarchiv</em>
             </template>
@@ -46,7 +47,8 @@
                   v-bind:title="group.label"
                 >
                   <group-tab
-                    v-bind:group="group"
+                    v-bind:groups="groups"
+                    v-bind:index="index"
                     v-bind:students="JSON.parse(groups[index].students)"
                   ></group-tab>
                 </b-tab>

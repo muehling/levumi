@@ -1,9 +1,0 @@
-<%
-  data = {
-      groups: @groups
-  }
-%>
-
-const element = document.getElementById('levumi');
-if (element != null)
-  element.setAttribute('data', "<%= data.to_json%>");
