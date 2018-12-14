@@ -7,8 +7,12 @@ class GroupsController < ApplicationController
 
   #POST /groups.html
   def create
-    @user.groups.create(params.require(:group).permit(:label))
-    redirect_to :students
+    g = @user.groups.new(params.require(:group).permit(:label))
+    if g.save
+      render json: g
+    else
+      head 500
+    end
   end
 
   #PUT /groups/:id
@@ -17,7 +21,7 @@ class GroupsController < ApplicationController
     unless g.nil?
       g.update_attributes(params.require(:group).permit(:label, :archive))
     end
-    render status: :ok
+    head :ok
   end
 
   #DEL /groups/:id
@@ -26,7 +30,7 @@ class GroupsController < ApplicationController
     unless g.nil?
       g.destroy
     end
-    render status: :ok
+    head :ok
   end
 
   private

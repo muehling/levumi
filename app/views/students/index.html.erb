@@ -1,64 +1,91 @@
 <%
   data = {
-      groups: @groups
+      groups: [Group.new] + @groups
   }
 %>
 
+
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>
-      <b-row>
-        <b-tabs pills>
+      <b-row class="mt-5">
+        <b-col md="12">
 
-          <!-- Neue Klasse anlegen -->
-          <b-tab>
-            <template slot="title">
-              <i class="fas fa-folder-plus"></i>
-            </template>
-            <%= render 'groups/form' %>
-          </b-tab>
+          <b-tabs pills>
 
-          <!-- Alle Klassen als Tabs anzeigen -->
-          <b-tab
-            v-for="(group, index) in groups"
-            v-if="group.archive == false"
-            v-bind:key="group.id"
-            v-bind:title="group.label"
-            v-bind:active="index == 0"
-          >
-            <group-tab
-                v-bind:groups="groups"
-                v-bind:index="index"
-                v-bind:students="JSON.parse(groups[index].students)"
-            ></group-tab>
-          </b-tab>
+            <b-tab active>
+              <template slot="title">
+                Aktuelle Klassen
+              </template>
 
-          <!-- Klassenarchiv -->
-          <b-tab key="100">
-            <template slot="title">
-               <em>Klassenarchiv</em>
-            </template>
+              <b-card no-body>
+                <b-tabs pills card>
 
-            <b-card no-body>
-              <b-tabs pills card vertical>
-                <b-tab
-                  v-for="(group, index) in groups"
-                  v-if="group.archive == true"
-                  v-bind:key="group.id"
-                  v-bind:title="group.label"
-                >
-                  <group-tab
-                    v-bind:groups="groups"
-                    v-bind:index="index"
-                    v-bind:students="JSON.parse(groups[index].students)"
-                  ></group-tab>
-                </b-tab>
-              </b-tabs>
-            </b-card>
+                  <!-- Neue Klasse anlegen -->
+                  <b-tab>
+                    <template slot="title">
+                      <i class="fas fa-folder-plus"></i>
+                    </template>
+                    <group-tab
+                      :groups="groups"
+                      :index="0"
+                      :students="null"
+                    ></group-tab>
+                  </b-tab>
 
-          </b-tab>
+                  <!-- Alle Klassen als Tabs anzeigen -->
+                  <b-tab
+                    v-for="(group, index) in groups"
+                    v-if="index > 0 & group.archive == false"
+                    :key="group.id"
+                    :title="group.label"
+                    :active="index == 1"
+                  >
+                    <group-tab
+                      :groups="groups"
+                      :index="index"
+                      :students="JSON.parse(groups[index].students)"
+                    ></group-tab>
+                  </b-tab>
 
-        </b-tabs>
-      </b-row>
+                </b-tabs>
+              </b-card>
+            </b-tab>
+
+            <!-- Klassenarchiv -->
+            <b-tab>
+              <template slot="title">
+                <em>Klassenarchiv</em>
+              </template>
+
+              <b-card no-body>
+                <b-tabs pills card vertical>
+
+                  <!-- Hinweistext falls keine Klasse vorhanden -->
+                  <div slot="empty" class="text-center text-muted">
+                    Keine Klassen im Archiv vorhanden.
+                  </div>
+
+                  <b-tab
+                    v-for="(group, index) in groups"
+                    v-if="group.archive == true"
+                    :key="group.id"
+                    :title="group.label"
+                  >
+                    <group-tab
+                      :groups="groups"
+                      :index="index"
+                      :students="JSON.parse(groups[index].students)"
+                    ></group-tab>
+                  </b-tab>
+                </b-tabs>
+              </b-card>
+
+            </b-tab>
+
+          </b-tabs>
+
+        </b-col>
+       </b-row>
     </b-container>
 </div>
 
