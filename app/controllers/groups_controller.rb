@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
     unless g.nil?
       g.update_attributes(params.require(:group).permit(:label, :archive))
     end
-    head :ok
+    render json: g
   end
 
   #DEL /groups/:id

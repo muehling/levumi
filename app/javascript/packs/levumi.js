@@ -1,7 +1,8 @@
 /* eslint no-console: 0 */
 import Vue from 'vue/dist/vue.esm'
 import GroupCard from './backend/group-card.vue'
-import GroupTab from './backend/group-tab.vue'
+import GroupDisplay from './backend/group-display.vue'
+import GroupForm from './backend/group-form.vue'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const backend = new Vue({
             el: '#levumi',
             data: data,
-            components: {GroupCard, GroupTab}
+            components: {GroupCard, GroupDisplay, GroupForm}
         });
     }
 });
