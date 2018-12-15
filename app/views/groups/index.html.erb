@@ -4,6 +4,9 @@
   }
 %>
 
+<script>
+    highlightNavItem("navbarKlassenbuch");
+</script>
 
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>
@@ -26,8 +29,9 @@
                       <i class="fas fa-folder-plus"></i>
                     </template>
                     <group-form
-                      :groups="groups"
+                      :group="groups[0]"
                       :index="0"
+                      v-on:update:groups="groups.splice(1, 0, $event.object)"
                     ></group-form>
                   </b-tab>
 
@@ -53,7 +57,7 @@
             <!-- Klassenarchiv -->
             <b-tab>
               <template slot="title">
-                <em>Klassenarchiv</em>
+                Klassenarchiv
               </template>
 
               <b-card no-body>

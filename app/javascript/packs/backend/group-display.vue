@@ -18,7 +18,7 @@
             <b-collapse :id="'collapse_' + groups[index].id" class="mt-2">
                 <b-card>
                     <group-form
-                            :groups="groups"
+                            :group="groups[index]"
                             :index="index"
                             v-on:update:groups="update($event)"
                     ></group-form>
@@ -67,17 +67,17 @@
             students: Array
         },
         methods: {
-            update(val) { //Neu-Rendern der Übersicht erzwingen
-                console.log(val);
-                this.$emit("update:groups", val);
+            update(val) { //Klasse updaten und View updaten
+                this.$set(this.groups, val.index, val.object);
+                this.$emit("update:groups", this.groups);
             },
             set_archive(i, a) { //Wert für archive ändern und View updaten
                 this.groups[i].archive = a;
-                this.update(this.groups);
+                this.$emit("update:groups", this.groups);
             },
             remove(i) { //Klasse entfernen und View updaten
                 this.groups.splice(i, 1);
-                this.update(this.groups);
+                this.$emit("update:groups", this.groups);
             }
         },
         name: "group-display"

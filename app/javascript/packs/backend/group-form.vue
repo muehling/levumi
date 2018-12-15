@@ -1,7 +1,7 @@
 <template>
 
     <b-form inline
-            :action="index == 0 ? '/groups' : '/groups/' + groups[index].id"
+            :action="index == 0 ? '/groups' : '/groups/' + group.id"
             accept-charset="UTF-8"
             method="post"
             data-remote="true"
@@ -34,6 +34,7 @@
                   type="submit"
                   variant="primary"
                   :disabled="label.trim().length === 0"
+                  v-b-toggle="'collapse_' + group.id"
         >
             Ändern
         </b-button>
@@ -44,25 +45,17 @@
 <script>
     export default {
         props: {
-            groups: Array,
+            group: Object,
             index: Number
         },
         data: function () {
             return {
-                label: this.index == 0 ? "" : this.groups[this.index].label
+                label: this.index == 0 ? "" : this.group.label
             }
         },
         methods: {
-            update() { //Neu-Rendern der Übersicht erzwingen
-                console.log(this.groups);
-                this.$emit("update:groups", this.groups);
-            },
-            success(event) { //Klasse einfügen oder ändern und View updaten
-                if (this.index === 0)
-                    this.groups.splice(1, 0, event.detail[0]); //event.detail[0] enthält das Objekt der Ajax-Antwort in rails-ujs
-                else
-                    this.groups[this.index].label = event.detail[0].label;
-                this.update();
+            success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
+                this.$emit("update:groups", {index: this.index, object: event.detail[0]});
             }
         },
         name: "group-form"

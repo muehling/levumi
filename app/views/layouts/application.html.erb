@@ -27,7 +27,7 @@
           <%= link_to "Start", root_path, class: "nav-link"%>
         </li>
         <li class="nav-item">
-          <%= link_to "Klassenbuch", students_path, class: "nav-link"%>
+          <%= link_to "Klassenbuch", '/klassenbuch', class: "nav-link", id: 'navbarKlassenbuch'%>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#">Material</a>
@@ -59,6 +59,18 @@
     </div>
   </nav>
 
+  <script>
+    function highlightNavItem(item) {
+        //Klasse "active" von allen nav-items entfernen und dann bei übergebenem Element hinzufügen
+        let btns = document.getElementById("navbarContent").getElementsByClassName("active");
+        for (let i = 0; i < btns.length; i++) {
+            btns[i].className = btns[i].className.replace(" active", "");
+        }
+        document.getElementById(item).className += " active";
+    }
+  </script>
+
   <%= yield %>
+
   </body>
 </html>
