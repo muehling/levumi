@@ -2,44 +2,32 @@
 
     <!-- Schülertabelle für reguläre Klasse -->
     <div v-if="groups[index].archive == false">
-
         <div class="mb-2">
-            <b-btn v-b-toggle="'collapse_' + groups[index].id"><i class="fas fa-edit"></i> Klasse bearbeiten</b-btn>
-            <a class="btn"
-               :href="'/groups/' + groups[index].id"
-               data-method="put"
-               data-remote="true"
-               data-params="group[archive]=1"
-               v-on:ajax:success="set_archive(index, true)"
-            >
-                <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
-            </a>
-
-            <b-collapse :id="'collapse_' + groups[index].id" class="mt-2">
-                <b-card>
-                    <group-form
-                            :group="groups[index]"
-                            :index="index"
-                            v-on:update:groups="update($event)"
-                    ></group-form>
-                </b-card>
-            </b-collapse>
+            <group-form
+                    :group="groups[index]"
+                    :index="index"
+                    v-on:update:groups="update($event)"
+            ></group-form>
         </div>
 
-        <b-table hover :items="students" :fields="['name', 'login']">
-        </b-table>
-        <i class="fas fa-user-plus"></i> Schüler_in hinzufügen
+        <student-list
+                :group="groups[index].id"
+        >
+        </student-list>
     </div>
 
     <!-- Archivdarstellung für archivierte Klasse -->
     <div v-else>
-        <p>Schüler_innen: {{students.length}}</p>
+        <p>
+            <em>Ins Archiv verschoben am {{ date }}</em><br/>
+            Schüler_innen: {{groups[index].size}}
+        </p>
         <a class="btn"
                 :href="'/groups/' + groups[index].id"
                 data-method="put"
                 data-remote="true"
                 data-params="group[archive]=0"
-                v-on:ajax:success="set_archive(index, false)"
+                v-on:ajax:success="update({index: index, object: $event.detail[0]})"
         >
             <i class="fas fa-file-import"></i> Klasse aus dem Archiv holen
         </a>
@@ -59,20 +47,22 @@
 
 <script>
     import GroupForm from "./group-form";
+    import StudentList from "./student-list";
     export default {
-        components: {GroupForm},
+        components: {StudentList, GroupForm},
         props: {
             groups: Array,
-            index: Number,
-            students: Array
+            index: Number
+        },
+        computed: {
+            date: function() {
+                let date = new Date(this.groups[this.index].updated_at);
+                return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear()
+            }
         },
         methods: {
             update(val) { //Klasse updaten und View updaten
                 this.$set(this.groups, val.index, val.object);
-                this.$emit("update:groups", this.groups);
-            },
-            set_archive(i, a) { //Wert für archive ändern und View updaten
-                this.groups[i].archive = a;
                 this.$emit("update:groups", this.groups);
             },
             remove(i) { //Klasse entfernen und View updaten
@@ -83,6 +73,3 @@
         name: "group-display"
     }
 </script>
-
-<style>
-</style>

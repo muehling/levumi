@@ -4,6 +4,8 @@ import GroupCard from './backend/group-card.vue'
 import GroupDisplay from './backend/group-display.vue'
 import GroupForm from './backend/group-form.vue'
 
+import StudentList from './backend/student-list.vue'
+
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
@@ -20,7 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const backend = new Vue({
             el: '#levumi',
             data: data,
-            components: {GroupCard, GroupDisplay, GroupForm}
+            components: {
+                GroupCard, GroupDisplay, GroupForm,
+                StudentList
+            }
         });
     }
 });

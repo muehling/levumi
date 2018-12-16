@@ -11,17 +11,18 @@ class GroupsController < ApplicationController
     if g.save
       render json: g
     else
-      head 500
+      head 304
     end
   end
 
   #PUT /groups/:id
   def update
     g = @user.groups.find(params[:id])
-    unless g.nil?
-      g.update_attributes(params.require(:group).permit(:label, :archive))
+    unless g.nil? || !g.update_attributes(params.require(:group).permit(:label, :archive))
+      render json: g
+    else
+      head 304
     end
-    render json: g
   end
 
   #DEL /groups/:id

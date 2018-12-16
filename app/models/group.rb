@@ -6,9 +6,8 @@ class Group < ApplicationRecord
 
   #JSON Ouput for Backend, include virtual attribute size
   def as_json(options={})
-    json = super(except: [:created_at, :updated_at, :user_id])
+    json = super(except: [:created_at, :user_id])
     json["size"] = size
-    json["students"] = students.all.to_json
     json
   end
 

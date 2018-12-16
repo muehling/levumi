@@ -1,44 +1,64 @@
 <template>
 
-    <b-form inline
-            :action="index == 0 ? '/groups' : '/groups/' + group.id"
-            accept-charset="UTF-8"
-            method="post"
-            data-remote="true"
-            v-on:ajax:success="success"
-    >
-        <!-- Hidden Field für Rails/Update -->
-        <input v-if="index > 0"
-                 type="hidden"
-                 value="put"
-                 name="_method"
-        />
-        <label class="sr-only" for="label">Klassenbezeichner</label>
-        <b-input class="mr-2"
-                 id="label"
-                 v-model="label"
-                 :value="label"
-                 name="group[label]"
-                 placeholder="Klassenbezeichner"
-        />
-        <!-- Button für neue Klasse -->
-        <b-button v-if="index === 0"
-                  type="submit"
-                  variant="primary"
-                  :disabled="label.trim().length === 0"
+    <div>
+        <b-btn v-b-toggle="'collapse_' + group.id"><i class="fas fa-edit"></i> Klasse bearbeiten</b-btn>
+
+        <a class="btn"
+           :href="'/groups/' + group.id"
+           data-method="put"
+           data-remote="true"
+           data-params="group[archive]=1"
+           v-on:ajax:success="success"
         >
-            Anlegen
-        </b-button>
-        <!-- Button für existierende Klasse -->
-        <b-button v-else
-                  type="submit"
-                  variant="primary"
-                  :disabled="label.trim().length === 0"
-                  v-b-toggle="'collapse_' + group.id"
-        >
-            Ändern
-        </b-button>
-    </b-form>
+            <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
+        </a>
+
+        <b-collapse :id="'collapse_' + group.id" class="mt-2">
+            <b-card>
+
+                <b-form inline
+                        :action="index == 0 ? '/groups' : '/groups/' + group.id"
+                        accept-charset="UTF-8"
+                        method="post"
+                        data-remote="true"
+                        v-on:ajax:success="success"
+                >
+                    <!-- Hidden Field für Rails/Update -->
+                    <input v-if="index > 0"
+                           type="hidden"
+                           value="put"
+                           name="_method"
+                    />
+                    <label class="sr-only" for="label">Klassenbezeichner</label>
+                    <b-input class="mr-2"
+                             id="label"
+                             v-model="label"
+                             :value="label"
+                             name="group[label]"
+                             placeholder="Klassenbezeichner"
+                    />
+                    <!-- Button für neue Klasse -->
+                    <b-button v-if="index === 0"
+                              type="submit"
+                              variant="primary"
+                              :disabled="label.trim().length === 0"
+                    >
+                        Anlegen
+                    </b-button>
+                    <!-- Button für existierende Klasse -->
+                    <b-button v-else
+                              type="submit"
+                              variant="primary"
+                              :disabled="label.trim().length === 0"
+                              v-b-toggle="'collapse_' + group.id"
+                    >
+                        Ändern
+                    </b-button>
+                </b-form>
+
+            </b-card>
+        </b-collapse>
+    </div>
 
 </template>
 
@@ -61,6 +81,3 @@
         name: "group-form"
     }
 </script>
-
-<style>
-</style>

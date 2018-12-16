@@ -1,6 +1,6 @@
 class StudentsController < ApplicationController
 
   def index
-    @groups = @user.groups.all
+    render json: @user.students
   end
 end
