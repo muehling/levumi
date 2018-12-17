@@ -4,7 +4,8 @@ Rails.application.routes.draw do
 
   get '/klassenbuch', to: 'groups#index'
 
-  resources :students
-  resources :groups
+  resources :groups do
+    resources :students
+  end
 
 end

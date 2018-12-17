@@ -74,8 +74,17 @@
                 <b-tabs pills card vertical>
 
                   <!-- Hinweistext falls keine Klasse vorhanden -->
-                  <div slot="empty" class="text-center text-muted">
-                    Keine Klassen im Archiv vorhanden.
+                  <div slot="empty">
+                    <div v-if="!$data">
+                      <div class="spinner">
+                        <div class="bounce1"></div>
+                        <div class="bounce2"></div>
+                        <div class="bounce3"></div>
+                      </div>
+                    </div>
+                    <div v-else class="v-cloak text-center text-muted">
+                      Keine Klassen im Archiv vorhanden.
+                    </div>
                   </div>
 
                   <b-tab

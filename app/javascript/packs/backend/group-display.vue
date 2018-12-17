@@ -61,11 +61,11 @@
             }
         },
         methods: {
-            update(val) { //Klasse updaten und View updaten
+            update(val) { //Klasse updaten und View aktualisieren
                 this.$set(this.groups, val.index, val.object);
                 this.$emit("update:groups", this.groups);
             },
-            remove(i) { //Klasse entfernen und View updaten
+            remove(i) { //Klasse entfernen und View aktualisieren
                 this.groups.splice(i, 1);
                 this.$emit("update:groups", this.groups);
             }

@@ -1,19 +1,21 @@
 <template>
 
     <div>
-        <b-btn v-b-toggle="'collapse_' + group.id"><i class="fas fa-edit"></i> Klasse bearbeiten</b-btn>
+        <div v-if="index > 0">
+            <b-btn v-b-toggle="'collapse_' + group.id" class="btn"><i class="fas fa-edit"></i> Klasse bearbeiten</b-btn>
 
-        <a class="btn"
-           :href="'/groups/' + group.id"
-           data-method="put"
-           data-remote="true"
-           data-params="group[archive]=1"
-           v-on:ajax:success="success"
-        >
-            <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
-        </a>
+            <a class="btn"
+               :href="'/groups/' + group.id"
+               data-method="put"
+               data-remote="true"
+               data-params="group[archive]=1"
+               v-on:ajax:success="success"
+            >
+                <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
+            </a>
+        </div>
 
-        <b-collapse :id="'collapse_' + group.id" class="mt-2">
+        <b-collapse :id="'collapse_' + group.id" class="mt-2" :visible="index == 0">
             <b-card>
 
                 <b-form inline
@@ -33,7 +35,6 @@
                     <b-input class="mr-2"
                              id="label"
                              v-model="label"
-                             :value="label"
                              name="group[label]"
                              placeholder="Klassenbezeichner"
                     />

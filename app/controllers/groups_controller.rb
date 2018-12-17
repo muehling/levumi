@@ -5,7 +5,7 @@ class GroupsController < ApplicationController
     @groups = @user.groups.all
   end
 
-  #POST /groups.html
+  #POST /groups
   def create
     g = @user.groups.new(params.require(:group).permit(:label))
     if g.save
@@ -32,11 +32,6 @@ class GroupsController < ApplicationController
       g.destroy
     end
     head :ok
-  end
-
-  private
-  def group_params
-    params.require(:group).permit(:label)
   end
 
 end
