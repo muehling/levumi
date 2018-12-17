@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
 
-  #GET /
+  #GET /klassenbuch
   def index
     @groups = @user.groups.all
   end

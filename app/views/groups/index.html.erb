@@ -21,7 +21,7 @@
 
 <div id='levumi' data="<%= data.to_json%>">
     <b-container fluid>
-      <b-row class="mt-5">
+      <b-row class="mt-3">
         <b-col md="12">
 
           <b-tabs pills>
@@ -31,7 +31,7 @@
                 Aktuelle Klassen
               </template>
 
-              <b-card no-body>
+              <b-card no-body class="mt-3">
                 <b-tabs pills card>
 
                   <!-- Neue Klasse anlegen -->
@@ -70,10 +70,10 @@
                 Klassenarchiv
               </template>
 
-              <b-card no-body>
+              <b-card no-body class="mt-3">
                 <b-tabs pills card vertical>
 
-                  <!-- Hinweistext falls keine Klasse vorhanden -->
+                  <!-- Hinweistext falls keine Klasse vorhanden, gleichzeitig Spinner während Vue Start-->
                   <div slot="empty">
                     <div v-if="!$data">
                       <div class="spinner">
@@ -82,7 +82,7 @@
                         <div class="bounce3"></div>
                       </div>
                     </div>
-                    <div v-else class="v-cloak text-center text-muted">
+                    <div v-cloak class="text-center text-muted">
                       Keine Klassen im Archiv vorhanden.
                     </div>
                   </div>

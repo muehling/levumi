@@ -53,7 +53,7 @@
             transform: scale(1.0);
           }
       }
-      .v-cloak {display: none}
+      [v-cloak] {display: none}
     </style>
 
   </head>
@@ -71,7 +71,7 @@
 
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <%= link_to "Start", root_path, class: "nav-link"%>
+          <%= link_to "Start", root_path, class: "nav-link", id: "navbarHome"%>
         </li>
         <li class="nav-item">
           <%= link_to "Klassenbuch", '/klassenbuch', class: "nav-link", id: 'navbarKlassenbuch'%>

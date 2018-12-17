@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="mt-3">
         <table class="table table-condensed table-striped vue-table">
             <thead>
             <tr>

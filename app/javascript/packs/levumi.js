@@ -1,15 +1,15 @@
 /* eslint no-console: 0 */
 import Vue from 'vue/dist/vue.esm'
-import GroupCard from './backend/group-card.vue'
 import GroupDisplay from './backend/group-display.vue'
 import GroupForm from './backend/group-form.vue'
+import GroupMenu from './backend/group-menu'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import Rails from 'rails-ujs'
-Rails.start()
+Rails.start();
 
 Vue.use(BootstrapVue);
 
@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             el: '#levumi',
             data: data,
             components: {
-                GroupCard, GroupDisplay, GroupForm
+                GroupDisplay, GroupForm, GroupMenu
             }
         });
     }

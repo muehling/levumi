@@ -8,6 +8,14 @@ if Rails.env.development?
   end
   u.groups.create(label: "Ein langer Klassenbezeichner", archive: true)
   u.save
+  t = Test.create(name: "Test 1")
+  t.assessments.create(group_id: 1)
+  t.assessments.create(group_id: 2)
+  t.save
+  t = Test.create(name: "Test 2")
+  t.assessments.create(group_id: 1)
+  t.assessments.create(group_id: 3)
+  t.save
 elsif Rails.env.production?
 
 end
