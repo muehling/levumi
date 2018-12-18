@@ -48,6 +48,7 @@
 <script>
     import GroupForm from "./group-form";
     import StudentList from "./student-list";
+
     export default {
         components: {StudentList, GroupForm},
         props: {

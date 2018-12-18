@@ -23,42 +23,16 @@
 
 <div id='levumi' data="<%= data.to_json%>">
 
-    <b-container fluid>
-
-      <div v-if="!$data">
-        <b-row>
-          <div class="spinner">
-            <div class="bounce1"></div>
-            <div class="bounce2"></div>
-            <div class="bounce3"></div>
-          </div>
-        </b-row>
+  <!-- Spinner -->
+  <div v-if="!$data">
+    <b-row>
+      <div class="spinner">
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
       </div>
+    </b-row>
+  </div>
 
-      <div v-cloak>
-
-        <b-row>
-          <b-col md="12">
-            <group-menu :groups="groups"></group-menu>
-          </b-col>
-        </b-row>
-
-        <b-row>
-          <b-col md="12">
-            <b-nav pills fill class="mt-5">
-              <b-nav-item v-for="test in tests"
-                          :key="test.id"
-              >
-                {{ test.name }}
-              </b-nav-item>
-            </b-nav>
-          </b-col>
-        </b-row>
-
-        <b-row class="justify-content-md-center">Klasseninfo</b-row>
-
-      </div>
-
-     </b-container>
-
+  <home-app></home-app>
 </div>

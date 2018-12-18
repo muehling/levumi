@@ -38,6 +38,7 @@
 
 <script>
     import StudentRow from "./student-row";
+
     export default {
         components: {StudentRow},
         props: {

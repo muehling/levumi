@@ -1,8 +1,8 @@
 /* eslint no-console: 0 */
 import Vue from 'vue/dist/vue.esm'
-import GroupDisplay from './backend/group-display.vue'
-import GroupForm from './backend/group-form.vue'
-import GroupMenu from './backend/group-menu'
+
+import HomeApp from './home/home-app'
+import ClassBookApp from './classbook/classbook-app'
 
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
             el: '#levumi',
             data: data,
             components: {
-                GroupDisplay, GroupForm, GroupMenu
+                ClassBookApp,
+                HomeApp
             }
         });
     }
