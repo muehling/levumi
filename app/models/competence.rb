@@ -1,7 +1,6 @@
-class Student < ApplicationRecord
-  belongs_to :group
-
-  validates_presence_of :name
+class Competence < ApplicationRecord
+  has_many :tests
+  belongs_to :area
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})

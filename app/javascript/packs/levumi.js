@@ -15,8 +15,8 @@ Vue.use(BootstrapVue);
 
 document.addEventListener('DOMContentLoaded', () => {
     const element = document.getElementById('levumi');
-    const data = JSON.parse(element.getAttribute('data'));
     if (element != null) {
+        const data = JSON.parse(element.getAttribute('data'));
         const backend = new Vue({
             el: '#levumi',
             data: data,

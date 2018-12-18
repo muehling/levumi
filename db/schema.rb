@@ -10,11 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_17_202205) do
+ActiveRecord::Schema.define(version: 2018_12_18_121757) do
+
+  create_table "areas", force: :cascade do |t|
+    t.string "name"
+    t.string "color"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "assessments", force: :cascade do |t|
     t.integer "group_id"
     t.integer "test_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "competences", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.integer "area_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -37,6 +52,7 @@ ActiveRecord::Schema.define(version: 2018_12_17_202205) do
 
   create_table "tests", force: :cascade do |t|
     t.string "name"
+    t.integer "competence_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

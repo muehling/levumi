@@ -6,7 +6,6 @@
                 <b-col md="12">
                     <b-nav pills fill class="mt-3">
                         <b-nav-item v-for="(group, index) in groups"
-                                    v-if="group.archive == false"
                                     :key="group.id"
                                     :active="selected_group == index"
                                     @click="selected_group = index"
@@ -20,10 +19,12 @@
             <b-row>
                 <b-col md="12">
                     <b-nav pills fill class="mt-5">
-                        <b-nav-item v-for="test in tests"
-                                    :key="test.id"
+                        <b-nav-item v-for="(area, index) in areas"
+                                    :key="area.id"
+                                    :active="selected_area == index"
+                                    @click="selected_area = index"
                         >
-                            {{ test.name }}
+                            {{ area.name }}
                         </b-nav-item>
                     </b-nav>
                 </b-col>
@@ -41,8 +42,9 @@
         data: function () {
             return {
                 groups: this.$root.groups,
-                tests: this.$root.tests,
-                selected_group: 0
+                areas: this.$root.areas,
+                selected_group: 0,
+                selected_area: 0
             }
         },
         name: "home-app"

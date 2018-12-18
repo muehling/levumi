@@ -1,8 +1,9 @@
 <%
   data = {
       groups: @groups,
-      tests: @tests,
-      assessments: @assessments
+      areas: Area.all,
+      assessments: @assessments,
+      competences: Competence.all
   }
 
   #Temporäer Hack
