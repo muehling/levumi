@@ -1,9 +1,7 @@
 <%
   data = {
       groups: @groups,
-      areas: Area.all,
-      assessments: @assessments,
-      competences: Competence.all
+      group_info: @groups.each.map{|g| g.get_home_info}
   }
 
   #Temporäer Hack

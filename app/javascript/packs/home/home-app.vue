@@ -1,50 +1,47 @@
 <template>
     <b-container fluid>
         <div v-cloak>
-
             <b-row>
-                <b-col md="12">
-                    <b-nav pills fill class="mt-3">
-                        <b-nav-item v-for="(group, index) in groups"
+                <b-col md="12" class="mt-3">
+                    <b-tabs pills>
+
+                        <div slot="empty">
+                            <div class="text-center text-muted">
+                                Keine aktuellen Klassen vorhanden.
+                            </div>
+                        </div>
+
+                        <!-- Oberste Ebene - aktuelle Klassen -->
+                        <b-tab v-for="(group, index) in groups"
                                     :key="group.id"
-                                    :active="selected_group == index"
-                                    @click="selected_group = index"
+                                    :title="group.label"
                         >
-                            {{ group.label }}
-                        </b-nav-item>
-                    </b-nav>
+
+                            <!-- Zweite Ebene - Lernbereiche -->
+                            <group-view
+                                    :group="group"
+                                    :group_info="group_info[index]"
+                            >
+                            </group-view>
+
+                        </b-tab>
+
+                    </b-tabs>
                 </b-col>
             </b-row>
-
-            <b-row>
-                <b-col md="12">
-                    <b-nav pills fill class="mt-5">
-                        <b-nav-item v-for="(area, index) in areas"
-                                    :key="area.id"
-                                    :active="selected_area == index"
-                                    @click="selected_area = index"
-                        >
-                            {{ area.name }}
-                        </b-nav-item>
-                    </b-nav>
-                </b-col>
-            </b-row>
-
-            <b-row class="justify-content-md-center">Klasseninfo</b-row>
-
         </div>
 
     </b-container>
 </template>
 
 <script>
+    import GroupView from "./group-view";
     export default {
+        components: {GroupView},
         data: function () {
             return {
                 groups: this.$root.groups,
-                areas: this.$root.areas,
-                selected_group: 0,
-                selected_area: 0
+                group_info: this.$root.group_info
             }
         },
         name: "home-app"

@@ -23,13 +23,14 @@
         <b-tabs pills>
 
           <% Area.all.each do |a| %>
+            <!-- Oberste Ebene Lernbereiche -->
             <b-tab>
+
               <template slot="title">
                 <%= a.name %>
               </template>
 
               <b-card no-body class="mt-3">
-
                 <b-tabs pills card>
 
                   <!-- Hinweistext falls keine Tests vorhanden -->
@@ -40,14 +41,17 @@
                   </div>
 
                   <% a.competences.each do |c| %>
+                    <!-- Zweite Ebene Kompetenzen -->
                     <b-tab>
+
                       <template slot="title">
                         <%= c.name %>
                       </template>
+
                       <%= c.description%>
 
-                      <b-card no-body class="mt-3">
-                        <b-tabs pills card vertical>
+                      <div class="mt-3">
+                        <b-tabs pills>
 
                           <!-- Hinweistext falls keine Tests vorhanden -->
                           <div slot="empty">
@@ -56,22 +60,51 @@
                             </div>
                           </div>
 
-                          <% c.tests.each do |t| %>
+                          <% c.tests.all.pluck(:name).uniq.each do |n| %>
+                            <!-- Dritte Ebene Tests -->
                             <b-tab>
+
                               <template slot="title">
-                                <%= t.name %>
+                                <%= n %>
                               </template>
-                              ...
+
+                              <b-card no-body class="mt-3">
+                                <b-tabs pills card vertical>
+
+                                  <% c.tests.where(name: n).each do |t| %>
+                                    <!-- Vierte Ebene Niveaustufen -->
+                                    <b-tab>
+
+                                      <template slot="title">
+                                        <%= t.level %>
+                                      </template>
+
+                                      <!-- Edit-Button anzeigen, falls Nutzer Berechtigung hat -->
+                                      <% if @user.has_capability?("test") %>
+                                        <a class="btn float-right"><i class="fas fa-edit"></i> Test bearbeiten</a>
+                                      <% end %>
+
+                                      <!-- Testinfo rendern -->
+                                      <%= render t %>
+
+                                    </b-tab>
+                                  <% end %>
+
+                                </b-tabs>
+                              </b-card>
+
                             </b-tab>
                           <% end %>
 
                         </b-tabs>
-                      </b-card>
+                      </div>
 
                     </b-tab>
                   <% end %>
+
                 </b-tabs>
               </b-card>
+
             </b-tab>
           <% end %>
 
