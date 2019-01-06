@@ -1,0 +1,347 @@
+<% test = Test.find(key)%>
+<% if online %>
+  <div class="dropdown text-right" id="p<%=key%>">
+    <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenuPrint" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+      <span class="glyphicon glyphicon-print" style="color:#337AB7"></span>
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuPrint">
+      <!-- Imitate a link-->
+      <li onclick="generatePDF(true, <%=key%>)"  style="padding: 3px 20px">Alles</li>
+      <li onclick="generatePDF(false, <%=key%>)" style="padding: 3px 20px">Nur Graph</li>
+    </ul>
+  </div>
+<% end %>
+
+<!-- Imitate a link-->
+<style>
+  li:hover{
+    background-color: #f5f5f5;
+    cursor: pointer;
+  }
+</style>
+
+<div id="chart<%=key%>"  >
+</div>
+
+
+
+
+<script type="text/javascript" charset="utf-8">
+    //Create a graph (svg-object)
+    var chart<%=key%> = c3.generate({
+        oninit: function() {
+            this.svg.attr('id', 'svgFor<%=key%>')
+        },
+        bindto: '#chart<%=key%>',
+        data: {
+            x: 'x',
+            columns: [
+                ['x',
+                    <% results.each do |r| %>
+                    '<%= r.measurement.date.to_date %>',
+                    <% end %>
+                ],
+                ['student',
+                    <% max = 0 %>
+                    <% results.each do |r| %>
+                    <%if !r.measurement.max.nil? && r.measurement.max > max %>
+                    <% max = r.measurement.max %>
+                    <% end %>
+                    <% unless r.nil? %>
+                    <%= r.score.nil? ? "null" : r.score %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n75',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.max.nil? ? "null" : r.measurement.third_quart %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n25',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.min.nil? ? "null" : r.measurement.first_quart %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ],
+                ['n50',
+                    <% results.each do |r| %>
+                    <% unless r.nil? %>
+                    <%= r.measurement.average.nil? ? "null" : r.measurement.median %>
+                    <% else %>
+                    null
+                    <% end %>,
+                    <% end %>
+                ]
+            ],
+            names: {
+                student: studentsCrypt['<%=@group.id%>']['<%=@student.id%>'],
+                n75: '75% Niveau der Klasse',
+                n25: '25% Niveau der Klasse',
+                n50: '50% Niveau der Klasse'
+            },
+        },
+        color: {
+            pattern: ['#46B8DA', '#5CB85C', '#D9534F', '#F0AD4E']
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    fit: true,
+                    format: "%e %b %y"
+                },
+                label: {
+                    text: 'Testzeitpunkte',
+                    position: 'outer-left'
+                }
+            },
+            y: {
+                label: {
+                    text: 'Anzahl richtiger Items',
+                    position: 'outer-middle'
+                },
+                min: 0,
+                max: <%= max.nonzero? || 1 %>,
+                tick: {
+                    format: function(x) { return x % 1 === 0 ? x : ''; }
+                },
+                padding: {top: 0, bottom: 20}
+            }
+        },
+        line: {
+            connectNull: true
+        },
+        legend: {
+            hide: false
+        }
+    });
+</script>
+<% unless without_table %>
+  <div>
+    <p>
+      <b>Höchste Lösungswahrscheinlichkeit (viertes Quartil):</b>
+      <% if results.size < 3 %>
+        -
+      <% else %>
+        <% first = true %>
+        <% test.items.each do |i| %>
+          <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] > items["4th"] %>
+            <% unless first %>
+              <%= ", " %>
+            <% end %>
+            <% first = false %>
+            <%= i.shorthand %>
+          <% end %>
+        <% end %>
+        <% if first %> - <% end %>
+      <% end %>
+    </p>
+    <p>
+      <b>Geringste Lösungswahrscheinlichkeit (erstes Quartil):</b>
+      <% if results.size < 3 %>
+        -
+      <% else %>
+        <% first = true %>
+        <% test.items.each do |i| %>
+          <% if items["data"].has_key?(i.id.to_s) && items["data"][i.id.to_s]["prob"] < items["1st"] %>
+            <% unless first %>
+              <%= ", " %>
+            <% end %>
+            <% first = false %>
+            <%= i.shorthand %>
+          <% end %>
+        <% end %>
+        <% if first %> - <% end %>
+      <% end %>
+    </p>
+    <table class="table table-striped" id="table<%=key%>">
+      <thead>
+      <tr>
+        <th rowspan="2">
+          Zeitpunkt
+        </th>
+        <th rowspan="2">
+          Dimension
+        </th>
+        <th rowspan="2">
+          Richtig gelöste Items
+        </th>
+        <th rowspan="2">
+          Falsch gelöste Items
+        </th>
+        <th colspan="2">
+          Anzahl richtig gelöster Items
+        </th>
+        <th colspan="2">
+          Anzahl falsch gelöster Items
+        </th>
+        <th rowspan="2">
+          Lösungswahrscheinlichkeit in %
+        </th>
+      </tr>
+      <tr>
+        <th>Pro Dimension</th>
+        <th>Pro Messzeitpunkt</th>
+        <th>Pro Dimension</th>
+        <th>Pro Messzeitpunkt</th>
+      </tr>
+      </thead>
+      <tbody>
+      <% results.sort_by {|x| x.measurement.date}.each do |r| %>
+        <% dims = ['Komplexe Satzstrukturen', 'Inferenzen (Schlussfolgerungen)', 'Kohärenz (Zusammenhänge)'] %>
+        <% difficulties = [1,2,3] %>
+        <% unless r.score.nil? %>
+          <% difficulties.each do |diff| %>
+            <tr>
+              <% if diff == 1 %>
+                <td rowspan="3">
+                  <%= r.measurement.date.to_date.strftime("%d.%m.%Y")%>
+                </td>
+              <% end %>
+              <td>
+                <%= dims[diff-1] %>
+              </td>
+              <% count_c = count_f = 0 %>
+              <td>
+                <%temp=""%>
+                <%count =0 %>
+                <% r.items.each_with_index do |item, i| %>
+                  <% if Item.find(r.items[i]).difficulty == diff %>
+                    <%if r.items[i+1].nil?||count==r.count_1-1%>
+                      <% if r.responses[i] ==  1 %>
+                        <%count =count+1 %>
+                        <%temp = temp + Item.find(r.items[i]).shorthand%>
+                        <% count_c += 1 %>
+                      <%end%>
+                    <%else%>
+                      <% if r.responses[i] ==  1 %>
+                        <%temp = temp + Item.find(r.items[i]).shorthand + ", "%>
+                        <% count_c += 1 %>
+                      <%end%>
+                    <% end %>
+                  <% end %>
+                <% end %>
+                <%=temp%>
+              </td>
+              <td>
+                <%temp=""%>
+                <%count =0 %>
+                <% r.items.each_with_index do |item, i| %>
+                  <% if Item.find(r.items[i]).difficulty == diff %>
+                    <%if r.items[i+1].nil?||count==r.count_0-1%>
+                      <% if r.responses[i] ==  0 %>
+                        <%count =count+1 %>
+                        <%temp = temp + Item.find(r.items[i]).shorthand%>
+                        <% count_f += 1 %>
+                      <%end%>
+                    <%else%>
+                      <% if r.responses[i] ==  0 %>
+                        <%temp = temp + Item.find(r.items[i]).shorthand + ", "%>
+                        <% count_f += 1 %>
+                      <%end%>
+                    <% end %>
+                  <% end %>
+                <% end %>
+                <%=temp%>
+              </td>
+              <td>
+                <%= count_c %>
+              </td>
+              <% if diff == 1  %>
+                <td rowspan="3"> <%= r.count_1 %></td>
+              <% end %>
+              <td>
+                <%= count_f %>
+              </td>
+              <% if diff == 1  %>
+                <td rowspan="3"> <%= r.count_0 %></td>
+                <td rowspan="3"> <%= (r.total * 100).round(1)%> </td>
+              <% end %>
+              <% if diff == 1  %>
+              <% end %>
+            </tr>
+          <% end %>
+        <% end %>
+      <% end %>
+      </tbody>
+    </table>
+  </div>
+<%end%>
+<script>
+    //generate pdf
+    function generatePDF(withTable, key) {
+        d3.selectAll("path").attr("fill", "none");
+        d3.selectAll(".tick line, path.domain").attr("stroke", "black");
+        d3.selectAll(".c3-line-student").attr("stroke-width", "3px");
+        d3.selectAll(".c3-line-n25").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n50").attr("stroke-dasharray", "10,10");
+        d3.selectAll(".c3-line-n75").attr("stroke-dasharray", "10,10");
+        //Convert SVG to PNG
+        canvas = document.getElementById("drawingArea");
+        //Hier kann man versuchen das Bild noch etwas "klarer" zu machen
+        //temporary resize of svg, otherwise canvas and png is as big as svg
+        eval("chart"+key).resize({width:700, height:300});
+        canvg(canvas, $('#svgFor' + key)[0].outerHTML.trim());
+        eval("chart"+key).resize({height:320});
+        eval("chart"+key).resize();
+        var data = canvas.toDataURL("image/png");
+        //build pdf-content
+        var docDefinition = {
+            pageSize: 'A4',
+            content: [
+                {
+                    columns:[
+                        {
+                            width:'auto',
+                            stack:[
+                                {image: levumiPic,
+                                    width: 40
+                                }
+                            ]
+                        },
+                        {text:
+                                'Levumi Schüleransicht '+studentsCrypt['<%=@group.id%>'][<%=@student.id%>],
+                            fontSize: 15,
+                            margin: [0, 10, 0, 0]
+                        }
+                    ]
+                },
+                {text:
+                        '<%=test.name%> - <%=test.level%>',
+                    style: 'subheader'
+                },
+                {image: data,
+                    width: 480,
+                    height: 250,
+                    margin: [0,15,0,0]
+                }],
+            styles: {
+                subheader: {
+                    fontSize: 13,
+                    margin: [50, 0, 5, 5]
+                }
+            }
+        };
+        if(withTable){
+            generateTable(docDefinition, key, false);
+        }
+        //open PDF in new window
+        //Alternativen:
+        //print the PDF
+        //  pdfMake.createPdf(docDefinition).print();
+        //open PDF in viewer
+        //pdfMake.createPdf(docDefinition).open();
+        // download the PDF
+        pdfMake.createPdf(docDefinition).download('Schüleransicht von '+studentsCrypt['<%=@group.id%>'][<%=@student.id%>]+' - <%=test.name%>.pdf');
+    }
+</script>
