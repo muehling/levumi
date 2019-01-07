@@ -321,7 +321,6 @@ categories_n4 = %W{
 	1
 }
 
-=begin
 t = TestSEL.create(name: "Sinnentnehmendes Lesen",  info: "Sinnentnehmendes Lesen N4", shorthand: "SEL4",len: 63, time: 300, subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "N4")
 
 i = t.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview: "items/studentbased/sinnentnehmender_lesetest/1hallo")
@@ -337,9 +336,6 @@ end
 it = t.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"items/studentbased/sinnentnehmender_lesetest/3ende")
 it.save
 t.save
-=end
-
-
 
 
 # Für die feste Reihenfolge
@@ -690,8 +686,6 @@ categories_n2 = %w{
 }
 
 
-
-=begin
 tN2 = TestSEL.create(name: "Sinnentnehmendes Lesen", len: 68, info: "Sinnentnehmendes Lesen N2", shorthand: "SEL2",
 										 subject: "Deutsch", construct: "Sinnentnehmendes Lesen", student_access:true, archive: false, level: "N2", time: 300)
 i = tN2.items.build(itemtext: "Hallo", difficulty: 0, itemtype:-1, itemview: "items/studentbased/sinnentnehmender_lesetest/1hallo")
@@ -706,7 +700,6 @@ end
 it = tN2.items.build(itemtext: "Ende", difficulty: 1, itemtype:1, itemview:"items/studentbased/sinnentnehmender_lesetest/3ende")
 it.save
 tN2.save
-=end
 
 # Neuer Teil von Ibrahim
 
