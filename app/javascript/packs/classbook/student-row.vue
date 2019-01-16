@@ -24,7 +24,7 @@
             <div v-else-if="editMode">
                 <a class="btn btn-success"
                    :href="'/groups/' + group + '/students' + (empty ? '' : '/' + student.id)"
-                   :data-method="empty? 'post' : 'put'"
+                   :data-method="empty ? 'post' : 'put'"
                    data-remote="true"
                    :data-params="collectData()"
                    v-on:ajax:success="update"

@@ -60,18 +60,20 @@
                             </div>
                           </div>
 
-                          <% c.tests.all.pluck(:name).uniq.each do |n| %>
+                          <% c.test_families.each do |f| %>
                             <!-- Dritte Ebene Tests -->
                             <b-tab>
 
                               <template slot="title">
-                                <%= n %>
+                                <%= f.name %>
                               </template>
+
+                              <%= f.description%>
 
                               <b-card no-body class="mt-3">
                                 <b-tabs pills card vertical>
 
-                                  <% c.tests.where(name: n).each do |t| %>
+                                  <% f.tests.each do |t| %>
                                     <!-- Vierte Ebene Niveaustufen -->
                                     <b-tab>
 

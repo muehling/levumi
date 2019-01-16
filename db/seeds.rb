@@ -46,7 +46,7 @@ if Rails.env.development?
   ]
 
   areas = [
-      {name: "Lesen/Schreiben", color: "red"},
+      {name: "Deutsch", color: "red"},
       {name: "Mathematik", color: "blue"},
       {name: "Verhalten", color: "black"}
   ]
@@ -59,31 +59,41 @@ if Rails.env.development?
       [
           {name: "Zahlenstrahl", description: "Tests zur Arbeit mit dem Zahlenstrahl"}
       ],
-      [
+      []
+  ]
 
+  families = [
+      [
+          [
+              {name: "Test 1", description: "Silbenlesen"},
+              {name: "Test 2", description: "Wortlesen"}
+          ],
+          []
+      ],
+      [
+          []
+      ],
+      [
+           []
       ]
   ]
 
   tests = [
       [
           [
-              {name: "Test 1", level: "Level 1"},
-              {name: "Test 1", level: "Level 2"},
-              {name: "Test 1", level: "Level 3"},
-              {name: "Test 2", level: "Level 1"}
-          ],
-          [
-
+             [
+                 {level: "Level 1"},
+                 {level: "Level 2"}
+             ],
+             [
+                 {level: "Niveaustufe 1"}
+             ]
           ]
       ],
       [
-          [
-
-          ]
+          []
       ],
-      [
-
-      ]
+      []
   ]
 
   users.each_with_index do |u, i|
@@ -102,10 +112,16 @@ if Rails.env.development?
     area = Area.create(a)
     competences[i].each_with_index do |c, j|
       competence = area.competences.create(c)
-      tests[i][j].each do |t|
-        test = competence.tests.create(t)
-        test.assessments.create(group: Group.find(1))
-        test.save
+      families[i][j].each_with_index do |f, k|
+        family = competence.test_families.create(f)
+        tests[i][j][k].each_with_index do |t, l|
+          test = family.tests.create(t)
+          if l == 0
+            test.assessments.create(group: Group.find(1))
+          end
+          test.save
+        end
+        family.save
       end
       competence.save
     end

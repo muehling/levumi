@@ -2,7 +2,7 @@
 
     <div>
         <div v-if="index > 0">
-            <b-btn v-b-toggle="'collapse_' + group.id" class="btn"><i class="fas fa-edit"></i> Klasse bearbeiten</b-btn>
+            <b-btn v-b-toggle="'collapse_' + group.id" class="btn"><i class="fas fa-edit"></i>Klasse umbenennen</b-btn>
 
             <a class="btn"
                :href="'/groups/' + group.id"
@@ -16,7 +16,7 @@
         </div>
 
         <b-collapse :id="'collapse_' + group.id" class="mt-2" :visible="index == 0">
-            <b-card>
+
 
                 <b-form inline
                         :action="index == 0 ? '/groups' : '/groups/' + group.id"
@@ -57,7 +57,7 @@
                     </b-button>
                 </b-form>
 
-            </b-card>
+
         </b-collapse>
     </div>
 

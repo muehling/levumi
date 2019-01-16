@@ -5,12 +5,16 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <!-- Bootstrap eininden für Teile außerhalb von Vue - Besser mit Yarn? -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
 
     <%= javascript_pack_tag 'levumi' %>
     <%= stylesheet_pack_tag "levumi" %>
 
-    <!-- Spinner für Vuw.js - evtl. besser woanders? -->
+    <!-- Spinner für Vue.js - evtl. besser woanders? -->
     <style>
       .spinner {
         margin: 100px auto 0;
@@ -83,10 +87,10 @@
           <%= link_to "Testinfos", tests_path, class: "nav-link", id: 'navbarTests'%>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown1" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Hilfe
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown1">
+          <div class="dropdown-menu" aria-labelledby="navbarHelp">
             <a class="dropdown-item" href="#">Handbuch</a>
             <a class="dropdown-item" href="#">Videos</a>
             <a class="dropdown-item" href="#">Blog</a>

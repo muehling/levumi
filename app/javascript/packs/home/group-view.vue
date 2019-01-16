@@ -3,13 +3,13 @@
 
         <template slot="header">
 
-            <b-nav pills>
+            <b-nav pills>    <!-- Übersicht über Lernbereiche -->
 
                 <b-nav-item v-for="area in group_info.areas"
                             v-if="area.used"
                             :key="area.info.id"
                             :active="area.info.id == area_selected"
-                            @click="area_selected = area.info.id"
+                            @click="area_selected = area.info.id; competence_selected = -1; family_selected = -1; test_selected = -1"
                 >
                     {{area.info.name}}
                 </b-nav-item>
@@ -18,14 +18,13 @@
                         v-if="areasLeft()"
                         text="<em>Neuer Lernbereich</em>"
                         right
-                        @click="area_selected = -1"
                 >
 
                     <b-dropdown-item
                             v-for="area in group_info.areas"
                             v-if="!area.used"
                             :key="area.info.id"
-                            @click="area.used = true"
+                            @click="area.used = true; area_selected = area.info.id; competence_selected = -1; family_selected = -1; test_selected = -1"
                     >
                         {{area.info.name}}
                     </b-dropdown-item>
@@ -34,24 +33,108 @@
 
             </b-nav>
 
+            <b-nav pills class="mt-1">  <!-- Übersicht über Kompetenzen -->
+
+                <b-nav-item v-for="competence in group_info.competences"
+                            :key="competence.info.id"
+                            :active="competence.info.id == competence_selected"
+                            v-if="competence.used && competence.info.area_id == area_selected"
+                            @click="competence_selected = competence.info.id; family_selected = -1; test_selected = -1"
+                >
+                    {{competence.info.name}}
+                </b-nav-item>
+
+                <b-nav-item-dropdown
+                        v-if="competencesLeft(area_selected)"
+                        text="<em>Neuer Kompetenzbereich</em>"
+                        right
+                >
+                    <b-dropdown-item
+                            v-for="competence in group_info.competences"
+                            :key="competence.info.id"
+                            v-if="!competence.used && competence.info.area_id == area_selected"
+                            @click="competence.used = true; competence_selected = competence.info.id; family_selected = -1; test_selected = -1"
+                    >
+                        {{competence.info.name}}
+                    </b-dropdown-item>
+
+                </b-nav-item-dropdown>
+
+            </b-nav>
+
+            <b-nav pills class="mt-1"> <!-- Übersicht über Testfamilien -->
+
+                <b-nav-item v-for="family in group_info.families"
+                            :key="family.info.id"
+                            :active="family.info.id == family_selected"
+                            v-if="family.used && family.info.competence_id == competence_selected"
+                            @click="family_selected = family.info.id; test_selected = -1"
+                >
+                    {{family.info.name}}
+                </b-nav-item>
+
+                <b-nav-item-dropdown
+                        v-if="familiesLeft(competence_selected)"
+                        text="<em>Neuen Test verwenden</em>"
+                        right
+                >
+                    <b-dropdown-item
+                            v-for="family in group_info.families"
+                            :key="family.info.id"
+                            v-if="!family.used && family.info.competence_id == competence_selected"
+                            @click="family.used = true; family_selected = family.info.id; test_selected = -1"
+                    >
+                        {{family.info.name}}
+                    </b-dropdown-item>
+
+                </b-nav-item-dropdown>
+
+            </b-nav>
+
+            <b-nav pills class="mt-1"> <!-- Übersicht über Niveaustufen -->
+
+                <b-nav-item v-for="test in group_info.tests"
+                            :key="test.info.id"
+                            :active="test.info.id == test_selected"
+                            v-if="test.used && test.info.test_family_id == family_selected"
+                            @click="loadAssessment(test.info.id)"
+                >
+                    {{test.info.level}}
+                </b-nav-item>
+
+                <b-nav-item-dropdown
+                        v-if="testsLeft(family_selected)"
+                        text="<em>Neue Niveaustufe verwenden</em>"
+                        right
+                >
+                    <b-dropdown-item
+                            v-for="test in group_info.tests"
+                            :key="test.info.id"
+                            v-if="!test.used && test.info.test_family_id == family_selected"
+                            @click="createAssessment(test)"
+                    >
+                        {{test.info.level}}
+                    </b-dropdown-item>
+
+                </b-nav-item-dropdown>
+
+            </b-nav>
+
         </template>
 
-        <b-nav pills>
+        <div id="spinner" style="display: none">
+            <b-row>
+                <div class="spinner">
+                    <div class="bounce1"></div>
+                    <div class="bounce2"></div>
+                    <div class="bounce3"></div>
+                </div>
+            </b-row>
+        </div>
 
-            <b-nav-item v-for="test in group_info.tests"
-                        :key="test.info.id"
-                        v-if="test.used && test.info.area_id == area_selected"
-            >
-                {{test.info.name}} - {{test.info.level}}
-            </b-nav-item>
+        <div id="main" style="display: none">
+        </div>
 
-            <b-nav-item  v-if="testsLeft(area_selected)">
-                <em>Neuen Test verwenden</em>
-            </b-nav-item>
-
-        </b-nav>
-
-        Assessment Info
     </b-card>
 
 </template>
@@ -65,7 +148,9 @@
         data: function () {
             return {
                 area_selected: 0,
-                assessments: [{id: 1, test: 'Test 1', area: 1}, {id: 2, test: 'Test 2', area: 1}, {id:3, test: 'Test 3', area: 2}] //Dummy Data
+                competence_selected: 0,
+                family_selected: 0,
+                test_selected: 0
             }
         },
         methods: {
@@ -75,13 +160,66 @@
                         return true;
                 return false;
             },
-            testsLeft(area) {
-                for (let i = 0; i < this.group_info.tests.length; ++i)
-                    if (!this.group_info.tests[i].used && this.group_info.tests[i].info.area_id == area)
+            competencesLeft(area) {
+                for (let i = 0; i < this.group_info.competences.length; ++i)
+                    if (!this.group_info.competences[i].used && this.group_info.competences[i].info.area_id == area)
                         return true;
                 return false;
+            },
+            familiesLeft(competence) {
+                for (let i = 0; i < this.group_info.families.length; ++i)
+                    if (!this.group_info.families[i].used && this.group_info.families[i].info.competence_id == competence)
+                        return true;
+                return false;
+            },
+            testsLeft(family) {
+                for (let i = 0; i < this.group_info.tests.length; ++i)
+                    if (!this.group_info.tests[i].used && this.group_info.tests[i].info.test_family_id == family)
+                        return true;
+                return false;
+            },
+            loadAssessment(test) {
+                this.test_selected = test;
+                $('#main').hide();
+                $('#spinner').show();
+                fetch("/groups/" + this.group.id + "/assessments/" + this.test_selected, {
+                    headers: {
+                        'Accept': 'text/javascript',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: "include"
+                })
+                    .then(function(response) {
+                        return response.text().then(function(text) {
+                            $('#main').html(text);
+                            $('#spinner').hide();
+                            $('#main').show();
+                        });
+                    });
+            },
+            createAssessment(test) {
+                test.used = true;
+                fetch("/groups/" + this.group.id + "/assessments/", {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: "include",
+                    body: "test_id=" + test.info.id
+                })
+                    .then(this.loadAssessment(test.info.id));
             }
         },
         name: "group-view"
     }
 </script>
+
+<style>
+    .nav>li>a {
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+</style>
