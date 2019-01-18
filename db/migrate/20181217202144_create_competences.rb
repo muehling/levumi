@@ -3,7 +3,7 @@ class CreateCompetences < ActiveRecord::Migration[5.2]
     create_table :competences do |t|
       t.string :name
       t.string :description
-      t.integer :area_id
+      t.belongs_to :area, index: true, foreign_key: true
 
       t.timestamps
     end

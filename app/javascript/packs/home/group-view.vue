@@ -9,7 +9,7 @@
                             v-if="area.used"
                             :key="area.info.id"
                             :active="area.info.id == area_selected"
-                            @click="area_selected = area.info.id; competence_selected = -1; family_selected = -1; test_selected = -1"
+                            @click="select_area(area.info.id)"
                 >
                     {{area.info.name}}
                 </b-nav-item>
@@ -24,7 +24,7 @@
                             v-for="area in group_info.areas"
                             v-if="!area.used"
                             :key="area.info.id"
-                            @click="area.used = true; area_selected = area.info.id; competence_selected = -1; family_selected = -1; test_selected = -1"
+                            @click="area.used = true; select_area(area.info.id)"
                     >
                         {{area.info.name}}
                     </b-dropdown-item>
@@ -39,7 +39,7 @@
                             :key="competence.info.id"
                             :active="competence.info.id == competence_selected"
                             v-if="competence.used && competence.info.area_id == area_selected"
-                            @click="competence_selected = competence.info.id; family_selected = -1; test_selected = -1"
+                            @click="select_competence(competence.info.id)"
                 >
                     {{competence.info.name}}
                 </b-nav-item>
@@ -53,7 +53,7 @@
                             v-for="competence in group_info.competences"
                             :key="competence.info.id"
                             v-if="!competence.used && competence.info.area_id == area_selected"
-                            @click="competence.used = true; competence_selected = competence.info.id; family_selected = -1; test_selected = -1"
+                            @click="competence.used = true; select_competence(competence.info.id)"
                     >
                         {{competence.info.name}}
                     </b-dropdown-item>
@@ -68,7 +68,7 @@
                             :key="family.info.id"
                             :active="family.info.id == family_selected"
                             v-if="family.used && family.info.competence_id == competence_selected"
-                            @click="family_selected = family.info.id; test_selected = -1"
+                            @click="select_family(family.info.id)"
                 >
                     {{family.info.name}}
                 </b-nav-item>
@@ -82,7 +82,7 @@
                             v-for="family in group_info.families"
                             :key="family.info.id"
                             v-if="!family.used && family.info.competence_id == competence_selected"
-                            @click="family.used = true; family_selected = family.info.id; test_selected = -1"
+                            @click="family.used = true; select_family(family.info.id)"
                     >
                         {{family.info.name}}
                     </b-dropdown-item>
@@ -111,7 +111,7 @@
                             v-for="test in group_info.tests"
                             :key="test.info.id"
                             v-if="!test.used && test.info.test_family_id == family_selected"
-                            @click="createAssessment(test)"
+                            @click="test.used = true; createAssessment(test)"
                     >
                         {{test.info.level}}
                     </b-dropdown-item>
@@ -122,7 +122,7 @@
 
         </template>
 
-        <div id="spinner" style="display: none">
+        <div v-if="updating">
             <b-row>
                 <div class="spinner">
                     <div class="bounce1"></div>
@@ -132,7 +132,7 @@
             </b-row>
         </div>
 
-        <div id="main" style="display: none">
+        <div :id="'main-' + group.id">
         </div>
 
     </b-card>
@@ -150,10 +150,29 @@
                 area_selected: 0,
                 competence_selected: 0,
                 family_selected: 0,
-                test_selected: 0
+                test_selected: 0,
+                updating: false
             }
         },
         methods: {
+            select_area(area) {
+                this.area_selected = area;
+                this.competence_selected = -1;
+                this.family_selected = -1;
+                this.test_selected = -1
+                $('#main-' + this.group_info.id).hide();
+            },
+            select_competence(competence) {
+                this.competence_selected = competence;
+                this.family_selected = -1;
+                this.test_selected = -1
+                $('#main-' + this.group_info.id).hide();
+            },
+            select_family(family) {
+                this.family_selected = family;
+                this.test_selected = -1
+                $('#main-' + this.group_info.id).hide();
+            },
             areasLeft() {
                 for (let i = 0; i < this.group_info.areas.length; ++i)
                     if (!this.group_info.areas[i].used)
@@ -180,8 +199,8 @@
             },
             loadAssessment(test) {
                 this.test_selected = test;
-                $('#main').hide();
-                $('#spinner').show();
+                this.updating = true;
+                $('main-' + this.group.id).hide();
                 fetch("/groups/" + this.group.id + "/assessments/" + this.test_selected, {
                     headers: {
                         'Accept': 'text/javascript',
@@ -190,16 +209,15 @@
                     },
                     credentials: "include"
                 })
-                    .then(function(response) {
-                        return response.text().then(function(text) {
-                            $('#main').html(text);
-                            $('#spinner').hide();
-                            $('#main').show();
+                    .then(response => {
+                        return response.text().then(text =>  {
+                            $('#main-' + this.group.id).html(text);
+                            this.updating = false;
+                            $('#main-' + this.group.id).show();
                         });
                     });
             },
             createAssessment(test) {
-                test.used = true;
                 fetch("/groups/" + this.group.id + "/assessments/", {
                     method: 'post',
                     headers: {

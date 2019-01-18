@@ -96,6 +96,28 @@ if Rails.env.development?
       []
   ]
 
+  assessments = [
+      {
+          group_id: 1,
+          test_id: 1
+      },
+      {
+          group_id: 1,
+          test_id: 2
+      },
+      {
+          group_id: 2,
+          test_id: 1
+      }
+  ]
+
+  results = [
+      [
+          {student_id: 1}, {student_id: 2}, {student_id: 3}
+      ],
+      [],
+      []
+  ]
   users.each_with_index do |u, i|
     user = User.create(u)
     groups[i].each_with_index do |g, j|
@@ -116,9 +138,6 @@ if Rails.env.development?
         family = competence.test_families.create(f)
         tests[i][j][k].each_with_index do |t, l|
           test = family.tests.create(t)
-          if l == 0
-            test.assessments.create(group: Group.find(1))
-          end
           test.save
         end
         family.save
@@ -126,6 +145,14 @@ if Rails.env.development?
       competence.save
     end
     area.save
+  end
+
+  assessments.each_with_index do |a, i|
+    a = Assessment.create(a)
+    results[i].each do |r|
+      a.results.create(r)
+    end
+    a.save
   end
 
 elsif Rails.env.production?
