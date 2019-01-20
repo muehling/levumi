@@ -2,21 +2,11 @@
   data = {
       groups: [Group.new] + @groups
   }
-
-  #Temporäer Hack
-  students = {}
-  @user.students.each do |s|
-    students[s.group_id] ||= []
-    students[s.group_id] += [s]
-  end
 %>
 
 <script>
   //Eintrag in der Navleiste markieren
   highlightNavItem("navbarKlassenbuch");
-
-  //Temporärer Hack!
-  sessionStorage['students'] = "<%= escape_javascript(raw students.to_json)%>";
 </script>
 
 <div id='levumi' data="<%= data.to_json%>">

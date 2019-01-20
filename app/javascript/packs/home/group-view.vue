@@ -132,7 +132,12 @@
             </b-row>
         </div>
 
-        <div :id="'main-' + group.id">
+        <div v-else-if="results">
+            <assessment-view
+                :group="group.id"
+                :results="results"
+            >
+            </assessment-view>
         </div>
 
     </b-card>
@@ -140,7 +145,10 @@
 </template>
 
 <script>
+    import AssessmentView from "./assessment-view"
     export default {
+        components: {AssessmentView},
+        comments: {AssessmentView},
         props: {
             group: Object,
             group_info: Object
@@ -151,7 +159,8 @@
                 competence_selected: 0,
                 family_selected: 0,
                 test_selected: 0,
-                updating: false
+                updating: false,
+                results: undefined
             }
         },
         methods: {
@@ -200,7 +209,6 @@
             loadAssessment(test) {
                 this.test_selected = test;
                 this.updating = true;
-                $('main-' + this.group.id).hide();
                 fetch("/groups/" + this.group.id + "/assessments/" + this.test_selected, {
                     headers: {
                         'Accept': 'text/javascript',
@@ -211,9 +219,8 @@
                 })
                     .then(response => {
                         return response.text().then(text =>  {
-                            $('#main-' + this.group.id).html(text);
+                            this.results = JSON.parse(text);
                             this.updating = false;
-                            $('#main-' + this.group.id).show();
                         });
                     });
             },

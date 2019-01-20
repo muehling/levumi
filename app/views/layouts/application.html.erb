@@ -14,7 +14,7 @@
     <%= javascript_pack_tag 'levumi' %>
     <%= stylesheet_pack_tag "levumi" %>
 
-    <!-- Spinner für Vue.js - evtl. besser woanders? -->
+    <!-- Spinner - evtl. besser woanders? -->
     <style>
       .spinner {
         margin: 100px auto 0;
@@ -59,6 +59,30 @@
       }
       [v-cloak] {display: none}
     </style>
+
+    <script>
+
+        <%
+          #Schülernamen verfügbar machen
+          groups = {}
+          @user.students.each do |s|
+            groups[s.group_id] ||= []
+            groups[s.group_id] += [s]
+          end
+       %>
+      groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
+
+      function get_student(id) {
+          let keys = Object.keys(groups);
+          for (let i = 0; i < keys.length; ++i) {
+              for (let j = 0; j < groups[keys[i]].length; ++j)
+                  if (groups[keys[i]][j].id == id)
+                      return groups[keys[i]][j];
+          }
+          return null;
+      }
+      //Namen entschlüsseln...
+    </script>
 
   </head>
 

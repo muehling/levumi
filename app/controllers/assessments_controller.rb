@@ -6,6 +6,8 @@ class AssessmentsController < ApplicationController
   def show
     if @assessment.nil?
       head 404
+    else
+      render json: @assessment.get_grouped_results
     end
   end
 

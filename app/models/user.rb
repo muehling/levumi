@@ -19,4 +19,5 @@ class User < ApplicationRecord
   def is_regular_user?
     return capabilities.nil? || capabilities.blank?
   end
+
 end

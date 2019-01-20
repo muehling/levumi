@@ -46,7 +46,7 @@
         },
         data: function () {
             return {
-                students: JSON.parse(sessionStorage['students'])[this.group] || []
+                students: groups[this.group] || []
             }
         },
         methods: {
@@ -59,10 +59,8 @@
                 else //Delete
                     this.students.splice(val.index, 1);
 
-                //Globalen Session Store updaten
-                let temp = JSON.parse(sessionStorage['students']);
-                temp[this.group] = this.students;
-                sessionStorage['students'] = JSON.stringify(temp);
+                //Global updaten - vermutlich unnötig?
+                groups[this.group] = this.students;
             }
         },
         name: "student-list"
