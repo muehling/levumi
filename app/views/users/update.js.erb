@@ -1,0 +1,24 @@
+if (sessionStorage['new-login'] != sessionStorage['login']) {
+    //Multiupdate triggern...
+    $("#modal-body").html("<p align='center'>Verschlüsselung aktualisieren</p><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
+
+    students = []
+    Object.keys(groups).forEach(function(key, index) {
+        for (let i = 0; i < this[key].length; ++i)
+            students.push({id: this[key][i].id, name: encrypt(this[key][i].name)})
+    }, groups);
+
+    fetch("/students/", {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+        },
+        credentials: "include",
+        body: JSON.stringify(students)
+    })
+        .then(response => $('#modal').modal('hide'));
+}
+else
+    $('#modal').modal('hide');

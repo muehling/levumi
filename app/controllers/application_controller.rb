@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
     reset_session
     respond_to do |format|
       format.html {
+        @retry = false
         render file: 'layouts/landing', layout: false
       }
     end
@@ -15,8 +16,9 @@ class ApplicationController < ActionController::Base
     if !u.nil? && u.authenticate(params[:password])
       reset_session
       session[:user] = u.id
-      redirect_to users_path(u)
+      redirect_to '/start'
     else
+      @retry = true
       render file: 'layouts/landing', layout: false
     end
   end

@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   get '/start', to: 'users#show'
 
-  resource :users
+  resource :user
 
   resources :groups do
     resources :students

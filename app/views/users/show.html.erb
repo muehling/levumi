@@ -3,21 +3,11 @@
       groups: @groups,
       group_info: @groups.each.map{|g| g.get_home_info}
   }
-
-  #Temporäer Hack
-  students = {}
-  @user.students.each do |s|
-    students[s.group_id] ||= []
-    students[s.group_id] += [s]
-  end
 %>
 
 <script>
     //Eintrag in der Navleiste markieren
     highlightNavItem("navbarHome");
-
-    //Temporärer Hack!
-    sessionStorage['students'] = "<%= escape_javascript(raw students.to_json)%>";
 </script>
 
 <div id='levumi' data="<%= data.to_json%>">

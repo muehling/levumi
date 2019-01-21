@@ -2,7 +2,9 @@
     <b-card no-body>
         <b-tabs pills card vertical>
             <b-tab title="Neue Messung">
-                <b-button v-for="student in students">
+                <b-button v-for="student in students"
+                          :key="student.id"
+                >
                     {{student.name}}
                 </b-button>
             </b-tab>

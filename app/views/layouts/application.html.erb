@@ -65,6 +65,8 @@
 
     <script>
 
+      sessionStorage['login'] = "123" //Nur Dev!
+
         <%
           #Schülernamen verfügbar machen
           groups = {}
@@ -75,10 +77,10 @@
        %>
       groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
 
-      function decrypt(name, id, key) {
+      function decrypt(name, id) {
           let student = "";
           try{
-              student = sjcl.decrypt(key, name);
+              student = sjcl.decrypt(sessionStorage['login'], name);
           }
           catch(e){
               console.error(e.toString());
@@ -86,6 +88,10 @@
               student = "Kind" + id;
           }
           return student;
+      }
+
+      function encrypt(name) {
+          return sjcl.encrypt(sessionStorage['login'], name);
       }
 
       function get_student(id) {
@@ -102,7 +108,7 @@
 
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
-              this[key][i].name = decrypt(this[key][i].name, this[key][i].id, sessionStorage['login']);
+              this[key][i].name = decrypt(this[key][i].name, this[key][i].id);
           }, groups);
 
     </script>
@@ -112,7 +118,7 @@
   <body>
 
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#"><img src="favicon.ico" alt="Levumi" width="48" height="48"/>Levumi</a>
+    <a class="navbar-brand" href="#"><img src="/favicon.ico" alt="Levumi" width="48" height="48"/>Levumi</a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -144,11 +150,11 @@
           </div>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown2" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Profil
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
-            <a class="dropdown-item" href="#">Meine Daten</a>
+          <div class="dropdown-menu" aria-labelledby="navbarProfile">
+            <%= link_to "Meine Daten", edit_user_path(@user), class: "dropdown-item", id: 'navbarMyData', remote: true%>
             <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
           </div>
         </li>
@@ -169,6 +175,16 @@
   </script>
 
   <%= yield %>
+
+  <div  id="modal" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body" id="modal-body">
+
+        </div>
+      </div>
+    </div>
+  </div>
 
   </body>
 </html>

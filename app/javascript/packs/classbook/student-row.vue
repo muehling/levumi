@@ -22,15 +22,16 @@
                 <b-btn class="btn" @click="editMode = !editMode"><i class="fas fa-user-edit"></i></b-btn>
             </div>
             <div v-else-if="editMode">
-                <a class="btn btn-success"
+                <b-link class="btn btn-success"
                    :href="'/groups/' + group + '/students' + (empty ? '' : '/' + student.id)"
+                   :disabled="name.length == 0"
                    :data-method="empty ? 'post' : 'put'"
                    data-remote="true"
                    :data-params="collectData()"
                    v-on:ajax:success="update"
                 >
                     <i class="fas fa-check"></i> Speichern
-                </a>
+                </b-link>
 
                 <b-btn @click="editMode = !editMode"><i class="fas fa-times"></i> Abbrechen</b-btn>
 
@@ -68,7 +69,7 @@
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
                 //URL-encoding?
-               return "student[name]=" + sjcl.encrypt(sessionStorage['login'], this.name); //Namen vor dem Senden verschlüsseln
+               return "student[name]=" + encodeURIComponent(encrypt(this.name)); //Namen vor dem Senden verschlüsseln
             },
             update(event) {
                 this.$emit("update:students", {index: this.index, object: event.detail[0]})
