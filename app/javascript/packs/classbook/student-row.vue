@@ -68,7 +68,7 @@
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
                 //URL-encoding?
-               return "student[name]=" + this.name
+               return "student[name]=" + sjcl.encrypt(sessionStorage['login'], this.name); //Namen vor dem Senden verschlüsseln
             },
             update(event) {
                 this.$emit("update:students", {index: this.index, object: event.detail[0]})

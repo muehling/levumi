@@ -1,6 +1,7 @@
 class Test < ApplicationRecord
   has_many :assessments
   belongs_to :test_family
+  has_many :items
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})

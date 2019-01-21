@@ -14,6 +14,9 @@
     <%= javascript_pack_tag 'levumi' %>
     <%= stylesheet_pack_tag "levumi" %>
 
+    <!-- sonstige Libaries -->
+    <script src="/javascript/sjcl.js"></script>
+
     <!-- Spinner - evtl. besser woanders? -->
     <style>
       .spinner {
@@ -72,6 +75,19 @@
        %>
       groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
 
+      function decrypt(name, id, key) {
+          let student = "";
+          try{
+              student = sjcl.decrypt(key, name);
+          }
+          catch(e){
+              console.error(e.toString());
+              console.log("Entschlüsselung fehlgeschlagen");
+              student = "Kind" + id;
+          }
+          return student;
+      }
+
       function get_student(id) {
           let keys = Object.keys(groups);
           for (let i = 0; i < keys.length; ++i) {
@@ -81,7 +97,14 @@
           }
           return null;
       }
-      //Namen entschlüsseln...
+
+      //Namen der Schüler entschlüsseln, passiert bisher bei jedem Reload neu...
+
+      Object.keys(groups).forEach(function(key, index) {
+          for (let i = 0; i < this[key].length; ++i)
+              this[key][i].name = decrypt(this[key][i].name, this[key][i].id, sessionStorage['login']);
+          }, groups);
+
     </script>
 
   </head>
@@ -99,7 +122,7 @@
 
       <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
-          <%= link_to "Start", root_path, class: "nav-link", id: "navbarHome"%>
+          <%= link_to "Start", '/start', class: "nav-link", id: "navbarHome"%>
         </li>
         <li class="nav-item">
           <%= link_to "Klassenbuch", '/klassenbuch', class: "nav-link", id: 'navbarKlassenbuch'%>
@@ -126,7 +149,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown2">
             <a class="dropdown-item" href="#">Meine Daten</a>
-            <a class="dropdown-item" href="#">Ausloggen</a>
+            <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
           </div>
         </li>
       </ul>

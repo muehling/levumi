@@ -235,7 +235,7 @@
                     credentials: "include",
                     body: "test_id=" + test.info.id
                 })
-                    .then(this.loadAssessment(test.info.id));
+                    .then(response => this.loadAssessment(test.info.id));
             }
         },
         name: "group-view"

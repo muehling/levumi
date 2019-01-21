@@ -51,11 +51,13 @@
         },
         methods: {
             update(val) { //Student einfügen, updaten oder löschen und View aktualisieren
-
-                if (val.index == -1) //Create
-                    this.students.push(val.object);
-                else if (val.object != null) //Update
-                    this.$set(this.students, val.index, val.object);
+                if (val.object != null) {
+                    val.object.name = decrypt(val.object.name, val.object.id, sessionStorage['login']); //Namen für weitere Verwendung entschlüsseln
+                    if (val.index > -1) //Update
+                        this.$set(this.students, val.index, val.object);
+                    else //Create
+                        this.students.push(val.object);
+                }
                 else //Delete
                     this.students.splice(val.index, 1);
 

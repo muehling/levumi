@@ -20,27 +20,34 @@ if Rails.env.development?
   students = [
       [
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}, {name: "Student 4"}, {name: "Student 5"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}, {name: "Student 4"}, {name: "Student 5"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}, {name: "Student 4"}, {name: "Student 5"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}, {name: "Student 4"}, {name: "Student 5"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}, {name: "Student 4"}, {name: "Student 5"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
-              {name: "Adam"}, {name: "Eva"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ]
       ],
       [
           [
-              {name: "Student 1"}, {name: "Student 2"}, {name: "Student 3"}
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ]
       ]
   ]
@@ -113,7 +120,7 @@ if Rails.env.development?
 
   results = [
       [
-          {student_id: 1}, {student_id: 2}, {student_id: 3}
+          {student_id: 1}, {student_id: 2}, {student_id: 1}
       ],
       [],
       []

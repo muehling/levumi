@@ -1,12 +1,15 @@
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
-  root 'users#home'
+  root 'application#start'
+
+  post '/login', to: 'application#login'
+  post '/logout', to: 'application#logout'
 
   get '/klassenbuch', to: 'groups#index'
 
-  resource :users do
-    get 'home'
-  end
+  get '/start', to: 'users#show'
+
+  resource :users
 
   resources :groups do
     resources :students
