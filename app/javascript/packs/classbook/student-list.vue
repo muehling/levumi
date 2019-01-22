@@ -52,7 +52,7 @@
         methods: {
             update(val) { //Student einfügen, updaten oder löschen und View aktualisieren
                 if (val.object != null) {
-                    val.object.name = decrypt(val.object.name, val.object.id); //Namen für weitere Verwendung entschlüsseln
+                    val.object.name = decrypt(val.object.name, "Kind_" + val.object.id); //Namen für weitere Verwendung entschlüsseln
                     if (val.index > -1) //Update
                         this.$set(this.students, val.index, val.object);
                     else //Create

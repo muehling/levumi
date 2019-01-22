@@ -63,7 +63,7 @@
         },
         methods: {
             student_name(id) {
-                return get_student(id).name;
+                return get_student(this.group, id).name;
             },
             print_date(date) {
                 let d = new Date(date);

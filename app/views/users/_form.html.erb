@@ -1,11 +1,19 @@
-<%= form_for @user, remote: true, onsubmit: "sessionStorage['new-login'] = $('#password').val();" do |f| %>
+<%= form_for @user, remote: true, html: {onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| %>
   <div class="form-group">
-    <%= f.email_field :email, class: "form-control" %>
+    <label for="email">E-Mail Adresse</label>
+    <%= f.email_field :email, id: "email", class: "form-control" %>
+    <div class="invalid-feedback">
+      Darf nicht leer sein!
+    </div>
   </div>
   <div class="form-group">
+    <label for="password">Passwort</label>
     <%= f.password_field :password, id:"password", class: "form-control", placeholder: "Neues Passwort"%>
     <%= f.password_field :password_confirmation, class: "form-control", placeholder: "Passwort bestätigen"%>
+    <div class="invalid-feedback">
+      Passwörter stimmen nicht überein!
+    </div>
   </div>
   <%= f.submit 'Aktualisieren', class: "btn btn-outline-success"%>
-  <button class="btn btn-outline-danger" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
+  <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>

@@ -65,8 +65,6 @@
 
     <script>
 
-      sessionStorage['login'] = "123" //Nur Dev!
-
         <%
           #Schülernamen verfügbar machen
           groups = {}
@@ -75,32 +73,30 @@
             groups[s.group_id] += [s]
           end
        %>
+
       groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
 
-      function decrypt(name, id) {
-          let student = "";
+      function decrypt(text, alt) {
+          let res = "";
           try{
-              student = sjcl.decrypt(sessionStorage['login'], name);
+              res = sjcl.decrypt(sessionStorage['login'], text);
           }
           catch(e){
               console.error(e.toString());
               console.log("Entschlüsselung fehlgeschlagen");
-              student = "Kind" + id;
+              res = alt;
           }
-          return student;
+          return res;
       }
 
-      function encrypt(name) {
-          return sjcl.encrypt(sessionStorage['login'], name);
+      function encrypt(text) {
+          return sjcl.encrypt(sessionStorage['login'], text);
       }
 
-      function get_student(id) {
-          let keys = Object.keys(groups);
-          for (let i = 0; i < keys.length; ++i) {
-              for (let j = 0; j < groups[keys[i]].length; ++j)
-                  if (groups[keys[i]][j].id == id)
-                      return groups[keys[i]][j];
-          }
+      function get_student(group, id) {
+          for (let j = 0; j < groups[group].length; ++j)
+              if (groups[group][j].id == id)
+                  return groups[group][j];
           return null;
       }
 
@@ -108,7 +104,7 @@
 
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
-              this[key][i].name = decrypt(this[key][i].name, this[key][i].id);
+              this[key][i].name = decrypt(this[key][i].name, "Kind_" + this[key][i].id);
           }, groups);
 
     </script>

@@ -9,10 +9,15 @@ Rails.application.routes.draw do
 
   get '/start', to: 'users#show'
 
-  resource :user
+  resources :users
+
+  resources :students do
+    collection do
+      put '', to: 'students#mass_update'
+    end
+  end
 
   resources :groups do
-    resources :students
     resources :assessments
   end
 

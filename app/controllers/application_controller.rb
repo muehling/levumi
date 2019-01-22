@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :set_user, except: [:start, :login]
 
+  #GET '/'
   def start
     reset_session
     respond_to do |format|
@@ -11,6 +12,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  #POST '/login'
   def login
     u = User.find_by_email(params[:email])
     if !u.nil? && u.authenticate(params[:password])
@@ -23,6 +25,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  #POST '/logout'
   def logout
     session[:user] = nil
     redirect_to '/'

@@ -23,7 +23,7 @@
             </div>
             <div v-else-if="editMode">
                 <b-link class="btn btn-success"
-                   :href="'/groups/' + group + '/students' + (empty ? '' : '/' + student.id)"
+                   :href="'/students' + (empty ? '' : '/' + student.id)"
                    :disabled="name.length == 0"
                    :data-method="empty ? 'post' : 'put'"
                    data-remote="true"
@@ -37,7 +37,7 @@
 
                 <a v-if="!empty"
                    class="btn btn-danger float-right"
-                   :href="'/groups/' + group + '/students/' + student.id"
+                   :href="'/students/' + student.id"
                    data-method="delete"
                    data-remote="true"
                    data-confirm="Schüler_in mit allen Messergebnissen löschen! Sind Sie sicher?"
@@ -69,11 +69,11 @@
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
                 //URL-encoding?
-               return "student[name]=" + encodeURIComponent(encrypt(this.name)); //Namen vor dem Senden verschlüsseln
+               return "group=" + this.group + "&student[name]=" + encodeURIComponent(encrypt(this.name)); //Namen vor dem Senden verschlüsseln
             },
             update(event) {
                 this.$emit("update:students", {index: this.index, object: event.detail[0]})
-                if (this.index > 0)  //Beim Anlegen Form offen lassen...
+                if (this.index >= 0)  //Beim Anlegen Form offen lassen...
                     this.editMode = false;
                 else
                     this.name = "";

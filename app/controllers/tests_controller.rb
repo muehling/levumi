@@ -1,6 +1,6 @@
 class TestsController < ApplicationController
 
-  # GET /tests
+  #GET /tests
   def index
   end
 
