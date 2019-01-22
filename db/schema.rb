@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.string "email"
     t.string "password_digest"
     t.string "capabilities"
+    t.datetime "last_login"
+    t.integer "account_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

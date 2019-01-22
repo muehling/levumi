@@ -1,6 +1,6 @@
 class AssessmentsController < ApplicationController
-  before_action :set_group #Sicherheitscheck!
-  before_action :set_assessment, only: [:show] #Sicherheitscheck!
+  before_action :set_group
+  before_action :set_assessment, only: [:show]
 
   #GET /groups/:group_id/assessments/:id
   def show
@@ -24,6 +24,9 @@ class AssessmentsController < ApplicationController
 
   def set_group
     @group = Group.find(params[:group_id])
+    if @group.user_id != @login.id
+      redirect_to '/'
+    end
   end
 
   def set_assessment  #:id meint Test.id, nicht Assessment.id !

@@ -82,7 +82,7 @@
                                       </template>
 
                                       <!-- Edit-Button anzeigen, falls Nutzer Berechtigung hat -->
-                                      <% if @user.has_capability?("test") %>
+                                      <% if @login.has_capability?("test") %>
                                         <a class="btn float-right"><i class="fas fa-edit"></i> Test bearbeiten</a>
                                       <% end %>
 

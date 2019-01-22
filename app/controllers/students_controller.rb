@@ -1,15 +1,14 @@
 class StudentsController < ApplicationController
-  #TODO: Sicherheitscheck!
 
   #GET /students
   def index
-    render json: @user.students
+    render json: @login.students
   end
 
   #POST /students
   def create
     group = Group.find(params[:group])
-    unless group.nil? || group.user_id != @user.id
+    unless group.nil? || group.user_id != @login.id
       s = group.students.new(params.require(:student).permit(:name))
       if s.save
         render json: s
@@ -24,7 +23,7 @@ class StudentsController < ApplicationController
   #PUT /students/:id
   def update
     s = Student.find(params[:id])
-    unless s.nil? || !s.update_attributes(params.require(:student).permit(:name))
+    unless s.nil? || s.group.user.id != @login.id || !s.update_attributes(params.require(:student).permit(:name))
       render json: s
     else
       head 304
@@ -36,7 +35,7 @@ class StudentsController < ApplicationController
     todo = JSON.parse(params[:students]) || []
     todo.each do |s|
       student = Student.find(s['id'])
-      unless student.nil? || student.group.user.id != @user.id
+      unless student.nil? || student.group.user.id != @login.id
         student.name = s['name']
         student.save
       end
@@ -47,7 +46,7 @@ class StudentsController < ApplicationController
   #DEL /students/:id
   def destroy
     s = Student.find(params[:id])
-    unless s.nil?
+    unless s.nil? || s.group.user.id != @login.id
       s.destroy
     end
     head :ok

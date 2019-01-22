@@ -2,7 +2,7 @@ class CreateGroups < ActiveRecord::Migration[5.2]
   def change
     create_table :groups do |t|
       t.string :label
-      t.belongs_to :user, index: true, foreign_key: true
+      t.belongs_to :user, index: true, foreign_key: {on_delete: :cascade}
       t.boolean :archive, default: false
       t.timestamps
     end

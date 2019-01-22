@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_user, except: [:start, :login]
+  before_action :set_login, except: [:start, :login]
 
   #GET '/'
   def start
@@ -18,6 +18,8 @@ class ApplicationController < ActionController::Base
     if !u.nil? && u.authenticate(params[:password])
       reset_session
       session[:user] = u.id
+      u.last_login = Time.now
+      u.save
       redirect_to '/start'
     else
       @retry = true
@@ -33,12 +35,12 @@ class ApplicationController < ActionController::Base
 
   private
   #Auto Log-In zum Entwickeln
-  def set_user
+  def set_login
     if session.has_key?('user')
-      @user = User.find(session[:user])
+      @login = User.find(session[:user])
     else
       #redirect_to '/'
-      @user = User.find(1) #Nur für Dev!
+      @login = User.find(1) #Nur für Dev!
     end
   end
 

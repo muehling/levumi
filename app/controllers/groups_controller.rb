@@ -1,13 +1,14 @@
 class GroupsController < ApplicationController
+  before_action :set_group, only: [:update, :destroy]
 
   #GET /klassenbuch
   def index
-    @groups = @user.groups.all
+    @groups = @login.groups.all
   end
 
   #POST /groups
   def create
-    g = @user.groups.new(params.require(:group).permit(:label))
+    g = @login.groups.new(params.require(:group).permit(:label))
     if g.save
       render json: g
     else
@@ -17,9 +18,8 @@ class GroupsController < ApplicationController
 
   #PUT /groups/:id
   def update
-    g = @user.groups.find(params[:id])
-    unless g.nil? || !g.update_attributes(params.require(:group).permit(:label, :archive))
-      render json: g
+    unless !@group.update_attributes(params.require(:group).permit(:label, :archive))
+      render json: @group
     else
       head 304
     end
@@ -27,11 +27,17 @@ class GroupsController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    g = @user.groups.find(params[:id])
-    unless g.nil?
-      g.destroy
-    end
+    @group.destroy
     head :ok
+  end
+
+  private
+
+  def set_group
+    @group = @login.groups.find(params[:id])
+    if @group.nil?
+      redirect_to '/'
+    end
   end
 
 end

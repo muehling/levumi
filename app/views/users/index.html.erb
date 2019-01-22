@@ -1,0 +1,36 @@
+<div class="container-fluid mt-3">
+
+  <ul class="nav nav-pills" id="user_tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" id="list-tab" data-toggle="tab" href="#list" role="tab" aria-controls="list" aria-selected="true">Nutzerliste</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="new-tab" data-toggle="tab" href="#new" role="tab" aria-controls="new" aria-selected="false">Neuen Nutzer anlegen</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" id="mail-tab" data-toggle="tab" href="#mail" role="tab" aria-controls="mail" aria-selected="false">Nachricht an Nutzer</a>
+    </li>
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content mt-3">
+    <div class="tab-pane active" id="list" role="tabpanel" aria-labelledby="list-tab">
+      <div id="list_content">
+        <%= render 'table' %>
+      </div>
+    </div>
+    <div class="tab-pane" id="new" role="tabpanel" aria-labelledby="new-tab">
+      <div class="row">
+        <div class="col-6">
+          <div id="new_content">
+            <%= render 'form', user: User.new %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane" id="mail" role="tabpanel" aria-labelledby="mail-tab">
+      ...
+    </div>
+  </div>
+
+</div>

@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_many :groups
 
   validates_presence_of :email
+  validates_uniqueness_of :email
 
   #Alle Schüler des Nutzers zurückliefern.
   def students
@@ -20,6 +21,18 @@ class User < ApplicationRecord
   #Keine speziellen Capabilities als shortcut
   def is_regular_user?
     return capabilities.nil? || capabilities.blank?
+  end
+
+  #Liefert Beschreibung zum Account-Typ
+  def get_account_type
+    case account_type
+    when 0
+      "Lehrkraft"
+    when 1
+      "Forscher_in"
+    else
+      "Sonstiges (Privat, System)"
+    end
   end
 
   #Informationen für Userübersicht sammeln

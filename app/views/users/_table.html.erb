@@ -1,0 +1,16 @@
+<table class="table table-hover">
+  <thead class="thead-light">
+  <tr>
+    <th scope="col">ID</th>
+    <th scope="col">E-Mail Adresse</th>
+    <th scope="col">Account-Typ</th>
+    <th scope="col">Zuletzt eingeloggt am</th>
+    <th scope="col">Aktionen</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @users.each do |u| %>
+    <%= render u %>
+  <% end %>
+  </tbody>
+</table>
