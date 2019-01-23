@@ -153,34 +153,35 @@
             <a class="dropdown-item" href="#">Blog</a>
           </div>
         </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Profil
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarProfile">
-            <%= link_to "Meine Daten", edit_user_path(@login), class: "dropdown-item", id: 'navbarMyData', remote: true%>
-            <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
-          </div>
-        </li>
-      </ul>
-      <% unless @login.is_regular_user? %>
-        <ul class="navbar-nav ml-auto">
+        <% unless @masquerade %>
           <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarSystem" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              System
+            <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Profil
             </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
-              <%= link_to_if @login.has_capability?('user'), "Benutzerverwaltung", users_path, class: "dropdown-item"%>
-              <a class="dropdown-item" href="#">Datenexport</a>
+            <div class="dropdown-menu" aria-labelledby="navbarProfile">
+              <%= link_to "Meine Daten", edit_user_path(@login), class: "dropdown-item", id: 'navbarMyData', remote: true%>
+              <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
             </div>
           </li>
-        </ul>
-      <% end %>
-      <% if @masquerade %>
+        <% end %>
+      </ul>
+      <% if @masquerade || !@login.is_regular_user? %>
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: "nav-link", id: "navbarMasquerade"%>
-          </li>
+          <% if @masquerade %>
+            <li class="nav-item">
+              <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: "nav-link btn btn-outline-secondary", id: "navbarMasquerade"%>
+            </li>
+          <% else %>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarSystem" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                System
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
+                <%= link_to_if @login.has_capability?('user'), "Benutzerverwaltung", users_path, class: "dropdown-item"%>
+                <a class="dropdown-item" href="#">Datenexport</a>
+              </div>
+            </li>
+          <% end %>
         </ul>
       <% end %>
     </div>
