@@ -175,7 +175,14 @@
             </div>
           </li>
         </ul>
-        <% end %>
+      <% end %>
+      <% if @masquerade %>
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: "nav-link", id: "navbarMasquerade"%>
+          </li>
+        </ul>
+      <% end %>
     </div>
   </nav>
 

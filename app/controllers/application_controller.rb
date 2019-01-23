@@ -33,14 +33,37 @@ class ApplicationController < ActionController::Base
     redirect_to '/'
   end
 
-  private
-  #Auto Log-In zum Entwickeln
-  def set_login
-    if session.has_key?('user')
-      @login = User.find(session[:user])
+  #GET '/login'
+  def start_masquerade
+    u = User.find(params[:user])
+    if !u.nil? && @login.has_capability?('user')
+      session[:masquerading] = u.id
+      redirect_to '/start'
     else
-      #redirect_to '/'
-      @login = User.find(1) #Nur für Dev!
+      redirect_to '/'
+    end
+  end
+
+  #GET '/logout'
+  def end_masquerade
+    if (session.has_key?(:masquerading))
+      session.delete(:masquerading)
+    end
+    redirect_to users_path
+  end
+
+  private
+  #Login aus Session holen und ggf. Masquerading aktivieren
+  def set_login
+    if (session.has_key?('masquerading'))
+      @login = User.find(session[:masquerading])
+      @masquerade = true
+    else
+      if session.has_key?('user')
+        @login = User.find(session[:user])
+      else
+        redirect_to '/'
+      end
     end
   end
 

@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   post '/login', to: 'application#login'
   post '/logout', to: 'application#logout'
 
+  get '/login', to: 'application#start_masquerade'
+  get '/logout', to: 'application#end_masquerade'
+
   get '/klassenbuch', to: 'groups#index'
 
   get '/start', to: 'users#show'
