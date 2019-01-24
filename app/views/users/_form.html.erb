@@ -1,4 +1,4 @@
-<%= form_for user, remote: true, html: {autocomplete: "off", onsubmit: (user.id == @login.id ? "sessionStorage['new_login'] = $('#password').val();" : "")} do |f| #Bei Submit neuen Key speichern, damit umkodiert werden kann%>
+<%= form_for user, remote: true, html: {autocomplete: "off", onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| #Bei Submit neuen Key speichern, damit umkodiert werden kann%>
   <div class="form-group">
     <label for="email">E-Mail Adresse</label>
     <%= f.email_field :email, id: "email", class: "form-control"%>
@@ -6,20 +6,19 @@
       Darf nicht leer und noch nicht registriert sein!   <!-- TODO: Aufteilung nach Situation? -->
     </div>
   </div>
-  <% unless @masquerade || user.new_record? || user.id != @login.id %>  <!-- Wegen Verschlüsselung darf nur ein Nutzer selbst sein Passwort ändern -->
-    <div class="form-group">
-      <label for="password">Passwort</label>
-      <%= f.password_field :password, id:"password", class: "form-control", placeholder: "Neues Passwort"%>
-      <%= f.password_field :password_confirmation, class: "form-control mt-1", placeholder: "Passwort bestätigen"%>
-      <div class="invalid-feedback">
-        <% if user.errors[:password].any? %>
-          Passwort muss mindestens 5 Zeichen haben!
-        <% else  %>
-          Passwörter stimmen nicht überein!
-        <% end %>
-      </div>
+  <div class="form-group">
+    <label for="password">Passwort</label>
+    <%= f.password_field :password, id:"password", class: "form-control", placeholder: "Neues Passwort"%>
+    <%= f.password_field :password_confirmation, class: "form-control mt-1", placeholder: "Passwort bestätigen"%>
+    <div class="invalid-feedback">
+      <% if user.errors[:password].any? %>
+        Passwort muss mindestens 5 Zeichen haben!
+      <% else  %>
+        Passwörter stimmen nicht überein!
+      <% end %>
     </div>
-  <% end %>
+  </div>
+
   <% if @login.has_capability?('user') %>    <!-- Nutzer darf seinen eigenen Accounttyp nicht ändern (?) -->
     <div class="form-group">
       <%= f.radio_button :account_type, 0 %>
@@ -30,8 +29,6 @@
       <%= f.label :account_type, "Sonstiges (Privat/System/...)", value: 2 %><br>
     </div>
   <% end %>
-  <%= f.submit (user.new_record? ? 'Anlegen' : 'Aktualisieren'), class: "btn btn-outline-success"%>
-  <% unless user.new_record? #Abbrechen gibt es nur beim Modal, nicht bei der Anlegen Form"%>
-    <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
-  <% end %>
+  <%= f.submit 'Aktualisieren', class: "btn btn-outline-success"%>
+  <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>

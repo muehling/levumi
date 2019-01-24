@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: [:index, :new, :show, :create]
+  before_action :set_user, except: [:index, :show, :create]
+  skip_before_action :set_login, only: [:create]
 
   #GET /start
   #GET /users/:id
@@ -37,23 +38,30 @@ class UsersController < ApplicationController
   end
 
   #POST /users
-  def create
+  def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login.
     @user = User.new(user_attributes)
-    unless @user.save
-      render 'edit'
+    if @login
+      unless @user.save
+        render 'edit'
+      else
+        @users = User.all  #Tabelle in der Benutzerverwaltung wird neu gerendert
+        render 'create_backend'
+      end
     else
-      @users = User.all  #Tabelle in der Benutzerverwaltung wird neu gerendert
+      pw = @user.generate_password
+      if @user.save
+        #Mail senden...
+        render 'create_register'
+      else
+        render 'new'
+      end
     end
   end
 
   private
 
   def user_attributes
-    if @login.has_capability?('user') #Accounttyp kann nicht von den Nutzern selbst verändert werden (?)
-      params.require(:user).permit(:email, :password, :password_confirmation, :account_type)
-    else
-      params.require(:user).permit(:email, :password, :password_confirmation)
-    end
+    params.require(:user).permit(:email, :password, :password_confirmation, :account_type)
   end
 
   #Nutzernummer aus Parametern holen und User laden
