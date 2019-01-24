@@ -6,7 +6,7 @@ class StudentsController < ApplicationController
   end
 
   #POST /students
-  def create
+  def create    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     group = Group.find(params[:group])
     unless group.nil? || group.user_id != @login.id
       s = group.students.new(params.require(:student).permit(:name))
@@ -21,7 +21,7 @@ class StudentsController < ApplicationController
   end
 
   #PUT /students/:id
-  def update
+  def update   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     s = Student.find(params[:id])
     unless s.nil? || s.group.user.id != @login.id || !s.update_attributes(params.require(:student).permit(:name))
       render json: s
@@ -31,8 +31,8 @@ class StudentsController < ApplicationController
   end
 
   #POST /students/:id
-  def mass_update
-    todo = JSON.parse(params[:students]) || []
+  def mass_update   #Neucodierung aller Namen nach Passwort-Änderung. Rückmeldung durch 200 an fetch-API
+    todo = JSON.parse(params[:students]) || [] #Gesendet werden (key, value)-Paare der Student-Objekte (id, name).
     todo.each do |s|
       student = Student.find(s['id'])
       unless student.nil? || student.group.user.id != @login.id
@@ -49,7 +49,7 @@ class StudentsController < ApplicationController
     unless s.nil? || s.group.user.id != @login.id
       s.destroy
     end
-    head :ok
+    head :ok #200 als Rückmeldung an Vue-Component
   end
 
 end

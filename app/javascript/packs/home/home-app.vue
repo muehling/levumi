@@ -17,7 +17,7 @@
                                     :title="group.label"
                         >
 
-                            <!-- Zweite Ebene - Lernbereiche -->
+                            <!-- Zweite Ebene - gewählte Klasse -->
                             <group-view
                                     :group="group"
                                     :group_info="group_info[index]"

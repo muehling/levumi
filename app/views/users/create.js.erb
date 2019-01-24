@@ -1,3 +1,4 @@
+//Tabelle neu rendern, Form zurücksetzen und Tabellentab aktivieren
 $('#list_content').html("<%= escape_javascript render 'table' %>")
 $('#new_content').html("<%= escape_javascript render 'form', user: User.new %>")
 $('#user_tabs a[href="#list"]').tab('show')

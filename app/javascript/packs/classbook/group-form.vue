@@ -1,6 +1,7 @@
 <template>
 
     <div>
+        <!-- index == 0 => Neue Klasse anlegen, dort keine Edit-Optionen -->
         <div v-if="index > 0">
             <b-btn v-b-toggle="'collapse_' + group.id" class="btn"><i class="fas fa-edit"></i>Klasse umbenennen</b-btn>
 
@@ -14,9 +15,8 @@
                 <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
             </a>
         </div>
-
+        <!-- Ausklappbare Edit-Form - falls index == 0, direkt anzeigen -->
         <b-collapse :id="'collapse_' + group.id" class="mt-2" :visible="index == 0">
-
 
                 <b-form inline
                         :action="index == 0 ? '/groups' : '/groups/' + group.id"
@@ -25,7 +25,7 @@
                         data-remote="true"
                         v-on:ajax:success="success"
                 >
-                    <!-- Hidden Field für Rails/Update -->
+                    <!-- Hidden Field für Rails/Update, damit POST/PUT unterschieden wird -->
                     <input v-if="index > 0"
                            type="hidden"
                            value="put"
@@ -38,7 +38,7 @@
                              name="group[label]"
                              placeholder="Klassenbezeichner"
                     />
-                    <!-- Button für neue Klasse -->
+                    <!-- Button für neue Klasse, Validierung Name nicht leer -->
                     <b-button v-if="index === 0"
                               type="submit"
                               variant="primary"
@@ -46,7 +46,7 @@
                     >
                         Anlegen
                     </b-button>
-                    <!-- Button für existierende Klasse -->
+                    <!-- Button für existierende Klasse Validierung Name nicht leer  -->
                     <b-button v-else
                               type="submit"
                               variant="primary"
@@ -56,7 +56,6 @@
                         Ändern
                     </b-button>
                 </b-form>
-
 
         </b-collapse>
     </div>

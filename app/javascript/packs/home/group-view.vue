@@ -3,7 +3,7 @@
 
         <template slot="header">
 
-            <b-nav pills>    <!-- Übersicht über Lernbereiche -->
+            <b-nav pills>    <!-- Aktuell in Assessments verwendete Lernbereiche -->
 
                 <b-nav-item v-for="area in group_info.areas"
                             v-if="area.used"
@@ -14,6 +14,7 @@
                     {{area.info.name}}
                 </b-nav-item>
 
+                <!-- Noch verfügbare Lernbereiche als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="areasLeft()"
                         text="<em>Neuer Lernbereich</em>"
@@ -33,7 +34,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1">  <!-- Übersicht über Kompetenzen -->
+            <b-nav pills class="mt-1">  <!-- Aktuell in Assessments verwendete Kompetenzen des gewählten Lernbereichs -->
 
                 <b-nav-item v-for="competence in group_info.competences"
                             :key="competence.info.id"
@@ -44,6 +45,7 @@
                     {{competence.info.name}}
                 </b-nav-item>
 
+                <!-- Noch verfügbare Kompetenzen des gewählten Lernbereichs als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="competencesLeft(area_selected)"
                         text="<em>Neuer Kompetenzbereich</em>"
@@ -62,7 +64,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1"> <!-- Übersicht über Testfamilien -->
+            <b-nav pills class="mt-1"> <!-- Aktuell in Assessments verwendete Testfamilien der gewählten Kompetenz  -->
 
                 <b-nav-item v-for="family in group_info.families"
                             :key="family.info.id"
@@ -73,6 +75,7 @@
                     {{family.info.name}}
                 </b-nav-item>
 
+                <!-- Noch verfügbare Testfamilien der gewählten Kompetenz als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="familiesLeft(competence_selected)"
                         text="<em>Neuen Test verwenden</em>"
@@ -91,7 +94,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1"> <!-- Übersicht über Niveaustufen -->
+            <b-nav pills class="mt-1"> <!-- Aktuell in Assessments verwendete Niveaustufen der gewählten Testfamilie -->
 
                 <b-nav-item v-for="test in group_info.tests"
                             :key="test.info.id"
@@ -102,6 +105,7 @@
                     {{test.info.level}}
                 </b-nav-item>
 
+                <!-- Noch verfügbare Niveaustufen der gewählten Testfamilie als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="testsLeft(family_selected)"
                         text="<em>Neue Niveaustufe verwenden</em>"
@@ -122,6 +126,7 @@
 
         </template>
 
+        <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
         <div v-if="updating">
             <b-row>
                 <div class="spinner">
@@ -148,7 +153,6 @@
     import AssessmentView from "./assessment-view"
     export default {
         components: {AssessmentView},
-        comments: {AssessmentView},
         props: {
             group: Object,
             group_info: Object
@@ -164,51 +168,60 @@
             }
         },
         methods: {
+            //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_area(area) {
                 this.area_selected = area;
                 this.competence_selected = -1;
                 this.family_selected = -1;
                 this.test_selected = -1
-                $('#main-' + this.group_info.id).hide();
+                $('#main-' + this.group_info.id).hide();   //Ggf. angezeigtes Assessment verstecken
             },
+            //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_competence(competence) {
                 this.competence_selected = competence;
                 this.family_selected = -1;
                 this.test_selected = -1
-                $('#main-' + this.group_info.id).hide();
+                $('#main-' + this.group_info.id).hide(); //Ggf. angezeigtes Assessment verstecken
             },
+            //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_family(family) {
                 this.family_selected = family;
                 this.test_selected = -1
-                $('#main-' + this.group_info.id).hide();
+                $('#main-' + this.group_info.id).hide(); //Ggf. angezeigtes Assessment verstecken
             },
+            //Prüfen, ob noch unverwendete Lernbereiche existieren
             areasLeft() {
                 for (let i = 0; i < this.group_info.areas.length; ++i)
                     if (!this.group_info.areas[i].used)
                         return true;
                 return false;
             },
+            //Prüfen, ob noch unverwendete Kompetenzen existieren
             competencesLeft(area) {
                 for (let i = 0; i < this.group_info.competences.length; ++i)
                     if (!this.group_info.competences[i].used && this.group_info.competences[i].info.area_id == area)
                         return true;
                 return false;
             },
+            //Prüfen, ob noch unverwendete Testfamilien existieren
             familiesLeft(competence) {
                 for (let i = 0; i < this.group_info.families.length; ++i)
                     if (!this.group_info.families[i].used && this.group_info.families[i].info.competence_id == competence)
                         return true;
                 return false;
             },
+            //Prüfen, ob noch unverwendete Niveaustufen existieren
             testsLeft(family) {
                 for (let i = 0; i < this.group_info.tests.length; ++i)
                     if (!this.group_info.tests[i].used && this.group_info.tests[i].info.test_family_id == family)
                         return true;
                 return false;
             },
+            //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
             loadAssessment(test) {
                 this.test_selected = test;
-                this.updating = true;
+                this.updating = true;  //Spinner anzeigen
+                //AJAX-Request senden
                 fetch("/groups/" + this.group.id + "/assessments/" + this.test_selected, {
                     headers: {
                         'Accept': 'text/javascript',
@@ -220,10 +233,11 @@
                     .then(response => {
                         return response.text().then(text =>  {
                             this.results = JSON.parse(text);
-                            this.updating = false;
+                            this.updating = false;  //Spinner verstecken
                         });
                     });
             },
+            //Neues Assessment anlegen und, bei Erfolg, laden.
             createAssessment(test) {
                 fetch("/groups/" + this.group.id + "/assessments/", {
                     method: 'post',

@@ -1,9 +1,13 @@
 <% if @login.id == @user.id %>
+  //Falls eigener Nutzer: Ggf. Rekdoierung der Schülernamen nötig.
 
   if (sessionStorage['new_login'] != undefined && sessionStorage['new_login'] != "" && sessionStorage['new_login'] != sessionStorage['login']) {
-      //Multiupdate triggern...
+      //Multiupdate nur triggern, falls neuer key hinterlegt ist und sich dieser vom Alten unterscheidet...
+
+      //Hinweistext - vermutlich unnötig.
       $("#modal-body").html("<p align='center'>Verschlüsselung aktualisieren</p><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
 
+      //Key aktualisieren und alle Namen neu verschlüsseln.
       sessionStorage['login'] = sessionStorage['new_login']
       students = []
       Object.keys(groups).forEach(function(key, index) {
@@ -11,6 +15,7 @@
               students.push({id: this[key][i].id, name: encrypt(this[key][i].name)})
       }, groups);
 
+      //Daten senden und Hinweistext bei Erfolg verstecken.
       fetch("/students/", {
           method: 'put',
           headers: {
@@ -23,10 +28,11 @@
       })
           .then(response => $('#modal').modal('hide'));
   }
-  else
+  else //Nichts zu tun außer Modal schließen
       $('#modal').modal('hide');
 
 <% else %>
+  //Update für einen anderen Nutzer => Nutzertabelle neu rendern und Modal schließen.
   $('#list_content').html("<%= escape_javascript render 'table' %>")
   $('#modal').modal('hide');
 <% end %>

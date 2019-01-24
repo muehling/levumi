@@ -35,7 +35,7 @@ class User < ApplicationRecord
     end
   end
 
-  #Informationen für Userübersicht sammeln
+  #Informationen für Userübersicht sammeln: Pro Gruppe alle verwendeten Tests, Familien, Kompetenzen und Bereiche und alle noch verfügbaren sammeln. Vermeidet redundante Anfragen. TODO: Optimmierbar?
   def get_home_info
     all_tests = Test.all.pluck(:id)
     all_families = TestFamily.all.pluck(:id)

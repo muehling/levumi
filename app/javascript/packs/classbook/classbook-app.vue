@@ -19,6 +19,7 @@
                                     <template slot="title">
                                         <i class="fas fa-folder-plus"></i>
                                     </template>
+                                    <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
                                     <group-form
                                             :group="groups[0]"
                                             :index="0"
@@ -26,7 +27,7 @@
                                     ></group-form>
                                 </b-tab>
 
-                                <!-- Alle Klassen als Tabs anzeigen -->
+                                <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern-->
                                 <b-tab
                                         v-for="(group, index) in groups"
                                         v-if="index > 0 & group.archive == false"
@@ -59,7 +60,6 @@
                                         Keine Klassen im Archiv vorhanden.
                                     </div>
                                 </div>
-
                                 <b-tab
                                         v-for="(group, index) in groups"
                                         v-if="group.archive == true"

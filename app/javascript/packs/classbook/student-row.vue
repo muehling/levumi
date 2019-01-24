@@ -1,14 +1,15 @@
 <template>
-
+    <!-- Eine Zeile der Schülerübersicht -->
     <tr>
         <td>
+            <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
                 {{ student.name }}
             </div>
-            <div v-else-if="editMode">
+            <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <input type="text" class="form-control" v-model="name">
             </div>
-            <div v-else>
+            <div v-else> <!-- Anlegen Button anzeigen -->
                 <b-btn class="btn" @click="editMode = true"><i class="fas fa-user-plus"></i> Schüler_in hinzufügen</b-btn>
             </div>
         </td>
@@ -19,9 +20,10 @@
 
         <td>
             <div v-if="!empty && !editMode">
-                <b-btn class="btn" @click="editMode = !editMode"><i class="fas fa-user-edit"></i></b-btn>
+                <b-btn class="btn" @click="editMode = true"><i class="fas fa-user-edit"></i></b-btn>
             </div>
             <div v-else-if="editMode">
+                <!-- rails-ujs Link -->
                 <b-link class="btn btn-success"
                    :href="'/students' + (empty ? '' : '/' + student.id)"
                    :disabled="name.length == 0"
@@ -32,9 +34,8 @@
                 >
                     <i class="fas fa-check"></i> Speichern
                 </b-link>
-
-                <b-btn @click="editMode = !editMode"><i class="fas fa-times"></i> Abbrechen</b-btn>
-
+                <b-btn @click="editMode = false"><i class="fas fa-times"></i> Abbrechen</b-btn>
+                <!-- rails-ujs Link -->
                 <a v-if="!empty"
                    class="btn btn-danger float-right"
                    :href="'/students/' + student.id"
@@ -54,7 +55,6 @@
 <script>
     export default {
         props: {
-            fields: Array,
             student: Object,
             group: Number,
             empty: Boolean,
@@ -68,14 +68,14 @@
         },
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
-                //URL-encoding?
                return "group=" + this.group + "&student[name]=" + encodeURIComponent(encrypt(this.name)); //Namen vor dem Senden verschlüsseln
             },
-            update(event) {
+            update(event) {                 //Wird bei erfolgreichem Create/Update aufgerufen
+                //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
                 this.$emit("update:students", {index: this.index, object: event.detail[0]})
-                if (this.index >= 0)  //Beim Anlegen Form offen lassen...
+                if (this.index >= 0)
                     this.editMode = false;
-                else
+                else  //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
                     this.name = "";
             },
             remove() {

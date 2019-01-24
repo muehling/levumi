@@ -7,7 +7,7 @@ class GroupsController < ApplicationController
   end
 
   #POST /groups
-  def create
+  def create    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     g = @login.groups.new(params.require(:group).permit(:label))
     if g.save
       render json: g
@@ -17,7 +17,7 @@ class GroupsController < ApplicationController
   end
 
   #PUT /groups/:id
-  def update
+  def update    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     unless !@group.update_attributes(params.require(:group).permit(:label, :archive))
       render json: @group
     else
@@ -28,13 +28,14 @@ class GroupsController < ApplicationController
   #DEL /groups/:id
   def destroy
     @group.destroy
-    head :ok
+    head :ok   #200 als Rückmeldung an Vue-Component
   end
 
   private
 
+  #Gruppenummer aus Parametern holen und Gruppe laden
   def set_group
-    @group = @login.groups.find(params[:id])
+    @group = @login.groups.find(params[:id]) #Nur aus den Gruppen des eingeloggten Users wählen.
     if @group.nil?
       redirect_to '/'
     end

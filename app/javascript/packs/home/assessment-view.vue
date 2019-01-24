@@ -1,6 +1,8 @@
 <template>
     <b-card no-body>
         <b-tabs pills card vertical>
+
+            <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab title="Neue Messung">
                 <b-button v-for="student in students"
                           :key="student.id"
@@ -8,16 +10,22 @@
                     {{student.name}}
                 </b-button>
             </b-tab>
+
+            <!-- Auswertungstab -->
             <b-tab title="Auswertung" active>
                Auswertung
             </b-tab>
-            <b-tab title="Messungen">
 
+            <!-- Liste der Messungen anzeigen -->
+            <b-tab title="Messungen">
+                <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
+                <!-- Header -->
                 <b-row>
                     <b-col><b>Woche ab dem</b></b-col>
                     <b-col><b>Anzahl Ergebnisse</b></b-col>
                     <b-col><b>Details</b></b-col>
                 </b-row>
+                <!-- Nach Wochen gruppierte Einträge -->
                 <div v-for="(date, index) in Object.keys(results)" class="mt-2">
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
@@ -29,6 +37,7 @@
                             </b-btn>
                         </b-col>
                     </b-row>
+                    <!-- Aufklappbare Details -->
                     <b-collapse :id="'collapse' + index">
                         <b-card class="mt-2">
                             <table class="table table-striped table-borderless">
@@ -47,7 +56,6 @@
                         </b-card>
                     </b-collapse>
                 </div>
-
             </b-tab>
         </b-tabs>
     </b-card>
@@ -62,10 +70,10 @@
             group: Number
         },
         methods: {
-            student_name(id) {
+            student_name(id) {   //Student-Objekt aus globaler Variable holen
                 return get_student(this.group, id).name;
             },
-            print_date(date) {
+            print_date(date) {   //Datumsanzeige formatieren
                 let d = new Date(date);
                 return d.toLocaleDateString("de-DE")
             }
@@ -79,6 +87,7 @@
 </script>
 
 <style scoped>
+    /* Darstellung des Collapse durch CSS toggeln*/
     .collapsed > .when-opened,
     :not(.collapsed) > .when-closed {
         display: none;

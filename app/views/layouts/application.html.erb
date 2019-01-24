@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Levumi2</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-
-    <!-- Bootstrap eininden für Teile außerhalb von Vue - Besser mit Yarn? -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <%= render 'layouts/header' %>
 
     <%= javascript_pack_tag 'levumi' %>
-    <%= stylesheet_pack_tag "levumi" %>
 
     <!-- sonstige Libaries -->
     <script src="/javascript/sjcl.js"></script>
 
-    <!-- Spinner - evtl. besser woanders? -->
+    <!-- Style für Spinner - TODO: evtl. besser woanders? -->
     <style>
       .spinner {
         margin: 100px auto 0;
@@ -64,7 +55,7 @@
     </style>
 
     <script>
-
+        //TODO: Besser woanders?
         <%
           #Schülernamen verfügbar machen
           groups = {}
@@ -76,6 +67,8 @@
 
       groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
 
+      //Entschlüsselt einen String mit dem im sessionStorage gespeicherten Key.
+      // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
       function decrypt(text, alt) {
           let res = "";
           try{
@@ -83,16 +76,18 @@
           }
           catch(e){
               console.error(e.toString());
-              console.log("Entschlüsselung fehlgeschlagen");
+              console.log("Entschlüsselung fehlgeschlagen"); //Log-Output (evtl. nicht in Production?)
               res = alt;
           }
           return res;
       }
 
+      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten Key.
       function encrypt(text) {
           return sjcl.encrypt(sessionStorage['login'], text);
       }
 
+      //Liefert das Student-Objekt zu einer ID in dessen Gruppe zurück.
       function get_student(group, id) {
           for (let j = 0; j < groups[group].length; ++j)
               if (groups[group][j].id == id)
@@ -100,95 +95,23 @@
           return null;
       }
 
-      //Namen der Schüler entschlüsseln, passiert bisher bei jedem Reload neu...
-
+      //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
               this[key][i].name = decrypt(this[key][i].name, "Kind_" + this[key][i].id);
           }, groups);
 
-      function highlightNavItem(item) {
-          //Klasse "active" von allen nav-items entfernen und dann bei übergebenem Element hinzufügen
-          let btns = document.getElementById("navbarContent").getElementsByClassName("active");
-          for (let i = 0; i < btns.length; i++) {
-              btns[i].className = btns[i].className.replace(" active", "");
-          }
-          document.getElementById(item).className += " active";
-      }
     </script>
 
   </head>
 
   <body>
 
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#"><img src="/favicon.ico" alt="Levumi" width="48" height="48"/>Levumi</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarContent">
-
-      <ul class="navbar-nav ml-3">
-        <li class="nav-item active">
-          <%= link_to "Start", '/start', class: "nav-link", id: "navbarHome"%>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Klassenbuch", '/klassenbuch', class: "nav-link", id: 'navbarKlassenbuch'%>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Material</a>
-        </li>
-        <li class="nav-item">
-          <%= link_to "Testinfos", tests_path, class: "nav-link", id: 'navbarTests'%>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Hilfe
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarHelp">
-            <a class="dropdown-item" href="#">Handbuch</a>
-            <a class="dropdown-item" href="#">Videos</a>
-            <a class="dropdown-item" href="#">Blog</a>
-          </div>
-        </li>
-        <% unless @masquerade %>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Profil
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarProfile">
-              <%= link_to "Meine Daten", edit_user_path(@login), class: "dropdown-item", id: 'navbarMyData', remote: true%>
-              <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
-            </div>
-          </li>
-        <% end %>
-      </ul>
-      <% if @masquerade || !@login.is_regular_user? %>
-        <ul class="navbar-nav ml-auto">
-          <% if @masquerade %>
-            <li class="nav-item">
-              <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: "nav-link btn btn-outline-secondary", id: "navbarMasquerade"%>
-            </li>
-          <% else %>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarSystem" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                System
-              </a>
-              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
-                <%= link_to_if @login.has_capability?('user'), "Benutzerverwaltung", users_path, class: "dropdown-item"%>
-                <a class="dropdown-item" href="#">Datenexport</a>
-              </div>
-            </li>
-          <% end %>
-        </ul>
-      <% end %>
-    </div>
-  </nav>
+  <%= render 'layouts/navbar' %>
 
   <%= yield %>
 
+  <!-- Platz für Dialoge etc -->
   <div id="modal" class="modal fade" tabindex="-1">
     <div class="modal-dialog">
       <div class="modal-content">

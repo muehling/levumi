@@ -1,8 +1,9 @@
 <template>
 
-    <!-- Schülertabelle für reguläre Klasse -->
+    <!-- Darstellung für reguläre Klasse: Schülertabelle -->
     <div v-if="groups[index].archive == false">
         <div class="mb-2">
+            <!-- Form über Umbenennung -->
             <group-form
                     :group="groups[index]"
                     :index="index"
@@ -16,12 +17,13 @@
         </student-list>
     </div>
 
-    <!-- Archivdarstellung für archivierte Klasse -->
+    <!-- Darstellung für archivierte Klasse -->
     <div v-else>
         <p>
             <em>Ins Archiv verschoben am {{ date }}</em><br/>
             Schüler_innen: {{groups[index].size}}
         </p>
+        <!-- rails-ujs Link beinhaltet Auth_Token-->
         <a class="btn"
                 :href="'/groups/' + groups[index].id"
                 data-method="put"
@@ -32,6 +34,7 @@
             <i class="fas fa-file-import"></i> Klasse aus dem Archiv holen
         </a>
 
+        <!-- rails-ujs Link beinhaltet Auth_Token-->
         <a class="btn btn-danger"
                 :href="'/groups/' + groups[index].id"
                 data-method="delete"
@@ -52,7 +55,7 @@
     export default {
         components: {StudentList, GroupForm},
         props: {
-            groups: Array,
+            groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
             index: Number
         },
         computed: {

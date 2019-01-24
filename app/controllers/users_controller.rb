@@ -4,7 +4,7 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
-    @groups = @login.groups.where(archive: false)
+    @groups = @login.groups.where(archive: false)  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
     @assessments = Assessment.where(group_id: @groups).all
   end
 
@@ -47,17 +47,19 @@ class UsersController < ApplicationController
   end
 
   private
+
   def user_attributes
-    if @login.has_capability?('user')
+    if @login.has_capability?('user') #Accounttyp kann nicht von den Nutzern selbst verändert werden (?)
       params.require(:user).permit(:email, :password, :password_confirmation, :account_type)
     else
       params.require(:user).permit(:email, :password, :password_confirmation)
     end
   end
 
+  #Nutzernummer aus Parametern holen und User laden
   def set_user
     @user = User.find(params[:id])
-    unless @user != nil || (@user.id != @login.id && !@login.has_capability?('user'))
+    unless @user != nil || (@user.id != @login.id && !@login.has_capability?('user')) #Entweder es ist der eigene Nutzer oder die entsprechende Berechtigung ist vorhanden
       redirect_to '/'
     end
   end

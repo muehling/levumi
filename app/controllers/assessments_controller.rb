@@ -3,7 +3,7 @@ class AssessmentsController < ApplicationController
   before_action :set_assessment, only: [:show]
 
   #GET /groups/:group_id/assessments/:id
-  def show
+  def show                #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
     if @assessment.nil?
       head 404
     else
@@ -16,12 +16,13 @@ class AssessmentsController < ApplicationController
     t = Test.find(params[:test_id])
     unless t.nil?
       @group.assessments.create(test: t)
-      head :ok
+      head :ok   #200 als Rückmeldung an Vue-Component
     end
   end
 
   private
 
+  #Gruppenummer aus Parametern holen und Gruppe laden
   def set_group
     @group = Group.find(params[:group_id])
     if @group.user_id != @login.id
@@ -29,7 +30,8 @@ class AssessmentsController < ApplicationController
     end
   end
 
-  def set_assessment  #:id meint Test.id, nicht Assessment.id !
+  #Assessment laden
+  def set_assessment  #:id meint Test.id, nicht Assessment.id (aus Auswahldialog)
     @assessment =  @group.assessments.where(test_id: params[:id]).first
   end
 end

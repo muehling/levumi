@@ -3,18 +3,13 @@
         <table class="table table-condensed table-striped vue-table">
             <thead>
             <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Login-Code
-                </th>
-                <th>
-                    Bearbeiten
-                </th>
+                <th>Name</th>
+                <th>Login-Code</th>
+                <th>Bearbeiten</th>
             </tr>
             </thead>
             <tbody>
+            <!-- Eine Reihe pro existierendem Schüler -->
                 <student-row v-for="(student, index) in this.students"
                              :key="student.id"
                              :student="student"
@@ -23,6 +18,7 @@
                              :empty="false"
                              v-on:update:students="update($event)"
                 ></student-row>
+            <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
                 <student-row :student="{name: '', login: ''}"
                              :key="0"
                              :group="group"
@@ -42,7 +38,7 @@
     export default {
         components: {StudentRow},
         props: {
-            group: Number
+            group: Number   //Benötigt um neue Schüler der Gruppe zuordnen zu können.
         },
         data: function () {
             return {
