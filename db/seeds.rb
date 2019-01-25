@@ -3,8 +3,8 @@ if Rails.env.development?
   #Spieldaten anlegen
 
   users = [
-      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 2} ,
-      {email: "user@user.de", password: "123", password_confirmation: "123", capabilities: "", account_type: 0}
+      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 2, state: 1} ,
+      {email: "user@user.de", password: "123", password_confirmation: "123", capabilities: "", account_type: 0, state: 1}
   ]
 
   groups = [

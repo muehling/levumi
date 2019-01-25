@@ -7,6 +7,9 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.datetime :last_login
       t.integer :account_type
       t.integer :state
+      t.integer :institution
+      t.integer :focus
+      t.datetime :tc_accepted
       t.timestamps
     end
   end

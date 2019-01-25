@@ -28,10 +28,10 @@
     </div>
     <div class="tab-pane" id="new" role="tabpanel" aria-labelledby="new-tab">
       <div class="row">
-        <div class="col-6">
-          <div id="new_content">
+        <div class="col-4">
+          <div class='card card-body' id="new_content">
             <!-- Nutzer anlegen-->
-            <%= render 'form', user: User.new %>
+            <%= render 'form_create', user: User.new %>
           </div>
         </div>
       </div>

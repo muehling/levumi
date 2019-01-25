@@ -1,11 +1,9 @@
-<%= form_for user, remote: true, html: {autocomplete: "off", onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| #Bei Submit neuen Key speichern, damit umkodiert werden kann%>
-  <div class="form-group">
-    <label for="email">E-Mail Adresse</label>
-    <%= f.email_field :email, id: "email", class: "form-control"%>
-    <div class="invalid-feedback">
-      Darf nicht leer und noch nicht registriert sein!   <!-- TODO: Aufteilung nach Situation? -->
-    </div>
-  </div>
+<!-- Form zum Ändern existierender User - entweder für eigene Daten oder als Admin -->
+
+<%= form_for user, remote: true, namespace: @user.id, html: {autocomplete: "off", onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
+
+  <%= render 'users/form/email', f: f %>
+
   <div class="form-group">
     <label for="password">Passwort</label>
     <%= f.password_field :password, id:"password", class: "form-control", placeholder: "Neues Passwort"%>
@@ -20,15 +18,16 @@
   </div>
 
   <% if @login.has_capability?('user') %>    <!-- Nutzer darf seinen eigenen Accounttyp nicht ändern (?) -->
-    <div class="form-group">
-      <%= f.radio_button :account_type, 0 %>
-      <%= f.label :account_type, "Lehrkraft", value: 0 %><br>
-      <%= f.radio_button :account_type, 1 %>
-      <%= f.label :account_type, "Forscher", value: 1 %><br>
-      <%= f.radio_button :account_type, 2 %>
-      <%= f.label :account_type, "Sonstiges (Privat/System/...)", value: 2 %><br>
-    </div>
+    <%= render 'users/form/type', f: f, label: 'Typ' %>
   <% end %>
+
+  <div class="form-group row">
+    <%= f.label "Bundesland", class: "col-sm-3 col-form-label" %>
+    <div class="col-sm-9">
+      <%= f.select(:state, federal_states, {}, {class: "custom-select"}) %>
+    </div>
+  </div>
+
   <%= f.submit 'Aktualisieren', class: "btn btn-outline-success"%>
   <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>

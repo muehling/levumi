@@ -1,0 +1,19 @@
+<!-- Radio-Boxes für Account-Typ, in allen Forms verwendet -->
+
+<div class='form-group'>
+  <div class='custom-control custom-control-inline'>
+    <label class = 'form-check-label'><%= label %></label>
+  </div>
+  <div class='custom-control custom-radio custom-control-inline'>
+    <%= f.radio_button :account_type, 0, class: 'custom-control-input'%>
+    <%= f.label :account_type, 'Lehrkraft', value: 0, class: 'custom-control-label' %>
+  </div>
+  <div class='custom-control custom-radio custom-control-inline'>
+    <%= f.radio_button :account_type, 1, class: 'custom-control-input' %>
+    <%= f.label :account_type, 'Forscher', value: 1, class: 'custom-control-label' %>
+  </div>
+  <div class='custom-control custom-radio custom-control-inline'>
+    <%= f.radio_button :account_type, 2, class: 'custom-control-input' %>
+    <%= f.label :account_type, 'Privatperson', value: 2, class: 'custom-control-label' %>
+  </div>
+</div>

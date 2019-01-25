@@ -61,6 +61,9 @@ class ApplicationController < ActionController::Base
     else
       if session.has_key?('user')               #Session existiert
         @login = User.find(session[:user])
+        if (@login.tc_accepted.nil?)
+          redirect_to '/willkommen'
+        end
       else                                      #Sonst: Startseite
         redirect_to '/'
       end

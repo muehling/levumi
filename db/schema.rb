@@ -100,6 +100,9 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.datetime "last_login"
     t.integer "account_type"
     t.integer "state"
+    t.integer "institution"
+    t.integer "focus"
+    t.datetime "tc_accepted"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

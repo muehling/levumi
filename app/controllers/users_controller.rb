@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: [:index, :show, :create]
-  skip_before_action :set_login, only: [:create]
+  before_action :set_user, except: [:index, :show, :create, :register]
+
+  skip_before_action :set_login, only: [:create, :register]
 
   #GET /start
   #GET /users/:id
@@ -38,17 +39,18 @@ class UsersController < ApplicationController
   end
 
   #POST /users
-  def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login.
+  def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login in der Session.
     @user = User.new(user_attributes)
-    if @login
+    pw = @user.generate_password
+    if (session.has_key?('user'))          #TODO: Ggf. Masquerading prüfen, kann aber regulär nicht passieren...
+      @login = User.find(session[:user])   #Login muss gesetzt werden, da before_action für create ausgelassen wird.
       unless @user.save
         render 'edit'
       else
-        @users = User.all  #Tabelle in der Benutzerverwaltung wird neu gerendert
+        @users = User.all                  #Benötigt für Tabelle in der Benutzerverwaltung
         render 'create_backend'
       end
-    else
-      pw = @user.generate_password
+    else                                   #Anfrage kommt von der Registrierungsseite
       if @user.save
         #Mail senden...
         render 'create_register'
@@ -58,10 +60,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def register
+    @user = User.find(session[:user])
+    if request.post?
+      @user.tc_accepted = Time.now
+      @user.save
+      redirect_to '/start'
+    else
+      render 'register', layout: 'minimal'
+    end
+  end
+
   private
 
   def user_attributes
-    params.require(:user).permit(:email, :password, :password_confirmation, :account_type)
+    params.require(:user).permit(:email, :password, :password_confirmation, :account_type, :state)
   end
 
   #Nutzernummer aus Parametern holen und User laden
