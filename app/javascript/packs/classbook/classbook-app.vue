@@ -1,23 +1,23 @@
 <template>
 
     <b-container fluid>
-        <b-row class="mt-3">
-            <b-col md="12">
+        <b-row class='mt-3'>
+            <b-col md='12'>
 
                 <b-tabs pills>
 
                     <b-tab active>
-                        <template slot="title">
+                        <template slot='title'>
                             Aktuelle Klassen
                         </template>
 
-                        <b-card no-body class="mt-3">
+                        <b-card no-body class='mt-3'>
                             <b-tabs pills card>
 
                                 <!-- Neue Klasse anlegen -->
                                 <b-tab>
-                                    <template slot="title">
-                                        <i class="fas fa-folder-plus"></i>
+                                    <template slot='title'>
+                                        <i class='fas fa-folder-plus'></i>
                                     </template>
                                     <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
                                     <group-form
@@ -32,9 +32,13 @@
                                         v-for="(group, index) in groups"
                                         v-if="index > 0 & group.archive == false"
                                         :key="group.id"
-                                        :title="group.label"
                                         :active="index == 1"
                                 >
+                                    <!-- Testklasse kursiv darstellen -->
+                                    <template slot='title'>
+                                        <i v-if="group.demo">{{group.label}}</i>
+                                        <span v-else>{{group.label}}</span>
+                                    </template>
                                     <group-display
                                             :groups="groups"
                                             :index="index"
@@ -47,16 +51,16 @@
 
                     <!-- Klassenarchiv -->
                     <b-tab>
-                        <template slot="title">
+                        <template slot='title'>
                             Klassenarchiv
                         </template>
 
-                        <b-card no-body class="mt-3">
+                        <b-card no-body class='mt-3'>
                             <b-tabs pills card vertical>
 
                                 <!-- Hinweistext falls keine Klasse vorhanden -->
-                                <div slot="empty">
-                                    <div v-cloak class="text-center text-muted">
+                                <div slot='empty'>
+                                    <div v-cloak class='text-center text-muted'>
                                         Keine Klassen im Archiv vorhanden.
                                     </div>
                                 </div>
@@ -64,8 +68,12 @@
                                         v-for="(group, index) in groups"
                                         v-if="group.archive == true"
                                         :key="group.id"
-                                        :title="group.label"
                                 >
+                                    <!-- Testklasse kursiv darstellen -->
+                                    <template slot='title'>
+                                        <i v-if="group.demo">{{group.label}}</i>
+                                        <span v-else>{{group.label}}</span>
+                                    </template>
                                     <group-display
                                             :groups="groups"
                                             :index="index"
@@ -85,8 +93,8 @@
 </template>
 
 <script>
-    import GroupForm from "./group-form";
-    import GroupDisplay from "./group-display";
+    import GroupForm from './group-form';
+    import GroupDisplay from './group-display';
 
     export default {
         components: {
@@ -97,6 +105,6 @@
                 groups: this.$root.groups
             }
         },
-        name: "class-book-app"
+        name: 'class-book-app'
     }
 </script>

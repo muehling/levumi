@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.string "label"
     t.integer "user_id"
     t.boolean "archive", default: false
+    t.boolean "demo", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_groups_on_user_id"

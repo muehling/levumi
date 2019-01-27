@@ -9,6 +9,11 @@ class User < ApplicationRecord
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 16
 
+  #Demoklasse anlegen
+  after_create do |user|
+    user.groups.create(label: 'Testklasse', demo: true)
+  end
+
   #Alle Schüler des Nutzers zurückliefern.
   def students
     Student.where(group_id: self.groups).all

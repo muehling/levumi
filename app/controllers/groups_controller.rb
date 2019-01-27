@@ -27,7 +27,9 @@ class GroupsController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    @group.destroy
+    unless @group.demo
+      @group.destroy
+    end
     head :ok   #200 als Rückmeldung an Vue-Component
   end
 

@@ -2,8 +2,8 @@
 
     <!-- Darstellung für reguläre Klasse: Schülertabelle -->
     <div v-if="groups[index].archive == false">
-        <div class="mb-2">
-            <!-- Form über Umbenennung -->
+        <div class='mb-2'>
+            <!-- Form zur Umbenennung -->
             <group-form
                     :group="groups[index]"
                     :index="index"
@@ -24,33 +24,34 @@
             Schüler_innen: {{groups[index].size}}
         </p>
         <!-- rails-ujs Link beinhaltet Auth_Token-->
-        <a class="btn"
-                :href="'/groups/' + groups[index].id"
-                data-method="put"
-                data-remote="true"
-                data-params="group[archive]=0"
-                v-on:ajax:success="update({index: index, object: $event.detail[0]})"
+        <a class='btn'
+           :href="'/groups/' + groups[index].id"
+           data-method='put'
+           data-remote='true'
+           data-params='group[archive]=0'
+           v-on:ajax:success="update({index: index, object: $event.detail[0]})"
         >
-            <i class="fas fa-file-import"></i> Klasse aus dem Archiv holen
+            <i class='fas fa-file-import'></i> Klasse aus dem Archiv holen
         </a>
 
         <!-- rails-ujs Link beinhaltet Auth_Token-->
-        <a class="btn btn-danger"
-                :href="'/groups/' + groups[index].id"
-                data-method="delete"
-                data-remote="true"
-                data-confirm="Die Klasse wird mit allen Schüler_innen und allen Messergebnissen gelöscht! Sind Sie sicher?"
-                v-on:ajax:success="remove(index)"
+        <a class='btn btn-danger'
+           :href="'/groups/' + groups[index].id"
+           v-if="!groups[index].demo"
+           data-method='delete'
+           data-remote='true'
+           data-confirm='Die Klasse wird mit allen Schüler_innen und allen Messergebnissen gelöscht! Sind Sie sicher?'
+           v-on:ajax:success="remove(index)"
         >
-            <i class="fas fa-trash"></i> Klasse löschen
+            <i class='fas fa-trash'></i> Klasse löschen
         </a>
     </div>
 
 </template>
 
 <script>
-    import GroupForm from "./group-form";
-    import StudentList from "./student-list";
+    import GroupForm from './group-form';
+    import StudentList from './student-list';
 
     export default {
         components: {StudentList, GroupForm},
@@ -67,13 +68,13 @@
         methods: {
             update(val) { //Klasse updaten und View aktualisieren
                 this.$set(this.groups, val.index, val.object);
-                this.$emit("update:groups", this.groups);
+                this.$emit('update:groups', this.groups);
             },
             remove(i) { //Klasse entfernen und View aktualisieren
                 this.groups.splice(i, 1);
-                this.$emit("update:groups", this.groups);
+                this.$emit('update:groups', this.groups);
             }
         },
-        name: "group-display"
+        name: 'group-display'
     }
 </script>
