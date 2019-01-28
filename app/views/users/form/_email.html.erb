@@ -1,15 +1,21 @@
 <!-- Input-Line für Email mit Fehlerangaben, wird in allen Forms verwendet -->
 
-<div class='form-group'>
-  <label for='email'>E-Mail Adresse</label>
-  <%= f.text_field :email, id: 'email', class: 'form-control'%>
-  <div class='invalid-feedback'>
-    <% if @user && @user.errors[:email].any? && @user.errors.details[:email].first[:error] == :blank %>
-      Darf nicht leer sein!
-    <% elsif @user && @user.errors[:email].any? && @user.errors.details[:email].first[:error] == :invalid %>
-      Bitte eine gültige E-Mail-Adresse angeben!
-    <% elsif @user && @user.errors[:email].any? && @user.errors.details[:email].first[:error] == :taken %>
-      E-Mail-Adresse ist bereits registriert!
+<div class='form-group row'>
+  <label for='email' class='col-sm-4 col-form-label'>E-Mail Adresse</label>
+  <div class='col-sm-8 pl-0'>
+    <% if readOnly %>
+      <input type='text' readonly class='form-control-plaintext' value='<%= user.email %>'>
+    <% else %>
+      <%= f.text_field :email, id: 'email', class: 'form-control'%>
+      <div class='invalid-feedback'>
+        <% if user && user.errors[:email].any? && user.errors.details[:email].first[:error] == :blank %>
+          Darf nicht leer sein!
+        <% elsif user && user.errors[:email].any? && user.errors.details[:email].first[:error] == :invalid %>
+          Bitte eine gültige E-Mail-Adresse angeben!
+        <% elsif user && user.errors[:email].any? && user.errors.details[:email].first[:error] == :taken %>
+          E-Mail-Adresse ist bereits registriert!
+        <% end %>
+      </div>
     <% end %>
   </div>
 </div>

@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password_digest"
+    t.string "security_digest"
     t.string "capabilities"
     t.datetime "last_login"
     t.integer "account_type"

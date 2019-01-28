@@ -5,7 +5,7 @@ module UsersHelper
   end
 
   def school_types
-    [['', nil], ['Grundschule', 1], ['Gesamtschule', 2], ['Gymnasium', 3], ['Förderschule', 4], ['Berufliche Schule', 5], ['Andere Schuleart', 6]]
+    [['', nil], ['Grundschule', 1], ['Gesamtschule', 2], ['Gymnasium', 3], ['Förderschule', 4], ['Berufliche Schule', 5], ['Andere Schulart', 6]]
   end
 
   def focus_types

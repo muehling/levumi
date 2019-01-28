@@ -1,0 +1,8 @@
+<!-- Auswahl des Bundeslands, in allen Forms verwendet -->
+
+<div class='form-group row'>
+  <%= f.label label, class: 'col-sm-4 col-form-label' %>
+  <div class='col-sm-8 pl-0'>
+    <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
+  </div>
+</div>

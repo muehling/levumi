@@ -81,7 +81,7 @@ class UsersController < ApplicationController
   private
 
   def user_attributes
-    params.require(:user).permit(:email, :password, :password_confirmation, :account_type, :state, :institution, :school_type, :focus)
+    params.require(:user).permit(:email, :password, :password_confirmation, :security_digest, :account_type, :state, :institution, :town, :school_type, :focus)
   end
 
   #Nutzernummer aus Parametern holen und User laden

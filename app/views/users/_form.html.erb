@@ -2,12 +2,12 @@
 
 <%= form_for user, remote: true, namespace: user.id, html: {autocomplete: 'off', onsubmit: "sessionStorage['new_login'] = $('##{user.id}_password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
 
-  <%= render 'users/form/email', f: f %>
+  <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>
 
   <div class='form-group'>
     <label for='password'>Passwort</label>
     <%= f.password_field :password, id:'password', class: 'form-control', placeholder: 'Neues Passwort'%>
-    <small id="passwordHelp" class="form-text text-muted">Passwort bleibt unverändert, wenn nichts eingegeben wird.</small>
+    <small id='passwordHelp' class='form-text text-muted'>Passwort bleibt unverändert, wenn nichts eingegeben wird.</small>
     <%= f.password_field :password_confirmation, class: 'form-control mt-1', placeholder: 'Neues Passwort bestätigen'%>
     <div class='invalid-feedback'>
       <% if user.errors[:password].any? %>
@@ -18,21 +18,25 @@
     </div>
   </div>
 
+  <div class='form-group'>
+    <label for='password'>In welcher Stadt wurden Sie geboren?</label>
+    <%= f.hidden_field :security_digest, id:'security_digest' %>
+    <input type='text' id='<%= user.id %>_security' class='form-control', placeholder='Antwort', onchange="$('#<%= user.id %>_security_digest').val( sjcl.encrypt($('#<%= user.id %>_security').val(), sessionStorage['login']));"/>
+    <small id='securityHelp' class='form-text text-muted'>
+      Wenn Sie Ihr Passwort vergessen, können Sie es mit Hilfe der Antwort auf die Sicherheitsfrage wiederherstellen. Ihre Antwort wird nur verschlüsselt gespeichert.
+    </small>
+  </div>
+
   <% if @login.has_capability?('user') %>    <!-- Nutzer darf seinen eigenen Accounttyp nicht ändern (?) -->
     <%= render 'users/form/type', f: f, label: 'Typ' %>
   <% end %>
 
-  <div class='form-group row'>
-    <%= f.label 'Bundesland', class: 'col-sm-3 col-form-label' %>
-    <div class='col-sm-9'>
-      <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
-    </div>
-  </div>
+  <%= render 'users/form/state', f: f, label: 'Bundesland' %>
 
   <% if user.account_type == 1 %>
     <div class='form-group row'>
-      <%= f.label 'Institution', class: 'col-sm-3 col-form-label' %>
-      <div class='col-sm-9'>
+      <%= f.label 'Institution', class: 'col-sm-4 col-form-label' %>
+      <div class='col-sm-8 pl-0'>
         <%= f.text_field :institution, id: 'institution', class: 'form-control'%>
         <small id="focusHelp" class="form-text text-muted">An welcher Forschungseinrichtung sind Sie tätig?</small>
       </div>
@@ -41,21 +45,21 @@
 
   <% if user.account_type == 0 %>
     <div class='form-group row'>
-      <%= f.label 'Ort', class: 'col-sm-3 col-form-label' %>
-      <div class='col-sm-9'>
+      <%= f.label 'Ort', class: 'col-sm-4 col-form-label' %>
+      <div class='col-sm-8 pl-0'>
         <%= f.text_field :town, id: 'town', class: 'form-control'%>
         <small id="focusHelp" class="form-text text-muted">Wo befindet sich Ihre Schule?</small>
       </div>
     </div>
     <div class='form-group row'>
-      <%= f.label 'Schulart', class: 'col-sm-3 col-form-label' %>
-      <div class='col-sm-9'>
+      <%= f.label 'Schulart', class: 'col-sm-4 col-form-label' %>
+      <div class='col-sm-8 pl-0'>
         <%= f.select(:school_type, school_types, {}, {class: 'custom-select'}) %>
       </div>
     </div>
     <div class='form-group row'>
-      <%= f.label 'Tätigkeit', class: 'col-sm-3 col-form-label' %>
-      <div class='col-sm-9'>
+      <%= f.label 'Tätigkeit', class: 'col-sm-4 col-form-label' %>
+      <div class='col-sm-8 pl-0'>
         <%= f.select(:focus, focus_types, {}, {class: 'custom-select'}) %>
         <small id="focusHelp" class="form-text text-muted">Was ist Ihre überwiegende Tätigkeit?</small>
       </div>
