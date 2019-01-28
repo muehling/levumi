@@ -1,0 +1,6 @@
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        $('#modal-body').html("<%= escape_javascript render 'form', user: @login %>");
+        $('#modal').modal('show');
+    });
+</script>

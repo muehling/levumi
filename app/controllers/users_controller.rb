@@ -8,6 +8,13 @@ class UsersController < ApplicationController
   def show
     @groups = @login.groups.where(archive: false)  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
     @assessments = Assessment.where(group_id: @groups).all
+    if @login.is_new
+      @login.is_new = false
+      @login.save
+      render 'intro'
+    else
+      render 'show'
+    end
   end
 
   #GET /users/edit/:id
@@ -74,7 +81,7 @@ class UsersController < ApplicationController
   private
 
   def user_attributes
-    params.require(:user).permit(:email, :password, :password_confirmation, :account_type, :state)
+    params.require(:user).permit(:email, :password, :password_confirmation, :account_type, :state, :institution, :school_type, :focus)
   end
 
   #Nutzernummer aus Parametern holen und User laden

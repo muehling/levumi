@@ -1,13 +1,14 @@
 <!-- Form zum Ändern existierender User - entweder für eigene Daten oder als Admin -->
 
-<%= form_for user, remote: true, namespace: @user.id, html: {autocomplete: 'off', onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
+<%= form_for user, remote: true, namespace: user.id, html: {autocomplete: 'off', onsubmit: "sessionStorage['new_login'] = $('##{user.id}_password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
 
   <%= render 'users/form/email', f: f %>
 
   <div class='form-group'>
     <label for='password'>Passwort</label>
     <%= f.password_field :password, id:'password', class: 'form-control', placeholder: 'Neues Passwort'%>
-    <%= f.password_field :password_confirmation, class: 'form-control mt-1', placeholder: 'Passwort bestätigen'%>
+    <small id="passwordHelp" class="form-text text-muted">Passwort bleibt unverändert, wenn nichts eingegeben wird.</small>
+    <%= f.password_field :password_confirmation, class: 'form-control mt-1', placeholder: 'Neues Passwort bestätigen'%>
     <div class='invalid-feedback'>
       <% if user.errors[:password].any? %>
         Passwort muss mindestens 5 Zeichen haben!
@@ -27,6 +28,39 @@
       <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
     </div>
   </div>
+
+  <% if user.account_type == 1 %>
+    <div class='form-group row'>
+      <%= f.label 'Institution', class: 'col-sm-3 col-form-label' %>
+      <div class='col-sm-9'>
+        <%= f.text_field :institution, id: 'institution', class: 'form-control'%>
+        <small id="focusHelp" class="form-text text-muted">An welcher Forschungseinrichtung sind Sie tätig?</small>
+      </div>
+    </div>
+  <% end %>
+
+  <% if user.account_type == 0 %>
+    <div class='form-group row'>
+      <%= f.label 'Ort', class: 'col-sm-3 col-form-label' %>
+      <div class='col-sm-9'>
+        <%= f.text_field :town, id: 'town', class: 'form-control'%>
+        <small id="focusHelp" class="form-text text-muted">Wo befindet sich Ihre Schule?</small>
+      </div>
+    </div>
+    <div class='form-group row'>
+      <%= f.label 'Schulart', class: 'col-sm-3 col-form-label' %>
+      <div class='col-sm-9'>
+        <%= f.select(:school_type, school_types, {}, {class: 'custom-select'}) %>
+      </div>
+    </div>
+    <div class='form-group row'>
+      <%= f.label 'Tätigkeit', class: 'col-sm-3 col-form-label' %>
+      <div class='col-sm-9'>
+        <%= f.select(:focus, focus_types, {}, {class: 'custom-select'}) %>
+        <small id="focusHelp" class="form-text text-muted">Was ist Ihre überwiegende Tätigkeit?</small>
+      </div>
+    </div>
+  <% end  %>
 
   <%= f.submit 'Aktualisieren', class: 'btn btn-outline-success'%>
   <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
