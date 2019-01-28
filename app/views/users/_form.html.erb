@@ -1,14 +1,14 @@
 <!-- Form zum Ändern existierender User - entweder für eigene Daten oder als Admin -->
 
-<%= form_for user, remote: true, namespace: @user.id, html: {autocomplete: "off", onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
+<%= form_for user, remote: true, namespace: @user.id, html: {autocomplete: 'off', onsubmit: "sessionStorage['new_login'] = $('#password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
 
   <%= render 'users/form/email', f: f %>
 
-  <div class="form-group">
-    <label for="password">Passwort</label>
-    <%= f.password_field :password, id:"password", class: "form-control", placeholder: "Neues Passwort"%>
-    <%= f.password_field :password_confirmation, class: "form-control mt-1", placeholder: "Passwort bestätigen"%>
-    <div class="invalid-feedback">
+  <div class='form-group'>
+    <label for='password'>Passwort</label>
+    <%= f.password_field :password, id:'password', class: 'form-control', placeholder: 'Neues Passwort'%>
+    <%= f.password_field :password_confirmation, class: 'form-control mt-1', placeholder: 'Passwort bestätigen'%>
+    <div class='invalid-feedback'>
       <% if user.errors[:password].any? %>
         Passwort muss mindestens 5 Zeichen haben!
       <% else  %>
@@ -21,13 +21,13 @@
     <%= render 'users/form/type', f: f, label: 'Typ' %>
   <% end %>
 
-  <div class="form-group row">
-    <%= f.label "Bundesland", class: "col-sm-3 col-form-label" %>
-    <div class="col-sm-9">
-      <%= f.select(:state, federal_states, {}, {class: "custom-select"}) %>
+  <div class='form-group row'>
+    <%= f.label 'Bundesland', class: 'col-sm-3 col-form-label' %>
+    <div class='col-sm-9'>
+      <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
     </div>
   </div>
 
-  <%= f.submit 'Aktualisieren', class: "btn btn-outline-success"%>
-  <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
+  <%= f.submit 'Aktualisieren', class: 'btn btn-outline-success'%>
+  <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>

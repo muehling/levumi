@@ -1,10 +1,14 @@
 <template>
-    <div class="mt-3">
-        <table class="table table-condensed table-striped vue-table">
+    <div class='mt-3'>
+        <table class='table table-condensed table-striped vue-table'>
             <thead>
             <tr>
                 <th>Name</th>
                 <th>Login-Code</th>
+                <th>Geschlecht</th>
+                <th>Geburtsmonat</th>
+                <th>Förderbedarf</th>
+                <th>Migrationshintergrund</th>
                 <th>Bearbeiten</th>
             </tr>
             </thead>
@@ -33,7 +37,7 @@
 </template>
 
 <script>
-    import StudentRow from "./student-row";
+    import StudentRow from './student-row';
 
     export default {
         components: {StudentRow},
@@ -61,6 +65,6 @@
                 groups[this.group] = this.students;
             }
         },
-        name: "student-list"
+        name: 'student-list'
     }
 </script>

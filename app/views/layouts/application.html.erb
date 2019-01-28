@@ -4,7 +4,7 @@
     <%= render 'layouts/header' %>
 
     <!-- sonstige Libaries -->
-    <script src="/javascript/sjcl.js"></script>
+    <script src='/javascript/sjcl.js'></script>
 
     <!-- Style für Spinner - TODO: evtl. besser woanders? -->
     <style>
@@ -53,7 +53,7 @@
     </style>
 
     <script>
-        //TODO: Besser woanders?
+        //TODO: woanders?
         <%
           #Schülernamen verfügbar machen
           groups = {}
@@ -74,7 +74,7 @@
           }
           catch(e){
               console.error(e.toString());
-              console.log("Entschlüsselung fehlgeschlagen"); //Log-Output (evtl. nicht in Production?)
+              console.log('Entschlüsselung fehlgeschlagen'); //Log-Output (evtl. nicht in Production?)
               res = alt;
           }
           return res;
@@ -96,7 +96,7 @@
       //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
-              this[key][i].name = decrypt(this[key][i].name, "Kind_" + this[key][i].id);
+              this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id);
           }, groups);
 
     </script>
@@ -110,10 +110,10 @@
   <%= yield %>
 
   <!-- Platz für Dialoge etc -->
-  <div id="modal" class="modal fade" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-body" id="modal-body">
+  <div id='modal' class='modal fade' tabindex='-1'>
+    <div class='modal-dialog'>
+      <div class='modal-content'>
+        <div class='modal-body' id='modal-body'>
         </div>
       </div>
     </div>

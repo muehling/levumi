@@ -3,7 +3,7 @@
         <b-tabs pills card vertical>
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
-            <b-tab title="Neue Messung">
+            <b-tab title='Neue Messung'>
                 <b-button v-for="student in students"
                           :key="student.id"
                 >
@@ -12,12 +12,12 @@
             </b-tab>
 
             <!-- Auswertungstab -->
-            <b-tab title="Auswertung" active>
+            <b-tab title='Auswertung' active>
                Auswertung
             </b-tab>
 
             <!-- Liste der Messungen anzeigen -->
-            <b-tab title="Messungen">
+            <b-tab title='Messungen'>
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -26,21 +26,21 @@
                     <b-col><b>Details</b></b-col>
                 </b-row>
                 <!-- Nach Wochen gruppierte Einträge -->
-                <div v-for="(date, index) in Object.keys(results)" class="mt-2">
+                <div v-for="(date, index) in Object.keys(results)" class='mt-2'>
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ results[date].length}}</b-col>
                         <b-col>
-                            <b-btn v-b-toggle="'collapse' + index" class="btn btn-outline-primary">
-                                <i class="when-closed fas fa-search-plus"></i>
-                                <i class="when-opened fas fa-search-minus"></i>
+                            <b-btn v-b-toggle="'collapse' + index" class='btn'>
+                                <i class='when-closed fas fa-search-plus'></i>
+                                <i class='when-opened fas fa-search-minus'></i>
                             </b-btn>
                         </b-col>
                     </b-row>
                     <!-- Aufklappbare Details -->
                     <b-collapse :id="'collapse' + index">
-                        <b-card class="mt-2">
-                            <table class="table table-striped table-borderless">
+                        <b-card class='mt-2'>
+                            <table class='table table-striped table-borderless'>
                                 <thead>
                                 <th>Datum</th>
                                 <th>Schüler/-in</th>
@@ -48,7 +48,7 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="result in results[date]">
-                                    <td>{{ print_date(result.created_at) }}</td>
+                                    <td>{{ print_date(result.updated_at) }}</td>
                                     <td>{{ student_name(result.student_id) }}</td>
                                 </tr>
                                 </tbody>
@@ -64,7 +64,6 @@
 
 <script>
     export default {
-        name: "assessment-view",
         props: {
             results: Object,
             group: Number
@@ -75,14 +74,15 @@
             },
             print_date(date) {   //Datumsanzeige formatieren
                 let d = new Date(date);
-                return d.toLocaleDateString("de-DE")
+                return d.toLocaleDateString('de-DE')
             }
         },
         data: function () {
             return {
-                students: groups[this.group] || []
+                students: groups[this.group] || []    //Zugriff aif globale Variable "groups"
             }
         },
+        name: 'assessment-view'
     }
 </script>
 

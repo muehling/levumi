@@ -2,19 +2,21 @@
     <b-container fluid>
         <div v-cloak>
             <b-row>
-                <b-col md="12" class="mt-3">
-                    <b-tabs pills>
+                <b-col md='12' class='mt-3'>
 
-                        <div slot="empty">
-                            <div class="text-center text-muted">
+                    <!-- Klassenauswahl nur bei mehreren Klassen anzeigen (=> Privatpersonen...) -->
+                    <b-tabs pills v-if="groups.length > 1">
+
+                        <div slot='empty'>
+                            <div class='text-center text-muted'>
                                 Keine aktuellen Klassen vorhanden.
                             </div>
                         </div>
 
                         <!-- Oberste Ebene - aktuelle Klassen -->
                         <b-tab v-for="(group, index) in groups"
-                                    :key="group.id"
-                                    :title="group.label"
+                               :key="group.id"
+                               :title="group.label"
                         >
 
                             <!-- Zweite Ebene - gewählte Klasse -->
@@ -27,6 +29,13 @@
                         </b-tab>
 
                     </b-tabs>
+
+                    <!-- Ansonsten Klasse vorauswählen -->
+                    <group-view v-else
+                                :group="groups[0]"
+                                :group_info="group_info[0]">
+                    </group-view>
+
                 </b-col>
             </b-row>
         </div>
@@ -35,7 +44,7 @@
 </template>
 
 <script>
-    import GroupView from "./group-view";
+    import GroupView from './group-view';
     export default {
         components: {GroupView},
         data: function () {
@@ -44,6 +53,6 @@
                 group_info: this.$root.group_info
             }
         },
-        name: "home-app"
+        name: 'home-app'
     }
 </script>

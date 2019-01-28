@@ -36,11 +36,11 @@ class User < ApplicationRecord
   def get_account_type
     case account_type
     when 0
-      "Lehrkraft"
+      'Lehrkraft'
     when 1
-      "Forscher_in"
+      'Forscher_in'
     else
-      "Sonstiges (Privat, System)"
+      'Privat'
     end
   end
 

@@ -4,6 +4,10 @@ class CreateStudents < ActiveRecord::Migration[5.2]
       t.string :name
       t.string :login
       t.belongs_to :group, index: true, foreign_key: {on_delete: :cascade}
+      t.integer :gender
+      t.date :birthmonth
+      t.integer :sen
+      t.boolean :migration
       t.timestamps
     end
   end

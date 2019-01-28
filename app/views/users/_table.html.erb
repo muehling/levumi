@@ -1,28 +1,28 @@
 <!-- Alle Nutzer in Tabelle darstellen -->
-<table class="table table-hover">
-  <thead class="thead-light">
+<table class='table table-hover'>
+  <thead class='thead-light'>
   <tr>
-    <th scope="col">ID</th>
-    <th scope="col">E-Mail Adresse</th>
-    <th scope="col">Account-Typ</th>
-    <th scope="col">Bundesland</th>
-    <th scope="col">Zuletzt eingeloggt am</th>
-    <th scope="col">Aktionen</th>
+    <th scope='col'>ID</th>
+    <th scope='col'>E-Mail Adresse</th>
+    <th scope='col'>Account-Typ</th>
+    <th scope='col'>Bundesland</th>
+    <th scope='col'>Zuletzt eingeloggt am</th>
+    <th scope='col'>Aktionen</th>
   </tr>
   </thead>
   <tbody>
   <% @users.each do |user| %>
     <tr>
-      <th scope="row"><%= user.id %></th>
+      <th scope='row'><%= user.id %></th>
       <td><%= user.email %></td>
       <td><%= user.get_account_type %></td>
       <td><%= state_to_s user.state %></td>
-      <td><%= user.last_login.nil? ? 'Nie' : user.last_login.strftime("%d.%m.%Y - %H:%M") %></td>
+      <td><%= user.last_login.nil? ? 'Nie' : user.last_login.strftime('%d.%m.%Y - %H:%M') %></td>
       <td>
-        <%= link_to edit_user_path(user), remote: true do %><button class="btn btn-outline-success"><i class="fas fa-user-edit"></i> Bearbeiten</button><% end %>
-        <%= link_to user_path(user), method: :delete, remote: true, data: {confirm: "Sind Sie sicher?"} do %><button class="btn btn-outline-danger"><i class="fas fa-trash"></i> Löschen</button><% end %>
+        <%= link_to edit_user_path(user), remote: true do %><button class='btn btn-outline-success'><i class='fas fa-user-edit'></i> Bearbeiten</button><% end %>
+        <%= link_to user_path(user), method: :delete, remote: true, data: {confirm: 'Sind Sie sicher?'} do %><button class='btn btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
         <% if user.id != @login.id %>
-          <%= link_to login_path(user: user.id) do %><button class="btn btn-outline-secondary"><i class="fas fa-user-md"></i> Einloggen als</button><% end %>
+          <%= link_to login_path(user: user.id) do %><button class='btn btn-outline-secondary'><i class='fas fa-user-md'></i> Einloggen als</button><% end %>
         <% end %>
       </td>
     </tr>

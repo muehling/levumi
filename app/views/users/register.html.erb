@@ -1,18 +1,18 @@
 <div class='container-fluid'>
   <div class='card card-body mt-5 ml-5 mr-5'>
     <h2>Einverständnis</h2>
-    <p class="text-justify">
+    <p class='text-justify'>
       Ich bin damit einverstanden, dass meine Daten gemäß der Datenschutzerklärung im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
       Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben, Sie können Ihre Daten jederzeit löschen!
     </p>
-    <p class="text-justify">
+    <p class='text-justify'>
       Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Eltern, Schulleiter, ggf. Betreuungslehrkaft) einhole.
       Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für einen Elternbrief finden Sie oben nach dem Einloggen im Menü.
     </p>
     <% if @user.tc_accepted.nil? %>
-      <%= link_to "Bestätigen und Weiter", register_user_path(@user), method: :post, class: 'btn btn-outline-success' %>
+      <%= link_to 'Bestätigen und Weiter', register_user_path(@user), method: :post, class: 'btn btn-outline-success' %>
     <% else %>
-      <p class="text-muted">Akzeptiert am: <%= @user.tc_accepted.strftime("%d.%m.%Y - %H:%M") %></p>
+      <p class='text-muted'>Akzeptiert am: <%= @user.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
     <% end %>
   </div>
 </div>

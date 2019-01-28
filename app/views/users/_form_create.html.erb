@@ -1,18 +1,18 @@
 <!-- Form zum Anlegen von Nutzern im Backend -->
 
-<%= form_for user, remote: true, namespace: 'new', html: {autocomplete: "off"} do |f| %>
+<%= form_for user, remote: true, namespace: 'new', html: {autocomplete: 'off'} do |f| %>
 
   <%= render 'users/form/email', f: f %>
 
   <%= render 'users/form/type', f: f, label: 'Typ' %>
 
-  <div class="form-group row">
-    <%= f.label "Bundesland", class: "col-sm-3 col-form-label" %>
-    <div class="col-sm-9">
-      <%= f.select(:state, federal_states, {}, {class: "custom-select"}) %>
+  <div class='form-group row'>
+    <%= f.label 'Bundesland', class: 'col-sm-3 col-form-label' %>
+    <div class='col-sm-9'>
+      <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
     </div>
   </div>
 
-  <%= f.submit 'Anlegen', class: "btn btn-outline-success"%>
+  <%= f.submit 'Anlegen', class: 'btn btn-outline-success'%>
 
 <% end %>

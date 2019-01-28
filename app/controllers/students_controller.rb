@@ -23,7 +23,7 @@ class StudentsController < ApplicationController
   #PUT /students/:id
   def update   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     s = Student.find(params[:id])
-    unless s.nil? || s.group.user.id != @login.id || !s.update_attributes(params.require(:student).permit(:name))
+    unless s.nil? || s.group.user.id != @login.id || !s.update_attributes(params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration))
       render json: s
     else
       head 304

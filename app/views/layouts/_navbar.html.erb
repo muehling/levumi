@@ -1,61 +1,61 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#"><img src="/favicon.ico" alt="Levumi" width="48" height="48"/>Levumi</a>
+<nav class='navbar navbar-expand-lg navbar-light bg-light'>
+  <a class='navbar-brand' href='#'><img src='/favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
 
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
+  <button class='navbar-toggler' type='button' data-toggle='collapse' data-target='#navbarContent' aria-controls='navbarContent' aria-expanded='false' aria-label='Toggle navigation'>
+    <span class='navbar-toggler-icon'></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarContent">
+  <div class='collapse navbar-collapse' id='navbarContent'>
 
-    <ul class="navbar-nav ml-3">
-      <li class="nav-item active">
-        <%= link_to "Start", '/start', class: "nav-link", id: "navbarHome"%>
+    <ul class='navbar-nav ml-3'>
+      <li class='nav-item active'>
+        <%= link_to 'Start', '/start', class: 'nav-link', id: 'navbarHome'%>
       </li>
-      <li class="nav-item">
-        <%= link_to "Klassenbuch", '/klassenbuch', class: "nav-link", id: 'navbarKlassenbuch'%>
+      <li class='nav-item'>
+        <%= link_to 'Klassenbuch', '/klassenbuch', class: 'nav-link', id: 'navbarKlassenbuch'%>
       </li>
-      <li class="nav-item">
-        <a class="nav-link" href="#">Material</a>
+      <li class='nav-item'>
+        <a class='nav-link' href='#'>Material</a>
       </li>
-      <li class="nav-item">
-        <%= link_to "Testinfos", tests_path, class: "nav-link", id: 'navbarTests'%>
+      <li class='nav-item'>
+        <%= link_to 'Testinfos', tests_path, class: 'nav-link', id: 'navbarTests'%>
       </li>
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarHelp" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <li class='nav-item dropdown'>
+        <a class='nav-link dropdown-toggle' href='#' id='navbarHelp' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           Hilfe
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarHelp">
-          <a class="dropdown-item" href="#">Handbuch</a>
-          <a class="dropdown-item" href="#">Videos</a>
-          <a class="dropdown-item" href="#">Blog</a>
+        <div class='dropdown-menu' aria-labelledby='navbarHelp'>
+          <a class='dropdown-item' href='#'>Handbuch</a>
+          <a class='dropdown-item' href='#'>Videos</a>
+          <a class='dropdown-item' href='#'>Blog</a>
         </div>
       </li>
       <% unless @masquerade %>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarProfile" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <li class='nav-item dropdown'>
+          <a class='nav-link dropdown-toggle' href='#' id='navbarProfile' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
             Profil
           </a>
-          <div class="dropdown-menu" aria-labelledby="navbarProfile">
-            <%= link_to "Meine Daten", edit_user_path(@login), class: "dropdown-item", id: 'navbarMyData', remote: true%>
-            <a class="dropdown-item" href="/logout" data-method="post">Ausloggen</a>
+          <div class='dropdown-menu' aria-labelledby='navbarProfile'>
+            <%= link_to 'Meine Daten', edit_user_path(@login), class: 'dropdown-item', id: 'navbarMyData', remote: true%>
+            <a class='dropdown-item' href='/logout' data-method='post'>Ausloggen</a>
           </div>
         </li>
       <% end %>
     </ul>
     <% if @masquerade || !@login.is_regular_user? %>
-      <ul class="navbar-nav ml-auto">
+      <ul class='navbar-nav ml-auto'>
         <% if @masquerade %>
-          <li class="nav-item">
-            <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: "nav-link btn btn-outline-secondary", id: "navbarMasquerade"%>
+          <li class='nav-item'>
+            <%= link_to 'Sitzung als #{@login.email} beenden', '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
           </li>
         <% else %>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarSystem" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <li class='nav-item dropdown'>
+            <a class='nav-link dropdown-toggle' href='#' id='navbarSystem' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
               System
             </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarSystem">
-              <%= link_to_if @login.has_capability?('user'), "Benutzerverwaltung", users_path, class: "dropdown-item"%>
-              <a class="dropdown-item" href="#">Datenexport</a>
+            <div class='dropdown-menu dropdown-menu-right' aria-labelledby='navbarSystem'>
+              <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
+              <a class='dropdown-item' href='#'>Datenexport</a>
             </div>
           </li>
         <% end %>
@@ -65,13 +65,13 @@
 </nav>
 
 <script>
-    //Setzt einen Eintrag der Navbar auf "aktiv"
+    //Setzt einen Eintrag der Navbar auf 'aktiv'
     function highlightNavItem(item) {
-        //Klasse "active" von allen nav-items entfernen und dann bei übergebenem Element hinzufügen
-        let btns = document.getElementById("navbarContent").getElementsByClassName("active");
+        //Klasse 'active' von allen nav-items entfernen und dann bei übergebenem Element hinzufügen
+        let btns = document.getElementById('navbarContent').getElementsByClassName('active');
         for (let i = 0; i < btns.length; i++) {
-            btns[i].className = btns[i].className.replace(" active", "");
+            btns[i].className = btns[i].className.replace(' active', "");
         }
-        document.getElementById(item).className += " active";
+        document.getElementById(item).className += ' active';
     }
 </script>

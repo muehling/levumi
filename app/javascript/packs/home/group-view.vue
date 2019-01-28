@@ -1,7 +1,7 @@
 <template>
-    <b-card class="mt-3">
+    <b-card class='mt-3'>
 
-        <template slot="header">
+        <template slot='header'>
 
             <b-nav pills>    <!-- Aktuell in Assessments verwendete Lernbereiche -->
 
@@ -17,7 +17,7 @@
                 <!-- Noch verfügbare Lernbereiche als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="areasLeft()"
-                        text="<em>Neuer Lernbereich</em>"
+                        text='<em>Neuer Lernbereich</em>'
                         right
                 >
 
@@ -34,7 +34,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1">  <!-- Aktuell in Assessments verwendete Kompetenzen des gewählten Lernbereichs -->
+            <b-nav pills class='mt-1'>  <!-- Aktuell in Assessments verwendete Kompetenzen des gewählten Lernbereichs -->
 
                 <b-nav-item v-for="competence in group_info.competences"
                             :key="competence.info.id"
@@ -48,7 +48,7 @@
                 <!-- Noch verfügbare Kompetenzen des gewählten Lernbereichs als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="competencesLeft(area_selected)"
-                        text="<em>Neuer Kompetenzbereich</em>"
+                        text='<em>Neuer Kompetenzbereich</em>'
                         right
                 >
                     <b-dropdown-item
@@ -64,7 +64,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1"> <!-- Aktuell in Assessments verwendete Testfamilien der gewählten Kompetenz  -->
+            <b-nav pills class='mt-1'> <!-- Aktuell in Assessments verwendete Testfamilien der gewählten Kompetenz  -->
 
                 <b-nav-item v-for="family in group_info.families"
                             :key="family.info.id"
@@ -78,7 +78,7 @@
                 <!-- Noch verfügbare Testfamilien der gewählten Kompetenz als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="familiesLeft(competence_selected)"
-                        text="<em>Neuen Test verwenden</em>"
+                        text='<em>Neuen Test verwenden</em>'
                         right
                 >
                     <b-dropdown-item
@@ -94,7 +94,7 @@
 
             </b-nav>
 
-            <b-nav pills class="mt-1"> <!-- Aktuell in Assessments verwendete Niveaustufen der gewählten Testfamilie -->
+            <b-nav pills class='mt-1'> <!-- Aktuell in Assessments verwendete Niveaustufen der gewählten Testfamilie -->
 
                 <b-nav-item v-for="test in group_info.tests"
                             :key="test.info.id"
@@ -108,7 +108,7 @@
                 <!-- Noch verfügbare Niveaustufen der gewählten Testfamilie als Dropdown-->
                 <b-nav-item-dropdown
                         v-if="testsLeft(family_selected)"
-                        text="<em>Neue Niveaustufe verwenden</em>"
+                        text='<em>Neue Niveaustufe verwenden</em>'
                         right
                 >
                     <b-dropdown-item
@@ -129,10 +129,10 @@
         <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
         <div v-if="updating">
             <b-row>
-                <div class="spinner">
-                    <div class="bounce1"></div>
-                    <div class="bounce2"></div>
-                    <div class="bounce3"></div>
+                <div class='spinner'>
+                    <div class='bounce1'></div>
+                    <div class='bounce2'></div>
+                    <div class='bounce3'></div>
                 </div>
             </b-row>
         </div>
@@ -150,7 +150,7 @@
 </template>
 
 <script>
-    import AssessmentView from "./assessment-view"
+    import AssessmentView from './assessment-view';
     export default {
         components: {AssessmentView},
         props: {
@@ -222,13 +222,13 @@
                 this.test_selected = test;
                 this.updating = true;  //Spinner anzeigen
                 //AJAX-Request senden
-                fetch("/groups/" + this.group.id + "/assessments/" + this.test_selected, {
+                fetch('/groups/' + this.group.id + '/assessments/' + this.test_selected, {
                     headers: {
                         'Accept': 'text/javascript',
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
-                    credentials: "include"
+                    credentials: 'include'
                 })
                     .then(response => {
                         return response.text().then(text =>  {
@@ -239,20 +239,20 @@
             },
             //Neues Assessment anlegen und, bei Erfolg, laden.
             createAssessment(test) {
-                fetch("/groups/" + this.group.id + "/assessments/", {
+                fetch('/groups/' + this.group.id + '/assessments/', {
                     method: 'post',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
-                    credentials: "include",
-                    body: "test_id=" + test.info.id
+                    credentials: 'include',
+                    body: 'test_id=' + test.info.id
                 })
                     .then(response => this.loadAssessment(test.info.id));
             }
         },
-        name: "group-view"
+        name: 'group-view'
     }
 </script>
 

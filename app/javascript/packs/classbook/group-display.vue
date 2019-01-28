@@ -2,7 +2,7 @@
 
     <!-- Darstellung für reguläre Klasse: Schülertabelle -->
     <div v-if="groups[index].archive == false">
-        <div class='mb-2'>
+        <div class='mb-2' v-if="!readOnly">
             <!-- Form zur Umbenennung -->
             <group-form
                     :group="groups[index]"
@@ -57,7 +57,8 @@
         components: {StudentList, GroupForm},
         props: {
             groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
-            index: Number
+            index: Number,
+            readOnly: Boolean
         },
         computed: {
             date: function() {

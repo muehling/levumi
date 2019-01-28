@@ -59,6 +59,9 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.integer "student_id"
     t.integer "assessment_id"
     t.integer "prior_result_id"
+    t.date "test_date"
+    t.date "test_week"
+    t.date "expires_on"
     t.string "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -71,6 +74,10 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.string "name"
     t.string "login"
     t.integer "group_id"
+    t.integer "gender"
+    t.date "birthmonth"
+    t.integer "sen"
+    t.boolean "migration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_students_on_group_id"
@@ -89,6 +96,7 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.integer "test_family_id"
     t.string "level"
     t.string "information"
+    t.boolean "student_test"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

@@ -6,12 +6,12 @@
 
   <%= render 'users/form/type', f: f, label: 'Ich bin...' %>
 
-  <div class="form-group row">
-    <%= f.label :state, "Aus...", class: "col-sm-2 col-form-label" %>
-    <div class="col-sm-10">
-      <%= f.select(:state, federal_states, {}, {class: "custom-select"}) %>
+  <div class='form-group row'>
+    <%= f.label :state, 'Aus...', class: 'col-sm-2 col-form-label' %>
+    <div class='col-sm-10'>
+      <%= f.select(:state, federal_states, {}, {class: 'custom-select'}) %>
     </div>
   </div>
-  <%= f.submit 'Registrieren', class: "btn btn-outline-success"%>
-  <button class="btn btn-outline-secondary" onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
+  <%= f.submit 'Registrieren', class: 'btn btn-outline-success'%>
+  <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>

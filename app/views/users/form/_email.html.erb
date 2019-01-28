@@ -1,9 +1,9 @@
 <!-- Input-Line für Email mit Fehlerangaben, wird in allen Forms verwendet -->
 
-<div class="form-group">
-  <label for="email">E-Mail Adresse</label>
-  <%= f.text_field :email, id: "email", class: "form-control"%>
-  <div class="invalid-feedback">
+<div class='form-group'>
+  <label for='email'>E-Mail Adresse</label>
+  <%= f.text_field :email, id: 'email', class: 'form-control'%>
+  <div class='invalid-feedback'>
     <% if @user && @user.errors[:email].any? && @user.errors.details[:email].first[:error] == :blank %>
       Darf nicht leer sein!
     <% elsif @user && @user.errors[:email].any? && @user.errors.details[:email].first[:error] == :invalid %>

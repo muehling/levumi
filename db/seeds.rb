@@ -3,7 +3,7 @@ if Rails.env.development?
   #Spieldaten anlegen
 
   users = [
-      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 2, state: 1} ,
+      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 1, state: 1} ,
       {email: "user@user.de", password: "123", password_confirmation: "123", capabilities: "", account_type: 0, state: 1}
   ]
 
@@ -20,7 +20,7 @@ if Rails.env.development?
   students = [
       [
           [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
+              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}', gender: 0, sen: 0, migration: 0},
               {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
           ],
           [
@@ -89,8 +89,8 @@ if Rails.env.development?
       [
           [
              [
-                 {level: "Level 1"},
-                 {level: "Level 2"}
+                 {level: "Level 1", student_test: false},
+                 {level: "Level 2", student_test: true}
              ],
              [
                  {level: "Niveaustufe 1"}
@@ -105,15 +105,15 @@ if Rails.env.development?
 
   assessments = [
       {
-          group_id: 1,
+          group_id: 2,
           test_id: 1
       },
       {
-          group_id: 1,
+          group_id: 2,
           test_id: 2
       },
       {
-          group_id: 2,
+          group_id: 3,
           test_id: 1
       }
   ]
@@ -157,7 +157,8 @@ if Rails.env.development?
   assessments.each_with_index do |a, i|
     a = Assessment.create(a)
     results[i].each do |r|
-      a.results.create(r)
+      t = a.results.create(r)
+      t.save   # wg. test_week
     end
     a.save
   end
