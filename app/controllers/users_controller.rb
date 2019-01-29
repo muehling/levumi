@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: [:index, :show, :create, :register]
+  before_action :set_user, except: [:index, :show, :create, :register, :recover]
 
-  skip_before_action :set_login, only: [:create, :register]
+  skip_before_action :set_login, only: [:create, :register, :recover]
 
   #GET /start
   #GET /users/:id
@@ -100,6 +100,16 @@ class UsersController < ApplicationController
           redirect_to '/start' and return #Registrierung fertig, als nächstes noch Hilfe anzeigen
         end
       end
+    end
+  end
+
+  #GET /passwort
+  #POST /passwort
+  def recover
+    if request.post?
+      @user = User.find_by_email(params[:email])
+    else
+      render 'recover', layout: 'minimal'
     end
   end
 

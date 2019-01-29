@@ -10,11 +10,15 @@ Rails.application.routes.draw do
   get '/login', to: 'application#start_masquerade'
   get '/logout', to: 'application#end_masquerade'
 
-  #Einfache URLs für Haupt-SPAs und andere Seiten
+  #Einfache URLs für Haupt-SPAs
   get '/klassenbuch', to: 'groups#index'
   get '/start', to: 'users#show'
+
+  #Einfache URLs für andere Seiten/Funktionen
   get '/willkommen', to: 'users#register'
   patch '/willkommen', to: 'users#register'
+  get '/passwort', to: 'users#recover'
+  post '/passwort', to: 'users#recover'
 
   #Reguläres REST-Routing
   resources :users
