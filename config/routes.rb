@@ -14,13 +14,10 @@ Rails.application.routes.draw do
   get '/klassenbuch', to: 'groups#index'
   get '/start', to: 'users#show'
   get '/willkommen', to: 'users#register'
+  patch '/willkommen', to: 'users#register'
 
   #Reguläres REST-Routing
-  resources :users do
-    member do
-      post 'register', to: 'users#register'
-    end
-  end
+  resources :users
 
   resources :students do
     collection do

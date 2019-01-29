@@ -115,7 +115,7 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
     t.integer "school_type"
     t.integer "focus"
     t.datetime "tc_accepted"
-    t.boolean "is_new", default: true
+    t.integer "intro_state", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -1,0 +1,38 @@
+<div class='container-fluid'>
+  <div class='row'>
+    <div class='col-3'>
+    </div>
+    <div class='col-6'>
+      <div class='card card-header mt-5 ml-5 mr-5'>
+        <% if @user.intro_state == 1 %>
+          Schützen Sie den Zugriff auf Ihr Konto
+        <% else %>
+          Helfen Sie uns bei der Forschung
+        <% end %>
+      </div>
+      <div class='card card-body ml-5 mr-5'>
+        <%= form_for @user, url: '/willkommen', html: {autocomplete: 'off', onsubmit: @user.intro_state == 1 ? 'updatePassword();' : ''} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
+          <% if @user.intro_state == 1 %>
+            <%= render 'users/form/password', f: f, user: @user, namespace: false %>
+          <% else %>
+            <%= render 'users/form/extra_data', f: f, user: @user  %>
+          <% end %>
+          <%= f.submit @user.intro_state == 1 ? 'Weiter' : 'Registrierung abschließen', class: 'btn btn-outline-success'%>
+        <% end %>
+      </div>
+    </div>
+    <div class='col-3'>
+    </div>
+  </div>
+</div>
+
+<script>
+    function updatePassword() {
+        if ($('#password').val() != "") {
+            sessionStorage['new_login'] = $('#password').val();          //Passwort zum Umkodieren der Schülerdaten lokal speichern
+            $('#security_digest').val(sjcl.encrypt($('#security').val(), $('#password').val()));   //Neues Passwort mit Sicherheitsantwort verschlüsseln
+        }
+        else
+            $('#security_digest').val(sjcl.encrypt($('#security').val(), sessionStorage['login']));  //Altes Passwort mit (neuer) Sicherheitsantwort verschlüsseln
+}
+</script>

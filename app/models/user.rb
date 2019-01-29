@@ -88,4 +88,8 @@ class User < ApplicationRecord
     return pw
   end
 
+  def has_security?
+    return !security_digest.nil? && !security_digest.blank?
+  end
+
 end

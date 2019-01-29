@@ -13,7 +13,7 @@ class CreateUsers < ActiveRecord::Migration[5.2]
       t.integer :school_type
       t.integer :focus
       t.datetime :tc_accepted
-      t.boolean :is_new, default: true
+      t.integer :intro_state, default: 0
       t.timestamps
     end
   end

@@ -8,13 +8,7 @@ class UsersController < ApplicationController
   def show
     @groups = @login.groups.where(archive: false)  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
     @assessments = Assessment.where(group_id: @groups).all
-    if @login.is_new
-      @login.is_new = false
-      @login.save
-      render 'intro'
-    else
-      render 'show'
-    end
+    # Prüfen ob intro_state == 3 ? oder Lieber im AC für Overlays im Layout?
   end
 
   #GET /users/edit/:id
@@ -23,7 +17,7 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    if (!@login.security_digest.nil? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
+    if (@login.has_security? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
       @user.errors.add(:security_digest)
       render 'edit'
     elsif !@user.update_attributes(user_attributes)
@@ -68,14 +62,44 @@ class UsersController < ApplicationController
     end
   end
 
+  #GET /willkommen
+  #POST /willkommen
   def register
-    @user = User.find(session[:user])
-    if request.post?
-      @user.tc_accepted = Time.now
-      @user.save
-      redirect_to '/start'
-    else
-      render 'register', layout: 'minimal'
+    @user = User.find(session[:user])               #Login nicht gesetzt, da before action nicht ausgeführt.
+    redirect_to '/' if @user.nil?
+    #GET Anfrage standardmäßig nur am Anfang, oder bei Unterbrechung des Prozesses
+    if request.get?
+      if @user.intro_state == 1 || @user.intro_state == 2
+        render 'users/intro/forms', layout: 'minimal'
+      else
+        render 'users/intro/terms_and_conditions', layout: 'minimal'
+      end
+    end
+
+    if request.patch?
+      if params.has_key?('tc_accepted_1') && params.has_key?('tc_accepted_2')
+        @user.tc_accepted = Time.now
+        @user.intro_state = 1
+        @user.save
+        render 'users/intro/forms', layout: 'minimal' and return
+      else
+        if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
+          render 'users/intro/terms_and_conditions', layout: 'minimal' and return
+        end
+        if @user.intro_state == 1 #TC Accept => Passwort/Sicherheitsfrage wird akzeptiert
+          if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :security_digest))
+            @user.intro_state = 2
+            @user.save
+          end
+          render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
+        end
+        if @user.intro_state == 2 #TC Accept + erste Form => Zweite Form wird akzeptiert
+          @user.update_attributes(params.require(:user).permit(:state, :institution, :town, :school_type, :focus))  #Unkritische Attribute, deswegen kein Fehlercheck
+          @user.intro_state = 3
+          @user.save
+          redirect_to '/start' and return #Registrierung fertig, als nächstes noch Hilfe anzeigen
+        end
+      end
     end
   end
 
