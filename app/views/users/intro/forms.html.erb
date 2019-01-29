@@ -27,12 +27,12 @@
 </div>
 
 <script>
-    function updatePassword() {
-        if ($('#password').val() != "") {
-            sessionStorage['new_login'] = $('#password').val();          //Passwort zum Umkodieren der Schülerdaten lokal speichern
-            $('#security_digest').val(sjcl.encrypt($('#security').val(), $('#password').val()));   //Neues Passwort mit Sicherheitsantwort verschlüsseln
-        }
-        else
-            $('#security_digest').val(sjcl.encrypt($('#security').val(), sessionStorage['login']));  //Altes Passwort mit (neuer) Sicherheitsantwort verschlüsseln
-}
+
+    <% if @user.intro_state == 2 %>
+      //Neuen Login speichern!
+      //TODO: Ggf. Schüler umkodieren (falls Testschüler angelegt werden)!
+      if (sessionStorage['new_login'] != undefined)
+        sessionStorage['login'] = sessionStorage['new_login']
+    <% end %>
+
 </script>

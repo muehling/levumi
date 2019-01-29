@@ -4,7 +4,7 @@
 
   <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>  <!-- Nutzer darf E-Mail nicht nachträglich ändern (?) -->
 
-  <%= render 'users/forms/password', f: f, user: user, namespace: true %>
+  <%= render 'users/form/password', f: f, user: user, namespace: true %>
 
   <% if @login.has_capability?('user') %>    <!-- Nutzer darf eigenen Accounttyp nicht nachträglich ändern (?) -->
     <%= render 'users/form/type', f: f, label: 'Typ' %>
@@ -17,15 +17,3 @@
   <%= f.submit 'Aktualisieren', class: 'btn btn-outline-success'%>
   <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
 <% end %>
-
-<script>
-  function updatePassword() {
-      if ($('#<%= user.id %>_password').val() != "") {
-          sessionStorage['new_login'] = $('#<%= user.id %>_password').val();          //Passwort zum Umkodieren der Schülerdaten lokal speichern
-          $('#<%= user.id %>_security_digest').val(sjcl.encrypt($('#<%= user.id %>_security').val(), $('#<%= user.id %>_password').val()));   //Neues Passwort mit Sicherheitsantwort verschlüsseln
-      }
-      else
-          $('#<%= user.id %>_security_digest').val(sjcl.encrypt($('#<%= user.id %>_security').val(), sessionStorage['login']));  //Altes Passwort mit (neuer) Sicherheitsantwort verschlüsseln
-
-  }
-</script>

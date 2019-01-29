@@ -138,12 +138,17 @@
         },
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
-               return 'group=' + this.group +
-                   '&student[name]=' + encodeURIComponent(encrypt(this.name)) +
-                   '&student[gender]=' + this.gender +
-                   '&student[birthmonth]=' + this.year + '-' + (this.month + 1)  +
-                   '&student[sen]=' + this.sen +
-                   '&student[migration]=' + this.migration; //Namen vor dem Senden verschlüsseln
+               let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name));  //Namen vor dem Senden verschlüsseln
+                //Restliche Attribute anfügen, falls vorhanden
+               if (this.gender != null)
+                   res += '&student[gender]=' + this.gender;
+               if (this.year != null && this.month != null)
+                   res += '&student[birthmonth]=' +  this.year + '-' + (this.month + 1);
+               if (this.sen != null)
+                   res += '&student[sen]=' + this.sen;
+               if (this.migration != null)
+                   res += '&student[migration]=' + this.migration;
+               return res;
             },
             update(event) {                 //Wird bei erfolgreichem Create/Update aufgerufen
                 //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten

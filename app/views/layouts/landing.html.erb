@@ -50,8 +50,13 @@
           </div>
           <%= submit_tag 'Einloggen', class: 'btn btn-primary'%>
         <% end %>
+        <% if @retry %>
+          <a class='dropdown-item' href='#'>Passwort vergessen? Hier klicken!</a>
+        <% end %>
         <div class='dropdown-divider'></div>
         <a class='dropdown-item' href='#', onclick="$('#modal').modal('show');">Noch keinen Zugang? Hier kostenlos registrieren...</a>
+        <div class='dropdown-divider'></div>
+        <a class='dropdown-item' href='#'>Sie suchen den Zugang für Schüler_innen?</a>
       </div>
     </li>
   </ul>

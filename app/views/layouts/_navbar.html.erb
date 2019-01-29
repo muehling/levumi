@@ -46,7 +46,7 @@
       <ul class='navbar-nav ml-auto'>
         <% if @masquerade %>
           <li class='nav-item'>
-            <%= link_to 'Sitzung als #{@login.email} beenden', '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
+            <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
           </li>
         <% else %>
           <li class='nav-item dropdown'>
