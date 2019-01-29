@@ -8,7 +8,6 @@ class UsersController < ApplicationController
   def show
     @groups = @login.groups.where(archive: false)  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
     @assessments = Assessment.where(group_id: @groups).all
-    # Prüfen ob intro_state == 3 ? oder Lieber im AC für Overlays im Layout?
   end
 
   #GET /users/edit/:id
@@ -68,12 +67,18 @@ class UsersController < ApplicationController
     @user = User.find(session[:user])               #Login nicht gesetzt, da before action nicht ausgeführt.
     redirect_to '/' if @user.nil?
 
-    #GET Anfrage standardmäßig nur am Anfang, oder bei Unterbrechung des Prozesses
+    #GET Anfrage standardmäßig nur am Anfang und Ende, oder bei Unterbrechung des Prozesses
     if request.get?
       if @user.intro_state == 1 || @user.intro_state == 2
         render 'users/intro/forms', layout: 'minimal'
       else
-        render 'users/intro/terms_and_conditions', layout: 'minimal'
+        if @user.intro_state == 0  #Anfang des Intros
+          render 'users/intro/terms_and_conditions', layout: 'minimal'
+        else  #Ende => Weiterleiten zu show - Ggf. Fall intro_state == 3 noch abfragen, damit Popovers nochmal neu gestartet werden bei Abbruch
+          @user.intro_state = 4
+          @user.save
+          redirect_to '/start'
+        end
       end
     end
 
@@ -98,7 +103,8 @@ class UsersController < ApplicationController
           @user.update_attributes(params.require(:user).permit(:state, :institution, :town, :school_type, :focus))  #Unkritische Attribute, deswegen kein Fehlercheck
           @user.intro_state = 3
           @user.save
-          redirect_to '/start' and return #Registrierung fertig, als nächstes noch Hilfe anzeigen
+          @login = @user
+          render 'users/intro/help'
         end
       end
     end

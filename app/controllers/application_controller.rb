@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
     else
       if session.has_key?('user')               #Session existiert
         @login = User.find(session[:user])
-        if (@login.tc_accepted.nil? || @login.intro_state < 3)  #Registrierung noch nicht vollständig abgeschlossen
+        if (@login.tc_accepted.nil? || @login.intro_state < 4)  #Registrierung noch nicht vollständig abgeschlossen
           redirect_to '/willkommen'
         end
       else                                      #Sonst: Startseite

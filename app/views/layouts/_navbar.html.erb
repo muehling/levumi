@@ -8,19 +8,19 @@
   <div class='collapse navbar-collapse' id='navbarContent'>
 
     <ul class='navbar-nav ml-3'>
-      <li class='nav-item active'>
+      <li class='nav-item active' id='intro1'>
         <%= link_to 'Start', '/start', class: 'nav-link', id: 'navbarHome'%>
       </li>
-      <li class='nav-item'>
+      <li class='nav-item' id='intro2'>
         <%= link_to 'Klassenbuch', '/klassenbuch', class: 'nav-link', id: 'navbarKlassenbuch'%>
       </li>
-      <li class='nav-item'>
+      <li class='nav-item' id='intro3'>
         <a class='nav-link' href='#'>Material</a>
       </li>
-      <li class='nav-item'>
+      <li class='nav-item' id='intro4'>
         <%= link_to 'Testinfos', tests_path, class: 'nav-link', id: 'navbarTests'%>
       </li>
-      <li class='nav-item dropdown'>
+      <li class='nav-item dropdown' id='intro5'>
         <a class='nav-link dropdown-toggle' href='#' id='navbarHelp' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           Hilfe
         </a>
@@ -31,7 +31,7 @@
         </div>
       </li>
       <% unless @masquerade %>
-        <li class='nav-item dropdown'>
+        <li class='nav-item dropdown' id='intro6'>
           <a class='nav-link dropdown-toggle' href='#' id='navbarProfile' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
             Profil
           </a>
