@@ -6,12 +6,24 @@
 
 <body>
 
-<!-- Navbar mit Login-Dialog -->
+<!-- Navbar nur mit Logo -->
 <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
   <a class='navbar-brand' href='#'><img src='/favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
 </nav>
 
-<%= yield %>
+<div class='container-fluid'>
+  <div class='row'>
+    <div class='col-3'>
+    </div>
+    <div class='col-6'>
+
+    <%= yield %>
+
+    </div>
+    <div class='col-3'>
+    </div>
+  </div>
+</div>
 
 </body>
 </html>

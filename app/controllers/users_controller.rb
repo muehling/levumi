@@ -67,6 +67,7 @@ class UsersController < ApplicationController
   def register
     @user = User.find(session[:user])               #Login nicht gesetzt, da before action nicht ausgeführt.
     redirect_to '/' if @user.nil?
+
     #GET Anfrage standardmäßig nur am Anfang, oder bei Unterbrechung des Prozesses
     if request.get?
       if @user.intro_state == 1 || @user.intro_state == 2
