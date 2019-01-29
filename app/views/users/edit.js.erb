@@ -1,6 +1,6 @@
 <% if @user.new_record? %> //New im Tab rendern
-  $('#new_content').html("<%= escape_javascript render 'form_create', user: @user %>")
+  $('#new_content').html("<%= escape_javascript render 'users/form/form_create', user: @user %>")
 <% else %> //Edit im Modal rendern und anzeigen
-  $('#modal-body').html("<%= escape_javascript render 'form', user: @user %>");
+  $('#modal-body').html("<%= escape_javascript render 'users/form/form_update', user: @user %>");
   $('#modal').modal('show');
 <% end %>

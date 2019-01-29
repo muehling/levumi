@@ -23,12 +23,13 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    unless @user.update_attributes(user_attributes)
+    if (!@login.security_digest.nil? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
+      @user.errors.add(:security_digest)
+      render 'edit'
+    elsif !@user.update_attributes(user_attributes)
       render 'edit'
     else
-      if (@login.id != @user.id)  #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
-        @users = User.all
-      end
+        @users = User.all if (@login.id != @user.id)  #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
     end
   end
 

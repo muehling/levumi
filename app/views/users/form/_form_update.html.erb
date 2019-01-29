@@ -2,7 +2,7 @@
 
 <%= form_for user, remote: true, namespace: user.id, html: {autocomplete: 'off', onsubmit: "sessionStorage['new_login'] = $('##{user.id}_password').val();"} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
 
-  <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>
+  <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>  <!-- Nutzer darf E-Mail nicht nachträglich ändern (?) -->
 
   <div class='form-group'>
     <label for='password'>Passwort</label>
@@ -21,13 +21,19 @@
   <div class='form-group'>
     <label for='password'>In welcher Stadt wurden Sie geboren?</label>
     <%= f.hidden_field :security_digest, id:'security_digest' %>
-    <input type='text' id='<%= user.id %>_security' class='form-control', placeholder='Antwort', onchange="$('#<%= user.id %>_security_digest').val( sjcl.encrypt($('#<%= user.id %>_security').val(), sessionStorage['login']));"/>
-    <small id='securityHelp' class='form-text text-muted'>
-      Wenn Sie Ihr Passwort vergessen, können Sie es mit Hilfe der Antwort auf die Sicherheitsfrage wiederherstellen. Ihre Antwort wird nur verschlüsselt gespeichert.
-    </small>
+    <input type='text' id='<%= user.id %>_security' class='form-control <%= user.errors[:security_digest].any? ? 'is-invalid' : ''%>', placeholder='Antwort', onchange="$('#<%= user.id %>_security_digest').val( sjcl.encrypt($('#<%= user.id %>_security').val(), sessionStorage['login']));"/>
+    <% if user.errors[:security_digest].any? %>
+      <div class='invalid-feedback'>
+          Bitte geben Sie die Antwort bei einer Passwortänderung erneut ein!
+      </div>
+    <% else %>
+      <small id='securityHelp' class='form-text text-muted'>
+        Wenn Sie Ihr Passwort vergessen, können Sie es mit Hilfe der Antwort auf die Sicherheitsfrage wiederherstellen. Ihre Antwort wird nur verschlüsselt gespeichert.
+      </small>
+    <% end %>
   </div>
 
-  <% if @login.has_capability?('user') %>    <!-- Nutzer darf seinen eigenen Accounttyp nicht ändern (?) -->
+  <% if @login.has_capability?('user') %>    <!-- Nutzer darf eigenen Accounttyp nicht nachträglich ändern (?) -->
     <%= render 'users/form/type', f: f, label: 'Typ' %>
   <% end %>
 
