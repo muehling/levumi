@@ -11,7 +11,7 @@
                 <small id="nameHelp" class="form-text text-muted">Name wird verschlüsselt gespeichert.</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
-                <b-btn class='btn btn-sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
+                <b-btn size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
             </div>
         </td>
 
@@ -75,7 +75,7 @@
 
         <td>
             <span v-if="!empty && !editMode">
-                <b-btn class='btn btn-sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
+                <b-btn size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
             </span>
             <span v-else-if="editMode">
                 <b-button-toolbar>

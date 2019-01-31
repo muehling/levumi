@@ -258,7 +258,7 @@
 
 <style>
     .nav>li>a {
-        padding-top: 5px;
-        padding-bottom: 5px;
+        padding-top: 4px;
+        padding-bottom: 4px;
     }
 </style>

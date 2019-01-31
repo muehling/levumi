@@ -26,7 +26,7 @@
                                     <!-- Neue Klasse anlegen -->
                                     <b-tab>
                                         <template slot='title'>
-                                            <i class='fas fa-folder-plus'></i>
+                                            <i class='fas fa-folder-plus' title='Neue Klasse anlegen'></i>
                                         </template>
                                         <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
                                         <group-form

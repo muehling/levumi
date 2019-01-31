@@ -3,9 +3,9 @@
     <div>
         <!-- index == 0 => Neue Klasse anlegen, dort keine Edit-Optionen -->
         <div v-if="index > 0">
-            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_' + group.id" class='btn'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
+            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
 
-            <a class='btn btn-outline-secondary'
+            <a class='btn btn-sm btn-outline-secondary'
                :href="'/groups/' + group.id"
                data-method='put'
                data-remote='true'
@@ -37,24 +37,32 @@
                              v-model="label"
                              name='group[label]'
                              placeholder='Klassenbezeichner'
+                             size='sm'
                     />
-                    <!-- Button für neue Klasse, Validierung Name nicht leer -->
-                    <b-button v-if="index === 0"
-                              type='submit'
-                              variant='primary'
-                              :disabled="label.trim().length === 0"
-                    >
-                        Anlegen
-                    </b-button>
-                    <!-- Button für existierende Klasse Validierung Name nicht leer  -->
-                    <b-button v-else
-                              type='submit'
-                              variant='primary'
-                              :disabled="label.trim().length === 0"
-                              v-b-toggle="'collapse_' + group.id"
-                    >
-                        Ändern
-                    </b-button>
+                    <div v-if="index === 0">
+                        <!-- Button für neue Klasse, Validierung Name nicht leer -->
+                        <b-button
+                                type='submit'
+                                variant='outline-success'
+                                size='sm'
+                                :disabled="label.trim().length === 0"
+                        >
+                            Anlegen
+                        </b-button>
+                    </div>
+                    <div v-else>
+                        <!-- Button für existierende Klasse Validierung Name nicht leer  -->
+                        <b-button type='submit'
+                                  variant='outline-success'
+                                  size='sm'
+                                  title='Speichern'
+                                  :disabled="label.trim().length === 0"
+                                  v-b-toggle="'collapse_' + group.id"
+                        >
+                            <i class='fas fa-check'></i>
+                        </b-button>
+                        <b-button v-b-toggle="'collapse_' + group.id" variant='outline-dark' size='sm' title='Abbrechen'><i class='fas fa-times'></i></b-button>
+                    </div>
                 </b-form>
 
         </b-collapse>
