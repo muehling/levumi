@@ -11,7 +11,7 @@
                 <small id="nameHelp" class="form-text text-muted">Name wird verschlüsselt gespeichert.</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
-                <b-btn size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
+                <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
             </div>
         </td>
 
@@ -75,7 +75,7 @@
 
         <td>
             <span v-if="!empty && !editMode">
-                <b-btn size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
+                <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
             </span>
             <span v-else-if="editMode">
                 <b-button-toolbar>
@@ -94,7 +94,7 @@
                         </b-link>
                     </b-button-group>
                     <b-button-group>
-                        <b-link class='btn btn-sm btn-outline-dark mr-2' href='#' title='Abbrechen' @click="editMode = false"><i class='fas fa-times'></i></b-link>
+                        <b-link class='btn btn-sm btn-outline-secondary mr-2' href='#' title='Abbrechen' @click="editMode = false"><i class='fas fa-times'></i></b-link>
                     </b-button-group>
                     <b-button-group>
                         <!-- rails-ujs Link -->

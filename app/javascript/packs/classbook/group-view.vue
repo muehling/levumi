@@ -24,7 +24,7 @@
             Schüler_innen: {{groups[index].size}}
         </p>
         <!-- rails-ujs Link beinhaltet Auth_Token-->
-        <a class='btn btn-sm btn-outline-secondary'
+        <a class='btn btn-sm btn-outline-primary'
            :href="'/groups/' + groups[index].id"
            data-method='put'
            data-remote='true'
@@ -76,6 +76,6 @@
                 this.$emit('update:groups', this.groups);
             }
         },
-        name: 'group-display'
+        name: 'group-view'
     }
 </script>

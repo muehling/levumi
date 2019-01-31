@@ -5,11 +5,11 @@
             <b-col md='12'>
 
                 <div v-if="single"> <!-- nur eine Gruppe darstellen -->
-                    <group-display
+                    <group-view
                             :groups="groups"
                             :index="1"
                             :readOnly="true"
-                    ></group-display>
+                    ></group-view>
                 </div>
 
                 <div v-else> <!-- reguläre Darstellung mit Klassenliste -->
@@ -26,7 +26,7 @@
                                     <!-- Neue Klasse anlegen -->
                                     <b-tab>
                                         <template slot='title'>
-                                            <i class='fas fa-folder-plus' title='Neue Klasse anlegen'></i>
+                                            <i class='fas fa-folder-plus fa-lg' title='Neue Klasse anlegen'></i>
                                         </template>
                                         <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
                                         <group-form
@@ -48,11 +48,11 @@
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>
                                         </template>
-                                        <group-display
+                                        <group-view
                                                 :groups="groups"
                                                 :index="index"
                                                 :readOnly="false"
-                                        ></group-display>
+                                        ></group-view>
                                     </b-tab>
 
                                 </b-tabs>
@@ -84,10 +84,10 @@
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>
                                         </template>
-                                        <group-display
+                                        <group-view
                                                 :groups="groups"
                                                 :index="index"
-                                        ></group-display>
+                                        ></group-view>
                                     </b-tab>
                                 </b-tabs>
                             </b-card>
@@ -104,11 +104,11 @@
 
 <script>
     import GroupForm from './group-form';
-    import GroupDisplay from './group-display';
+    import GroupView from './group-view';
 
     export default {
         components: {
-            GroupDisplay, GroupForm
+            GroupView, GroupForm
         },
         data: function () {
             return {

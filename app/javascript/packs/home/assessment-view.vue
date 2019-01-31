@@ -4,11 +4,16 @@
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab title='Neue Messung'>
-                <b-button v-for="student in students"
-                          :key="student.id"
-                >
-                    {{student.name}}
-                </b-button>
+                <button-group>
+                    <!-- TODO: State ändern falls Ergebnis für aktuelle Woche schon vorhanden? -->
+                    <b-button v-for="student in students"
+                              :key="student.id"
+                              variant='outline-success'
+                              class='mr-2'
+                    >
+                        {{student.name}}
+                    </b-button>
+                </button-group>
             </b-tab>
 
             <!-- Auswertungstab -->
@@ -31,7 +36,7 @@
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ results[date].length}}</b-col>
                         <b-col>
-                            <b-btn v-b-toggle="'collapse' + index" class='btn'>
+                            <b-btn v-b-toggle="'collapse' + index" size='sm' variant='outline-secondary'>
                                 <i class='when-closed fas fa-search-plus'></i>
                                 <i class='when-opened fas fa-search-minus'></i>
                             </b-btn>
@@ -40,7 +45,7 @@
                     <!-- Aufklappbare Details -->
                     <b-collapse :id="'collapse' + index">
                         <b-card class='mt-2'>
-                            <table class='table table-striped table-borderless'>
+                            <table class='table table-striped table-sm table-borderless'>
                                 <thead>
                                 <th>Datum</th>
                                 <th>Schüler/-in</th>
