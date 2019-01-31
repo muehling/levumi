@@ -8,39 +8,35 @@
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
+                <small id="nameHelp" class="form-text text-muted">Name wird verschlüsselt gespeichert.</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
-                <b-btn class='btn' @click="editMode = true"><i class='fas fa-user-plus'></i> Schüler_in hinzufügen</b-btn>
+                <b-btn class='btn btn-sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
             </div>
         </td>
 
         <td>
-            <div v-if="!editMode">
+            <div v-if="editMode">
+                <small class='form-text text-muted'>nicht änderbar</small>
+            </div>
+            <div v-else>
                 {{ student.login }}
             </div>
-            <div v-else>
-                <span class='text-muted'>nicht änderbar</span>
-            </div>
-
         </td>
 
         <td>
-            <div v-if="!editMode">
-                <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
-                <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
-            </div>
-            <div v-else>
+            <div v-if="editMode">
                 <b-form-radio-group id="gender" v-model="gender" :options="options_gender" name='gender'>
                 </b-form-radio-group>
             </div>
+            <div v-else>
+                <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
+                <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
+            </div>
         </td>
 
         <td>
-            <div v-if="!editMode">
-                <span v-if="student.birthmonth != undefined">{{ student.birthmonth }}</span>
-                <span v-else-if="!empty" class='text-muted'>nicht erfasst</span>
-            </div>
-            <div v-else>
+            <div v-if="editMode">
                 <b-form-select v-model="month" size="sm">
                     <option v-for="(month, index) in months" :value="index">{{month}}</option>
                 </b-form-select>
@@ -48,59 +44,73 @@
                     <option v-for="year in years()" :value="year">{{year}}</option>
                 </b-form-select>
             </div>
+            <div v-else>
+                <span v-if="student.birthmonth != undefined">{{ student.birthmonth }}</span>
+                <span v-else-if="!empty" class='text-muted'>nicht erfasst</span>
+            </div>
         </td>
 
         <td>
-            <div v-if="!editMode">
+            <div v-if="editMode">
+                <b-form-select id="sen" v-model="sen" :options="options_sen" size='sm' />
+                <small id="focusHelp" class="form-text text-muted">Diagnostizierter sonderpädagogischer Förderbedarf?</small>
+            </div>
+            <div v-else>
                 <span v-if="student.sen != undefined">{{ options_sen[student.sen].text }}</span>
                 <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
             </div>
-            <div v-else>
-                <b-form-select id="sen" v-model="sen" :options="options_sen" size='sm' />
-            </div>
         </td>
 
         <td>
-            <div v-if="!editMode">
+            <div v-if="editMode">
+                <b-form-radio-group id="migration" v-model="migration" :options="options_migration" name='migration'>
+                </b-form-radio-group>
+                <small id="focusHelp" class="form-text text-muted">Kind oder Eltern im Ausland geboren?</small>
+            </div>
+            <div v-else>
                 <span v-if="student.migration != undefined">{{ options_migration[student.migration].text }}</span>
                 <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
             </div>
-            <div v-else>
-                <b-form-radio-group id="migration" v-model="migration" :options="options_migration" name='migration'>
-                </b-form-radio-group>
-            </div>
-
         </td>
 
         <td>
-            <div v-if="!empty && !editMode">
-                <b-btn class='btn' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
-            </div>
-            <div v-else-if="editMode">
-                <!-- rails-ujs Link -->
-                <b-link class='btn btn-success'
-                   :href="'/students' + (empty ? '' : '/' + student.id)"
-                   :disabled="name.length == 0"
-                   :data-method="empty ? 'post' : 'put'"
-                   data-remote='true'
-                   :data-params="collectData()"
-                   v-on:ajax:success="update"
-                >
-                    <i class='fas fa-check'></i> Speichern
-                </b-link>
-                <b-btn @click="editMode = false"><i class='fas fa-times'></i> Abbrechen</b-btn>
-                <!-- rails-ujs Link -->
-                <a v-if="!empty"
-                   class='btn btn-danger float-right'
-                   :href="'/students/' + student.id"
-                   data-method='delete'
-                   data-remote='true'
-                   data-confirm='Schüler_in mit allen Messergebnissen löschen! Sind Sie sicher?'
-                   v-on:ajax:success="remove"
-                >
-                    <i class='fas fa-trash'></i> Löschen
-                </a>
-            </div>
+            <span v-if="!empty && !editMode">
+                <b-btn class='btn btn-sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
+            </span>
+            <span v-else-if="editMode">
+                <b-button-toolbar>
+                    <b-button-group>
+                        <!-- rails-ujs Link -->
+                        <b-link class='btn btn-sm btn-outline-success mr-1'
+                                :href="'/students' + (empty ? '' : '/' + student.id)"
+                                title='Speichern'
+                                :disabled="name.length == 0"
+                                :data-method="empty ? 'post' : 'put'"
+                                data-remote='true'
+                                :data-params="collectData()"
+                                v-on:ajax:success="update"
+                        >
+                            <i class='fas fa-check'></i>
+                        </b-link>
+                    </b-button-group>
+                    <b-button-group>
+                        <b-link class='btn btn-sm btn-outline-dark mr-2' href='#' title='Abbrechen' @click="editMode = false"><i class='fas fa-times'></i></b-link>
+                    </b-button-group>
+                    <b-button-group>
+                        <!-- rails-ujs Link -->
+                        <a v-if="!empty"
+                           class='btn btn-block btn-sm btn-outline-danger'
+                           :href="'/students/' + student.id"
+                           data-method='delete'
+                           data-remote='true'
+                           :data-confirm="student.name +  ' mit allen Messergebnissen löschen! Sind Sie sicher?'"
+                           v-on:ajax:success="remove"
+                        >
+                            <i class='fas fa-trash'></i> Löschen
+                        </a>
+                    </b-button-group>
+                </b-button-toolbar>
+            </span>
         </td>
     </tr>
 

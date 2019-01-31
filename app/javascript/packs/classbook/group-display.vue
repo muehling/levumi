@@ -24,7 +24,7 @@
             Schüler_innen: {{groups[index].size}}
         </p>
         <!-- rails-ujs Link beinhaltet Auth_Token-->
-        <a class='btn'
+        <a class='btn btn-outline-secondary'
            :href="'/groups/' + groups[index].id"
            data-method='put'
            data-remote='true'
@@ -35,7 +35,7 @@
         </a>
 
         <!-- rails-ujs Link beinhaltet Auth_Token-->
-        <a class='btn btn-danger'
+        <a class='btn btn-outline-danger'
            :href="'/groups/' + groups[index].id"
            v-if="!groups[index].demo"
            data-method='delete'

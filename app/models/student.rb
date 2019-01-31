@@ -18,6 +18,7 @@ class Student < ApplicationRecord
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :migration])
     json['gender'] = self.gender unless self.gender.nil?
+    I18n.locale = :de
     json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%b %Y') unless self.birthmonth.nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['migration'] = (self.migration ? 1 : 0) unless self.migration.nil?

@@ -29,5 +29,7 @@ module Levumi2
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    I18n.config.available_locales = :de
   end
 end

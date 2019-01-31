@@ -1,6 +1,6 @@
 <template>
     <div class='mt-3'>
-        <table class='table table-condensed table-striped vue-table'>
+        <table class='table table-sm table-striped table-responsive-md'>
             <thead>
             <tr>
                 <th>Name</th>

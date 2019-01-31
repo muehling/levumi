@@ -5,7 +5,7 @@
         <div v-if="index > 0">
             <b-btn  v-if="!group.demo" v-b-toggle="'collapse_' + group.id" class='btn'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
 
-            <a class='btn'
+            <a class='btn btn-outline-secondary'
                :href="'/groups/' + group.id"
                data-method='put'
                data-remote='true'
