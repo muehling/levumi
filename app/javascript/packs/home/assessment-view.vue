@@ -4,7 +4,7 @@
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab title='Neue Messung'>
-                <button-group>
+                <b-button-group>
                     <!-- TODO: State ändern falls Ergebnis für aktuelle Woche schon vorhanden? -->
                     <b-button v-for="student in students"
                               :key="student.id"
@@ -13,12 +13,14 @@
                     >
                         {{student.name}}
                     </b-button>
-                </button-group>
+                </b-button-group>
             </b-tab>
 
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
-               Auswertung
+                <div id='chart'>
+                    <apexchart width='500' type='line' :options="options" :series="series"></apexchart>
+                </div>
             </b-tab>
 
             <!-- Liste der Messungen anzeigen -->
@@ -84,7 +86,22 @@
         },
         data: function () {
             return {
-                students: groups[this.group] || []    //Zugriff aif globale Variable "groups"
+                students: groups[this.group] || [],   //Zugriff aif globale Variable "groups"
+
+                options: {
+                    chart: {
+                        id: 'chart'
+                    },
+                    xaxis: {
+                        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
+                    }
+                },
+
+                series: [{
+                    name: 'series-1',
+                    data: [30, 40, 45, 50, 49, 60, 70, 91]
+                }]
+
             }
         },
         name: 'assessment-view'

@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_login, except: [:start, :login]
+  before_action :set_locale
 
   #GET '/'
   def start
@@ -68,6 +69,10 @@ class ApplicationController < ActionController::Base
         redirect_to '/'
       end
     end
+  end
+
+  def set_locale
+    I18n.locale = :de
   end
 
 end

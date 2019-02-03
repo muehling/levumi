@@ -1,17 +1,35 @@
 /* eslint no-console: 0 */
-import Vue from 'vue/dist/vue.esm'
 
+//Javascript
+
+//Rails-UJS für Links etc.
+import Rails from 'rails-ujs'
+//Vue und Komponenten
+import Vue from 'vue/dist/vue.esm'
+import BootstrapVue from 'bootstrap-vue'
+import VueApexCharts from 'vue-apexcharts'
+//Eigene Vue Komponenten
 import HomeApp from './home/home-app'
 import ClassBookApp from './classbook/classbook-app'
 
-import BootstrapVue from 'bootstrap-vue'
+//Stylesheets
+
+//FontAwesome für Icons
+import "@fortawesome/fontawesome-free/css/all.css"
+//Bootstrap-Styles
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+//Selbst definierte Styles
+import 'css/application.css'
 
-import Rails from 'rails-ujs'
+//Vorbereitungscode
+
 Rails.start();
-
 Vue.use(BootstrapVue);
+Vue.use(VueApexCharts);
+Vue.component('apexchart', VueApexCharts)
+
+//Setup für Vue-SPAs
 
 document.addEventListener('DOMContentLoaded', () => {
     const element = document.getElementById('levumi');
