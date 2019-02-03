@@ -19,7 +19,7 @@
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
                 <div id='chart'>
-                    <apexchart width='500' type='line' :options="options" :series="series"></apexchart>
+                    <apexchart width='1024' type='line' :options="options" :series="series"></apexchart>
                 </div>
             </b-tab>
 
@@ -89,17 +89,96 @@
                 students: groups[this.group] || [],   //Zugriff aif globale Variable "groups"
 
                 options: {
+                    annotations: {
+                        yaxis: [{
+                            y: 8200,
+                            borderColor: '#00E396',
+                            label: {
+                                borderColor: '#00E396',
+                                style: {
+                                    color: '#fff',
+                                    background: '#00E396',
+                                },
+                                text: 'Support',
+                            }
+                        }],
+                        xaxis: [{
+                            x: new Date('23 Nov 2017').getTime(),
+                            strokeDashArray: 0,
+                            borderColor: '#775DD0',
+                            label: {
+                                borderColor: '#775DD0',
+                                style: {
+                                    color: '#fff',
+                                    background: '#775DD0',
+                                },
+                                text: 'Anno Test',
+                            }
+                        }, {
+                            x: new Date('03 Dec 2017').getTime(),
+                            borderColor: '#FEB019',
+                            label: {
+                                borderColor: '#FEB019',
+                                style: {
+                                    color: '#fff',
+                                    background: '#FEB019',
+                                },
+                                orientation: 'horizontal',
+                                text: 'New Beginning',
+                            }
+                        }],
+                        points: [{
+                            x: new Date('27 Nov 2017').getTime(),
+                            y: 8506.9,
+                            marker: {
+                                size: 8,
+                                fillColor: '#fff',
+                                strokeColor: 'red',
+                                radius: 2
+                            },
+                            label: {
+                                borderColor: '#FF4560',
+                                offsetY: 0,
+                                style: {
+                                    color: '#fff',
+                                    background: '#FF4560',
+                                },
+
+                                text: 'Point Annotation',
+                            }
+                        }]
+                    },
                     chart: {
                         id: 'chart'
                     },
+                    dataLabels: {
+                        enabled: false
+                    },
+                    stroke: {
+                        curve: 'straight'
+                    },
+                    grid: {
+                        padding: {
+                            right: 30,
+                            left: 20
+                        }
+                    },
+                    title: {
+                        text: 'Line with Annotations',
+                        align: 'left'
+                    },
+                    labels: ['2017-11-13', '2017-11-27', '2017-12-01', '2017-12-13', '2017-12-23', '2018-01-01', '2018-01-13', '2018-01-23'],
                     xaxis: {
-                        categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-                    }
-                },
+                        type: 'datetime',
+                    },
+
+            },
 
                 series: [{
-                    name: 'series-1',
-                    data: [30, 40, 45, 50, 49, 60, 70, 91]
+                    name: 'Adam',
+                    data: [30, 40, 45, 50, 49, 60, 70, 91]},
+                    {name: 'Eva',
+                    data: [24, 37, 40, 37, 41, 52, 55, 60]
                 }]
 
             }
