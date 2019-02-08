@@ -1,5 +1,5 @@
 <template>
-    <b-card class='mt-3'>
+    <b-card class='mt-3' body-class='p-0'>
 
         <template slot='header'>
 

@@ -1,5 +1,5 @@
 <template>
-    <b-card no-body>
+    <b-card no-body border-variant='light'>
         <b-tabs pills card vertical>
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
@@ -18,8 +18,12 @@
 
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
-                <div id='chart'>
-                    <apexchart width='1024' type='line' :options="options" :series="series"></apexchart>
+                <div class='container'>
+
+                        <div class="aspect-ratio-box">
+                            <apexchart width='100%' height='auto' :options="options" :series="series"></apexchart>
+                        </div>
+
                 </div>
             </b-tab>
 
@@ -33,7 +37,10 @@
                     <b-col><b>Details</b></b-col>
                 </b-row>
                 <!-- Nach Wochen gruppierte Einträge -->
-                <div v-for="(date, index) in Object.keys(results)" class='mt-2'>
+                <div v-if="Object.keys(results).length == 0" class='mt-2'>
+                    <b-row><b-col><p class='text-center text-muted'>Keine Messungen vorhanden.</p></b-col></b-row>
+                </div>
+                <div v-else v-for="(date, index) in Object.keys(results)" class='mt-2'>
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ results[date].length}}</b-col>
@@ -149,7 +156,9 @@
                         }]
                     },
                     chart: {
-                        id: 'chart'
+                        id: 'chart',
+                        type: 'line',
+                        responsive: false
                     },
                     dataLabels: {
                         enabled: false
@@ -159,19 +168,14 @@
                     },
                     grid: {
                         padding: {
-                            right: 30,
-                            left: 20
+                            right: 15,
+                            left: 15
                         }
-                    },
-                    title: {
-                        text: 'Line with Annotations',
-                        align: 'left'
                     },
                     labels: ['2017-11-13', '2017-11-27', '2017-12-01', '2017-12-13', '2017-12-23', '2018-01-01', '2018-01-13', '2018-01-23'],
                     xaxis: {
                         type: 'datetime',
                     },
-
             },
 
                 series: [{
@@ -192,5 +196,22 @@
     .collapsed > .when-opened,
     :not(.collapsed) > .when-closed {
         display: none;
+    }
+
+    .aspect-ratio-box {
+        background: white;
+    }
+    .aspect-ratio-box::before {
+        content: "";
+        width: 1px;
+        margin-left: -1px;
+        float: left;
+        height: 0;
+        padding-top: 56.6%;
+    }
+    .aspect-ratio-box::after { /* to clear float */
+        content: "";
+        display: table;
+        clear: both;
     }
 </style>
