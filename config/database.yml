@@ -28,4 +28,4 @@ production:
   database: levumi2
   encoding: utf8
   username: levumi2
-  password: <%= Rails.application.credentials.dig(:database, :production, :password)
+  password: <%= Rails.application.credentials.dig(:database, :production, :password) %>
