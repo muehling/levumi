@@ -5,8 +5,6 @@ server "levumi.informatik.uni-kiel.de", roles: %w{web app db}, user: 'levumi', p
 
 set :web_user, 'www-data'
 
-set :asset_env, "RAILS_RELATIVE_URL_ROOT=/preview"
-
 set :rails_env, :production
 
 namespace :deploy do
