@@ -83,7 +83,10 @@ class User < ApplicationRecord
   end
 
   def generate_password
-    pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+
+    #pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
+    pw = "123" #TODO: Entfernen vor Deploy!
+
     self.update_attributes({password: pw, password_confirmation: pw})
     return pw
   end

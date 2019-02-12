@@ -1,4 +1,4 @@
-if Rails.env.development?
+#if Rails.env.development?
 
   #Spieldaten anlegen
 
@@ -163,6 +163,6 @@ if Rails.env.development?
     a.save
   end
 
-elsif Rails.env.production?
+#elsif Rails.env.production?
   #Admin Account anlegen
-end
+#end
