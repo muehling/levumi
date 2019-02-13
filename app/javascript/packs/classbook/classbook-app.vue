@@ -36,12 +36,14 @@
                                         ></group-form>
                                     </b-tab>
 
-                                    <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern-->
+                                    <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
+                                    <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                                     <b-tab
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 & group.archive == false"
                                             :key="group.id"
                                             :active="index == 1"
+                                            :title-link-class="{ update_trigger_hack: group.label }"
                                     >
                                         <!-- Testklasse kursiv darstellen -->
                                         <template slot='title'>
@@ -110,9 +112,17 @@
         components: {
             GroupView, GroupForm
         },
+        methods: {
+          sort: function(groups) {
+              let empty = groups.shift();       //Erstes Element ist leere Gruppe für "new"
+              groups.sort((a, b) => b.id - a.id); //Rest nach ID absteigend sortieren
+              groups.unshift(empty);
+              return groups;
+          }
+        },
         data: function () {
             return {
-                groups: this.$root.groups,
+                groups: this.sort(this.$root.groups),
                 single: this.$root.single
             }
         },

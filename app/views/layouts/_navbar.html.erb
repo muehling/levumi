@@ -37,18 +37,9 @@
           </a>
           <div class='dropdown-menu' aria-labelledby='navbarProfile'>
             <%= link_to 'Meine Daten', edit_user_path(@login), class: 'dropdown-item', id: 'navbarMyData', remote: true%>
-            <a class='dropdown-item' href='/logout' data-method='post'>Ausloggen</a>
           </div>
         </li>
-      <% end %>
-    </ul>
-    <% if @masquerade || !@login.is_regular_user? %>
-      <ul class='navbar-nav ml-auto'>
-        <% if @masquerade %>
-          <li class='nav-item'>
-            <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
-          </li>
-        <% else %>
+        <% if !@login.is_regular_user? %>
           <li class='nav-item dropdown'>
             <a class='nav-link dropdown-toggle' href='#' id='navbarSystem' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
               System
@@ -59,8 +50,21 @@
             </div>
           </li>
         <% end %>
-      </ul>
-    <% end %>
+      <% end %>
+    </ul>
+
+    <ul class='navbar-nav ml-auto'>
+      <% if @masquerade %>
+        <li class='nav-item'>
+          <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
+        </li>
+      <% else %>
+        <li class='nav-item'>
+          <a class='nav-link' href='/logout' data-method='post'>Ausloggen</a>
+        </li>
+      <% end %>
+    </ul>
+
   </div>
 </nav>
 

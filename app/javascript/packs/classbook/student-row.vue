@@ -8,7 +8,7 @@
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
-                <small id="nameHelp" class="form-text text-muted">Name wird verschlüsselt gespeichert.</small>
+                <small id="nameHelp" class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
                 <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
@@ -140,7 +140,7 @@
                 years: function() {
                     let years = [];
                     let cur = (new Date()).getFullYear();
-                    for (let i = cur - 3; i > cur - 21; --i)
+                    for (let i = cur - 3; i > cur - 30; --i)
                         years.push(i);
                     return years;
                 }
@@ -187,7 +187,10 @@
                 { text: 'Geistige Entwicklung', value: 2 },
                 { text: 'Emotional-soziale Entwicklung', value: 3 },
                 { text: 'Sprache', value: 4 },
-                { text: 'Anderer Förderbedarf', value: 5 }
+                { text: 'Körperlich-motorische Entwicklung', value: 5 },
+                { text: 'Sehen', value: 6 },
+                { text: 'Hören', value: 7 },
+                { text: 'Autismus', value: 8 }
             ];
 
             this.options_migration = [

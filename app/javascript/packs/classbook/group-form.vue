@@ -1,7 +1,7 @@
 <template>
 
     <div>
-        <!-- index == 0 => Neue Klasse anlegen, dort keine Edit-Optionen -->
+        <!-- index > 0 => Klasse umbenennen / Ins Archiv verschieben-->
         <div v-if="index > 0">
             <b-btn  v-if="!group.demo" v-b-toggle="'collapse_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
 
