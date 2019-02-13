@@ -43,3 +43,11 @@ Rake::Task["deploy:assets:backup_manifest"].clear_actions #Skip asset precompila
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
+
+#Restart Passenger module
+namespace :passenger do
+  desc "Restart Application"
+  task :restart do
+    run "touch #{current_path}/tmp/restart.txt"
+  end
+end

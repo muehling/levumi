@@ -24,7 +24,6 @@ group :development do
   gem 'capistrano', '~> 3.11.0', require: false
   gem 'capistrano-rails', '~> 1.3', require: false
   gem 'capistrano-bundler', '~> 1.5'
-  gem 'capistrano-passenger'
 end
 
 # Reduces boot times through caching; required in config/boot.rb
