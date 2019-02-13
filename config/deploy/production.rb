@@ -8,5 +8,5 @@ set :web_user, 'www-data'
 set :rails_env, :production
 
 namespace :deploy do
-  after :deploy, :'assets:precompile'
+  after :deploy, 'webpacker:compile'
 end

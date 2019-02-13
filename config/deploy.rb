@@ -32,8 +32,6 @@ append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/pack
 
 set :assets_roles, [] #Skip asset precompilation
 
-set :passenger_restart_with_sudo, true
-
 # Default value for default_env is {}
 # set :default_env, { path: '/opt/ruby/bin:$PATH' }
 
