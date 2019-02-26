@@ -42,7 +42,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 & group.archive == false"
                                             :key="group.id"
-                                            :active="index == 1"
+                                            :active="index > 0"
                                             :title-link-class="{ update_trigger_hack: group.label }"
                                     >
                                         <!-- Testklasse kursiv darstellen -->
