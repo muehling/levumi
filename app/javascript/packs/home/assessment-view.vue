@@ -1,6 +1,6 @@
 <template>
-    <b-card no-body border-variant='light'>
-        <b-tabs pills card vertical>
+    <b-card no-body class='mt-3 pb-0 mb-1'>
+        <b-tabs pills card >
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab title='Neue Messung'>
@@ -18,12 +18,8 @@
 
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
-                <div class='container'>
-
-                        <div class="aspect-ratio-box">
-                            <apexchart width='100%' height='auto' :options="options" :series="series"></apexchart>
-                        </div>
-
+                <div>
+                    <apexchart width='100%' height='500px' :options="options" :series="series"></apexchart>
                 </div>
             </b-tab>
 
@@ -73,7 +69,6 @@
             </b-tab>
         </b-tabs>
     </b-card>
-
 </template>
 
 <script>
@@ -196,22 +191,5 @@
     .collapsed > .when-opened,
     :not(.collapsed) > .when-closed {
         display: none;
-    }
-
-    .aspect-ratio-box {
-        background: white;
-    }
-    .aspect-ratio-box::before {
-        content: "";
-        width: 1px;
-        margin-left: -1px;
-        float: left;
-        height: 0;
-        padding-top: 56.6%;
-    }
-    .aspect-ratio-box::after { /* to clear float */
-        content: "";
-        display: table;
-        clear: both;
     }
 </style>

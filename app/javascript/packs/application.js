@@ -8,33 +8,38 @@
 // layout file, like app/views/layouts/application.html.erb
 
 //Javascript
+import 'jquery'
+import 'bootstrap'   //Javascript Teile von Bootstrap
+import Rails from 'rails-ujs' //Rails-UJS für Links etc.
 
-//Rails-UJS für Links etc.
-import Rails from 'rails-ujs'
 //Vue und Komponenten
 import Vue from 'vue/dist/vue.esm'
 import BootstrapVue from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
+
 //Eigene Vue Komponenten
 import HomeApp from './home/home-app'
 import ClassBookApp from './classbook/classbook-app'
 
+
 //Stylesheets
 
-//FontAwesome für Icons
-import "@fortawesome/fontawesome-free/css/all.css"
-//Bootstrap-Styles
-import 'bootstrap/dist/css/bootstrap.css'
+import "@fortawesome/fontawesome-free/css/all.css" //FontAwesome für Icons
+import 'bootstrap/dist/css/bootstrap.css' //Bootstrap-Styles
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+
 //Selbst definierte Styles
 import 'css/application.css'
 
+
 //Vorbereitungscode
 
-Rails.start();
+window.$ = $;          //JQuery für den Rest der Seite verfügbar machen. Alternative ggf. über Expose-Loader
+Rails.start();         //Rails-ujs für die SPAs verfügbar machen
+
 Vue.use(BootstrapVue);
 Vue.use(VueApexCharts);
-Vue.component('apexchart', VueApexCharts)
+Vue.component('apexchart', VueApexCharts);
 
 //Setup für Vue-SPAs
 
