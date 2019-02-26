@@ -32,6 +32,7 @@
                                         <group-form
                                                 :group="groups[0]"
                                                 :index="0"
+                                                :active="firstIndex == 0"
                                                 v-on:update:groups="groups.splice(1, 0, $event.object)"
                                         ></group-form>
                                     </b-tab>
@@ -42,7 +43,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 & group.archive == false"
                                             :key="group.id"
-                                            :active="index > 0"
+                                            :active="index == firstIndex"
                                             :title-link-class="{ update_trigger_hack: group.label }"
                                     >
                                         <!-- Testklasse kursiv darstellen -->
@@ -118,6 +119,14 @@
               groups.sort((a, b) => b.id - a.id); //Rest nach ID absteigend sortieren
               groups.unshift(empty);
               return groups;
+          }
+        },
+        computed: {
+          firstIndex: function() {
+              for (let i = 1; i < this.groups.length; ++i)
+                  if (!this.groups[i].archive)
+                      return i;
+              return 0;
           }
         },
         data: function () {
