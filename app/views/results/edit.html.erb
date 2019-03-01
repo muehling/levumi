@@ -1,0 +1,17 @@
+<script>
+  <%= raw @test.entry_point.download %>
+
+  function saveResults(data) {
+      fetch('<%= student_result_url(@student, @result) %>', {
+          method: 'put',
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+          },
+          credentials: 'include',
+          body: 'data=' + encodeURIComponent(data)
+      })
+          .then(response => exit());
+  }
+</script>
