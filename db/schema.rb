@@ -50,6 +50,8 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
   create_table "items", force: :cascade do |t|
     t.integer "test_id"
     t.string "shorthand"
+    t.string "description"
+    t.string "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_id"], name: "index_items_on_test_id"
@@ -95,7 +97,8 @@ ActiveRecord::Schema.define(version: 2019_01_21_143835) do
   create_table "tests", force: :cascade do |t|
     t.integer "test_family_id"
     t.string "level"
-    t.string "information"
+    t.string "shorthand"
+    t.string "description"
     t.boolean "student_test"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
