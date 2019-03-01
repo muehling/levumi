@@ -10,6 +10,8 @@
                               :key="student.id"
                               variant='outline-success'
                               class='mr-2'
+                              title='Jetzt testen'
+                              @click="loadTest(student)"
                     >
                         {{student.name}}
                     </b-button>
@@ -75,7 +77,8 @@
     export default {
         props: {
             results: Object,
-            group: Number
+            group: Number,
+            assessment: Number
         },
         methods: {
             student_name(id) {   //Student-Objekt aus globaler Variable holen
@@ -84,11 +87,38 @@
             print_date(date) {   //Datumsanzeige formatieren
                 let d = new Date(date);
                 return d.toLocaleDateString('de-DE')
+            },
+            loadTest(student) { //Testfenster für Kind öffnen und auf Schließen warten.
+                fetch('/students/' + student.id + '/results', {  //Test laden
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: 'include',
+                    body: 'test_id=' + this.assessment
+                })
+                    .then(response => {    //Neues Fenster öffnen und Test dort anzeigen.
+                        return response.text().then(text =>  {
+                            let win = window.open();
+                            win.document.open();
+                            win.document.write(text);
+                            win.document.close();
+                            win.document.title = 'Testfenster ' + student.name;
+                            let timer = setInterval(function() {    //Warten bis Fenster geschlossen
+                                if (win.closed) {
+                                    clearInterval(timer);
+                                    alert("Fertig!"); //TODO: Später Button aktualisieren, o.ä.
+                                }
+                            }, 500);
+                    })
+                    });
             }
         },
         data: function () {
             return {
-                students: groups[this.group] || [],   //Zugriff aif globale Variable "groups"
+                students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
 
                 options: {
                     annotations: {

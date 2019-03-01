@@ -1,5 +1,6 @@
 class Student < ApplicationRecord
   belongs_to :group
+  has_many :results
 
   validates_presence_of :name
   validates_uniqueness_of :login

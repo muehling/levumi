@@ -163,6 +163,10 @@
     a.save
   end
 
+  #Spieltest anlegen (später per Upload)
+  test = Test.find(1)
+  test.entry_point.attach(io: File.open('db/active_storage/test_example.js'), filename: 'main.js', content_type: 'text/javascript')
+
 #elsif Rails.env.production?
   #Admin Account anlegen
 #end

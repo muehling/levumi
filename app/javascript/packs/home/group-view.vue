@@ -105,6 +105,7 @@
             <assessment-view v-else-if="results"
                              :group="group.id"
                              :results="results"
+                             :assessment="test_selected"
             >
             </assessment-view>
         </b-col>

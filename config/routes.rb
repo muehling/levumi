@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     collection do
       put '', to: 'students#mass_update'
     end
+    resources :results
   end
 
   resources :groups do
