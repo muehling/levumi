@@ -32,6 +32,13 @@
             .then(response => exit());
     }
 
+    <% unless @test.student_test %>
+      //Testfenster schließen
+      function exit() {
+          window.close();
+      }
+    <% end %>
+
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>
     <%= raw f.download %>

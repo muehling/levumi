@@ -2,5 +2,9 @@
   "level": "Niveaustufe 1",
   "shorthand": "Ex_U_1",
   "description": "Beispiel für einen Nutzerzentrierten Test in Levumi",
-  "student_test": 0
+  "student_test": 0,
+  "items": {
+    "I1":  "Ist das ein Vogel?",
+    "I2": "Noch ein Item"
+  }
 }

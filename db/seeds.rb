@@ -166,7 +166,10 @@
   #Spieltest anlegen (später per Upload)
   test = Test.find(1)
   vals = ActiveSupport::JSON.decode(File.read('db/example_tests/user_based_test/test.json'))
-  test.update_attributes(vals)
+  test.update_attributes(vals.slice(:description, :level, :shorthand, :student_test))
+  vals["items"].each do |key, value|
+    test.items.create(shorthand: key, description: value)
+  end
   test.entry_point.attach(io: File.open('db/example_tests/user_based_test/test.html'), filename: 'test.html', content_type: 'text/html')
   Dir.foreach('db/example_tests/user_based_test/media') do |filename|
     if filename == '.' || filename == '..'
