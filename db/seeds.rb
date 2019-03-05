@@ -3,7 +3,7 @@
   #Spieldaten anlegen
 
   users = [
-      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 1, state: 1} ,
+      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 1, state: 1, tc_accepted: DateTime.now, intro_state: 4} ,
       {email: "user@user.de", password: "123", password_confirmation: "123", capabilities: "", account_type: 0, state: 1}
   ]
 
@@ -165,7 +165,28 @@
 
   #Spieltest anlegen (später per Upload)
   test = Test.find(1)
-  test.entry_point.attach(io: File.open('db/active_storage/test_example.js'), filename: 'main.js', content_type: 'text/javascript')
+  vals = ActiveSupport::JSON.decode(File.read('db/example_tests/user_based_test/test.json'))
+  test.update_attributes(vals)
+  test.entry_point.attach(io: File.open('db/example_tests/user_based_test/test.html'), filename: 'test.html', content_type: 'text/html')
+  Dir.foreach('db/example_tests/user_based_test/media') do |filename|
+    if filename == '.' || filename == '..'
+      next
+    end
+    test.media_files.attach(io: File.open('db/example_tests/user_based_test/media/' + filename), filename: filename)
+  end
+  Dir.foreach('db/example_tests/user_based_test/scripts') do |filename|
+    if filename == '.' || filename == '..'
+      next
+    end
+    test.script_files.attach(io: File.open('db/example_tests/user_based_test/scripts/' + filename), filename: filename, content_type: 'text/javascript')
+  end
+  Dir.foreach('db/example_tests/user_based_test/styles') do |filename|
+    if filename == '.' || filename == '..'
+      next
+    end
+    test.style_files.attach(io: File.open('db/example_tests/user_based_test/styles/' + filename), filename: filename, content_type: 'text/css')
+  end
+
 
 #elsif Rails.env.production?
   #Admin Account anlegen

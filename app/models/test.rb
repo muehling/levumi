@@ -4,7 +4,9 @@ class Test < ApplicationRecord
   has_many :items
 
   has_one_attached :entry_point
-  has_many_attached :files
+  has_many_attached :media_files
+  has_many_attached :script_files
+  has_many_attached :style_files
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})

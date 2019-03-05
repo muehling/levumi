@@ -1,17 +1,40 @@
-<script>
-  <%= raw @test.entry_point.download %>
+<!-- Test-Styles einbinden -->
+<style>
+  <% @test.style_files.each do |f| %>
+  <%= raw f.download %>
+  <% end %>
+</style>
 
-  function saveResults(data) {
-      fetch('<%= student_result_url(@student, @result) %>', {
-          method: 'put',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-          credentials: 'include',
-          body: 'data=' + encodeURIComponent(data)
-      })
-          .then(response => exit());
-  }
+<!-- Hauptseite rendern -->
+<%= raw @test.entry_point.download %>
+
+<!-- Testskripte laden und Testumgebund definieren -->
+<script>
+    //Medienpfade für Test bekannt machen (aus ActiveStorage)
+    media_paths = {
+        <% @test.media_files.each do |f| %>
+        '<%= f.filename %>': '<%= url_for(f) %>',
+        <% end %>
+    };
+
+    //Funktionen für Testumgebung bereitstellen
+    function saveResults(data) {
+        fetch('<%= student_result_url(@student, @result) %>', {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            },
+            credentials: 'include',
+            body: 'data=' + encodeURIComponent(data)
+        })
+            .then(response => exit());
+    }
+
+    //Test-Skripte einbinden
+    <% @test.script_files.each do |f| %>
+    <%= raw f.download %>
+    <% end %>
+
 </script>
