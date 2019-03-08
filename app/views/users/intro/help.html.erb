@@ -24,7 +24,10 @@
       if (i < ids.length) {
           $(ids[i]).data('toggle', 'popover');
           $(ids[i]).data('content', texts[i]);
-          $(ids[i]).popover({html: true});
+          $(ids[i]).popover({
+              html: true,
+              sanitizeFn: function(content) {return content}
+          });
           $(ids[i]).popover('show');
       }
       ++i;
