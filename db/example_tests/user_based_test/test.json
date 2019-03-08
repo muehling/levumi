@@ -1,7 +1,10 @@
 {
-  "level": "Niveaustufe 1",
+  "area": "Deutsch",
+  "competence": "Leseflüssigkeit",
+  "family": "Test 1",
+  "level": "Niveaustufe 1a",
   "shorthand": "Ex_U_1",
-  "description": "Beispiel für einen Nutzerzentrierten Test in Levumi",
+  "description": "Beispiel für einen <b>Nutzerzentrierten</b> Test in Levumi",
   "student_test": 0,
   "items": {
     "I1":  "Ist das ein Vogel?",

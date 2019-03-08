@@ -6,6 +6,7 @@ class CreateTests < ActiveRecord::Migration[5.2]
       t.string :shorthand
       t.string :description
       t.boolean :student_test
+      t.boolean :archive, default: false
       t.timestamps
     end
   end

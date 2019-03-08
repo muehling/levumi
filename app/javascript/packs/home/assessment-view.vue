@@ -78,7 +78,7 @@
         props: {
             results: Object,
             group: Number,
-            assessment: Number
+            test: Number
         },
         methods: {
             student_name(id) {   //Student-Objekt aus globaler Variable holen
@@ -97,7 +97,7 @@
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
                     credentials: 'include',
-                    body: 'test_id=' + this.assessment
+                    body: 'test_id=' + this.test
                 })
                     .then(response => {    //Neues Fenster öffnen und Test dort anzeigen.
                         return response.text().then(text =>  {
@@ -106,10 +106,11 @@
                             win.document.write(text);
                             win.document.close();
                             win.document.title = 'Testfenster ' + student.name;
+                            let vue = this;
                             let timer = setInterval(function() {    //Warten bis Fenster geschlossen
                                 if (win.closed) {
                                     clearInterval(timer);
-                                    alert("Fertig!"); //TODO: Später Button aktualisieren, o.ä.
+                                    vue.$emit('update');
                                 }
                             }, 500);
                     })

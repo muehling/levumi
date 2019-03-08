@@ -22,9 +22,20 @@
 
         <b-tabs pills>
 
+          <% if @login.has_capability?('test') %>
+            <b-tab>
+              <template slot='title'>
+                <i class='fas fa-plus'></i> Neuer Test
+              </template>
+              <%= render 'form', test: nil %>
+            </b-tab>
+          <% end %>
+
+          <% first = true %>
           <% Area.all.each do |a| %>
             <!-- Oberste Ebene Lernbereiche -->
-            <b-tab>
+            <b-tab <% if first %> active <% end %> >
+            <% first = false %>
 
               <template slot='title'>
                 <%= a.name %>
@@ -73,12 +84,16 @@
                               <b-card no-body class='mt-3'>
                                 <b-tabs pills card vertical>
 
-                                  <% f.tests.each do |t| %>
+                                  <% f.tests.sort_by{ |a| a.archive.to_s }.each do |t|  # to_s damit "false" < "true" %>
                                     <!-- Vierte Ebene Niveaustufen -->
                                     <b-tab>
 
                                       <template slot='title'>
-                                        <%= t.level %>
+                                        <% if t.archive %>
+                                          <span class='text-muted'><%= t.name %></span>
+                                        <% else %>
+                                          <%= t.name %>
+                                        <% end %>
                                       </template>
 
                                       <!-- Edit-Button anzeigen, falls Nutzer Berechtigung hat -->

@@ -72,7 +72,6 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.integer "test_id"
     t.string "shorthand"
     t.string "description"
-    t.string "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_id"], name: "index_items_on_test_id"
@@ -121,6 +120,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.string "shorthand"
     t.string "description"
     t.boolean "student_test"
+    t.boolean "archive", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
