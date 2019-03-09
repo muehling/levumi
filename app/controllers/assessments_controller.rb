@@ -32,6 +32,6 @@ class AssessmentsController < ApplicationController
 
   #Assessment laden
   def set_assessment  #:id meint Test.id, nicht Assessment.id (aus Auswahldialog)
-    @assessment =  @group.assessments.where(test_id: params[:id]).first
+    @assessment = @group.assessments.where(test_id: params[:id]).first
   end
 end

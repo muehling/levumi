@@ -6,6 +6,7 @@ class Assessment < ApplicationRecord
   #Result-Objekte nach Wochennummer gruppieren
   #Rückgabe: Hash mit allen vorkommenden Wochennummern
   def get_grouped_results
+    self.reload #Neue Resultate werden ggf. sonst nicht berücksichtigt
     results = self.results.all
     weeks = results.map{|r| r.test_week}    #Alle Wochennummer ermitteln
     group = {}
