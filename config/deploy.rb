@@ -28,7 +28,7 @@ set :pty, true
 append :linked_files, 'config/master.key'
 
 # Default value for linked_dirs is []
-append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/packs', 'node_modules'
+append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/packs', 'node_modules', 'storage'
 
 Rake::Task["deploy:assets:backup_manifest"].clear_actions #Skip asset precompilation
 
