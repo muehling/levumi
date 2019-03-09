@@ -5,10 +5,10 @@
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab title='Neue Messung'>
                 <b-button-group>
-                    <!-- TODO: State ändern falls Ergebnis für aktuelle Woche schon vorhanden? -->
+                    <!-- Button erscheint grün, falls schon ein Ergebnis am selben Tag vorhanden ist. TODO: Lieber selbe Woche? -->
                     <b-button v-for="student in students"
                               :key="student.id"
-                              variant='outline-success'
+                              :variant="hasResult(student.id) ? 'success' : 'outline-success'"
                               class='mr-2'
                               title='Jetzt testen'
                               @click="loadTest(student)"
@@ -60,7 +60,7 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="result in results[date]">
-                                    <td>{{ print_date(result.updated_at) }}</td>
+                                    <td>{{ print_date(result.test_date) }}</td>
                                     <td>{{ student_name(result.student_id) }}</td>
                                 </tr>
                                 </tbody>
@@ -87,6 +87,16 @@
             print_date(date) {   //Datumsanzeige formatieren
                 let d = new Date(date);
                 return d.toLocaleDateString('de-DE')
+            },
+            hasResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
+                let d = new Date();
+                let dates = Object.keys(this.results);
+                for (let i = 0; i < dates.length; ++i)
+                    for (let r = 0; r < this.results[dates[i]].length; ++r) {
+                        if (this.results[dates[i]][r].student_id == student && (new Date(this.results[dates[i]][r].test_date)).toDateString() == d.toDateString())
+                            return true;
+                    }
+                return false;
             },
             loadTest(student) { //Testfenster für Kind öffnen und auf Schließen warten.
                 fetch('/students/' + student.id + '/results', {  //Test laden

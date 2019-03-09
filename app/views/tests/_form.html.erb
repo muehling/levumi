@@ -1,6 +1,7 @@
 <% if test.nil? %>
+  <!-- Form für Import -->
   <b-card class='mt-3'>
-    <%= form_for Test.new, multipart: true do |f| %>
+    <%= form_for Test.new, multipart: true, class: 'form' do |f| %>
       <div class='form-group'>
         <label for='fileInput'>Test aus Archivdatei(en) importieren</label>
         <%= f.file_field 'file', id: 'fileInput', class: 'form-control-file', accept: '.zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
@@ -21,5 +22,23 @@
     <% end %>
   </b-card>
 <% else %>
-  ...
+  <!-- Form für Ändern -->
+  <%= form_for test, remote: true, class: 'form form-inline' do |f| %>
+    <div class='form-group'>
+      <%= label_tag 'level', 'Niveaustufe', class: 'form-label' %>
+      <%= f.text_field :level, id: 'level', class: 'form-control'%>
+    </div>
+    <div class='form-group'>
+      <%= label_tag 'description', 'Beschreibung', class: 'form-label' %>
+      <%= f.text_area :description, id: 'description', class: 'form-control'%>
+    </div>
+    <div class='form-group'>
+    </div>
+    <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-success' do%>
+      <i class='fas fa-check'></i> Aktualisieren
+    <% end %>
+    <button class='btn btn-outline-secondary' onclick='hideForm(<%= test.id %>); return false;'><i class='fas fa-times'></i> Abbrechen</button>
+    <%= link_to test_path(test), method: :delete, class: 'float-right', data: {confirm: 'Test mit allen Daten löschen! Sind Sie sicher?'} do %><button class='btn btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
+  <% end %>
+
 <% end %>

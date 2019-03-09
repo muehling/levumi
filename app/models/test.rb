@@ -12,6 +12,8 @@ class Test < ApplicationRecord
 
   before_destroy :purge_files
 
+  validates_presence_of :level
+
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     if archive then level + " (veraltet)" else level end

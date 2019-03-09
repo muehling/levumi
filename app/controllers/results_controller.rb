@@ -13,7 +13,9 @@ class ResultsController < ApplicationController
 
   #PUT /students/:student_id/results/:id
   def update
-
+    @result = Result.find(params[:id])
+    @result.test_date = DateTime.now
+    @result.save
   end
 
   private
