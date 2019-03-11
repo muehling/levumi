@@ -5,14 +5,20 @@ class Test < ApplicationRecord
   belongs_to :test_family
   has_many :items
 
+  #Zu einem Test gehörende Dateien => Active_Storage
   has_one_attached :entry_point
   has_many_attached :media_files
   has_many_attached :script_files
   has_many_attached :style_files
 
+  #Dateien beim Löschen ebenfalls löschen
   before_destroy :purge_files
 
+  #Entspricht dem Testnamen
   validates_presence_of :level
+
+  #Konfiguration der Views als Hash
+  serialize :configuration, Hash
 
   #Ggf. "veraltet" zum Namen dazufügen
   def name
@@ -26,7 +32,7 @@ class Test < ApplicationRecord
     json
   end
 
-  #Remove all attached files before destroying test
+  #Ggf. zum Test gehörende Dateien löschen
   def purge_files
     entry_point.purge
     media_files.purge
@@ -34,7 +40,7 @@ class Test < ApplicationRecord
     style_files.purge
   end
 
-  #Create Test object from ZIP file
+  #Test Objekt als Import aus ZIP-Datei erzeugen
   def self.import file, archive, create
     zip = Zip::File.open(file)
     f = zip.glob('test.json').first
@@ -65,7 +71,7 @@ class Test < ApplicationRecord
         end
       end
 
-      test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test'))
+      test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
       if !test.nil? && test.save
         #Items anlegen
         vals["items"].each do |key, value|

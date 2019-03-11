@@ -121,6 +121,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.string "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
+    t.string "configuration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

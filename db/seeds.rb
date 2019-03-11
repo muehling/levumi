@@ -158,6 +158,7 @@
     a = Assessment.create(a)
     results[i].each do |r|
       t = a.results.create(r)
+      t.test_date = DateTime.now
       t.save   # wg. test_week
     end
     a.save
@@ -166,7 +167,7 @@
   #Spieltest anlegen (später per Upload)
   test = Test.find(1)
   vals = ActiveSupport::JSON.decode(File.read('db/example_tests/user_based_test/test.json'))
-  test.update_attributes(vals.slice('description', 'level', 'shorthand', 'student_test'))
+  test.update_attributes(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
   vals["items"].each do |key, value|
     test.items.create(shorthand: key, description: value)
   end

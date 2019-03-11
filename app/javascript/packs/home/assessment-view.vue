@@ -20,6 +20,11 @@
 
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
+                <b-button-group>
+                    <b-button v-for="view in Object.keys(configuration.views)" class='mr-2' @click="loadView(view)">
+                        {{ view }}
+                    </b-button>
+                </b-button-group>
                 <div>
                     <apexchart width='100%' height='500px' :options="options" :series="series"></apexchart>
                 </div>
@@ -35,13 +40,13 @@
                     <b-col><b>Details</b></b-col>
                 </b-row>
                 <!-- Nach Wochen gruppierte Einträge -->
-                <div v-if="Object.keys(results).length == 0" class='mt-2'>
+                <div v-if="Object.keys(grouped_results).length == 0" class='mt-2'>
                     <b-row><b-col><p class='text-center text-muted'>Keine Messungen vorhanden.</p></b-col></b-row>
                 </div>
-                <div v-else v-for="(date, index) in Object.keys(results)" class='mt-2'>
+                <div v-else v-for="(date, index) in Object.keys(grouped_results)" class='mt-2'>
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
-                        <b-col>{{ results[date].length}}</b-col>
+                        <b-col>{{ grouped_results[date].length }}</b-col>
                         <b-col>
                             <b-btn v-b-toggle="'collapse' + index" size='sm' variant='outline-secondary'>
                                 <i class='when-closed fas fa-search-plus'></i>
@@ -59,7 +64,7 @@
                                 <th>Aktionen</th>
                                 </thead>
                                 <tbody>
-                                <tr v-for="result in results[date]">
+                                <tr v-for="result in grouped_results[date]">
                                     <td>{{ print_date(result.test_date) }}</td>
                                     <td>{{ student_name(result.student_id) }}</td>
                                 </tr>
@@ -76,9 +81,26 @@
 <script>
     export default {
         props: {
-            results: Object,
+            results: Array,
+            configuration: Object,
             group: Number,
             test: Number
+        },
+        computed: {
+          grouped_results: function() {
+              let weeks = [];
+              for (let i = 0; i < this.results.length; ++i)
+                  if (this.results[i].test_week != null)
+                    weeks.push(this.results[i].test_week);
+              weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
+              let res = {}
+              for (let i = 0; i < this.results.length; ++i)
+                  if (res[this.results[i].test_week] === undefined)
+                      res[this.results[i].test_week] = [this.results[i]];
+                  else
+                      res[this.results[i].test_week].push(this.results[i]);
+              return res;
+          }
         },
         methods: {
             student_name(id) {   //Student-Objekt aus globaler Variable holen
@@ -90,12 +112,9 @@
             },
             hasResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
                 let d = new Date();
-                let dates = Object.keys(this.results);
-                for (let i = 0; i < dates.length; ++i)
-                    for (let r = 0; r < this.results[dates[i]].length; ++r) {
-                        if (this.results[dates[i]][r].student_id == student && (new Date(this.results[dates[i]][r].test_date)).toDateString() == d.toDateString())
+                for (let i = 0; i < this.results.length; ++i)
+                    if (this.results[i].student_id == student && (new Date(this.results[i].test_date)).toDateString() == d.toDateString())
                             return true;
-                    }
                 return false;
             },
             loadTest(student) { //Testfenster für Kind öffnen und auf Schließen warten.
@@ -125,6 +144,9 @@
                             }, 500);
                     })
                     });
+            },
+            loadView: function(view) {
+                //Object.assign({}, default, new_options)
             }
         },
         data: function () {

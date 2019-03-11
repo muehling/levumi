@@ -7,7 +7,7 @@ class AssessmentsController < ApplicationController
     if @assessment.nil?
       head 404
     else
-      render json: @assessment.get_grouped_results
+      render json: @assessment.get_data
     end
   end
 

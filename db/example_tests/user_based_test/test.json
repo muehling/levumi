@@ -6,8 +6,28 @@
   "shorthand": "Ex_U_1",
   "description": "Beispiel für einen <b>Nutzerzentrierten</b> Test in Levumi",
   "student_test": 0,
+  "configuration": {
+    "views": {
+      "View_1": {
+        "options": {
+          "type": "line",
+          "stroke": {
+            "curve": "straight"
+          }
+        }
+      },
+      "View_2": {
+        "options": {
+          "type": "line",
+          "stroke": {
+            "curve": "straight"
+          }
+        }
+      }
+    }
+  },
   "items": {
-    "I1":  "Ist das ein Vogel?",
-    "I2": "Noch ein Item"
+    "I1": "Vogel",
+    "I2": "Katze"
   }
 }

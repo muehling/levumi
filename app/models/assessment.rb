@@ -3,16 +3,14 @@ class Assessment < ApplicationRecord
   belongs_to :group
   has_many :results
 
-  #Result-Objekte nach Wochennummer gruppieren
-  #Rückgabe: Hash mit allen vorkommenden Wochennummern
-  def get_grouped_results
+  #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
+  #Rückgabe: Hash mit zwei Einträgen für Ergebnisse und Konfiguration
+  def get_data
     results = self.results.all
-    weeks = results.map{|r| r.test_week}    #Alle Wochennummer ermitteln
-    group = {}
-    weeks.uniq.each do |w|
-      group[w] = results.select{|r| r.test_week == w}    #Nach Wochennumer filtern
-    end
-    group
+    res = {}
+    res['configuration'] = self.test.configuration
+    res['series'] = results
+    res
   end
 
 end

@@ -65,7 +65,8 @@
 
             <assessment-view v-else-if="results"
                              :group="group.id"
-                             :results="results"
+                             :results="results.series"
+                             :configuration="results.configuration"
                              :test="test_selected"
                              v-on:update="loadAssessment(test_selected)"
             >
