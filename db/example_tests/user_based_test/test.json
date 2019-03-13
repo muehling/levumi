@@ -7,27 +7,33 @@
   "description": "Beispiel für einen <b>Nutzerzentrierten</b> Test in Levumi",
   "student_test": 0,
   "configuration": {
-    "views": {
-      "View_1": {
+    "views": [{
+        "label": "Übersicht",
         "options": {
-          "type": "line",
-          "stroke": {
-            "curve": "straight"
+          "chart": {
+            "type": "line"
           }
         }
       },
-      "View_2": {
+      {
+        "label": "Detailauswertung",
         "options": {
-          "type": "line",
+          "chart": {
+            "type": "bar"
+          },
           "stroke": {
             "curve": "straight"
           }
         }
       }
-    }
+    ]
   },
   "items": {
-    "I1": "Vogel",
-    "I2": "Katze"
+    "I1": "Vogel 1",
+    "I2": "Vogel 2",
+    "I3": "Vogel 3",
+    "I4": "Katze 1",
+    "I5": "Katze 2",
+    "I6": "Katze 3"
   }
 }

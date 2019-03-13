@@ -1,12 +1,12 @@
 <!-- Test-Styles einbinden -->
 <style>
   <% @test.style_files.each do |f| %>
-  <%= raw f.download %>
+  <%= raw f.download.force_encoding('UTF-8') %>
   <% end %>
 </style>
 
 <!-- Hauptseite rendern -->
-<%= raw @test.entry_point.download %>
+<%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
 <!-- Testskripte laden und Testumgebund definieren -->
 <script>
@@ -18,7 +18,7 @@
     };
 
     //Funktionen für Testumgebung bereitstellen
-    function saveResults(data) {
+    function saveResults(result, data) {
         fetch('<%= student_result_url(@student, @result) %>', {
             method: 'put',
             headers: {
@@ -27,7 +27,7 @@
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             },
             credentials: 'include',
-            body: 'data=' + encodeURIComponent(data)
+            body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&data=' + encodeURIComponent(JSON.stringify(data))
         })
             .then(response => exit());
     }
@@ -41,7 +41,7 @@
 
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>
-    <%= raw f.download %>
+    <%= raw f.download.force_encoding('UTF-8') %>
     <% end %>
 
 </script>

@@ -3,6 +3,9 @@ class Result < ApplicationRecord
   belongs_to :assessment
   has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result'
 
+  serialize :results, Hash
+  serialize :data, Array
+
   #Wochennummer-Format des Testungsdatum zur Zusammenfassung von Ergebnissen einer Woche generieren und speichern
   before_save do |result|
     unless result.test_date.nil?

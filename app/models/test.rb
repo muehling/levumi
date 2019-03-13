@@ -71,7 +71,9 @@ class Test < ApplicationRecord
         end
       end
 
+      #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
       test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+
       if !test.nil? && test.save
         #Items anlegen
         vals["items"].each do |key, value|

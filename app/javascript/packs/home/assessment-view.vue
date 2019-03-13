@@ -21,8 +21,8 @@
             <!-- Auswertungstab -->
             <b-tab title='Auswertung' active>
                 <b-button-group>
-                    <b-button v-for="view in Object.keys(configuration.views)" class='mr-2' @click="loadView(view)">
-                        {{ view }}
+                    <b-button v-for="(view, index) in configuration.views" class='mr-2' @click="view_selected = index">
+                        {{ view.label }}
                     </b-button>
                 </b-button-group>
                 <div>
@@ -40,10 +40,10 @@
                     <b-col><b>Details</b></b-col>
                 </b-row>
                 <!-- Nach Wochen gruppierte Einträge -->
-                <div v-if="Object.keys(grouped_results).length == 0" class='mt-2'>
+                <div v-if="weeks.length == 0" class='mt-2'>
                     <b-row><b-col><p class='text-center text-muted'>Keine Messungen vorhanden.</p></b-col></b-row>
                 </div>
-                <div v-else v-for="(date, index) in Object.keys(grouped_results)" class='mt-2'>
+                <div v-else v-for="(date, index) in weeks" class='mt-2'>
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ grouped_results[date].length }}</b-col>
@@ -87,12 +87,16 @@
             test: Number
         },
         computed: {
-          grouped_results: function() {
-              let weeks = [];
-              for (let i = 0; i < this.results.length; ++i)
-                  if (this.results[i].test_week != null)
-                    weeks.push(this.results[i].test_week);
-              weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
+            weeks: function() {
+                let weeks = [];
+                for (let i = 0; i < this.results.length; ++i)
+                    if (this.results[i].test_week != null)
+                        weeks.push(this.results[i].test_week);
+                weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
+                console.log(weeks);
+                return weeks;
+            },
+            grouped_results: function() {
               let res = {}
               for (let i = 0; i < this.results.length; ++i)
                   if (res[this.results[i].test_week] === undefined)
@@ -100,7 +104,29 @@
                   else
                       res[this.results[i].test_week].push(this.results[i]);
               return res;
-          }
+            },
+            options: function() {
+                let options = Object.assign({}, this.default_options, this.configuration.views[this.view_selected].options)
+                options.labels = this.weeks;
+                return options;
+            },
+            series: function() {
+                let res = [];
+                for (let s = 0; s < this.students.length; ++s)
+                    res.push({
+                        'name': this.student_name(this.students[s].id),
+                        'data': []
+                    });
+                for (let i = 0; i < this.results.length; ++i) {
+                    let student = this.student_name(this.results[i].student_id);
+                    let view = this.configuration.views[this.view_selected].label;
+                        for (let r = 0; r < res.length; ++r)
+                            if (res[r].name == student)
+                                res[r].data.push(this.results[i].results[view]);
+                }
+                console.log(res);
+                return res
+            }
         },
         methods: {
             student_name(id) {   //Student-Objekt aus globaler Variable holen
@@ -144,85 +170,18 @@
                             }, 500);
                     })
                     });
-            },
-            loadView: function(view) {
-                //Object.assign({}, default, new_options)
             }
         },
         data: function () {
             return {
+                view_selected: 0,
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
 
-                options: {
-                    annotations: {
-                        yaxis: [{
-                            y: 8200,
-                            borderColor: '#00E396',
-                            label: {
-                                borderColor: '#00E396',
-                                style: {
-                                    color: '#fff',
-                                    background: '#00E396',
-                                },
-                                text: 'Support',
-                            }
-                        }],
-                        xaxis: [{
-                            x: new Date('23 Nov 2017').getTime(),
-                            strokeDashArray: 0,
-                            borderColor: '#775DD0',
-                            label: {
-                                borderColor: '#775DD0',
-                                style: {
-                                    color: '#fff',
-                                    background: '#775DD0',
-                                },
-                                text: 'Anno Test',
-                            }
-                        }, {
-                            x: new Date('03 Dec 2017').getTime(),
-                            borderColor: '#FEB019',
-                            label: {
-                                borderColor: '#FEB019',
-                                style: {
-                                    color: '#fff',
-                                    background: '#FEB019',
-                                },
-                                orientation: 'horizontal',
-                                text: 'New Beginning',
-                            }
-                        }],
-                        points: [{
-                            x: new Date('27 Nov 2017').getTime(),
-                            y: 8506.9,
-                            marker: {
-                                size: 8,
-                                fillColor: '#fff',
-                                strokeColor: 'red',
-                                radius: 2
-                            },
-                            label: {
-                                borderColor: '#FF4560',
-                                offsetY: 0,
-                                style: {
-                                    color: '#fff',
-                                    background: '#FF4560',
-                                },
-
-                                text: 'Point Annotation',
-                            }
-                        }]
-                    },
+                default_options: {
                     chart: {
                         id: 'chart',
                         type: 'line',
                         responsive: false
-                    },
-                    dataLabels: {
-                        enabled: false
-                    },
-                    stroke: {
-                        curve: 'straight'
                     },
                     grid: {
                         padding: {
@@ -230,19 +189,11 @@
                             left: 15
                         }
                     },
-                    labels: ['2017-11-13', '2017-11-27', '2017-12-01', '2017-12-13', '2017-12-23', '2018-01-01', '2018-01-13', '2018-01-23'],
+                    labels: [],
                     xaxis: {
                         type: 'datetime',
                     },
-            },
-
-                series: [{
-                    name: 'Adam',
-                    data: [30, 40, 45, 50, 49, 60, 70, 91]},
-                    {name: 'Eva',
-                    data: [24, 37, 40, 37, 41, 52, 55, 60]
-                }]
-
+                }
             }
         },
         name: 'assessment-view'

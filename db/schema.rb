@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.date "test_date"
     t.date "test_week"
     t.date "expires_on"
+    t.string "results"
     t.string "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

@@ -103,28 +103,6 @@
       []
   ]
 
-  assessments = [
-      {
-          group_id: 2,
-          test_id: 1
-      },
-      {
-          group_id: 2,
-          test_id: 2
-      },
-      {
-          group_id: 3,
-          test_id: 1
-      }
-  ]
-
-  results = [
-      [
-          {student_id: 1}, {student_id: 2}, {student_id: 1}
-      ],
-      [],
-      []
-  ]
   users.each_with_index do |u, i|
     user = User.create(u)
     groups[i].each_with_index do |g, j|
@@ -154,14 +132,8 @@
     area.save
   end
 
-  assessments.each_with_index do |a, i|
+  assessments.each do |a|
     a = Assessment.create(a)
-    results[i].each do |r|
-      t = a.results.create(r)
-      t.test_date = DateTime.now
-      t.save   # wg. test_week
-    end
-    a.save
   end
 
   #Spieltest anlegen (später per Upload)
@@ -190,6 +162,11 @@
     end
     test.style_files.attach(io: File.open('db/example_tests/user_based_test/styles/' + filename), filename: filename, content_type: 'text/css')
   end
+
+  #Spielergebnisse anlegen
+  a = Assessment.create(group_id: Group.find(1).id, test_id: Test.find(1).id)
+  # ...
+  # a.results.build
 
 
 #elsif Rails.env.production?
