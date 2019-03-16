@@ -7,8 +7,8 @@ class CreateResults < ActiveRecord::Migration[5.2]
       t.date :test_date
       t.date :test_week
       t.date :expires_on
-      t.string :results
-      t.string :data
+      t.text :results
+      t.text :data
 
       t.timestamps
     end
