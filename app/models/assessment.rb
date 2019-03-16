@@ -6,7 +6,7 @@ class Assessment < ApplicationRecord
   #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
   #Rückgabe: Hash mit zwei Einträgen für Ergebnisse und Konfiguration
   def get_data
-    results = self.results.all
+    results = self.results.all.order(:test_date)
     res = {}
     res['configuration'] = self.test.configuration
     res['series'] = results

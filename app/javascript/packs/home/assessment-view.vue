@@ -18,14 +18,44 @@
                 </b-button-group>
             </b-tab>
 
-            <!-- Auswertungstab -->
+            <!-- Auswertungstab Klasse -->
             <b-tab title='Auswertung' active>
-                <b-button-group>
-                    <b-button v-for="(view, index) in configuration.views" class='mr-2' @click="view_selected = index">
-                        {{ view.label }}
-                    </b-button>
-                </b-button-group>
-                <div>
+                <b-row>
+                    <b-button-group class='ml-3'>
+                        <b-button class='mr-2'
+                                  size='sm'
+                                  variant='outline-primary'
+                                  :pressed="student_selected == -1"
+                                  @click="student_selected = -1">Ganze Klasse</b-button>
+                        <b-button v-for="(student, index) in students"
+                                  :key="student.id"
+                                  class='mr-2'
+                                  size='sm'
+                                  variant='outline-primary'
+                                  :pressed="student_selected == index"
+                                  @click="student_selected = index"
+                        >
+                            {{student.name}}
+                        </b-button>
+                    </b-button-group>
+                </b-row>
+                <b-row class='mt-2'>
+                    <b-button-group class='ml-3'>
+                        <b-button
+                                v-for="(view, index) in configuration.views"
+                                v-if="(student_selected == -1 && view.group) || (student_selected > -1 && view.student)"
+                                :key="index"
+                                class='mr-2'
+                                size='sm'
+                                variant='outline-secondary'
+                                :pressed="view_selected == index"
+                                @click="view_selected = index"
+                        >
+                            {{ view.label }}
+                        </b-button>
+                    </b-button-group>
+                </b-row>
+                <div id='chart_area_group'>
                     <apexchart width='100%' height='500px' :options="options" :series="series"></apexchart>
                 </div>
             </b-tab>
@@ -93,7 +123,6 @@
                     if (this.results[i].test_week != null)
                         weeks.push(this.results[i].test_week);
                 weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
-                console.log(weeks);
                 return weeks;
             },
             grouped_results: function() {
@@ -112,20 +141,54 @@
             },
             series: function() {
                 let res = [];
-                for (let s = 0; s < this.students.length; ++s)
-                    res.push({
-                        'name': this.student_name(this.students[s].id),
-                        'data': []
-                    });
+                let weeks = this.weeks;
+                let view = this.configuration.views[this.view_selected];
+                if (this.student_selected == -1) {
+                    for (let s = 0; s < this.students.length; ++s)
+                        res.push({
+                            'name': this.student_name(this.students[s].id),
+                            'data': Array(weeks.length).fill(null)
+                        });
+                }
+                else {
+                    if (view.series == undefined) {
+                        res.push({
+                            'name': this.student_name(this.students[this.student_selected].id),
+                            'data': Array(weeks.length).fill(null)
+                        });
+                    }
+                    else
+                        for (let s = 0; s < view.series.length; ++s)
+                            res.push({
+                                'name': view.series[s],
+                                'data': Array(weeks.length).fill(null)
+                            });
+                }
                 for (let i = 0; i < this.results.length; ++i) {
-                    let student = this.student_name(this.results[i].student_id);
-                    let view = this.configuration.views[this.view_selected].label;
-                        for (let r = 0; r < res.length; ++r)
-                            if (res[r].name == student)
-                                res[r].data.push(this.results[i].results[view]);
+                    if (this.student_selected == -1 || view.series == undefined) {
+                        let student = this.student_name(this.results[i].student_id);
+                        let week = this.results[i].test_week;
+                        for (let r = 0; r < res.length; ++r) {
+                            if (res[r].name == student) {
+                                for (let j = 0; j < weeks.length; ++j) {
+                                    if (weeks[j] == week)
+                                        res[r].data[j] = this.results[i].results[view.label];
+                                }
+                            }
+                        }
+                    }
+                    else if (this.results[i].student_id == this.students[this.student_selected].id) {
+                        let week = this.results[i].test_week;
+                        for (let r = 0; r < view.series.length; ++r) {
+                            for (let j = 0; j < weeks.length; ++j) {
+                                if (weeks[j] == week)
+                                    res[r].data[j] = this.results[i].results[view.label][view.series[r]];
+                            }
+                        }
+                    }
                 }
                 console.log(res);
-                return res
+                return res;
             }
         },
         methods: {
@@ -163,6 +226,7 @@
                             win.document.title = 'Testfenster ' + student.name;
                             let vue = this;
                             let timer = setInterval(function() {    //Warten bis Fenster geschlossen
+                                //TODO: Funtioniert noch nicht bei mehreren Tabs!
                                 if (win.closed) {
                                     clearInterval(timer);
                                     vue.$emit('update');
@@ -175,13 +239,16 @@
         data: function () {
             return {
                 view_selected: 0,
+                student_selected: -1,
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
 
                 default_options: {
                     chart: {
                         id: 'chart',
                         type: 'line',
-                        responsive: false
+                        toolbar: {
+                            show: false,
+                        },
                     },
                     grid: {
                         padding: {
@@ -189,10 +256,18 @@
                             left: 15
                         }
                     },
-                    labels: [],
                     xaxis: {
                         type: 'datetime',
                     },
+                    markers: {
+                        size: 4,
+                        hover: {
+                            sizeOffset: 2
+                        }
+                    },
+                    stroke: {
+                        width: 1
+                    }
                 }
             }
         },
