@@ -1,0 +1,42 @@
+{
+  "area": "Deutsch",
+  "competence": "Leseflüssigkeit",
+  "family": "Test 1",
+  "level": "Niveaustufe 0",
+  "shorthand": "SL0",
+  "description": "Erster Test Levumi",
+  "student_test": 0,
+  "configuration": {
+    "views": [{
+        "label": "Übersicht",
+        "options": {
+          "chart": {
+            "type": "line"
+          }
+        }
+      }
+    ]
+  },
+  "items": {
+    "I1":  "ma",
+    "I2":  "Mu",
+    "I3":  "le",
+    "I4":  "mi",
+    "I5":  "La",
+    "I6":  "Mo",
+    "I7":  "lu",
+    "I8":  "Lo",
+    "I9":  "me",
+    "I10": "li",
+    "I11": "lo",
+    "I12": "Ma",
+    "I13": "mo",
+    "I14": "Li",
+    "I15": "Lu",
+    "I16": "Me",
+    "I17": "mu",
+    "I18": "Mi",
+    "I19": "Le",
+    "I20": "la"
+  }
+}

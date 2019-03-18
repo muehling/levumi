@@ -103,6 +103,28 @@
       []
   ]
 
+  assessments = [
+      {
+          group_id: 2,
+          test_id: 1
+      },
+      {
+          group_id: 2,
+          test_id: 2
+      },
+      {
+          group_id: 3,
+          test_id: 1
+      }
+  ]
+
+  results = [
+      [
+          {student_id: 1}, {student_id: 2}, {student_id: 1}
+      ],
+      [],
+      []
+  ]
   users.each_with_index do |u, i|
     user = User.create(u)
     groups[i].each_with_index do |g, j|
