@@ -154,10 +154,6 @@
     area.save
   end
 
-  assessments.each do |a|
-    a = Assessment.create(a)
-  end
-
   #Spieltest anlegen (später per Upload)
   test = Test.find(1)
   vals = ActiveSupport::JSON.decode(File.read('db/example_tests/user_based_test/test.json'))
@@ -186,10 +182,15 @@
   end
 
   #Spielergebnisse anlegen
-  a = Assessment.create(group_id: Group.find(1).id, test_id: Test.find(1).id)
-  # ...
-  # a.results.build
-
+  a = Assessment.create(group_id: 2, test_id: 1)
+  Group.find(2).students.each do |s|
+    7.times do |i|
+      if (rand > 0.3)
+        r = a.results.build(student_id: s.id, test_date: DateTime.now-7*(6-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})
+        r.save
+      end
+    end
+  end
 
 #elsif Rails.env.production?
   #Admin Account anlegen
