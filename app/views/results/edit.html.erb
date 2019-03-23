@@ -11,7 +11,7 @@
 <!-- Testskripte laden und Testumgebund definieren -->
 <script>
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
-    media_paths = {
+    var media_paths = {
         <% @test.media_files.each do |f| %>
         '<%= f.filename %>': '<%= url_for(f) %>',
         <% end %>
@@ -28,16 +28,7 @@
     <% else %>
       <% last_result = -1 %>
     <% end %>
-    lastResult = <%= last_result %>;
-
-    stopwatch = null;
-    function startTimer() {
-        stopwatch = new Date();
-    }
-
-    function stopTimer() {
-        return (new Date() - stopwatch)
-    }
+    var lastResult = <%= last_result %>;
 
     //Funktionen für Testumgebung bereitstellen
     function saveResults(result, data) {
@@ -59,6 +50,15 @@
           window.close();
       }
     <% end %>
+
+    var stopwatch = null;
+    function startTimer() {
+        stopwatch = new Date();
+    }
+
+    function stopTimer() {
+        return (new Date() - stopwatch)
+    }
 
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>

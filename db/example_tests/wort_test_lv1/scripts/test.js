@@ -148,13 +148,13 @@ function next(res) {
             }
             saveResults({'Übersicht': factor},  result);
             if(lastResult==-1){
-                $('#pic').attr('src', '/images/shared/Levumi-normal-blau.jpg')
+                $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
             }
             else if(sum>= lastResult){
                 $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
             }
             else{
-                $('#pic').attr('src', '/images/shared/Levumi-weiterlesen.gif')
+                $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
             }
             $('#pic').css('width', '300px');
             $(window).unbind('keydown');
@@ -192,9 +192,9 @@ function checkResult() {
     if (lastResult >= 0 && lastResult < total)
         $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif');
     else if(lastResult == -1)
-        $('#pic').attr('src', '/images/shared/Levumi-normal-blau.jpg');
+        $('#pic').attr('src', '/images/shared/Levumi-normal.jpg');
     else
-        $('#pic').attr('src', '/images/shared/Levumi-weiterlesen.gif');
+        $('#pic').attr('src', '/images/shared/Levumi-liest.gif');
     if (false)
         $('#status').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster nun schließen.');
     else
