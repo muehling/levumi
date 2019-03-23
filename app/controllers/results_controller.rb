@@ -6,7 +6,10 @@ class ResultsController < ApplicationController
     if (params.has_key? :test_id)
       @test = Test.find(params[:test_id])
       a = Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first       #Assessment aus student_id und test_id bestimmen
-      @result = @student.results.create(assessment_id: a)
+      priorResult = Result.where(["student_id = ? and assessment_id = ?", @student.id, a]).last
+      priorResult = priorResult.nil? ? nil : priorResult.id
+
+      @result = @student.results.create(assessment_id: a, prior_result_id: priorResult)
     end
     render 'edit', layout: 'blank'
   end

@@ -17,6 +17,28 @@
         <% end %>
     };
 
+    <% if !@result.prior_result_id.nil? %>
+    <% last_result = 0 %>
+    <% Result.find(@result.prior_result_id).data.each do |data| %>
+        <% if data["result"]=='NA'%>
+        <% else %>
+          <% last_result += data["result"]%>
+        <% end %>
+      <% end %>
+    <% else %>
+      <% last_result = -1 %>
+    <% end %>
+    lastResult = <%= last_result %>;
+
+    stopwatch = null;
+    function startTimer() {
+        stopwatch = new Date();
+    }
+
+    function stopTimer() {
+        return (new Date() - stopwatch)
+    }
+
     //Funktionen für Testumgebung bereitstellen
     function saveResults(result, data) {
         fetch('<%= student_result_url(@student, @result) %>', {
@@ -28,8 +50,7 @@
             },
             credentials: 'include',
             body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&data=' + encodeURIComponent(JSON.stringify(data))
-        })
-            .then(response => exit());
+        });
     }
 
     <% unless @test.student_test %>
