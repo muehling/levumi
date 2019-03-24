@@ -10,13 +10,15 @@
         <!-- Übersicht anzeigen -->
         <b-row>
             <b-col>
-                <b-card class='mt-3' v-for="test in tests">
-                    <template slot='header'>
-                        {{test.id}}
-                    </template>
-                    Läuft ab am: {{test.expires_on}}
-                    <b-btn>Los geht's</b-btn>
-                </b-card>
+                <b-card-group deck>
+                    <b-card class='mt-3' v-for="test in tests">
+                        <template slot='header'>
+                            {{test.id}}
+                        </template>
+                        Läuft ab am: {{test.expires_on}}
+                        <b-btn>Los geht's</b-btn>
+                    </b-card>
+                </b-card-group>
             </b-col>
         </b-row>
     </div>
