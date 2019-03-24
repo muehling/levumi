@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
 
   create_table "competences", force: :cascade do |t|
     t.string "name"
-    t.string "description"
+    t.text "description"
     t.integer "area_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.date "test_date"
     t.date "test_week"
     t.date "expires_on"
-    t.string "results"
-    t.string "data"
+    t.text "results"
+    t.text "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assessment_id"], name: "index_results_on_assessment_id"
@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
 
   create_table "test_families", force: :cascade do |t|
     t.string "name"
-    t.string "description"
+    t.text "description"
     t.integer "competence_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -119,10 +119,10 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.integer "test_family_id"
     t.string "level"
     t.string "shorthand"
-    t.string "description"
+    t.text "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
-    t.string "configuration"
+    t.text "configuration"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

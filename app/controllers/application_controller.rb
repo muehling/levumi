@@ -1,7 +1,9 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: [:start, :login]
+  before_action :set_login, except: [:start, :login, :frontend, :login_frontend]
   before_action :set_locale
 
+  #Normaler Zugang
+  #
   #GET '/'
   def start
     reset_session #Alte Daten ggf. entfernen
@@ -32,6 +34,34 @@ class ApplicationController < ActionController::Base
     reset_session    #Session löschen
     redirect_to '/'
   end
+
+
+  #Zugang für Schülerinnen und Schüler
+  #
+  #GET '/testen'
+  def frontend
+    if session.has_key?(:student)
+      @student = Student.find(session[:student])
+    end
+    respond_to do |format|
+      format.html {
+        render file: 'layouts/frontend', layout: false
+      }
+    end
+  end
+
+  #POST '/login_frontend'
+  def login_frontend
+    s = Student.find_by_login(params[:login])
+    unless s.nil?
+      session[:student] = s.id
+      render json: s.available_tests
+    else
+      head 403
+    end
+  end
+
+  #Masquerading
 
   #GET '/login'
   def start_masquerade

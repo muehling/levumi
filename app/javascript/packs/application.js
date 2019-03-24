@@ -20,6 +20,7 @@ import VueApexCharts from 'vue-apexcharts'
 //Eigene Vue Komponenten
 import HomeApp from './home/home-app'
 import ClassBookApp from './classbook/classbook-app'
+import FrontendApp from './frontend/frontend-app'
 
 
 //Stylesheets
@@ -52,7 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
             data: data,
             components: {
                 ClassBookApp,
-                HomeApp
+                HomeApp,
+                FrontendApp
             }
         });
     }

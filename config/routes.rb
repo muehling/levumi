@@ -6,6 +6,10 @@ Rails.application.routes.draw do
   post '/login', to: 'application#login'
   post '/logout', to: 'application#logout'
 
+  #Login für SuS
+  get '/testen', to: 'application#frontend'
+  post '/login_frontend', to: 'application#login_frontend'
+
   #Masquerading Login durch Admin
   get '/login', to: 'application#start_masquerade'
   get '/logout', to: 'application#end_masquerade'

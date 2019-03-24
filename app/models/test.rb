@@ -53,7 +53,7 @@ class Test < ApplicationRecord
         area = Area.create(name: vals['area']) if area.nil?
         competence = Competence.find_by_name(vals['competence'])
         competence = area.competences.build(name: vals['competence']) if competence.nil?
-        family = competence.test_families.build(vals['family'])
+        family = competence.test_families.build(name: vals['family'])
         family.save
       else
         unless family.nil?

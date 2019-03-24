@@ -30,4 +30,11 @@ class Student < ApplicationRecord
     val = Date.strptime(value, '%Y-%m')
     super(val)
   end
+
+  #Finde alle aktuell verfügbaren Tests für die Schüleransicht
+  def available_tests
+    res = Result.where("student_id = ? AND expires_on >= ? AND test_date IS NULL", self.id, Date.today).order(:expires_on)
+    res = res.select {|r| r.assessment.test.student_test}
+    return res
+  end
 end
