@@ -1,8 +1,8 @@
 class ResultsController < ApplicationController
-  before_action :set_student, except: [:edit]
+  before_action :set_student
 
-  before_action :check_login, only: [:edit]
-  skip_before_action :set_login, only: [:edit]
+  before_action :check_login, only: [:edit, :update]
+  skip_before_action :set_login, only: [:edit, :update]
 
   #POST /students/:student_id/results
   def create
@@ -44,14 +44,21 @@ class ResultsController < ApplicationController
   #Kind id aus Parametern holen und laden
   def set_student
     @student = Student.find(params[:student_id])
-    if @student.group.user_id != @login.id      #TODO: Nicht für Schülertest
-      redirect_to '/'
-    end
   end
 
   def check_login
-    if !session.has_key?(:student) || session[:student] != params[:student_id].to_i
-      head 403
+    #Fall 1: User Login
+    if session.has_key?(:user)
+      if @student.group.user_id == session[:user]
+        return true
+      end
     end
+    #Fall 2: Schüler Login
+    if session.has_key?(:student)
+      if session[:student] == @student.id
+        return true
+      end
+    end
+    head 403
   end
 end

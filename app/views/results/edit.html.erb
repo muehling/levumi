@@ -44,12 +44,14 @@
         });
     }
 
-    <% unless @test.student_test %>
-      //Testfenster schließen
-      function exit() {
+    //Testfenster schließen
+    function exit() {
+        <% if @test.student_test %>
+          window.location.href = '/testen';
+        <% else %>
           window.close();
-      }
-    <% end %>
+        <% end %>
+    }
 
     var stopwatch = null;
     function startTimer() {
