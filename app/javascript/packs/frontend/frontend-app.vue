@@ -8,19 +8,18 @@
     </div>
     <div v-else-if="tests">
         <!-- Übersicht anzeigen -->
-        <b-row>
-            <b-col>
-                <b-card-group deck>
-                    <b-card class='mt-3' v-for="test in tests">
-                        <template slot='header'>
-                            {{test.id}}
-                        </template>
-                        Läuft ab am: {{test.expires_on}}
-                        <b-btn>Los geht's</b-btn>
-                    </b-card>
-                </b-card-group>
-            </b-col>
-        </b-row>
+        <b-card-group deck>
+            <b-card class='mt-3' v-for="test in tests" :key="test.id" :title="test.family" :sub-title="test.level">
+                <template slot='header'>
+                    <h4>{{test.competence}}</h4>
+                    <h6>{{test.area}}</h6>
+                </template>
+                <b-button block variant='primary' :href="'/students/' + test.student + '/results/' + test.id + '/edit' ">Los geht's</b-button>
+                <template slot='footer'>
+                    Läuft am {{test.date}} ab<br/>
+                </template>
+            </b-card>
+        </b-card-group>
     </div>
     <div v-else>
         <!-- Login Form anzeigen -->
@@ -43,7 +42,7 @@
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
                         </b-form-group>
-                        <b-btn type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-btn>
+                        <b-button type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
                     </b-form>
                 </b-card>
             </b-col>

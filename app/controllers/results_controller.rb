@@ -1,5 +1,8 @@
 class ResultsController < ApplicationController
-  before_action :set_student
+  before_action :set_student, except: [:edit]
+
+  before_action :check_login, only: [:edit]
+  skip_before_action :set_login, only: [:edit]
 
   #POST /students/:student_id/results
   def create
@@ -24,6 +27,18 @@ class ResultsController < ApplicationController
     @result.save
   end
 
+  #GET /students/:student_id/results/:id/edit
+  def edit
+    @result = Result.find(params[:id])
+    @student = Student.find(session[:student])
+    unless @result.nil? || @result.student_id != @student.id
+      @test = @result.assessment.test
+      render layout: 'blank'
+    else
+      head 403
+    end
+  end
+
   private
 
   #Kind id aus Parametern holen und laden
@@ -34,4 +49,9 @@ class ResultsController < ApplicationController
     end
   end
 
+  def check_login
+    if !session.has_key?(:student) || session[:student] != params[:student_id].to_i
+      head 403
+    end
+  end
 end

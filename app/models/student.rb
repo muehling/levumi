@@ -35,6 +35,10 @@ class Student < ApplicationRecord
   def available_tests
     res = Result.where("student_id = ? AND expires_on >= ? AND test_date IS NULL", self.id, Date.today).order(expires_on: :asc)
     res = res.select {|r| r.assessment.test.student_test}
-    return res
+    infos = []
+    res.each do |r|
+      infos += [{'id': r.id, 'student': r.student_id, 'assessment': r.assessment.id, 'date': r.expires_on, 'area': r.assessment.test.test_family.competence.area.name, 'competence': r.assessment.test.test_family.competence.name, 'family': r.assessment.test.test_family.name, 'level': r.assessment.test.level}]
+    end
+    return infos
   end
 end
