@@ -52,7 +52,6 @@ function incorrect() {
 }
 
 function next(res) {
-    console.log(result);
     current++;
     if (current < items.length) {
         result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
@@ -64,6 +63,7 @@ function next(res) {
         for (let i = 0; i < result.length; ++i)
             sum[result[i].group] += result[i].result;
         saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
+        $('#testspace').html("<button class='btn btn-primary onclick='exit()'>Test beenden</button>");
     }
 }
 

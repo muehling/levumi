@@ -31,6 +31,8 @@ let items = [
     }
 ];
 
+let answers =  ['Vogel', 'Nashorn', 'Katze', 'Fahrradklingel'];
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -43,20 +45,20 @@ shuffleArray(items);
 let current = 0;
 let result = [];
 
-function correct() {
-    next(1);
-}
 
-function incorrect() {
-    next(0);
-}
-
-function next(res) {
-    console.log(result);
+function next(btn) {
+    let res = 0
+    if (items[current].group == 1 && $('#btn' + btn).html() == 'Katze')
+        res = 1;
+    if (items[current].group == 0 && $('#btn' + btn).html() == 'Vogel')
+        res = 1;
     current++;
     if (current < items.length) {
         result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
         $('#image').attr('src', media_paths[items[current].path]);
+        shuffleArray(answers);
+        for (let i = 0; i < answers.length; ++i)
+            $('#btn' + i).html(answers[i]);
     }
     else {
         result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
@@ -64,9 +66,12 @@ function next(res) {
         for (let i = 0; i < result.length; ++i)
             sum[result[i].group] += result[i].result;
         saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
+        $('#testspace').html("<button class='btn btn-primary' onclick='exit()'>Test beenden</button>");
     }
 }
 
 $('#image').attr('src', media_paths[items[current].path]);
-
+shuffleArray(answers);
+for (let i = 0; i < answers.length; ++i)
+    $('#btn' + i).html(answers[i]);
 
