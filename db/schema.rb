@@ -58,14 +58,24 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.index ["area_id"], name: "index_competences_on_area_id"
   end
 
+  create_table "group_shares", force: :cascade do |t|
+    t.boolean "owner"
+    t.boolean "read_only"
+    t.string "key"
+    t.integer "user_id"
+    t.integer "group_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["group_id"], name: "index_group_shares_on_group_id"
+    t.index ["user_id"], name: "index_group_shares_on_user_id"
+  end
+
   create_table "groups", force: :cascade do |t|
     t.string "label"
-    t.integer "user_id"
     t.boolean "archive", default: false
     t.boolean "demo", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["user_id"], name: "index_groups_on_user_id"
   end
 
   create_table "items", force: :cascade do |t|

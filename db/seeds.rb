@@ -8,48 +8,26 @@
   ]
 
   groups = [
-      [
-          {label: "Klasse 1"}, {label: "Klasse 2"}, {label: "Klasse 3"}, {label: "Klasse 4"}, {label: "Klasse 5"},
-          {label: "Ein langer Klassenbezeichner", archive: true}
-      ],
-      [
-          {label: "Klasse 1"}
-      ]
+      {label: "Klasse 1"},
+      {label: "Klasse 2"},
+      {label: "Klasse 3"},
+      {label: "Ein langer Klassenbezeichner", archive: true},
   ]
 
+  #Key für "Klasse 1", "Klasse 3", "Ein langer Klassenbezeichner" => "test", Key für "Klasse 2" => "klasse"
+  group_shares = [
+      {user_id: 1, group_id: 3, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 1, group_id: 4, owner: true, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'},
+      {user_id: 1, group_id: 5, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 1, group_id: 6, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 2, group_id: 3, owner: false, read_only: true, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 2, group_id: 4, owner: false, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'}
+  ]
+
+  #"Adamn" und "Eva", verschlüsselt mit Key für Klasse 1
   students = [
-      [
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}', gender: 0, sen: 0, migration: 0},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ],
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ],
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ],
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ],
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ],
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ]
-      ],
-      [
-          [
-              {name: '{"iv":"AQC/DPc+k/vLTL7tkJH87Q==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"ylxAnM2YxsoBw5uy"}'},
-              {name: '{"iv":"IHeQV3xdT1+xGjTBVUQHvw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"g0w2SBoi72E=","ct":"W0NL/wvkjA3clT0="}'}
-          ]
-      ]
+      {name: '{"iv":"WCm9XH6cM7s7e3ea4cZB3w==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"MbW6TZm0FKF9pSb1"}', gender: 0, sen: 0, migration: 0},
+      {name: '{"iv":"6QrHF209McMuDUfcMP3z4g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"ErP3QkJVO3qUbp0="}'}
   ]
 
   areas = [
@@ -103,21 +81,28 @@
       []
   ]
 
-  users.each_with_index do |u, i|
-    user = User.create(u)
-    groups[i].each_with_index do |g, j|
-      group = user.groups.create(g)
-      students[i][j].each do |s|
+  users.each do |u|
+    User.create(u)
+  end
+
+  groups.each_with_index do |g, i|
+    group = Group.create(g)
+    if (i == 0)
+      students.each_with_index do |s, j|
         x = group.students.create(s)
-        if (i == 0 && j == 0 && x.name.starts_with?('{"iv":"A'))
+        if (j == 0)
           x.login = 'test'
           x.save
         end
       end
-      group.save
     end
-    user.save
+    group.save
   end
+
+  group_shares.each do |c|
+    GroupShare.create(c)
+  end
+
 
   areas.each_with_index do |a, i|
     area = Area.create(a)
@@ -141,9 +126,9 @@
   Test.import('db/example_tests/student_based_test/test.zip', false, true )
 
   #Spielergebnisse anlegen
-  a1 = Assessment.create(group_id: 2, test_id: Test.find_by_shorthand('Ex_U_1').id)
-  a2 = Assessment.create(group_id: 2, test_id: Test.find_by_shorthand('Ex_S_1').id)
-  Group.find(2).students.each do |s|
+  a1 = Assessment.create(group_id: 3, test_id: Test.find_by_shorthand('Ex_U_1').id)
+  a2 = Assessment.create(group_id: 3, test_id: Test.find_by_shorthand('Ex_S_1').id)
+  Group.find(3).students.each do |s|
     7.times do |i|
       if (rand > 0.3)
         r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(6-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})

@@ -12,8 +12,10 @@
       students = []
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
-              students.push({id: this[key][i].id, name: encrypt(this[key][i].name)})
+              students.push({id: this[key][i].id, name: encrypt(this[key][i].name, key)})
       }, groups);
+
+      //TODO: Alle Keys müssen auch neu verschlüsselt werden!
 
       //Daten senden und Hinweistext bei Erfolg verstecken.
       fetch('/students/', {

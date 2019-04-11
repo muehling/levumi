@@ -2,17 +2,27 @@
 
     <!-- Darstellung für reguläre Klasse: Schülertabelle -->
     <div v-if="groups[index].archive == false">
-        <div class='mb-2' v-if="!readOnly">
+        <div class='mb-1'>
             <!-- Form zur Umbenennung -->
             <group-form
+                    v-if="index == 0 || groups[index].owner"
                     :group="groups[index]"
                     :index="index"
                     v-on:update:groups="update($event)"
             ></group-form>
         </div>
-
+        <div class='mb-2'>
+            <!-- Info/Form für Klassen teilen -->
+            <share-form
+                    v-if="index > 0"
+                    :group="groups[index]"
+                    :index="index"
+                    v-on:update:groups="update($event)"
+            ></share-form>
+        </div>
         <student-list
                 :group="groups[index].id"
+                :read_only="groups[index].read_only"
         >
         </student-list>
     </div>
@@ -37,7 +47,6 @@
         <!-- rails-ujs Link beinhaltet Auth_Token-->
         <a class='btn btn-sm btn-outline-danger'
            :href="'/groups/' + groups[index].id"
-           v-if="!groups[index].demo"
            data-method='delete'
            data-remote='true'
            data-confirm='Die Klasse wird mit allen Schüler_innen und allen Messergebnissen gelöscht! Sind Sie sicher?'
@@ -51,14 +60,14 @@
 
 <script>
     import GroupForm from './group-form';
+    import ShareForm from './share-form';
     import StudentList from './student-list';
 
     export default {
-        components: {StudentList, GroupForm},
+        components: {StudentList, GroupForm, ShareForm},
         props: {
             groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
-            index: Number,
-            readOnly: Boolean
+            index: Number
         },
         computed: {
             date: function() {
@@ -69,6 +78,7 @@
         methods: {
             update(val) { //Klasse updaten und View aktualisieren
                 this.$set(this.groups, val.index, val.object);
+                keys[val.object.id] = val.object.key;
                 this.$emit('update:groups', this.groups);
             },
             remove(i) { //Klasse entfernen und View aktualisieren

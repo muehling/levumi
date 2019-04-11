@@ -1,9 +1,9 @@
 <template>
 
     <div>
-        <!-- index > 0 => Klasse umbenennen / Ins Archiv verschieben-->
+        <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
         <div v-if="index > 0">
-            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
+            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_edit_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
 
             <a class='btn btn-sm btn-outline-primary'
                :href="'/groups/' + group.id"
@@ -16,7 +16,7 @@
             </a>
         </div>
         <!-- Ausklappbare Edit-Form - falls index == 0, direkt anzeigen -->
-        <b-collapse :id="'collapse_' + group.id" class='mt-2' :visible="index == 0" v-if="!group.demo">
+        <b-collapse :id="'collapse_edit_' + group.id" class='mt-2' :visible="index == 0" v-if="!group.demo">
 
                 <b-form inline
                         :action="index == 0 ? '/groups' : '/groups/' + group.id"
@@ -30,6 +30,12 @@
                            type='hidden'
                            value='put'
                            name='_method'
+                    />
+                    <!-- Hidden Field mit generiertem Key für die Klasse -->
+                    <input v-if="index == 0"
+                           type='hidden'
+                           :value="generate_key()"
+                           name='group[key]'
                     />
                     <label class='sr-only' for='label'>Klassenbezeichner</label>
                     <b-input class='mr-2'
@@ -57,11 +63,11 @@
                                   size='sm'
                                   title='Speichern'
                                   :disabled="label.trim().length === 0"
-                                  v-b-toggle="'collapse_' + group.id"
+                                  v-b-toggle="'collapse_edit_' + group.id"
                         >
                             <i class='fas fa-check'></i>
                         </b-button>
-                        <b-button v-b-toggle="'collapse_' + group.id" variant='outline-dark' size='sm' title='Abbrechen'><i class='fas fa-times'></i></b-button>
+                        <b-button v-b-toggle="'collapse_edit_' + group.id" variant='outline-dark' size='sm' title='Abbrechen'><i class='fas fa-times'></i></b-button>
                     </div>
                 </b-form>
 
@@ -84,6 +90,10 @@
         methods: {
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
                 this.$emit('update:groups', {index: this.index, object: event.detail[0]});
+            },
+            generate_key() {
+                let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+                return encrypt_key(key);
             }
         },
         name: 'group-form'

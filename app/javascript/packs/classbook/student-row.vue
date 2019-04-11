@@ -74,10 +74,10 @@
         </td>
 
         <td>
-            <span v-if="!empty && !editMode">
+            <span v-if="!read_only && !empty && !editMode">
                 <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
             </span>
-            <span v-else-if="editMode">
+            <span v-else-if="!read_only && editMode">
                 <b-button-toolbar>
                     <b-button-group>
                         <!-- rails-ujs Link -->
@@ -123,7 +123,8 @@
             student: Object,
             group: Number,
             empty: Boolean,
-            index: Number
+            index: Number,
+            read_only: Boolean
         },
         data: function () {
             return {
@@ -148,7 +149,7 @@
         },
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
-               let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name));  //Namen vor dem Senden verschlüsseln
+               let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name, this.group));  //Namen vor dem Senden verschlüsseln
                 //Restliche Attribute anfügen, falls vorhanden
                if (this.gender != null)
                    res += '&student[gender]=' + this.gender;
@@ -175,8 +176,8 @@
         beforeCreate() {
             // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
             this.options_gender = [
-                {text: 'weiblich', value: '0'},
-                {text: 'männlich', value: '1'}
+                {text: 'weiblich', value: '0', disabled: 0},
+                {text: 'männlich', value: '1', disabled: 0}
             ];
 
             this.months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
@@ -194,8 +195,8 @@
             ];
 
             this.options_migration = [
-                {text: 'Nein', value: '0'},
-                {text: 'Ja', value: '1'}
+                {text: 'Nein', value: '0', disabled: 0},
+                {text: 'Ja', value: '1', disabled: 0}
             ];
         },
         name: 'student-row'

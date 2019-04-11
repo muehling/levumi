@@ -1,7 +1,8 @@
 class User < ApplicationRecord
-  has_secure_password
-  has_many :groups
+  has_many :group_shares
+  has_many :groups, through: :group_shares
 
+  has_secure_password
   validates_presence_of :email
   validates_uniqueness_of :email
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
@@ -11,7 +12,9 @@ class User < ApplicationRecord
 
   #Demoklasse anlegen
   after_create do |user|
-    user.groups.create(label: 'Testklasse', demo: true)
+    group = Group.create(label: 'Testklasse', demo: true)
+    #user.group_shares.create(group_id: group.id, capabilities: 'owner', key: '')
+    #TODO: Klappt so nicht mehr, da key nicht bekannt...
   end
 
   #Alle Schüler des Nutzers zurückliefern.
@@ -78,7 +81,15 @@ class User < ApplicationRecord
       }]
 
     end
+    return result
+  end
 
+  #Informationen für die Klassenbuchansicht sammeln.
+  def get_classbook_info
+    result = []
+    groups.each do |g|
+      result += [g.as_hash(self)]
+    end
     return result
   end
 

@@ -13,16 +13,23 @@
             groups[s.group_id] ||= []
             groups[s.group_id] += [s]
           end
+
+          keys = {}
+          @login.group_shares.each do |c|
+            keys[c.group_id] = c.key
+          end
        %>
 
       groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
+      keys = JSON.parse("<%= escape_javascript(raw keys.to_json)%>");
 
-      //Entschlüsselt einen String mit dem im sessionStorage gespeicherten Key.
+      //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
       // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
-      function decrypt(text, alt) {
+      function decrypt(text, alt, group) {
           let res = "";
           try{
-              res = sjcl.decrypt(sessionStorage['login'], text);
+              let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
+              res = sjcl.decrypt(tempkey, text);
           }
           catch(e){
               console.error(e.toString());
@@ -32,8 +39,14 @@
           return res;
       }
 
-      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten Key.
-      function encrypt(text) {
+      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
+      function encrypt(text, group) {
+          let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
+          return sjcl.encrypt(tempkey, text);
+      }
+
+      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey".
+      function encrypt_key(text) {
           return sjcl.encrypt(sessionStorage['login'], text);
       }
 
@@ -48,7 +61,7 @@
       //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
       Object.keys(groups).forEach(function(key, index) {
           for (let i = 0; i < this[key].length; ++i)
-              this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id);
+              this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key);
           }, groups);
 
     </script>

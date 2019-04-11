@@ -1,16 +1,9 @@
-<%
-  data = {
-      'groups': [Group.new] + @groups,
-      'single': @login.account_type == 2
-  }
-%>
-
 <script>
   //Eintrag in der Navleiste markieren
   highlightNavItem('navbarKlassenbuch');
 </script>
 
-<div id='levumi' data="<%= data.to_json%>">
+<div id='levumi' data="<%= @data.to_json%>">
 
   <!-- Spinner -->
   <div v-if='!$data'>

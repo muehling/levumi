@@ -8,7 +8,7 @@ class StudentsController < ApplicationController
   #POST /students
   def create    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     group = Group.find(params[:group])
-    unless group.nil? || group.user_id != @login.id
+    unless group.nil? || group.read_only(@login)
       s = group.students.new(student_attributes)
       if s.save
         render json: s
@@ -23,7 +23,7 @@ class StudentsController < ApplicationController
   #PUT /students/:id
   def update   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     s = Student.find(params[:id])
-    unless s.nil? || s.group.user.id != @login.id || !s.update_attributes(student_attributes)
+    unless s.nil? || s.group.read_only(@login) || !s.update_attributes(student_attributes)
       render json: s
     else
       head 304
@@ -35,7 +35,7 @@ class StudentsController < ApplicationController
     todo = JSON.parse(params[:students]) || [] #Gesendet werden (key, value)-Paare der Student-Objekte (id, name).
     todo.each do |s|
       student = Student.find(s['id'])
-      unless student.nil? || student.group.user.id != @login.id
+      unless student.nil? || student.group.read_only(@login)
         student.name = s['name']
         student.save
       end
@@ -46,7 +46,7 @@ class StudentsController < ApplicationController
   #DEL /students/:id
   def destroy
     s = Student.find(params[:id])
-    unless s.nil? || s.group.user.id != @login.id
+    unless s.nil? || s.group.read_only(@login)
       s.destroy
     end
     head :ok #200 als Rückmeldung an Vue-Component

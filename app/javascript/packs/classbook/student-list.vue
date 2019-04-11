@@ -20,10 +20,12 @@
                              :group="group"
                              :index="index"
                              :empty="false"
+                             :read_only="read_only"
                              v-on:update:students="update($event)"
                 ></student-row>
             <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
-                <student-row :student="{name: '', login: ''}"
+                <student-row v-if="!read_only"
+                             :student="{name: '', login: ''}"
                              :key="0"
                              :group="group"
                              :index="-1"
@@ -42,7 +44,8 @@
     export default {
         components: {StudentRow},
         props: {
-            group: Number   //Benötigt um neue Schüler der Gruppe zuordnen zu können.
+            group: Number,   //Benötigt um neue Schüler der Gruppe zuordnen zu können.
+            read_only: Boolean
         },
         data: function () {
             return {
@@ -52,7 +55,7 @@
         methods: {
             update(val) { //Student einfügen, updaten oder löschen und View aktualisieren
                 if (val.object != null) {
-                    val.object.name = decrypt(val.object.name, "Kind_" + val.object.id); //Namen für weitere Verwendung entschlüsseln
+                    val.object.name = decrypt(val.object.name, "Kind_" + val.object.id, this.group); //Namen für weitere Verwendung entschlüsseln
                     if (val.index > -1) //Update
                         this.$set(this.students, val.index, val.object);
                     else //Create

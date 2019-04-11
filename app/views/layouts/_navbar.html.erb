@@ -31,13 +31,8 @@
         </div>
       </li>
       <% unless @masquerade %>
-        <li class='nav-item dropdown' id='intro6'>
-          <a class='nav-link dropdown-toggle' href='#' id='navbarProfile' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-            Profil
-          </a>
-          <div class='dropdown-menu' aria-labelledby='navbarProfile'>
-            <%= link_to 'Meine Daten', edit_user_path(@login), class: 'dropdown-item', id: 'navbarMyData', remote: true%>
-          </div>
+        <li class='nav-item' id='intro6'>
+          <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
         </li>
         <% if !@login.is_regular_user? %>
           <li class='nav-item dropdown'>

@@ -8,7 +8,6 @@
                     <group-view
                             :groups="groups"
                             :index="1"
-                            :readOnly="true"
                     ></group-view>
                 </div>
 
@@ -17,7 +16,7 @@
 
                         <b-tab active>
                             <template slot='title'>
-                                Aktuelle Klassen
+                                Eigene Klassen
                             </template>
 
                             <b-card no-body class='mt-3'>
@@ -41,7 +40,7 @@
                                     <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                                     <b-tab
                                             v-for="(group, index) in groups"
-                                            v-if="index > 0 & group.archive == false"
+                                            v-if="index > 0 & !group.archive && group.owner"
                                             :key="group.id"
                                             :active="index == firstIndex"
                                             :title-link-class="{ update_trigger_hack: group.label }"
@@ -54,13 +53,48 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
-                                                :readOnly="false"
                                         ></group-view>
                                     </b-tab>
 
                                 </b-tabs>
                             </b-card>
                         </b-tab>
+
+                        <!-- Geteilte Klassen -->
+                        <b-tab>
+                            <template slot='title'>
+                                Geteilte Klassen
+                            </template>
+
+                            <b-card no-body class='mt-3'>
+                                <b-tabs pills card>
+
+                                    <!-- Hinweistext falls keine Klasse vorhanden -->
+                                    <div slot='empty'>
+                                        <div v-cloak class='text-center text-muted'>
+                                            Keine geteilten Klassen vorhanden.
+                                        </div>
+                                    </div>
+                                    <b-tab
+                                            v-for="(group, index) in groups"
+                                            v-if="index > 0 && !group.owner"
+                                            :key="group.id"
+                                    >
+                                        <!-- Testklasse kursiv darstellen -->
+                                        <template slot='title'>
+                                            <i v-if="group.demo">{{group.label}}</i>
+                                            <span v-else>{{group.label}}</span>
+                                        </template>
+                                        <group-view
+                                                :groups="groups"
+                                                :index="index"
+                                        ></group-view>
+                                    </b-tab>
+                                </b-tabs>
+                            </b-card>
+
+                        </b-tab>
+
 
                         <!-- Klassenarchiv -->
                         <b-tab>
@@ -79,7 +113,7 @@
                                     </div>
                                     <b-tab
                                             v-for="(group, index) in groups"
-                                            v-if="group.archive == true"
+                                            v-if="index > 0 && group.archive"
                                             :key="group.id"
                                     >
                                         <!-- Testklasse kursiv darstellen -->

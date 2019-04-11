@@ -36,6 +36,7 @@ Rails.application.routes.draw do
 
   resources :groups do
     resources :assessments
+    resources :group_shares
   end
 
   resources :tests
