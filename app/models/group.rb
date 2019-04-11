@@ -28,6 +28,7 @@ class Group < ApplicationRecord
         size: students.size,
         students: students,
         demo: demo,
+        auth_token: auth_token,
         read_only: c.read_only,
         archive: archive,
         updated_at: updated_at,

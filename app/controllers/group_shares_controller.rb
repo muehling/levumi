@@ -11,7 +11,7 @@ class GroupSharesController < ApplicationController
       elsif GroupShare.exists?(user: user, group: @group)
         head 403 #Existiert schon
       else
-        GroupShare.create(group: @group, user: user, owner: false, key: nil, read_only: params.require(:group_share).permit(:read_only))
+        GroupShare.create(group: @group, user: user, owner: false, key: nil, read_only: params.require(:group_share)[:read_only].to_i)
         render json:  @group.as_hash(@login)
       end
     end

@@ -63,7 +63,7 @@
                         <!-- Geteilte Klassen -->
                         <b-tab>
                             <template slot='title'>
-                                Geteilte Klassen
+                                Geteilte Klassen <span v-if="new_shares" class="badge badge-info">Neu!</span>
                             </template>
 
                             <b-card no-body class='mt-3'>
@@ -84,6 +84,7 @@
                                         <template slot='title'>
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>
+                                            <span v-if="group.key == null" class="badge badge-info">Neu!</span>
                                         </template>
                                         <group-view
                                                 :groups="groups"
@@ -161,6 +162,12 @@
                   if (!this.groups[i].archive)
                       return i;
               return 0;
+          },
+          new_shares: function() {
+              for (let i = 1; i < this.groups.length; ++i)
+                  if (this.groups[i].key == null)
+                      return true;
+              return false;
           }
         },
         data: function () {

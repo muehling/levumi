@@ -21,6 +21,7 @@
             ></share-form>
         </div>
         <student-list
+                v-if="groups[index].key != null"
                 :group="groups[index].id"
                 :read_only="groups[index].read_only"
         >

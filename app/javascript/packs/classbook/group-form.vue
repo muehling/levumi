@@ -3,7 +3,7 @@
     <div>
         <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
         <div v-if="index > 0">
-            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_edit_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
+            <b-btn  v-if="!group.demo" @click="refresh_key()" v-b-toggle="'collapse_edit_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
 
             <a class='btn btn-sm btn-outline-primary'
                :href="'/groups/' + group.id"
@@ -36,6 +36,12 @@
                            type='hidden'
                            :value="generate_key()"
                            name='group[key]'
+                    />
+                    <!-- Hidden Field mit generiertem Auth_Token für die Klasse -->
+                    <input v-if="index == 0"
+                           type='hidden'
+                           :value="generate_token()"
+                           name='group[auth_token]'
                     />
                     <label class='sr-only' for='label'>Klassenbezeichner</label>
                     <b-input class='mr-2'
@@ -84,17 +90,23 @@
         },
         data: function () {
             return {
-                label: this.index == 0 ? '' : this.group.label
+                label: this.index == 0 ? '' : this.group.label,
+                key: ''
             }
         },
         methods: {
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
                 this.$emit('update:groups', {index: this.index, object: event.detail[0]});
             },
+            refresh_key() {
+                this.key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+            },
             generate_key() {
-                let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
-                return encrypt_key(key);
-            }
+                return encrypt_key(this.key);
+            },
+            generate_token() {
+                return sjcl.encrypt(this.key, this.key)
+            },
         },
         name: 'group-form'
     }

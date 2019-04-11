@@ -83,16 +83,50 @@
         <!-- geteilte Klasse => Teilung beenden -->
         <div v-else>
             <p>Klasse wurde geteilt von: {{group.belongs_to}}</p>
-            <p>Sie können die Klasse {{group.read_only ? ' nur ansehen' : ' ansehen und verwenden'}}</p>
-            <a class='btn btn-sm btn-outline-danger'
-               :href="'/groups/' + group.id + '/group_shares/' + group.share_id"
-               data-method='delete'
-               data-remote='true'
-               data-confirm='Damit können Sie nicht weiter auf die Klasse und ihre Messergebnisse zugreifen! Sind Sie sicher?'
-               v-on:ajax:success="$parent.remove(index)"
-            >
-                <i class='fas fa-trash'></i> Teilen beenden
-            </a>
+            <div v-if="group.key == null">
+                <b-form inline
+                        :action="'/groups/' + group.id + '/group_shares/' +  group.share_id"
+                        accept-charset='UTF-8'
+                        method='post'
+                        data-remote='true'
+                        :validated="check_key()"
+                        v-on:ajax:success="success"
+                >
+                    <input type='hidden'
+                           value='put'
+                           name='_method'
+                    />
+                    <input type='hidden'
+                           :value="prepare_key()"
+                           name='group_share[key]'
+                    />
+                    <b-input class='mr-2'
+                             placeholder='Code'
+                             size='sm'
+                             v-model="key"
+                    />
+                    <b-button
+                            type='submit'
+                            variant='outline-primary'
+                            size='sm'
+                            :disabled="!check_key()"
+                    >
+                        Jetzt freischalten
+                    </b-button>
+                </b-form>
+            </div>
+            <div v-else>
+                <p>Sie können die Klasse {{group.read_only ? ' nur ansehen' : ' ansehen und verwenden'}}</p>
+                <a class='btn btn-sm btn-outline-danger'
+                   :href="'/groups/' + group.id + '/group_shares/' + group.share_id"
+                   data-method='delete'
+                   data-remote='true'
+                   data-confirm='Damit können Sie nicht weiter auf die Klasse und ihre Messergebnisse zugreifen! Sind Sie sicher?'
+                   v-on:ajax:success="$parent.remove(index)"
+                >
+                    <i class='fas fa-trash'></i> Teilen beenden
+                </a>
+            </div>
         </div>
     </div>
 
@@ -108,7 +142,8 @@
           return {
               not_found: false,
               exists: false,
-              rights_selected: 1
+              rights_selected: 1,
+              key: ''
           }
         },
         methods: {
@@ -120,6 +155,18 @@
                     this.not_found = true
                 else
                     this.exists = true;
+            },
+            check_key() {
+                try{
+                    sjcl.decrypt(this.key, this.group.auth_token);
+                    return true;
+                }
+                catch(e){
+                    return false;
+                }
+            },
+            prepare_key() {
+                return encrypt_key(this.key);
             }
         },
         beforeCreate() {

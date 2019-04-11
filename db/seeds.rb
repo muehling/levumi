@@ -8,20 +8,20 @@
   ]
 
   groups = [
-      {label: "Klasse 1"},
-      {label: "Klasse 2"},
-      {label: "Klasse 3"},
-      {label: "Ein langer Klassenbezeichner", archive: true},
+      {label: "Klasse 1", auth_token: '{"iv":"xnRCex00TPDU4qy/6SOuXQ==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"61xDj17EoaA=","ct":"xWJ5Cck4QvJ77J++"}'},
+      {label: "Klasse 2", auth_token: '{"iv":"KIvFNdFKL3q7vV6KBqY4gw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"zrMNMViJZok=","ct":"XZp0uEjIvPddSDFP5po="}'},
+      {label: "Klasse 3", auth_token: '{"iv":"xnRCex00TPDU4qy/6SOuXQ==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"61xDj17EoaA=","ct":"xWJ5Cck4QvJ77J++"}'},
+      {label: "Ein langer Klassenbezeichner", archive: true, auth_token: '{"iv":"xnRCex00TPDU4qy/6SOuXQ==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"61xDj17EoaA=","ct":"xWJ5Cck4QvJ77J++"}'},
   ]
 
   #Key für "Klasse 1", "Klasse 3", "Ein langer Klassenbezeichner" => "test", Key für "Klasse 2" => "klasse"
   group_shares = [
+      {user_id: 1, group_id: 1, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 1, group_id: 2, owner: true, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'},
       {user_id: 1, group_id: 3, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
-      {user_id: 1, group_id: 4, owner: true, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'},
-      {user_id: 1, group_id: 5, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
-      {user_id: 1, group_id: 6, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
-      {user_id: 2, group_id: 3, owner: false, read_only: true, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
-      {user_id: 2, group_id: 4, owner: false, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'}
+      {user_id: 1, group_id: 4, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 2, group_id: 1, owner: false, read_only: true, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
+      {user_id: 2, group_id: 2, owner: false, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'}
   ]
 
   #"Adamn" und "Eva", verschlüsselt mit Key für Klasse 1

@@ -11,7 +11,7 @@ class GroupsController < ApplicationController
 
   #POST /groups
   def create    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    g = @login.groups.new(params.require(:group).permit(:label))
+    g = @login.groups.new(params.require(:group).permit(:label, :auth_token))
     if g.save
       #Neue Capability als Besitzer der Klase anlegen, kann nur hier passieren, wegen key aus params
       GroupShare.create(group: g, user: @login, owner: true, read_only: false, key: params.require(:group).permit(:key))

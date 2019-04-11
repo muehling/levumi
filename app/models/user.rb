@@ -10,13 +10,6 @@ class User < ApplicationRecord
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 16
 
-  #Demoklasse anlegen
-  after_create do |user|
-    group = Group.create(label: 'Testklasse', demo: true)
-    #user.group_shares.create(group_id: group.id, capabilities: 'owner', key: '')
-    #TODO: Klappt so nicht mehr, da key nicht bekannt...
-  end
-
   #Alle Schüler des Nutzers zurückliefern.
   def students
     Student.where(group_id: self.groups).all
@@ -47,7 +40,8 @@ class User < ApplicationRecord
     end
   end
 
-  #Informationen für Userübersicht sammeln: Pro Gruppe alle verwendeten Tests, Familien, Kompetenzen und Bereiche und alle noch verfügbaren sammeln. Vermeidet redundante Anfragen. TODO: Optimmierbar?
+  #Informationen für Userübersicht sammeln: Pro Gruppe alle verwendeten Tests, Familien, Kompetenzen und Bereiche und alle noch verfügbaren sammeln. Vermeidet redundante Anfragen.
+  # TODO: Optimmierbar?
   def get_home_info
     all_tests = Test.all.pluck(:id)
     all_families = TestFamily.all.pluck(:id)
@@ -93,6 +87,11 @@ class User < ApplicationRecord
     return result
   end
 
+  def new_shares?
+    GroupShare.exists?(user: self, key: nil)
+  end
+
+  #Zufälliges Passwort erzeugen
   def generate_password
 
     #pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
@@ -102,8 +101,15 @@ class User < ApplicationRecord
     return pw
   end
 
+  #Gibt es eine Sicherheitsabfrage für den Account?
   def has_security?
     return !security_digest.nil? && !security_digest.blank?
+  end
+
+  #Testklasse anlegen
+  def create_demo(key, token)
+    g = Group.create(label: 'Beispiel-Klasse', demo: true, auth_token: token)
+    GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 
 end

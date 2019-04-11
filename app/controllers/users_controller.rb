@@ -87,12 +87,13 @@ class UsersController < ApplicationController
         @user.tc_accepted = Time.now
         @user.intro_state = 1
         @user.save
+        @user.create_demo(params[:key], params[:auth_token])
         render 'users/intro/forms', layout: 'minimal' and return
       else
         if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
           render 'users/intro/terms_and_conditions', layout: 'minimal' and return
         end
-        if @user.intro_state == 1 #TC Accept => Passwort/Sicherheitsfrage wird akzeptiert
+        if @user.intro_state == 1 #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
           if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :security_digest))
             @user.intro_state = 2
             @user.save

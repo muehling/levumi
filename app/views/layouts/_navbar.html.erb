@@ -12,7 +12,12 @@
         <%= link_to 'Start', '/start', class: 'nav-link', id: 'navbarHome'%>
       </li>
       <li class='nav-item' id='intro2'>
-        <%= link_to 'Klassenbuch', '/klassenbuch', class: 'nav-link', id: 'navbarKlassenbuch'%>
+        <%= link_to '/klassenbuch', class: 'nav-link', id: 'navbarKlassenbuch' do%>
+          Klassenbuch
+          <% if @login.new_shares? %>
+            <span class="badge badge-info">Neu!</span>
+          <% end %>
+        <% end %>
       </li>
       <li class='nav-item' id='intro3'>
         <a class='nav-link' href='#'>Material</a>

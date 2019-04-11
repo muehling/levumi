@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.string "label"
     t.boolean "archive", default: false
     t.boolean "demo", default: false
+    t.string "auth_token"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

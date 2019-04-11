@@ -21,6 +21,7 @@ class CreateUsersAndGroups < ActiveRecord::Migration[5.2]
       t.string :label
       t.boolean :archive, default: false
       t.boolean :demo, default: false
+      t.string :auth_token
       t.timestamps
     end
 
