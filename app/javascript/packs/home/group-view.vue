@@ -7,11 +7,12 @@
                 <b-nav pills>
                     <!-- Alle Lernbereiche -->
                     <b-nav-item v-for="area in group_info.areas"
+                                v-if="area.used || !group.read_only"
                                 :key="area.info.id"
                                 :active="area.info.id == area_selected"
                                 @click="area.used = true;select_area(area.info.id)"
                     >
-                        <span :class="area.used? '' : 'text-muted'">{{area.info.name}}</span>
+                        <span :class="area.used ? '' : 'text-muted'">{{area.info.name}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -20,10 +21,10 @@
                     <b-nav-item v-for="competence in group_info.competences"
                                 :key="competence.info.id"
                                 :active="competence.info.id == competence_selected"
-                                v-if="competence.info.area_id == area_selected"
+                                v-if="(competence.used || !group.read_only) && (competence.info.area_id == area_selected)"
                                 @click="competence.used = true;select_competence(competence.info.id)"
                     >
-                        <span :class="competence.used? '' : 'text-muted'">{{competence.info.name}}</span>
+                        <span :class="competence.used ? '' : 'text-muted'">{{competence.info.name}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -32,10 +33,10 @@
                     <b-nav-item v-for="family in group_info.families"
                                 :key="family.info.id"
                                 :active="family.info.id == family_selected"
-                                v-if="family.info.competence_id == competence_selected"
+                                v-if="(family.used || !group.read_only) && (family.info.competence_id == competence_selected)"
                                 @click="family.used=true;select_family(family.info.id)"
                     >
-                        <span :class="family.used? '' : 'text-muted'">{{family.info.name}}</span>
+                        <span :class="family.used ? '' : 'text-muted'">{{family.info.name}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -44,10 +45,10 @@
                     <b-nav-item v-for="test in group_info.tests"
                                 :key="test.info.id"
                                 :active="test.info.id == test_selected"
-                                v-if="test.info.test_family_id == family_selected"
-                                @click="test.used? loadAssessment(test.info.id) : createAssessment(test)"
+                                v-if="(test.used || !group.read_only) && (test.info.test_family_id == family_selected)"
+                                @click="test.used ? loadAssessment(test.info.id) : createAssessment(test)"
                     >
-                        <span :class="test.used? '' : 'text-muted'">{{test.info.level}}</span>
+                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -68,6 +69,7 @@
                              :results="results.series"
                              :configuration="results.configuration"
                              :test="test_selected"
+                             :read_only="group.read_only"
                              v-on:update="loadAssessment(test_selected)"
             >
             </assessment-view>

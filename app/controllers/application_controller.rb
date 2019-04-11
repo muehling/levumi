@@ -22,6 +22,11 @@ class ApplicationController < ActionController::Base
       session[:user] = u.id
       u.last_login = Time.now
       u.save
+
+      #TODO:
+      # Neue Teilungen anzeigen
+      # Testklasse erzeugen
+
       redirect_to '/start'
     else
       @retry = true

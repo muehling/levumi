@@ -5,6 +5,7 @@
                 <b-col md='12' class='mt-3'>
 
                     <!-- Klassenauswahl nur bei mehreren Klassen anzeigen (=> Privatpersonen...) -->
+                    <!-- TODO: Besser! -->
                     <b-tabs pills v-if="groups.length > 1">
 
                         <div slot='empty'>

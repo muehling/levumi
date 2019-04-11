@@ -6,6 +6,19 @@ class Group < ApplicationRecord
 
   validates_presence_of :label
 
+
+  #Alle "Fremd-Shares" löschen, wenn Klasse archiviert wird
+  after_save do |g|
+    if g.archive
+      GroupShare.where(group: g, owner: false).destroy_all
+    end
+  end
+
+  #Alle Einträge aus Share löschen, bevor Klasse gelöscht wird
+  before_destroy do |g|
+    GroupShare.where(group: g).destroy_all
+  end
+
   #Liefere Objekt für Frontend, das Group und GroupShare vereint
   def as_hash(user)
     c = group_shares.where(user: user).first  #Kombination aus User & Group muss eindeutig sein!

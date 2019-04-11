@@ -14,7 +14,7 @@ class AssessmentsController < ApplicationController
   #POST /groups/:group_id/assessments
   def create
     t = Test.find(params[:test_id])
-    unless t.nil?
+    unless t.nil? || @group.read_only(@login)
       @group.assessments.create(test: t)
       head :ok   #200 als Rückmeldung an Vue-Component
     end
@@ -24,8 +24,8 @@ class AssessmentsController < ApplicationController
 
   #Gruppenummer aus Parametern holen und Gruppe laden
   def set_group
-    @group = Group.find(params[:group_id])
-    if @group.user_id != @login.id
+    @group = @login.groups.find(params[:group_id])
+    if @group.nil?
       redirect_to '/'
     end
   end

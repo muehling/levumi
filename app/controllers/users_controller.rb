@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
-    @groups = @login.groups.where(archive: false)  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
+    @groups = @login.groups.where(archive: false).map {|g| g.as_hash(@login)}  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
     @assessments = Assessment.where(group_id: @groups).all
   end
 

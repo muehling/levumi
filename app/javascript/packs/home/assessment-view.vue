@@ -3,7 +3,7 @@
         <b-tabs pills card >
 
             <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
-            <b-tab title='Neue Messung'>
+            <b-tab v-if="!read_only" title='Neue Messung'>
                 <b-button-group>
                     <!-- Button erscheint grün, falls schon ein Ergebnis am selben Tag vorhanden ist. TODO: Lieber selbe Woche? -->
                     <b-button v-for="student in students"
@@ -61,7 +61,7 @@
             </b-tab>
 
             <!-- Liste der Messungen anzeigen -->
-            <b-tab title='Messungen'>
+            <b-tab v-if="!read_only" title='Messungen'>
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -114,7 +114,8 @@
             results: Array,
             configuration: Object,
             group: Number,
-            test: Number
+            test: Number,
+            read_only: Boolean
         },
         computed: {
             weeks: function() {
