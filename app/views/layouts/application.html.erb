@@ -2,70 +2,7 @@
 <html>
   <head>
     <%= render 'layouts/header' %>
-
-    <script>
-
-        //TODO: woanders? Teil von Webpack?
-        <%
-          #Schülernamen verfügbar machen
-          groups = {}
-          @login.students.each do |s|
-            groups[s.group_id] ||= []
-            groups[s.group_id] += [s]
-          end
-
-          keys = {}
-          @login.group_shares.each do |c|
-            keys[c.group_id] = c.key
-          end
-       %>
-
-      groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
-      keys = JSON.parse("<%= escape_javascript(raw keys.to_json)%>");
-
-      //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
-      // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
-      function decrypt(text, alt, group) {
-          let res = "";
-          try{
-              let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
-              res = sjcl.decrypt(tempkey, text);
-          }
-          catch(e){
-              console.error(e.toString());
-              console.log('Entschlüsselung fehlgeschlagen'); //Log-Output (evtl. nicht in Production?)
-              res = alt;
-          }
-          return res;
-      }
-
-      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
-      function encrypt(text, group) {
-          let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
-          return sjcl.encrypt(tempkey, text);
-      }
-
-      //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey".
-      function encrypt_key(text) {
-          return sjcl.encrypt(sessionStorage['login'], text);
-      }
-
-      //Liefert das Student-Objekt zu einer ID in dessen Gruppe zurück.
-      function get_student(group, id) {
-          for (let j = 0; j < groups[group].length; ++j)
-              if (groups[group][j].id == id)
-                  return groups[group][j];
-          return null;
-      }
-
-      //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
-      Object.keys(groups).forEach(function(key, index) {
-          for (let i = 0; i < this[key].length; ++i)
-              this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key);
-          }, groups);
-
-    </script>
-
+    <%= render 'layouts/scripts' %>
   </head>
 
   <body>

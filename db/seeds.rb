@@ -21,10 +21,10 @@
       {user_id: 1, group_id: 3, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
       {user_id: 1, group_id: 4, owner: true, read_only: false, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
       {user_id: 2, group_id: 1, owner: false, read_only: true, key: '{"iv":"+ufs7ck1IVNL2/OGOAO82g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"ZQgBZSEJaX2d0VVf"}'},
-      {user_id: 2, group_id: 2, owner: false, read_only: false, key: '{"iv":"zqS4X5C6jvq4Kh4FVIcXxw==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"jQ03irrBvvg=","ct":"GnNuOCPp3nkcUzzWFks="}'}
+      {user_id: 2, group_id: 2, owner: false, read_only: false, key: nil}
   ]
 
-  #"Adamn" und "Eva", verschlüsselt mit Key für Klasse 1
+  #"Adam" und "Eva", verschlüsselt mit Key für Klasse 1
   students = [
       {name: '{"iv":"WCm9XH6cM7s7e3ea4cZB3w==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"MbW6TZm0FKF9pSb1"}', gender: 0, sen: 0, migration: 0},
       {name: '{"iv":"6QrHF209McMuDUfcMP3z4g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"ErP3QkJVO3qUbp0="}'}

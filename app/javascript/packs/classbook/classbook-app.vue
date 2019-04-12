@@ -32,7 +32,7 @@
                                                 :group="groups[0]"
                                                 :index="0"
                                                 :active="firstIndex == 0"
-                                                v-on:update:groups="groups.splice(1, 0, $event.object)"
+                                                v-on:update:groups="create($event)"
                                         ></group-form>
                                     </b-tab>
 
@@ -149,12 +149,19 @@
             GroupView, GroupForm
         },
         methods: {
-          sort: function(groups) {
-              let empty = groups.shift();       //Erstes Element ist leere Gruppe für "new"
-              groups.sort((a, b) => b.id - a.id); //Rest nach ID absteigend sortieren
-              groups.unshift(empty);
-              return groups;
-          }
+            create(val) {
+                this.groups.splice(1, 0, val.object);
+                //Globale Daten aktualisieren
+                //TODO: Classbook-App autark halten?
+                keys[val.object.id] = val.object.key;
+                groups[val.object.id] = [];
+            },
+            sort: function(groups) {
+                let empty = groups.shift();       //Erstes Element ist leere Gruppe für "new"
+                groups.sort((a, b) => b.id - a.id); //Rest nach ID absteigend sortieren
+                groups.unshift(empty);
+                return groups;
+            }
         },
         computed: {
           firstIndex: function() {

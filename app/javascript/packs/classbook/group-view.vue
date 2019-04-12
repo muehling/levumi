@@ -1,11 +1,11 @@
 <template>
 
-    <!-- Darstellung für reguläre Klasse: Schülertabelle -->
+    <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
     <div v-if="groups[index].archive == false">
         <div class='mb-1'>
             <!-- Form zur Umbenennung -->
             <group-form
-                    v-if="index == 0 || groups[index].owner"
+                    v-if="groups[index].owner"
                     :group="groups[index]"
                     :index="index"
                     v-on:update:groups="update($event)"

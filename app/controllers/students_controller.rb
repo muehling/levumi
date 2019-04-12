@@ -30,19 +30,6 @@ class StudentsController < ApplicationController
     end
   end
 
-  #POST /students/:id
-  def mass_update   #Neucodierung aller Namen nach Passwort-Änderung. Rückmeldung durch 200 an fetch-API
-    todo = JSON.parse(params[:students]) || [] #Gesendet werden (key, value)-Paare der Student-Objekte (id, name).
-    todo.each do |s|
-      student = Student.find(s['id'])
-      unless student.nil? || student.group.read_only(@login)
-        student.name = s['name']
-        student.save
-      end
-    end
-    head 200
-  end
-
   #DEL /students/:id
   def destroy
     s = Student.find(params[:id])

@@ -39,6 +39,15 @@
         <li class='nav-item' id='intro6'>
           <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
         </li>
+      <% end %>
+    </ul>
+
+    <ul class='navbar-nav ml-auto'>
+      <% if @masquerade %>
+        <li class='nav-item'>
+          <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
+        </li>
+      <% else %>
         <% if !@login.is_regular_user? %>
           <li class='nav-item dropdown'>
             <a class='nav-link dropdown-toggle' href='#' id='navbarSystem' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
@@ -50,15 +59,6 @@
             </div>
           </li>
         <% end %>
-      <% end %>
-    </ul>
-
-    <ul class='navbar-nav ml-auto'>
-      <% if @masquerade %>
-        <li class='nav-item'>
-          <%= link_to "Sitzung als #{@login.email} beenden", '/logout', class: 'nav-link btn btn-outline-secondary', id: 'navbarMasquerade'%>
-        </li>
-      <% else %>
         <li class='nav-item'>
           <a class='nav-link' href='/logout' data-method='post'>Ausloggen</a>
         </li>

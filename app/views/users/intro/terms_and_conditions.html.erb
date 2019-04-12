@@ -3,10 +3,6 @@
 </div>
 <div class='card card-body ml-5 mr-5'>
   <%= form_for @user, url: '/willkommen' do |f| %>
-    <!-- Hidden Field mit generiertem Key für die Testklasse -->
-    <input type='hidden' id='key' name='key'/>
-    <!-- Hidden Field mit generiertem Auth_Token für die Testklasse -->
-    <input type='hidden' id='token' name='auth_token'/>
     <p class='text-justify'>
       <div class="custom-control custom-checkbox">
         <%= check_box_tag('tc_accepted_1', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
@@ -34,8 +30,3 @@
   <% end %>
 </div>
 
-<script>
-  let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
-  $('#key').value(encrypt_key(key));
-  $('#token').value(sjcl.encrypt(key, key));
-</script>

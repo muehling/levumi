@@ -16,13 +16,25 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    if (@login.has_security? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
-      @user.errors.add(:security_digest)
-      render 'edit'
-    elsif !@user.update_attributes(user_attributes)
-      render 'edit'
-    else
+    if params.has_key?(:recode)  #Umkodierung aller Share-Keys durch Passwort-Änderung
+      todo = JSON.parse(params[:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupAccess-Objekte.
+      todo.each do |k, v|
+        ga = GroupShare.where(user: @login, group_id: k).first
+        unless ga.nil? || ga.key.nil? || ga.key.blank?
+          ga.key = v
+          ga.save
+        end
+      end
+      head 200
+    else                        # "Normales" Update
+      if (@login.has_security? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
+        @user.errors.add(:security_digest)
+        render 'edit'
+      elsif !@user.update_attributes(user_attributes)
+        render 'edit'
+      else
         @users = User.all if (@login.id != @user.id)  #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
+      end
     end
   end
 
@@ -87,7 +99,6 @@ class UsersController < ApplicationController
         @user.tc_accepted = Time.now
         @user.intro_state = 1
         @user.save
-        @user.create_demo(params[:key], params[:auth_token])
         render 'users/intro/forms', layout: 'minimal' and return
       else
         if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
@@ -104,6 +115,7 @@ class UsersController < ApplicationController
           @user.update_attributes(params.require(:user).permit(:state, :institution, :town, :school_type, :focus))  #Unkritische Attribute, deswegen kein Fehlercheck
           @user.intro_state = 3
           @user.save
+          @user.create_demo(params[:key], params[:auth_token])
           @login = @user
           render 'users/intro/help'
         end

@@ -14,7 +14,7 @@ class GroupsController < ApplicationController
     g = @login.groups.new(params.require(:group).permit(:label, :auth_token))
     if g.save
       #Neue Capability als Besitzer der Klase anlegen, kann nur hier passieren, wegen key aus params
-      GroupShare.create(group: g, user: @login, owner: true, read_only: false, key: params.require(:group).permit(:key))
+      GroupShare.create(group: g, user: @login, owner: true, read_only: false, key: params.require(:group)[:key])
       render json: g.as_hash(@login)
     else
       head 304
