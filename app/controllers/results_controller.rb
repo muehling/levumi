@@ -45,7 +45,7 @@ class ResultsController < ApplicationController
   def check_login
     #Fall 1: User Login
     if session.has_key?(:user)
-      if @student.group.user_id == session[:user]
+      if @student.group.owner.id == session[:user]
         return true
       end
     end

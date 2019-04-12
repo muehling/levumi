@@ -21,10 +21,21 @@
                 </div>
                 <div v-else>
                     <p>Legen Sie hier einen neuen Zeitraum an, in dem die Schüler_innen die Tests mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen können!</p>
+                    <p>Unten können Sie sehen, welche Schüler_innen den Test bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                     <b-button block :variant="emptyResults() ? 'success' : 'outline-success'" :disabled="emptyResults()" @click="createResults()">
                         <span v-if="emptyResults()">Bereits freigeschaltet</span>
                         <span v-else>Für aktuelle Kalenderwoche freischalten</span>
                     </b-button>
+                    <b-button-group class='mt-3'>
+                        <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
+                        <b-button v-for="student in students"
+                                  :key="student.id"
+                                  :variant="hasResult(student.id) ? 'success' : 'outline-secondary'"
+                                  disabled
+                        >
+                            {{student.name}}
+                        </b-button>
+                    </b-button-group>
                 </div>
             </b-tab>
 
@@ -212,8 +223,9 @@
             },
             hasResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
                 let d = new Date();
+                let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)));
                 for (let i = 0; i < this.results.length; ++i)
-                    if (this.results[i].student_id == student && (new Date(this.results[i].test_date)).toDateString() == d.toDateString())
+                    if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
                             return true;
                 return false;
             },
