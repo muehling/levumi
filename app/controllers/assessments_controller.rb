@@ -16,13 +16,15 @@ class AssessmentsController < ApplicationController
     t = Test.find(params[:test_id])
     unless t.nil? || @group.read_only(@login)
       @group.assessments.create(test: t)
-      head :ok   #200 als Rückmeldung an Vue-Component
+      render json: @assessment.get_data
     end
   end
 
   #PUT /groups/:group_id/assessments/:id
   def update
     #"Zweckentfremdet" für Erzeugen neuer Results-Objekte für Schülertest
+    @assessment.prepare_results
+    head :ok   #200 als Rückmeldung an Vue-Component
   end
 
   private

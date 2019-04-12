@@ -21,11 +21,9 @@
                 </div>
                 <div v-else>
                     <p>Legen Sie hier einen neuen Zeitraum an, in dem die Schüler_innen die Tests mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen können!</p>
-                    <b-button block variant='outline-success' @click="createResults()">
-                        Für diese Woche freischalten
-                    </b-button>
-                    <b-button block variant='outline-success' @click="createResults()">
-                        Für nächste Woche freischalten
+                    <b-button block :variant="emptyResults() ? 'success' : 'outline-success'" :disabled="emptyResults()" @click="createResults()">
+                        <span v-if="emptyResults()">Bereits freigeschaltet</span>
+                        <span v-else>Für aktuelle Kalenderwoche freischalten</span>
                     </b-button>
                 </div>
             </b-tab>
@@ -201,7 +199,6 @@
                         }
                     }
                 }
-                console.log(res);
                 return res;
             }
         },
@@ -218,6 +215,13 @@
                 for (let i = 0; i < this.results.length; ++i)
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_date)).toDateString() == d.toDateString())
                             return true;
+                return false;
+            },
+            emptyResults() {
+                let d = new Date();
+                for (let i = 0; i < this.results.length; ++i)
+                    if (new Date(this.results[i].expires_on).toDateString() > d.toDateString())
+                        return true;
                 return false;
             },
             loadTest(student) { //Testfenster für Kind öffnen und auf Schließen warten.
@@ -250,17 +254,22 @@
                     });
             },
             createResults() {
-                fetch('/groups/' + this.group.id + '/assessments/' + this.test, {  //Results erzeugen
+                fetch('/groups/' + this.group + '/assessments/' + this.test, {  //Results erzeugen
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                         'X-Requested-With': 'XMLHttpRequest',
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
-                    credentials: 'include',
-                    body: 'date='
+                    credentials: 'include'
                 })
-                    .then(response => {  });
+                    .then(response => {
+                        return response.text().then(text =>  {
+                            let results = JSON.parse(text);
+                            this.results = results.series;
+                            this.configuration = results.configuration;
+                        });
+                    });
 
             }
         },

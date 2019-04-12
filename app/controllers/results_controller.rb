@@ -9,11 +9,7 @@ class ResultsController < ApplicationController
     if (params.has_key? :test_id)
       @test = Test.find(params[:test_id])
       a = Assessment.where(group_id: @student.group_id, test_id: @test.id).first       #Assessment aus student_id und test_id bestimmen
-
-      #TODO: Evtl. after_create ?
-      priorResult = Result.where(["student_id = ? and assessment_id = ?", @student.id, a]).order(:test_date).last
-
-      @result = @student.results.create(assessment: a, prior_result: priorResult)
+      @result = @student.results.create(assessment: a)
     end
     render 'edit', layout: 'blank'
   end
