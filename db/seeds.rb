@@ -126,9 +126,9 @@
   Test.import('db/example_tests/student_based_test/test.zip', false, true )
 
   #Spielergebnisse anlegen
-  a1 = Assessment.create(group_id: 3, test_id: Test.find_by_shorthand('Ex_U_1').id)
-  a2 = Assessment.create(group_id: 3, test_id: Test.find_by_shorthand('Ex_S_1').id)
-  Group.find(3).students.each do |s|
+  a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
+  a2 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
+  Group.find(1).students.each do |s|
     7.times do |i|
       if (rand > 0.3)
         r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(6-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})

@@ -13,7 +13,7 @@ class ResultsController < ApplicationController
       #TODO: Evtl. after_create ?
       priorResult = Result.where(["student_id = ? and assessment_id = ?", @student.id, a]).order(:test_date).last
 
-      @result = @student.results.create(assessment: a, prior_result_id: priorResult.nil? ? nil : priorResult.id)
+      @result = @student.results.create(assessment: a, prior_result: priorResult)
     end
     render 'edit', layout: 'blank'
   end

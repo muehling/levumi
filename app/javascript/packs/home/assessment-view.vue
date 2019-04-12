@@ -2,20 +2,32 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card >
 
-            <!-- Schüler anzeigen um Messung zu starten. TODO: passt nur für Lehrertests -->
             <b-tab v-if="!read_only" title='Neue Messung'>
-                <b-button-group>
-                    <!-- Button erscheint grün, falls schon ein Ergebnis am selben Tag vorhanden ist. TODO: Lieber selbe Woche? -->
-                    <b-button v-for="student in students"
-                              :key="student.id"
-                              :variant="hasResult(student.id) ? 'success' : 'outline-success'"
-                              class='mr-2'
-                              title='Jetzt testen'
-                              @click="loadTest(student)"
-                    >
-                        {{student.name}}
+                <div v-if="!student_test">
+                    <!-- Schüler anzeigen um Messung zu starten. -->
+                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten. Grün hinterlege Namen wurden heute bereits getestet!</p>
+                    <b-button-group>
+                        <!-- Button erscheint grün, falls schon ein Ergebnis am selben Tag vorhanden ist. TODO: Lieber selbe Woche? -->
+                        <b-button v-for="student in students"
+                                  :key="student.id"
+                                  :variant="hasResult(student.id) ? 'success' : 'outline-success'"
+                                  class='mr-2'
+                                  title='Jetzt testen'
+                                  @click="loadTest(student)"
+                        >
+                            {{student.name}}
+                        </b-button>
+                    </b-button-group>
+                </div>
+                <div v-else>
+                    <p>Legen Sie hier einen neuen Zeitraum an, in dem die Schüler_innen die Tests mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen können!</p>
+                    <b-button block variant='outline-success' @click="createResults()">
+                        Für diese Woche freischalten
                     </b-button>
-                </b-button-group>
+                    <b-button block variant='outline-success' @click="createResults()">
+                        Für nächste Woche freischalten
+                    </b-button>
+                </div>
             </b-tab>
 
             <!-- Auswertungstab Klasse -->
@@ -115,7 +127,8 @@
             configuration: Object,
             group: Number,
             test: Number,
-            read_only: Boolean
+            read_only: Boolean,
+            student_test: Boolean,
         },
         computed: {
             weeks: function() {
@@ -235,6 +248,20 @@
                             }, 500);
                     })
                     });
+            },
+            createResults() {
+                fetch('/groups/' + this.group.id + '/assessments/' + this.test, {  //Results erzeugen
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: 'include',
+                    body: 'date='
+                })
+                    .then(response => {  });
+
             }
         },
         data: function () {

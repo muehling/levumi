@@ -70,6 +70,7 @@
                              :configuration="results.configuration"
                              :test="test_selected"
                              :read_only="group.read_only"
+                             :student_test="results.student_test"
                              v-on:update="loadAssessment(test_selected)"
             >
             </assessment-view>

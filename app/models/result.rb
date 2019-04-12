@@ -1,7 +1,7 @@
 class Result < ApplicationRecord
   belongs_to :student
   belongs_to :assessment
-  has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result'
+  has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result_id'
 
   serialize :results, Hash
   serialize :data, Array

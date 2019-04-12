@@ -1,6 +1,6 @@
 class AssessmentsController < ApplicationController
   before_action :set_group
-  before_action :set_assessment, only: [:show]
+  before_action :set_assessment, only: [:show, :update]
 
   #GET /groups/:group_id/assessments/:id
   def show                #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
@@ -18,6 +18,11 @@ class AssessmentsController < ApplicationController
       @group.assessments.create(test: t)
       head :ok   #200 als Rückmeldung an Vue-Component
     end
+  end
+
+  #PUT /groups/:group_id/assessments/:id
+  def update
+    #"Zweckentfremdet" für Erzeugen neuer Results-Objekte für Schülertest
   end
 
   private
