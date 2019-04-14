@@ -27,8 +27,7 @@ class ResultsController < ApplicationController
   #GET /students/:student_id/results/:id/edit
   def edit
     @result = Result.find(params[:id])
-    @student = Student.find(session[:student])
-    unless @result.nil? || @result.student_id != @student.id
+    unless @result.nil?
       @test = @result.assessment.test
       render layout: 'blank'
     else

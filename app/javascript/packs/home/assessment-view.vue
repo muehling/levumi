@@ -13,11 +13,11 @@
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
                                   :key="student.id"
-                                  :variant="hasResult(student.id) ? 'success' : 'outline-success'"
+                                  :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
                                   class='mr-2'
                                   title='Jetzt testen'
-                                  :href="'/students/' + student.id + '/results?test_id='+ test"
-                                  data-method='post'
+                                  :href="getResult(student.id) > 0 ? '/students/' + student.id + '/results/' + getResult(student.id) + '/edit' : '/students/' + student.id + '/results?test_id='+ test"
+                                  :data-method="getResult(student.id) == 0 ? 'post' : ''"
                         >
                             {{student.name}}
                         </b-button>
@@ -30,7 +30,7 @@
                         <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                         <b-button v-for="student in students"
                                   :key="student.id"
-                                  :variant="hasResult(student.id) ? 'success' : 'outline-secondary'"
+                                  :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
                                   disabled
                         >
                             {{student.name}}
@@ -222,18 +222,18 @@
                 let d = new Date(date);
                 return d.toLocaleDateString('de-DE')
             },
-            hasResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
+            getResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
                 let d = new Date();
                 let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)));
                 for (let i = 0; i < this.results.length; ++i)
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
-                            return true;
-                return false;
+                            return this.results[i].id;
+                return 0;
             }
         },
         data: function () {
             return {
-                deep_link: this.$root.pre_select ? true : false,
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 view_selected: 0,
                 student_selected: -1,
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
