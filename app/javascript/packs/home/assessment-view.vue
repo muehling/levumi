@@ -8,7 +8,8 @@
                 </div>
                 <div v-else-if="!student_test">
                     <!-- Schüler anzeigen um Messung zu starten. -->
-                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten. Grün hinterlege Namen wurden in dieser Woche bereits getestet!</p>
+                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten.</p>
+                    <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
                     <b-button-group>
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
