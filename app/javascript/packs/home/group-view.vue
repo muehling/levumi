@@ -48,7 +48,8 @@
                                 v-if="(test.used || !group.read_only) && (test.info.test_family_id == family_selected)"
                                 @click="test.used ? loadAssessment(test.info.id) : createAssessment(test)"
                     >
-                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
+                        <!-- TODO: Veraltet lieber als Dropdown, oder... ? -->
+                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}} {{test.info.archive ? '(veraltet)' : ''}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -69,6 +70,7 @@
                              :results="results.series"
                              :configuration="results.configuration"
                              :test="test_selected"
+                             :test_info="test_info"
                              :read_only="group.read_only"
                              :student_test="results.student_test"
                              v-on:update="loadAssessment(test_selected)"
@@ -87,6 +89,15 @@
         props: {
             group: Object,
             group_info: Object
+        },
+        computed: {
+          test_info: function() {
+              if (this.test_selected > 0)
+                  for (let i = 0; i < this.group_info.tests.length; ++i)
+                      if (this.group_info.tests[i].info.id == this.test_selected)
+                          return this.group_info.tests[i].info;
+              return {};
+          }
         },
         data: function () {
             return {

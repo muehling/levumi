@@ -133,7 +133,6 @@
       if (rand > 0.3)
         r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(6-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})
         r.save
-        a2.results.create(student_id: s.id, expires_on: DateTime.now + i)
       end
     end
   end

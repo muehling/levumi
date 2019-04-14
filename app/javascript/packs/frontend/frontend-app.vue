@@ -7,6 +7,9 @@
         <div class='bounce3'></div>
     </div>
     <div v-else-if="tests">
+        <b-alert :show="tests.length == 0"  variant='secondary'>
+            Gerade gibt es keine Tests für dich. Schau nächste Woche nochmal vorbei!
+        </b-alert>
         <!-- Übersicht anzeigen -->
         <b-card-group deck>
             <b-card class='mt-3' v-for="test in tests" :key="test.id" :title="test.family" :sub-title="test.level">
@@ -15,9 +18,6 @@
                     <h6>{{test.area}}</h6>
                 </template>
                 <b-button block variant='primary' :href="'/students/' + test.student + '/results/' + test.id + '/edit' ">Los geht's</b-button>
-                <template slot='footer'>
-                    Läuft am {{test.date}} ab<br/>
-                </template>
             </b-card>
         </b-card-group>
     </div>

@@ -6,7 +6,6 @@ class CreateResults < ActiveRecord::Migration[5.2]
       t.references :prior_result
       t.date :test_date
       t.date :test_week
-      t.date :expires_on
       t.text :results
       t.text :data
 

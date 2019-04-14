@@ -59,7 +59,9 @@
                         <%= c.name %>
                       </template>
 
-                      <%= c.description%>
+                      <b-alert show variant="secondary">
+                        <%= c.description%>
+                      </b-alert>
 
                       <div class='mt-3'>
                         <b-tabs pills>
@@ -79,7 +81,9 @@
                                 <%= f.name %>
                               </template>
 
-                              <%= f.description%>
+                              <b-alert show variant="secondary" class='mt-3'>
+                                <%= f.description%>
+                              </b-alert>
 
                               <b-card no-body class='mt-3'>
                                 <b-tabs pills card vertical>

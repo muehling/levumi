@@ -3,7 +3,10 @@
         <b-tabs pills card >
 
             <b-tab v-if="!read_only" title='Neue Messung' :active="deep_link">
-                <div v-if="!student_test">
+                <div v-if="test_info.archive">
+                    <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
+                </div>
+                <div v-else-if="!student_test">
                     <!-- Schüler anzeigen um Messung zu starten. -->
                     <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten. Grün hinterlege Namen wurden in dieser Woche bereits getestet!</p>
                     <b-button-group>
@@ -21,12 +24,8 @@
                     </b-button-group>
                 </div>
                 <div v-else>
-                    <p>Legen Sie hier einen neuen Zeitraum an, in dem die Schüler_innen die Tests mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen können!</p>
-                    <p>Unten können Sie sehen, welche Schüler_innen den Test bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
-                    <b-button block :variant="emptyResults() ? 'success' : 'outline-success'" :disabled="emptyResults()" @click="createResults()">
-                        <span v-if="emptyResults()">Bereits freigeschaltet</span>
-                        <span v-else>Für aktuelle Kalenderwoche freischalten</span>
-                    </b-button>
+                    <p>Diesen Test müssen die Schüler_innen mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                    <p>Hier können Sie sehen, welche Schüler_innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                     <b-button-group class='mt-3'>
                         <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                         <b-button v-for="student in students"
@@ -137,6 +136,7 @@
             configuration: Object,
             group: Number,
             test: Number,
+            test_info: Object,
             read_only: Boolean,
             student_test: Boolean,
         },
@@ -229,32 +229,6 @@
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
                             return true;
                 return false;
-            },
-            emptyResults() {
-                let d = new Date();
-                for (let i = 0; i < this.results.length; ++i)
-                    if (new Date(this.results[i].expires_on).toDateString() > d.toDateString())
-                        return true;
-                return false;
-            },
-            createResults() {
-                fetch('/groups/' + this.group + '/assessments/' + this.test, {  //Results erzeugen
-                    method: 'put',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    credentials: 'include'
-                })
-                    .then(response => {
-                        return response.text().then(text =>  {
-                            let results = JSON.parse(text);
-                            this.results = results.series;
-                            this.configuration = results.configuration;
-                        });
-                    });
-
             }
         },
         data: function () {
