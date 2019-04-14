@@ -2,18 +2,19 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card >
 
-            <b-tab v-if="!read_only" title='Neue Messung'>
+            <b-tab v-if="!read_only" title='Neue Messung' :active="deep_link">
                 <div v-if="!student_test">
                     <!-- Schüler anzeigen um Messung zu starten. -->
-                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten. Grün hinterlege Namen wurden heute bereits getestet!</p>
+                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten. Grün hinterlege Namen wurden in dieser Woche bereits getestet!</p>
                     <b-button-group>
-                        <!-- Button erscheint grün, falls schon ein Ergebnis am selben Tag vorhanden ist. TODO: Lieber selbe Woche? -->
+                        <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
                                   :key="student.id"
                                   :variant="hasResult(student.id) ? 'success' : 'outline-success'"
                                   class='mr-2'
                                   title='Jetzt testen'
-                                  @click="loadTest(student)"
+                                  :href="'/students/' + student.id + '/results?test_id='+ test"
+                                  data-method='post'
                         >
                             {{student.name}}
                         </b-button>
@@ -40,7 +41,7 @@
             </b-tab>
 
             <!-- Auswertungstab Klasse -->
-            <b-tab title='Auswertung' active>
+            <b-tab title='Auswertung' :active="!deep_link">
                 <b-row>
                     <b-button-group class='ml-3'>
                         <b-button class='mr-2'
@@ -236,35 +237,6 @@
                         return true;
                 return false;
             },
-            loadTest(student) { //Testfenster für Kind öffnen und auf Schließen warten.
-                fetch('/students/' + student.id + '/results', {  //Test laden
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    credentials: 'include',
-                    body: 'test_id=' + this.test
-                })
-                    .then(response => {    //Neues Fenster öffnen und Test dort anzeigen.
-                        return response.text().then(text =>  {
-                            let win = window.open();
-                            win.document.open();
-                            win.document.write(text);
-                            win.document.close();
-                            win.document.title = 'Testfenster ' + student.name;
-                            let vue = this;
-                            let timer = setInterval(function() {    //Warten bis Fenster geschlossen
-                                //TODO: Funtioniert noch nicht bei mehreren Tabs!
-                                if (win.closed) {
-                                    clearInterval(timer);
-                                    vue.$emit('update');
-                                }
-                            }, 500);
-                    })
-                    });
-            },
             createResults() {
                 fetch('/groups/' + this.group + '/assessments/' + this.test, {  //Results erzeugen
                     method: 'put',
@@ -287,6 +259,7 @@
         },
         data: function () {
             return {
+                deep_link: this.$root.pre_select ? true : false,
                 view_selected: 0,
                 student_selected: -1,
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"

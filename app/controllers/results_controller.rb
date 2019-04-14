@@ -21,6 +21,7 @@ class ResultsController < ApplicationController
     @result.data = JSON.parse(params[:data])
     @result.test_date = DateTime.now
     @result.save
+    head :ok
   end
 
   #GET /students/:student_id/results/:id/edit

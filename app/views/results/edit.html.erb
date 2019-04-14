@@ -49,7 +49,7 @@
         <% if @test.student_test %>
           window.location.href = '/testen';
         <% else %>
-          window.close();
+          window.location.href = '<%= group_assessment_path(@result.student.group, @test) %>';
         <% end %>
     }
 

@@ -14,10 +14,11 @@
                             </div>
                         </div>
 
-                        <!-- Oberste Ebene - aktuelle Klassen -->
+                        <!-- Oberste Ebene - aktuelle Klassen, falls pre_select gesetzt, direkt auswählen -->
                         <b-tab v-for="(group, index) in groups"
                                :key="group.id"
                                :title="group.label"
+                               :active="$root.pre_select && ($root.pre_select.group == group.id)"
                         >
 
                             <!-- Zweite Ebene - gewählte Klasse -->
@@ -53,6 +54,9 @@
                 groups: this.$root.groups,
                 group_info: this.$root.group_info
             }
+        },
+        updated() {
+            this.$root.pre_select = undefined;
         },
         name: 'home-app'
     }

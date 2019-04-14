@@ -1,8 +1,18 @@
 <%
   data = {
       groups: @groups,
-      group_info: @login.get_home_info
+      group_info: @login.get_home_info,
   }
+  if @assessment
+    data[:pre_select] = {
+        group: @assessment.group_id,
+        area: @assessment.test.test_family.competence.area_id,
+        competence: @assessment.test.test_family.competence_id,
+        family: @assessment.test.test_family_id,
+        test: @assessment.test_id,
+        assessment: @assessment.get_data
+    }
+  end
 %>
 
 <script>

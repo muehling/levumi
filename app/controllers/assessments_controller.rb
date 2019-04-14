@@ -7,7 +7,13 @@ class AssessmentsController < ApplicationController
     if @assessment.nil?
       head 404
     else
-      render json: @assessment.get_data
+      respond_to do |format|
+        format.html {
+          @groups = @login.groups.where(archive: false).map {|g| g.as_hash(@login)}  #Daten für die "Home"-Ansicht laden. Alle aktuellen Assessments.
+          render 'users/show'
+        }
+        format.js {render json: @assessment.get_data}
+      end
     end
   end
 

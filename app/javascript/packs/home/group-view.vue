@@ -90,12 +90,12 @@
         },
         data: function () {
             return {
-                area_selected: 0,
-                competence_selected: 0,
-                family_selected: 0,
-                test_selected: 0,
+                area_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.area : 0,
+                competence_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.competence : 0,
+                family_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.family : 0,
+                test_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0,
                 updating: false,
-                results: undefined
+                results: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.assessment : undefined
             }
         },
         methods: {
