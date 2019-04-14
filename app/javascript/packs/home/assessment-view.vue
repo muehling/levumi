@@ -14,10 +14,11 @@
                         <b-button v-for="student in students"
                                   :key="student.id"
                                   :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
+                                  :disabled="getResult(student.id) > 0"
                                   class='mr-2'
-                                  title='Jetzt testen'
-                                  :href="getResult(student.id) > 0 ? '/students/' + student.id + '/results/' + getResult(student.id) + '/edit' : '/students/' + student.id + '/results?test_id='+ test"
-                                  :data-method="getResult(student.id) == 0 ? 'post' : ''"
+                                  :title="getResult(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
+                                  :href="'/students/' + student.id + '/results?test_id='+ test"
+                                  data-method='post'
                         >
                             {{student.name}}
                         </b-button>
