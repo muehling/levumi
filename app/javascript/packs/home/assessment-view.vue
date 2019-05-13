@@ -2,7 +2,11 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card >
 
-            <b-tab v-if="!read_only" title='Neue Messung' :active="deep_link">
+            <b-tab v-if="!read_only"
+                   title='Neue Messung'
+                   :active="deep_link"
+                   class='m-3'
+            >
                 <div v-if="test_info.archive">
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
@@ -42,7 +46,7 @@
             </b-tab>
 
             <!-- Auswertungstab Klasse -->
-            <b-tab title='Auswertung' :active="!deep_link">
+            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#chart_area')" class='m-3'>
                 <b-row>
                     <b-button-group class='ml-3'>
                         <b-button class='mr-2'
@@ -78,13 +82,13 @@
                         </b-button>
                     </b-button-group>
                 </b-row>
-                <div id='chart_area_group'>
+                <div id='chart_area'>
                     <apexchart width='100%' height='500px' :options="options" :series="series"></apexchart>
                 </div>
             </b-tab>
 
             <!-- Liste der Messungen anzeigen -->
-            <b-tab v-if="!read_only" title='Messungen'>
+            <b-tab v-if="!read_only" title='Messungen' class='m-3'>
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -101,14 +105,14 @@
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ grouped_results[date].length }}</b-col>
                         <b-col>
-                            <b-btn v-b-toggle="'collapse' + index" size='sm' variant='outline-secondary'>
+                            <b-btn v-b-toggle="'collapse_' + index" size='sm' variant='outline-secondary'>
                                 <i class='when-closed fas fa-search-plus'></i>
                                 <i class='when-opened fas fa-search-minus'></i>
                             </b-btn>
                         </b-col>
                     </b-row>
                     <!-- Aufklappbare Details -->
-                    <b-collapse :id="'collapse' + index">
+                    <b-collapse :id="'collapse_' + index" v-on:shown="auto_scroll('#collapse_' + index)">
                         <b-card class='mt-2'>
                             <table class='table table-striped table-sm table-borderless'>
                                 <thead>
@@ -118,14 +122,27 @@
                                 </thead>
                                 <tbody>
                                 <tr v-for="result in grouped_results[date]">
-                                    <td>{{ print_date(result.test_date) }}</td>
-                                    <td>{{ student_name(result.student_id) }}</td>
+                                    <td>{{ print_date(result.data.test_date) }}</td>
+                                    <td>{{ student_name(result.data.student_id) }}</td>
+                                    <td>
+                                        <b-btn small
+                                               variant='outline-danger'
+                                               title='Diese Messung löschen'
+                                               :href="'/students/' + result.data.student_id + '/results/' + result.data.id"
+                                               data-remote='true'
+                                               data-method='delete'
+                                               data-confirm='Diese Messung unwiederruflich löschen! Sind Sie sicher?'
+                                               v-on:ajax:success="remove(result.index, index)"
+                                        >
+                                            <i class='fas fa-trash'></i>
+                                        </b-btn>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </b-card>
                     </b-collapse>
-                </div>
+                 </div>
             </b-tab>
         </b-tabs>
     </b-card>
@@ -155,19 +172,19 @@
               let res = {}
               for (let i = 0; i < this.results.length; ++i)
                   if (res[this.results[i].test_week] === undefined)
-                      res[this.results[i].test_week] = [this.results[i]];
+                      res[this.results[i].test_week] = [{index: i, data: this.results[i]}];
                   else
-                      res[this.results[i].test_week].push(this.results[i]);
+                      res[this.results[i].test_week].push({index: i, data: this.results[i]});
               return res;
             },
             options: function() {
-                let options = Object.assign({}, this.default_options, this.configuration.views[this.view_selected].options)
+                let options = Object.assign({}, this.default_options, this.configuration.views[this.view_selected].options);
                 options.labels = this.weeks;
                 return options;
             },
             series: function() {
                 let res = [];
-                let weeks = this.weeks;
+                const weeks = this.weeks;
                 let view = this.configuration.views[this.view_selected];
                 if (this.student_selected == -1) {
                     for (let s = 0; s < this.students.length; ++s)
@@ -231,6 +248,20 @@
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
                             return this.results[i].id;
                 return 0;
+            },
+            remove(index, collapse) { //Löscht einen Eintrag aus der Ergebnisliste
+                let last = true;
+                for (let i = 0; i < this.results.length; ++i)
+                    if (i != index && this.results[i].test_week == this.results[index].test_week) {
+                        last = false;
+                        break;
+                    }
+                if (last) //Letzter Eintrag der Woche wird gelöscht => Collapse erst schließen
+                    this.$root.$emit('bv::toggle::collapse', 'collapse_' + collapse);
+                this.results.splice(index, 1);
+            },
+            auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
+                window.$(element)[0].scrollIntoView(false);
             }
         },
         data: function () {

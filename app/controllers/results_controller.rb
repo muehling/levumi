@@ -35,6 +35,21 @@ class ResultsController < ApplicationController
     end
   end
 
+  #DEL /students/:student_id/results/:id
+  def destroy
+    if @student.group.owner == @login
+      @result = Result.find(params[:id])
+      unless @result.nil? || @result.student != @student
+        @result.destroy
+        head :ok
+      else
+        head 403
+      end
+    else
+      head 403
+    end
+  end
+
   private
 
   #Kind id aus Parametern holen und laden

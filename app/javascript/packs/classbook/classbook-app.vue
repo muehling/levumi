@@ -44,6 +44,7 @@
                                             :key="group.id"
                                             :active="index == firstIndex"
                                             :title-link-class="{ update_trigger_hack: group.label }"
+                                            class='m-3'
                                     >
                                         <!-- Testklasse kursiv darstellen -->
                                         <template slot='title'>
@@ -79,6 +80,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 && !group.owner"
                                             :key="group.id"
+                                            class='m-3'
                                     >
                                         <!-- Testklasse kursiv darstellen -->
                                         <template slot='title'>
@@ -116,6 +118,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 && group.archive"
                                             :key="group.id"
+                                            class='m-3'
                                     >
                                         <!-- Testklasse kursiv darstellen -->
                                         <template slot='title'>

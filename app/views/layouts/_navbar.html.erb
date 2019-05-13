@@ -32,14 +32,9 @@
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
           <a class='dropdown-item' href='#'>Handbuch</a>
           <a class='dropdown-item' href='#'>Videos</a>
-          <a class='dropdown-item' href='#'>Blog</a>
+          <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
         </div>
       </li>
-      <% unless @masquerade %>
-        <li class='nav-item' id='intro6'>
-          <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
-        </li>
-      <% end %>
     </ul>
 
     <ul class='navbar-nav ml-auto'>
@@ -59,6 +54,9 @@
             </div>
           </li>
         <% end %>
+        <li class='nav-item' id='intro6'>
+          <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
+        </li>
         <li class='nav-item'>
           <a class='nav-link' href='/logout' data-method='post'>Ausloggen</a>
         </li>
