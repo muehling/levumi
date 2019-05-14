@@ -1,6 +1,6 @@
 <template>
     <b-card no-body class='mt-3 pb-0 mb-1'>
-        <b-tabs pills card >
+        <b-tabs pills card>
 
             <b-tab v-if="!read_only"
                    title='Neue Messung'
@@ -12,16 +12,16 @@
                 </div>
                 <div v-else-if="!student_test">
                     <!-- Schüler anzeigen um Messung zu starten. -->
-                    <p>Klicken Sie auf einen Namen um den Test sofort in einem neuen Fenster zu starten.</p>
+                    <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
                     <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
                     <b-button-group>
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
                                   :key="student.id"
-                                  :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
-                                  :disabled="getResult(student.id) > 0"
+                                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
+                                  :disabled="get_result(student.id) > 0"
                                   class='mr-2'
-                                  :title="getResult(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
+                                  :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
                                   :href="'/students/' + student.id + '/results?test_id='+ test"
                                   data-method='post'
                         >
@@ -36,7 +36,7 @@
                         <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                         <b-button v-for="student in students"
                                   :key="student.id"
-                                  :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
+                                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
                                   disabled
                         >
                             {{student.name}}
@@ -53,7 +53,7 @@
                                   size='sm'
                                   variant='outline-primary'
                                   :pressed="student_selected == -1"
-                                  @click="student_selected = -1">Ganze Klasse</b-button>
+                                  @click="student_selected = -1; view_selected = 0;">Ganze Klasse</b-button>
                         <b-button v-for="(student, index) in students"
                                   :key="student.id"
                                   class='mr-2'
@@ -82,9 +82,16 @@
                         </b-button>
                     </b-button-group>
                 </b-row>
-                <div id='chart_area'>
-                    <apexchart width='100%' height='500px' :options="options" :series="series"></apexchart>
-                </div>
+                <b-row>
+                    <div id='chart_area'>
+                        <apexchart ref='chart' width='100%' height='500px' :options="options" :series="series"></apexchart>
+                    </div>
+                </b-row>
+                <b-row>
+                    <div class='ml-3'>
+                        <b-button @click="add_annotation">Kommentar einfügen</b-button>
+                    </div>
+                </b-row>
             </b-tab>
 
             <!-- Liste der Messungen anzeigen -->
@@ -160,15 +167,7 @@
             student_test: Boolean,
         },
         computed: {
-            weeks: function() {
-                let weeks = [];
-                for (let i = 0; i < this.results.length; ++i)
-                    if (this.results[i].test_week != null)
-                        weeks.push(this.results[i].test_week);
-                weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
-                return weeks;
-            },
-            grouped_results: function() {
+            grouped_results: function() { //Results nach Wochen gruppieren, für die Ergebnisliste
               let res = {}
               for (let i = 0; i < this.results.length; ++i)
                   if (res[this.results[i].test_week] === undefined)
@@ -177,15 +176,15 @@
                       res[this.results[i].test_week].push({index: i, data: this.results[i]});
               return res;
             },
-            options: function() {
+            options: function() { //Options für die gewählte Ansicht mit den globalen Options vereinen
                 let options = Object.assign({}, this.default_options, this.configuration.views[this.view_selected].options);
                 options.labels = this.weeks;
                 return options;
             },
-            series: function() {
+            series: function() {  //Bereitet die Results-Daten so auf, dass sie im Chart dargestellt werden können.
                 let res = [];
                 const weeks = this.weeks;
-                let view = this.configuration.views[this.view_selected];
+                const view = this.configuration.views[this.view_selected];
                 if (this.student_selected == -1) {
                     for (let s = 0; s < this.students.length; ++s)
                         res.push({
@@ -215,7 +214,7 @@
                             if (res[r].name == student) {
                                 for (let j = 0; j < weeks.length; ++j) {
                                     if (weeks[j] == week)
-                                        res[r].data[j] = this.results[i].results[view.label];
+                                        res[r].data[j] = Math.round(this.results[i].results[view.label]*100) / 100; //Macht das Runden hier immer Sinn?
                                 }
                             }
                         }
@@ -225,29 +224,55 @@
                         for (let r = 0; r < view.series.length; ++r) {
                             for (let j = 0; j < weeks.length; ++j) {
                                 if (weeks[j] == week)
-                                    res[r].data[j] = this.results[i].results[view.label][view.series[r]];
+                                    res[r].data[j] = Math.round(this.results[i].results[view.label][view.series[r]]*100)/100; //Macht das Runden hier immer Sinn?
                             }
                         }
                     }
                 }
                 return res;
+            },
+            weeks: function() {
+                let weeks = [];
+                for (let i = 0; i < this.results.length; ++i)
+                    if (this.results[i].test_week != null)
+                        weeks.push(this.results[i].test_week);
+                weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
+                return weeks;
             }
         },
         methods: {
-            student_name(id) {   //Student-Objekt aus globaler Variable holen
-                return get_student(this.group, id).name;
+            add_annotation() {
+                let x1 = new Date(this.results[Math.floor(Math.random()*this.results.length)].test_week).getTime();
+                let x2 = x1;
+                if (Math.random() > 0.5)
+                    x2 = new Date(this.results[Math.floor(Math.random()*this.results.length)].test_week).getTime();
+                if (x1 > x2) {
+                    let t = x1;
+                    x1 = x2;
+                    x2 = t;
+                }
+                this.$refs.chart.addXaxisAnnotation ({
+                    x: x1,
+                    x2: x2,
+                    label: {
+                        text: 'Lorem Ipsum'
+                    },
+                }, true);
             },
-            print_date(date) {   //Datumsanzeige formatieren
-                let d = new Date(date);
-                return d.toLocaleDateString('de-DE')
+            auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
+                window.$(element)[0].scrollIntoView(false);
             },
-            getResult(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
+            get_result(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
                 let d = new Date();
                 let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)));
                 for (let i = 0; i < this.results.length; ++i)
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
-                            return this.results[i].id;
+                        return this.results[i].id;
                 return 0;
+            },
+            print_date(date) {   //Datumsanzeige formatieren
+                let d = new Date(date);
+                return d.toLocaleDateString('de-DE')
             },
             remove(index, collapse) { //Löscht einen Eintrag aus der Ergebnisliste
                 let last = true;
@@ -260,8 +285,8 @@
                     this.$root.$emit('bv::toggle::collapse', 'collapse_' + collapse);
                 this.results.splice(index, 1);
             },
-            auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
-                window.$(element)[0].scrollIntoView(false);
+            student_name(id) {   //Student-Objekt aus globaler Variable holen
+                return get_student(this.group, id).name;
             }
         },
         data: function () {
