@@ -1403,6 +1403,11 @@ clone@^1.0.2:
   resolved "https://registry.yarnpkg.com/clone/-/clone-1.0.4.tgz#da309cc263df15994c688ca902179ca3c7cd7c7e"
   integrity sha1-2jCcwmPfFZlMaIypAheco8fNfH4=
 
+cloner@^0.4.0:
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/cloner/-/cloner-0.4.0.tgz#364a86ba7995d4664efc9ccad27ea40b3fa652d2"
+  integrity sha1-NkqGunmV1GZO/JzK0n6kCz+mUtI=
+
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"

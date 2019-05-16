@@ -2,6 +2,7 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card>
 
+            <!-- Tab für neue Messungen -->
             <b-tab v-if="!read_only"
                    title='Neue Messung'
                    :active="deep_link"
@@ -45,57 +46,8 @@
                 </div>
             </b-tab>
 
-            <!-- Auswertungstab Klasse -->
-            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#chart_area')" class='m-3'>
-                <b-row>
-                    <b-button-group class='ml-3'>
-                        <b-button class='mr-2'
-                                  size='sm'
-                                  variant='outline-primary'
-                                  :pressed="student_selected == -1"
-                                  @click="student_selected = -1; view_selected = 0;">Ganze Klasse</b-button>
-                        <b-button v-for="(student, index) in students"
-                                  :key="student.id"
-                                  class='mr-2'
-                                  size='sm'
-                                  variant='outline-primary'
-                                  :pressed="student_selected == index"
-                                  @click="student_selected = index"
-                        >
-                            {{student.name}}
-                        </b-button>
-                    </b-button-group>
-                </b-row>
-                <b-row class='mt-2'>
-                    <b-button-group class='ml-3'>
-                        <b-button
-                                v-for="(view, index) in configuration.views"
-                                v-if="(student_selected == -1 && view.group) || (student_selected > -1 && view.student)"
-                                :key="index"
-                                class='mr-2'
-                                size='sm'
-                                variant='outline-secondary'
-                                :pressed="view_selected == index"
-                                @click="view_selected = index"
-                        >
-                            {{ view.label }}
-                        </b-button>
-                    </b-button-group>
-                </b-row>
-                <b-row>
-                    <div id='chart_area'>
-                        <apexchart ref='chart' width='100%' height='500px' :options="options" :series="series"></apexchart>
-                    </div>
-                </b-row>
-                <b-row>
-                    <div class='ml-3'>
-                        <b-button @click="add_annotation">Kommentar einfügen</b-button>
-                    </div>
-                </b-row>
-            </b-tab>
-
-            <!-- Liste der Messungen anzeigen -->
-            <b-tab v-if="!read_only" title='Messungen' class='m-3'>
+            <!-- Liste der Messungen -->
+            <b-tab v-if="!read_only" title='Bisherige Messungen' class='m-3'>
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -138,7 +90,7 @@
                                                :href="'/students/' + result.data.student_id + '/results/' + result.data.id"
                                                data-remote='true'
                                                data-method='delete'
-                                               data-confirm='Diese Messung unwiederruflich löschen! Sind Sie sicher?'
+                                               data-confirm='Diese Messung unwiderruflich löschen! Sind Sie sicher?'
                                                v-on:ajax:success="remove(result.index, index)"
                                         >
                                             <i class='fas fa-trash'></i>
@@ -149,14 +101,30 @@
                             </table>
                         </b-card>
                     </b-collapse>
-                 </div>
+                </div>
+            </b-tab>
+
+            <!-- Auswertungstab mit Graph -->
+            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#chart_area')" class='m-3'>
+                <graph-view
+                        :students="students"
+                        :configuration="configuration"
+                        :results="results"
+                ></graph-view>
+            </b-tab>
+
+            <!-- Vorschläge für Fördermaterial -->
+             <b-tab title='Fördern'>
+
             </b-tab>
         </b-tabs>
     </b-card>
 </template>
 
 <script>
+    import GraphView from './graph-view'
     export default {
+        components: {GraphView},
         props: {
             results: Array,
             configuration: Object,
@@ -176,62 +144,7 @@
                       res[this.results[i].test_week].push({index: i, data: this.results[i]});
               return res;
             },
-            options: function() { //Options für die gewählte Ansicht mit den globalen Options vereinen
-                let options = Object.assign({}, this.default_options, this.configuration.views[this.view_selected].options);
-                options.labels = this.weeks;
-                return options;
-            },
-            series: function() {  //Bereitet die Results-Daten so auf, dass sie im Chart dargestellt werden können.
-                let res = [];
-                const weeks = this.weeks;
-                const view = this.configuration.views[this.view_selected];
-                if (this.student_selected == -1) {
-                    for (let s = 0; s < this.students.length; ++s)
-                        res.push({
-                            'name': this.student_name(this.students[s].id),
-                            'data': Array(weeks.length).fill(null)
-                        });
-                }
-                else {
-                    if (view.series == undefined) {
-                        res.push({
-                            'name': this.student_name(this.students[this.student_selected].id),
-                            'data': Array(weeks.length).fill(null)
-                        });
-                    }
-                    else
-                        for (let s = 0; s < view.series.length; ++s)
-                            res.push({
-                                'name': view.series[s],
-                                'data': Array(weeks.length).fill(null)
-                            });
-                }
-                for (let i = 0; i < this.results.length; ++i) {
-                    if (this.student_selected == -1 || view.series == undefined) {
-                        let student = this.student_name(this.results[i].student_id);
-                        let week = this.results[i].test_week;
-                        for (let r = 0; r < res.length; ++r) {
-                            if (res[r].name == student) {
-                                for (let j = 0; j < weeks.length; ++j) {
-                                    if (weeks[j] == week)
-                                        res[r].data[j] = Math.round(this.results[i].results[view.label]*100) / 100; //Macht das Runden hier immer Sinn?
-                                }
-                            }
-                        }
-                    }
-                    else if (this.results[i].student_id == this.students[this.student_selected].id) {
-                        let week = this.results[i].test_week;
-                        for (let r = 0; r < view.series.length; ++r) {
-                            for (let j = 0; j < weeks.length; ++j) {
-                                if (weeks[j] == week)
-                                    res[r].data[j] = Math.round(this.results[i].results[view.label][view.series[r]]*100)/100; //Macht das Runden hier immer Sinn?
-                            }
-                        }
-                    }
-                }
-                return res;
-            },
-            weeks: function() {
+            weeks: function () {
                 let weeks = [];
                 for (let i = 0; i < this.results.length; ++i)
                     if (this.results[i].test_week != null)
@@ -241,24 +154,6 @@
             }
         },
         methods: {
-            add_annotation() {
-                let x1 = new Date(this.results[Math.floor(Math.random()*this.results.length)].test_week).getTime();
-                let x2 = x1;
-                if (Math.random() > 0.5)
-                    x2 = new Date(this.results[Math.floor(Math.random()*this.results.length)].test_week).getTime();
-                if (x1 > x2) {
-                    let t = x1;
-                    x1 = x2;
-                    x2 = t;
-                }
-                this.$refs.chart.addXaxisAnnotation ({
-                    x: x1,
-                    x2: x2,
-                    label: {
-                        text: 'Lorem Ipsum'
-                    },
-                }, true);
-            },
             auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
                 window.$(element)[0].scrollIntoView(false);
             },
@@ -292,37 +187,7 @@
         data: function () {
             return {
                 deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-                view_selected: 0,
-                student_selected: -1,
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
-
-                default_options: {
-                    chart: {
-                        id: 'chart',
-                        type: 'line',
-                        toolbar: {
-                            show: false,
-                        },
-                    },
-                    grid: {
-                        padding: {
-                            right: 15,
-                            left: 15
-                        }
-                    },
-                    xaxis: {
-                        type: 'datetime',
-                    },
-                    markers: {
-                        size: 4,
-                        hover: {
-                            sizeOffset: 2
-                        }
-                    },
-                    stroke: {
-                        width: 1
-                    }
-                }
             }
         },
         name: 'assessment-view'
