@@ -14,8 +14,9 @@
 <div class='container-fluid'>
 
   <%
-    data = {'tests': nil}
-    data['tests'] = @student.available_tests unless @student.nil?
+    data = {'tests': nil, student: 0}
+    data['tests'] = @student.get_assessments unless @student.nil?
+    data['student'] = @student.id unless @student.nil?
   %>
 
 

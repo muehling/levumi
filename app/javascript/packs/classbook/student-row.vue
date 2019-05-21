@@ -4,7 +4,31 @@
         <td>
             <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
-                {{ student.name }}
+
+                <b-link v-b-modal="'modal_' + student.id">
+                    {{ student.name }}
+                </b-link>
+
+                <b-modal :id="'modal_' + student.id"
+                         size='xl'
+                         :title="student.name"
+                         scrollable
+                         hide-footer
+                         lazy
+                         ref='modal'
+                         v-on:show="loadData(student.id)"
+                >
+                    <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
+                    <div class='spinner' style='padding-bottom: 75px' v-if="loading">
+                        <div class='bounce1'></div>
+                        <div class='bounce2'></div>
+                        <div class='bounce3'></div>
+                    </div>
+
+                    <student-view v-else-if="results" :tests="results" :student="student.id">
+                    </student-view>
+
+                </b-modal>
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
@@ -117,34 +141,38 @@
 </template>
 
 <script>
+    import StudentView from './student-view';
 
     export default {
+        components: {StudentView},
         props: {
-            student: Object,
-            group: Number,
             empty: Boolean,
+            group: Number,
             index: Number,
-            read_only: Boolean
+            read_only: Boolean,
+            student: Object,
+            open_modal: Boolean
         },
         data: function () {
             return {
                 editMode: false,
+                loading: false,
                 name: this.student.name,
-
-                //Defaultwerte für diese Werte, da sie ggf. nicht existieren!
-                gender: this.student.gender != undefined ? this.student.gender : null,
-                sen: this.student.sen != undefined ? this.student.sen : null,
-                migration: this.student.migration != undefined ? this.student.migration : null,
-                year: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getFullYear() : null,
-                month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
-
+                results: undefined,
                 years: function() {
                     let years = [];
                     let cur = (new Date()).getFullYear();
                     for (let i = cur - 3; i > cur - 30; --i)
                         years.push(i);
                     return years;
-                }
+                },
+
+                //Defaultwerte für  Werte, die ggf. nicht existieren!
+                gender: this.student.gender != undefined ? this.student.gender : null,
+                migration: this.student.migration != undefined ? this.student.migration : null,
+                month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
+                sen: this.student.sen != undefined ? this.student.sen : null,
+                year: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getFullYear() : null
             }
         },
         methods: {
@@ -161,6 +189,28 @@
                    res += '&student[migration]=' + this.migration;
                return res;
             },
+            loadData(student) {
+              this.loading = true;
+                //AJAX-Request senden
+                fetch('/students/' + student, {
+                    headers: {
+                        'Accept': 'text/javascript',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        return response.text().then(text =>  {
+                            this.results = JSON.parse(text);
+                            this.loading = false;  //Spinner verstecken
+                        });
+                    });
+
+            },
+            remove() {
+                this.$emit('update:students', {index: this.index, object: null})
+            },
             update(event) {                 //Wird bei erfolgreichem Create/Update aufgerufen
                 //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
                 this.$emit('update:students', {index: this.index, object: event.detail[0]})
@@ -168,9 +218,6 @@
                     this.editMode = false;
                 else  //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
                     this.name = "";
-            },
-            remove() {
-                this.$emit('update:students', {index: this.index, object: null})
             }
         },
         beforeCreate() {
@@ -198,6 +245,10 @@
                 {text: 'Nein', value: '0', disabled: 0},
                 {text: 'Ja', value: '1', disabled: 0}
             ];
+        },
+        mounted() {
+            if (this.open_modal)
+                this.$refs['modal'].show();
         },
         name: 'student-row'
     }

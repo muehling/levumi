@@ -20,6 +20,32 @@ class StudentsController < ApplicationController
     end
   end
 
+  #GET /students/:id.js
+  #GET /students/:id.html
+  def show
+    s = Student.find(params[:id])
+    respond_to do |format|
+      format.js {   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
+        unless s.nil?
+          render json: s.get_assessments
+        else
+          head 304
+        end
+      }
+      format.html {  #Deep-Link in das Klassenbuch
+        unless s.nil?
+          #Daten für Klassenbuch laden
+          @data = {
+              'groups': [Group.new] + @login.get_classbook_info,
+              'single': @login.account_type == 2,
+              'selected': s
+          }
+          render 'groups/index'
+        end
+      }
+    end
+  end
+
   #PUT /students/:id
   def update   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     s = Student.find(params[:id])

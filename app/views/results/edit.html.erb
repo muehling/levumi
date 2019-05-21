@@ -46,11 +46,7 @@
 
     //Testfenster schließen
     function exit() {
-        <% if @test.student_test %>
-          window.location.href = '/testen';
-        <% else %>
-          window.location.href = '<%= group_assessment_path(@result.student.group, @test) %>';
-        <% end %>
+        window.location.href = '<%= @redirect %>';
     }
 
     var stopwatch = null;

@@ -31,7 +31,7 @@
                                         <group-form
                                                 :group="groups[0]"
                                                 :index="0"
-                                                :active="firstIndex == 0"
+                                                :active="firstOwnIndex == 0"
                                                 v-on:update:groups="create($event)"
                                         ></group-form>
                                     </b-tab>
@@ -42,7 +42,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 & !group.archive && group.owner"
                                             :key="group.id"
-                                            :active="index == firstIndex"
+                                            :active="(selected && group.id == selected.group_id ) || (!selected && index == firstOwnIndex)"
                                             :title-link-class="{ update_trigger_hack: group.label }"
                                             class='m-3'
                                     >
@@ -54,6 +54,7 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
+                                                :selected="selected"
                                         ></group-view>
                                     </b-tab>
 
@@ -80,6 +81,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 && !group.owner"
                                             :key="group.id"
+                                            :active="(selected && group.id == selected.group_id ) || (!selected && index == firstSharedIndex)"
                                             class='m-3'
                                     >
                                         <!-- Testklasse kursiv darstellen -->
@@ -91,6 +93,7 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
+                                                :student="student"
                                         ></group-view>
                                     </b-tab>
                                 </b-tabs>
@@ -167,9 +170,15 @@
             }
         },
         computed: {
-          firstIndex: function() {
+          firstOwnIndex: function() {
               for (let i = 1; i < this.groups.length; ++i)
-                  if (!this.groups[i].archive)
+                  if (this.groups[i].owner && !this.groups[i].archive)
+                      return i;
+              return 0;
+          },
+          firstSharedIndex: function() {
+              for (let i = 1; i < this.groups.length; ++i)
+                  if (!this.groups[i].owner)
                       return i;
               return 0;
           },
@@ -183,7 +192,8 @@
         data: function () {
             return {
                 groups: this.sort(this.$root.groups),
-                single: this.$root.single
+                single: this.$root.single,
+                selected: undefined || this.$root.selected
             }
         },
         name: 'class-book-app'

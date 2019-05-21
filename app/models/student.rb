@@ -31,30 +31,20 @@ class Student < ApplicationRecord
     super(val)
   end
 
-  #Finde alle aktuell verfügbaren Tests für die Schüleransicht
-  def available_tests
-    infos = []
-    assessment = Assessment.where(group: self.group)
-    assessment.each do |a|
-      if a.test.student_test
-        results = Result.where(assessment: a, student: self)
-        create = true
-        results.each do |r|
-          if r.test_date.nil?
-            infos += [{'id': r.id, 'student': r.student_id, 'assessment': r.assessment.id, 'area': r.assessment.test.test_family.competence.area.name, 'competence': r.assessment.test.test_family.competence.name, 'family': r.assessment.test.test_family.name, 'level': r.assessment.test.level}]
-            create = false
-          else
-            if r.test_week == Date.commercial(Date.today.year, Date.today.cweek)
-              create = false
-            end
-          end
-        end
-        if create
-          r = Result.create(assessment: a, student: self)
-          infos += [{'id': r.id, 'student': r.student_id, 'assessment': r.assessment.id, 'area': r.assessment.test.test_family.competence.area.name, 'competence': r.assessment.test.test_family.competence.name, 'family': r.assessment.test.test_family.name, 'level': r.assessment.test.level}]
-        end
-      end
-     end
-    return infos
+  #Liefert die aktuellen Assessments eines Schülers zurück. Archivierte Tests werden ignoriert.
+  def get_assessments
+    tests = Test.where(archive: false)
+    all_assessments = Assessment.where(group_id: self.group_id, test_id: tests)
+    week = Date.commercial(Date.today.year, Date.today.cweek)
+    result = []
+    all_assessments.each do |a|
+      result += [
+          {id: a.id,
+           test_info: a.test.info,
+           open: !Result.exists?(assessment_id: a.id, student_id: self.id, test_week: week)}
+      ]
+    end
+    result
   end
+
 end

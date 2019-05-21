@@ -24,6 +24,7 @@
                 v-if="groups[index].key != null"
                 :group="groups[index].id"
                 :read_only="groups[index].read_only"
+                :selected="selected"
         >
         </student-list>
     </div>
@@ -68,7 +69,8 @@
         components: {StudentList, GroupForm, ShareForm},
         props: {
             groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
-            index: Number
+            index: Number,
+            selected: Object      //Für Deep-Link zur Student-Ansicht
         },
         computed: {
             date: function() {
