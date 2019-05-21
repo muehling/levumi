@@ -67,4 +67,82 @@
     <%= raw f.download.force_encoding('UTF-8') %>
     <% end %>
 
+    //Anzeigen der Elemente zum Verändern der Schriftgröße
+    function showResizeOption() {
+        $('#testspace').html(
+            "<div style='text-align: center'>" +
+            "<p style='font-family: fibel_nordregular; font-size:96px; margin-top: 10%' id='testtext' class='text-center'>Test</p>" +
+            "<br/><br/><br/>" +
+            "</div>" +
+            "<div class='footer' style='text-align: center'>" +
+            "<button type='button' class='btn btn-default btn-lg' style='border:1px solid lightgrey; margin-right: 1%' onclick='increaseSize()'>Schrift größer (Taste: 1)</button>" +
+            "<button type='button' class='btn btn-success btn-lg' onclick='$(window).unbind(\"keydown\");start()'>Test starten</button>" +
+            "<button type='button' class='btn btn-default btn-lg' style='border:1px solid lightgrey; margin-left: 1%' onclick='decreaseSize()'>Schrift kleiner (Taste: 0)</button></div>"
+        )
+    }
+
+    //Ändern der Schriftgröße über die Button 1 und 0
+    $(window).keydown(function(event) {
+        switch (event.keyCode) {
+            case 49:
+            case 97:
+                increaseSize();
+                break;
+            case 48:
+            case 96:
+                decreaseSize();
+                break;
+        }
+    });
+
+    //Originale Schriftgröße
+    var font_size= 96;
+
+    //Schriftgröße vergrößern
+    function increaseSize() {
+     font_size = (parseFloat($('#testtext').css('font-size')) + 10) +"px";
+     $('#testtext').css('font-size', font_size);
+    }
+
+    //Schriftgröße verkleinern
+    function decreaseSize() {
+        font_size = (parseFloat($('#testtext').css('font-size')) - 10) +"px";
+        $('#testtext').css('font-size', font_size);
+    }
+    //Soll der Test das Verändern der Schriftgröße erlauben?
+    var resize_option = <%=@result.assessment.test.configuration["resize_option"].nil? ? false : @result.assessment.test.configuration["resize_option"]%>;
+    if(resize_option){
+        showResizeOption();
+    }
+    else{
+        $(window).unbind('keydown');
+        start();
+    }
+    //Anzeigen des Feedbacks
+    //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))
+    function show_feedback(result, timedout) {
+        $('#testspace').html(
+            "<div style='text-align: center'>" +
+            "<img id='pic' style='width: 300px'/>" +
+            "<p style='font-family: fibel_nordregular; font-size:40px; margin-top: 10%' id='feedback_text' class='text-center'></p>" +
+            "</div>"
+        );
+        if(result==0){
+            $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
+        }
+        else if(result==1){
+            $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
+        }
+        else{
+            $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
+        }
+        if (timedout)
+            $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster' +
+                ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
+                .css('margin-top','0%');
+        else
+            $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können' +
+                ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
+                .css('margin-top','0%');
+    }
 </script>

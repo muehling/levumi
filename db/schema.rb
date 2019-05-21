@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
-    t.date "expires_on"
     t.text "results"
     t.text "data"
     t.datetime "created_at", null: false

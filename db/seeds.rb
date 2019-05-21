@@ -123,6 +123,7 @@
 
   #Spieltest anlegen (später per Upload)
   Test.import('db/example_tests/user_based_test/test.zip', false, true )
+  Test.import('db/example_tests/reading_test/test.zip', false, true )
   Test.import('db/example_tests/student_based_test/test.zip', false, true )
 
   #Spielergebnisse anlegen
