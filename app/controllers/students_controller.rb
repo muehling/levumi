@@ -25,22 +25,17 @@ class StudentsController < ApplicationController
   def show
     s = Student.find(params[:id])
     respond_to do |format|
-      format.js {   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
+      format.js {   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung => Schüleransicht
         unless s.nil?
           render json: s.get_assessments
         else
           head 304
         end
       }
-      format.html {  #Deep-Link in das Klassenbuch
+      format.html {  #Anzeige als eigene Seite => Lehrkraft-Ansicht
         unless s.nil?
-          #Daten für Klassenbuch laden
-          @data = {
-              'groups': [Group.new] + @login.get_classbook_info,
-              'single': @login.account_type == 2,
-              'selected': s
-          }
-          render 'groups/index'
+          @student = s
+          render :show, layout: 'frontend'
         end
       }
     end
@@ -68,7 +63,7 @@ class StudentsController < ApplicationController
   private
 
   def student_attributes
-    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration)
+    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration, settings: [:font_family, :font_size])
   end
 
 end

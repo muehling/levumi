@@ -9,7 +9,7 @@
                 <th>Geburtsmonat</th>
                 <th>Förderbedarf</th>
                 <th>Migrationshintergrund</th>
-                <th>Bearbeiten</th>
+                <th>Aktionen</th>
             </tr>
             </thead>
             <tbody>
@@ -17,7 +17,6 @@
                 <student-row v-for="(student, index) in this.students"
                              :key="student.id"
                              :student="student"
-                             :open_modal="selected && student.id == selected.id"
                              :group="group"
                              :index="index"
                              :empty="false"
@@ -47,7 +46,6 @@
         props: {
             group: Number,   //Benötigt um neue Schüler der Gruppe zuordnen zu können.
             read_only: Boolean,
-            selected: Object      //Für Deep-Link zur Student-Ansicht
         },
         data: function () {
             return {

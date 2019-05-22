@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
-    t.date "expires_on"
     t.text "results"
     t.text "data"
     t.datetime "created_at", null: false
@@ -112,6 +111,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.date "birthmonth"
     t.integer "sen"
     t.boolean "migration"
+    t.string "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_students_on_group_id"

@@ -63,10 +63,21 @@ function next(res) {
         for (let i = 0; i < result.length; ++i)
             sum[result[i].group] += result[i].result;
         saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
-        $('#testspace').html("<button class='btn btn-primary' onclick='exit()'>Test beenden</button>");
+        //Interpretieren des Ergebnis und Anzeigen des Feedbacks
+        let result_interp = 0;
+        let timedout = false;
+
+        if(lastResult==-1){}
+        else if(sum[0] + sum[1]>=lastResult)
+            result_interp = 1;
+        else
+            result_interp = -1;
+        show_feedback(result_interp, timedout);
     }
 }
-
-$('#image').attr('src', media_paths[items[current].path]);
+//Start-Methode, welche beim Aufrufen der Testseite ausgeführt wird
+function start() {
+    $('#image').attr('src', media_paths[items[current].path]);
+}
 
 

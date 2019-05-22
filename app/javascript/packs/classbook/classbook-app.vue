@@ -42,7 +42,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 & !group.archive && group.owner"
                                             :key="group.id"
-                                            :active="(selected && group.id == selected.group_id ) || (!selected && index == firstOwnIndex)"
+                                            :active="index == firstOwnIndex"
                                             :title-link-class="{ update_trigger_hack: group.label }"
                                             class='m-3'
                                     >
@@ -54,7 +54,6 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
-                                                :selected="selected"
                                         ></group-view>
                                     </b-tab>
 
@@ -81,7 +80,7 @@
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 && !group.owner"
                                             :key="group.id"
-                                            :active="(selected && group.id == selected.group_id ) || (!selected && index == firstSharedIndex)"
+                                            :active="index == firstSharedIndex"
                                             class='m-3'
                                     >
                                         <!-- Testklasse kursiv darstellen -->
@@ -192,8 +191,7 @@
         data: function () {
             return {
                 groups: this.sort(this.$root.groups),
-                single: this.$root.single,
-                selected: undefined || this.$root.selected
+                single: this.$root.single
             }
         },
         name: 'class-book-app'

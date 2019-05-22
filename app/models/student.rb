@@ -2,6 +2,8 @@ class Student < ApplicationRecord
   belongs_to :group
   has_many :results
 
+  serialize :settings, Hash
+
   validates_presence_of :name
   validates_uniqueness_of :login
 
@@ -17,11 +19,12 @@ class Student < ApplicationRecord
 
   #JSON Export, nur relevante Attribute übernehmen. Falls zusätzliche Daten vorhanden sind, diese auch exportieren.
   def as_json(options = {})
-    json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :migration])
+    json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :migration, :settings])
     json['gender'] = self.gender unless self.gender.nil?
     json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%b %Y') unless self.birthmonth.nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['migration'] = (self.migration ? 1 : 0) unless self.migration.nil?
+    json['settings'] = self.settings unless self.settings.nil?
     json
   end
 
@@ -45,6 +48,19 @@ class Student < ApplicationRecord
       ]
     end
     result
+  end
+
+  #Liefert den Wert einer der möglichen Einstellungen falls er existiert oder einen Defaultwert
+  def get_setting key
+    if settings.has_key? key
+      return settings[key]
+    else
+      defs = {
+          font_family: 'serif',
+          font_size: 1
+      }
+      return defs[key]
+    end
   end
 
 end

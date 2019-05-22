@@ -4,31 +4,9 @@
         <td>
             <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
-
-                <b-link v-b-modal="'modal_' + student.id">
+                <b-link :href="'students/' + student.id + '#' + student.name" target="_blank">
                     {{ student.name }}
                 </b-link>
-
-                <b-modal :id="'modal_' + student.id"
-                         size='xl'
-                         :title="student.name"
-                         scrollable
-                         hide-footer
-                         lazy
-                         ref='modal'
-                         v-on:show="loadData(student.id)"
-                >
-                    <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
-                    <div class='spinner' style='padding-bottom: 75px' v-if="loading">
-                        <div class='bounce1'></div>
-                        <div class='bounce2'></div>
-                        <div class='bounce3'></div>
-                    </div>
-
-                    <student-view v-else-if="results" :tests="results" :student="student.id">
-                    </student-view>
-
-                </b-modal>
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
@@ -99,7 +77,58 @@
 
         <td>
             <span v-if="!read_only && !empty && !editMode">
-                <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
+                <b-button-toolbar>
+                    <b-button-group>
+                        <b-btn class='mr-1'
+                               variant='outline-primary'
+                               size='sm' title='Schrifteinstellungen'
+                               v-b-modal="'modal_settings_' + student.id"
+                        >
+                            <i class='fas fa-text-height'></i>
+                        </b-btn>
+                        <b-btn variant='outline-secondary'
+                               size='sm'
+                               title='Bearbeiten'
+                               @click="editMode = true"
+                        >
+                            <i class='fas fa-user-edit'></i>
+                        </b-btn>
+                    </b-button-group>
+                </b-button-toolbar>
+                <b-modal :id="'modal_settings_' + student.id"
+                         :title="'Schrifteinstellungen für ' + student.name"
+                         size='xl'
+                         scrollable
+                         hide-footer
+                         lazy
+                >
+                    <p id='example' class='mt-5 mb-5 text-center' :style="'font-size:' + font_size*3 + 'em;font-family:\'' + font_family+'\''">
+                        Das ist ein Beispieltext!
+                    </p>
+                    <b-button-toolbar justify>
+                        <b-button-group size='sm'>
+                            <b-btn variant='outline-primary' :pressed="font_size == 1" @click="font_size=1">Normal</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_size == 2" @click="font_size=2">Vergrößert</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_size == 3" @click="font_size=3">Stark vergrößert</b-btn>
+                        </b-button-group>
+                        <b-button-group size='sm'>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'serif'" @click="font_family='serif'">Rechnerschrift</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Fibel Nord'" @click="font_family='Fibel Nord'">Fibel Nord</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Grundschrift'" @click="font_family='Grundschrift'">Grundschulschrift</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Grundschrift Grundlinie'" @click="font_family='Grundschrift Grundlinie'">Grundschulschrift Grundlinie</b-btn>
+                        </b-button-group>
+                    </b-button-toolbar>
+                    <!-- rails-ujs Link -->
+                    <b-link class='btn btn-sm btn-block btn-outline-success mt-3'
+                            :href="'/students/' + student.id"
+                            data-method='put'
+                            data-remote='true'
+                            :data-params="'group=' + group + '&student[settings[font_family]]='+encodeURIComponent(font_family) + '&student[settings[font_size]]=' + font_size"
+                            v-on:ajax:success="update"
+                    >
+                        <i class='fas fa-check'></i> Speichern
+                    </b-link>
+                </b-modal>
             </span>
             <span v-else-if="!read_only && editMode">
                 <b-button-toolbar>
@@ -141,17 +170,13 @@
 </template>
 
 <script>
-    import StudentView from './student-view';
-
     export default {
-        components: {StudentView},
         props: {
             empty: Boolean,
             group: Number,
             index: Number,
             read_only: Boolean,
             student: Object,
-            open_modal: Boolean
         },
         data: function () {
             return {
@@ -168,6 +193,8 @@
                 },
 
                 //Defaultwerte für  Werte, die ggf. nicht existieren!
+                font_family: this.student.settings == undefined || this.student.settings['font_family'] == undefined ? 'serif' : this.student.settings['font_family'],
+                font_size: this.student.settings == undefined || this.student.settings['font_size'] == undefined ? '1' : this.student.settings['font_size'],
                 gender: this.student.gender != undefined ? this.student.gender : null,
                 migration: this.student.migration != undefined ? this.student.migration : null,
                 month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
@@ -218,6 +245,8 @@
                     this.editMode = false;
                 else  //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
                     this.name = "";
+                //Falls Update aus Settings: Modal schließen
+                this.$bvModal.hide('modal_settings_' + this.student.id)
             }
         },
         beforeCreate() {
@@ -245,10 +274,6 @@
                 {text: 'Nein', value: '0', disabled: 0},
                 {text: 'Ja', value: '1', disabled: 0}
             ];
-        },
-        mounted() {
-            if (this.open_modal)
-                this.$refs['modal'].show();
         },
         name: 'student-row'
     }

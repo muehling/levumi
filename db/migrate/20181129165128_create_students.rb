@@ -8,6 +8,7 @@ class CreateStudents < ActiveRecord::Migration[5.2]
       t.date :birthmonth
       t.integer :sen
       t.boolean :migration
+      t.string :settings
       t.timestamps
     end
   end

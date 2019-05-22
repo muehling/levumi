@@ -40,4 +40,31 @@
           transform: scale(1.0);
       }
 }
+
+/* Verstecken von noch nicht geladenen Vue-Komponenten */
 [v-cloak] {display: none}
+
+/* Schriftarten */
+@font-face {
+    font-family: 'Fibel Nord';
+    src: url('../media/fonts/FibelNord.woff2') format('woff2'),
+    url('../media/fonts/FibelNord.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grundschrift';
+    src: url('../media/fonts/Grundschrift.woff2') format('woff2'),
+    url('../media/fonts/Grundschrift.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Grundschrift Grundlinie';
+    src: url('../media/fonts/GrundschriftGrundlinie.woff2') format('woff2'),
+    url('../media/fonts/GrundschriftGrundlinie.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
