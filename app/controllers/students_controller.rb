@@ -35,7 +35,7 @@ class StudentsController < ApplicationController
       format.html {  #Anzeige als eigene Seite => Lehrkraft-Ansicht
         unless s.nil?
           @student = s
-          render :show, layout: 'frontend'
+          render :show, layout: 'blank'
         end
       }
     end
