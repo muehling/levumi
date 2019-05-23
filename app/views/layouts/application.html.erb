@@ -1,20 +1,30 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <%= render 'layouts/header' %>
+    <title>Levumi</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= javascript_pack_tag 'application' %>
+    <%= stylesheet_pack_tag 'application' %>
+
+    <!-- sonstige Libaries -->
+    <%= javascript_include_tag 'sjcl.js' %>
+
     <%= render 'layouts/scripts' %>
 
     <%= yield :head if content_for? :head %>
   </head>
 
   <body>
-
+  <!-- Platz für Navbar -->
   <% if content_for? :navbar %>
     <%= yield :navbar %>
   <% else %>
     <%= render 'layouts/navbar' %>
   <% end %>
 
+  <!-- Hauptinhalt der Seite -->
   <%= content_for?(:body) ? yield(:body) : yield %>
 
   <!-- Platz für Dialoge etc -->

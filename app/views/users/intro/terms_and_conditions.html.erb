@@ -1,32 +1,39 @@
-<div class='card card-header mt-5 ml-5 mr-5'>
-  Einverständnis
-</div>
-<div class='card card-body ml-5 mr-5'>
-  <%= form_for @user, url: '/willkommen' do |f| %>
-    <p class='text-justify'>
-      <div class="custom-control custom-checkbox">
-        <%= check_box_tag('tc_accepted_1', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
-        <%= label_tag 'tc_accepted_1', class: 'custom-control-label' do %>
-          Ich bin damit einverstanden, dass meine Daten gemäß der Datenschutzerklärung im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
-          Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben. Eine solche Auswertung kann z.B. die Verteilung der Nutzer_innen über die Bundesländer oder Schulformen sein.
-          Ich bin darüber informiert, dass ich meine Daten jederzeit löschen kann.
+<div class='row'>
+  <div class='col-3'>
+  </div>
+  <div class='col-6'>
+    <div class='card card-header mt-5 ml-5 mr-5'>
+      Einverständnis
+    </div>
+    <div class='card card-body ml-5 mr-5'>
+      <%= form_for @user, url: '/willkommen' do |f| %>
+        <p class='text-justify'>
+          <div class="custom-control custom-checkbox">
+            <%= check_box_tag('tc_accepted_1', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
+            <%= label_tag 'tc_accepted_1', class: 'custom-control-label' do %>
+              Ich bin damit einverstanden, dass meine Daten gemäß der Datenschutzerklärung im Rahmen der wissenschaftlichen Begleitforschung ausgewertet werden.
+              Ihre Daten werden nur anonymisiert ausgewertet und nicht an Dritte weitergegeben. Eine solche Auswertung kann z.B. die Verteilung der Nutzer_innen über die Bundesländer oder Schulformen sein.
+              Ich bin darüber informiert, dass ich meine Daten jederzeit löschen kann.
+            <% end %>
+          </div>
+        </p>
+        <p class='text-justify'>
+          <div class="custom-control custom-checkbox">
+            <%= check_box_tag('tc_accepted_2', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
+            <%= label_tag 'tc_accepted_2', class: 'custom-control-label' do %>
+              Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Erziehungsberechtigte, Schulleiter) einhole.
+              Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für eine Einverständniserklärung finden Sie nach dem Einloggen im Menü.
+            <% end %>
+          </div>
+        </p>
+        <% if @user.tc_accepted.nil? %>
+          <%= f.submit 'Weiter', class: 'btn btn-outline-success'%>
+        <% else %>
+          <p class='text-muted'>Akzeptiert am: <%= @user.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
         <% end %>
-      </div>
-    </p>
-    <p class='text-justify'>
-      <div class="custom-control custom-checkbox">
-        <%= check_box_tag('tc_accepted_2', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
-        <%= label_tag 'tc_accepted_2', class: 'custom-control-label' do %>
-          Hiermit bestätige ich außerdem, dass ich für alle Daten, die ich von Kindern mit Hilfe dieser Plattform erhebe, die nötige Berechtigung (Erziehungsberechtigte, Schulleiter) einhole.
-          Die Daten der Kinder werden durch Verschlüsselung vollständig anonymisiert gespeichert! Eine Vorlage für eine Einverständniserklärung finden Sie nach dem Einloggen im Menü.
-        <% end %>
-      </div>
-    </p>
-    <% if @user.tc_accepted.nil? %>
-      <%= f.submit 'Weiter', class: 'btn btn-outline-success'%>
-    <% else %>
-      <p class='text-muted'>Akzeptiert am: <%= @user.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
-    <% end %>
-  <% end %>
+      <% end %>
+    </div>
+  </div>
+  <div class='col-3'>
+  </div>
 </div>
-

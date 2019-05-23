@@ -1,38 +1,31 @@
-<% content_for :navbar do%>
-    <!-- Navbar nur mit Logo -->
-    <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
-      <a class='navbar-brand' href='#'><img src='/favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
-    </nav>
+<%
+  data = {'tests': nil, student: 0}
+  data['tests'] = @student.get_assessments unless @student.nil?
+  data['student'] = @student.id unless @student.nil?
+%>
+
+<% if controller_name == 'students' %>
+  <script>
+    //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
+    document.title = window.location.hash.replace('#','')
+  </script>
 <% end %>
 
-<% content_for :body do%>
-  <div class='container-fluid'>
+<div id='levumi' data="<%= data.to_json%>">
 
-    <%
-      data = {'tests': nil, student: 0}
-      data['tests'] = @student.get_assessments unless @student.nil?
-      data['student'] = @student.id unless @student.nil?
-    %>
-
-
-    <div id='levumi' data="<%= data.to_json%>">
-
-
-      <!-- Spinner -->
-      <div v-if='!$data'>
-        <b-row>
-          <div class='spinner'>
-            <div class='bounce1'></div>
-            <div class='bounce2'></div>
-            <div class='bounce3'></div>
-          </div>
-        </b-row>
+  <!-- Spinner -->
+  <div v-if='!$data'>
+    <b-row>
+      <div class='spinner'>
+        <div class='bounce1'></div>
+        <div class='bounce2'></div>
+        <div class='bounce3'></div>
       </div>
-
-      <!-- Vue-component -->
-      <frontend-app></frontend-app>
-    </div>
-
+    </b-row>
   </div>
-<% end %>
+
+  <!-- Vue-component -->
+  <frontend-app></frontend-app>
+</div>
+
 

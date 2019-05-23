@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     end
     respond_to do |format|
       format.html {
-        render :frontend
+        render :frontend, layout: 'minimal'
       }
     end
   end

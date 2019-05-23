@@ -88,9 +88,11 @@
     }
 
     //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
-    Object.keys(groups).forEach(function(key, index) {
-        for (let i = 0; i < this[key].length; ++i)
-            this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key);
-    }, groups);
+    if (sessionStorage['login'] != undefined) {
+        Object.keys(groups).forEach(function(key, index) {
+            for (let i = 0; i < this[key].length; ++i)
+                this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key);
+        }, groups);
+    }
 
 </script>

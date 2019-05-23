@@ -8,18 +8,9 @@
 <% content_for :body do %>
   <div class='container-fluid'>
 
-    <div class='row'>
-      <div class='col-3'>
-      </div>
-      <div class='col-6'>
+    <%= yield %>
 
-        <%= yield %>
-
-      </div>
-      <div class='col-3'>
-      </div>
-    </div>
   </div>
 <% end %>
 
-<% render layout: 'application' %>
+<%= render template: 'layouts/application' %>
