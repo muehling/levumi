@@ -1,30 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <%= render 'layouts/header' %>
-  <%= render 'layouts/scripts' %>
-</head>
+<% content_for :navbar do %>
+  <!-- Navbar nur mit Logo -->
+  <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
+    <a class='navbar-brand' href='#'><img src='/favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
+  </nav>
+<% end %>
 
-<body>
+<% content_for :body do %>
+  <div class='container-fluid'>
 
-<!-- Navbar nur mit Logo -->
-<nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
-  <a class='navbar-brand' href='#'><img src='/favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
-</nav>
+    <div class='row'>
+      <div class='col-3'>
+      </div>
+      <div class='col-6'>
 
-<div class='container-fluid'>
-  <div class='row'>
-    <div class='col-3'>
-    </div>
-    <div class='col-6'>
+        <%= yield %>
 
-    <%= yield %>
-
-    </div>
-    <div class='col-3'>
+      </div>
+      <div class='col-3'>
+      </div>
     </div>
   </div>
-</div>
+<% end %>
 
-</body>
-</html>
+<% render layout: 'application' %>

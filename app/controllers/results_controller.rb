@@ -19,7 +19,7 @@ class ResultsController < ApplicationController
           @redirect = group_assessment_path(@result.student.group, @test)
         end
       end
-      render 'edit', layout: 'blank'
+      render 'edit', layout: 'testing'
     end
   end
 

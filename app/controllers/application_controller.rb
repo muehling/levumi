@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     reset_session #Alte Daten ggf. entfernen
     respond_to do |format|
       format.html {
-        render file: 'layouts/landing', layout: false
+        render :start
       }
     end
   end
@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
       redirect_to '/start'
     else
       @retry = true
-      render file: 'layouts/landing', layout: false
+      render :start
     end
   end
 
@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     end
     respond_to do |format|
       format.html {
-        render file: 'layouts/frontend', layout: false
+        render :frontend
       }
     end
   end
