@@ -1,5 +1,8 @@
 <template>
     <div>
+        <b-alert :show="tests.size == 0"  variant='secondary'>
+            Aktuell sind keine Tests verfügbar!
+        </b-alert>
         <b-card-group deck>
             <b-card class='mt-3'
                     v-for="test in tests"
@@ -18,7 +21,7 @@
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
                 >
-                    {{test.open ? 'Los geht\'s' : 'Nächste Woche wieder'}}
+                    {{test.open ? 'Test starten' : 'Diese Woche bereits gestestet'}}
                 </b-button>
             </b-card>
         </b-card-group>
@@ -29,18 +32,14 @@
 <script>
     export default {
         name: "student-view",
-        props: {
-            tests: Array,
-            student: Number
+        data: function () {
+            return {
+                tests: this.$root.tests,
+                student: this.$root.student
+            }
         },
-        mounted() {
-            console.log("Ready!")
-            document.title=window.location.hash.replace('#','')
-            console.log("Ready!")
-        }
     }
 </script>
 
 <style scoped>
-
 </style>

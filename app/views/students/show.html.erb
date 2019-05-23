@@ -4,6 +4,12 @@
   data['student'] = @student.id unless @student.nil?
 %>
 
+<script>
+    //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
+    document.title = window.location.hash.replace('#','')
+</script>
+
+
 <div id='levumi' data="<%= data.to_json%>">
 
   <!-- Spinner -->
@@ -18,7 +24,5 @@
   </div>
 
   <!-- Vue-component -->
-  <frontend-app></frontend-app>
+  <student-view></student-view>
 </div>
-
-
