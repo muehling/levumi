@@ -38,7 +38,6 @@ shuffleArray(items)
 let current = 0
 let result = []
 
-
 function next(btn) {
     let res = 0
     if (items[current].group == 1 && $('#btn' + btn).html() == 'Katze')
@@ -62,13 +61,13 @@ function next(btn) {
 
         //Anzeigen einer individuellen Feedback-Seite
         $('#testspace').html(
-            "<p id='evaluation' style='font-family: fibel_nordregular; font-size:60px;margin-top: 3%' class='text-center'></p>" +
-            "<br /><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>" +
+            "<p id='evaluation' margin-top: 3% class='text-center'></p>" +
+            "<br /><p class='text-center'>" +
             "<img align='middle' id='levumi' style='width: 250px '/></p><br/><br/><br/>" +
             "<p class='text-center'><button class='btn btn-primary' onclick='exit()'>Test beenden</button></p>"
         );
 
-        if (typeof lastResult === 'undefined') {
+        if (lastResult == undefined) {
             $('#levumi').attr('src', '/images/shared/Levumi-normal.gif');
             $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“');
         }
@@ -88,6 +87,8 @@ function next(btn) {
 }
 
 //Test starten
+$('#testspace').attr('style', "font-family: '" + font_family + "'; font-size: " + font_size*2 + "em" )
+$('.btn').attr('style', "font-family: '" + font_family + "'; font-size: 1em")
 $('#image').attr('src', media_paths[items[current].path]);
 shuffleArray(answers);
 for (let i = 0; i < answers.length; ++i)

@@ -15,33 +15,32 @@
         <% @test.media_files.each do |f| %>
         '<%= f.filename %>': '<%= url_for(f) %>',
         <% end %>
-    };
-    <%p %>
+    }
 
     //Vorheriges Ergebnis als Objekt
     <% if @result.prior_result.nil? %>
-      const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>");
+    const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
     <% else %>
-      const lastResult = undefined;
+    const lastResult = undefined
     <% end %>
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @result.student.get_setting(:font_family) %>';
-    const font_size = '<%= @result.student.get_setting(:font_size) %>';
+    const font_family = '<%= @result.student.get_setting(:font_family) %>'
+    const font_size = <%= @result.student.get_setting(:font_size) %>
 
-    //Funktionen für Testumgebung bereitstellen
-    function saveResults(result, data) {
-        fetch('<%= student_result_url(@student, @result) %>', {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            },
-            credentials: 'include',
-            body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&data=' + encodeURIComponent(JSON.stringify(data))
-        });
-    }
+        //Funktionen für Testumgebung bereitstellen
+        function saveResults(result, data) {
+            fetch('<%= student_result_url(@student, @result) %>', {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                credentials: 'include',
+                body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&data=' + encodeURIComponent(JSON.stringify(data))
+            })
+        }
 
     //Testfenster schließen
     function exit() {
@@ -54,7 +53,7 @@
     var stopwatch = null
 
     function startTimer() {
-        stopwatch = new Date();
+        stopwatch = new Date()
     }
 
     function stopTimer() {
@@ -83,23 +82,23 @@
             "<img id='pic' style='width: 300px'/>" +
             "<p style='font-family: "+font_family+"; font-size:40px; margin-top: 10%' id='feedback_text' class='text-center'></p>" +
             "</div>"
-        );
+        )
         if (result == 0) {
-            $('#pic').attr('src', '/images/shared/Levumi-normal.jpg');
+            $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
         }
         else if (result == 1) {
-            $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif');
+            $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
         }
         else {
-            $('#pic').attr('src', '/images/shared/Levumi-liest.gif');
+            $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
         }
         if (timedout)
             $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster' +
                 ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%');
+                .css('margin-top','0%')
         else
             $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%');
+                .css('margin-top','0%')
     }
 </script>
