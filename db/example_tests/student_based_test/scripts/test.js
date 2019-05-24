@@ -66,9 +66,9 @@ function next(btn) {
             "<br /><p style='font-family: fibel_nordregular; font-size:60px' class='text-center'>" +
             "<img align='middle' id='levumi' style='width: 250px '/></p><br/><br/><br/>" +
             "<p class='text-center'><button class='btn btn-primary' onclick='exit()'>Test beenden</button></p>"
-        )
+        );
 
-        if (lastResult) {
+        if (typeof lastResult === 'undefined') {
             $('#levumi').attr('src', '/images/shared/Levumi-normal.gif');
             $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“');
         }
