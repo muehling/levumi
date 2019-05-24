@@ -25,8 +25,8 @@
     <% end %>
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @result.student.get_setting(:font_family) %>'
-    const font_size = <%= @result.student.get_setting(:font_size) %>
+    const font_family = '<%= @result.student.get_setting(:font_family) %>';
+    const font_size = '<%= @result.student.get_setting(:font_size) %>';
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(result, data) {
