@@ -25,8 +25,8 @@
     <% end %>
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @result.student.get_setting(:font_family) %>'
-    const font_size = <%= @result.student.get_setting(:font_size) %>
+    const font_family = '<%= @result.student.get_setting(:font_family) %>';
+    const font_size = '<%= @result.student.get_setting(:font_size) %>';
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(result, data) {
@@ -80,7 +80,7 @@
         $('#testspace').html(
             "<div style='text-align: center'>" +
             "<img id='pic' style='width: 300px'/>" +
-            "<p style='font-family: fibel_nordregular; font-size:40px; margin-top: 10%' id='feedback_text' class='text-center'></p>" +
+            "<p style='font-family: "+font_family+"; font-size:40px; margin-top: 10%' id='feedback_text' class='text-center'></p>" +
             "</div>"
         )
         if (result == 0) {
