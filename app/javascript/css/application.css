@@ -47,24 +47,24 @@
 /* Schriftarten */
 @font-face {
     font-family: 'Fibel Nord';
-    src: url('../media/fonts/FibelNord.woff2') format('woff2'),
-    url('../media/fonts/FibelNord.woff') format('woff');
+    src: url('/fonts/FibelNord.woff2') format('woff2'),
+    url('/fonts/FibelNord.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Grundschrift';
-    src: url('../media/fonts/Grundschrift.woff2') format('woff2'),
-    url('../media/fonts/Grundschrift.woff') format('woff');
+    src: url('/fonts/Grundschrift.woff2') format('woff2'),
+    url('/fonts/Grundschrift.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Grundschrift Grundlinie';
-    src: url('../media/fonts/GrundschriftGrundlinie.woff2') format('woff2'),
-    url('../media/fonts/GrundschriftGrundlinie.woff') format('woff');
+    src: url('/fonts/GrundschriftGrundlinie.woff2') format('woff2'),
+    url('/fonts/GrundschriftGrundlinie.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
