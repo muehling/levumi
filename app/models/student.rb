@@ -56,8 +56,8 @@ class Student < ApplicationRecord
       return settings[key]
     else
       defs = {
-          font_family: 'serif',
-          font_size: 1
+          'font_family': 'Fibel Nord',
+          'font_size': 1
       }
       return defs[key]
     end

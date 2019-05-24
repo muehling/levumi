@@ -8,7 +8,7 @@
 <!-- Hauptseite rendern -->
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
-<!-- Testskripte laden und Testumgebund definieren -->
+<!-- Testskripte laden und Testumgebung definieren -->
 <script>
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
@@ -18,11 +18,15 @@
     }
 
     //Vorheriges Ergebnis als Objekt
-    var lastResult = JSON.parse(<%= @result.prior_result.as_json %>)
+    <% if @result.prior_result.nil? %>
+      const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
+    <% else %>
+      const lastResult = undefined
+    <% end %>
 
     //Präferenzen des Kindes setzen
-    var font_family = '<%= @result.student.get_setting('font_family') %>';
-    var font_size = <%= @result.student.get_setting('font_size') %>;
+    const font_family = '<%= @result.student.get_setting(:font_family) %>'
+    const font_size = <%= @result.student.get_setting(:font_size) %>
 
     //Funktionen für Testumgebung bereitstellen
     function saveResults(result, data) {
@@ -43,7 +47,9 @@
         window.location.href = '<%= @redirect %>'
     }
 
-    //Hilfsfunktionen zum Zeitmessen
+    //Hilfsfunktionen
+
+    //Zeitmessen
     var stopwatch = null
 
     function startTimer() {
@@ -52,6 +58,14 @@
 
     function stopTimer() {
         return (new Date() - stopwatch)
+    }
+
+    //zufälliges Umsortieren
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
     }
 
     //Test-Skripte einbinden

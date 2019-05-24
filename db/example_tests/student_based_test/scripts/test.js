@@ -33,13 +33,6 @@ let items = [
 
 let answers =  ['Vogel', 'Nashorn', 'Katze', 'Fahrradklingel']
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1))
-        [array[i], array[j]] = [array[j], array[i]]
-    }
-}
-
 shuffleArray(items)
 
 let current = 0
@@ -66,6 +59,7 @@ function next(btn) {
         for (let i = 0; i < result.length; ++i)
             sum[result[i].group] += result[i].result
         saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result)
+
         //Anzeigen einer individuellen Feedback-Seite
         $('#testspace').html(
             "<p id='evaluation' style='font-family: fibel_nordregular; font-size:60px;margin-top: 3%' class='text-center'></p>" +
@@ -74,30 +68,29 @@ function next(btn) {
             "<p class='text-center'><button class='btn btn-primary' onclick='exit()'>Test beenden</button></p>"
         )
 
-        if (lastResult == -1){
+        if (lastResult) {
             $('#levumi').attr('src', '/images/shared/Levumi-normal.gif');
             $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“');
         }
-        else if(sum[0]+sum[1]== lastResult){
+        else if(sum[0] + sum[1] == lastResult['Übersicht']) {
             $('#levumi').attr('src', '/images/shared/Levumi-spricht.gif');
             $('#evaluation').html('„Du hast genauso viele Tiere richtig zugeordnet, wie beim letzten Mal.“');
         }
-        else if(sum[0]+sum[1]> lastResult){
+        else if(sum[0] + sum[1] > lastResult['Übersicht']) {
             $('#levumi').attr('src', '/images/shared/Levumi-jubelt.gif');
             $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“');
         }
-        else{
+        else {
             $('#levumi').attr('src', '/images/shared/Levumi-liest.gif');
             $('#evaluation').html('„Beim letzten Mal hast du mehr Tiere richtig zugeordnet.“');
         }
     }
 }
 
-//Start-Methode, welche beim Aufrufen der Testseite ausgeführt wird
-function start() {
-    $('#image').attr('src', media_paths[items[current].path]);
-    shuffleArray(answers);
-    for (let i = 0; i < answers.length; ++i)
-        $('#btn' + i).html(answers[i]);
-}
+//Test starten
+$('#image').attr('src', media_paths[items[current].path]);
+shuffleArray(answers);
+for (let i = 0; i < answers.length; ++i)
+    $('#btn' + i).html(answers[i]);
+
 

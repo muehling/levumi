@@ -2,7 +2,7 @@ class ResultsController < ApplicationController
   before_action :set_student
 
   before_action :check_login, only: [:edit, :update]
-  skip_before_action :set_login, only: [:edit, :update]
+  skip_before_action :set_login, only: [:create, :edit, :update]
 
   #POST /students/:student_id/results
   def create

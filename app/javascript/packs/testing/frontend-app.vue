@@ -8,7 +8,7 @@
     </div>
     <div v-else-if="tests">
         <b-alert :show="no_tests()"  variant='secondary'>
-            Gerade gibt es keine Tests für dich. Schau nächste Woche nochmal vorbei!
+            Gerade gibt es keine Tests für dich!
         </b-alert>
         <!-- Übersicht anzeigen -->
         <b-card-group deck>
@@ -83,7 +83,8 @@
               return true;
             },
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
-                this.tests = event.detail[0];
+                this.tests = event.detail[0]['tests'];
+                this.student = event.detail[0]['student'];
                 this.loading = false;
             }
         },

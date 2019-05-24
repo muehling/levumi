@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
     s = Student.find_by_login(params[:login])
     unless s.nil?
       session[:student] = s.id
-      render json: s.get_assessments
+      render json: {tests: s.get_assessments, student: s.id}
     else
       head 403
     end
