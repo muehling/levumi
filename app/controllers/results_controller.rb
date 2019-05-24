@@ -38,7 +38,7 @@ class ResultsController < ApplicationController
     if @student.group.owner == @login
       @result = Result.find(params[:id])
       unless @result.nil? || @result.student != @student
-        @result.destroy
+        @result.delete
         head :ok
       else
         head 403

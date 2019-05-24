@@ -9,7 +9,7 @@ class Assessment < ApplicationRecord
     res = {}
     res['student_test'] = self.test.student_test
     res['configuration'] = self.test.configuration
-    res['series'] = self.results.all.order(:test_date)
+    res['series'] = self.results.where.not(test_date: nil).order(:test_date)
     res
   end
 
