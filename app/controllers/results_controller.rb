@@ -2,19 +2,25 @@ class ResultsController < ApplicationController
   before_action :set_student
 
   before_action :check_login, only: [:edit, :update]
-  skip_before_action :set_login, only: [:edit, :update]
+  skip_before_action :set_login, only: [:create, :edit, :update]
 
   #POST /students/:student_id/results
   def create
-    if (params.has_key? :test_id)
-      @test = Test.find(params[:test_id])
+    @test = Test.find(params[:test_id])
+    unless @test.nil?
       a = Assessment.where(group_id: @student.group_id, test_id: @test.id).first       #Assessment aus student_id und test_id bestimmen
-      #bestimmen des vorherigen Resultobjektes
-      prior_result = Result.where(["student_id = ? and assessment_id = ?", @student.id, a]).order(:test_date).last
-      prior_result = prior_result.nil? ? nil : prior_result.id
-      @result = @student.results.create(assessment: a, prior_result_id: prior_result)
+      @result = @student.results.create(assessment: a)
+      if @test.student_test         #Reicht das immer aus?
+        @redirect = '/testen'
+      else
+        if params.has_key? :student
+          @redirect = student_path(@result.student)
+        else
+          @redirect = group_assessment_path(@result.student.group, @test)
+        end
+      end
+      render 'edit', layout: 'testing'
     end
-    render 'edit', layout: 'blank'
   end
 
   #PUT /students/:student_id/results/:id
@@ -25,17 +31,6 @@ class ResultsController < ApplicationController
     @result.test_date = DateTime.now
     @result.save
     head :ok
-  end
-
-  #GET /students/:student_id/results/:id/edit
-  def edit
-    @result = Result.find(params[:id])
-    unless @result.nil?
-      @test = @result.assessment.test
-      render layout: 'blank'
-    else
-      head 403
-    end
   end
 
   #DEL /students/:student_id/results/:id

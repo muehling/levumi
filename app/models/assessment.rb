@@ -13,12 +13,4 @@ class Assessment < ApplicationRecord
     res
   end
 
-  #"Leere" Result-Objekte für Schülertest anlegen
-  def prepare_results
-    end_of_week = (Date.commercial(Date.today.to_date.year, Date.today.to_date.cweek) + 6).end_of_day
-    group.students.each do |s|
-      results.create(student: s, expires_on: end_of_week)
-    end
-  end
-
 end

@@ -20,6 +20,27 @@ class StudentsController < ApplicationController
     end
   end
 
+  #GET /students/:id.js
+  #GET /students/:id.html
+  def show
+    s = Student.find(params[:id])
+    respond_to do |format|
+      format.js {   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung => Schüleransicht
+        unless s.nil?
+          render json: s.get_assessments
+        else
+          head 304
+        end
+      }
+      format.html {  #Anzeige als eigene Seite => Lehrkraft-Ansicht
+        unless s.nil?
+          @student = s
+          render :show, layout: 'minimal'
+        end
+      }
+    end
+  end
+
   #PUT /students/:id
   def update   #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     s = Student.find(params[:id])
@@ -42,7 +63,7 @@ class StudentsController < ApplicationController
   private
 
   def student_attributes
-    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration)
+    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration, settings: [:font_family, :font_size])
   end
 
 end

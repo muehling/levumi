@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(version: 2019_03_01_104250) do
     t.date "birthmonth"
     t.integer "sen"
     t.boolean "migration"
+    t.string "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_students_on_group_id"

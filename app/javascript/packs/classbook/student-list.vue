@@ -9,7 +9,7 @@
                 <th>Geburtsmonat</th>
                 <th>Förderbedarf</th>
                 <th>Migrationshintergrund</th>
-                <th>Bearbeiten</th>
+                <th>Aktionen</th>
             </tr>
             </thead>
             <tbody>
@@ -45,7 +45,7 @@
         components: {StudentRow},
         props: {
             group: Number,   //Benötigt um neue Schüler der Gruppe zuordnen zu können.
-            read_only: Boolean
+            read_only: Boolean,
         },
         data: function () {
             return {

@@ -25,6 +25,18 @@ class Test < ApplicationRecord
     if archive then level + " (veraltet)" else level end
   end
 
+  #Kurzdarstellung des Tests
+  def info
+    {
+        id: id,
+        level: level,
+        family: test_family.name,
+        competence: test_family.competence.name,
+        area: test_family.competence.area.name,
+        student_test: student_test
+    }
+  end
+
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at])

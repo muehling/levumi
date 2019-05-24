@@ -99,13 +99,9 @@
                     if (this.results[i].test_week != null)
                         weeks.push(this.results[i].test_week);
                 weeks = weeks.filter((v, i, a) => a.indexOf(v) === i);
-                console.log(JSON.parse(JSON.stringify(this.default_options)));
                 let opt = JSON.parse(JSON.stringify(this.default_options));
-                console.log(opt);
                 opt.xaxis.categories = cloner.shallow.copy(weeks);
-                console.log(opt);
                 opt = cloner.deep.merge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)));
-                console.log(opt);
                 return opt;
             },
             series: function () {  //Bereitet die Results-Daten so auf, dass sie im Chart dargestellt werden können.

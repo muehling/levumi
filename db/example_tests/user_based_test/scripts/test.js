@@ -31,13 +31,6 @@ let items = [
     }
 ];
 
-function shuffleArray(array) {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-}
-
 shuffleArray(items);
 
 let current = 0;
@@ -62,22 +55,15 @@ function next(res) {
         let sum = [0, 0];
         for (let i = 0; i < result.length; ++i)
             sum[result[i].group] += result[i].result;
-        saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
-        //Interpretieren des Ergebnis und Anzeigen des Feedbacks
-        let result_interp = 0;
-        let timedout = false;
 
-        if(lastResult==-1){}
-        else if(sum[0] + sum[1]>=lastResult)
-            result_interp = 1;
-        else
-            result_interp = -1;
-        show_feedback(result_interp, timedout);
+        //Ergebnisse speichern
+        saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
+
+        //Interpretieren des Ergebnis und Anzeigen des Feedbacks
+        showFeedback(lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0, false);
     }
 }
-//Start-Methode, welche beim Aufrufen der Testseite ausgeführt wird
-function start() {
-    $('#image').attr('src', media_paths[items[current].path]);
-}
 
+//Test starten
+$('#image').attr('src', media_paths[items[current].path]);
 

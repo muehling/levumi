@@ -8,7 +8,7 @@
 <!-- Hauptseite rendern -->
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
-<!-- Testskripte laden und Testumgebund definieren -->
+<!-- Testskripte laden und Testumgebung definieren -->
 <script>
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
@@ -17,18 +17,16 @@
         <% end %>
     };
 
-    <% if !@result.prior_result_id.nil? %>
-    <% last_result = 0 %>
-    <% Result.find(@result.prior_result_id).data.each do |data| %>
-        <% if data["result"]=='NA'%>
-        <% else %>
-          <% last_result += data["result"]%>
-        <% end %>
-      <% end %>
+    //Vorheriges Ergebnis als Objekt
+    <% if @result.prior_result.nil? %>
+      const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
     <% else %>
-      <% last_result = -1 %>
+      const lastResult = undefined
     <% end %>
-    var lastResult = <%= last_result %>;
+
+    //Präferenzen des Kindes setzen
+    const font_family = '<%= @result.student.get_setting(:font_family) %>'
+    const font_size = <%= @result.student.get_setting(:font_size) %>
 
     //Funktionen für Testumgebung bereitstellen
     function saveResults(result, data) {
@@ -46,14 +44,14 @@
 
     //Testfenster schließen
     function exit() {
-        <% if @test.student_test %>
-          window.location.href = '/testen';
-        <% else %>
-          window.location.href = '<%= group_assessment_path(@result.student.group, @test) %>';
-        <% end %>
+        window.location.href = '<%= @redirect %>'
     }
 
-    var stopwatch = null;
+    //Hilfsfunktionen
+
+    //Zeitmessen
+    var stopwatch = null
+
     function startTimer() {
         stopwatch = new Date();
     }
@@ -62,87 +60,45 @@
         return (new Date() - stopwatch)
     }
 
+    //zufälliges Umsortieren
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>
     <%= raw f.download.force_encoding('UTF-8') %>
     <% end %>
 
-    //Anzeigen der Elemente zum Verändern der Schriftgröße
-    function showResizeOption() {
-        $('#testspace').html(
-            "<div style='text-align: center'>" +
-            "<p style='font-family: fibel_nordregular; font-size:96px; margin-top: 10%' id='testtext' class='text-center'>Test</p>" +
-            "<br/><br/><br/>" +
-            "</div>" +
-            "<div class='footer' style='text-align: center'>" +
-            "<button type='button' class='btn btn-default btn-lg' style='border:1px solid lightgrey; margin-right: 1%' onclick='increaseSize()'>Schrift größer (Taste: 1)</button>" +
-            "<button type='button' class='btn btn-success btn-lg' onclick='$(window).unbind(\"keydown\");start()'>Test starten</button>" +
-            "<button type='button' class='btn btn-default btn-lg' style='border:1px solid lightgrey; margin-left: 1%' onclick='decreaseSize()'>Schrift kleiner (Taste: 0)</button></div>"
-        )
-    }
 
-    //Ändern der Schriftgröße über die Button 1 und 0
-    $(window).keydown(function(event) {
-        switch (event.keyCode) {
-            case 49:
-            case 97:
-                increaseSize();
-                break;
-            case 48:
-            case 96:
-                decreaseSize();
-                break;
-        }
-    });
-
-    //Originale Schriftgröße
-    var font_size= 96;
-
-    //Schriftgröße vergrößern
-    function increaseSize() {
-     font_size = (parseFloat($('#testtext').css('font-size')) + 10) +"px";
-     $('#testtext').css('font-size', font_size);
-    }
-
-    //Schriftgröße verkleinern
-    function decreaseSize() {
-        font_size = (parseFloat($('#testtext').css('font-size')) - 10) +"px";
-        $('#testtext').css('font-size', font_size);
-    }
-    //Soll der Test das Verändern der Schriftgröße erlauben?
-    var resize_option = <%=@result.assessment.test.configuration["resize_option"].nil? ? false : @result.assessment.test.configuration["resize_option"]%>;
-    if(resize_option){
-        showResizeOption();
-    }
-    else{
-        $(window).unbind('keydown');
-        start();
-    }
     //Anzeigen des Feedbacks
     //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))
-    function show_feedback(result, timedout) {
+    function showFeedback(result, timedout) {
         $('#testspace').html(
             "<div style='text-align: center'>" +
             "<img id='pic' style='width: 300px'/>" +
             "<p style='font-family: fibel_nordregular; font-size:40px; margin-top: 10%' id='feedback_text' class='text-center'></p>" +
             "</div>"
-        );
-        if(result==0){
+        )
+        if (result == 0) {
             $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
         }
-        else if(result==1){
+        else if (result == 1) {
             $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
         }
-        else{
+        else {
             $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
         }
         if (timedout)
             $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster' +
                 ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%');
+                .css('margin-top','0%')
         else
             $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%');
+                .css('margin-top','0%')
     }
 </script>

@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
     reset_session #Alte Daten ggf. entfernen
     respond_to do |format|
       format.html {
-        render file: 'layouts/landing', layout: false
+        render :start
       }
     end
   end
@@ -25,7 +25,7 @@ class ApplicationController < ActionController::Base
       redirect_to '/start'
     else
       @retry = true
-      render file: 'layouts/landing', layout: false
+      render :start
     end
   end
 
@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
     end
     respond_to do |format|
       format.html {
-        render file: 'layouts/frontend', layout: false
+        render :frontend, layout: 'minimal'
       }
     end
   end
@@ -55,7 +55,7 @@ class ApplicationController < ActionController::Base
     s = Student.find_by_login(params[:login])
     unless s.nil?
       session[:student] = s.id
-      render json: s.available_tests
+      render json: {tests: s.get_assessments, student: s.id}
     else
       head 403
     end

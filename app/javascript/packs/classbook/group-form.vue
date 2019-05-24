@@ -3,7 +3,7 @@
     <div>
         <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
         <div v-if="index > 0">
-            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_edit_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i>Klasse umbenennen</b-btn>
+            <b-btn  v-if="!group.demo" v-b-toggle="'collapse_edit_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-edit'></i> Klasse umbenennen</b-btn>
 
             <a class='btn btn-sm btn-outline-primary'
                :href="'/groups/' + group.id"

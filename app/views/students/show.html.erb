@@ -1,0 +1,28 @@
+<%
+  data = {'tests': nil, student: 0}
+  data['tests'] = @student.get_assessments unless @student.nil?
+  data['student'] = @student.id unless @student.nil?
+%>
+
+<script>
+    //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
+    document.title = window.location.hash.replace('#','')
+</script>
+
+
+<div id='levumi' data="<%= data.to_json%>">
+
+  <!-- Spinner -->
+  <div v-if='!$data'>
+    <b-row>
+      <div class='spinner'>
+        <div class='bounce1'></div>
+        <div class='bounce2'></div>
+        <div class='bounce3'></div>
+      </div>
+    </b-row>
+  </div>
+
+  <!-- Vue-component -->
+  <student-view></student-view>
+</div>

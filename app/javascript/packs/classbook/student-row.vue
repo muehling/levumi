@@ -4,7 +4,9 @@
         <td>
             <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
-                {{ student.name }}
+                <b-link :href="'students/' + student.id + '#' + student.name" target="_blank">
+                    {{ student.name }}
+                </b-link>
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
@@ -75,7 +77,58 @@
 
         <td>
             <span v-if="!read_only && !empty && !editMode">
-                <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-edit'></i></b-btn>
+                <b-button-toolbar>
+                    <b-button-group>
+                        <b-btn class='mr-1'
+                               variant='outline-primary'
+                               size='sm' title='Schrifteinstellungen'
+                               v-b-modal="'modal_settings_' + student.id"
+                        >
+                            <i class='fas fa-text-height'></i>
+                        </b-btn>
+                        <b-btn variant='outline-secondary'
+                               size='sm'
+                               title='Bearbeiten'
+                               @click="editMode = true"
+                        >
+                            <i class='fas fa-user-edit'></i>
+                        </b-btn>
+                    </b-button-group>
+                </b-button-toolbar>
+                <b-modal :id="'modal_settings_' + student.id"
+                         :title="'Schrifteinstellungen für ' + student.name"
+                         size='xl'
+                         scrollable
+                         hide-footer
+                         lazy
+                >
+                    <p id='example' class='mt-5 mb-5 text-center' :style="'font-size:' + font_size*3 + 'em;font-family:\'' + font_family+'\''">
+                        Das ist ein Beispieltext!
+                    </p>
+                    <b-button-toolbar justify>
+                        <b-button-group size='sm'>
+                            <b-btn variant='outline-primary' :pressed="font_size == 1" @click="font_size=1">Normal</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_size == 2" @click="font_size=2">Vergrößert</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_size == 3" @click="font_size=3">Stark vergrößert</b-btn>
+                        </b-button-group>
+                        <b-button-group size='sm'>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'serif'" @click="font_family='serif'">Rechnerschrift</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Fibel Nord'" @click="font_family='Fibel Nord'">Fibel Nord</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Grundschrift'" @click="font_family='Grundschrift'">Grundschulschrift</b-btn>
+                            <b-btn variant='outline-primary' :pressed="font_family == 'Grundschrift Grundlinie'" @click="font_family='Grundschrift Grundlinie'">Grundschulschrift Grundlinie</b-btn>
+                        </b-button-group>
+                    </b-button-toolbar>
+                    <!-- rails-ujs Link -->
+                    <b-link class='btn btn-sm btn-block btn-outline-success mt-3'
+                            :href="'/students/' + student.id"
+                            data-method='put'
+                            data-remote='true'
+                            :data-params="'group=' + group + '&student[settings[font_family]]='+encodeURIComponent(font_family) + '&student[settings[font_size]]=' + font_size"
+                            v-on:ajax:success="update"
+                    >
+                        <i class='fas fa-check'></i> Speichern
+                    </b-link>
+                </b-modal>
             </span>
             <span v-else-if="!read_only && editMode">
                 <b-button-toolbar>
@@ -117,34 +170,36 @@
 </template>
 
 <script>
-
     export default {
         props: {
-            student: Object,
-            group: Number,
             empty: Boolean,
+            group: Number,
             index: Number,
-            read_only: Boolean
+            read_only: Boolean,
+            student: Object,
         },
         data: function () {
             return {
                 editMode: false,
+                loading: false,
                 name: this.student.name,
-
-                //Defaultwerte für diese Werte, da sie ggf. nicht existieren!
-                gender: this.student.gender != undefined ? this.student.gender : null,
-                sen: this.student.sen != undefined ? this.student.sen : null,
-                migration: this.student.migration != undefined ? this.student.migration : null,
-                year: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getFullYear() : null,
-                month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
-
+                results: undefined,
                 years: function() {
                     let years = [];
                     let cur = (new Date()).getFullYear();
                     for (let i = cur - 3; i > cur - 30; --i)
                         years.push(i);
                     return years;
-                }
+                },
+
+                //Defaultwerte für  Werte, die ggf. nicht existieren!
+                font_family: this.student.settings == undefined || this.student.settings['font_family'] == undefined ? 'serif' : this.student.settings['font_family'],
+                font_size: this.student.settings == undefined || this.student.settings['font_size'] == undefined ? '1' : this.student.settings['font_size'],
+                gender: this.student.gender != undefined ? this.student.gender : null,
+                migration: this.student.migration != undefined ? this.student.migration : null,
+                month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
+                sen: this.student.sen != undefined ? this.student.sen : null,
+                year: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getFullYear() : null
             }
         },
         methods: {
@@ -161,6 +216,28 @@
                    res += '&student[migration]=' + this.migration;
                return res;
             },
+            loadData(student) {
+              this.loading = true;
+                //AJAX-Request senden
+                fetch('/students/' + student, {
+                    headers: {
+                        'Accept': 'text/javascript',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: 'include'
+                })
+                    .then(response => {
+                        return response.text().then(text =>  {
+                            this.results = JSON.parse(text);
+                            this.loading = false;  //Spinner verstecken
+                        });
+                    });
+
+            },
+            remove() {
+                this.$emit('update:students', {index: this.index, object: null})
+            },
             update(event) {                 //Wird bei erfolgreichem Create/Update aufgerufen
                 //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
                 this.$emit('update:students', {index: this.index, object: event.detail[0]})
@@ -168,9 +245,8 @@
                     this.editMode = false;
                 else  //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
                     this.name = "";
-            },
-            remove() {
-                this.$emit('update:students', {index: this.index, object: null})
+                //Falls Update aus Settings: Modal schließen
+                this.$bvModal.hide('modal_settings_' + this.student.id)
             }
         },
         beforeCreate() {

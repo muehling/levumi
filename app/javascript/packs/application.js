@@ -20,7 +20,8 @@ import VueApexCharts from 'vue-apexcharts'
 //Eigene Vue Komponenten
 import HomeApp from './home/home-app'
 import ClassBookApp from './classbook/classbook-app'
-import FrontendApp from './frontend/frontend-app'
+import FrontendApp from './testing/frontend-app'
+import StudentView from './testing/student-view';
 
 
 //Stylesheets
@@ -53,8 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
             data: data,
             components: {
                 ClassBookApp,
+                FrontendApp,
                 HomeApp,
-                FrontendApp
+                StudentView
             }
         });
     }

@@ -7,17 +7,30 @@
         <div class='bounce3'></div>
     </div>
     <div v-else-if="tests">
-        <b-alert :show="tests.length == 0"  variant='secondary'>
-            Gerade gibt es keine Tests für dich. Schau nächste Woche nochmal vorbei!
+        <b-alert :show="no_tests()"  variant='secondary'>
+            Gerade gibt es keine Tests für dich!
         </b-alert>
         <!-- Übersicht anzeigen -->
         <b-card-group deck>
-            <b-card class='mt-3' v-for="test in tests" :key="test.id" :title="test.family" :sub-title="test.level">
+            <b-card class='mt-3'
+                    v-for="test in tests"
+                    v-if="test.test_info.student_test"
+                    :key="test.id"
+                    :title="test.test_info.family"
+                    :sub-title="test.test_info.level"
+            >
                 <template slot='header'>
-                    <h4>{{test.competence}}</h4>
-                    <h6>{{test.area}}</h6>
+                    <h4>{{test.test_info.competence}}</h4>
+                    <h6>{{test.test_info.area}}</h6>
                 </template>
-                <b-button block variant='primary' :href="'/students/' + test.student + '/results/' + test.id + '/edit' ">Los geht's</b-button>
+                <b-button block variant='primary'
+                          :href="'/students/' + student + '/results?test_id='+ test.test_info.id"
+                          data-method='post'
+                          :disabled="!test.open"
+                          :variant="test.open ? 'outline-success' : 'success'"
+                >
+                    {{test.open ? 'Los geht\'s' : 'Nächste Woche wieder'}}
+                </b-button>
             </b-card>
         </b-card-group>
     </div>
@@ -57,13 +70,21 @@
         data: function () {
             return {
                 tests: this.$root.tests,
+                student: this.$root.student,
                 retry: false,
                 loading: false
             }
         },
         methods: {
+            no_tests() {
+              for (let i = 0; i < this.tests.length; ++i)
+                  if (this.tests[i].test_info.student_test)
+                      return false;
+              return true;
+            },
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
-                this.tests = event.detail[0];
+                this.tests = event.detail[0]['tests'];
+                this.student = event.detail[0]['student'];
                 this.loading = false;
             }
         },

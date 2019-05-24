@@ -68,7 +68,7 @@
         components: {StudentList, GroupForm, ShareForm},
         props: {
             groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
-            index: Number
+            index: Number,
         },
         computed: {
             date: function() {

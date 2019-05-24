@@ -45,7 +45,7 @@
                     </tr>
                 </tbody>
             </table>
-            <b-btn  v-b-toggle="'collapse_share_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-handshake'></i>Klasse teilen</b-btn>
+            <b-btn  v-b-toggle="'collapse_share_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-handshake'></i> Klasse teilen</b-btn>
             <b-collapse :id="'collapse_share_' + group.id" class='mt-2' :visible="false">
                 <b-form inline
                         :action="'/groups/' + group.id + '/group_shares'"

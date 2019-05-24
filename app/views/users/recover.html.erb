@@ -1,19 +1,26 @@
-<div class='card card-header mt-5 ml-5 mr-5'>
-  Passwort zurücksetzen
-</div>
-<div class='card card-body ml-5 mr-5'>
-  <%= form_tag '/passwort', method: :post, remote: true, onsubmit: "sessionStorage['answer'] = $('#security').val();" do %>
-    <div class='form-group'>
-      <input type='email' name='email' class='form-control' id='email' placeholder='E-Mail Adresse'>
+<div class='row'>
+  <div class='col-3'>
+  </div>
+  <div class='col-6'>
+    <div class='card card-header mt-5 ml-5 mr-5'>
+      Passwort zurücksetzen
     </div>
-    <div class='form-group'>
-      <label for='security'>In welcher Stadt wurden Sie geboren?</label>
-      <input type='text' name='security' class='form-control' id='security' placeholder='Antwort auf die Sicherheitsfrage'>
+    <div class='card card-body ml-5 mr-5'>
+      <%= form_tag '/passwort', method: :post, remote: true, onsubmit: "sessionStorage['answer'] = $('#security').val();" do %>
+        <div class='form-group'>
+          <input type='email' name='email' class='form-control' id='email' placeholder='E-Mail Adresse'>
+        </div>
+        <div class='form-group'>
+          <label for='security'>In welcher Stadt wurden Sie geboren?</label>
+          <input type='text' name='security' class='form-control' id='security' placeholder='Antwort auf die Sicherheitsfrage'>
+        </div>
+        <%= submit_tag 'Überprüfen', class: 'btn btn-primary'%>
+      <% end %>
     </div>
-    <%= submit_tag 'Überprüfen', class: 'btn btn-primary'%>
-  <% end %>
+    <div id='res' class='card-footer ml-5 mr-5'>
+      Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
+    </div>
+  </div>
+  <div class='col-3'>
+  </div>
 </div>
-<div id='res' class='card-footer ml-5 mr-5'>
-  Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
-</div>
-
