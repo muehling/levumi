@@ -65,5 +65,7 @@ function next(res) {
 }
 
 //Test starten
-$('#image').attr('src', media_paths[items[current].path]);
+$('#testspace').attr('style', "font-family: '" + font_family + "'; font-size: " + font_size*2 + "em" )
+$('.btn').attr('style', "font-family: '" + font_family + "'; font-size: 0.5em")
+$('#image').attr('src', media_paths[items[current].path])
 

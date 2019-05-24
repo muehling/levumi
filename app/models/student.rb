@@ -55,7 +55,7 @@ class Student < ApplicationRecord
     if settings.has_key? key
       return settings[key]
     else
-      defs = {
+      defs = {                             #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
           'font_family': 'Fibel Nord',
           'font_size': 1
       }
