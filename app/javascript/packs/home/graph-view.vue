@@ -42,7 +42,34 @@
         </b-row>
         <b-row>
             <div class='ml-3'>
-                <b-button @click="add_annotation">Kommentar einfügen</b-button>
+                <b-button size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
+                    Kommentare
+                    <i class='when-closed fas fa-caret-down'></i>
+                    <i class='when-opened fas fa-caret-up'></i>
+                </b-button>
+                <b-collapse id='annotation_collapse' v-on:shown="$parent.auto_scroll('#annotation_collapse')">
+                    <table class='table table-sm table-striped table-borderless mt-1'>
+                        <thead>
+                        <tr>
+                            <th>Von</th>
+                            <th>Bis</th>
+                            <th>Anmerkung</th>
+                            <th>Aktionen</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="a in annotations"
+                            v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
+                            :key="a.id"
+                        >
+                            <td>{{a.start}}</td>
+                            <td>{{a.end}}</td>
+                            <td>{{a.content}}</td>
+                            <td></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </b-collapse>
             </div>
         </b-row>
     </div>
@@ -54,6 +81,7 @@
         props: {
             students: Array,
             results: Array,
+            annotations: Array,
             configuration: Object,
         },
         data: function () {
@@ -183,4 +211,9 @@
 </script>
 
 <style scoped>
+    /* Darstellung des Collapse durch CSS toggeln*/
+    .collapsed > .when-opened,
+    :not(.collapsed) > .when-closed {
+        display: none;
+    }
 </style>

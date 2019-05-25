@@ -80,7 +80,7 @@
                 <b-button-toolbar>
                     <b-button-group>
                         <b-btn class='mr-1'
-                               variant='outline-primary'
+                               variant='outline-secondary'
                                size='sm' title='Schrifteinstellungen'
                                v-b-modal="'modal_settings_' + student.id"
                         >

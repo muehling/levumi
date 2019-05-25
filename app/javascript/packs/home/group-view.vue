@@ -67,13 +67,14 @@
             </div>
 
             <assessment-view v-else-if="results"
-                             :group="group.id"
-                             :results="results.series"
+                             :annotations="results.annotations"
                              :configuration="results.configuration"
+                             :group="group.id"
+                             :read_only="group.read_only"
+                             :results="results.series"
+                             :student_test="results.student_test"
                              :test="test_selected"
                              :test_info="test_info"
-                             :read_only="group.read_only"
-                             :student_test="results.student_test"
                              v-on:update="loadAssessment(test_selected)"
             >
             </assessment-view>

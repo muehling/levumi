@@ -127,15 +127,22 @@
 
   #Spielergebnisse anlegen
   a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
-  a2 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
+  Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
   Group.find(1).students.each do |s|
     7.times do |i|
-      if (rand > 0.5)
+      if (rand > 0.3)
         r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})
         r.save
       end
     end
   end
+  Annotation.create(assessment_id: a1.id, group_id: 1, content: "Anmerkung für die ganze Gruppe", view: 0,
+                     start: Student.find(1).results.order(:test_week).first.test_week,
+                     end: Student.find(1).results.order(:test_week).last.test_week)
+  Annotation.create(assessment_id: a1.id, student_id: 1, content: "Anmerkung für Adam", view: 1,
+                     start: Student.find(1).results.order(:test_week).first.test_week,
+                     end: Student.find(1).results.order(:test_week).first.test_week)
+
 
 #elsif Rails.env.production?
   #Admin Account anlegen

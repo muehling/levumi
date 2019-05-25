@@ -65,8 +65,8 @@
                         <b-col>{{ grouped_results[date].length }}</b-col>
                         <b-col>
                             <b-btn v-b-toggle="'collapse_' + index" size='sm' variant='outline-secondary'>
-                                <i class='when-closed fas fa-search-plus'></i>
-                                <i class='when-opened fas fa-search-minus'></i>
+                                <i class='when-closed fas fa-caret-down'></i>
+                                <i class='when-opened fas fa-caret-up'></i>
                             </b-btn>
                         </b-col>
                     </b-row>
@@ -107,9 +107,10 @@
             <!-- Auswertungstab mit Graph -->
             <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#chart_area')" class='m-3'>
                 <graph-view
-                        :students="students"
+                        :annotations="annotations"
                         :configuration="configuration"
                         :results="results"
+                        :students="students"
                 ></graph-view>
             </b-tab>
 
@@ -126,13 +127,14 @@
     export default {
         components: {GraphView},
         props: {
-            results: Array,
+            annotations: Array,
             configuration: Object,
             group: Number,
+            read_only: Boolean,
+            results: Array,
+            student_test: Boolean,
             test: Number,
             test_info: Object,
-            read_only: Boolean,
-            student_test: Boolean,
         },
         computed: {
             grouped_results: function() { //Results nach Wochen gruppieren, für die Ergebnisliste
