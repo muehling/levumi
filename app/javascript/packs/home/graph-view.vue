@@ -202,9 +202,6 @@
                     },
                 }, true);
             },
-            auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
-                window.$(element)[0].scrollIntoView(false);
-            },
         },
         name: "graph-view.vue"
     }

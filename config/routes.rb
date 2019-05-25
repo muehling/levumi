@@ -32,7 +32,9 @@ Rails.application.routes.draw do
   end
 
   resources :groups do
-    resources :assessments
+    resources :assessments do
+      resources :annotations
+    end
     resources :group_shares
   end
 
