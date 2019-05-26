@@ -48,22 +48,45 @@
                     <i class='when-opened fas fa-caret-up'></i>
                 </b-button>
                 <b-collapse id='annotation_collapse' v-on:shown="$parent.auto_scroll('#annotation_collapse')">
-                    <b-form class='mt-2'>
+                    <b-form class='mt-2'
+                            :action="'/groups/' + $parent.group + '/assessments/' + $parent.test + '/annotations'"
+                            accept-charset='UTF-8'
+                            method='post'
+                            data-remote='true'
+                            v-on:ajax:success="success"
+                    >
                         <b-form-row>
                             <b-col>
                                 <label>Anzeigebereich</label>
                             </b-col>
                             <b-col>
-                                <b-form-select v-model="comment_start" :options="weeks(true)" size='sm'></b-form-select>
+                                <b-form-select name='annotation[start]' v-model="annotation_start" :options="weeks(true)" size='sm'></b-form-select>
                             </b-col>
                             <b-col>
-                                <b-form-select v-model="comment_end" :options="weeks(false)" size='sm'></b-form-select>
+                                <b-form-select name='annotation[end]' v-model="annotation_end" :options="weeks(false)" size='sm'></b-form-select>
                             </b-col>
                         </b-form-row>
                         <b-form-row class='mt-1'>
                             <b-col>
+                                <!-- Hidden Field mit user bzw group id -->
+                                <input v-if="student_selected == -1"
+                                       type='hidden'
+                                       :value="$parent.group"
+                                       name='annotation[group_id]'
+                                />
+                                <input v-else
+                                       type='hidden'
+                                       :value="students[student_selected].id"
+                                       name='annotation[student_id]'
+                                />
+                                <!-- Hidden Field mit view -->
+                                <input type='hidden'
+                                       :value="view_selected"
+                                       name='annotation[view]'
+                                />
                                 <b-form-textarea
-                                        v-model="comment_text"
+                                        name='annotation[content]'
+                                        v-model="annotation_text"
                                         placeholder="Hier die Anmerkung eingeben..."
                                         rows="2"
                                         max-rows="3"
@@ -73,13 +96,14 @@
                         </b-form-row>
                         <b-form-row class='mt-1'>
                             <b-col>
-                                <!-- rails-ujs Link -->
-                                <b-link class='btn btn-sm btn-outline-success mr-1'
-                                        href="#"
-                                        title='Speichern'
+                                <b-button
+                                        type='submit'
+                                        variant='outline-success'
+                                        size='sm'
+                                        :disabled="annotation_text.trim().length === 0 || annotation_end == null || annotation_start == null"
                                 >
                                     <i class='fas fa-check'></i> Anmerkung speichern
-                                </b-link>
+                                </b-button>
                             </b-col>
                         </b-form-row>
                     </b-form>
@@ -93,7 +117,7 @@
                         </tr>
                         </thead>
                         <tbody>
-                        <tr v-for="a in annotations"
+                        <tr v-for="(a, i) in annotations"
                             v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
                             :key="a.id"
                         >
@@ -103,12 +127,13 @@
                             <td>
                                 <!-- rails-ujs Link -->
                                 <a class='btn btn-block btn-sm btn-outline-danger'
-                                   href="#"
+                                   :href="'/groups/' + $parent.group + '/assessments/' + $parent.test + '/annotations/' + a.id"
                                    data-method='delete'
                                    data-remote='true'
-                                   title="Löschen"
+                                   data-confirm='Anmerkung löschen! Sind Sie sicher?'
+                                   v-on:ajax:success="annotations.splice(i, 1)"
                                 >
-                                    <i class='fas fa-trash'></i>
+                                    <i class='fas fa-trash'></i> Löschen
                                 </a>
                             </td>
                         </tr>
@@ -131,9 +156,9 @@
         },
         data: function () {
             return {
-                comment_end: null,
-                comment_start: null,
-                comment_text: '',
+                annotation_end: null,
+                annotation_start: null,
+                annotation_text: '',
                 default_options: {
                     chart: {
                         id: 'chart',
@@ -249,6 +274,12 @@
                         text: 'Lorem Ipsum'
                     },
                 }, true)
+            },
+            success(event) {  //Attributwerte aus AJAX Antwort übernehmen und View updaten
+                this.annotations.splice(0, 0, event.detail[0])
+                this.annotation_start = null
+                this.annotation_end = null
+                this.annotation_text = ''
             },
             weeks(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]

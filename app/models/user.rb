@@ -52,20 +52,20 @@ class User < ApplicationRecord
     groups.each do |group|
 
       used = group.assessments.map{|a| a.test_id}
-      used_tests = Test.where(id: used)
-      unused_tests = Test.where(id: all_tests - used)
+      used_tests = Test.where(id: used).order(:level)
+      unused_tests = Test.where(id: all_tests - used).order(:level)
 
       used = used_tests.map{|a| a.test_family_id}
-      used_families = TestFamily.where(id: used)
-      unused_families = TestFamily.where(id: all_families - used)
+      used_families = TestFamily.where(id: used).order(:name)
+      unused_families = TestFamily.where(id: all_families - used).order(:name)
 
       used = used_families.map{|f| f.competence_id}
-      used_competences = Competence.where(id: used)
-      unused_competences = Competence.where(id: all_competences - used)
+      used_competences = Competence.where(id: used).order(:name)
+      unused_competences = Competence.where(id: all_competences - used).order(:name)
 
       used = used_competences.map{|c| c.area_id}
-      used_areas = Area.where(id: used)
-      unused_areas = Area.where(id: all_areas - used)
+      used_areas = Area.where(id: used).order(:name)
+      unused_areas = Area.where(id: all_areas - used).order(:name)
 
       result += [{
           areas: used_areas.map{|a| {info: a, used: true}} + unused_areas.map{|a| {info: a, used: false}},
