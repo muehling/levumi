@@ -42,7 +42,7 @@
         </b-row>
         <b-row>
             <div class='ml-3'>
-                <b-button size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
+                <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
                     Kommentare
                     <i class='when-closed fas fa-caret-down'></i>
                     <i class='when-opened fas fa-caret-up'></i>
@@ -121,8 +121,8 @@
                             v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
                             :key="a.id"
                         >
-                            <td>{{a.start}}</td>
-                            <td>{{a.end}}</td>
+                            <td>{{$parent.print_date(a.start)}}</td>
+                            <td>{{$parent.print_date(a.end)}}</td>
                             <td>{{a.content}}</td>
                             <td>
                                 <!-- rails-ujs Link -->
@@ -173,8 +173,7 @@
                         }
                     },
                     xaxis: {
-                        type: 'category',
-                        categories: []
+                        type: 'timeseries',
                     },
                     markers: {
                         size: 4,
@@ -203,6 +202,40 @@
                 let opt = JSON.parse(JSON.stringify(this.default_options))
                 opt.xaxis.categories = cloner.shallow.copy(weeks)
                 opt = cloner.deep.merge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
+
+                //Kommentare einfügen
+                opt['annotations'] = {
+                    position: 'front',
+                    xaxis: [{
+
+                    }]
+                }
+                for (let i = 0; i < this.annotations.length; ++i)
+                    if (this.annotations[i].view == this.view_selected &&
+                        ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
+                            (this.student_selected == -1 && this.annotations[i].group_id != null)))
+                        opt['annotations']['xaxis'].push({
+                            x: this.annotations[i].start,
+                            x2: this.annotations[i].start == this.annotations[i].end ? null : this.annotations[i].end,
+                            strokeDashArray: 1,
+                            borderColor: '#c2c2c2',
+                            fillColor: '#c2c2c2',
+                            opacity: 0.3,
+                            label: {
+                                borderColor: '#c2c2c2',
+                                borderWidth: 1,
+                                text: this.annotations[i].content,
+                                textAnchor: 'middle',
+                                position: 'top',
+                                orientation: 'horizontal',
+                                style: {
+                                    background: '#fff',
+                                    color: '#777',
+                                    fontSize: '12px',
+                                    cssClass: 'apexcharts-xaxis-annotation-label',
+                                },
+                            },
+                        })
                 return opt
             },
             series: function () {  //Bereitet die Results-Daten so auf, dass sie im Chart dargestellt werden können.
@@ -255,26 +288,6 @@
             }
         },
         methods: {
-            add_annotation() {
-                let x1 = new Date(this.results[Math.floor(Math.random() * this.results.length)].test_week).getTime()
-                let x2 = x1
-                if (Math.random() > 0.5)
-                    x2 = new Date(this.results[Math.floor(Math.random() * this.results.length)].test_week).getTime()
-                if (x1 > x2) {
-                    let t = x1
-                    x1 = x2
-                    x2 = t
-                }
-                this.$refs.chart.addXaxisAnnotation({
-                    x: x1,
-                    x2: x2,
-                    strokeDashArray: 0,
-                    borderColor: '#775DD0',
-                    label: {
-                        text: 'Lorem Ipsum'
-                    },
-                }, true)
-            },
             success(event) {  //Attributwerte aus AJAX Antwort übernehmen und View updaten
                 this.annotations.splice(0, 0, event.detail[0])
                 this.annotation_start = null
@@ -283,8 +296,8 @@
             },
             weeks(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]
-                for (let i = 0; i < this.$parent.weeks.length; ++i)
-                    res.push({value: this.$parent.weeks[i], text: this.$parent.weeks[i]})
+                for (let i = this.$parent.weeks.length-1; i >= 0; --i)
+                    res.push({value: this.$parent.weeks[i], text: this.$parent.print_date(this.$parent.weeks[i])})
                 return res
             },
         },
