@@ -92,7 +92,6 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
-                                                :student="student"
                                         ></group-view>
                                     </b-tab>
                                 </b-tabs>

@@ -26,7 +26,7 @@
 
     //Präferenzen des Kindes setzen
     const font_family = '<%= @result.student.get_setting(:font_family) %>'
-    const font_size = '<%= @result.student.get_setting(:font_size) %>'
+    const font_size = <%= @result.student.get_setting(:font_size) %>
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(result, data) {
@@ -62,8 +62,9 @@
 
     //zufälliges Umsortieren
     function shuffleArray(array) {
+       let j = undefined
         for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1))
+            j = Math.floor(Math.random() * (i + 1))
             [array[i], array[j]] = [array[j], array[i]]
         }
     }
@@ -93,11 +94,11 @@
             $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
         }
         if (timedout)
-            $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können das Testfenster' +
+            $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster' +
                 ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
                 .css('margin-top','0%')
         else
-            $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden geschickt!<br/>Sie können' +
+            $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
                 .css('margin-top','0%')
     }

@@ -79,13 +79,13 @@
             no_tests() {
               for (let i = 0; i < this.tests.length; ++i)
                   if (this.tests[i].test_info.student_test)
-                      return false;
-              return true;
+                      return false
+              return true
             },
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
-                this.tests = event.detail[0]['tests'];
-                this.student = event.detail[0]['student'];
-                this.loading = false;
+                this.tests = event.detail[0]['tests']
+                this.student = event.detail[0]['student']
+                this.loading = false
             }
         },
         name: 'frontend-app'

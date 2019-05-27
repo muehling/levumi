@@ -5,24 +5,22 @@
         </b-alert>
         <b-card-group deck>
             <b-card class='mt-3'
-                    v-for="test in tests"
-                    v-if="!test.test_info.student_test"
-                    :key="test.id"
-                    :title="test.test_info.family"
-                    :sub-title="test.test_info.level"
+                    v-for="(area, index) in areas"
+                    :key="index"
+                    :title="area"
             >
-                <template slot='header'>
-                    <h4>{{test.test_info.competence}}</h4>
-                    <h6>{{test.test_info.area}}</h6>
-                </template>
-                <b-button block variant='primary'
-                          :href="'/students/' + student + '/results?test_id='+ test.test_info.id + '&student=1'"
-                          data-method='post'
-                          :disabled="!test.open"
-                          :variant="test.open ? 'outline-success' : 'success'"
-                >
-                    {{test.open ? 'Test starten' : 'Diese Woche bereits gestestet'}}
-                </b-button>
+                <b-list-group flush>
+                    <b-list-group-item
+                            v-for="test in tests_for_area(area)"
+                            :key="test.id"
+                            :href="'/students/' + student + '/results?test_id='+ test.test_info.id + '&student=1'"
+                            data-method='post'
+                            :disabled="!test.open"
+                            :variant="test.open ? 'success' : ''"
+                    >
+                    {{test.test_info.competence}} - {{test.test_info.family}} - {{test.test_info.level}}
+                    </b-list-group-item>
+                </b-list-group>
             </b-card>
         </b-card-group>
 
@@ -31,13 +29,31 @@
 
 <script>
     export default {
-        name: "student-view",
         data: function () {
             return {
                 tests: this.$root.tests,
                 student: this.$root.student
             }
         },
+        computed: {
+            areas() {
+                let res = []
+                for (let i = 0; i < this.tests.length; ++i)
+                    res.push(this.tests[i].test_info.area)
+                res = res.filter((v, i, a) => a.indexOf(v) === i)
+                return res
+            },
+        },
+        methods: {
+            tests_for_area(area) {
+                let res = []
+                for (let i = 0; i < this.tests.length; ++i)
+                    if (this.tests[i].test_info.area == area && !this.tests[i].test_info.student_test)
+                        res.push(this.tests[i])
+                return res
+            }
+        },
+        name: 'student-view'
     }
 </script>
 

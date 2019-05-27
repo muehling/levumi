@@ -192,7 +192,7 @@
                     return years;
                 },
 
-                //Defaultwerte für  Werte, die ggf. nicht existieren!
+                //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
                 font_family: this.student.settings == undefined || this.student.settings['font_family'] == undefined ? 'Fibel Nord' : this.student.settings['font_family'],
                 font_size: this.student.settings == undefined || this.student.settings['font_size'] == undefined ? '1' : this.student.settings['font_size'],
                 gender: this.student.gender != undefined ? this.student.gender : null,

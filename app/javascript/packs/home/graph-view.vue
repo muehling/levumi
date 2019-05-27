@@ -47,9 +47,9 @@
                     <i class='when-closed fas fa-caret-down'></i>
                     <i class='when-opened fas fa-caret-up'></i>
                 </b-button>
-                <b-collapse id='annotation_collapse' v-on:shown="$parent.auto_scroll('#annotation_collapse')">
+                <b-collapse id='annotation_collapse' v-on:shown="auto_scroll('#annotation_collapse')">
                     <b-form class='mt-2'
-                            :action="'/groups/' + $parent.group + '/assessments/' + $parent.test + '/annotations'"
+                            :action="'/groups/' + group + '/assessments/' + test + '/annotations'"
                             accept-charset='UTF-8'
                             method='post'
                             data-remote='true'
@@ -60,10 +60,10 @@
                                 <label>Anzeigebereich</label>
                             </b-col>
                             <b-col>
-                                <b-form-select name='annotation[start]' v-model="annotation_start" :options="weeks(true)" size='sm'></b-form-select>
+                                <b-form-select name='annotation[start]' v-model="annotation_start" :options="week_labels(true)" size='sm'></b-form-select>
                             </b-col>
                             <b-col>
-                                <b-form-select name='annotation[end]' v-model="annotation_end" :options="weeks(false)" size='sm'></b-form-select>
+                                <b-form-select name='annotation[end]' v-model="annotation_end" :options="week_labels(false)" size='sm'></b-form-select>
                             </b-col>
                         </b-form-row>
                         <b-form-row class='mt-1'>
@@ -71,7 +71,7 @@
                                 <!-- Hidden Field mit user bzw group id -->
                                 <input v-if="student_selected == -1"
                                        type='hidden'
-                                       :value="$parent.group"
+                                       :value="group"
                                        name='annotation[group_id]'
                                 />
                                 <input v-else
@@ -121,13 +121,13 @@
                             v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
                             :key="a.id"
                         >
-                            <td>{{$parent.print_date(a.start)}}</td>
-                            <td>{{$parent.print_date(a.end)}}</td>
+                            <td>{{print_date(a.start)}}</td>
+                            <td>{{print_date(a.end)}}</td>
                             <td>{{a.content}}</td>
                             <td>
                                 <!-- rails-ujs Link -->
                                 <a class='btn btn-block btn-sm btn-outline-danger'
-                                   :href="'/groups/' + $parent.group + '/assessments/' + $parent.test + '/annotations/' + a.id"
+                                   :href="'/groups/' + group + '/assessments/' + test + '/annotations/' + a.id"
                                    data-method='delete'
                                    data-remote='true'
                                    data-confirm='Anmerkung löschen! Sind Sie sicher?'
@@ -149,10 +149,13 @@
     import cloner from 'cloner';
     export default {
         props: {
-            students: Array,
-            results: Array,
             annotations: Array,
             configuration: Object,
+            group: Number,
+            parent: Object,
+            results: Array,
+            students: Array,
+            test: Number
         },
         data: function () {
             return {
@@ -194,15 +197,9 @@
         },
         computed: {
             options: function () { //Options für die gewählte Ansicht mit den globalen Options vereinen
-                let weeks = []
-                for (let i = 0; i < this.results.length; ++i)
-                    if (this.results[i].test_week != null)
-                        weeks.push(this.results[i].test_week)
-                weeks = weeks.filter((v, i, a) => a.indexOf(v) === i)
-                let opt = JSON.parse(JSON.stringify(this.default_options))
-                opt.xaxis.categories = cloner.shallow.copy(weeks)
+                let opt = cloner.shallow.copy(this.default_options)
+                opt.xaxis.categories = cloner.shallow.copy(this.weeks)
                 opt = cloner.deep.merge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
-
                 //Kommentare einfügen
                 opt['annotations'] = {
                     position: 'front',
@@ -245,13 +242,13 @@
                 if (this.student_selected == -1) {
                     for (let s = 0; s < this.students.length; ++s)
                         res.push({
-                            'name': this.$parent.student_name(this.students[s].id),
+                            'name': this.student_name(this.students[s].id),
                             'data': []
                         })
                 } else {
                     if (view.series == undefined) {
                         res.push({
-                            'name': this.$parent.student_name(this.students[this.student_selected].id),
+                            'name': this.student_name(this.students[this.student_selected].id),
                             'data': []
                         })
                     } else
@@ -264,7 +261,7 @@
                 //Leere Objekte füllen
                 for (let i = 0; i < this.results.length; ++i) {
                     if (this.student_selected == -1 || view.series == undefined) {
-                        let student = this.$parent.student_name(this.results[i].student_id)
+                        let student = this.student_name(this.results[i].student_id)
                         let week = this.results[i].test_week
                         for (let r = 0; r < res.length; ++r) {
                             if (res[r].name == student) {
@@ -294,13 +291,14 @@
                 this.annotation_end = null
                 this.annotation_text = ''
             },
-            weeks(start) {
+            week_labels(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]
-                for (let i = this.$parent.weeks.length-1; i >= 0; --i)
-                    res.push({value: this.$parent.weeks[i], text: this.$parent.print_date(this.$parent.weeks[i])})
+                for (let i = this.weeks.length-1; i >= 0; --i)
+                    res.push({value: this.weeks[i], text: this.print_date(this.weeks[i])})
                 return res
             },
         },
+        inject: ['student_name', 'weeks', 'print_date', 'auto_scroll'],
         name: "graph-view.vue"
     }
 </script>

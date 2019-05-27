@@ -7,7 +7,7 @@ set :repo_url,  'levumi@levumi.informatik.uni-kiel.de:/var/git/levumi2.git'
 # Default branch is :master
 set :branch, 'production'
 
-# Default deploy_to directory is /var/www/my_app_name 
+# Default deploy_to directory is /var/www/my_app_name
 set :deploy_to, '/var/www/levumi2'
 set :deploy_via, :remote_cache
 
@@ -30,7 +30,8 @@ append :linked_files, 'config/master.key'
 # Default value for linked_dirs is []
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/packs', 'node_modules', 'storage'
 
-Rake::Task["deploy:assets:backup_manifest"].clear_actions #Skip asset precompilation
+#Skip asset precompilation
+Rake::Task["deploy:assets:backup_manifest"].clear_actions
 
 # Default value for default_env is {}
 # set :default_env, { path: '/opt/ruby/bin:$PATH' }
@@ -43,11 +44,3 @@ Rake::Task["deploy:assets:backup_manifest"].clear_actions #Skip asset precompila
 
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
-
-#Restart Passenger module
-namespace :passenger do
-  desc "Restart Application"
-  task :restart do
-    run "touch #{current_path}/tmp/restart.txt"
-  end
-end

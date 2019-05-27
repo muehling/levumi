@@ -13,7 +13,7 @@ import 'bootstrap'   //Javascript Teile von Bootstrap
 import Rails from 'rails-ujs' //Rails-UJS für Links etc.
 
 //Vue und Komponenten
-import Vue from 'vue/dist/vue.esm'
+import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
 

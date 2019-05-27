@@ -109,8 +109,10 @@
                 <graph-view
                         :annotations="annotations"
                         :configuration="configuration"
+                        :group="group"
                         :results="results"
                         :students="students"
+                        :test="test"
                 ></graph-view>
             </b-tab>
 
@@ -190,6 +192,14 @@
             return {
                 deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
+            }
+        },
+        provide: function () {
+            return {
+                student_name: this.student_name,
+                weeks: this.weeks,
+                auto_scroll: this.auto_scroll,
+                print_date: this.print_date,
             }
         },
         name: 'assessment-view'
