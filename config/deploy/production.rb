@@ -7,7 +7,3 @@ set :web_user, 'www-data'
 set :rails_env, :production
 
 set :default_env, {'PASSENGER_INSTANCE_REGISTRY_DIR': '/var/run/passenger'}
-
-namespace :deploy do
-  after :deploy, 'webpacker:compile'
-end
