@@ -25,14 +25,12 @@
   <!-- Form für Ändern -->
   <%= form_for test, remote: true, class: 'form form-inline' do |f| %>
     <div class='form-group'>
-      <%= label_tag 'level', 'Niveaustufe', class: 'form-label' %>
-      <%= f.text_field :level, id: 'level', class: 'form-control'%>
-    </div>
-    <div class='form-group'>
-      <%= label_tag 'description', 'Beschreibung', class: 'form-label' %>
-      <%= f.text_area :description, id: 'description', class: 'form-control'%>
-    </div>
-    <div class='form-group'>
+      <%= f.fields_for :description, test.description do |fields| %>
+        <%= fields.label 'full', 'Beschreibung', class: 'form-label' %>
+        <%= fields.text_area "full", value: test.description['full'], id: 'full', class: 'form-control'%>
+        <%= fields.label 'short', 'Kurzbeschreibung', class: 'form-label' %>
+        <%= fields.text_area "short", value: test.description['short'], id: 'short', class: 'form-control'%>
+      <% end %>
     </div>
     <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-success' do%>
       <i class='fas fa-check'></i> Aktualisieren

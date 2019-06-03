@@ -4,8 +4,12 @@
   "family": "Katzen und Vögel",
   "level": "Schüler_innen",
   "shorthand": "Ex_S_1",
-  "full_description": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
-  "short_description": "",
+  "description": {
+    "full": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
+    "time_limit": "Keine"
+  },
+  "time_limit": "Keine",
   "student_test": 1,
   "configuration": {
     "views": [{

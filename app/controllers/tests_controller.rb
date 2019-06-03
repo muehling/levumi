@@ -20,7 +20,7 @@ class TestsController < ApplicationController
   #PUT /tests/:id
   def update
     if !@test.update_attributes(test_attributes)
-      render 'edit'
+      render nothing: true
     else
       render 'update'
     end
@@ -41,7 +41,7 @@ class TestsController < ApplicationController
 
   #Erlaubte Attribute definieren
   def test_attributes
-    params.require(:test).permit(:level, :description)
+    params.require(:test).permit(description: [:full, :short])
   end
 
   #Prüfen ob Nutzer die Berechtigung für Testaktualisierungen hat

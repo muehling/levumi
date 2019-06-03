@@ -145,8 +145,7 @@ ActiveRecord::Schema.define(version: 2019_05_25_203450) do
     t.integer "test_family_id"
     t.string "level"
     t.string "shorthand"
-    t.text "full_description"
-    t.text "short_description"
+    t.text "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
     t.text "configuration"

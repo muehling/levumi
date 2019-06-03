@@ -12,6 +12,7 @@
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
                 <div v-else-if="!student_test">
+                    <span>Testinfos: ...</span>
                     <!-- Schüler anzeigen um Messung zu starten. -->
                     <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
                     <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
@@ -118,6 +119,11 @@
 
             <!-- Vorschläge für Fördermaterial -->
              <b-tab title='Fördern'>
+
+            </b-tab>
+
+            <!-- Testinfos darstellen -->
+            <b-tab title='Info'>
 
             </b-tab>
         </b-tabs>
