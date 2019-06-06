@@ -42,7 +42,7 @@ class Material < ApplicationRecord
     unless f.nil?
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
       vals['elements'].each do |val|
-        material = Material.create
+        material = Material.create(description: val['description'])
         zip.glob("files/#{val['path']}/*").each do |f|
           material.files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
         end

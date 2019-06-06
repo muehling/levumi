@@ -1,6 +1,7 @@
 {
   "elements": [
     {
+      "description":"Ein Arbeitsblatt, dass speziell das Erkennen von <b>Katzen</b> trainiert.",
       "path": "cats",
       "areas": [],
       "competences": [],
@@ -34,6 +35,7 @@
       ]
     },
     {
+      "description":"Ein Arbeitsblatt, dass speziell das Erkennen von <b>Katzen</b> trainiert.",
       "path": "birds",
       "areas": [],
       "competences": [],
