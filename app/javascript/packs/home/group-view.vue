@@ -70,7 +70,7 @@
                                    :target="group.id + '_test_' + test.info.id"
                                    triggers="hover"
                         >
-                            {{test.info.short_description}}
+                            {{test.info.description.short}}
                         </b-popover>
                     </b-nav-item>
                 </b-nav>
@@ -94,8 +94,7 @@
                              :read_only="group.read_only"
                              :results="results.series"
                              :student_test="results.student_test"
-                             :test="test_selected"
-                             :test_info="test_info"
+                             :test="results.test"
                              v-on:update="loadAssessment(test_selected)"
             >
             </assessment-view>
@@ -112,15 +111,6 @@
         props: {
             group: Object,
             group_info: Object
-        },
-        computed: {
-          test_info: function() {
-              if (this.test_selected > 0)
-                  for (let i = 0; i < this.group_info.tests.length; ++i)
-                      if (this.group_info.tests[i].info.id == this.test_selected)
-                          return this.group_info.tests[i].info;
-              return {};
-          }
         },
         data: function () {
             return {

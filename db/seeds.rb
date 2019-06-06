@@ -143,6 +143,8 @@
                      start: Student.find(1).results.order(:test_week).first.test_week,
                      end: Student.find(1).results.order(:test_week).first.test_week)
 
+  #Fördermaterial anlegen
+  Material.import('db/example_material/cats_and_birds/training.zip')
 
 #elsif Rails.env.production?
   #Admin Account anlegen

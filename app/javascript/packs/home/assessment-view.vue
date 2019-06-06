@@ -8,11 +8,11 @@
                    :active="deep_link"
                    class='m-3'
             >
-                <div v-if="test_info.archive">
+                <div v-if="test.archive">
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
                 <div v-else-if="!student_test">
-                    <span>Testinfos: ...</span>
+                    <p>{{test.description.usage}}</p>
                     <!-- Schüler anzeigen um Messung zu starten. -->
                     <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
                     <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
@@ -32,6 +32,7 @@
                     </b-button-group>
                 </div>
                 <div v-else>
+                    <p>{{test.description.usage}}</p>
                     <p>Diesen Test müssen die Schüler_innen mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
                     <p>Hier können Sie sehen, welche Schüler_innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                     <b-button-group class='mt-3'>
@@ -113,7 +114,7 @@
                         :group="group"
                         :results="results"
                         :students="students"
-                        :test="test"
+                        :test="test.id"
                 ></graph-view>
             </b-tab>
 
@@ -124,7 +125,7 @@
 
             <!-- Testinfos darstellen -->
             <b-tab title='Info'>
-
+                <div v-html="test.description.full"></div>
             </b-tab>
         </b-tabs>
     </b-card>
@@ -141,8 +142,7 @@
             read_only: Boolean,
             results: Array,
             student_test: Boolean,
-            test: Number,
-            test_info: Object,
+            test: Object,
         },
         computed: {
             grouped_results: function() { //Results nach Wochen gruppieren, für die Ergebnisliste
@@ -196,7 +196,7 @@
         },
         data: function () {
             return {
-                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
             }
         },

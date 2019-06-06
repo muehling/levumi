@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_25_203450) do
+ActiveRecord::Schema.define(version: 2019_06_05_111439) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -101,6 +101,30 @@ ActiveRecord::Schema.define(version: 2019_05_25_203450) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_id"], name: "index_items_on_test_id"
+  end
+
+  create_table "material_supports", force: :cascade do |t|
+    t.integer "material_id"
+    t.integer "area_id"
+    t.integer "competence_id"
+    t.integer "test_family_id"
+    t.integer "test_id"
+    t.integer "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_id"], name: "index_material_supports_on_area_id"
+    t.index ["competence_id"], name: "index_material_supports_on_competence_id"
+    t.index ["item_id"], name: "index_material_supports_on_item_id"
+    t.index ["material_id"], name: "index_material_supports_on_material_id"
+    t.index ["test_family_id"], name: "index_material_supports_on_test_family_id"
+    t.index ["test_id"], name: "index_material_supports_on_test_id"
+  end
+
+  create_table "materials", force: :cascade do |t|
+    t.string "name"
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "results", force: :cascade do |t|
