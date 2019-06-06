@@ -1,0 +1,10 @@
+<script>
+    //Eintrag in der Navleiste markieren
+    highlightNavItem('navbarMaterial');
+</script>
+
+<% @materials.each do |m| %>
+  <p>
+    <%= raw m.description %>
+  </p>
+<% end %>
