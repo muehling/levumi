@@ -1,6 +1,7 @@
 {
   "elements": [
     {
+      "name": "Katzen üben",
       "description":"Ein Arbeitsblatt, dass speziell das Erkennen von <b>Katzen</b> trainiert.",
       "path": "cats",
       "areas": [],
@@ -35,7 +36,8 @@
       ]
     },
     {
-      "description":"Ein Arbeitsblatt, dass speziell das Erkennen von <b>Katzen</b> trainiert.",
+      "name": "Vögel üben",
+      "description":"Ein Arbeitsblatt, dass speziell das Erkennen von <b>Vögel</b> trainiert.",
       "path": "birds",
       "areas": [],
       "competences": [],

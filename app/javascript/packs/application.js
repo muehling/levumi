@@ -18,10 +18,11 @@ import BootstrapVue from 'bootstrap-vue'
 import VueApexCharts from 'vue-apexcharts'
 
 //Eigene Vue Komponenten
-import HomeApp from './home/home-app'
 import ClassBookApp from './classbook/classbook-app'
 import FrontendApp from './testing/frontend-app'
-import StudentView from './testing/student-view';
+import HomeApp from './home/home-app'
+import MaterialsApp from './materials/materials-app'
+import StudentView from './testing/student-view'
 
 
 //Stylesheets
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 ClassBookApp,
                 FrontendApp,
                 HomeApp,
+                MaterialsApp,
                 StudentView
             }
         });

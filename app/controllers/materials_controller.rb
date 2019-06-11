@@ -2,7 +2,7 @@ class MaterialsController < ApplicationController
 
   #GET /materials
   def index
-    @materials = Material.all
+    @data = Material.get_material_info
   end
 
 end

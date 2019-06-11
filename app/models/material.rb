@@ -42,7 +42,7 @@ class Material < ApplicationRecord
     unless f.nil?
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
       vals['elements'].each do |val|
-        material = Material.create(description: val['description'])
+        material = Material.create(name: val['name'], description: val['description'])
         zip.glob("files/#{val['path']}/*").each do |f|
           material.files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
         end
@@ -51,4 +51,22 @@ class Material < ApplicationRecord
      end
   end
 
+  #Liefert die Informationen für die Material-App SPA
+  def self.get_material_info
+    materials = Material.all
+    items = Item.where(id: MaterialSupport.all.pluck(:item_id))
+    tests = (Test.where(id: MaterialSupport.all.pluck(:test_id)) + Test.where(id: items.pluck(:test_id))).uniq
+    test_families = (TestFamily.where(id: MaterialSupport.all.pluck(:test_family_id)) + TestFamily.where(id: tests.pluck(:test_family_id))).uniq
+    competences = (Competence.where(id: MaterialSupport.all.pluck(:competence_id)) + Competence.where(id: test_families.pluck(:competence_id))).uniq
+    areas = (Area.where(id: MaterialSupport.all.pluck(:area_id)) + Area.where(id: competences.pluck(:area_id))).uniq
+    {
+        'materials': materials,
+        'items': items,
+        'tests': tests,
+        'test_families': test_families,
+        'competences': competences,
+        'areas': areas,
+        'supports': MaterialSupport.all
+    }
+  end
 end
