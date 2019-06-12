@@ -2,35 +2,39 @@
     <b-container fluid v-cloak>
         <b-row class='mt-3'>
             <b-col md='12'>
+                <div class='text-muted'>Kompetenzbereiche auswählen</div>
                 <b-button-group>
-                    <b-button v-for="area in all_areas" :key="area.id" :pressed.sync="area.selected">
+                    <b-button class='mr-1' variant='outline-primary' v-for="area in all_areas" :key="area.id" :pressed.sync="area.selected">
                         {{area.name}}
                     </b-button>
                 </b-button-group>
             </b-col>
         </b-row>
-        <b-row class='mt-3'>
+        <b-row class='mt-2' v-if="filtered_competences.length > 0">
             <b-col md='12'>
+                <div class='text-muted'>Konstrukte auswählen</div>
                 <b-button-group>
-                    <b-button v-for="competence in filtered_competences" :key="competence.id" :pressed.sync="competence.selected">
+                    <b-button class='mr-1' variant='outline-primary' v-for="competence in filtered_competences" :key="competence.id" :pressed.sync="competence.selected">
                         {{competence.name}}
                     </b-button>
                 </b-button-group>
             </b-col>
         </b-row>
-        <b-row class='mt-3'>
+        <b-row class='mt-2' v-if="filtered_families.length > 0">
             <b-col md='12'>
+                <div class='text-muted'>Testfamilien auswählen</div>
                 <b-button-group>
-                    <b-button v-for="family in filtered_families" :key="family.id" :pressed.sync="family.selected">
+                    <b-button class='mr-1' variant='outline-primary' v-for="family in filtered_families" :key="family.id" :pressed.sync="family.selected">
                         {{family.name}}
                     </b-button>
                 </b-button-group>
             </b-col>
         </b-row>
-        <b-row class='mt-3'>
+        <b-row class='mt-2' v-if="filtered_tests.length > 0">
             <b-col md='12'>
+                <div class='text-muted'>Tests auswählen</div>
                 <b-button-group>
-                    <b-button v-for="test in filtered_tests" :key="test.id" :pressed.sync="test.selected">
+                    <b-button class='mr-1' variant='outline-primary' v-for="test in filtered_tests" :key="test.id" :pressed.sync="test.selected">
                         {{test.level}}
                     </b-button>
                 </b-button-group>
@@ -38,12 +42,19 @@
         </b-row>
         <b-row class='mt-3'>
             <b-col md='12'>
-                <b-tabs pills vertical>
-                    <b-tab v-for="material in filtered_materials" :key="material.id" :title="material.name">
-                        <div v-html="material.description">
-                        </div>
-                    </b-tab>
-                </b-tabs>
+                <b-card no-body v-if="filtered_materials.length > 0">  <!-- b-tabs funktioniert nicht bei anfangs leerer Liste, daher eigenständige Lösung -->
+                    <b-tabs card pills vertical>
+                        <b-tab v-for="material in filtered_materials" :key="material.id" :title="material.name">
+                            <div v-html="material.description">
+                            </div>
+                        </b-tab>
+                    </b-tabs>
+                </b-card>
+                <b-card v-else>
+                    <div class='text-center text-muted'>
+                        Kein Material zur aktuellen Auswahl vorhanden.
+                    </div>
+                </b-card>
             </b-col>
         </b-row>
     </b-container>
@@ -57,40 +68,52 @@
             all_areas() {
                 for (let a = 0; a < this.areas.length; ++a)
                     if (this.areas[a].selected === undefined)
-                        Vue.set(this.areas[a], 'selected', false);
+                        Vue.set(this.areas[a], 'selected', false)
                 return this.areas
             },
             filtered_competences() {
                 let res = []
                 for (let c = 0; c < this.competences.length; ++c)
                     for (let a = 0; a < this.areas.length; ++a)
-                        if (this.competences[c].area_id == this.areas[a].id && this.areas[a].selected)
-                            res.push(this.competences[c])
-
-                for (let i = 0; i < res.length; ++i)
-                    Vue.set(res[i], 'selected', false);
+                        if (this.competences[c].area_id == this.areas[a].id) {
+                            if (this.areas[a].selected) {
+                                if (this.competences[c] === undefined)
+                                    Vue.set(this.competences[c], 'selected', false)
+                                res.push(this.competences[c])
+                            }
+                            else
+                                Vue.set(this.competences[c], 'selected', false);
+                        }
                 return res
             },
             filtered_families() {
                 let res = []
                 for (let f = 0; f < this.test_families.length; ++f)
                     for (let c = 0; c < this.competences.length; ++c)
-                        if (this.test_families[f].competence_id == this.competences[c].id && this.competences[c].selected)
-                            res.push(this.test_families[f])
-
-                for (let i = 0; i < res.length; ++i)
-                    Vue.set(res[i], 'selected', false);
+                        if (this.test_families[f].competence_id == this.competences[c].id) {
+                            if (this.competences[c].selected) {
+                                if (this.test_families[f].selected === undefined)
+                                    Vue.set(this.test_families[f], 'selected', false)
+                                res.push(this.test_families[f])
+                            }
+                            else
+                                Vue.set(this.test_families[f], 'selected', false)
+                        }
                 return res
             },
             filtered_tests() {
                 let res = []
                 for (let t = 0; t < this.tests.length; ++t)
                     for (let f = 0; f < this.test_families.length; ++f)
-                        if (this.tests[t].test_family_id == this.test_families[f].id && this.test_families[f].selected)
-                            res.push(this.tests[t])
-
-                for (let i = 0; i < res.length; ++i)
-                    Vue.set(res[i], 'selected', false);
+                        if (this.tests[t].test_family_id == this.test_families[f].id) {
+                            if (this.test_families[f].selected) {
+                                if (this.tests[t].selected === undefined)
+                                    Vue.set(this.tests[t], 'selected', false)
+                                res.push(this.tests[t])
+                            }
+                            else
+                                Vue.set(this.tests[t], 'selected', false)
+                        }
                 return res
             },
             filtered_materials() {
@@ -134,7 +157,3 @@
         },
     }
 </script>
-
-<style scoped>
-
-</style>
