@@ -12,10 +12,12 @@
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
                 <div v-else-if="!student_test">
+                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                     <p>{{test.description.usage}}</p>
-                    <!-- Schüler anzeigen um Messung zu starten. -->
+                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
                     <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
                     <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
+                    <!-- Schüler anzeigen um Messung zu starten. -->
                     <b-button-group>
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
@@ -32,9 +34,12 @@
                     </b-button-group>
                 </div>
                 <div v-else>
+                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                     <p>{{test.description.usage}}</p>
+                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
                     <p>Diesen Test müssen die Schüler_innen mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
                     <p>Hier können Sie sehen, welche Schüler_innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                    <!-- Schüler nur als Info anzeigen -->
                     <b-button-group class='mt-3'>
                         <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                         <b-button v-for="student in students"
@@ -120,11 +125,16 @@
 
             <!-- Vorschläge für Fördermaterial -->
              <b-tab title='Fördern'>
+                <support-view
+                        :group="group"
+                        :test="test.id"
+                >
 
+                </support-view>
             </b-tab>
 
             <!-- Testinfos darstellen -->
-            <b-tab title='Info'>
+            <b-tab title='Testinfos'>
                 <div v-html="test.description.full"></div>
             </b-tab>
         </b-tabs>
@@ -133,8 +143,9 @@
 
 <script>
     import GraphView from './graph-view'
+    import SupportView from './support-view'
     export default {
-        components: {GraphView},
+        components: {GraphView, SupportView},
         props: {
             annotations: Array,
             configuration: Object,

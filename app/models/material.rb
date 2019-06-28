@@ -10,6 +10,8 @@ class Material < ApplicationRecord
 
   has_many_attached :files
 
+  serialize :description, Hash
+
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at])
@@ -75,5 +77,17 @@ class Material < ApplicationRecord
         'areas': areas,
         'supports': MaterialSupport.all
     }
+  end
+
+  #Vorschläge für Fördermateiral generieren
+  def self.get_suggestions(test, group)
+    students = Student.where(group_id: group)
+    test = Test.find(test)
+    supports = MaterialSupport.where(area_id: test.test_family.competence.area.id) + MaterialSupport.where(competence_id: test.test_family.competence.id) +
+        MaterialSupport.where(test_family_id: test.test_family.id) + MaterialSupport.where(test_id: test.id)
+    test.items.each do |i|
+      supports = supports + MaterialSupport.where(item_id: i.id)
+    end
+    students.map{|s| {student: s.id, materials: Material.find(supports.map{|sup| sup.material_id})}}
   end
 end

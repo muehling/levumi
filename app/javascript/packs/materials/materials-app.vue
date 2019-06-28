@@ -45,16 +45,7 @@
                 <b-card no-body v-if="filtered_materials.length > 0">  <!-- b-tabs funktioniert nicht bei anfangs leerer Liste, daher eigene Lösung -->
                     <b-tabs card pills vertical>
                         <b-tab v-for="material in filtered_materials" :key="material.id" :title="material.name">
-                            <p>
-                                <div v-html="material.description">
-                                </div>
-                            </p>
-                            <p>
-                                Material:
-                                <ul>
-                                    <li v-for="f in material.files"><a :href="f.path" target='_blank'>{{f.name}}</a></li>
-                                </ul>
-                            </p>
+                            <material-view :material="material" :full="true"></material-view>
                         </b-tab>
                     </b-tabs>
                 </b-card>
@@ -70,8 +61,10 @@
 
 <script>
     import Vue from 'vue'
+    import MaterialView from './material-view'
     export default {
         name: "materials-app",
+        components: {MaterialView},
         computed: {
             all_areas() {
                 for (let a = 0; a < this.areas.length; ++a)
