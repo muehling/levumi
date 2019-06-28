@@ -35,8 +35,7 @@
     <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-success' do%>
       <i class='fas fa-check'></i> Aktualisieren
     <% end %>
-    <button class='btn btn-outline-secondary' onclick='hideForm(<%= test.id %>); return false;'><i class='fas fa-times'></i> Abbrechen</button>
-    <%= link_to test_path(test), method: :delete, class: 'float-right', data: {confirm: 'Test mit allen Daten löschen! Sind Sie sicher?'} do %><button class='btn btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
+    <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide'); return false;"><i class='fas fa-times'></i> Abbrechen</button>
   <% end %>
 
 <% end %>

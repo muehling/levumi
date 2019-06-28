@@ -1,2 +1,2 @@
-$('#info_<%= @test.id %>_inner').html("<%= escape_javascript render @test %>");
-hideForm(<%= @test.id %>);
+$('#test_<%= @test.id %>').html("<%= escape_javascript render @test %>")
+$('#modal').modal('hide')

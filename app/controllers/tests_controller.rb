@@ -1,19 +1,27 @@
 class TestsController < ApplicationController
   before_action :set_test, except: [:index, :create]
-  before_action :is_allowed, only: [:create, :update, :destroy]
+  before_action :is_allowed, only: [:create, :edit, :update, :destroy]
 
   #GET /tests
   def index
+    if params[:admin] && @login.has_capability?('test')
+      render 'index_admin'
+    else
+      render 'index'
+    end
+  end
+
+  #GET /tests/:id/edit
+  def edit
   end
 
   #POST /tests
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
-      res = true
       params[:test][:file].each do |f|
-        res = res && Test.import(f.tempfile, params.has_key?(:archive), params.has_key?(:create)).nil?
+        Test.import(f.tempfile, params.has_key?(:archive), params.has_key?(:create))
       end
-      render 'index'
+      render 'index_admin'
     end
   end
 
