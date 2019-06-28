@@ -1,0 +1,30 @@
+<table class='table table-hover table-sm'>
+  <thead class='thead-light'>
+  <tr>
+    <th scope='col'>ID</th>
+    <th scope='col'>Name</th>
+    <th scope='col'>Aktionen</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% Material.all.each do |material| %>
+    <tr>
+      <th scope='row'><%= material.id %></th>
+      <td><%= material.name %></td>
+      <td>
+        <div id='material_<%= material.id %>' hidden='true'>
+          <%= raw material.description %>
+        </div>
+        <a href='#' onclick='showMaterial(<%= material.id %>)'><button class='btn btn-sm btn-outline-primary'><i class='fas fa-search'></i> Beschreibung</button></a>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<script>
+  function showMaterial(id) {
+      $('#modal-body').html($('#material_' + id).html())
+      $('#modal').modal('show')
+  }
+</script>

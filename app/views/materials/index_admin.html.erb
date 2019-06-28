@@ -11,7 +11,7 @@
       <a class='nav-link active' id='list-tab' data-toggle='tab' href='#list' role='tab' aria-controls='list' aria-selected='true'>Übersicht</a>
     </li>
     <li class='nav-item'>
-      <a class='nav-link' id='new-tab' data-toggle='tab' href='#new' role='tab' aria-controls='new' aria-selected='false'>Neuer Test</a>
+      <a class='nav-link' id='new-tab' data-toggle='tab' href='#new' role='tab' aria-controls='new' aria-selected='false'>Neues Material</a>
     </li>
   </ul>
 
@@ -19,7 +19,7 @@
   <div class='tab-content mt-3'>
     <div class='tab-pane active' id='list' role='tabpanel' aria-labelledby='list-tab'>
       <div id='list_content'>
-        <!-- Testtabelle -->
+        <!-- Materialtabelle -->
         <%= render 'table' %>
       </div>
     </div>
@@ -27,8 +27,8 @@
       <div class='row'>
         <div class='col-4'>
           <div class='card card-body' id='new_content'>
-            <!-- Test anlegen-->
-            <%= render 'form', test: nil %>
+            <!-- Material anlegen-->
+            <%= render 'form', material: nil %>
           </div>
         </div>
       </div>
