@@ -10,4 +10,13 @@ class MaterialsController < ApplicationController
     end
   end
 
+  #POST /materials
+  def create
+    if params.has_key?(:material) && !params[:material][:file].nil?
+      params[:material][:file].each do |f|
+        Material.import(f.tempfile)
+      end
+      render 'index_admin'
+    end
+  end
 end

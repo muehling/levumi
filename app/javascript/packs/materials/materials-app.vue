@@ -42,11 +42,19 @@
         </b-row>
         <b-row class='mt-3'>
             <b-col md='12'>
-                <b-card no-body v-if="filtered_materials.length > 0">  <!-- b-tabs funktioniert nicht bei anfangs leerer Liste, daher eigenständige Lösung -->
+                <b-card no-body v-if="filtered_materials.length > 0">  <!-- b-tabs funktioniert nicht bei anfangs leerer Liste, daher eigene Lösung -->
                     <b-tabs card pills vertical>
                         <b-tab v-for="material in filtered_materials" :key="material.id" :title="material.name">
-                            <div v-html="material.description">
-                            </div>
+                            <p>
+                                <div v-html="material.description">
+                                </div>
+                            </p>
+                            <p>
+                                Material:
+                                <ul>
+                                    <li v-for="f in material.files"><a :href="f.path" target='_blank'>{{f.name}}</a></li>
+                                </ul>
+                            </p>
                         </b-tab>
                     </b-tabs>
                 </b-card>

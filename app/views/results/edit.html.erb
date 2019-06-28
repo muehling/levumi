@@ -13,7 +13,7 @@
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
         <% @test.media_files.each do |f| %>
-        '<%= f.filename %>': '<%= url_for(f) %>',
+        '<%= f.filename %>': '<%= rails_blob_path(f) %>',
         <% end %>
     }
 

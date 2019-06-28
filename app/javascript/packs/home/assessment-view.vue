@@ -24,7 +24,7 @@
                                   :disabled="get_result(student.id) > 0"
                                   class='mr-2'
                                   :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                  :href="'/students/' + student.id + '/results?test_id='+ test"
+                                  :href="'/students/' + student.id + '/results?test_id='+ test.id"
                                   data-method='post'
                         >
                             {{student.name}}

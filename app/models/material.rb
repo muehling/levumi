@@ -10,6 +10,13 @@ class Material < ApplicationRecord
 
   has_many_attached :files
 
+  #JSON Export, nur relevante Attribute übernehmen
+  def as_json(options = {})
+    json = super(except: [:created_at, :updated_at])
+    json['files'] = self.files.map{|f| {name: f.filename, path: Rails.application.routes.url_helpers.rails_blob_path(f, only_path: true)}}
+    json
+  end
+
   #Legt neue Eintrag in material_supports an. Übergegeben werden außer für items Felder von Bezeichnern (name bzw. shorthand).
   # Für items wird ein Feld von Hashes erwartet, die jeweils item (shorthand) und test (shorthand) als keys beinhalten.
   def attach_to(areas: [], competences: [], test_families: [], tests: [], items: [])
