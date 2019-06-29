@@ -1,6 +1,6 @@
 class Student < ApplicationRecord
   belongs_to :group
-  has_many :results
+  has_many :results, dependent: :destroy
 
   serialize :settings, Hash
 

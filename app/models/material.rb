@@ -1,7 +1,7 @@
 require 'zip'
 
 class Material < ApplicationRecord
-  has_many :material_supports
+  has_many :material_supports, dependent: :destroy
   has_many :areas, through: :material_supports
   has_many :competences, through: :material_supports
   has_many :test_families, through: :material_supports
@@ -9,6 +9,8 @@ class Material < ApplicationRecord
   has_many :items, through: :material_supports
 
   has_many_attached :files
+
+  validates_uniqueness_of :name
 
   serialize :description, Hash
 
@@ -44,13 +46,15 @@ class Material < ApplicationRecord
     end
   end
 
-  #Material Objekt als Import aus ZIP-Datei erzeugen und passende Verknüpfungen anlegen
-  def self.import file
+  #Material Objekt als Import aus ZIP-Datei erzeugen und passende Verknüpfungen anlegen, vorhandenes Material ggf. vorher löschen
+  def self.import file, replace
     zip = Zip::File.open(file)
     f = zip.glob('material.json').first
     unless f.nil?
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
       vals['elements'].each do |val|
+        material = Material.where(name: val['name']).first
+        material.destroy unless (material.nil? || !replace)
         material = Material.create(name: val['name'], description: val['description'])
         zip.glob("files/#{val['path']}/*").each do |f|
           material.files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
@@ -88,6 +92,11 @@ class Material < ApplicationRecord
     test.items.each do |i|
       supports = supports + MaterialSupport.where(item_id: i.id)
     end
-    students.map{|s| {student: s.id, materials: Material.find(supports.map{|sup| sup.material_id})}}
+    result = []
+    students.each do |s|
+      m = Material.find(supports.map{|sup| sup.material_id})
+      result += [{student: s.id, materials: m}] if m.size > 0
+    end
+    result
   end
 end

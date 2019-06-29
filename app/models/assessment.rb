@@ -1,8 +1,8 @@
 class Assessment < ApplicationRecord
   belongs_to :test
   belongs_to :group
-  has_many :results
-  has_many :annotations
+  has_many :results, dependent: :destroy
+  has_many :annotations, dependent: :destroy
 
   #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
   #Rückgabe: Hash

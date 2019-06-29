@@ -1,9 +1,9 @@
 require 'zip'
 
 class Test < ApplicationRecord
-  has_many :assessments
+  has_many :assessments, dependent: :destroy
   belongs_to :test_family
-  has_many :items
+  has_many :items, dependent: :destroy
 
   #Zu einem Test gehörende Dateien => Active_Storage
   has_one_attached :entry_point

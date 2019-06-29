@@ -8,6 +8,12 @@
         </div>
         <div v-else>
             <b-tabs pills>
+                <!-- Hinweistext falls kein Material vorhanden -->
+                <div slot='empty'>
+                    <div class='text-center text-muted'>
+                        Leider ist zur Zeit kein passendes Fördermaterial vorhanden.
+                    </div>
+                </div>
                 <b-tab v-for="entry in suggestions" :key="entry.student.id" :title="student_name(entry.student)">
                     <b-tabs pills card vertical class='mt-2'>
                         <b-tab v-for="material in entry.materials" :key="material.id" :title="material.name">

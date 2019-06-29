@@ -42,7 +42,7 @@ class TestsController < ApplicationController
     if family.tests.empty?
       family.destroy
     end
-    render'index'
+    render 'index_admin'
   end
 
   private

@@ -16,6 +16,7 @@
           <%= raw material.description %>
         </div>
         <a href='#' onclick='showMaterial(<%= material.id %>)'><button class='btn btn-sm btn-outline-primary'><i class='fas fa-search'></i> Beschreibung</button></a>
+        <%= link_to material_path(material), method: :delete, data: {confirm: 'Fördermaterial löschen! Sind Sie sicher?'} do %><button class='btn btn-sm btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
       </td>
     </tr>
   <% end %>

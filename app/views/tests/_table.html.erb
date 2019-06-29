@@ -33,7 +33,7 @@
         </div>
         <a href='#' onclick='showTest(<%= test.id %>)'><button class='btn btn-sm btn-outline-primary'><i class='fas fa-search'></i> Beschreibung</button></a>
         <%= link_to edit_test_path(test), remote: true do %><button class='btn btn-sm btn-outline-success'><i class='fas fa-edit'></i> Bearbeiten</button><% end %>
-        <%= link_to test_path(test), method: :delete, remote: true, data: {confirm: 'Test mit allen Messungen löschen! Sind Sie sicher?'} do %><button class='btn btn-sm btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
+        <%= link_to test_path(test), method: :delete, data: {confirm: 'Test mit allen Messungen löschen! Sind Sie sicher?'} do %><button class='btn btn-sm btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
       </td>
     </tr>
   <% end %>
