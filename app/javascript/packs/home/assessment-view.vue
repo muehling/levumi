@@ -114,6 +114,7 @@
             <!-- Auswertungstab mit Graph -->
             <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3'>
                 <graph-view
+                        :key="test.id"
                         :annotations="annotations"
                         :configuration="configuration"
                         :group="group"

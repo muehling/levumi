@@ -60,6 +60,7 @@ class User < ApplicationRecord
     groups.each do |group|
 
       used = group.assessments.map{|a| a.test_id}
+
       used_tests = Test.where(id: used).order(:level)
       unused_tests = Test.where(id: all_tests - used).order(:level)
 
@@ -80,7 +81,7 @@ class User < ApplicationRecord
           competences: used_competences.map{|c| {info: c, used: true}} + unused_competences.map{|c| {info: c, used: false}},
           families: used_families.map{|f| {info: f, used: true}} + unused_families.map{|f| {info: f, used: false}},
           tests: used_tests.map{|t| {info: t, used: true}} + unused_tests.map{|t| {info: t, used: false}}
-      }]
+                 }]
 
     end
     return result

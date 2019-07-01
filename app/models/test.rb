@@ -42,6 +42,7 @@ class Test < ApplicationRecord
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at])
     json['area_id'] = self.test_family.competence.area.id
+    json['label'] = self.archive ? "Bis #{self.updated_at.strftime("%b %y")}" : 'Aktuell'
     json
   end
 
