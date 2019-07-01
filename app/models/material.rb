@@ -68,7 +68,7 @@ class Material < ApplicationRecord
   def self.get_material_info
     materials = Material.all
     items = Item.where(id: MaterialSupport.all.pluck(:item_id))
-    tests = (Test.where(id: MaterialSupport.all.pluck(:test_id)) + Test.where(id: items.pluck(:test_id))).uniq
+    tests = (Test.where(id: MaterialSupport.all.pluck(:test_id)).where.not(archive: true) + Test.where(id: items.pluck(:test_id)).where.not(archive: true)).uniq
     test_families = (TestFamily.where(id: MaterialSupport.all.pluck(:test_family_id)) + TestFamily.where(id: tests.pluck(:test_family_id))).uniq
     competences = (Competence.where(id: MaterialSupport.all.pluck(:competence_id)) + Competence.where(id: test_families.pluck(:competence_id))).uniq
     areas = (Area.where(id: MaterialSupport.all.pluck(:area_id)) + Area.where(id: competences.pluck(:area_id))).uniq

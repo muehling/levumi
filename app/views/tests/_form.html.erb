@@ -12,6 +12,10 @@
           <%= label_tag 'archive', 'Gleichnamige Tests archvieren', class: 'custom-control-label' %>
         </div>
         <div class='custom-control custom-checkbox'>
+          <%= check_box_tag 'update', true, false, {class: 'custom-control-input', id: 'update'}%>
+          <%= label_tag 'update', 'Existierendes Fördermaterial beibehalten', class: 'custom-control-label' %>
+        </div>
+        <div class='custom-control custom-checkbox'>
           <%= check_box_tag 'create', true, false, {class: 'custom-control-input', id: 'create'}%>
           <%= label_tag 'create', 'Fehlende Bereiche/Konstrukte/Testfamilien anlegen', class: 'custom-control-label' %>
         </div>

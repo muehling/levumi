@@ -122,8 +122,8 @@
   end
 
   #Spieltest anlegen (später per Upload)
-  Test.import('db/example_tests/user_based_test/test.zip', false, true )
-  Test.import('db/example_tests/student_based_test/test.zip', false, true )
+  Test.import('db/example_tests/user_based_test/test.zip', false, false, true )
+  Test.import('db/example_tests/student_based_test/test.zip', false, false, true )
 
   #Spielergebnisse anlegen
   a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
