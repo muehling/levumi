@@ -142,6 +142,30 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.index ["student_id"], name: "index_results_on_student_id"
   end
 
+  create_table "shadow_results", force: :cascade do |t|
+    t.integer "shadow_student_id"
+    t.integer "test"
+    t.date "test_date"
+    t.date "test_week"
+    t.text "results"
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shadow_student_id"], name: "index_shadow_results_on_shadow_student_id"
+  end
+
+  create_table "shadow_students", force: :cascade do |t|
+    t.integer "original_id"
+    t.integer "group"
+    t.integer "gender"
+    t.date "birthmonth"
+    t.integer "sen"
+    t.boolean "migration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_id"], name: "index_shadow_students_on_original_id"
+  end
+
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "login"

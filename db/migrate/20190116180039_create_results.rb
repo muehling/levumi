@@ -8,7 +8,17 @@ class CreateResults < ActiveRecord::Migration[5.2]
       t.date :test_week
       t.text :results
       t.text :data
+      t.timestamps
+    end
 
+    #Tabelle für anonymiserte Altdaten
+    create_table :shadow_results do |t|
+      t.belongs_to :shadow_student, index: true
+      t.integer :test
+      t.date :test_date
+      t.date :test_week
+      t.text :results
+      t.text :data
       t.timestamps
     end
   end
