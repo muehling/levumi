@@ -36,7 +36,7 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
 
     create_table :items do |t|
       t.belongs_to :test, index: true
-      t.string :shorthand
+      t.string :shorthand, index: true
       t.string :description
       t.timestamps
     end

@@ -10,7 +10,7 @@
       "path": "cats",
       "areas": [],
       "competences": [],
-      "test_families": ["Katzen und Vögel"],
+      "test_families": [],
       "tests": [],
       "items": [
         {
@@ -42,14 +42,14 @@
     {
       "name": "Vögel üben",
       "description": {
-        "full": "Ein Arbeitsblatt, das speziell das Erkennen von <b>Katzen</b> trainiert.",
-        "short": "Katzentraining",
+        "full": "Ein Arbeitsblatt, das speziell das Erkennen von <b>Vögeln</b> trainiert.",
+        "short": "Vogeltraining",
         "usage": "Üben, üben, üben..."
       },
       "path": "birds",
       "areas": [],
       "competences": [],
-      "test_families": ["Katzen und Vögel"],
+      "test_families": [],
       "tests": [],
       "items": [
         {
@@ -77,6 +77,20 @@
           "item": "I3"
         }
       ]
+    },
+    {
+      "name": "Unterscheidung üben",
+      "description": {
+        "full": "Ein Arbeitsblatt, das speziell das Unterscheiden von Katzen und Vögeln trainiert.",
+        "short": "Tiertraining",
+        "usage": "Üben, üben, üben..."
+      },
+      "path": "birds_and_cats",
+      "areas": [],
+      "competences": [],
+      "test_families": ["Katzen und Vögel"],
+      "tests": [],
+      "items": []
     }
   ]
 }

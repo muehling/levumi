@@ -62,7 +62,7 @@
                                 :id="group.id + '_test_' + test.info.id"
                                 :active="test.info.id == test_selected"
                                 v-if="test.used || !group.read_only"
-                                @click="test.used ? (test.versions.length == 1 ? loadAssessment(test.info.id) : test_selected = test.info.id) : createAssessment(test)"
+                                @click="test.used ? (test.versions.length == 1 ? loadAssessment(test.info.id, false) : test_selected = test.info.id) : createAssessment(test, false)"
                     >
                         <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
                         <b-popover v-if="!test.used"
@@ -81,7 +81,7 @@
                                 :id="group.id + '_version_' + version.info.id"
                                 :active="version.info.id == version_selected"
                                 v-if="version.used || !group.read_only"
-                                @click="version.used ? loadAssessment(version.info.id) : createAssessment(version)"
+                                @click="version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)"
                     >
                         <span :class="version.used ? '' : 'text-muted'">{{version.info.label}}</span>
                         <b-popover v-if="!version.used"
@@ -174,7 +174,7 @@
         },
         methods: {
              //Neues Assessment anlegen und, bei Erfolg, laden.
-            createAssessment(test) {
+            createAssessment(test, isVersion) {
                 fetch('/groups/' + this.group.id + '/assessments/', {
                     method: 'post',
                     headers: {
@@ -185,11 +185,11 @@
                     credentials: 'include',
                     body: 'test_id=' + test.info.id
                 })
-                    .then(response => {test.used = true; this.loadAssessment(test.info.id)});
+                    .then(response => {test.used = true; this.loadAssessment(test.info.id, isVersion)});
             },
             //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-            loadAssessment(test) {
-                if (this.versions.length > 1)
+            loadAssessment(test, isVersion) {
+                if (isVersion)
                     this.version_selected = test
                 else
                     this.test_selected = test

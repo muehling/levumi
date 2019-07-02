@@ -86,16 +86,41 @@ class Material < ApplicationRecord
   #Vorschläge für Fördermateiral generieren
   def self.get_suggestions(test, group)
     students = Student.where(group_id: group)
+    assessment = Assessment.where(test_id: test, group_id: group).first
     test = Test.find(test)
-    supports = MaterialSupport.where(area_id: test.test_family.competence.area.id) + MaterialSupport.where(competence_id: test.test_family.competence.id) +
+
+    generic_supports = MaterialSupport.where(area_id: test.test_family.competence.area.id) + MaterialSupport.where(competence_id: test.test_family.competence.id) +
         MaterialSupport.where(test_family_id: test.test_family.id) + MaterialSupport.where(test_id: test.id)
-    test.items.each do |i|
-      supports = supports + MaterialSupport.where(item_id: i.id)
-    end
+
     result = []
     students.each do |s|
-      m = Material.find(supports.map{|sup| sup.material_id})
-      result += [{student: s.id, materials: m}] if m.size > 0
+      m = []
+      last_results = Result.where(student_id: s.id, assessment_id: assessment.id).order(test_week: :desc).limit(6).all
+      if last_results.size > 1 && last_results[0].get_support_total < 0
+        #Fall 1: Letzte Testung war schlechter => Förderung vorschlagen
+        m = Material.find(generic_supports.map{|sup| sup.material_id})
+      elsif last_results.size > 2 && last_results[0].get_support_total == 0 && last_results[1].get_support_total == 0
+        #Fall 2: Letzte beide Testungen ohne Zuwachs => Förderung vorschlagen
+        m = Material.find(generic_supports.map{|sup| sup.material_id})
+      end
+      #Zusätzlich: Items aus den letzten Testungen identifizieren
+      item_map = {}
+      last_results.each do |r|
+        r.get_support_items.each do |i|
+          if item_map.has_key?(i)
+            item_map[i] += 1
+          else
+            item_map[i] = 1
+          end
+        end
+      end
+      #Zusätzlich: Alle Items, die mindestens 3 Mal in supports auftauchen
+      item_map.each do |k, v|
+        if v > 2
+          m = Material.find(MaterialSupport.where(item_id: test.items.where(shorthand: k).first).pluck(:material_id)) + m
+        end
+      end
+      result += [{student: s.id, materials: m.uniq}] if m.size > 0
     end
     result
   end

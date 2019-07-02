@@ -100,6 +100,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["shorthand"], name: "index_items_on_shorthand"
     t.index ["test_id"], name: "index_items_on_test_id"
   end
 

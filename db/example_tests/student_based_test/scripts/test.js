@@ -31,7 +31,7 @@ let items = [
     }
 ]
 
-let answers =  ['Vogel', 'Nashorn', 'Katze', 'Fahrradklingel'];
+let answers =  ['Vogel', 'Nashorn', 'Katze', 'Fahrradklingel']
 
 shuffleArray(items)
 
@@ -39,25 +39,41 @@ let current = 0
 let result = []
 
 function next(btn) {
+    stopTimer()
     let res = 0
     if (items[current].group == 1 && $('#btn' + btn).html() == 'Katze')
-        res = 1;
+        res = 1
     if (items[current].group == 0 && $('#btn' + btn).html() == 'Vogel')
-        res = 1;
-    current++;
+        res = 1
+    current++
     if (current < items.length) {
-        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res})
+        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res, 'time': stopwatch})
         $('#image').attr('src', media_paths[items[current].path])
         shuffleArray(answers)
         for (let i = 0; i < answers.length; ++i)
-            $('#btn' + i).html(answers[i]);
+            $('#btn' + i).html(answers[i])
+        startTimer()
     }
     else {
-        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
-        let sum = [0, 0];
-        for (let i = 0; i < result.length; ++i)
+        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res})
+        let sum = [0, 0]
+        let items = []
+        for (let i = 0; i < result.length; ++i) {
             sum[result[i].group] += result[i].result
-        saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result)
+            if (result[i].result == 0)
+                items.push(result[i].item)
+        }
+
+        let total = lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0
+
+        saveResults(
+            {
+                'Übersicht': (sum[0] + sum[1]) / result.length,
+                'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'support': {'total': total, 'items': items}
+            },
+            result
+        )
 
         //Anzeigen einer individuellen Feedback-Seite
         $('#testspace').html(
@@ -68,20 +84,20 @@ function next(btn) {
         );
 
         if (lastResult == undefined) {
-            $('#levumi').attr('src', '/images/shared/Levumi-normal.gif');
-            $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“');
+            $('#levumi').attr('src', '/images/shared/Levumi-normal.gif')
+            $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“')
         }
         else if(sum[0] + sum[1] == lastResult['Übersicht']) {
-            $('#levumi').attr('src', '/images/shared/Levumi-spricht.gif');
-            $('#evaluation').html('„Du hast genauso viele Tiere richtig zugeordnet, wie beim letzten Mal.“');
+            $('#levumi').attr('src', '/images/shared/Levumi-spricht.gif')
+            $('#evaluation').html('„Du hast genauso viele Tiere richtig zugeordnet, wie beim letzten Mal.“')
         }
         else if(sum[0] + sum[1] > lastResult['Übersicht']) {
-            $('#levumi').attr('src', '/images/shared/Levumi-jubelt.gif');
-            $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“');
+            $('#levumi').attr('src', '/images/shared/Levumi-jubelt.gif')
+            $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“')
         }
         else {
-            $('#levumi').attr('src', '/images/shared/Levumi-liest.gif');
-            $('#evaluation').html('„Beim letzten Mal hast du mehr Tiere richtig zugeordnet.“');
+            $('#levumi').attr('src', '/images/shared/Levumi-liest.gif')
+            $('#evaluation').html('„Beim letzten Mal hast du mehr Tiere richtig zugeordnet.“')
         }
     }
 }
@@ -89,8 +105,8 @@ function next(btn) {
 //Test starten
 $('#testspace').attr('style', "font-family: '" + font_family + "'; font-size: " + font_size*2 + "em" )
 $('.btn').attr('style', "font-family: '" + font_family + "'; font-size: 1em")
-$('#image').attr('src', media_paths[items[current].path]);
-shuffleArray(answers);
+$('#image').attr('src', media_paths[items[current].path])
+shuffleArray(answers)
 for (let i = 0; i < answers.length; ++i)
-    $('#btn' + i).html(answers[i]);
-
+    $('#btn' + i).html(answers[i])
+startTimer()
