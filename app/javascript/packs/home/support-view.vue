@@ -16,7 +16,12 @@
                 </div>
                 <b-tab v-for="entry in suggestions" :key="entry.student.id" :title="student_name(entry.student)">
                     <b-tabs pills card vertical class='mt-2'>
-                        <b-tab v-for="material in entry.materials" :key="material.id" :title="material.name">
+                        <b-tab title="Spezifische Vorschläge" disabled v-if="specific(entry).length > 0"></b-tab>
+                        <b-tab v-for="material in specific(entry)" :key="material.id" :title="material.name">
+                            <material-view :material="material" :full="false"></material-view>
+                        </b-tab>
+                        <b-tab title="Allgemeine Vorschläge" disabled v-if="generic(entry).length > 0"></b-tab>
+                        <b-tab v-for="material in generic(entry)" :key="material.id" :title="material.name">
                             <material-view :material="material" :full="false"></material-view>
                         </b-tab>
                     </b-tabs>
@@ -45,6 +50,28 @@
         methods: {
             student_name(id) {   //Student-Objekt aus globaler Variable holen
                 return get_student(this.group, id).name;
+            },
+            generic(entry) {
+                if (entry.materials.length == 0)
+                    return []
+                else {
+                    let res = []
+                    for (let i=0; i < entry.materials.length; ++i)
+                        if (!entry.materials[i].specific)
+                            res.push(entry.materials[i].material)
+                    return res
+                }
+            },
+            specific(entry) {
+                if (entry.materials.length == 0)
+                    return []
+                else {
+                    let res = []
+                    for (let i=0; i < entry.materials.length; ++i)
+                        if (entry.materials[i].specific)
+                            res.push(entry.materials[i].material)
+                    return res
+                }
             }
         },
         created() {

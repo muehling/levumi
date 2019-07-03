@@ -186,10 +186,10 @@
 
   a2 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
   s = Student.find(1)
-  i = results.size
+  i = 1
   results.each do |r|
-    a2.results.create(student_id: s.id, test_date: DateTime.now-7*(7-i), results: r[:results], data: r[:data])
-    i = i-1
+    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, results: r[:results], data: r[:data])
+    i = i+1
   end
 
   Annotation.create(assessment_id: a1.id, group_id: 1, content: "Anmerkung für die ganze Gruppe", view: 0,

@@ -48,7 +48,7 @@ class Result < ApplicationRecord
 
   #Eintrag 'total' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_support_total
-    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:total) #TODO: 'support' klappt nicht => Grund?
+    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:total)
       results[:support][:total]
     else
       0
