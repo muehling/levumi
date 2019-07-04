@@ -1,26 +1,34 @@
 class TestsController < ApplicationController
   before_action :set_test, except: [:index, :create]
-  before_action :is_allowed, only: [:create, :update, :destroy]
+  before_action :is_allowed, only: [:create, :edit, :update, :destroy]
 
   #GET /tests
   def index
+    if params[:admin] && @login.has_capability?('test')
+      render 'index_admin'
+    else
+      render 'index'
+    end
+  end
+
+  #GET /tests/:id/edit
+  def edit
   end
 
   #POST /tests
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
-      res = true
       params[:test][:file].each do |f|
-        res = res && Test.import(f.tempfile, params.has_key?(:archive), params.has_key?(:create)).nil?
+        Test.import(f.tempfile, params.has_key?(:archive), params.has_key?(:update), params.has_key?(:create))
       end
-      render 'index'
+      render 'index_admin'
     end
   end
 
   #PUT /tests/:id
   def update
     if !@test.update_attributes(test_attributes)
-      render 'edit'
+      render nothing: true
     else
       render 'update'
     end
@@ -34,14 +42,14 @@ class TestsController < ApplicationController
     if family.tests.empty?
       family.destroy
     end
-    render'index'
+    render 'index_admin'
   end
 
   private
 
   #Erlaubte Attribute definieren
   def test_attributes
-    params.require(:test).permit(:level, :description)
+    params.require(:test).permit(description: [:full, :short])
   end
 
   #Prüfen ob Nutzer die Berechtigung für Testaktualisierungen hat

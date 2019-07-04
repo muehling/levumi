@@ -39,5 +39,6 @@ Rails.application.routes.draw do
   end
 
   resources :tests
+  resources :materials
 
 end

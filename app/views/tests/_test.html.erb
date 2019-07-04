@@ -1,1 +1,26 @@
-<%= raw test.full_description %>
+<b-row>
+  <b-col cols='10'>
+  <table class='table table-sm table-striped table-borderless mt-1'>
+    <tr>
+      <td>Anzahl an Items</td><td><%= test.items.size %></td>
+    </tr>
+    <tr>
+      <td>Durchführung</td><td><%= test.student_test ? 'Selbstständig durch die Schüler_innen' : 'Durch die Lehrkraft'%></td>
+    </tr>
+    <tr>
+      <td>Zeitbeschränkung</td><td><%= test.description['time_limit'] %></td>
+    </tr>
+    <tr>
+      <td>Durchführung</td><td><p><%= test.description['usage'] %></p></td>
+    </tr>
+  </table>
+  </b-col>
+  <b-col cols='2'>
+  </b-col>
+</b-row>
+<b-row>
+  <b-col cols='12'>
+    <p class='text-light bg-secondary'>&nbsp;Beschreibung</p>
+    <span><%= raw test.description['full'] %></span>
+  </b-col>
+</b-row>

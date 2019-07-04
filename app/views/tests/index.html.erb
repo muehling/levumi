@@ -22,15 +22,6 @@
 
         <b-tabs pills>
 
-          <% if @login.has_capability?('test') %>
-            <b-tab>
-              <template slot='title'>
-                <i class='fas fa-plus'></i> Neuer Test
-              </template>
-              <%= render 'form', test: nil %>
-            </b-tab>
-          <% end %>
-
           <% first = true %>
           <% Area.all.each do |a| %>
             <!-- Oberste Ebene Lernbereiche -->
@@ -102,16 +93,9 @@
 
                                       <!-- Testinfo rendern -->
                                       <div id='info_<%= t.id %>'>
-                                        <!-- Edit-Button anzeigen, falls Nutzer Berechtigung hat -->
-                                        <% if @login.has_capability?('test') %>
-                                          <button class='btn btn-outline-secondary float-right' onclick='showForm(<%= t.id %>)'><i class='fas fa-edit'></i> Test bearbeiten</button>
-                                        <% end %>
                                         <div id='info_<%= t.id %>_inner'>
                                           <%= render t %>
                                         </div>
-                                      </div>
-                                      <div id='form_<%= t.id %>' style='display: none'>
-                                        <%= render 'form', test: t %>
                                       </div>
 
                                     </b-tab>
@@ -141,15 +125,3 @@
     </b-row>
   </b-container>
 </div>
-
-<script>
-    function showForm(id) {
-        $('#info_' + id).hide();
-        $('#form_' + id).show();
-    }
-
-    function hideForm(id) {
-        $('#form_' + id).hide();
-        $('#info_' + id).show();
-    }
-</script>

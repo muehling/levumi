@@ -4,8 +4,13 @@
   "family": "Katzen und Vögel",
   "level": "Schüler_innen",
   "shorthand": "Ex_S_1",
-  "full_description": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
-  "short_description": "",
+  "description": {
+    "full": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Schüler_innen</b>",
+    "time_limit": "Keine",
+    "usage": "Die Schüler_innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Zu jedem Bild gibt es vier Antwortoptionen, die Schüler_innen wählen selbstständig eine aus und klicken auf weiter, bis alle Bilder bearbeitet wurden."
+  },
+  "time_limit": "Keine",
   "student_test": 1,
   "configuration": {
     "views": [{

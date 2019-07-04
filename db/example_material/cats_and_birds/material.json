@@ -1,0 +1,96 @@
+{
+  "elements": [
+    {
+      "name": "Katzen üben",
+      "description": {
+        "full": "Ein Arbeitsblatt, das speziell das Erkennen von <b>Katzen</b> trainiert.",
+        "short": "Katzentraining",
+        "usage": "Üben, üben, üben..."
+      },
+      "path": "cats",
+      "areas": [],
+      "competences": [],
+      "test_families": [],
+      "tests": [],
+      "items": [
+        {
+          "test": "Ex_S_1",
+          "item": "I4"
+        },
+        {
+          "test": "Ex_S_1",
+          "item": "I5"
+        },
+        {
+          "test": "Ex_S_1",
+          "item": "I6"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I4"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I5"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I6"
+        }
+      ]
+    },
+    {
+      "name": "Vögel üben",
+      "description": {
+        "full": "Ein Arbeitsblatt, das speziell das Erkennen von <b>Vögeln</b> trainiert.",
+        "short": "Vogeltraining",
+        "usage": "Üben, üben, üben..."
+      },
+      "path": "birds",
+      "areas": [],
+      "competences": [],
+      "test_families": [],
+      "tests": [],
+      "items": [
+        {
+          "test": "Ex_S_1",
+          "item": "I1"
+        },
+        {
+          "test": "Ex_S_1",
+          "item": "I2"
+        },
+        {
+          "test": "Ex_S_1",
+          "item": "I3"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I1"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I2"
+        },
+        {
+          "test": "Ex_U_1",
+          "item": "I3"
+        }
+      ]
+    },
+    {
+      "name": "Unterscheidung üben",
+      "description": {
+        "full": "Ein Arbeitsblatt, das speziell das Unterscheiden von Katzen und Vögeln trainiert.",
+        "short": "Tiertraining",
+        "usage": "Üben, üben, üben..."
+      },
+      "path": "birds_and_cats",
+      "areas": [],
+      "competences": [],
+      "test_families": ["Katzen und Vögel"],
+      "tests": [],
+      "items": []
+    }
+  ]
+}

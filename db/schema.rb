@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_25_203450) do
+ActiveRecord::Schema.define(version: 2019_06_05_111439) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -100,7 +100,32 @@ ActiveRecord::Schema.define(version: 2019_05_25_203450) do
     t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["shorthand"], name: "index_items_on_shorthand"
     t.index ["test_id"], name: "index_items_on_test_id"
+  end
+
+  create_table "material_supports", force: :cascade do |t|
+    t.integer "material_id"
+    t.integer "area_id"
+    t.integer "competence_id"
+    t.integer "test_family_id"
+    t.integer "test_id"
+    t.integer "item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["area_id"], name: "index_material_supports_on_area_id"
+    t.index ["competence_id"], name: "index_material_supports_on_competence_id"
+    t.index ["item_id"], name: "index_material_supports_on_item_id"
+    t.index ["material_id"], name: "index_material_supports_on_material_id"
+    t.index ["test_family_id"], name: "index_material_supports_on_test_family_id"
+    t.index ["test_id"], name: "index_material_supports_on_test_id"
+  end
+
+  create_table "materials", force: :cascade do |t|
+    t.string "name"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "results", force: :cascade do |t|
@@ -116,6 +141,30 @@ ActiveRecord::Schema.define(version: 2019_05_25_203450) do
     t.index ["assessment_id"], name: "index_results_on_assessment_id"
     t.index ["prior_result_id"], name: "index_results_on_prior_result_id"
     t.index ["student_id"], name: "index_results_on_student_id"
+  end
+
+  create_table "shadow_results", force: :cascade do |t|
+    t.integer "shadow_student_id"
+    t.integer "test"
+    t.date "test_date"
+    t.date "test_week"
+    t.text "results"
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["shadow_student_id"], name: "index_shadow_results_on_shadow_student_id"
+  end
+
+  create_table "shadow_students", force: :cascade do |t|
+    t.integer "original_id"
+    t.integer "group"
+    t.integer "gender"
+    t.date "birthmonth"
+    t.integer "sen"
+    t.boolean "migration"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_id"], name: "index_shadow_students_on_original_id"
   end
 
   create_table "students", force: :cascade do |t|
@@ -145,8 +194,7 @@ ActiveRecord::Schema.define(version: 2019_05_25_203450) do
     t.integer "test_family_id"
     t.string "level"
     t.string "shorthand"
-    t.text "full_description"
-    t.text "short_description"
+    t.text "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
     t.text "configuration"

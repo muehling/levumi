@@ -21,11 +21,18 @@
                     <!-- Alle Kompetenzen des gewählten Lernbereichs -->
                     <b-nav-item v-for="competence in group_info.competences"
                                 :key="competence.info.id"
+                                :id="group.id + '_competence_' + competence.info.id"
                                 :active="competence.info.id == competence_selected"
                                 v-if="(competence.used || !group.read_only) && (competence.info.area_id == area_selected)"
-                                @click="competence.used = true;select_competence(competence.info.id)"
+                                @click="competence.used = true; select_competence(competence.info.id)"
                     >
                         <span :class="competence.used ? '' : 'text-muted'">{{competence.info.name}}</span>
+                        <b-popover v-if="!competence.used"
+                                   :target="group.id + '_competence_' + competence.info.id"
+                                   triggers="hover"
+                        >
+                            <div v-html="competence.info.description.short"> </div>
+                        </b-popover>
                     </b-nav-item>
                 </b-nav>
 
@@ -33,24 +40,56 @@
                     <!-- Alle Testfamilien der gewählten Kompetenz  -->
                     <b-nav-item v-for="family in group_info.families"
                                 :key="family.info.id"
+                                :id="group.id + '_family_' + family.info.id"
                                 :active="family.info.id == family_selected"
                                 v-if="(family.used || !group.read_only) && (family.info.competence_id == competence_selected)"
-                                @click="family.used=true;select_family(family.info.id)"
+                                @click="family.used=true; select_family(family.info.id)"
                     >
                         <span :class="family.used ? '' : 'text-muted'">{{family.info.name}}</span>
+                        <b-popover v-if="!family.used"
+                                   :target="group.id + '_family_' + family.info.id"
+                                   triggers="hover"
+                        >
+                            <div v-html="family.info.description"> </div>
+                        </b-popover>
                     </b-nav-item>
                 </b-nav>
 
                 <b-nav pills class='mt-1'>
                     <!-- Alle Niveaustufen der gewählten Testfamilie -->
-                    <b-nav-item v-for="test in group_info.tests"
+                    <b-nav-item v-for="test in tests"
                                 :key="test.info.id"
+                                :id="group.id + '_test_' + test.info.id"
                                 :active="test.info.id == test_selected"
-                                v-if="(test.used || !group.read_only) && (test.info.test_family_id == family_selected)"
-                                @click="test.used ? loadAssessment(test.info.id) : createAssessment(test)"
+                                v-if="test.used || !group.read_only"
+                                @click="test.used ? (test.versions.length == 1 ? loadAssessment(test.info.id, false) : test_selected = test.info.id) : createAssessment(test, false)"
                     >
-                        <!-- TODO: Veraltet lieber als Dropdown, oder... ? -->
-                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}} {{test.info.archive ? '(veraltet)' : ''}}</span>
+                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
+                        <b-popover v-if="!test.used"
+                                   :target="group.id + '_test_' + test.info.id"
+                                   triggers="hover"
+                        >
+                            <div v-html="test.info.description.short"> </div>
+                        </b-popover>
+                    </b-nav-item>
+                </b-nav>
+
+                <b-nav pills class='mt-1' v-if="versions.length > 1">
+                    <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
+                    <b-nav-item v-for="version in versions"
+                                :key="version.info.id"
+                                :id="group.id + '_version_' + version.info.id"
+                                :active="version.info.id == version_selected"
+                                v-if="version.used || !group.read_only"
+                                @click="version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)"
+                    >
+                        <span :class="version.used ? '' : 'text-muted'">{{version.info.label}}</span>
+                        <b-popover v-if="!version.used"
+                                   :target="group.id + '_version_' + version.info.id"
+                                   triggers="hover"
+                        >
+                            <div v-html="version.info.description.short"> </div>
+                        </b-popover>
                     </b-nav-item>
                 </b-nav>
 
@@ -73,8 +112,7 @@
                              :read_only="group.read_only"
                              :results="results.series"
                              :student_test="results.student_test"
-                             :test="test_selected"
-                             :test_info="test_info"
+                             :test="results.test"
                              v-on:update="loadAssessment(test_selected)"
             >
             </assessment-view>
@@ -92,53 +130,72 @@
             group: Object,
             group_info: Object
         },
-        computed: {
-          test_info: function() {
-              if (this.test_selected > 0)
-                  for (let i = 0; i < this.group_info.tests.length; ++i)
-                      if (this.group_info.tests[i].info.id == this.test_selected)
-                          return this.group_info.tests[i].info;
-              return {};
-          }
-        },
         data: function () {
             return {
                 area_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.area : 0,
                 competence_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.competence : 0,
                 family_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.family : 0,
                 test_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0,
+                version_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
                 updating: false,
                 results: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.assessment : undefined
             }
         },
+        computed: {
+            //Alle zur aktuellen Familie passenden Tests, jeweils nur die aktuelle Version
+            tests: function() {
+                let res = []
+                for (let i = 0; i < this.group_info.tests.length; ++i)
+                  if (this.group_info.tests[i].info.test_family_id == this.family_selected && this.group_info.tests[i].info.label === "Aktuell") {
+                      let versions = []
+                      let used = false
+                      for (let j = 0; j < this.group_info.tests.length; ++j)
+                          if (this.group_info.tests[i].info.level == this.group_info.tests[j].info.level) {
+                              versions.push(this.group_info.tests[j])
+                              if (this.group_info.tests[j].used)
+                                  used = true
+                          }
+                          res.push({info: this.group_info.tests[i].info, used: used, versions: versions})
+                  }
+                return res
+            },
+            //Alle Versionen des gewählten Tests
+            versions: function() {
+                let level = ""
+                for (let i = 0; i < this.group_info.tests.length; ++i)
+                    if (this.group_info.tests[i].info.id == this.test_selected)
+                        level = this.group_info.tests[i].info.level
+                let res = []
+                for (let i = 0; i < this.group_info.tests.length; ++i)
+                    if (this.group_info.tests[i].info.level === level)
+                        res.push(this.group_info.tests[i])
+                return res
+            }
+        },
         methods: {
-            //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
-            select_area(area) {
-                this.area_selected = area;
-                this.competence_selected = -1;
-                this.family_selected = -1;
-                this.test_selected = -1
-                $('#main-' + this.group_info.id).hide();   //Ggf. angezeigtes Assessment verstecken
-            },
-            //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
-            select_competence(competence) {
-                this.competence_selected = competence;
-                this.family_selected = -1;
-                this.test_selected = -1
-                $('#main-' + this.group_info.id).hide(); //Ggf. angezeigtes Assessment verstecken
-            },
-            //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
-            select_family(family) {
-                this.family_selected = family;
-                this.test_selected = -1
-                $('#main-' + this.group_info.id).hide(); //Ggf. angezeigtes Assessment verstecken
+             //Neues Assessment anlegen und, bei Erfolg, laden.
+            createAssessment(test, isVersion) {
+                fetch('/groups/' + this.group.id + '/assessments/', {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    credentials: 'include',
+                    body: 'test_id=' + test.info.id
+                })
+                    .then(response => {test.used = true; this.loadAssessment(test.info.id, isVersion)});
             },
             //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-            loadAssessment(test) {
-                this.test_selected = test;
-                this.updating = true;  //Spinner anzeigen
+            loadAssessment(test, isVersion) {
+                if (isVersion)
+                    this.version_selected = test
+                else
+                    this.test_selected = test
+                this.updating = true  //Spinner anzeigen
                 //AJAX-Request senden
-                fetch('/groups/' + this.group.id + '/assessments/' + this.test_selected, {
+                fetch('/groups/' + this.group.id + '/assessments/' + test, {
                     headers: {
                         'Accept': 'text/javascript',
                         'X-Requested-With': 'XMLHttpRequest',
@@ -153,19 +210,26 @@
                         });
                     });
             },
-            //Neues Assessment anlegen und, bei Erfolg, laden.
-            createAssessment(test) {
-                fetch('/groups/' + this.group.id + '/assessments/', {
-                    method: 'post',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                    },
-                    credentials: 'include',
-                    body: 'test_id=' + test.info.id
-                })
-                    .then(response => {test.used = true; this.loadAssessment(test.info.id)});
+            //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
+            select_area(area) {
+                this.area_selected = area;
+                this.competence_selected = -1
+                this.family_selected = -1
+                this.test_selected = -1
+                this.version_selected = -1
+            },
+            //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
+            select_competence(competence) {
+                this.competence_selected = competence
+                this.family_selected = -1
+                this.test_selected = -1
+                this.version_selected = -1
+            },
+            //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
+            select_family(family) {
+                this.family_selected = family
+                this.test_selected = -1
+                this.version_selected = -1
             }
         },
         name: 'group-view'

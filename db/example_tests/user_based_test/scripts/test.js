@@ -31,36 +31,49 @@ let items = [
     }
 ];
 
-shuffleArray(items);
+shuffleArray(items)
 
-let current = 0;
-let result = [];
+let current = 0
+let result = []
 
 function correct() {
-    next(1);
+    next(1)
 }
 
 function incorrect() {
-    next(0);
+    next(0)
 }
 
 function next(res) {
-    current++;
+    current++
     if (current < items.length) {
-        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
-        $('#image').attr('src', media_paths[items[current].path]);
+        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res})
+        $('#image').attr('src', media_paths[items[current].path])
     }
     else {
-        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res});
+        result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res})
         let sum = [0, 0];
-        for (let i = 0; i < result.length; ++i)
-            sum[result[i].group] += result[i].result;
+        let items = []
+        for (let i = 0; i < result.length; ++i) {
+            sum[result[i].group] += result[i].result
+            if (result[i].result == 0)
+                items.push(result[i].item)
+        }
+
+        let total = lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0
 
         //Ergebnisse speichern
-        saveResults({'Übersicht': (sum[0] + sum[1]) / result.length, 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3}}, result);
+        saveResults(
+            {
+                'Übersicht': (sum[0] + sum[1]) / result.length,
+                'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'support': {'total': total, 'items': items}
+                },
+            result
+        )
 
         //Interpretieren des Ergebnis und Anzeigen des Feedbacks
-        showFeedback(lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0, false);
+        showFeedback(total, false)
     }
 }
 
@@ -68,4 +81,3 @@ function next(res) {
 $('#testspace').attr('style', "font-family: '" + font_family + "'; font-size: " + font_size*2 + "em" )
 $('.btn').attr('style', "font-family: '" + font_family + "'; font-size: 0.5em")
 $('#image').attr('src', media_paths[items[current].path])
-

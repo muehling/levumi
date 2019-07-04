@@ -5,9 +5,9 @@
       //Multiupdate nur triggern, falls neuer key hinterlegt ist und sich dieser vom Alten unterscheidet...
 
       //Hinweistext + Spinner - vermutlich unnötig.
-      $('#modal-body').html("<p align='center'>Verschlüsselung aktualisieren</p><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>");
+      $('#modal-body').html("<p align='center'>Verschlüsselung aktualisieren</p><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>")
 
-      recode_keys(sessionStorage['new_login']);
+      recode_keys(sessionStorage['new_login'])
 
       //Daten senden und Hinweistext bei Erfolg verstecken.
       fetch('/users/<%= @login.id %>', {
@@ -20,13 +20,13 @@
           credentials: 'include',
           body: 'recode=true&keys=' + encodeURIComponent(JSON.stringify(keys))
       })
-          .then(response => $('#modal').modal('hide'));
+          .then(response => $('#modal').modal('hide'))
   }
   else //Nichts zu tun außer Modal schließen
-      $('#modal').modal('hide');
+      $('#modal').modal('hide')
 
 <% else %>
   //Update für einen anderen Nutzer => Nutzertabelle neu rendern und Modal schließen.
   $('#list_content').html("<%= escape_javascript render 'table' %>")
-  $('#modal').modal('hide');
+  $('#modal').modal('hide')
 <% end %>

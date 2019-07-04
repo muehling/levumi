@@ -8,13 +8,16 @@
                    :active="deep_link"
                    class='m-3'
             >
-                <div v-if="test_info.archive">
+                <div v-if="test.archive">
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
                 <div v-else-if="!student_test">
-                    <!-- Schüler anzeigen um Messung zu starten. -->
+                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
+                    <p>{{test.description.usage}}</p>
+                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
                     <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
                     <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
+                    <!-- Schüler anzeigen um Messung zu starten. -->
                     <b-button-group>
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                         <b-button v-for="student in students"
@@ -23,7 +26,7 @@
                                   :disabled="get_result(student.id) > 0"
                                   class='mr-2'
                                   :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                  :href="'/students/' + student.id + '/results?test_id='+ test"
+                                  :href="'/students/' + student.id + '/results?test_id='+ test.id"
                                   data-method='post'
                         >
                             {{student.name}}
@@ -31,8 +34,12 @@
                     </b-button-group>
                 </div>
                 <div v-else>
+                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
+                    <p>{{test.description.usage}}</p>
+                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
                     <p>Diesen Test müssen die Schüler_innen mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
                     <p>Hier können Sie sehen, welche Schüler_innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                    <!-- Schüler nur als Info anzeigen -->
                     <b-button-group class='mt-3'>
                         <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                         <b-button v-for="student in students"
@@ -107,18 +114,29 @@
             <!-- Auswertungstab mit Graph -->
             <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3'>
                 <graph-view
+                        :key="test.id"
                         :annotations="annotations"
                         :configuration="configuration"
                         :group="group"
                         :results="results"
                         :students="students"
-                        :test="test"
+                        :test="test.id"
                 ></graph-view>
             </b-tab>
 
             <!-- Vorschläge für Fördermaterial -->
              <b-tab title='Fördern'>
+                <support-view
+                        :group="group"
+                        :test="test.id"
+                >
 
+                </support-view>
+            </b-tab>
+
+            <!-- Testinfos darstellen -->
+            <b-tab title='Testinfos'>
+                <div v-html="test.description.full"></div>
             </b-tab>
         </b-tabs>
     </b-card>
@@ -126,8 +144,9 @@
 
 <script>
     import GraphView from './graph-view'
+    import SupportView from './support-view'
     export default {
-        components: {GraphView},
+        components: {GraphView, SupportView},
         props: {
             annotations: Array,
             configuration: Object,
@@ -135,8 +154,7 @@
             read_only: Boolean,
             results: Array,
             student_test: Boolean,
-            test: Number,
-            test_info: Object,
+            test: Object,
         },
         computed: {
             grouped_results: function() { //Results nach Wochen gruppieren, für die Ergebnisliste
@@ -190,7 +208,7 @@
         },
         data: function () {
             return {
-                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
             }
         },

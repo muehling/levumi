@@ -81,6 +81,54 @@
       []
   ]
 
+  results = [
+      {
+          results: {
+              'Übersicht': 0.5,
+              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33} ,
+              'support': {'total': 0, 'items': ['I2', 'I3', 'I6']}
+          },
+          data: [
+              {item: 'I1', result: 1},
+              {item: 'I2', result: 0},
+              {item: 'I3', result: 0},
+              {item: 'I4', result: 1},
+              {item: 'I5', result: 1},
+              {item: 'I6', result: 0},
+          ]
+      },
+      {
+          results: {
+              'Übersicht': 0.5,
+              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33} ,
+              'support': {'total': 0, 'items': ['I2', 'I3', 'I6']}
+          },
+          data: [
+              {item: 'I1', result: 1},
+              {item: 'I2', result: 0},
+              {item: 'I3', result: 0},
+              {item: 'I4', result: 1},
+              {item: 'I5', result: 1},
+              {item: 'I6', result: 0},
+          ]
+      },
+      {
+          results: {
+              'Übersicht': 0.5,
+              'Detailauswertung': {'Katzen': 1, 'Vögel': 0} ,
+              'support': {'total': 0, 'items': ['I1', 'I2', 'I3']}
+          },
+          data: [
+              {item: 'I1', result: 0},
+              {item: 'I2', result: 0},
+              {item: 'I3', result: 0},
+              {item: 'I4', result: 1},
+              {item: 'I5', result: 1},
+              {item: 'I6', result: 1},
+          ]
+      },
+  ]
+
   users.each do |u|
     User.create(u)
   end
@@ -122,12 +170,11 @@
   end
 
   #Spieltest anlegen (später per Upload)
-  Test.import('db/example_tests/user_based_test/test.zip', false, true )
-  Test.import('db/example_tests/student_based_test/test.zip', false, true )
+  Test.import('db/example_tests/user_based_test/test.zip', false, false, true )
+  Test.import('db/example_tests/student_based_test/test.zip', false, false, true )
 
   #Spielergebnisse anlegen
   a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
-  Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
   Group.find(1).students.each do |s|
     7.times do |i|
       if (rand > 0.3)
@@ -136,6 +183,15 @@
       end
     end
   end
+
+  a2 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_S_1').id)
+  s = Student.find(1)
+  i = 1
+  results.each do |r|
+    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, results: r[:results], data: r[:data])
+    i = i+1
+  end
+
   Annotation.create(assessment_id: a1.id, group_id: 1, content: "Anmerkung für die ganze Gruppe", view: 0,
                      start: Student.find(1).results.order(:test_week).first.test_week,
                      end: Student.find(1).results.order(:test_week).last.test_week)
@@ -143,6 +199,11 @@
                      start: Student.find(1).results.order(:test_week).first.test_week,
                      end: Student.find(1).results.order(:test_week).first.test_week)
 
+  #Fördermaterial anlegen
+  Material.import('db/example_material/cats_and_birds/training.zip', false)
+
+  #Test durch neue Version ersetzen
+  Test.import('db/example_tests/student_based_test/test.zip', true, true, false )
 
 #elsif Rails.env.production?
   #Admin Account anlegen

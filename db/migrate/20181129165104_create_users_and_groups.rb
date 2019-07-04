@@ -29,8 +29,8 @@ class CreateUsersAndGroups < ActiveRecord::Migration[5.2]
       t.boolean :owner
       t.boolean :read_only
       t.string :key
-      t.belongs_to :user, index: true, foreign_key: {on_delete: :cascade}
-      t.belongs_to :group, index: true, foreign_key: {on_delete: :cascade}
+      t.belongs_to :user, index: true
+      t.belongs_to :group, index: true
       t.timestamps
     end
   end

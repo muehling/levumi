@@ -1,6 +1,6 @@
 class Student < ApplicationRecord
   belongs_to :group
-  has_many :results
+  has_many :results, dependent: :destroy
 
   serialize :settings, Hash
 
@@ -15,6 +15,11 @@ class Student < ApplicationRecord
         break if student.save
       end
     end
+  end
+
+  #Schattenkopie anlegen, wird im Zuge des Löschen von Results aufgerufen.
+  def create_shadow
+    ShadowStudent.create(original_id: self.id, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, migration: self.migration)
   end
 
   #JSON Export, nur relevante Attribute übernehmen. Falls zusätzliche Daten vorhanden sind, diese auch exportieren.

@@ -10,6 +10,14 @@ class User < ApplicationRecord
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 16
 
+  # Eigene Gruppen löschen
+  before_destroy do |user|
+    shares = GroupShare.where(user_id: user.id, owner: true)
+    shares.each do |s|
+      s.group.destroy
+    end
+  end
+
   #Alle Schüler des Nutzers zurückliefern.
   def students
     Student.where(group_id: self.groups).all
@@ -52,6 +60,7 @@ class User < ApplicationRecord
     groups.each do |group|
 
       used = group.assessments.map{|a| a.test_id}
+
       used_tests = Test.where(id: used).order(:level)
       unused_tests = Test.where(id: all_tests - used).order(:level)
 
@@ -72,7 +81,7 @@ class User < ApplicationRecord
           competences: used_competences.map{|c| {info: c, used: true}} + unused_competences.map{|c| {info: c, used: false}},
           families: used_families.map{|f| {info: f, used: true}} + unused_families.map{|f| {info: f, used: false}},
           tests: used_tests.map{|t| {info: t, used: true}} + unused_tests.map{|t| {info: t, used: false}}
-      }]
+                 }]
 
     end
     return result

@@ -12,6 +12,10 @@
           <%= label_tag 'archive', 'Gleichnamige Tests archvieren', class: 'custom-control-label' %>
         </div>
         <div class='custom-control custom-checkbox'>
+          <%= check_box_tag 'update', true, false, {class: 'custom-control-input', id: 'update'}%>
+          <%= label_tag 'update', 'Existierendes Fördermaterial beibehalten', class: 'custom-control-label' %>
+        </div>
+        <div class='custom-control custom-checkbox'>
           <%= check_box_tag 'create', true, false, {class: 'custom-control-input', id: 'create'}%>
           <%= label_tag 'create', 'Fehlende Bereiche/Konstrukte/Testfamilien anlegen', class: 'custom-control-label' %>
         </div>
@@ -25,20 +29,17 @@
   <!-- Form für Ändern -->
   <%= form_for test, remote: true, class: 'form form-inline' do |f| %>
     <div class='form-group'>
-      <%= label_tag 'level', 'Niveaustufe', class: 'form-label' %>
-      <%= f.text_field :level, id: 'level', class: 'form-control'%>
-    </div>
-    <div class='form-group'>
-      <%= label_tag 'description', 'Beschreibung', class: 'form-label' %>
-      <%= f.text_area :full_description, id: 'description', class: 'form-control'%>
-    </div>
-    <div class='form-group'>
+      <%= f.fields_for :description, test.description do |fields| %>
+        <%= fields.label 'full', 'Beschreibung', class: 'form-label' %>
+        <%= fields.text_area "full", value: test.description['full'], id: 'full', class: 'form-control'%>
+        <%= fields.label 'short', 'Kurzbeschreibung', class: 'form-label' %>
+        <%= fields.text_area "short", value: test.description['short'], id: 'short', class: 'form-control'%>
+      <% end %>
     </div>
     <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-success' do%>
       <i class='fas fa-check'></i> Aktualisieren
     <% end %>
-    <button class='btn btn-outline-secondary' onclick='hideForm(<%= test.id %>); return false;'><i class='fas fa-times'></i> Abbrechen</button>
-    <%= link_to test_path(test), method: :delete, class: 'float-right', data: {confirm: 'Test mit allen Daten löschen! Sind Sie sicher?'} do %><button class='btn btn-outline-danger'><i class='fas fa-trash'></i> Löschen</button><% end %>
+    <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide'); return false;"><i class='fas fa-times'></i> Abbrechen</button>
   <% end %>
 
 <% end %>

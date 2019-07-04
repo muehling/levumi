@@ -21,6 +21,15 @@ class Result < ApplicationRecord
     end
   end
 
+  # Schattenkopie anlegen. falls Result-Objekt nicht leer und länger als 24h in der Datenbank (sonst vermutlich Fehlerhaft)
+  before_destroy do |result|
+    if (!result.test_data.nil? && result.test_date < Date.today)
+      student = ShadowStudent.find_by_original_id(result.student_id)
+      student = result.student.create_shadow if student.nil?
+      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, results: result.results, data: result.data)
+    end
+  end
+
   #JSON Export, nur relevante Attribute übernehmen.
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at])
@@ -37,4 +46,21 @@ class Result < ApplicationRecord
     save
   end
 
+  #Eintrag 'total' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
+  def get_support_total
+    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:total)
+      results[:support][:total]
+    else
+      0
+    end
+  end
+
+  #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
+  def get_support_items
+    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:items)
+      results[:support][:items]
+    else
+      []
+    end
+  end
 end

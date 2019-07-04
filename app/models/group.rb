@@ -1,8 +1,8 @@
 class Group < ApplicationRecord
-  has_many :group_shares
+  has_many :group_shares, dependent: :destroy
   has_many :users, through: :group_shares
-  has_many :students
-  has_many :assessments
+  has_many :students, dependent: :destroy
+  has_many :assessments, dependent: :destroy
 
   validates_presence_of :label
 

@@ -4,8 +4,12 @@
   "family": "Katzen und Vögel",
   "level": "Lehrkräfte",
   "shorthand": "Ex_U_1",
-  "full_description": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
-  "short_description": "",
+  "description": {
+    "full": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
+    "time_limit": "Keine",
+    "usage": "Die Schüler_innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Die Schüler_innen sagen, was sie erkennen, die Lehrkraft bewertet die Antwort als richtig oder falsch."
+  },
   "student_test": 0,
   "configuration": {
     "views": [{

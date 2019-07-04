@@ -1,5 +1,5 @@
 class Competence < ApplicationRecord
-  has_many :test_families
+  has_many :test_families, dependent: :destroy
   belongs_to :area
 
   #JSON Export, nur relevante Attribute übernehmen
