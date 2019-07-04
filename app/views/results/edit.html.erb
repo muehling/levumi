@@ -19,14 +19,14 @@
 
     //Vorheriges Ergebnis als Objekt
     <% if @result.prior_result.nil? %>
-    const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
+    const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>");
     <% else %>
     const lastResult = undefined
     <% end %>
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @result.student.get_setting(:font_family) %>'
-    const font_size = <%= @result.student.get_setting(:font_size) %>
+    const font_family = '<%= @result.student.get_setting(:font_family) %>';
+    const font_size = '<%= @result.student.get_setting(:font_size) %>';
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(result, data) {
@@ -101,5 +101,20 @@
             $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
                 .css('margin-top','0%')
+    }
+
+    //Vorzeitiges Laden von Audiodateien
+    //benötigt eine Funktion hasLoadedAudio
+    function preloadAudio(url) {
+        let audio = new Audio();
+        // once this file loads, it will call loadedAudio()
+        // the file will be kept by the browser as cache
+        if(url =="") {
+            hasLoadedAudio()
+        }
+        else {
+            audio.addEventListener('canplaythrough', hasLoadedAudio, false);
+            audio.src = url;
+        }
     }
 </script>
