@@ -23,7 +23,7 @@ class Result < ApplicationRecord
 
   # Schattenkopie anlegen. falls Result-Objekt nicht leer und länger als 24h in der Datenbank (sonst vermutlich Fehlerhaft)
   before_destroy do |result|
-    if (!result.test_data.nil? && result.test_date < Date.today)
+    if (!result.data.nil? && result.test_date < Date.today)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
       student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, results: result.results, data: result.data)

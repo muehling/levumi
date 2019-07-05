@@ -44,25 +44,25 @@
 
     //Testfenster schließen
     function exit() {
-        window.location.href = '<%= @redirect %>'
+        window.location.href = '<%= @redirect %>';
     }
 
     //Hilfsfunktionen
 
     //Zeitmessen
-    var stopwatch = null
+    var stopwatch = null;
 
     function startTimer() {
-        stopwatch = new Date()
+        stopwatch = new Date();
     }
 
     function stopTimer() {
-        return (new Date() - stopwatch)
+        return (new Date() - stopwatch);
     }
 
     //zufälliges Umsortieren
     function shuffleArray(array) {
-       let j = undefined
+       let j = undefined;
         for (let i = array.length - 1; i > 0; i--) {
             j = Math.floor(Math.random() * (i + 1))
             [array[i], array[j]] = [array[j], array[i]]
@@ -85,22 +85,22 @@
             "</div>"
         )
         if (result == 0) {
-            $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
+            $('#pic').attr('src', '/images/shared/Levumi-normal.jpg');
         }
         else if (result == 1) {
-            $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
+            $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif');
         }
         else {
-            $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
+            $('#pic').attr('src', '/images/shared/Levumi-liest.gif');
         }
         if (timedout)
             $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster' +
                 ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%')
+                .css('margin-top','0%');
         else
             $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
-                .css('margin-top','0%')
+                .css('margin-top','0%');
     }
 
     //Vorzeitiges Laden von Audiodateien
