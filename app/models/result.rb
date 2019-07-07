@@ -8,7 +8,7 @@ class Result < ApplicationRecord
 
   #Nach dem Anlegen das letzte Ergebnis desselben Assessment finden und verlinken (ggf. nil)
   after_create do |result|
-    result.prior_result = Result.where(["student_id = ? and assessment_id = ?", result.student_id, result.assessment_id]).order(:test_date).last
+    result.prior_result = Result.where(["id != ? and student_id = ? and assessment_id = ?",result.id, result.student_id, result.assessment_id]).order(:test_date).last
     result.save
   end
 
