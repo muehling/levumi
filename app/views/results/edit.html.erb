@@ -29,7 +29,7 @@
     const font_size = <%= @result.student.get_setting(:font_size) %>
 
         //Funktionen für Testumgebung bereitstellen
-        function saveResults(result, data) {
+        function saveResults(result, report, extra_data) {
             fetch('<%= student_result_url(@student, @result) %>', {
                 method: 'put',
                 headers: {
@@ -38,7 +38,7 @@
                     'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
                 credentials: 'include',
-                body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&data=' + encodeURIComponent(JSON.stringify(data))
+                body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&extra=' + encodeURIComponent(JSON.stringify(extra_data))
             })
         }
 

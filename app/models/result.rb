@@ -4,6 +4,7 @@ class Result < ApplicationRecord
   has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result_id'
 
   serialize :results, Hash
+  serialize :report, Hash
   serialize :data, Array
 
   #Nach dem Anlegen das letzte Ergebnis desselben Assessment finden und verlinken (ggf. nil)
@@ -21,12 +22,17 @@ class Result < ApplicationRecord
     end
   end
 
-  # Schattenkopie anlegen. falls Result-Objekt nicht leer und länger als 24h in der Datenbank (sonst vermutlich Fehlerhaft)
+  # Schattenkopie anlegen. falls Result-Objekt nicht leer und länger als 24h in der Datenbank (sonst vermutlich fehlerhaft). Prior Verweis aktualisieren
   before_destroy do |result|
-    if (!result.test_data.nil? && result.test_date < Date.today)
+    if (!result.test_date.nil? && result.test_date < Date.today)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
-      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, results: result.results, data: result.data)
+      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, results: result.results, report: result.report, data: result.data)
+    end
+    r = Result.where(prior_result_id: result.id).first
+    unless r.nil?
+      r.prior_result = result.prior_result
+      r.save
     end
   end
 
@@ -35,21 +41,10 @@ class Result < ApplicationRecord
     json = super(except: [:created_at, :updated_at])
   end
 
-  #Markiert ein Objekt als gelöscht durch Löschen des Testdatums, aktualisiert prior_result Verweise
-  def delete
-    self.test_date = nil
-    r = Result.where(prior_result_id: self.id).first
-    unless r.nil?
-      r.prior_result = self.prior_result
-      r.save
-    end
-    save
-  end
-
   #Eintrag 'total' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
-  def get_support_total
-    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:total)
-      results[:support][:total]
+  def get_trend
+    unless report.nil? || !report.has_key?(:total)
+      report[:total]
     else
       0
     end
@@ -57,8 +52,8 @@ class Result < ApplicationRecord
 
   #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_support_items
-    unless results.nil? || !results.has_key?(:support) || !results[:support].has_key?(:items)
-      results[:support][:items]
+    unless report.nil? || !report.has_key?(:negative)
+      report[:negative]
     else
       []
     end

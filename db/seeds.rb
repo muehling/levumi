@@ -85,9 +85,9 @@
       {
           results: {
               'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33} ,
-              'support': {'total': 0, 'items': ['I2', 'I3', 'I6']}
+              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33}
           },
+          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 1},
               {item: 'I2', result: 0},
@@ -100,9 +100,9 @@
       {
           results: {
               'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33} ,
-              'support': {'total': 0, 'items': ['I2', 'I3', 'I6']}
+              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33}
           },
+          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 1},
               {item: 'I2', result: 0},
@@ -115,9 +115,9 @@
       {
           results: {
               'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 1, 'Vögel': 0} ,
-              'support': {'total': 0, 'items': ['I1', 'I2', 'I3']}
+              'Detailauswertung': {'Katzen': 1, 'Vögel': 0}
           },
+          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 0},
               {item: 'I2', result: 0},
@@ -188,7 +188,7 @@
   s = Student.find(1)
   i = 1
   results.each do |r|
-    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, results: r[:results], data: r[:data])
+    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, results: r[:results], report: r[:report], data: r[:data])
     i = i+1
   end
 

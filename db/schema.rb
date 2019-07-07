@@ -135,6 +135,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.date "test_date"
     t.date "test_week"
     t.text "results"
+    t.text "report"
     t.text "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -149,6 +150,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.date "test_date"
     t.date "test_week"
     t.text "results"
+    t.text "report"
     t.text "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

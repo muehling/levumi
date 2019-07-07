@@ -7,6 +7,7 @@ class CreateResults < ActiveRecord::Migration[5.2]
       t.date :test_date
       t.date :test_week
       t.text :results
+      t.text :report
       t.text :data
       t.timestamps
     end
@@ -18,6 +19,7 @@ class CreateResults < ActiveRecord::Migration[5.2]
       t.date :test_date
       t.date :test_week
       t.text :results
+      t.text :report
       t.text :data
       t.timestamps
     end
