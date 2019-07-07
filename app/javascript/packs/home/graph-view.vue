@@ -146,7 +146,7 @@
 </template>
 
 <script>
-    import cloner from 'cloner';
+    import deepmerge from 'deepmerge';
     export default {
         props: {
             annotations: Array,
@@ -168,6 +168,9 @@
                         toolbar: {
                             show: false,
                         },
+                        zoom: {
+                            enabled: false
+                        }
                     },
                     grid: {
                         padding: {
@@ -176,7 +179,12 @@
                         }
                     },
                     xaxis: {
-                        type: 'timeseries',
+                        type: 'numeric',
+                        min: 0,
+                        max: this.weeks.length-1,
+                        tickAmount: this.weeks.length-1,
+                        tickPlacement: 'on',
+                        categories: this.weeks
                     },
                     markers: {
                         size: 4,
@@ -197,23 +205,30 @@
         },
         computed: {
             options: function () { //Options für die gewählte Ansicht mit den globalen Options vereinen
-                let opt = cloner.shallow.copy(this.default_options)
-                opt.xaxis.categories = cloner.shallow.copy(this.weeks)
-                opt = cloner.deep.merge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
+
+                //Optionen für Graph aus Default Werten und gewählten Werten bauen
+                let opt = JSON.parse(JSON.stringify(this.default_options))
+                opt = deepmerge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
+
+                //Wochen einfügen
+                opt.xaxis.labels = {
+                    formatter: function (value, timestamp, index) {
+                        return this.weeks[index]
+                    }.bind(this)
+                }
+
                 //Kommentare einfügen
                 opt['annotations'] = {
                     position: 'front',
-                    xaxis: [{
-
-                    }]
+                    xaxis: []
                 }
                 for (let i = 0; i < this.annotations.length; ++i)
                     if (this.annotations[i].view == this.view_selected &&
                         ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
-                            (this.student_selected == -1 && this.annotations[i].group_id != null)))
+                            (this.student_selected == -1 && this.annotations[i].group_id != null))) {
                         opt['annotations']['xaxis'].push({
-                            x: this.annotations[i].start,
-                            x2: this.annotations[i].start == this.annotations[i].end ? null : this.annotations[i].end,
+                            x: this.weeks.indexOf(this.annotations[i].start),
+                            x2: this.annotations[i].start == this.annotations[i].end ? null : this.weeks.indexOf(this.annotations[i].end),
                             strokeDashArray: 1,
                             borderColor: '#c2c2c2',
                             fillColor: '#c2c2c2',
@@ -233,6 +248,7 @@
                                 },
                             },
                         })
+                    }
                 return opt
             },
             series: function () {  //Bereitet die Results-Daten so auf, dass sie im Chart dargestellt werden können.
@@ -266,7 +282,7 @@
                         for (let r = 0; r < res.length; ++r) {
                             if (res[r].name == student) {
                                 res[r].data.push({
-                                    x: this.results[i].test_week,
+                                    x: this.weeks.indexOf(this.results[i].test_week),
                                     y: this.results[i].results[view.label].toFixed(2), //Macht das Runden hier immer Sinn?
                                 })
                                 break
@@ -275,7 +291,7 @@
                     } else if (this.results[i].student_id == this.students[this.student_selected].id) {
                         for (let r = 0; r < view.series.length; ++r) {
                             res[r].data.push({
-                                x: this.results[i].test_week,
+                                x: this.weeks.indexOf(this.results[i].test_week),
                                 y: this.results[i].results[view.label][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
                             })
                         }

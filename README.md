@@ -11,8 +11,14 @@
 	* Zusätzlich ein Eintrag mit dem Key 'support' für Fördervorschläge. Dieser Eintrag verweist auf einen Hash mit den folgenden Keys:
 		* total: 1 / 0 / -1 für "Verbesserung", "Keine Änderung" und "Verschlechterung", aus Sicht des Tests.
 		* items: Array mit Shorthand der Items für die diese Testung einen Förderbedarf nahelegt.
+
+##### report - Qualitative Aufbereitung
+    Hash mit drei Einträgen:
+		* total: 1 / 0 / -1 für "Verbesserung", "Keine Änderung" und "Verschlechterung", aus Sicht des Tests.
+		* positive: Array mit Shorthand der Items, die in dieser Testung "gut" waren.
+		* negative: Array mit Shorthand der Items, die in dieser Testung "schlecht" waren.
 	
-##### data - Weitere Daten der Testung
+##### extra_data - Weitere Daten der Testung
 	* Array mit genau einem Eintrag pro Item der Testung in der Reihenfolge der Testung
 	* Eintrag im Array ist ein Hash mit den folgenden Keys und Werten:
 		* item: Shorthand des Items 

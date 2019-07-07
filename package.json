@@ -10,6 +10,7 @@
     "cloner": "^0.4.0",
     "core-js": "3",
     "css-loader": "^2.1.1",
+    "deepmerge": "^3.3.0",
     "jquery": "^3.4.1",
     "popper.js": "^1.15.0",
     "rails-ujs": "^5.2.3",

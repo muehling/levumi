@@ -84,12 +84,22 @@
                                 <thead>
                                 <th>Datum</th>
                                 <th>Schüler/-in</th>
+                                <th>Positive Items</th>
+                                <th>Negative Items</th>
+                                <th>Trend</th>
                                 <th>Aktionen</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="result in grouped_results[date]">
                                     <td>{{ print_date(result.data.test_date) }}</td>
                                     <td>{{ student_name(result.data.student_id) }}</td>
+                                    <td><span v-for="(item, index) in result.data.report.positive">{{(index > 0 ? ', ' : '') + item}}</span></td>
+                                    <td><span v-for="(item, index) in result.data.report.negative">{{(index > 0 ? ', ' : '') + item}}</span></td>
+                                    <td>
+                                        <i class='fas fa-arrow-up' v-if="result.data.report.total > 0"></i>
+                                        <i class='fas fa-arrow-right' v-else-if="result.data.report.total == 0"></i>
+                                        <i class='fas fa-arrow-down' v-else></i>
+                                    </td>
                                     <td>
                                         <b-btn small
                                                variant='outline-danger'
@@ -130,7 +140,6 @@
                         :group="group"
                         :test="test.id"
                 >
-
                 </support-view>
             </b-tab>
 

@@ -27,7 +27,8 @@ class ResultsController < ApplicationController
   def update
     @result = Result.find(params[:id])
     @result.results = JSON.parse(params[:results])
-    @result.data = JSON.parse(params[:data])
+    @result.report = JSON.parse(params[:report])
+    @result.data = JSON.parse(params[:extra])
     @result.test_date = DateTime.now
     @result.save
     head :ok
@@ -38,7 +39,7 @@ class ResultsController < ApplicationController
     if @student.group.owner == @login
       @result = Result.find(params[:id])
       unless @result.nil? || @result.student != @student
-        @result.delete
+        @result.destroy
         head :ok
       else
         head 403

@@ -96,10 +96,10 @@ class Material < ApplicationRecord
     students.each do |s|
       generic = []
       last_results = Result.where(student_id: s.id, assessment_id: assessment.id).order(test_week: :desc).limit(6).all
-      if last_results.size > 1 && last_results[0].get_support_total < 0
+      if last_results.size > 1 && last_results[0].get_trend < 0
         #Fall 1: Letzte Testung war schlechter => Förderung vorschlagen
         generic = Material.find(generic_supports.map{|sup| sup.material_id})
-      elsif last_results.size > 2 && last_results[0].get_support_total == 0 && last_results[1].get_support_total == 0
+      elsif last_results.size > 2 && last_results[0].get_trend == 0 && last_results[1].get_trend == 0
         #Fall 2: Letzte beide Testungen ohne Zuwachs => Förderung vorschlagen
         generic = Material.find(generic_supports.map{|sup| sup.material_id})
       end

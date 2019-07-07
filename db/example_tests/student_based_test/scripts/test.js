@@ -57,11 +57,15 @@ function next(btn) {
     else {
         result.push({'item': items[current-1].id, 'group': items[current-1].group, 'result': res})
         let sum = [0, 0]
-        let items = []
+
+        let p_items = []
+        let n_items = []
         for (let i = 0; i < result.length; ++i) {
             sum[result[i].group] += result[i].result
             if (result[i].result == 0)
-                items.push(result[i].item)
+                n_items.push(result[i].item)
+            else
+                p_items.push(result[i].item)
         }
 
         let total = lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0
@@ -70,8 +74,8 @@ function next(btn) {
             {
                 'Übersicht': (sum[0] + sum[1]) / result.length,
                 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
-                'support': {'total': total, 'items': items}
             },
+            {'total': total, 'positive': p_items, 'negative': n_items},
             result
         )
 
