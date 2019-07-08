@@ -24,3 +24,20 @@
 		* item: Shorthand des Items 
 		* result: Item-Rohwert (wird in diesem Format exportiert)
 		* (optional) time: Bearbeitungszeit des Items in ms
+		
+#### function exit()
+    * Beendet den Testablauf und leitet auf die Übersichtsseite(Lehrer:Startseite + Assessment ausgewählt, Schüler: Startseite) zurück.
+
+#### function startTimer()
+    * Erstellt ein neues Datum.
+
+#### function stoptimer()
+    * Erstellt ein neues Datum und gibt die Differenz zwischen dem Datum von startTimer und stopTimer zurück.
+
+#### function shuffleArray(array)
+    * Mischt ein übergebenes Array.
+ 
+#### function showFeedback(result, timedout)
+    * Zeigt eine abschließende Seite anhand des Ergebnisses an.
+        * result: -1, 0, 1 für die "Verbesserung", abhängig vom letztens Resultobjekt.
+        * timedout: Wahrheitswert der angibt, ob die Zeit des Tests abgelaufen ist.
