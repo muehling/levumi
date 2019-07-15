@@ -87,7 +87,8 @@ class Test < ApplicationRecord
       end
 
       #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
-      test = family.tests.build(vals.slice('level', 'shorthand', 'student_test', 'configuration').merge({description: {"full"=>vals['full_description'], "short"=>vals['short_description']}}))
+      test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+
       #MaterialSupport Einträge für neue Version kopieren
       if update && !old_test.nil?
         todo = MaterialSupport.where(test_id: old_test.id)
