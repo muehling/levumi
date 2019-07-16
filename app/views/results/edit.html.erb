@@ -18,7 +18,7 @@
     }
 
     //Vorheriges Ergebnis als Objekt
-    <% if @result.prior_result.nil? %>
+    <% unless @result.prior_result.nil? %>
     const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
     <% else %>
     const lastResult = undefined
