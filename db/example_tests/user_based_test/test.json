@@ -30,9 +30,6 @@
         "options": {
           "chart": {
             "type": "bar"
-          },
-          "stroke": {
-            "curve": "straight"
           }
         }
       }
