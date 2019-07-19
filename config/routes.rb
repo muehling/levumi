@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   post 'signup' => 'application#signup'
   get 'static' => 'application#static'
   get 'export' => 'application#export'
+  post 'transfer_data' => 'application#transfer_data'
 
   get 'schueler' => 'frontend#welcome'
   post 'frontend/login' => 'frontend#login'

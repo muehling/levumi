@@ -100,6 +100,124 @@ class ApplicationController < ActionController::Base
     @users = User.all
   end
 
+  def transfer_data
+    client_data = JSON.parse(params[:data])
+    data_to_transfer = {}
+
+    #prepare user for tranfer
+    user_transfer =  {id: @login_user.id, email: @login_user.email, password_digest: @login_user.password_digest,
+                      institution: @login_user.school, capabilities: @login_user.capabilities,
+                      account_type: @login_user.account_type, state: @login_user.state}
+    data_to_transfer[:user] = user_transfer
+
+    #prepare groups for tranfer
+    groups_transfer = {}
+    students_transfer = {}
+    assessments_transfer = {}
+    groups = @login_user.groups
+    groups.each do |g|
+      if !g.demo
+        groups_transfer[g.id] = {label: g.name, archive: g.archive, key: client_data[g.id.to_s]['key']}
+        students_transfer[g.id] = {}
+        assessments_transfer[g.id] = {}
+      end
+    end
+    data_to_transfer[:groups] = groups_transfer
+
+
+    students = Student.where(group_id:groups)
+    #prepare students for transfer
+    students.each do |s|
+      if s.specific_needs.nil?
+        sen = nil
+      elsif s.specific_needs == 0
+        sen = 0
+      elsif s.specific_needs == 1
+        sen = 1
+      elsif s.specific_needs == 2
+        sen = 2
+      elsif s.specific_needs == 3
+        sen = 0
+      else
+        sen = 4
+      end
+      students_transfer[s.group_id][s.id] = {name: client_data[s.group_id.to_s]['students'][s.id.to_s],
+                                     gender: (s.gender.nil? ? nil : (s.gender ? 1 : 0)), birthmonth: s.birthdate,
+                                     migration: (s.migration.nil? ? nil : (s.migration ? 1 : 0)), sen: sen}
+    end
+    data_to_transfer[:students] = students_transfer
+    #prepare assessments for transfer and merge relevant data from test
+    assessments = Assessment.where(group_id:groups)
+    test = Test.all.pluck(:id, :name, :level, :construct, :subject)
+    test_transfer = {}
+    test.each do |t|
+      if t[1] == "Sinnentnehmendes Lesen"
+        t[1] = "Sinnkonstruierendes Satzlesen"
+        t[3] = "Sinnkonstruierendes Satzlesen"
+      end
+      test_transfer[t[0]] = {name:t[1], level: t[2], construct: t[3], subject: t[4]}
+    end
+    measurements = Measurement.where(assessment_id: assessments).pluck(:id, :assessment_id)
+    measurements_transfer = {}
+    measurements.each do |m|
+      if measurements_transfer[m[1]].nil?
+        measurements_transfer[m[1]] = [m[0]]
+      else
+        measurements_transfer[m[1]] = measurements_transfer[m[1]] + [m[0]]
+      end
+    end
+    assessments.each do |a|
+      assessments_transfer[a.group_id][a.id] = {test_id: a.test_id, testName: test_transfer[a.test_id][:name], testlvl: test_transfer[a.test_id][:level],
+                                        testCon: test_transfer[a.test_id][:construct], testSubj: test_transfer[a.test_id][:subject], measurements: measurements_transfer[a.id]}
+    end
+    data_to_transfer[:assessments] = assessments_transfer
+
+    #prepare results for transfer
+    results = Result.where(student_id: students)
+    results_transfer = {}
+    results.each do |r|
+      prior_result = r.getPriorResult()
+      if prior_result == -1 || r.total == prior_result
+        total = 0
+      elsif r.total > prior_result
+        total  = 1
+      else
+        total = -1
+      end
+      if results_transfer[r.student_id].nil?
+        results_transfer[r.student_id] = [{measurement_id: r.measurement_id, test_date: r.created_at, results:{'Übersicht': r.total}, report:{total: total, positive:"1", negative:"1" }, data:"1" }]
+      else
+        results_transfer[r.student_id] = results_transfer[r.student_id] + [{measurement_id: r.measurement_id, test_date: r.created_at, results:{'Übersicht': r.total}, report:{total: total, positive:"1", negative:"1" }, data:"1" }]
+      end
+    end
+    data_to_transfer[:results] = results_transfer
+
+
+    #send data to new Levumi
+=begin
+    TODO:Fill with data and test
+    uri = URI.parse('???')
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    request = Net::HTTP::Post.new(uri.request_uri)
+
+    data_to_send = {method:"???",params:{username:"?", password:"???"}}
+    request.body = data_to_send.to_json
+
+    request["Content-Type"] = "application/json"
+    request["Data-Type"] = 'json'
+    response = JSON.parse(http.request(request).body)
+=end
+    p "send"
+    @login_user.transferred = true
+    @login_user.save
+
+    flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
+    respond_to do |format|
+      format.js   {}
+    end
+  end
+
   private
   #check if user is logged in
   def check_login

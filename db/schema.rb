@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180506125803) do
+ActiveRecord::Schema.define(version: 20190719140003) do
 
   create_table "assessments", force: :cascade do |t|
     t.integer  "group_id"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 20180506125803) do
     t.integer  "account_type"
     t.integer  "state"
     t.integer  "occupation"
+    t.boolean  "transferred"
   end
 
 end
