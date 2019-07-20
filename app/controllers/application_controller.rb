@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: [:start, :login, :frontend, :login_frontend]
+  before_action :set_login, except: [:start, :login, :frontend, :login_frontend, :recieve]
   before_action :set_locale
 
   #Normaler Zugang

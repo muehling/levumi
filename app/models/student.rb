@@ -35,8 +35,11 @@ class Student < ApplicationRecord
 
   #Setter für "birthmonth" - Damit Format "YYYY-MM" akzeptiert wird
   def birthmonth=(value)
-    val = Date.strptime(value, '%Y-%m')
-    super(val)
+    if value.nil?
+    else
+      val = Date.strptime(value, '%Y-%m')
+      super(val)
+    end
   end
 
   #Liefert die aktuellen Assessments eines Schülers zurück. Archivierte Tests werden ignoriert.

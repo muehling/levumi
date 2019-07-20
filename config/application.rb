@@ -29,5 +29,16 @@ module Levumi2
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    #TODO:erlaubt aktuell zugriff von jede localhost. Port scheint irrelevant zu sein
+    #origins sollte später levumi.de sein. (Request aus eigner Domain)
+    config.middleware.use Rack::Cors do
+      allow do
+        origins 'localhost:3000'
+        resource '*',
+                 headers: :any,
+                 methods: [:get, :post, :put, :delete, :options]
+      end
+    end
   end
 end
