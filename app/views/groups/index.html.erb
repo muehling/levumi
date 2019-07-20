@@ -124,10 +124,11 @@
         var students = JSON.parse(sessionStorage['students']);
         Object.keys(students).forEach(function(keyGroup) {
             var key = createKey();
-            students[keyGroup]['key'] = encrypt_key(key)
+            students[keyGroup]['key'] = encrypt_key(key);
+            students[keyGroup]['token'] = generate_token(key);
             students[keyGroup]['students'] = {};
             Object.keys(students[keyGroup]).forEach(function(keyStudent) {
-                if(keyStudent!='key' && keyStudent!='students'){
+                if(keyStudent!='key' && keyStudent!='students'&&keyStudent!='token'){
                     students[keyGroup]['students'][keyStudent] = encrypt(students[keyGroup][keyStudent], key);
                     delete students[keyGroup][keyStudent];
                 }
