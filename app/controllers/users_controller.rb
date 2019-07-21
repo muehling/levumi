@@ -15,7 +15,24 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    if params.has_key?(:recode)  #Umkodierung aller Share-Keys durch Passwort-Änderung
+    if params.has_key?('text') && @login.id == @user.id       #Send mail to all users
+      if params.has_key?('teacher')
+        User.where(account_type: 0).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+        end
+      end
+      if params.has_key?('researcher')
+        User.where(account_type: 1).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+        end
+      end
+      if params.has_key?('private')
+        User.where(account_type: 2).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+        end
+      end
+      render js: "alert('Nachricht wurde verschickt!')"
+    elsif params.has_key?(:recode)  #Umkodierung aller Share-Keys durch Passwort-Änderung
       todo = JSON.parse(params[:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupAccess-Objekte.
       todo.each do |k, v|
         ga = GroupShare.where(user: @login, group_id: k).first
