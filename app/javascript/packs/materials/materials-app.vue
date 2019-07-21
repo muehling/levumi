@@ -143,7 +143,7 @@
                     for (let m = 0; m < this.materials.length; ++m)
                         if (this.materials[m].id == ids[i])
                             res.push(this.materials[m])
-                return res
+                return res.filter((x, i, a) => a.indexOf(x) == i)       //Doppelte Einträge entfernen, klappt wegen Objektidentität
             }
         },
         data: function () {

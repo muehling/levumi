@@ -357,6 +357,7 @@
                 this.annotation_start = null
                 this.annotation_end = null
                 this.annotation_text = ''
+                this.updateGraph()
             },
             week_labels(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]

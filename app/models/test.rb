@@ -105,7 +105,7 @@ class Test < ApplicationRecord
             item = old_test.items.find_by_shorthand(key)
             todo = MaterialSupport.where(item_id: item.id)
             todo.each do |m|
-              MaterialSupport.create(test_id: m.id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
+              MaterialSupport.create(test_id: m.test_id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
             end
           end
         end

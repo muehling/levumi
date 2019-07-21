@@ -1674,11 +1674,6 @@ clone-deep@^2.0.1:
     kind-of "^6.0.0"
     shallow-clone "^1.0.0"
 
-cloner@^0.4.0:
-  version "0.4.0"
-  resolved "https://registry.yarnpkg.com/cloner/-/cloner-0.4.0.tgz#364a86ba7995d4664efc9ccad27ea40b3fa652d2"
-  integrity sha1-NkqGunmV1GZO/JzK0n6kCz+mUtI=
-
 coa@^2.0.2:
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/coa/-/coa-2.0.2.tgz#43f6c21151b4ef2bf57187db0d73de229e3e7ec3"
