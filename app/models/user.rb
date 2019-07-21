@@ -102,10 +102,7 @@ class User < ApplicationRecord
 
   #Zufälliges Passwort erzeugen
   def generate_password
-
-    #pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
-    pw = "123" #TODO: Entfernen vor Deploy!
-
+    pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
     self.update_attributes({password: pw, password_confirmation: pw})
     return pw
   end

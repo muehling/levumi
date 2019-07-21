@@ -27,11 +27,11 @@
                                 @click="competence.used = true; select_competence(competence.info.id)"
                     >
                         <span :class="competence.used ? '' : 'text-muted'">{{competence.info.name}}</span>
-                        <b-popover v-if="!competence.used"
+                        <b-popover v-if="!competence.used && competence.info.description != undefined"
                                    :target="group.id + '_competence_' + competence.info.id"
                                    triggers="hover"
                         >
-                            <div v-html="competence.info.description.short"> </div>
+                            <div v-html="competence.info.description"> </div>
                         </b-popover>
                     </b-nav-item>
                 </b-nav>
@@ -46,7 +46,7 @@
                                 @click="family.used=true; select_family(family.info.id)"
                     >
                         <span :class="family.used ? '' : 'text-muted'">{{family.info.name}}</span>
-                        <b-popover v-if="!family.used"
+                        <b-popover v-if="!family.used && family.info.description != undefined"
                                    :target="group.id + '_family_' + family.info.id"
                                    triggers="hover"
                         >
@@ -65,7 +65,7 @@
                                 @click="test.used ? (test.versions.length == 1 ? loadAssessment(test.info.id, false) : test_selected = test.info.id) : createAssessment(test, false)"
                     >
                         <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
-                        <b-popover v-if="!test.used"
+                        <b-popover v-if="!test.used && test.info.description.short != undefined"
                                    :target="group.id + '_test_' + test.info.id"
                                    triggers="hover"
                         >
@@ -84,7 +84,7 @@
                                 @click="version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)"
                     >
                         <span :class="version.used ? '' : 'text-muted'">{{version.info.label}}</span>
-                        <b-popover v-if="!version.used"
+                        <b-popover v-if="!version.used && version.info.description.short != undefined"
                                    :target="group.id + '_version_' + version.info.id"
                                    triggers="hover"
                         >
@@ -217,6 +217,7 @@
                 this.family_selected = -1
                 this.test_selected = -1
                 this.version_selected = -1
+                this.results = null
             },
             //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_competence(competence) {
@@ -224,12 +225,14 @@
                 this.family_selected = -1
                 this.test_selected = -1
                 this.version_selected = -1
+                this.results = null
             },
             //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_family(family) {
                 this.family_selected = family
                 this.test_selected = -1
                 this.version_selected = -1
+                this.results = null
             }
         },
         name: 'group-view'

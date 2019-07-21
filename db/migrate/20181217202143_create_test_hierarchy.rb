@@ -3,7 +3,6 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
     create_table :areas do |t|
       t.string :name
       t.string :color
-
       t.timestamps
     end
 
@@ -11,7 +10,6 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.string :name
       t.text :description
       t.belongs_to :area, index: true
-
       t.timestamps
     end
 
@@ -19,7 +17,6 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.string :name
       t.text :description
       t.belongs_to :competence, index: true
-
       t.timestamps
     end
 

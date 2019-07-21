@@ -64,7 +64,7 @@ class UsersController < ApplicationController
       end
     else                                   #Anfrage kommt von der Registrierungsseite
       if @user.save
-        #Mail senden...
+        UserMailer.with(user: @user, password: pw).welcome.deliver_later
         render 'create_register'
       else
         render 'new'
