@@ -238,10 +238,3 @@
         name: 'group-view'
     }
 </script>
-
-<style>
-    .nav>li>a {
-        padding-top: 4px;
-        padding-bottom: 4px;
-    }
-</style>

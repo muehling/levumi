@@ -42,7 +42,7 @@
             <b-col>
                 <div class='ml-2'>
                     <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
-                        Kommentare
+                        Anmerkungen
                         <i class='when-closed fas fa-caret-down'></i>
                         <i class='when-opened fas fa-caret-up'></i>
                     </b-button>
@@ -54,7 +54,7 @@
                                 data-remote='true'
                                 v-on:ajax:success="success"
                         >
-                            <b-form-row>
+                            <b-form-row class='text-small'>
                                 <b-col>
                                     <label>Datumsbereich</label>
                                 </b-col>
@@ -84,6 +84,7 @@
                                            name='annotation[view]'
                                     />
                                     <b-form-textarea
+                                            class='text-small'
                                             name='annotation[content]'
                                             v-model="annotation_text"
                                             placeholder="Hier die Anmerkung eingeben..."
@@ -106,7 +107,7 @@
                                 </b-col>
                             </b-form-row>
                         </b-form>
-                        <table class='table table-sm table-striped table-borderless mt-1'>
+                        <table class='table table-sm table-striped table-borderless mt-1 text-small'>
                             <thead>
                             <tr>
                                 <th>Von</th>
@@ -246,7 +247,7 @@
                         pdf.text('Ganze Klasse - ' + this.configuration.views[this.view_selected].label, 10, 20)
                     else
                         pdf.text(this.students[this.student_selected].name + ' - ' + this.configuration.views[this.view_selected].label, 10, 10)
-                    pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 90)
+                    pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
                     pdf.save(this.test.shorthand + '.pdf')
                 })
             },

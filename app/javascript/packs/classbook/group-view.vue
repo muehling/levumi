@@ -30,9 +30,9 @@
 
     <!-- Darstellung für archivierte Klasse -->
     <div v-else>
-        <p>
+        <p class='text-small'>
             <em>Ins Archiv verschoben am {{ date }}</em><br/>
-            Schüler_innen: {{groups[index].size}}
+            <span >Schüler_innen: {{groups[index].size}}</span>
         </p>
         <!-- rails-ujs Link beinhaltet Auth_Token-->
         <a class='btn btn-sm btn-outline-primary'

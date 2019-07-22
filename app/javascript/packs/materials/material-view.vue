@@ -1,16 +1,16 @@
 <template>
     <div v-if="full">
         <p class='text-light bg-secondary'>&nbsp;Beschreibung</p>
-        <div v-html="material.description.full">
+        <div class='text-small' v-html="material.description.full">
         </div>
         <br/>
         <p class='text-light bg-secondary'>&nbsp;Benutzungshinweise</p>
-        <div v-html="material.description.usage">
+        <div class='text-small' v-html="material.description.usage">
         </div>
         <br/>
         <p class='text-light bg-secondary'>&nbsp;Material</p>
             <ul>
-                <li v-for="(f, i) in material.files" :key="i"><a :href="f.path" target='_blank'>{{f.name}}</a></li>
+                <li v-for="(f, i) in material.files" :key="i"><a :href="f.path" class='text-muted text-reset' target='_blank'>{{f.name}}</a></li>
             </ul>
     </div>
     <div v-else>

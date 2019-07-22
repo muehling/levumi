@@ -2,7 +2,7 @@
     <b-container fluid v-cloak>
         <b-row class='mt-3'>
             <b-col md='12'>
-                <div class='text-muted'>Kompetenzbereiche auswählen</div>
+                <div class='text-muted text-small'>Kompetenzbereiche auswählen</div>
                 <b-button-group>
                     <b-button class='mr-1' variant='outline-primary' v-for="area in all_areas" :key="area.id" :pressed.sync="area.selected">
                         {{area.name}}
@@ -12,7 +12,7 @@
         </b-row>
         <b-row class='mt-2' v-if="filtered_competences.length > 0">
             <b-col md='12'>
-                <div class='text-muted'>Konstrukte auswählen</div>
+                <div class='text-muted text-small'>Konstrukte auswählen</div>
                 <b-button-group>
                     <b-button class='mr-1' variant='outline-primary' v-for="competence in filtered_competences" :key="competence.id" :pressed.sync="competence.selected">
                         {{competence.name}}
@@ -22,7 +22,7 @@
         </b-row>
         <b-row class='mt-2' v-if="filtered_families.length > 0">
             <b-col md='12'>
-                <div class='text-muted'>Testfamilien auswählen</div>
+                <div class='text-muted text-small'>Testfamilien auswählen</div>
                 <b-button-group>
                     <b-button class='mr-1' variant='outline-primary' v-for="family in filtered_families" :key="family.id" :pressed.sync="family.selected">
                         {{family.name}}
@@ -32,7 +32,7 @@
         </b-row>
         <b-row class='mt-2' v-if="filtered_tests.length > 0">
             <b-col md='12'>
-                <div class='text-muted'>Tests auswählen</div>
+                <div class='text-muted text-small'>Tests auswählen</div>
                 <b-button-group>
                     <b-button class='mr-1' variant='outline-primary' v-for="test in filtered_tests" :key="test.id" :pressed.sync="test.selected">
                         {{test.level}}

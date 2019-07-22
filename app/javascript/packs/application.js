@@ -25,14 +25,12 @@ import StudentView from './testing/student-view'
 
 
 //Stylesheets
-
 import "@fortawesome/fontawesome-free/css/all.css" //FontAwesome für Icons
 import 'bootstrap/dist/css/bootstrap.css' //Bootstrap-Styles
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 //Selbst definierte Styles
 import 'css/application.css'
-
 
 //Vorbereitungscode
 
