@@ -130,7 +130,7 @@
                         :group="group"
                         :results="results"
                         :students="students"
-                        :test="test.id"
+                        :test="test"
                 ></graph-view>
             </b-tab>
 

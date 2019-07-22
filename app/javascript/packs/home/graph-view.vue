@@ -39,122 +39,130 @@
             <div id='chart'></div>
         </b-row>
         <b-row>
-            <div class='ml-3'>
-                <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
-                    Kommentare
-                    <i class='when-closed fas fa-caret-down'></i>
-                    <i class='when-opened fas fa-caret-up'></i>
-                </b-button>
-                <b-collapse id='annotation_collapse' v-on:shown="auto_scroll('#annotation_collapse')">
-                    <b-form class='mt-2'
-                            :action="'/groups/' + group + '/assessments/' + test + '/annotations'"
-                            accept-charset='UTF-8'
-                            method='post'
-                            data-remote='true'
-                            v-on:ajax:success="success"
-                    >
-                        <b-form-row>
-                            <b-col>
-                                <label>Anzeigebereich</label>
-                            </b-col>
-                            <b-col>
-                                <b-form-select name='annotation[start]' v-model="annotation_start" :options="week_labels(true)" size='sm'></b-form-select>
-                            </b-col>
-                            <b-col>
-                                <b-form-select name='annotation[end]' v-model="annotation_end" :options="week_labels(false)" size='sm'></b-form-select>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row class='mt-1'>
-                            <b-col>
-                                <!-- Hidden Field mit user bzw group id -->
-                                <input v-if="student_selected == -1"
-                                       type='hidden'
-                                       :value="group"
-                                       name='annotation[group_id]'
-                                />
-                                <input v-else
-                                       type='hidden'
-                                       :value="students[student_selected].id"
-                                       name='annotation[student_id]'
-                                />
-                                <!-- Hidden Field mit view -->
-                                <input type='hidden'
-                                       :value="view_selected"
-                                       name='annotation[view]'
-                                />
-                                <b-form-textarea
-                                        name='annotation[content]'
-                                        v-model="annotation_text"
-                                        placeholder="Hier die Anmerkung eingeben..."
-                                        rows="2"
-                                        max-rows="3"
-                                >
-                                </b-form-textarea>
-                            </b-col>
-                        </b-form-row>
-                        <b-form-row class='mt-1'>
-                            <b-col>
-                                <b-button
-                                        type='submit'
-                                        variant='outline-success'
-                                        size='sm'
-                                        :disabled="annotation_text.trim().length === 0 || annotation_end == null || annotation_start == null"
-                                >
-                                    <i class='fas fa-check'></i> Anmerkung speichern
-                                </b-button>
-                            </b-col>
-                        </b-form-row>
-                    </b-form>
-                    <table class='table table-sm table-striped table-borderless mt-1'>
-                        <thead>
-                        <tr>
-                            <th>Von</th>
-                            <th>Bis</th>
-                            <th>Anmerkung</th>
-                            <th>Aktionen</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(a, i) in annotations"
-                            v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
-                            :key="a.id"
+            <b-col>
+                <div class='ml-2'>
+                    <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
+                        Kommentare
+                        <i class='when-closed fas fa-caret-down'></i>
+                        <i class='when-opened fas fa-caret-up'></i>
+                    </b-button>
+                    <b-collapse id='annotation_collapse' v-on:shown="auto_scroll('#annotation_collapse')">
+                        <b-form class='mt-2'
+                                :action="'/groups/' + group + '/assessments/' + test.id + '/annotations'"
+                                accept-charset='UTF-8'
+                                method='post'
+                                data-remote='true'
+                                v-on:ajax:success="success"
                         >
-                            <td>{{print_date(a.start)}}</td>
-                            <td>{{print_date(a.end)}}</td>
-                            <td>{{a.content}}</td>
-                            <td>
-                                <!-- rails-ujs Link -->
-                                <a class='btn btn-block btn-sm btn-outline-danger'
-                                   :href="'/groups/' + group + '/assessments/' + test + '/annotations/' + a.id"
-                                   data-method='delete'
-                                   data-remote='true'
-                                   data-confirm='Anmerkung löschen! Sind Sie sicher?'
-                                   v-on:ajax:success="annotations.splice(i, 1)"
-                                >
-                                    <i class='fas fa-trash'></i> Löschen
-                                </a>
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
-                </b-collapse>
-            </div>
-        </b-row>
+                            <b-form-row>
+                                <b-col>
+                                    <label>Datumsbereich</label>
+                                </b-col>
+                                <b-col>
+                                    <b-form-select name='annotation[start]' v-model="annotation_start" :options="week_labels(true)" size='sm'></b-form-select>
+                                </b-col>
+                                <b-col>
+                                    <b-form-select name='annotation[end]' v-model="annotation_end" :options="week_labels(false)" size='sm'></b-form-select>
+                                </b-col>
+                            </b-form-row>
+                            <b-form-row class='mt-1'>
+                                <b-col>
+                                    <!-- Hidden Field mit user bzw group id -->
+                                    <input v-if="student_selected == -1"
+                                           type='hidden'
+                                           :value="group"
+                                           name='annotation[group_id]'
+                                    />
+                                    <input v-else
+                                           type='hidden'
+                                           :value="students[student_selected].id"
+                                           name='annotation[student_id]'
+                                    />
+                                    <!-- Hidden Field mit view -->
+                                    <input type='hidden'
+                                           :value="view_selected"
+                                           name='annotation[view]'
+                                    />
+                                    <b-form-textarea
+                                            name='annotation[content]'
+                                            v-model="annotation_text"
+                                            placeholder="Hier die Anmerkung eingeben..."
+                                            rows="2"
+                                            max-rows="3"
+                                    >
+                                    </b-form-textarea>
+                                </b-col>
+                            </b-form-row>
+                            <b-form-row class='mt-1'>
+                                <b-col>
+                                    <b-button
+                                            type='submit'
+                                            variant='outline-success'
+                                            size='sm'
+                                            :disabled="annotation_text.trim().length === 0 || annotation_end == null || annotation_start == null"
+                                    >
+                                        <i class='fas fa-check'></i> Anmerkung speichern
+                                    </b-button>
+                                </b-col>
+                            </b-form-row>
+                        </b-form>
+                        <table class='table table-sm table-striped table-borderless mt-1'>
+                            <thead>
+                            <tr>
+                                <th>Von</th>
+                                <th>Bis</th>
+                                <th>Anmerkung</th>
+                                <th>Aktionen</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr v-for="(a, i) in annotations"
+                                v-if="a.view == view_selected && ((student_selected != -1 && students[student_selected].id == a.student_id) || (student_selected == -1 && a.group_id != null))"
+                                :key="a.id"
+                            >
+                                <td>{{print_date(a.start)}}</td>
+                                <td>{{print_date(a.end)}}</td>
+                                <td>{{a.content}}</td>
+                                <td>
+                                    <!-- rails-ujs Link -->
+                                    <a class='btn btn-block btn-sm btn-outline-danger'
+                                       :href="'/groups/' + group + '/assessments/' + test.id + '/annotations/' + a.id"
+                                       data-method='delete'
+                                       data-remote='true'
+                                       data-confirm='Anmerkung löschen! Sind Sie sicher?'
+                                       v-on:ajax:success="annotations.splice(i, 1)"
+                                    >
+                                        <i class='fas fa-trash'></i> Löschen
+                                    </a>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </b-collapse>
+                </div>
+            </b-col>
+            <b-col>
+                <b-button class='float-right mr-4' size='sm' variant='outline-secondary' @click="export_graph">
+                    <i class='fas fa-file-pdf'></i>
+                    PDF erzeugen
+                </b-button>
+            </b-col>
+         </b-row>
     </div>
 </template>
 
 <script>
     import deepmerge from 'deepmerge'
     import ApexCharts from 'apexcharts'
+    import jsPDF from 'jspdf'
     export default {
         props: {
             annotations: Array,
             configuration: Object,
             group: Number,
-            parent: Object,
             results: Array,
             students: Array,
-            test: Number
+            test: Object
         },
         data: function () {
             return {
@@ -230,6 +238,18 @@
             }
         },
         methods: {
+            export_graph() {
+                var dataURL = this.apexchart.dataURI().then((uri) => {
+                    let pdf = new jsPDF({orientation: 'landscape'})
+                        pdf.text(this.test.full_name, 10, 10)
+                    if (this.student_selected == -1)
+                        pdf.text('Ganze Klasse - ' + this.configuration.views[this.view_selected].label, 10, 20)
+                    else
+                        pdf.text(this.students[this.student_selected].name + ' - ' + this.configuration.views[this.view_selected].label, 10, 10)
+                    pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 90)
+                    pdf.save(this.test.shorthand + '.pdf')
+                })
+            },
             updateGraph() {
                 //Options für die gewählte Ansicht mit den globalen Options vereinen
 
@@ -252,7 +272,6 @@
                     for (let i = 0; i < opt.xaxis.categories.length; ++i)
                         opt.xaxis.categories[i] = this.print_date(opt.xaxis.categories[i])
 
-                console.log(this.weeks)
                 //Kommentare einfügen
                 opt['annotations'] = {
                     position: 'front',

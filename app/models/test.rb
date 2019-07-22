@@ -16,6 +16,7 @@ class Test < ApplicationRecord
 
   #Entspricht dem Testnamen
   validates_presence_of :level
+  validates_uniqueness_of :shorthand
 
   #Konfiguration der Views und Beschreibung als Hash
   serialize :configuration, Hash
@@ -43,6 +44,7 @@ class Test < ApplicationRecord
     json = super(except: [:created_at, :updated_at])
     json['area_id'] = self.test_family.competence.area.id
     json['label'] = self.archive ? "Bis #{self.updated_at.strftime("%b %y")}" : 'Aktuell'
+    json['full_name'] = self.test_family.name + ' - ' + self.level
     json
   end
 
