@@ -150,8 +150,15 @@ class ApplicationController < ActionController::Base
     assessments = Assessment.where(group_id:groups)
     test = Test.all.pluck(:id, :shorthand)
     test_transfer = {}
+    items_test = {}
     test.each do |t|
       test_transfer[t[0]] = {shorthand:t[1]}
+      items = Item.where(test_id: t[0]).pluck(:id, :difficulty, :shorthand)
+      count = 1
+      items.each do |i|
+        items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2]}
+        count += 1
+      end
     end
     measurements = Measurement.where(assessment_id: assessments).pluck(:id, :assessment_id)
     measurements_transfer = {}
@@ -179,15 +186,37 @@ class ApplicationController < ActionController::Base
       else
         total = -1
       end
-      #TODO: positive, negativ und data füllen
-      results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
-                                              results:{Übersicht: r.total}, report:{total: total, positive:"1", negative:"1" },
-                                              data:[{item:"i1",time:"2", answers:"1"},{item:"i2",time:"2", answers:"1"}], created_at: r.created_at}]
+      data = []
+      p r
+      r.items.each_with_index do |item, index|
+        if r.response[0].nil?
+        else
+          if r.extra_data['answers'].nil?
+            if r.extra_data['times'][index].nil?
+              data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
+            else
+              data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
+            end
+          else
+            if r.extra_data['times'][index].nil?
+              data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
+            else
+              data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+            end
+          end
+
+          #TODO: positive, negativ und data füllen
+          results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
+                                                  results:{Übersicht: r.total}, report:{total: total, positive:"1", negative:"1" },
+                                                  data:[{item:"i1",time:"2", answers:"1"},{item:"i2",time:"2", answers:"1"}], created_at: r.created_at}]
+        end
+      end
     end
     data_to_transfer[:results] = results_transfer
 
 
     #send data to new Levumi
+=begin
     uri = URI.parse('http://localhost:4000/recieve')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = false
@@ -199,7 +228,9 @@ class ApplicationController < ActionController::Base
     request["Content-Type"] = "application/json"
     request["Data-Type"] = 'json'
     response = JSON.parse(http.request(request).body)
-
+=end
+    response = {}
+    response['status']=false
     if response['status']
       @login_user.transferred = true
       @login_user.save
