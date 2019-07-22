@@ -178,45 +178,55 @@ class ApplicationController < ActionController::Base
     results = Result.where(student_id: students)
     results_transfer = []
     results.each do |r|
-      prior_result = r.getPriorResult()
-      if prior_result == -1 || r.total == prior_result
-        total = 0
-      elsif r.total > prior_result
-        total  = 1
-      else
-        total = -1
-      end
-      data = []
-      p r
-      r.items.each_with_index do |item, index|
-        if r.response[0].nil?
+      if !r.responses[0].nil?
+        prior_result = r.getPriorResult()
+        if prior_result == -1 || r.total == prior_result
+          total = 0
+        elsif r.total > prior_result
+          total  = 1
         else
-          if r.extra_data['answers'].nil?
-            if r.extra_data['times'][index].nil?
-              data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
-            else
-              data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
-            end
+          total = -1
+        end
+        data = []
+        report = {total:total, positive:[], negative:[]}
+        p_items = []
+        n_items = []
+        r.items.each_with_index do |item, index|
+          if r.extra_data['times'].nil?
+            data += [{item: items_test[item][:id], group: items_test[item][:group]}]
           else
-            if r.extra_data['times'][index].nil?
-              data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
+            if r.extra_data['answers'].nil?
+              if r.extra_data['times'][index].nil?
+                data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
+              else
+                data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
+              end
+
             else
-              data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+              if r.extra_data['times'][index].nil?
+                data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
+              else
+                data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+              end
             end
           end
-
-          #TODO: positive, negativ und data füllen
-          results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
-                                                  results:{Übersicht: r.total}, report:{total: total, positive:"1", negative:"1" },
-                                                  data:[{item:"i1",time:"2", answers:"1"},{item:"i2",time:"2", answers:"1"}], created_at: r.created_at}]
+          if r.responses[index] == 1
+            p_items += [data.last]
+          elsif r.responses[index] == 0
+            n_items += [data.last]
+          end
         end
+        report[:positive] = p_items
+        report[:neagtive] = n_items
+        results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
+                                                results:{Übersicht: r.total}, report:report,
+                                                data:data, created_at: r.created_at}]
       end
     end
     data_to_transfer[:results] = results_transfer
 
 
     #send data to new Levumi
-=begin
     uri = URI.parse('http://localhost:4000/recieve')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = false
@@ -228,9 +238,7 @@ class ApplicationController < ActionController::Base
     request["Content-Type"] = "application/json"
     request["Data-Type"] = 'json'
     response = JSON.parse(http.request(request).body)
-=end
-    response = {}
-    response['status']=false
+
     if response['status']
       @login_user.transferred = true
       @login_user.save
