@@ -76,7 +76,7 @@
 /* Bootstrap Theming */
 :root {
     --primary-color: #5a598c;
-    --secondary-color:#636b72;
+    --secondary-color:#616970;
     --danger-color: #cc6560;
     --success-color: #5da066;
 }
@@ -153,7 +153,7 @@
     background-color: white;
 }
 
-/* Navs */
+/* Navs etc. */
 
 .nav>li>a,
 .btn {
@@ -165,6 +165,25 @@
     color: var(--primary-color);
 }
 
-.nav-pills .nav-link.active {
+.nav-link.disabled {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.nav-pills .nav-link.active,
+.dropdown-item:active {
+    background-color: var(--primary-color);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--secondary-color);
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: black;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: white;
     background-color: var(--primary-color);
 }

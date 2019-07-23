@@ -23,15 +23,15 @@
         <%= link_to 'Fördermaterial', materials_path, class: 'nav-link', id: 'navbarMaterial'%>
       </li>
       <li class='nav-item' id='intro4'>
-        <%= link_to 'Testinfos', tests_path, class: 'nav-link', id: 'navbarTests'%>
+        <%= link_to 'Tests', tests_path, class: 'nav-link', id: 'navbarTests'%>
       </li>
       <li class='nav-item dropdown' id='intro5'>
         <a class='nav-link dropdown-toggle' href='#' id='navbarHelp' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
           Hilfe
         </a>
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
-          <a class='dropdown-item' href='#'>Handbuch</a>
-          <a class='dropdown-item' href='#'>Videos</a>
+          <a class='dropdown-item disabled' href='#'>Handbuch</a>
+          <a class='dropdown-item disabled' href='#'>Videos</a>
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
         </div>
       </li>
@@ -52,7 +52,7 @@
               <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('test'), 'Testverwaltung', tests_path(admin: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('material'), 'Materialverwaltung', materials_path(admin: true), class: 'dropdown-item'%>
-              <a class='dropdown-item' href='#'>Datenexport</a>
+              <a class='dropdown-item disabled' href='#'>Datenexport</a>
             </div>
           </li>
         <% end %>

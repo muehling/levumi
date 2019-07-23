@@ -143,7 +143,7 @@
                 </div>
             </b-col>
             <b-col>
-                <b-button class='float-right mr-4' size='sm' variant='outline-secondary' @click="export_graph">
+                <b-button class='float-right mr-4' size='sm' variant='outline-primary' @click="export_graph">
                     <i class='fas fa-file-pdf'></i>
                     PDF erzeugen
                 </b-button>
