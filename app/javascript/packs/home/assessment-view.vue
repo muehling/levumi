@@ -13,10 +13,10 @@
                 </div>
                 <div v-else-if="!student_test">
                     <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
-                    <p>{{test.description.usage}}</p>
+                    <p class='text-small'>{{test.description.usage}}</p>
                     <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                    <p>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.</p>
-                    <p>Grün hinterlege Namen wurden in dieser Woche bereits getestet, wenn Sie erneut testen möchten, löschen Sie bitte die vorherige Messung!</p>
+                    <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
+                    Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung!</p>
                     <!-- Schüler anzeigen um Messung zu starten. -->
                     <b-button-group>
                         <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->

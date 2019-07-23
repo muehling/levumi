@@ -3,7 +3,7 @@
     <div>
         <!-- eigene Klasse => Infos anzeigen und teilen erlauben-->
         <div v-if="group.owner">
-            <table class='table table-sm table-striped table-responsive-md' v-if="group.shares.length > 0">
+            <table class='table table-sm table-striped table-responsive-md text-small' v-if="group.shares.length > 0">
                 <thead>
                 <tr>
                     <th>Geteilt mit</th>
@@ -46,12 +46,13 @@
                 </tbody>
             </table>
             <b-btn  v-b-toggle="'collapse_share_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-handshake'></i> Klasse teilen</b-btn>
-            <b-collapse :id="'collapse_share_' + group.id" class='mt-2' :visible="false">
+            <b-collapse :id="'collapse_share_' + group.id" class='mt-2 mb-4' :visible="false">
                 <b-form inline
                         :action="'/groups/' + group.id + '/group_shares'"
                         accept-charset='UTF-8'
                         method='post'
                         data-remote='true'
+                        class='text-small'
                         v-on:ajax:success="success"
                         v-on:ajax:error="failure"
                 >
