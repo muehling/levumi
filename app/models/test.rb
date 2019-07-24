@@ -16,7 +16,7 @@ class Test < ApplicationRecord
 
   #Entspricht dem Testnamen
   validates_presence_of :level
-  validates_uniqueness_of :shorthand
+  validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
   #Konfiguration der Views und Beschreibung als Hash
   serialize :configuration, Hash
@@ -74,7 +74,7 @@ class Test < ApplicationRecord
         family.save
       else
         unless family.nil?
-          old_test = family.tests.find_by_level(vals['level'])
+          old_test = family.tests.where(level: vals['level']).where.not(archive: true).first
           unless old_test.nil?
             if archive
               old_test.archive = true

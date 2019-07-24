@@ -3,6 +3,12 @@
     highlightNavItem('navbarSystem');
 </script>
 
+<% if @import_failure %>
+  <div class="alert alert-danger" role="alert">
+    Import fehlgeschlagen!
+  </div>
+<% end %>
+
 <div class='container-fluid mt-3'>
 
   <!-- Tabs -->

@@ -80,7 +80,7 @@
                                 :key="version.info.id"
                                 :id="group.id + '_version_' + version.info.id"
                                 :active="version.info.id == version_selected"
-                                v-if="version.used || !group.read_only"
+                                v-if="version.used || (!version.info.archive && !group.read_only)"
                                 @click="version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)"
                     >
                         <span :class="version.used ? '' : 'text-muted'">{{version.info.label}}</span>

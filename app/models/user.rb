@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   has_many :group_shares
-  has_many :groups, through: :group_shares
+  has_many :groups, -> { where.not(group_shares: {key: nil}) }, through: :group_shares
 
   has_secure_password
   validates_presence_of :email
@@ -58,7 +58,6 @@ class User < ApplicationRecord
 
     result = []
     groups.each do |group|
-
       used = group.assessments.map{|a| a.test_id}
 
       used_tests = Test.where(id: used).order(:level)
@@ -91,6 +90,10 @@ class User < ApplicationRecord
   def get_classbook_info
     result = []
     groups.each do |g|
+      result += [g.as_hash(self)]
+    end
+    #Gruppen dazunehmen für die ein Share-Angebot vorliegt, das aber noch nicht angenommen wurde. Diese fehlen in groups.
+    Group.find(GroupShare.where(user_id: self.id, key: nil).pluck(:group_id)).each do |g|
       result += [g.as_hash(self)]
     end
     return result
