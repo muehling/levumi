@@ -42,6 +42,7 @@
                                 <i class='fas fa-trash'></i> Nicht mehr teilen
                             </a>
                         </td>
+                        <td><span v-if="!share.accepted">Bitte teilen Sie {{share.user}} den Zugangsschlüssel mit: <b>{{share_key}}</b></span></td>
                     </tr>
                 </tbody>
             </table>
@@ -144,38 +145,39 @@
               not_found: false,
               exists: false,
               rights_selected: 1,
-              key: ''
+              key: '',
+              share_key: decrypt_key(keys[this.group.id])
           }
         },
         methods: {
-            success(event) { //Klasse updaten und View aktualisieren
-                this.$emit('update:groups', {index: this.index, object: event.detail[0]});
+            check_key() {
+                try{
+                    sjcl.decrypt(this.key, this.group.auth_token)
+                    return true
+                }
+                catch(e){
+                    return false
+                }
             },
             failure(event) {
                 if (event.detail[2].status == 404)
                     this.not_found = true
                 else
-                    this.exists = true;
-            },
-            check_key() {
-                try{
-                    sjcl.decrypt(this.key, this.group.auth_token);
-                    return true;
-                }
-                catch(e){
-                    return false;
-                }
+                    this.exists = true
             },
             prepare_key() {
-                return encrypt_key(this.key);
-            }
+                return encrypt_key(this.key)
+            },
+            success(event) { //Klasse updaten und View aktualisieren
+                this.$emit('update:groups', {index: this.index, object: event.detail[0]})
+            },
         },
         beforeCreate() {
             // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
             this.options_rights = [
                 {text: 'Nur Ansicht', value: 1, disabled: 0},
                 {text: 'Ansicht und verwenden', value: 0, disabled: 0}
-            ];
+            ]
         },
         name: 'share-form'
     }
