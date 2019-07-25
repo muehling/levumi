@@ -157,7 +157,6 @@
                           }
                           res.push({info: this.group_info.tests[i].info, used: used, versions: versions})
                   }
-                  console.log(res)
                 return res
             },
             //Alle Versionen des gewählten Tests
