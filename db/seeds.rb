@@ -63,24 +63,6 @@
       ]
   ]
 
-  tests = [
-      [
-          [
-             [
-                 {level: "Level 1", student_test: false},
-                 {level: "Level 2", student_test: true}
-             ],
-             [
-                 {level: "Niveaustufe 1"}
-             ]
-          ]
-      ],
-      [
-          []
-      ],
-      []
-  ]
-
   results = [
       {
           results: {
@@ -158,10 +140,6 @@
       competence = area.competences.create(c)
       families[i][j].each_with_index do |f, k|
         family = competence.test_families.create(f)
-        tests[i][j][k].each_with_index do |t, l|
-          test = family.tests.create(t)
-          test.save
-        end
         family.save
       end
       competence.save

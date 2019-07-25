@@ -111,7 +111,7 @@ class UsersController < ApplicationController
     end
 
     if request.patch?
-      if params.has_key?('tc_accepted_1') && params.has_key?('tc_accepted_2')
+      if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
         @user.intro_state = 1
         @user.save

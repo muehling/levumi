@@ -6,7 +6,7 @@ class User < ApplicationRecord
   validates_presence_of :email
   validates_uniqueness_of :email
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-
+  
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 16
 

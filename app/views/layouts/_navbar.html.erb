@@ -27,12 +27,14 @@
       </li>
       <li class='nav-item dropdown' id='intro5'>
         <a class='nav-link dropdown-toggle' href='#' id='navbarHelp' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-          Hilfe
+          Infomaterial
         </a>
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
           <a class='dropdown-item disabled' href='#'>Handbuch</a>
           <a class='dropdown-item disabled' href='#'>Videos</a>
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
+          <div class="dropdown-divider"></div>
+          <a class='dropdown-item disabled' href='#'>Einwilligungserklärung</a>
         </div>
       </li>
     </ul>
@@ -59,6 +61,16 @@
         <li class='nav-item' id='intro6'>
           <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
         </li>
+        <li class='nav-item dropdown'>
+          <a class='nav-link dropdown-toggle' href='#' id='navbarLegal' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+            Rechtliches
+          </a>
+          <div class='dropdown-menu' aria-labelledby='navbarLegal'>
+            <a class='dropdown-item' href='#' onclick="$('#imprint').modal('show')">Impressum</a>
+            <a class='dropdown-item' href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a>
+            <a class='dropdown-item' href='#' onclick="$('#tc').modal('show')">Nutzungsbedingungen</a>
+          </div>
+        </li>
         <li class='nav-item'>
           <a class='nav-link' href='/logout' data-method='post'>Ausloggen</a>
         </li>
@@ -67,6 +79,24 @@
 
   </div>
 </nav>
+
+<!-- Hier, da ansonsten auch auf der Startseite geladen, wo es kein @login gibt -->
+<div id='tc' class='modal fade' tabindex='-1'>
+  <div class='modal-dialog modal-dialog-scrollable modal-lg'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Nutzungsbedingungen</h5>
+        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='modal-body'>
+        <%= render 'application/terms_and_conditions' %>
+        <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
     //Setzt einen Eintrag der Navbar auf 'aktiv'

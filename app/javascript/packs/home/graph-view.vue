@@ -36,7 +36,7 @@
             </b-button-group>
         </b-row>
         <b-row>
-            <div id='chart'></div>
+            <div id='chart' style='width: 100%;'></div>
         </b-row>
         <b-row>
             <b-col>
@@ -176,6 +176,7 @@
                         chart: {
                             id: 'chart',
                             height: '500px',
+                            width: '100%',
                             type: 'bar',
                             toolbar: {show:false},
                             zoom: {enabled: false},
@@ -199,6 +200,7 @@
                         chart: {
                             id: 'chart',
                             height: '500px',
+                            width: '100%',
                             type: 'line',
                             toolbar: {show:false},
                             zoom: {enabled: false},

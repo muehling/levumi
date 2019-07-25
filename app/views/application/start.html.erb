@@ -39,19 +39,6 @@
     </style>
 <% end %>
 
-<%= content_for :modal do %>
-  <!-- Dialog zur Registrierung -->
-  <div class='modal-header'>
-    <h5 class='modal-title'>Registrierung</h5>
-    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-      <span aria-hidden='true'>&times;</span>
-    </button>
-  </div>
-  <div class='modal-body' id='modal-body'>
-    <%= render 'users/form/form_register', user: User.new %>
-  </div>
-<% end %>
-
 <%= content_for :navbar do %>
   <!-- Navbar mit Login-Dialog -->
   <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
@@ -86,6 +73,19 @@
       </li>
     </ul>
   </nav>
+<% end %>
+
+<%= content_for :modal do %>
+  <!-- Dialog zur Registrierung -->
+  <div class='modal-header'>
+    <h5 class='modal-title'>Registrierung</h5>
+    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+      <span aria-hidden='true'>&times;</span>
+    </button>
+  </div>
+  <div class='modal-body' id='modal-body'>
+    <%= render 'users/form/form_register', user: User.new %>
+  </div>
 <% end %>
 
 <%= content_for :body do %>
@@ -141,5 +141,12 @@
       </div>
     </div>
   </div>
+
+  <footer>
+    <ul class="list-inline text-center ">
+      <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
+      <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
+    </ul>
+  </footer>
 
 <% end %>
