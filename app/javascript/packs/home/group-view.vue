@@ -150,13 +150,14 @@
                       let versions = []
                       let used = false
                       for (let j = 0; j < this.group_info.tests.length; ++j)
-                          if (this.group_info.tests[i].info.level == this.group_info.tests[j].info.level) {
+                          if (this.group_info.tests[i].info.level == this.group_info.tests[j].info.level && this.group_info.tests[j].info.test_family_id == this.family_selected) {
                               versions.push(this.group_info.tests[j])
                               if (this.group_info.tests[j].used)
                                   used = true
                           }
                           res.push({info: this.group_info.tests[i].info, used: used, versions: versions})
                   }
+                  console.log(res)
                 return res
             },
             //Alle Versionen des gewählten Tests
@@ -169,6 +170,7 @@
                 for (let i = 0; i < this.group_info.tests.length; ++i)
                     if (this.group_info.tests[i].info.level === level && this.group_info.tests[i].info.test_family_id == this.family_selected)
                         res.push(this.group_info.tests[i])
+                //console.log(res)
                 return res
             }
         },
