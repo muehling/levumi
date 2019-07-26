@@ -169,7 +169,6 @@
                 for (let i = 0; i < this.group_info.tests.length; ++i)
                     if (this.group_info.tests[i].info.level === level && this.group_info.tests[i].info.test_family_id == this.family_selected)
                         res.push(this.group_info.tests[i])
-                //console.log(res)
                 return res
             }
         },
