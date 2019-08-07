@@ -40,7 +40,7 @@
             <b-col md='3'>
             </b-col>
             <b-col md='6'>
-                <b-card class='mt-5' header='Gleich geht es los, bitte gib noch deinen Zugangscode ein'>
+                <b-card class='mt-5' style="font-size:1.4em" header='Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein.'>
                     <b-form
                             action='/login_frontend'
                             accept-charset='UTF-8'
@@ -50,12 +50,12 @@
                             v-on:ajax:success="success"
                     >
                         <b-form-group>
-                            <b-form-input :state="retry ? false : null" type='text' name='login' id='login' placeholder='Zugangscode'/>
+                            <b-form-input :state="retry ? false : null" type='text' name='login' id='login' placeholder='Zugangscode' style="font-size:1.5em"/>
                             <div class='invalid-feedback'>
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
                         </b-form-group>
-                        <b-button type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
+                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
                     </b-form>
                 </b-card>
             </b-col>
