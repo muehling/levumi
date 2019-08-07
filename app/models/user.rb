@@ -117,7 +117,7 @@ class User < ApplicationRecord
 
   #Testklasse anlegen
   def create_demo(key, token)
-    g = Group.create(label: 'Beispiel-Klasse', demo: true, auth_token: token)
+    g = Group.create(label: 'Testklasse', demo: true, auth_token: token)
     GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 
