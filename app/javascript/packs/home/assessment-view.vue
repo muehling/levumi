@@ -37,7 +37,7 @@
                     <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                     <p>{{test.description.usage}}</p>
                     <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                    <p>Diesen Test müssen die Schüler*innen mit ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                    <p>Diesen Test müssen die Schüler*innen in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
                     <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                     <!-- Schüler nur als Info anzeigen -->
                     <b-button-group class='mt-3'>
