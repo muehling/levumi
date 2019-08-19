@@ -5,6 +5,7 @@
   <% end %>
 </style>
 
+<div id="error_message" class="text-center"> </div>
 <!-- Hauptseite rendern -->
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
@@ -29,17 +30,37 @@
     const font_size = <%= @result.student.get_setting(:font_size) %>
 
         //Funktionen für Testumgebung bereitstellen
-        function saveResults(result, report, extra_data) {
-            fetch('<%= student_result_url(@student, @result) %>', {
+        function saveResults(result, report, extra_data, callback) {
+            let url = '<%= student_result_url(@student, @result) %>'
+            let header = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            }
+            let body = 'results=' + encodeURIComponent(JSON.stringify(result)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&extra=' + encodeURIComponent(JSON.stringify(extra_data))
+
+            fetch(url, {
                 method: 'put',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                },
+                headers: header,
                 credentials: 'include',
-                body: 'results=' + encodeURIComponent(JSON.stringify(result)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&extra=' + encodeURIComponent(JSON.stringify(extra_data))
+                body: body
             })
+                .then(data => callback(data))
+                .catch(error => {
+                    //Bei ersten Error-> versuche die Daten nochmal abzuspeichern
+                    fetch(url, {
+                        method: 'put',
+                        headers: header,
+                        credentials: 'include',
+                        body: body
+                    })
+                        .then(data => callback(data))
+                        .catch(error => {
+                            //Anzeigen entgültigen "Fehlschlags"
+                            $('#error_message').html('Fehler aufgetreten! Ergebnis konnte nicht gespeichert werden!')
+                                .css('font-size', '1.5em').css('margin-top', '2%').css('background-color', 'rgba(255,50,50, 0.8)')
+                        })
+                })
         }
 
     //Testfenster schließen
