@@ -28,6 +28,7 @@
                           data-method='post'
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
+                          @click="kick = false"
                 >
                     {{test.open ? 'Los geht\'s' : 'Nächste Woche wieder'}}
                 </b-button>
@@ -67,12 +68,16 @@
 
 <script>
     export default {
+        created() {
+            window.addEventListener('beforeunload', this.handler)
+        },
         data: function () {
             return {
                 tests: this.$root.tests,
                 student: this.$root.student,
                 retry: false,
-                loading: false
+                loading: false,
+                kick: true
             }
         },
         methods: {
@@ -86,6 +91,19 @@
                 this.tests = event.detail[0]['tests']
                 this.student = event.detail[0]['student']
                 this.loading = false
+            },
+            handler: function handler(event) {
+                if(this.kick){
+                    fetch('/kick_frontend', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'text/javascript',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        credentials: 'include'
+                    });
+                }
             }
         },
         name: 'frontend-app'

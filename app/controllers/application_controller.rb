@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: [:start, :login, :frontend, :login_frontend]
+  before_action :set_login, except: [:start, :login, :frontend, :login_frontend, :kick_frontend]
   before_action :set_locale
 
   #Normaler Zugang
@@ -59,6 +59,12 @@ class ApplicationController < ActionController::Base
     else
       head 403
     end
+  end
+
+  #POST '/kick_frontend'
+  def kick_frontend
+    session.delete(:student)
+    head 200
   end
 
   #Masquerading
