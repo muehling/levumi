@@ -18,7 +18,7 @@
                     <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
                     Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung!</p>
                     <!-- Schüler anzeigen um Messung zu starten. -->
-                    <div v-if="students.length==0"><br/>
+                    <div v-if="students.length == 0"><br/>
                         <p class='text-small'>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
                     </div>
                     <div v-else>

@@ -10,7 +10,7 @@
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
-                <small id="nameHelp" class="form-text text-muted">Name des Kindes wird verschlüsselt gespeichert!</small>
+                <small id="nameHelp" class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
                 <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
