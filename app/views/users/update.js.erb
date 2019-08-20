@@ -1,32 +1,8 @@
 <% if @login.id == @user.id %>
-  //Falls eigener Nutzer: Ggf. Rekodierung der Keys nötig.
-
-  if (sessionStorage['new_login'] != undefined && sessionStorage['new_login'] != '' && sessionStorage['new_login'] != sessionStorage['login']) {
-      //Multiupdate nur triggern, falls neuer key hinterlegt ist und sich dieser vom Alten unterscheidet...
-
-      //Hinweistext + Spinner - vermutlich unnötig.
-      $('#modal-body').html("<p align='center'>Verschlüsselung aktualisieren</p><div class='spinner'><div class='bounce1'></div><div class='bounce2'></div><div class='bounce3'></div></div>")
-
-      recode_keys(sessionStorage['new_login'])
-
-      //Daten senden und Hinweistext bei Erfolg verstecken.
-      fetch('/users/<%= @login.id %>', {
-          method: 'put',
-          headers: {
-              'Content-Type': 'application/x-www-form-urlencoded',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-          },
-          credentials: 'include',
-          body: 'recode=true&keys=' + encodeURIComponent(JSON.stringify(keys))
-      })
-          .then(response => $('#modal').modal('hide'))
-  }
-  else //Nichts zu tun außer Modal schließen
-      $('#modal').modal('hide')
-
+  //Update erfolgreich, temporäres Passwort löschen
+  sessionStorage['old_login'] = undefined
 <% else %>
   //Update für einen anderen Nutzer => Nutzertabelle neu rendern und Modal schließen.
   $('#list_content').html("<%= escape_javascript render 'table' %>")
-  $('#modal').modal('hide')
 <% end %>
+$('#modal').modal('hide')

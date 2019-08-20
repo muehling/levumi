@@ -213,7 +213,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.datetime "last_login"
     t.integer "account_type"
     t.integer "state"
-    t.integer "institution"
+    t.string "institution"
     t.string "town"
     t.integer "school_type"
     t.integer "focus"

@@ -78,6 +78,7 @@
         }, keys);
 
         //Key aktualisieren
+        sessionStorage['old_login'] = sessionStorage['login']
         sessionStorage['login'] = new_password;
 
         //Key neu verschlüsseln und globales Array aktualisieren

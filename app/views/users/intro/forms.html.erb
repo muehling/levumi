@@ -31,12 +31,6 @@
 
 <% if @user.intro_state == 2 %>
     <script>
-      //Neuen Login speichern!
-      if (sessionStorage['new_login'] != undefined) {
-          sessionStorage['login']
-          sessionStorage['new_login'] = undefined
-      }
-
       //Zufallsstring für Key und Auth_Token der Testklasse generieren
       let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
       $('#key').val(encrypt_key(key));

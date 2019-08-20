@@ -8,7 +8,7 @@ class CreateUsersAndGroups < ActiveRecord::Migration[5.2]
       t.datetime :last_login
       t.integer :account_type
       t.integer :state
-      t.integer :institution
+      t.string :institution
       t.string :town
       t.integer :school_type
       t.integer :focus
