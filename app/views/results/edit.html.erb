@@ -5,12 +5,15 @@
   <% end %>
 </style>
 
-<div id="error_message" class="text-center"> </div>
+<div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.5em">
+  Fehler aufgetreten! Ergebnis konnte nicht gespeichert werden!
+</div>
 <!-- Hauptseite rendern -->
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
 <!-- Testskripte laden und Testumgebung definieren -->
 <script>
+    $('#error_message').hide()
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
         <% @test.media_files.each do |f| %>
@@ -31,20 +34,23 @@
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(result, report, extra_data, callback) {
-            let url = '<%= student_result_url(@student, @result) %>'
+            let url = '<%= student_result_url(@student, @result)%>'
             let header = {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             }
             let body = 'results=' + encodeURIComponent(JSON.stringify(result)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&extra=' + encodeURIComponent(JSON.stringify(extra_data))
-
             fetch(url, {
                 method: 'put',
                 headers: header,
                 credentials: 'include',
                 body: body
             })
+                .then(function(response){
+                    if(!response.ok)
+                        throw Error(response.statusText)
+                })
                 .then(data => callback(data))
                 .catch(error => {
                     //Bei ersten Error-> versuche die Daten nochmal abzuspeichern
@@ -54,11 +60,14 @@
                         credentials: 'include',
                         body: body
                     })
+                        .then(function(response){
+                            if(!response.ok)
+                                throw Error(response.statusText)
+                        })
                         .then(data => callback(data))
                         .catch(error => {
                             //Anzeigen entgültigen "Fehlschlags"
-                            $('#error_message').html('Fehler aufgetreten! Ergebnis konnte nicht gespeichert werden!')
-                                .css('font-size', '1.5em').css('margin-top', '2%').css('background-color', 'rgba(255,50,50, 0.8)')
+                            $('#error_message').show()
                         })
                 })
         }
