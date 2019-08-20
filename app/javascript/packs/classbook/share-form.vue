@@ -152,7 +152,10 @@
         methods: {
             check_key() {
                 try{
-                    sjcl.decrypt(this.key, this.group.auth_token)
+                    if (this.key != undefined && this.key != '')
+                        sjcl.decrypt(this.key, this.group.auth_token)
+                    else
+                        return false
                     return true
                 }
                 catch(e){

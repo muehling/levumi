@@ -4,9 +4,9 @@
 
   <%= render 'users/form/email', f: f, user: user, readOnly: false %>
 
-  <%= render 'users/form/state', f: f, label: 'Bundesland' %>
+  <%= render 'users/form/type', f: f,  user: user, readOnly: false, label: 'Typ' %>
 
-  <%= render 'users/form/type', f: f, label: 'Typ' %>
+  <%= render 'users/form/state', f: f, label: 'Bundesland' %>
 
   <%= button_tag class: 'btn btn-outline-success' do %>
     <i class='fas fa-plus'></i> Anlegen

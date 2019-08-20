@@ -9,15 +9,15 @@
       <%= form_for @user, url: '/willkommen' do |f| %>
         <%=render 'application/terms_and_conditions' %>
         <p class='text-justify'>
-          <div class="custom-control custom-checkbox">
-            <%= check_box_tag('tc_accepted', "1", !@user.tc_accepted.nil?, class: 'custom-control-input', disabled: !@user.tc_accepted.nil?) %>
-            <%= label_tag 'tc_accepted', class: 'custom-control-label' do %>
+          <div class='form-check'>
+            <%= check_box_tag('tc_accepted', "1", !@user.tc_accepted.nil?, class: 'form-check-input', disabled: !@user.tc_accepted.nil?, id: 'cb', onclick: "$('#submit').attr('disabled', !$('#cb').is(':checked'));") %>
+            <%= label_tag 'tc_accepted', class: 'form-check-label' do %>
               Ich bin mit diesen Nutzungsbedingungen einverstanden.
             <% end %>
           </div>
         </p>
         <% if @user.tc_accepted.nil? %>
-          <%= f.submit 'Weiter', class: 'btn btn-outline-success'%>
+          <%= f.submit 'Weiter', class: 'btn btn-outline-success',  disabled: @user.tc_accepted.nil?, id: 'submit'%>
         <% else %>
           <p class='text-muted'>Akzeptiert am: <%= @user.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
         <% end %>
