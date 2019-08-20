@@ -1,13 +1,13 @@
+<div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em">
+  Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
+</div>
+
 <!-- Test-Styles einbinden -->
 <style>
   <% @test.style_files.each do |f| %>
   <%= raw f.download.force_encoding('UTF-8') %>
   <% end %>
 </style>
-
-<div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.5em">
-  Fehler aufgetreten! Ergebnis konnte nicht gespeichert werden!
-</div>
 <!-- Hauptseite rendern -->
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
@@ -51,9 +51,9 @@
                     if(!response.ok)
                         throw Error(response.statusText)
                 })
-                .then(data => callback(data))
+                .then(data => callback())
                 .catch(error => {
-                    //Bei ersten Error-> versuche die Daten nochmal abzuspeichern
+                    //Bei Fehler versuche die Daten nochmal abzuspeichern
                     fetch(url, {
                         method: 'put',
                         headers: header,
@@ -64,9 +64,9 @@
                             if(!response.ok)
                                 throw Error(response.statusText)
                         })
-                        .then(data => callback(data))
+                        .then(data => callback())
                         .catch(error => {
-                            //Anzeigen entgültigen "Fehlschlags"
+                            //Zweimal erfolglos => Fehlermeldung anzeigen
                             $('#error_message').show()
                         })
                 })
