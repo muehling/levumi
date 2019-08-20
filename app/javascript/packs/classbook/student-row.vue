@@ -28,8 +28,8 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-radio-group id="gender" v-model="gender" :options="options_gender" name='gender'>
-                </b-form-radio-group>
+                <b-form-select size="sm" id="gender" v-model="gender" :options="options_gender" name='gender'>
+                </b-form-select>
             </div>
             <div v-else>
                 <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
@@ -253,7 +253,8 @@
             // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
             this.options_gender = [
                 {text: 'weiblich', value: '0', disabled: 0},
-                {text: 'männlich', value: '1', disabled: 0}
+                {text: 'männlich', value: '1', disabled: 0},
+                {text: 'divers', value: '2', disabled: 0}
             ];
 
             this.months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
