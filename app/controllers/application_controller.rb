@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     groups_transfer = {}
     students_transfer = {}
     assessments_transfer = {}
-    groups = @login_user.groups
+    groups = @login_user.groups.where('(archive IS NULL OR archive =?) AND name != "Testklasse"', false)
     groups.each do |g|
       if !g.demo
         groups_transfer[g.id] = {label: g.name, archive: g.archive, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
@@ -148,18 +148,497 @@ class ApplicationController < ActionController::Base
     data_to_transfer[:students] = students_transfer
     #prepare assessments for transfer and merge relevant data from test
     assessments = Assessment.where(group_id:groups)
-    test = Test.all.pluck(:id, :shorthand)
+    test = Test.where.not(archive: true).pluck(:id, :shorthand)
     test_transfer = {}
     items_test = {}
+    lookup_table= {
+        "SL2a" => {
+            "del" => "I1",
+            "ho" => "I2",
+            "Rei" => "I3",
+            "Wu" => "I4",
+            "nen" => "I5",
+            "pi" => "I6",
+            "en" => "I7",
+            "lei" => "I8",
+            "Tau" => "I9",
+            "sen" => "I10",
+            "fer" => "I11",
+            "men" => "I12",
+            "de" => "I13",
+            "wa" => "I14",
+            "Dau" => "I15",
+            "Pa" => "I16",
+            "Lei" => "I17",
+            "hu" => "I18",
+            "Sau" => "I19",
+            "wei" => "I20",
+            "da" => "I21",
+            "hen" => "I22",
+            "Pi" => "I23",
+            "we" => "I24",
+            "hau" => "I25",
+            "Tei" => "I26",
+            "De" => "I27",
+            "pa" => "I28",
+            "fen" => "I29",
+            "der" => "I30",
+            "Wei" => "I31",
+            "Hu" => "I32",
+            "po" => "I33",
+            "Sei" => "I34",
+            "We" => "I35",
+            "tau" => "I36",
+            "du" => "I37",
+            "fei" => "I38",
+            "Ho" => "I39",
+            "Rau" => "I40",
+            "sei" => "I41",
+            "wu" => "I42",
+            "Da" => "I43",
+            "hei" => "I44",
+            "Po" => "I45",
+            "rau" => "I46",
+            "Wa" => "I47",
+            "Hei" => "I48",
+            "Du" => "I49",
+            "sau" => "I50",
+            "len" => "I51",
+            "rei" => "I52",
+            "Do" => "I53",
+            "ha" => "I54",
+            "tei" => "I55",
+            "Hau" => "I56",
+            "do" => "I57",
+            "lau" => "I58",
+            "Ha" => "I59",
+            "dei" => "I60",
+            "mer" => "I61",
+            "dau" => "I62"
+        },
+        "SL3" => {
+            "Stä" => "I1",
+            "Je" => "I2",
+            "feu" => "I3",
+            "Schä" => "I4",
+            "Zü" => "I5",
+            "Euch" => "I6",
+            "zä" => "I7",
+            "beu" => "I8",
+            "zeu" => "I9",
+            "jä" => "I10",
+            "vei" => "I11",
+            "spi" => "I12",
+            "ßen" => "I13",
+            "ja" => "I14",
+            "Vi" => "I15",
+            "Sta" => "I16",
+            "Zö" => "I17",
+            "vö" => "I18",
+            "zö" => "I19",
+            "je" => "I20",
+            "zü" => "I21",
+            "jau" => "I22",
+            "spe" => "I23",
+            "qua" => "I24",
+            "spä" => "I25",
+            "za" => "I26",
+            "spei" => "I27",
+            "keu" => "I28",
+            "Zei" => "I29",
+            "Jä" => "I30",
+            "Zi" => "I31",
+            "vo" => "I32",
+            "Ze" => "I33",
+            "Sti" => "I34",
+            "Stö" => "I35",
+            "ßer" => "I36",
+            "euch" => "I37",
+            "Hex" => "I38",
+            "Qua" => "I39",
+            "Feu" => "I40",
+            "stau" => "I41",
+            "auch" => "I42",
+            "spu" => "I43",
+            "neu" => "I44",
+            "geu" => "I45",
+            "Jau" => "I46",
+            "spa" => "I47",
+            "Zau" => "I48",
+            "Scheu" => "I49",
+            "Keu" => "I50",
+            "sti" => "I51",
+            "va" => "I52",
+            "Schü" => "I53",
+            "Vei" => "I54",
+            "zu" => "I55",
+            "qui" => "I56",
+            "Schö" => "I57",
+            "Va" => "I58",
+            "ze" => "I59",
+            "ju" => "I60",
+            "stu" => "I61",
+            "zi" => "I62",
+            "Ja" => "I63",
+            "stä" => "I64",
+            "Zu" => "I65",
+            "vi" => "I66",
+            "Stei" => "I67",
+            "schä" => "I68",
+            "Eu" => "I69",
+            "spü" => "I70",
+            "Vö" => "I71",
+            "schö" => "I72",
+            "Beu" => "I73",
+            "Auch" => "I74",
+            "stei" => "I75",
+            "hex" => "I76",
+            "Stu" => "I77",
+            "Neu" => "I78",
+            "Spu" => "I79",
+            "Ju" => "I80",
+            "scheu" => "I81",
+            "Vo" => "I82",
+            "schü" => "I83",
+            "Jo" => "I84",
+            "seu" => "I85",
+            "Za" => "I86",
+            "Spei" => "I87",
+            "jo" => "I88",
+            "zei" => "I89",
+            "Spi" => "I90",
+            "xi" => "I91",
+            "Sto" => "I92",
+            "Zeu" => "I93",
+            "Ty" => "I94",
+            "Spa" => "I95",
+            "cheu" => "I96",
+            "Spä" => "I97",
+            "py" => "I98",
+            "eu" => "I99",
+            "Ste" => "I100",
+            "ße" => "I101",
+            "ste" => "I102",
+            "Py" => "I103",
+            "Stau" => "I104",
+            "Zä" => "I105",
+            "Seu" => "I106",
+            "Qui" => "I107",
+            "sta" => "I108",
+            "zau" => "I109",
+            "stö" => "I110",
+            "ty" => "I111",
+            "Spü" => "I112",
+            "Spe" => "I113",
+            "sto" => "I114"
+        },
+        "PL2a" => {
+            "pofen" => "I1",
+            "halei" => "I2",
+            "wapa" => "I3",
+            "teitau" => "I4",
+            "delsau" => "I5",
+            "eidel" => "I6",
+            "wemer" => "I7",
+            "leisau" => "I8",
+            "senhau" => "I9",
+            "mendel" => "I10",
+            "rawu" => "I11",
+            "fenha" => "I12",
+            "nenrau" => "I13",
+            "teilei" => "I14",
+            "sendu" => "I15",
+            "heira" => "I16",
+            "laulen" => "I17",
+            "wenen" => "I18",
+            "derho" => "I19",
+            "pihau" => "I20",
+            "enmer" => "I21",
+            "senra" => "I22",
+            "rauwa" => "I23",
+            "daufer" => "I24",
+            "heiwa" => "I25",
+            "lenrei" => "I26",
+            "teisei" => "I27",
+            "weido" => "I28",
+            "ferha" => "I29",
+            "pawa" => "I30",
+            "dofen" => "I31",
+            "laudel" => "I32",
+            "detei" => "I33",
+            "wawu" => "I34",
+            "haulen" => "I35",
+            "derde" => "I36",
+            "reidel" => "I37",
+            "lensen" => "I38",
+            "wadu" => "I39",
+            "mertau" => "I40",
+            "hauha" => "I41",
+            "rahei" => "I42",
+            "deldo" => "I43",
+            "teisen" => "I44",
+            "wamen" => "I45",
+            "pahau" => "I46",
+            "heifen" => "I47",
+            "fenpi" => "I48",
+            "derda" => "I49",
+            "hura" => "I50",
+            "weiha" => "I51",
+            "saupi" => "I52",
+            "wupi" => "I53",
+            "laumer" => "I54",
+            "dode" => "I55",
+            "huwa" => "I56",
+            "pader" => "I57",
+            "duwu" => "I58",
+            "ratei" => "I59",
+            "tausau" => "I60",
+            "hoder" => "I61",
+            "wuda" => "I62",
+            "datau" => "I63",
+            "hupi" => "I64",
+            "pihei" => "I65",
+            "weiwa" => "I66",
+            "haura" => "I67",
+            "teimer" => "I68",
+            "dellei" => "I69",
+            "weipo" => "I70",
+            "lenho" => "I71",
+            "huhei" => "I72",
+            "merpo" => "I73",
+            "dodau" => "I74",
+            "reipa" => "I75",
+            "poder" => "I76",
+            "welen" => "I77",
+            "dara" => "I78",
+            "hupo" => "I79",
+            "wepa" => "I80",
+            "pawei" => "I81",
+            "reihau" => "I82",
+            "dohau" => "I83",
+            "wuhei" => "I84",
+            "reilau" => "I85",
+            "haunen" => "I86",
+            "merrei" => "I87",
+            "lentau" => "I88",
+            "huda" => "I89",
+            "padau" => "I90",
+            "weipa" => "I91",
+            "delei" => "I92",
+            "teidu" => "I93",
+            "heiho" => "I94",
+            "mermen" => "I95",
+            "seiwei" => "I96",
+            "wadau" => "I97",
+            "dauha" => "I98",
+            "reien" => "I99",
+            "hendau" => "I100",
+            "parau" => "I101",
+            "waho" => "I102",
+            "teifen" => "I103",
+            "wetei" => "I104",
+            "heidau" => "I105",
+            "derpo" => "I106",
+            "saulei" => "I107",
+            "daudel" => "I108",
+            "hauhen" => "I109",
+            "weisau" => "I110",
+            "leihei" => "I111",
+            "ender" => "I112",
+            "pahen" => "I113",
+            "wapi" => "I114",
+            "laupa" => "I115",
+            "weda" => "I116",
+            "hensei" => "I117",
+            "durau" => "I118",
+            "mensei" => "I119",
+            "eirei" => "I120",
+            "lauhu" => "I121",
+            "heisau" => "I122",
+            "reiwu" => "I123",
+            "ferwa" => "I124",
+            "weipi" => "I125",
+            "dusau" => "I126",
+            "nende" => "I127",
+            "heiha" => "I128",
+            "pilau" => "I129",
+            "depa" => "I130",
+            "menen" => "I131",
+            "hurau" => "I132",
+            "derdo" => "I133",
+            "wuwa" => "I134",
+            "hauwu" => "I135",
+            "teiha" => "I136",
+            "rauho" => "I137",
+            "hopi" => "I138",
+            "dado" => "I139",
+            "deldu" => "I140",
+            "rauwei" => "I141",
+            "hudu" => "I142",
+            "leilau" => "I143",
+            "wuwei" => "I144",
+            "dupi" => "I145",
+            "pafen" => "I146",
+            "wulau" => "I147",
+            "humer" => "I148",
+            "mentau" => "I149",
+            "dudel" => "I150"
+        },
+        "PL3a" => {
+            "hexef" => "I1",
+            "schönu" => "I2",
+            "pysa" => "I3",
+            "scheuli" => "I4",
+            "tyli" => "I5",
+            "hexaf" => "I6",
+            "steisi" => "I7",
+            "zale" => "I8",
+            "jese" => "I9",
+            "schöse" => "I10",
+            "zamo" => "I11",
+            "geusi" => "I12",
+            "beuno" => "I13",
+            "eufo" => "I14",
+            "pyfu" => "I15",
+            "speife" => "I16",
+            "geufu" => "I17",
+            "jale" => "I18",
+            "zile" => "I19",
+            "vofa" => "I20",
+            "stafi" => "I21",
+            "xila" => "I22",
+            "volu" => "I23",
+            "jemo" => "I24",
+            "scheuse" => "I25",
+            "zema" => "I26",
+            "geula" => "I27",
+            "zisa" => "I28",
+            "steiru" => "I29",
+            "zuri" => "I30",
+            "steime" => "I31",
+            "zili" => "I32",
+            "euni" => "I33",
+            "tyma" => "I34",
+            "hexun" => "I35",
+            "eure→““" => "I36",
+            "beulu" => "I37",
+            "qualo" => "I38",
+            "tyru" => "I39",
+            "scheufu" => "I40",
+            "pyme" => "I41",
+            "vano" => "I42",
+            "zasi" => "I43",
+            "vasu" => "I44",
+            "zifu" => "I45",
+            "spesu" => "I46",
+            "xilo" => "I47",
+            "feune" => "I48",
+            "schöfo" => "I49",
+            "tyso" => "I50",
+            "neune" => "I51",
+            "stana" => "I52",
+            "vise" => "I53",
+            "stame" => "I54",
+            "zeru" => "I55",
+            "steifo" => "I56",
+            "quafu" => "I57",
+            "vifo" => "I58",
+            "jeli" => "I59",
+            "spelo" => "I60",
+            "feuma" => "I61",
+            "neumi" => "I62",
+            "speilu" => "I63",
+            "vore" => "I64",
+            "pyri" => "I65",
+            "spele" => "I66",
+            "feuli" => "I67",
+            "speino" => "I68",
+            "xisu" => "I69",
+            "zufe" => "I70",
+            "vari" => "I71",
+            "feufu" => "I72",
+            "zele" => "I73",
+            "xime" => "I74",
+            "zeni" => "I75",
+            "speimi" => "I76",
+            "jara" => "I77",
+            "stalo" => "I78",
+            "beumi" => "I79",
+            "zusu" => "I80",
+            "vane" => "I81",
+            "zanu" => "I82",
+            "feuso" => "I83",
+            "jenu" => "I84",
+            "scheura" => "I85",
+            "vono" => "I86",
+            "stasu" => "I87",
+            "vala" => "I88",
+            "quani" => "I89",
+            "neulo" => "I90",
+            "geuso" => "I91",
+            "eusu" => "I92",
+            "pyno" => "I93",
+            "zafa" => "I94",
+            "vume" => "I95",
+            "tyne" => "I96",
+            "beusa" => "I97",
+            "neusa" => "I98",
+            "schöla" => "I99",
+            "xine" => "I100",
+            "hexol" => "I101",
+            "beure" => "I102",
+            "jasu" => "I103",
+            "speira" => "I104",
+            "vomi" => "I105",
+            "steila" => "I106",
+            "vimi" => "I107",
+            "geume" => "I108",
+            "speni" => "I109",
+            "vufo" => "I110",
+            "spema" => "I111",
+            "zula" => "I112",
+            "quase" => "I113",
+            "vuni" => "I114",
+            "schöme" => "I115",
+            "euma" => "I116",
+            "zefo" => "I117",
+            "hexim" => "I118",
+            "zino" => "I119",
+            "vura" => "I120",
+            "zumo" => "I121",
+            "quara" => "I122",
+            "vuru" => "I123",
+            "jamo" => "I124",
+            "vila" => "I125",
+            "jafi" => "I126",
+            "viru" => "I127",
+            "neufu" => "I128",
+            "scheuno" => "I129",
+            "jera" => "I130"
+        }
+    }
+
     test.each do |t|
       test_transfer[t[0]] = {shorthand:t[1]}
       items = Item.where(test_id: t[0]).pluck(:id, :difficulty, :shorthand)
       count = 1
+
       items.each do |i|
-        items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2]}
-        count += 1
+        if (t[1] == 'SW2' && i[2] == 'gerade') || (t[1] == 'SL2a' && (i[2] == 'Ra' ||i[2] == 'ra')) ||
+            (t[1] == 'SL3' && (i[2] == 'Quä' ||i[2] == 'quä')) || (t[1] == 'SL4' && i[2] == 'tri') || (t[1] == 'PL2a' && i[2] == 'seiei') || (t[1] == 'PL3a' && i[2] == 'eure')||
+            (t[1] == 'TS0' && i[2] != 'Fertig') || ((t[1] == 'WSK' || t[1] == 'WS1') && (i[2] == 'Hallo' ||i[2] == 'Erklärung' ||i[2] == 'Löschen und Audio' ||i[2] == 'Hinweis' ||i[2] == 'Beispiel' ||i[2] == 'Beispiele' ||i[2] == 'Ich beginne' ||i[2] == 'Ende')) ||
+            (i[2] == 'Preparation') || (i[2] == 'Ende')
+        else
+          if t[1] == 'SL2a' || t[1] == 'SL3' || t[1] == 'PL2a' || t[1] == 'PL3a'
+            items_test[i[0]] = {id: lookup_table[t[1]][i[2]], group: i[1], itemtext: i[2]}
+          else
+            items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2]}
+          end
+          count += 1
+        end
       end
     end
+
     measurements = Measurement.where(assessment_id: assessments).pluck(:id, :assessment_id)
     measurements_transfer = {}
     measurements.each do |m|
@@ -170,7 +649,9 @@ class ApplicationController < ActionController::Base
       end
     end
     assessments.each do |a|
-      assessments_transfer[a.id] = {test_id: a.test_id,group_id: a.group_id, shorthand: test_transfer[a.test_id][:shorthand], measurement_ids: measurements_transfer[a.id]}
+      if !test_transfer[a.test_id].nil?
+        assessments_transfer[a.id] = {test_id: a.test_id,group_id: a.group_id, shorthand: test_transfer[a.test_id][:shorthand], measurement_ids: measurements_transfer[a.id]}
+      end
     end
     data_to_transfer[:assessments] = assessments_transfer
 
@@ -178,50 +659,55 @@ class ApplicationController < ActionController::Base
     results = Result.where(student_id: students)
     results_transfer = []
     results.each do |r|
-      if !r.responses[0].nil?
-        prior_result = r.getPriorResult()
-        if prior_result == -1 || r.total == prior_result
-          total = 0
-        elsif r.total > prior_result
-          total  = 1
-        else
-          total = -1
-        end
-        data = []
-        report = {total:total, positive:[], negative:[]}
-        p_items = []
-        n_items = []
-        r.items.each_with_index do |item, index|
-          if r.extra_data['times'].nil?
-            data += [{item: items_test[item][:id], group: items_test[item][:group]}]
+      if !test_transfer[r.measurement.assessment.test_id].nil?
+        if !r.responses[0].nil?
+          prior_result = r.getPriorResult()
+          if prior_result == -1 || r.total == prior_result
+            total = 0
+          elsif r.total > prior_result
+            total  = 1
           else
-            if r.extra_data['answers'].nil?
-              if r.extra_data['times'][index].nil?
-                data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
+            total = -1
+          end
+          data = []
+          report = {total:total, positive:[], negative:[]}
+          p_items = []
+          n_items = []
+          r.items.each_with_index do |item, index|
+            if !items_test[item].nil?
+              if r.extra_data['times'].nil?
+                data += [{item: items_test[item][:id], group: items_test[item][:group]}]
               else
-                data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
-              end
+                if r.extra_data['answers'].nil?
+                  if r.extra_data['times'][index].nil?
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: 'NA'}]
+                  else
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], time: r.extra_data['times'][index]}]
+                  end
 
-            else
-              if r.extra_data['times'][index].nil?
-                data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
-              else
-                data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+                else
+                  if r.extra_data['times'][index].nil?
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: 'NA', time: 'NA'}]
+                  else
+                    data += [{item: items_test[item][:id], group: items_test[item][:group], answer: r.extra_data['answers'][index] ,time: r.extra_data['times'][index]}]
+                  end
+                end
+              end
+              if r.responses[index] == 1
+                p_items += [data.last]
+              elsif r.responses[index] == 0
+                n_items += [data.last]
               end
             end
           end
-          if r.responses[index] == 1
-            p_items += [data.last]
-          elsif r.responses[index] == 0
-            n_items += [data.last]
-          end
+          report[:positive] = p_items
+          report[:neagtive] = n_items
+          results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
+                                                  results:{Übersicht: r.total}, report:report,
+                                                  data:data, created_at: r.created_at}]
         end
-        report[:positive] = p_items
-        report[:neagtive] = n_items
-        results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
-                                                results:{Übersicht: r.total}, report:report,
-                                                data:data, created_at: r.created_at}]
       end
+
     end
     data_to_transfer[:results] = results_transfer
 
@@ -268,5 +754,6 @@ class ApplicationController < ActionController::Base
       render 'accept'
     end
   end
+
 
 end
