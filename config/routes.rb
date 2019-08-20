@@ -8,8 +8,8 @@ Rails.application.routes.draw do
 
   #Login für SuS
   get '/testen', to: 'application#frontend'
-  post '/login_frontend', to: 'application#login_frontend'
-  post '/kick_frontend', to: 'application#kick_frontend'
+  post '/testen_login', to: 'application#login_frontend'
+  post '/testen_logout', to: 'application#logout_frontend'
 
   #Masquerading Login durch Admin
   get '/login', to: 'application#start_masquerade'

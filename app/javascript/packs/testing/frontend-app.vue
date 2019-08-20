@@ -28,7 +28,7 @@
                           data-method='post'
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
-                          @click="kick = false"
+                          @click="logout = false"
                 >
                     {{test.open ? 'Los geht\'s' : 'Nächste Woche wieder'}}
                 </b-button>
@@ -41,9 +41,9 @@
             <b-col md='3'>
             </b-col>
             <b-col md='6'>
-                <b-card class='mt-5' style="font-size:1.4em" header='Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein.'>
+                <b-card class='mt-5' style="font-size:1.2em" header='Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein.'>
                     <b-form
-                            action='/login_frontend'
+                            action='/testen_login'
                             accept-charset='UTF-8'
                             data-remote='true'
                             method='post'
@@ -69,7 +69,7 @@
 <script>
     export default {
         created() {
-            window.addEventListener('beforeunload', this.handler)
+            window.addEventListener('beforeunload', this.auto_logout)
         },
         data: function () {
             return {
@@ -77,7 +77,7 @@
                 student: this.$root.student,
                 retry: false,
                 loading: false,
-                kick: true
+                logout: true
             }
         },
         methods: {
@@ -92,9 +92,9 @@
                 this.student = event.detail[0]['student']
                 this.loading = false
             },
-            handler: function handler(event) {
-                if(this.kick){
-                    fetch('/kick_frontend', {
+            auto_logout: function handler(event) {
+                if(this.logout){
+                    fetch('/testen_logout', {
                         method: 'POST',
                         headers: {
                             'Accept': 'text/javascript',

@@ -61,8 +61,8 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #POST '/kick_frontend'
-  def kick_frontend
+  #POST '/logout_frontend'
+  def logout_frontend
     session.delete(:student)
     head 200
   end
