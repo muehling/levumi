@@ -68,3 +68,136 @@
     font-weight: normal;
     font-style: normal;
 }
+
+.text-small {
+    font-size: 0.875rem;
+}
+
+/* Bootstrap Theming */
+:root {
+    --primary-color: #5a598c;
+    --secondary-color:#616970;
+    --danger-color: #b73631;
+    --success-color: #34823e;
+}
+/* Buttons */
+
+.btn-outline-primary,
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-primary:active,
+.btn-primary,
+.btn-primary:active {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.btn-primary,
+.btn-primary:focus,
+.btn-outline-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(81, 80, 126, 0.5) !important;
+}
+
+
+.btn-outline-primary:hover,
+.btn-outline-primary:not(:disabled):not(.disabled).active,
+.btn-primary,
+.btn-primary:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-outline-secondary,
+.btn-outline-secondary.disabled,
+.btn-outline-secondary:disabled{
+    color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-outline-secondary:hover,
+.btn-outline-secondary:not(:disabled):not(.disabled).active,
+.btn-secondary,
+.btn-secondary:hover {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.btn-outline-danger,
+.btn-outline-danger.disabled,
+.btn-outline-danger:disabled {
+    color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-danger:hover,
+.btn-outline-danger:not(:disabled):not(.disabled).active,
+.btn-danger,
+.btn-danger:hover {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+.btn-outline-success,
+.btn-outline-success.disabled,
+.btn-outline-success:disabled {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-outline-success:hover,
+.btn-outline-success:not(:disabled):not(.disabled).active,
+.btn-success,
+.btn-success:hover {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled,
+.btn-outline-secondary:disabled,
+.btn-outline-secondary.disabled,
+.btn-outline-success:disabled,
+.btn-outline-success.disabled,
+.btn-outline-danger:disabled,
+.btn-outline-danger.disabled {
+    background-color: white;
+}
+
+/* Navs etc. */
+
+.nav>li>a,
+.btn {
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.nav-pills .nav-link {
+    color: var(--primary-color);
+}
+
+.nav-link.disabled {
+    color: var(--secondary-color);
+    font-style: italic;
+}
+
+.nav-pills .nav-link.active,
+.dropdown-item:active {
+    background-color: var(--primary-color);
+}
+
+.navbar-light .navbar-nav .nav-link {
+    color: var(--secondary-color);
+}
+
+.navbar-light .navbar-nav .nav-link:hover {
+    color: black;
+}
+
+.navbar-light .navbar-nav .nav-link.active {
+    color: white;
+    background-color: var(--primary-color);
+}

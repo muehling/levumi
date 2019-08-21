@@ -38,7 +38,36 @@
     </div>
     <div class='tab-pane' id='mail' role='tabpanel' aria-labelledby='mail-tab'>
       <!-- Nutzer benachrichtigen -->
-      ...
+      <div class='row'>
+        <div class='col-4'>
+          <div class='card card-body'>
+            <%= form_tag(user_path(@login), method: :put, remote: true) do %>
+              <div class='form-group'>
+                <label>Nachricht</label>
+                <textarea class="form-control" rows="3" name="text"></textarea>
+              </div>
+              <div class='form-group'>
+                <label>Senden an alle</label>
+                <div class="checkbox">
+                  <label>
+                    <input type="checkbox" name="teacher" value="1">
+                    Lehrkräfte
+                  </label>
+                  <label>
+                    <input type="checkbox" name="researcher" value="1">
+                    Forscher*innen
+                  </label>
+                  <label>
+                    <input type="checkbox" name="private" value="1">
+                    Privatpersonen
+                  </label>
+                </div>
+              </div>
+              <%= submit_tag 'Abschicken', class: 'btn btn-primary' %>
+            <% end %>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 

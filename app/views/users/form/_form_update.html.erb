@@ -2,12 +2,29 @@
 
 <%= form_for user, remote: true, namespace: user.id, html: {autocomplete: 'off', onsubmit: 'updatePassword();'} do |f| %> <!-- #Bei Submit neuen Key speichern, damit umkodiert werden kann  -->
 
-  <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>  <!-- Nutzer darf E-Mail nicht nachträglich ändern (?) -->
+  <%= render 'users/form/email', f: f, user: user, readOnly: !@login.has_capability?('user')%>  <!-- Nutzer darf E-Mail nicht nachträglich ändern  -->
 
-  <%= render 'users/form/password', f: f, user: user, namespace: true %>
+  <%= render 'users/form/type', f: f, label: 'Typ', user: user, readOnly: !@login.has_capability?('user') %> <!-- Nutzer darf Accounttyp nicht nachträglich ändern  -->
 
-  <% if @login.has_capability?('user') %>    <!-- Nutzer darf eigenen Accounttyp nicht nachträglich ändern (?) -->
-    <%= render 'users/form/type', f: f, label: 'Typ' %>
+  <% unless @login.has_capability?('user') %>
+    <div class='form-group row'>
+      <div class='col-sm-12'>
+        <small class='form-text text-muted'>Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich bitte an uns.</small>
+      </div>
+    </div>
+  <% end %>
+
+  <% if user == @login %>
+    <div class='form-group row'>
+      <div class='col-sm-12'>
+        <button class="btn btn-outline-secondary" type="button" data-toggle="collapse" data-target="#collapsePW" aria-expanded="<%= user.errors[:password_confirmation].any? || user.errors[:security_digest].any? ? 'true' : 'false'%>" aria-controls="collapsePW">
+          Passwort ändern
+        </button>
+        <div class="collapse <%= user.errors[:password_confirmation].any? || user.errors[:security_digest].any? ? 'show' : ''%> mt-2" id="collapsePW">
+          <%= render 'users/form/password', f: f, user: user, namespace: true %>
+        </div>
+      </div>
+    </div>
   <% end %>
 
   <%= render 'users/form/state', f: f, label: 'Bundesland' %>

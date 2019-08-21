@@ -1,23 +1,24 @@
 <!-- Radio-Boxes für Account-Typ, in allen Forms verwendet -->
-
 <div class='form-group row'>
   <div class='col-sm-4'>
-    <div class='custom-control custom-control-inline pl-0'>
-      <label class='form-check-label'><%= label %></label>
-    </div>
+    <% if readOnly %>
+      <label class='col-form-label'><%= label %></label>
+    <% else %>
+      <div class='custom-control custom-control-inline pl-0'>
+        <label class='form-check-label'><%= label %></label>
+      </div>
+    <% end %>
   </div>
   <div class='col-sm-8  pl-0'>
-    <div class='custom-control custom-radio'>
-      <%= f.radio_button :account_type, 0, class: 'custom-control-input'%>
-      <%= f.label :account_type, 'Lehrkraft', value: 0, class: 'custom-control-label' %>
-    </div>
-    <div class='custom-control custom-radio'>
-      <%= f.radio_button :account_type, 1, class: 'custom-control-input' %>
-      <%= f.label :account_type, 'Forscher', value: 1, class: 'custom-control-label' %>
-    </div>
-    <div class='custom-control custom-radio'>
-      <%= f.radio_button :account_type, 2, class: 'custom-control-input' %>
-      <%= f.label :account_type, 'Privatperson', value: 2, class: 'custom-control-label' %>
-    </div>
+    <% if readOnly %>
+      <input type='text' readonly class='form-control-plaintext' value='<%= account_types[user.account_type] %>'>
+    <% else %>
+      <% (0..2).each do |i| %>
+        <div class='form-check'>
+          <%= f.radio_button :account_type, i, class: 'form-check-input', checked: user.account_type == i%>
+          <%= f.label :account_type, account_types[i], value: i, class: 'form-check-label' %>
+        </div>
+      <% end %>
+    <% end %>
   </div>
 </div>

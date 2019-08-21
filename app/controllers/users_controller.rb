@@ -15,24 +15,44 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    if params.has_key?(:recode)  #Umkodierung aller Share-Keys durch Passwort-Änderung
-      todo = JSON.parse(params[:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupAccess-Objekte.
-      todo.each do |k, v|
-        ga = GroupShare.where(user: @login, group_id: k).first
-        unless ga.nil? || ga.key.nil? || ga.key.blank?
-          ga.key = v
-          ga.save
+    if params.has_key?('text') && @login.id == @user.id       #Send mail to all users
+      if params.has_key?('teacher')
+        User.where(account_type: 0).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
         end
       end
-      head 200
+      if params.has_key?('researcher')
+        User.where(account_type: 1).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+        end
+      end
+      if params.has_key?('private')
+        User.where(account_type: 2).each do |u|
+          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+        end
+      end
+      render js: "alert('Nachricht wurde verschickt!')"
     else                        # "Normales" Update
-      if (@login.has_security? && user_attributes.has_key?(:password) && (!user_attributes.has_key?(:security_digest) || user_attributes[:security_digest].blank?))
+      if @login.has_security? && user_attributes.has_key?(:password) && !user_attributes.has_key?(:security_digest)  #Leere Parameter werden entfernt
         @user.errors.add(:security_digest)
         render 'edit'
       elsif !@user.update_attributes(user_attributes)
         render 'edit'
       else
-        @users = User.all if (@login.id != @user.id)  #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
+        if (@login.id == @user.id) #Eigenes Update, ggf. keys Recodieren
+          if (params.has_key?(:user) && params[:user].has_key?(:keys) && !params[:user][:keys].blank?)
+            todo = JSON.parse(params[:user][:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupAccess-Objekte.
+            todo.each do |k, v|
+              ga = GroupShare.where(user: @login, group_id: k).first
+              unless ga.nil? || ga.key.nil? || ga.key.blank?
+                ga.key = v
+                ga.save
+              end
+            end
+          end
+        else
+          @users = User.all   #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
+        end
       end
     end
   end
@@ -64,7 +84,7 @@ class UsersController < ApplicationController
       end
     else                                   #Anfrage kommt von der Registrierungsseite
       if @user.save
-        #Mail senden...
+        UserMailer.with(user: @user, password: pw).welcome.deliver_later
         render 'create_register'
       else
         render 'new'
@@ -94,7 +114,7 @@ class UsersController < ApplicationController
     end
 
     if request.patch?
-      if params.has_key?('tc_accepted_1') && params.has_key?('tc_accepted_2')
+      if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
         @user.intro_state = 1
         @user.save
@@ -104,14 +124,14 @@ class UsersController < ApplicationController
           render 'users/intro/terms_and_conditions', layout: 'minimal' and return
         end
         if @user.intro_state == 1 #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
-          if @user.update_attributes(params.require(:user).permit(:password, :password_confirmation, :security_digest))
+          if @user.update_attributes(user_attributes)
             @user.intro_state = 2
             @user.save
           end
           render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
         end
         if @user.intro_state == 2 #TC Accept + erste Form => Zweite Form wird akzeptiert
-          @user.update_attributes(params.require(:user).permit(:state, :institution, :town, :school_type, :focus))  #Unkritische Attribute, deswegen kein Fehlercheck
+          @user.update_attributes(user_attributes)  #Unkritische Attribute, deswegen kein Fehlercheck
           @user.intro_state = 3
           @user.save
           @user.create_demo(params[:key], params[:auth_token])
@@ -135,7 +155,11 @@ class UsersController < ApplicationController
   private
 
   def user_attributes
-    params.require(:user).permit(:email, :password, :password_confirmation, :security_digest, :account_type, :state, :institution, :town, :school_type, :focus)
+    temp = params.require(:user).permit(:email, :password, :password_confirmation, :security_digest, :account_type, :state, :institution, :town, :school_type, :focus).reject{|_, v| v.blank?}
+    if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)
+      temp[:password_confirmation] = ''
+    end
+    temp
   end
 
   #Nutzernummer aus Parametern holen und User laden

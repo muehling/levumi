@@ -63,24 +63,6 @@
       ]
   ]
 
-  tests = [
-      [
-          [
-             [
-                 {level: "Level 1", student_test: false},
-                 {level: "Level 2", student_test: true}
-             ],
-             [
-                 {level: "Niveaustufe 1"}
-             ]
-          ]
-      ],
-      [
-          []
-      ],
-      []
-  ]
-
   results = [
       {
           results: {
@@ -158,10 +140,6 @@
       competence = area.competences.create(c)
       families[i][j].each_with_index do |f, k|
         family = competence.test_families.create(f)
-        tests[i][j][k].each_with_index do |t, l|
-          test = family.tests.create(t)
-          test.save
-        end
         family.save
       end
       competence.save
@@ -193,11 +171,11 @@
   end
 
   Annotation.create(assessment_id: a1.id, group_id: 1, content: "Anmerkung für die ganze Gruppe", view: 0,
-                     start: Student.find(1).results.order(:test_week).first.test_week,
-                     end: Student.find(1).results.order(:test_week).last.test_week)
+                     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
+                     end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).last.test_week)
   Annotation.create(assessment_id: a1.id, student_id: 1, content: "Anmerkung für Adam", view: 1,
-                     start: Student.find(1).results.order(:test_week).first.test_week,
-                     end: Student.find(1).results.order(:test_week).first.test_week)
+                     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
+                     end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week)
 
   #Fördermaterial anlegen
   Material.import('db/example_material/cats_and_birds/training.zip', false)

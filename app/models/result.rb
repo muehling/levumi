@@ -41,6 +41,16 @@ class Result < ApplicationRecord
     json = super(except: [:created_at, :updated_at])
   end
 
+  #Textdarstellung für CSV Export
+  def as_csv
+    start = "#{self.id},#{self.student_id},#{self.assessment.group_id},#{self.assessment.test_id},#{self.assessment.test_date},#{self.assessment.test_week},"
+    res = ""
+    self.data.each do |d|
+      res = res + start + "'#{d['item']}','#{d['result']}'" + (d.has_key?('time') ? ",#{d['time']}\n" : "\n")
+    end
+    return res
+  end
+
   #Eintrag 'total' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_trend
     unless report.nil? || !report.has_key?(:total)

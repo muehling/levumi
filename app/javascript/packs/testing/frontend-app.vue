@@ -28,6 +28,7 @@
                           data-method='post'
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
+                          @click="logout = false"
                 >
                     {{test.open ? 'Los geht\'s' : 'Nächste Woche wieder'}}
                 </b-button>
@@ -40,9 +41,9 @@
             <b-col md='3'>
             </b-col>
             <b-col md='6'>
-                <b-card class='mt-5' header='Gleich geht es los, bitte gib noch deinen Zugangscode ein'>
+                <b-card class='mt-5' style="font-size:1.2em" header='Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein.'>
                     <b-form
-                            action='/login_frontend'
+                            action='/testen_login'
                             accept-charset='UTF-8'
                             data-remote='true'
                             method='post'
@@ -50,12 +51,12 @@
                             v-on:ajax:success="success"
                     >
                         <b-form-group>
-                            <b-form-input :state="retry ? false : null" type='text' name='login' id='login' placeholder='Zugangscode'/>
+                            <b-form-input :state="retry ? false : null" type='text' name='login' id='login' placeholder='Zugangscode' style="font-size:1.5em"/>
                             <div class='invalid-feedback'>
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
                         </b-form-group>
-                        <b-button type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
+                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
                     </b-form>
                 </b-card>
             </b-col>
@@ -67,12 +68,16 @@
 
 <script>
     export default {
+        created() {
+            window.addEventListener('beforeunload', this.auto_logout)
+        },
         data: function () {
             return {
                 tests: this.$root.tests,
                 student: this.$root.student,
                 retry: false,
-                loading: false
+                loading: false,
+                logout: true
             }
         },
         methods: {
@@ -86,6 +91,19 @@
                 this.tests = event.detail[0]['tests']
                 this.student = event.detail[0]['student']
                 this.loading = false
+            },
+            auto_logout: function handler(event) {
+                if(this.logout){
+                    fetch('/testen_logout', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'text/javascript',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        credentials: 'include'
+                    });
+                }
             }
         },
         name: 'frontend-app'

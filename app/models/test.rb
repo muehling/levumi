@@ -16,6 +16,7 @@ class Test < ApplicationRecord
 
   #Entspricht dem Testnamen
   validates_presence_of :level
+  validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
   #Konfiguration der Views und Beschreibung als Hash
   serialize :configuration, Hash
@@ -43,6 +44,7 @@ class Test < ApplicationRecord
     json = super(except: [:created_at, :updated_at])
     json['area_id'] = self.test_family.competence.area.id
     json['label'] = self.archive ? "Bis #{self.updated_at.strftime("%b %y")}" : 'Aktuell'
+    json['full_name'] = self.test_family.name + ' - ' + self.level
     json
   end
 
@@ -72,7 +74,7 @@ class Test < ApplicationRecord
         family.save
       else
         unless family.nil?
-          old_test = family.tests.find_by_level(vals['level'])
+          old_test = family.tests.where(level: vals['level']).where.not(archive: true).first
           unless old_test.nil?
             if archive
               old_test.archive = true
@@ -87,7 +89,8 @@ class Test < ApplicationRecord
       end
 
       #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
-      test = family.tests.build(vals.slice('level', 'shorthand', 'student_test', 'configuration').merge({description: {"full"=>vals['full_description'], "short"=>vals['short_description']}}))
+      test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+
       #MaterialSupport Einträge für neue Version kopieren
       if update && !old_test.nil?
         todo = MaterialSupport.where(test_id: old_test.id)
@@ -104,7 +107,7 @@ class Test < ApplicationRecord
             item = old_test.items.find_by_shorthand(key)
             todo = MaterialSupport.where(item_id: item.id)
             todo.each do |m|
-              MaterialSupport.create(test_id: m.id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
+              MaterialSupport.create(test_id: m.test_id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
             end
           end
         end

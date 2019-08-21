@@ -73,7 +73,8 @@ function next(res) {
                 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
                 },
             {'total': total, 'postive': p_items, 'negative': n_items},
-            result
+            result,
+            function (data) {}
         )
 
         //Interpretieren des Ergebnis und Anzeigen des Feedbacks

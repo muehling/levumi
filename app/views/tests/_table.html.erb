@@ -1,4 +1,4 @@
-<table class='table table-hover table-sm'>
+<table class='table table-hover table-sm text-small'>
   <thead class='thead-light'>
   <tr>
     <th scope='col'>ID</th>
@@ -21,7 +21,7 @@
       <td><%= test.archive ? 'Ja' : '' %></td>
       <td>
         <div id='test_<%= test.id %>' hidden='true'>
-          <p class="text-light bg-secondary">Kurzbeschreibung</p>
+          <p class="text-light bg-secondary text-small">Kurzbeschreibung</p>
           <p>
             <%= raw test.description['short'] %>
           </p>

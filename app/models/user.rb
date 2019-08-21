@@ -1,14 +1,17 @@
 class User < ApplicationRecord
   has_many :group_shares
-  has_many :groups, through: :group_shares
+  has_many :groups, -> { where.not(group_shares: {key: nil}) }, through: :group_shares
 
   has_secure_password
+  #TODO: Kommentar entfernen und Fehler-Validierung in _password anpassen.
+  #validates :password, length: { minimum: 5 }
+
   validates_presence_of :email
   validates_uniqueness_of :email
   validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
-
+  
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
-  validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 16
+  validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
 
   # Eigene Gruppen löschen
   before_destroy do |user|
@@ -42,7 +45,7 @@ class User < ApplicationRecord
     when 0
       'Lehrkraft'
     when 1
-      'Forscher_in'
+      'Forscher*in'
     else
       'Privat'
     end
@@ -58,7 +61,6 @@ class User < ApplicationRecord
 
     result = []
     groups.each do |group|
-
       used = group.assessments.map{|a| a.test_id}
 
       used_tests = Test.where(id: used).order(:level)
@@ -93,6 +95,10 @@ class User < ApplicationRecord
     groups.each do |g|
       result += [g.as_hash(self)]
     end
+    #Gruppen dazunehmen für die ein Share-Angebot vorliegt, das aber noch nicht angenommen wurde. Diese fehlen in groups.
+    Group.find(GroupShare.where(user_id: self.id, key: nil).pluck(:group_id)).each do |g|
+      result += [g.as_hash(self)]
+    end
     return result
   end
 
@@ -102,10 +108,7 @@ class User < ApplicationRecord
 
   #Zufälliges Passwort erzeugen
   def generate_password
-
-    #pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
-    pw = "123" #TODO: Entfernen vor Deploy!
-
+    pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
     self.update_attributes({password: pw, password_confirmation: pw})
     return pw
   end
@@ -117,8 +120,12 @@ class User < ApplicationRecord
 
   #Testklasse anlegen
   def create_demo(key, token)
-    g = Group.create(label: 'Beispiel-Klasse', demo: true, auth_token: token)
+    g = Group.create(label: 'Testklasse', demo: true, auth_token: token)
     GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 
+  #Hat der Nutzer bereits alle Intro-Phasen durchlaufen?
+  def is_registered
+    return intro_state == 4
+  end
 end

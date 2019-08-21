@@ -76,7 +76,8 @@ function next(btn) {
                 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
             },
             {'total': total, 'positive': p_items, 'negative': n_items},
-            result
+            result,
+            function (data) {}
         )
 
         //Anzeigen einer individuellen Feedback-Seite

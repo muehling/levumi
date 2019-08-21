@@ -1,5 +1,11 @@
-class CreateResults < ActiveRecord::Migration[5.2]
+class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
   def change
+    create_table :assessments do |t|
+      t.belongs_to :group, index: true
+      t.belongs_to :test, index: true
+      t.timestamps
+    end
+
     create_table :results do |t|
       t.belongs_to :student, index: true
       t.belongs_to :assessment, index: true
