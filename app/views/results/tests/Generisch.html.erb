@@ -174,7 +174,11 @@
             $('#myProgress').hide();
             $('#myBar').hide();
             <%if @measurement.assessment.test.student_access == true%>
-            nextItem();
+              <%if @measurement.assessment.test.shorthand =='WSK'||@measurement.assessment.test.shorthand =='WS1' || @measurement.assessment.test.shorthand =='TS0'%>
+                $('#startBtn').show()
+              <%else%>
+                nextItem();
+              <%end%>
             <%end%>
         }
     }
