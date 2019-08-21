@@ -13,12 +13,17 @@
     <% if readOnly %>
       <input type='text' readonly class='form-control-plaintext' value='<%= account_types[user.account_type] %>'>
     <% else %>
-      <% (0..2).each do |i| %>
-        <div class='form-check'>
-          <%= f.radio_button :account_type, i, class: 'form-check-input', checked: user.account_type == i%>
-          <%= f.label :account_type, account_types[i], value: i, class: 'form-check-label' %>
-        </div>
-      <% end %>
+        <% (0..2).each do |i| %>
+          <div class='form-check'>
+            <%= f.radio_button :account_type, i, class: 'form-check-input' + (user.errors[:account_type].any? ? ' is-invalid' : ''), checked: user.account_type == i%>
+            <%= f.label :account_type, account_types[i], value: i, class: 'form-check-label' %>
+            <% if i == 2 %>
+              <div class='invalid-feedback'>
+                Bitte auswählen!
+              </div>
+            <% end %>
+          </div>
+        <% end %>
     <% end %>
   </div>
 </div>

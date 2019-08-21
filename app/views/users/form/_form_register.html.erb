@@ -6,7 +6,7 @@
 
   <%= render 'users/form/type', f: f,  user: user, readOnly: false, label: 'Ich bin...' %>
 
-  <%= render 'users/form/state', f: f, label: 'Aus...' %>
+  <%= render 'users/form/state', f: f, user: user, label: 'Aus...' %>
 
   <%= f.submit 'Registrieren', class: 'btn btn-outline-success'%>
   <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
