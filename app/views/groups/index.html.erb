@@ -113,14 +113,14 @@
     }
 
     function transfer_data(){
-       /* $("#transfer").html('    <div id="wait" style="font-size: 20px;margin-top: 1%; text-align: center">' +
+       $("#transfer").html('    <div id="wait" style="font-size: 20px;margin-top: 1%; text-align: center">' +
             '        Dieser Vorgang kann einen Moment dauern.' +
             '            <div  class="spinner" style="margin: 30px auto 0">' +
             '            <div class="bounce1"></div>' +
             '            <div class="bounce2"></div>' +
             '            <div class="bounce3"></div>' +
             '            </div>' +
-            '            </div>');*/
+            '            </div>');
         var students = JSON.parse(sessionStorage['students']);
         Object.keys(students).forEach(function(keyGroup) {
             var key = createKey();
