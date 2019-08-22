@@ -143,7 +143,7 @@ class Result < ActiveRecord::Base
   #Used for generating student feedback after a measurement.
   def getPriorResult()
     measurements = Measurement.where("assessment_id = ? AND created_at < ?", measurement.assessment, measurement.created_at)
-    res = Result.where(:measurement => measurements, :student => student).order(created_at: :desc).first
+    res = Result.where(:measurement => measurements, :student => student).order(updated_at: :desc).first
     if res.nil?
       return -1
     else

@@ -4,4 +4,4 @@ git checkout deploy
 git merge preview
 git push deploy deploy
 git checkout development
-cap production deploy
+bundle exec cap production deploy
