@@ -44,6 +44,8 @@
   <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
     <a class='navbar-brand' href='#'><img src='favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
 
+    <a class='nav-item btn btn-outline-secondary nav-link ml-auto' href='/testen'>Zugang für Schülerinnen und Schüler</a>
+
     <ul class='navbar-nav ml-auto'>
       <li class='nav-item dropdown <%= @retry ? 'show':'' %>'>
         <a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
@@ -67,8 +69,6 @@
           <% end %>
           <div class='dropdown-divider'></div>
           <a class='dropdown-item' href='#', onclick="$('#modal').modal('show');">Noch keinen Zugang? Hier kostenlos registrieren...</a>
-          <div class='dropdown-divider'></div>
-          <a class='dropdown-item' href='/testen'>Hier geht's zum Zugang für Schüler*innen...</a>
         </div>
       </li>
     </ul>

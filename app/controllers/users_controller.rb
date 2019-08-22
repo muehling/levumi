@@ -135,7 +135,7 @@ class UsersController < ApplicationController
           render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
         end
         if @user.intro_state == 2 #TC Accept + erste Form => Zweite Form wird akzeptiert
-          @user.update_attributes(user_attributes)  #Unkritische Attribute, deswegen kein Fehlercheck
+          @user.update_attributes(user_attributes) if params.has_key?(:user)  #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
           @user.intro_state = 3
           @user.save
           @user.create_demo(params[:key], params[:auth_token])
