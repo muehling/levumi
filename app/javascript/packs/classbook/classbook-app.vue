@@ -8,6 +8,7 @@
                     <group-view
                             :groups="groups"
                             :index="1"
+                            :single="true"
                     ></group-view>
                 </div>
 
@@ -54,6 +55,7 @@
                                         <group-view
                                                 :groups="groups"
                                                 :index="index"
+                                                :single="false"
                                         ></group-view>
                                     </b-tab>
 
