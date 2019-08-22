@@ -694,14 +694,14 @@ class ApplicationController < ActionController::Base
                 end
               end
               if r.responses[index] == 1
-                p_items += [data.last]
+                p_items += [data.last[:item]]
               elsif r.responses[index] == 0
-                n_items += [data.last]
+                n_items += [data.last[:item]]
               end
             end
           end
           report[:positive] = p_items
-          report[:neagtive] = n_items
+          report[:negative] = n_items
           results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
                                                   results:{Übersicht: r.total}, report:report,
                                                   data:data, created_at: r.created_at}]
@@ -713,7 +713,7 @@ class ApplicationController < ActionController::Base
 
 
     #send data to new Levumi
-    uri = URI.parse('https://www.levumi.de:4433/recieve')
+    uri = URI.parse('https://www.levumi.de:4433/import')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = false
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
