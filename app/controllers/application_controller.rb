@@ -148,7 +148,7 @@ class ApplicationController < ActionController::Base
     data_to_transfer[:students] = students_transfer
     #prepare assessments for transfer and merge relevant data from test
     assessments = Assessment.where(group_id:groups)
-    test = Test.where.not(archive: true).pluck(:id, :shorthand)
+    test = Test.where('archive!=? AND shorthand!= "PF1" AND shorthand!= "PF2" AND shorthand!= "PF3" AND shorthand!= "ZF1" AND shorthand!= "ZF2" AND shorthand!= "ZF3"', true).pluck(:id, :shorthand)
     test_transfer = {}
     items_test = {}
     lookup_table= {
