@@ -11,6 +11,9 @@
                 <div v-if="test.archive">
                     <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                 </div>
+                <div v-else-if="students.length == 0">
+                    <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
+                </div>
                 <div v-else-if="!student_test">
                     <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                     <p class='text-small'>{{test.description.usage}}</p>
@@ -18,25 +21,20 @@
                     <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
                     Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung!</p>
                     <!-- Schüler anzeigen um Messung zu starten. -->
-                    <div v-if="students.length == 0"><br/>
-                        <p class='text-small'>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
-                    </div>
-                    <div v-else>
-                        <b-button-group>
-                            <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
-                            <b-button v-for="student in students"
-                                      :key="student.id"
-                                      :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                                      :disabled="get_result(student.id) > 0"
-                                      class='mr-2'
-                                      :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                      :href="'/students/' + student.id + '/results?test_id='+ test.id"
-                                      data-method='post'
-                            >
-                                {{student.name}}
-                            </b-button>
-                        </b-button-group>
-                    </div>
+                    <b-button-group>
+                        <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
+                        <b-button v-for="student in students"
+                                  :key="student.id"
+                                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
+                                  :disabled="get_result(student.id) > 0"
+                                  class='mr-2'
+                                  :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
+                                  :href="'/students/' + student.id + '/results?test_id='+ test.id"
+                                  data-method='post'
+                        >
+                            {{student.name}}
+                        </b-button>
+                    </b-button-group>
                 </div>
                 <div v-else>
                     <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
@@ -59,7 +57,7 @@
             </b-tab>
 
             <!-- Liste der Messungen -->
-            <b-tab v-if="!read_only" title='Bisherige Messungen' class='m-3'>
+            <b-tab v-if="!read_only" title='Bisherige Messungen' class='m-3' :disabled="weeks.length == 0">
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -68,10 +66,7 @@
                     <b-col><b>Details</b></b-col>
                 </b-row>
                 <!-- Nach Wochen gruppierte Einträge -->
-                <div v-if="weeks.length == 0" class='mt-2'>
-                    <b-row><b-col><p class='text-center text-muted'>Keine Messungen vorhanden.</p></b-col></b-row>
-                </div>
-                <div v-else v-for="(date, index) in weeks" class='mt-2'>
+                <div v-for="(date, index) in weeks" class='mt-2'>
                     <b-row>
                         <b-col>{{ print_date(date) }}</b-col>
                         <b-col>{{ grouped_results[date].length }}</b-col>
@@ -127,7 +122,7 @@
             </b-tab>
 
             <!-- Auswertungstab mit Graph -->
-            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3'>
+            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3' :disabled="weeks.length == 0">
                 <graph-view
                         :key="test.id"
                         :annotations="annotations"

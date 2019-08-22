@@ -2,7 +2,7 @@
 
 ## Dokumentation der Testschnittstellen
 
-#### function saveResults(result, data)
+#### function saveResults(result, report, extra_data, callback)
 
 ##### result - Ergebnisse des Tests für Darstellung im Graph aufbereitet
 	* Hash mit genau einem Eintrag pro definierter "View" des Tests (vgl. test.json - configuration/views).
@@ -21,6 +21,9 @@
 		* item: Shorthand des Items 
 		* result: Item-Rohwert (wird in diesem Format exportiert)
 		* (optional) time: Bearbeitungszeit des Items in ms
+		* (optional) answer: Gegebene Antwort
+
+##### callback - Parameterlose Funktion, die nach erfolgreichem Speichern der Ergebnisse aufgerufen wird
 		
 #### function exit()
     * Beendet den Testablauf 

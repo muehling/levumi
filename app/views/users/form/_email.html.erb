@@ -6,7 +6,7 @@
     <% if readOnly %>
       <input type='text' readonly class='form-control-plaintext' value='<%= user.email %>'>
     <% else %>
-      <%= f.text_field :email, id: 'email', class: 'form-control'%>
+      <%= f.text_field :email, id: 'email', class: 'form-control' + (user.errors[:email].any? ? ' is-invalid' : '')%>
       <div class='invalid-feedback'>
         <% if user && user.errors[:email].any? && user.errors.details[:email].first[:error] == :blank %>
           Darf nicht leer sein!

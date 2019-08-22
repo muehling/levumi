@@ -9,7 +9,7 @@
 
     <ul class='navbar-nav ml-3'>
       <li class='nav-item active' id='intro1'>
-        <%= link_to 'Start', '/start', class: 'nav-link', id: 'navbarHome'%>
+        <%= link_to 'Diagnostik', '/start', class: 'nav-link', id: 'navbarHome'%>
       </li>
       <li class='nav-item' id='intro2'>
         <%= link_to '/klassenbuch', class: 'nav-link', id: 'navbarKlassenbuch' do%>
@@ -20,21 +20,19 @@
         <% end %>
       </li>
       <li class='nav-item' id='intro3'>
-        <%= link_to 'Fördermaterial', materials_path, class: 'nav-link', id: 'navbarMaterial'%>
+        <%= link_to 'Fördermaterialien', materials_path, class: 'nav-link', id: 'navbarMaterial'%>
       </li>
       <li class='nav-item' id='intro4'>
-        <%= link_to 'Testinformationen', tests_path, class: 'nav-link', id: 'navbarTests'%>
+        <%= link_to 'Testübersicht', tests_path, class: 'nav-link', id: 'navbarTests'%>
       </li>
       <li class='nav-item dropdown' id='intro5'>
         <a class='nav-link dropdown-toggle' href='#' id='navbarHelp' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-          Infomaterial
+          Informationen
         </a>
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
-          <a class='dropdown-item disabled' href='#'>Handbuch</a>
+          <a class='dropdown-item disabled' href='#'>Handbücher</a>
           <a class='dropdown-item disabled' href='#'>Videos</a>
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
-          <div class="dropdown-divider"></div>
-          <a class='dropdown-item disabled' href='#'>Einwilligungserklärung</a>
         </div>
       </li>
     </ul>
@@ -66,6 +64,8 @@
             Rechtliches
           </a>
           <div class='dropdown-menu' aria-labelledby='navbarLegal'>
+            <a class='dropdown-item' href='/files/Vorlage_Elternbrief.doc'>Vorlage Einwilligungserklärung</a>
+            <div class="dropdown-divider"></div>
             <a class='dropdown-item' href='#' onclick="$('#imprint').modal('show')">Impressum</a>
             <a class='dropdown-item' href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a>
             <a class='dropdown-item' href='#' onclick="$('#tc').modal('show')">Nutzungsbedingungen</a>

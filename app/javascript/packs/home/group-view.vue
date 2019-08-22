@@ -13,7 +13,7 @@
                                 :active="area.info.id == area_selected"
                                 @click="area.used = true;select_area(area.info.id)"
                     >
-                        <span :class="area.used ? '' : 'text-muted'">{{area.info.name}}</span>
+                        <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{area.info.name}}</span>
                     </b-nav-item>
                 </b-nav>
 
@@ -26,7 +26,7 @@
                                 v-if="(competence.used || !group.read_only) && (competence.info.area_id == area_selected)"
                                 @click="competence.used = true; select_competence(competence.info.id)"
                     >
-                        <span :class="competence.used ? '' : 'text-muted'">{{competence.info.name}}</span>
+                        <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{competence.info.name}}</span>
                         <b-popover v-if="!competence.used && competence.info.description != undefined"
                                    :target="group.id + '_competence_' + competence.info.id"
                                    triggers="hover"
@@ -45,7 +45,7 @@
                                 v-if="(family.used || !group.read_only) && (family.info.competence_id == competence_selected)"
                                 @click="family.used=true; select_family(family.info.id)"
                     >
-                        <span :class="family.used ? '' : 'text-muted'">{{family.info.name}}</span>
+                        <span :class="family.used ? 'font-weight-bold' : 'text-muted'">{{family.info.name}}</span>
                         <b-popover v-if="!family.used && family.info.description != undefined"
                                    :target="group.id + '_family_' + family.info.id"
                                    triggers="hover"
@@ -64,7 +64,7 @@
                                 v-if="test.used || !group.read_only"
                                 @click="test.used ? (test.versions.length == 1 ? loadAssessment(test.info.id, false) : test_selected = test.info.id) : createAssessment(test, false)"
                     >
-                        <span :class="test.used ? '' : 'text-muted'">{{test.info.level}}</span>
+                        <span :class="test.used ? 'font-weight-bold' : 'text-muted'">{{test.info.level}}</span>
                         <b-popover v-if="!test.used && test.info.description.short != undefined"
                                    :target="group.id + '_test_' + test.info.id"
                                    triggers="hover"
@@ -83,7 +83,7 @@
                                 v-if="version.used || (!version.info.archive && !group.read_only)"
                                 @click="version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)"
                     >
-                        <span :class="version.used ? '' : 'text-muted'">{{version.info.label}}</span>
+                        <span :class="version.used ? 'font-weight-bold' : 'text-muted'">{{version.info.label}}</span>
                         <b-popover v-if="!version.used && version.info.description.short != undefined"
                                    :target="group.id + '_version_' + version.info.id"
                                    triggers="hover"

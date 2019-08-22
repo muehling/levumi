@@ -6,7 +6,7 @@
                 <th>Name</th>
                 <th>Login-Code</th>
                 <th>Geschlecht</th>
-                <th>Geburtsmonat</th>
+                <th>Geburtsdatum</th>
                 <th>Förderbedarf</th>
                 <th>Migrationshintergrund</th>
                 <th>Aktionen</th>

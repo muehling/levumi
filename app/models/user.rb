@@ -6,9 +6,9 @@ class User < ApplicationRecord
   #TODO: Kommentar entfernen und Fehler-Validierung in _password anpassen.
   #validates :password, length: { minimum: 5 }
 
-  validates_presence_of :email
-  validates_uniqueness_of :email
-  validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }
+  validates_presence_of :email, message: 'E-Mail darf nicht leer sein!'
+  validates_uniqueness_of :email, message: 'E-Mail Adresse ist bereits registriert!'
+  #validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, message: 'Bitte eine gültige E-Mail Adresse eingeben'
   
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
@@ -63,26 +63,26 @@ class User < ApplicationRecord
     groups.each do |group|
       used = group.assessments.map{|a| a.test_id}
 
-      used_tests = Test.where(id: used).order(:level)
-      unused_tests = Test.where(id: all_tests - used).order(:level)
+      used_tests = Test.where(id: used)
+      unused_tests = Test.where(id: all_tests - used)
 
       used = used_tests.map{|a| a.test_family_id}
-      used_families = TestFamily.where(id: used).order(:name)
-      unused_families = TestFamily.where(id: all_families - used).order(:name)
+      used_families = TestFamily.where(id: used)
+      unused_families = TestFamily.where(id: all_families - used)
 
       used = used_families.map{|f| f.competence_id}
-      used_competences = Competence.where(id: used).order(:name)
-      unused_competences = Competence.where(id: all_competences - used).order(:name)
+      used_competences = Competence.where(id: used)
+      unused_competences = Competence.where(id: all_competences - used)
 
       used = used_competences.map{|c| c.area_id}
-      used_areas = Area.where(id: used).order(:name)
-      unused_areas = Area.where(id: all_areas - used).order(:name)
+      used_areas = Area.where(id: used)
+      unused_areas = Area.where(id: all_areas - used)
 
       result += [{
-          areas: used_areas.map{|a| {info: a, used: true}} + unused_areas.map{|a| {info: a, used: false}},
-          competences: used_competences.map{|c| {info: c, used: true}} + unused_competences.map{|c| {info: c, used: false}},
-          families: used_families.map{|f| {info: f, used: true}} + unused_families.map{|f| {info: f, used: false}},
-          tests: used_tests.map{|t| {info: t, used: true}} + unused_tests.map{|t| {info: t, used: false}}
+          areas: (used_areas.map{|a| {info: a, used: true}} + unused_areas.map{|a| {info: a, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
+          competences: (used_competences.map{|c| {info: c, used: true}} + unused_competences.map{|c| {info: c, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
+          families: (used_families.map{|f| {info: f, used: true}} + unused_families.map{|f| {info: f, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
+          tests: (used_tests.map{|t| {info: t, used: true}} + unused_tests.map{|t| {info: t, used: false}}).sort!{|a,b| a[:info].level <=> b[:info].level},
                  }]
 
     end
