@@ -57,7 +57,7 @@
             </b-tab>
 
             <!-- Liste der Messungen -->
-            <b-tab v-if="!read_only" title='Bisherige Messungen' class='m-3' :disabled="weeks.length == 0">
+            <b-tab title='Bisherige Messungen' class='m-3' :disabled="weeks.length == 0">
                 <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
                 <!-- Header -->
                 <b-row>
@@ -87,7 +87,7 @@
                                 <th>Positive Items</th>
                                 <th>Negative Items</th>
                                 <th>Trend</th>
-                                <th>Aktionen</th>
+                                <th v-if="!read_only" >Aktionen</th>
                                 </thead>
                                 <tbody>
                                 <tr v-for="result in grouped_results[date]">
@@ -100,7 +100,7 @@
                                         <i class='fas fa-arrow-right' v-else-if="result.data.report.total == 0"></i>
                                         <i class='fas fa-arrow-down' v-else></i>
                                     </td>
-                                    <td>
+                                    <td v-if="!read_only">
                                         <b-btn small
                                                variant='outline-danger'
                                                title='Diese Messung löschen'
@@ -223,10 +223,11 @@
         },
         provide: function () {
             return {
-                student_name: this.student_name,
-                weeks: this.weeks,
                 auto_scroll: this.auto_scroll,
                 print_date: this.print_date,
+                read_only: this.read_only,
+                student_name: this.student_name,
+                weeks: this.weeks,
             }
         },
         name: 'assessment-view'

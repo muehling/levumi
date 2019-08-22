@@ -53,6 +53,7 @@
                                 method='post'
                                 data-remote='true'
                                 v-on:ajax:success="success"
+                                v-if="!read_only"
                         >
                             <b-form-row class='text-small'>
                                 <b-col>
@@ -113,7 +114,7 @@
                                 <th>Von</th>
                                 <th>Bis</th>
                                 <th>Anmerkung</th>
-                                <th>Aktionen</th>
+                                <th v-if="!read_only">Aktionen</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -124,7 +125,7 @@
                                 <td>{{print_date(a.start)}}</td>
                                 <td>{{print_date(a.end)}}</td>
                                 <td>{{a.content}}</td>
-                                <td>
+                                <td v-if="!read_only">
                                     <!-- rails-ujs Link -->
                                     <a class='btn btn-block btn-sm btn-outline-danger'
                                        :href="'/groups/' + group + '/assessments/' + test.id + '/annotations/' + a.id"
@@ -391,7 +392,7 @@
         mounted() {
             this.updateGraph()
         },
-        inject: ['student_name', 'weeks', 'print_date', 'auto_scroll'],
+        inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks'],
         name: "graph-view.vue"
     }
 </script>
