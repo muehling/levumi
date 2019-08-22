@@ -116,9 +116,13 @@ class UsersController < ApplicationController
     if request.patch?
       if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
-        @user.intro_state = 1
+        @user.intro_state = 1 if @user.intro_state == 0
         @user.save
-        render 'users/intro/forms', layout: 'minimal' and return
+        if @user.intro_state == 1
+          render 'users/intro/forms', layout: 'minimal' and return
+        else
+          redirect_to @user
+        end
       else
         if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
           render 'users/intro/terms_and_conditions', layout: 'minimal' and return
