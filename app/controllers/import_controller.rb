@@ -3,7 +3,7 @@ skip_before_action :verify_authenticity_token
 skip_before_action :set_login
 before_action :recieve_params, only: :recieve
   #PUT /students/:student_id/results/:id
-  def recieve
+  def import
     user = params[:data][:user]
     groups = params[:data][:groups]
     students = params[:data][:students]

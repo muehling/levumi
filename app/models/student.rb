@@ -35,8 +35,7 @@ class Student < ApplicationRecord
 
   #Setter für "birthmonth" - Damit Format "YYYY-MM" akzeptiert wird
   def birthmonth=(value)
-    if value.nil?
-    else
+    unless value.nil?
       val = Date.strptime(value, '%Y-%m')
       super(val)
     end
