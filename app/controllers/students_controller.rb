@@ -63,7 +63,7 @@ class StudentsController < ApplicationController
   private
 
   def student_attributes
-    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :migration, settings: [:font_family, :font_size])
+    params.require(:student).permit(:name, :gender, :birthmonth, :sen, :tags, settings: [:font_family, :font_size])
   end
 
 end

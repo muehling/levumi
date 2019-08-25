@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.boolean "migration"
+    t.string "tags"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["original_id"], name: "index_shadow_students_on_original_id"
@@ -176,7 +176,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.boolean "migration"
+    t.string "tags"
     t.string "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

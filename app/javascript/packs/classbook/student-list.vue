@@ -8,7 +8,7 @@
                 <th>Geschlecht</th>
                 <th>Geburtsdatum</th>
                 <th>Förderbedarf</th>
-                <th>Migrationshintergrund</th>
+                <th>Weitere Merkmale</th>
                 <th>Aktionen</th>
             </tr>
             </thead>

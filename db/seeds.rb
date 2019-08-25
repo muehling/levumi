@@ -26,7 +26,7 @@
 
   #"Adam" und "Eva", verschlüsselt mit Key für Klasse 1
   students = [
-      {name: '{"iv":"WCm9XH6cM7s7e3ea4cZB3w==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"MbW6TZm0FKF9pSb1"}', gender: 0, sen: 0, migration: 0},
+      {name: '{"iv":"WCm9XH6cM7s7e3ea4cZB3w==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"MbW6TZm0FKF9pSb1"}', gender: 0, sen: 0, tags: ['Migrationshintergrund'].to_json},
       {name: '{"iv":"6QrHF209McMuDUfcMP3z4g==","v":1,"iter":1000,"ks":128,"ts":64,"mode":"ccm","adata":"","cipher":"aes","salt":"nPcGN4uGo9Y=","ct":"ErP3QkJVO3qUbp0="}'}
   ]
 
