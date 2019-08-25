@@ -19,7 +19,7 @@ class TestsController < ApplicationController
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
       params[:test][:file].each do |f|
-        @import_failure = true unless Test.import(f.tempfile, params.has_key?(:archive), params.has_key?(:update), params.has_key?(:create))
+        @import_failure = Test.import(f.tempfile, !params.has_key?(:update_test), params.has_key?(:update_material), params.has_key?(:create)).nil?
       end
       render 'index_admin'
     end

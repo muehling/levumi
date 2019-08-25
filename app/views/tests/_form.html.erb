@@ -7,17 +7,17 @@
         <%= f.file_field 'file', id: 'fileInput', class: 'form-control-file', accept: '.zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
       </div>
       <div class='form-group'>
-        <div class='custom-control custom-checkbox'>
-          <%= check_box_tag 'archive', true, false, {class: 'custom-control-input', id: 'archive'}%>
-          <%= label_tag 'archive', 'Gleichnamige Tests archvieren', class: 'custom-control-label' %>
+        <div class='form-check'>
+          <%= check_box_tag 'update_test', true, false, {class: 'form-check-input', id: 'archive'}%>
+          <%= label_tag 'update_test', 'Nur update (sonst archivieren von existierendem Test) ', class: 'form-check-label' %>
         </div>
-        <div class='custom-control custom-checkbox'>
-          <%= check_box_tag 'update', true, false, {class: 'custom-control-input', id: 'update'}%>
-          <%= label_tag 'update', 'Existierendes Fördermaterial beibehalten', class: 'custom-control-label' %>
+        <div class='form-check'>
+          <%= check_box_tag 'update_material', true, false, {class: 'form-check-input', id: 'update'}%>
+          <%= label_tag 'update_material', 'Existierendes Fördermaterial beibehalten (nur bei Archivierung)', class: 'form-check-label' %>
         </div>
-        <div class='custom-control custom-checkbox'>
-          <%= check_box_tag 'create', true, false, {class: 'custom-control-input', id: 'create'}%>
-          <%= label_tag 'create', 'Fehlende Bereiche/Konstrukte/Testfamilien anlegen', class: 'custom-control-label' %>
+        <div class='form-check'>
+          <%= check_box_tag 'create', true, false, {class: 'form-check-input', id: 'create'}%>
+          <%= label_tag 'create', 'Fehlende Bereiche/Konstrukte/Testfamilien anlegen', class: 'form-check-label' %>
         </div>
       </div>
       <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-primary disabled' do%>

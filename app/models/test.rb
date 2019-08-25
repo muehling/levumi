@@ -61,6 +61,7 @@ class Test < ApplicationRecord
     zip = Zip::File.open(file)
     f = zip.glob('test.json').first
     old_test = nil
+    test = nil
     unless f.nil?
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
       family = TestFamily.find_by_name(vals['family'])
@@ -79,20 +80,23 @@ class Test < ApplicationRecord
             if archive
               old_test.archive = true
               old_test.save
-            else
-              return false #Test existiert bereits und soll nicht archiviert werden
             end
           end
         else
-          return false  #Test kann nicht eingeordnet werden und Strukturen sollen nicht erzeugt werden
+          return nil  #Test kann nicht eingeordnet werden und Strukturen sollen nicht erzeugt werden
         end
       end
 
-      #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
-      test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+      if old_test.nil? || old_test.archive #Test anlegen oder updaten
+        #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
+        test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+      else
+        test = old_test
+        test.update_attributes(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+      end
 
       #MaterialSupport Einträge für neue Version kopieren
-      if update && !old_test.nil?
+      if update && !old_test.nil? && old_test != test
         todo = MaterialSupport.where(test_id: old_test.id)
         todo.each do |m|
           MaterialSupport.create(test_id: test.id, item_id: m.item_id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
@@ -100,37 +104,41 @@ class Test < ApplicationRecord
       end
 
       if !test.nil? && test.save
-        #Items anlegen
-        vals["items"].each do |key, value|
-          new_item = test.items.create(shorthand: key, description: value)
-          if update && !old_test.nil?
-            item = old_test.items.find_by_shorthand(key)
-            todo = MaterialSupport.where(item_id: item.id)
-            todo.each do |m|
-              MaterialSupport.create(test_id: m.test_id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
+
+        if !old_test.nil? && old_test.archive       #Falls nicht archiviert wurde, nur Test updaten, keine Items anlegen.
+          vals["items"].each do |key, value|
+            new_item = test.items.create(shorthand: key, description: value)
+            if update && !old_test.nil?     #old_test != test ist hier immer erfüllt wegen archive
+              item = old_test.items.find_by_shorthand(key)
+              todo = item.nil? ? [] : MaterialSupport.where(item_id: item.id)
+              todo.each do |m|
+                MaterialSupport.create(test_id: m.test_id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
+              end
             end
           end
         end
 
-        #Dateien aus ZIP lesen und zu Test dazufügen
+        #Dateien aus ZIP lesen und zu Test dazufügen bzw. updaten
         f = zip.glob('test.html').first
-
+        test.entry_point.purge_later if old_test == test
         test.entry_point.attach(io: StringIO.new(f.get_input_stream.read), filename: 'test.html', content_type: 'text/html')
 
+        test.media_files.purge_later if old_test == test
         zip.glob('media/*').each do |f|
           test.media_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
         end
 
+        test.script_files.purge_later if old_test == test
         zip.glob('scripts/*').each do |f|
           test.script_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last, content_type: 'text/javascript')
         end
 
+        test.style_files.purge_later if old_test == test
         zip.glob('styles/*').each do |f|
           test.style_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last, content_type: 'text/css')
         end
 
         return test
-
       end
     end
     return nil

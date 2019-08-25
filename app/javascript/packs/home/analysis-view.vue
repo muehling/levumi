@@ -6,14 +6,14 @@
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == -1"
-                          @click="student_selected = -1; view_selected = 0; updateGraph();">Ganze Klasse</b-button>
+                          @click="student_selected = -1; view_selected = 0; updateView();">Ganze Klasse</b-button>
                 <b-button v-for="(student, index) in students"
                           :key="student.id"
                           class='mr-2'
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == index"
-                          @click="student_selected = index; updateGraph();"
+                          @click="student_selected = index; updateView();"
                 >
                     {{student.name}}
                 </b-button>
@@ -29,14 +29,17 @@
                         size='sm'
                         variant='outline-secondary'
                         :pressed="view_selected == index"
-                        @click="view_selected = index; updateGraph();"
+                        @click="view_selected = index; updateView();"
                 >
                     {{ view.label }}
                 </b-button>
             </b-button-group>
         </b-row>
         <b-row>
-            <div id='chart' style='width: 100%;'></div>
+            <div :hidden="!graph_visible" id='chart' style='width: 100%;'></div>
+            <div class='m-4' :hidden="graph_visible" id='table' style='width: 100%;'>
+                ...
+            </div>
         </b-row>
         <b-row>
             <b-col>
@@ -166,6 +169,11 @@
             students: Array,
             test: Object
         },
+        computed: {
+          graph_visible() {
+              return this.configuration.views[this.view_selected].type === 'graph'
+          }
+        },
         data: function () {
             return {
                 annotation_end: null,
@@ -254,133 +262,137 @@
                     pdf.save(this.test.shorthand + '.pdf')
                 })
             },
-            updateGraph() {
-                //Options für die gewählte Ansicht mit den globalen Options vereinen
+            updateView() {
+                if (this.configuration.views[this.view_selected].type === 'table') {
 
-                //Optionen für Graph aus Default Werten und gewählten Werten bauen
-                //Aktuell Unterscheidung bar/line wegen Bug in Apexcharts
-                let opt = JSON.parse(JSON.stringify(
-                    this.configuration.views[this.view_selected].options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
-                ))
-                opt = deepmerge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
-
-                if (this.configuration.views[this.view_selected].options.chart.type === 'line') {
-                    opt.xaxis.labels.formatter = function (value, timestamp, index) {
-                        if (index >= this.weeks.length)
-                            return ""
-                        else
-                            return this.print_date(this.weeks[index])
-                    }.bind(this)
                 }
-                else
-                    for (let i = 0; i < opt.xaxis.categories.length; ++i)
-                        opt.xaxis.categories[i] = this.print_date(opt.xaxis.categories[i])
+                else {
+                    //Options für die gewählte Ansicht mit den globalen Options vereinen
 
-                //Kommentare einfügen
-                opt['annotations'] = {
-                    position: 'front',
-                    xaxis: []
-                }
-                for (let i = 0; i < this.annotations.length; ++i)
-                    if (this.annotations[i].view == this.view_selected &&
-                        ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
-                            (this.student_selected == -1 && this.annotations[i].group_id != null))) {
-                        opt['annotations']['xaxis'].push({
-                            x: this.weeks.indexOf(this.annotations[i].start),
-                            x2: this.annotations[i].start == this.annotations[i].end ? null : this.weeks.indexOf(this.annotations[i].end),
-                            strokeDashArray: 1,
-                            borderColor: '#c2c2c2',
-                            fillColor: '#c2c2c2',
-                            opacity: 0.3,
-                            label: {
-                                borderColor: '#c2c2c2',
-                                borderWidth: 1,
-                                text: this.annotations[i].content,
-                                textAnchor: 'middle',
-                                position: 'top',
-                                orientation: 'horizontal',
-                                style: {
-                                    background: '#fff',
-                                    color: '#777',
-                                    fontSize: '12px',
-                                    cssClass: 'apexcharts-xaxis-annotation-label',
-                                },
-                            },
-                        })
+                    //Optionen für Graph aus Default Werten und gewählten Werten bauen
+                    //Aktuell Unterscheidung bar/line wegen Bug in Apexcharts
+                    let opt = JSON.parse(JSON.stringify(
+                        this.configuration.views[this.view_selected].options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
+                    ))
+                    opt = deepmerge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
+
+                    if (this.configuration.views[this.view_selected].options.chart.type === 'line') {
+                        opt.xaxis.labels.formatter = function (value, timestamp, index) {
+                            if (index >= this.weeks.length)
+                                return ""
+                            else
+                                return this.print_date(this.weeks[index])
+                        }.bind(this)
                     }
-                let res = []
-                const view = this.configuration.views[this.view_selected]
-                //Ein "leeres" Objekt für alle Datenserien anlegen
-                if (this.student_selected == -1) {
-                    for (let s = 0; s < this.students.length; ++s)
-                        res.push({
-                            'name': this.student_name(this.students[s].id),
-                            'data': []
-                        })
-                } else {
-                    if (view.series == undefined) {
-                        res.push({
-                            'name': this.student_name(this.students[this.student_selected].id),
-                            'data': []
-                        })
-                    } else
-                        for (let s = 0; s < view.series.length; ++s)
+                    else
+                        for (let i = 0; i < opt.xaxis.categories.length; ++i)
+                            opt.xaxis.categories[i] = this.print_date(opt.xaxis.categories[i])
+
+                    //Kommentare einfügen
+                    opt['annotations'] = {
+                        position: 'front',
+                        xaxis: []
+                    }
+                    for (let i = 0; i < this.annotations.length; ++i)
+                        if (this.annotations[i].view == this.view_selected &&
+                            ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
+                                (this.student_selected == -1 && this.annotations[i].group_id != null))) {
+                            opt['annotations']['xaxis'].push({
+                                x: this.weeks.indexOf(this.annotations[i].start),
+                                x2: this.annotations[i].start == this.annotations[i].end ? null : this.weeks.indexOf(this.annotations[i].end),
+                                strokeDashArray: 1,
+                                borderColor: '#c2c2c2',
+                                fillColor: '#c2c2c2',
+                                opacity: 0.3,
+                                label: {
+                                    borderColor: '#c2c2c2',
+                                    borderWidth: 1,
+                                    text: this.annotations[i].content,
+                                    textAnchor: 'middle',
+                                    position: 'top',
+                                    orientation: 'horizontal',
+                                    style: {
+                                        background: '#fff',
+                                        color: '#777',
+                                        fontSize: '12px',
+                                        cssClass: 'apexcharts-xaxis-annotation-label',
+                                    },
+                                },
+                            })
+                        }
+                    let res = []
+                    const view = this.configuration.views[this.view_selected]
+                    //Ein "leeres" Objekt für alle Datenserien anlegen
+                    if (this.student_selected == -1) {
+                        for (let s = 0; s < this.students.length; ++s)
                             res.push({
-                                'name': view.series[s],
+                                'name': this.student_name(this.students[s].id),
                                 'data': []
                             })
-                }
-
-                //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                if (view.options.chart.type === 'bar') {
-                    for (let r = 0; r < res.length; ++r) {
-                        res[r].data = JSON.parse(JSON.stringify(this.weeks))
-                        res[r].data.fill(null)
+                    } else {
+                        if (view.series == undefined) {
+                            res.push({
+                                'name': this.student_name(this.students[this.student_selected].id),
+                                'data': []
+                            })
+                        } else
+                            for (let s = 0; s < view.series.length; ++s)
+                                res.push({
+                                    'name': view.series[s],
+                                    'data': []
+                                })
                     }
-                }
 
-                //Leere Objekte füllen
-                for (let i = 0; i < this.results.length; ++i) {
-                    if (this.student_selected == -1 || view.series == undefined) {
-                        let student = this.student_name(this.results[i].student_id)
+                    //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+                    if (view.options.chart.type === 'bar') {
                         for (let r = 0; r < res.length; ++r) {
-                            if (res[r].name == student) {
+                            res[r].data = JSON.parse(JSON.stringify(this.weeks))
+                            res[r].data.fill(null)
+                        }
+                    }
+
+                    //Leere Objekte füllen
+                    for (let i = 0; i < this.results.length; ++i) {
+                        if (this.student_selected == -1 || view.series == undefined) {
+                            let student = this.student_name(this.results[i].student_id)
+                            for (let r = 0; r < res.length; ++r) {
+                                if (res[r].name == student) {
+                                    //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+                                    if (view.options.chart.type === 'bar')
+                                        res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label].toFixed(2) //Macht das Runden hier immer Sinn?
+                                    else
+                                        res[r].data.push({
+                                            x: this.weeks.indexOf(this.results[i].test_week),
+                                            y: this.results[i].results[view.label].toFixed(2), //Macht das Runden hier immer Sinn?
+                                        })
+                                    break
+                                }
+                            }
+                        } else if (this.results[i].student_id == this.students[this.student_selected].id) {
+                            for (let r = 0; r < view.series.length; ++r) {
                                 //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
                                 if (view.options.chart.type === 'bar')
-                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label].toFixed(2) //Macht das Runden hier immer Sinn?
+                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label][view.series[r]].toFixed(2) //Macht das Runden hier immer Sinn?
                                 else
                                     res[r].data.push({
                                         x: this.weeks.indexOf(this.results[i].test_week),
-                                        y: this.results[i].results[view.label].toFixed(2), //Macht das Runden hier immer Sinn?
+                                        y: this.results[i].results[view.label][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
                                     })
-                                break
                             }
                         }
-                    } else if (this.results[i].student_id == this.students[this.student_selected].id) {
-                        for (let r = 0; r < view.series.length; ++r) {
-                            //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                            if (view.options.chart.type === 'bar')
-                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label][view.series[r]].toFixed(2) //Macht das Runden hier immer Sinn?
-                            else
-                                res[r].data.push({
-                                    x: this.weeks.indexOf(this.results[i].test_week),
-                                    y: this.results[i].results[view.label][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
-                                })
-                        }
                     }
+                    if (this.apexchart != null)
+                        this.apexchart.destroy()
+                    this.apexchart = new ApexCharts(document.querySelector('#chart'), deepmerge(opt, {series: res}))
+                    this.apexchart.render()
                 }
-                if (this.apexchart != null)
-                    this.apexchart.destroy()
-                this.apexchart = new ApexCharts(document.querySelector('#chart'), deepmerge(opt, {series: res}))
-                this.apexchart.render()
-
             },
             success(event) {  //Attributwerte aus AJAX Antwort übernehmen und View updaten
                 this.annotations.splice(0, 0, event.detail[0])
                 this.annotation_start = null
                 this.annotation_end = null
                 this.annotation_text = ''
-                this.updateGraph()
+                this.updateView()
             },
             week_labels(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]
@@ -390,10 +402,10 @@
             },
         },
         mounted() {
-            this.updateGraph()
+            this.updateView()
         },
         inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks'],
-        name: "graph-view.vue"
+        name: "analysis-view.vue"
     }
 </script>
 
