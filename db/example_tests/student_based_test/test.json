@@ -28,18 +28,6 @@
         "label": "Detailauswertung",
         "student": true,
         "group": false,
-        "type": "graph",
-        "series": ["Vögel", "Katzen"],
-        "options": {
-          "chart": {
-            "type": "bar"
-          }
-        }
-      },
-      {
-        "label": "Tabelle",
-        "student": true,
-        "group": false,
         "type": "table",
         "columns": ["Katzen", "Vögel"]
       }

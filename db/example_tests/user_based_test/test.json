@@ -34,13 +34,6 @@
             "type": "bar"
           }
         }
-      },
-      {
-        "label": "Tabelle",
-        "student": true,
-        "group": false,
-        "type": "table",
-        "columns": ["Katzen", "Vögel"]
       }
     ]
   },
