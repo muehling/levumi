@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     groups_transfer = {}
     students_transfer = {}
     assessments_transfer = {}
-    groups = @login_user.groups.where('(archive IS NULL OR archive =?) AND name != "Testklasse"', false)
+    groups = @login_user.groups.where('(archive IS NULL OR archive = false) AND demo = false "')
     groups.each do |g|
       if !g.demo
         groups_transfer[g.id] = {label: g.name, archive: g.archive, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
@@ -148,7 +148,7 @@ class ApplicationController < ActionController::Base
     data_to_transfer[:students] = students_transfer
     #prepare assessments for transfer and merge relevant data from test
     assessments = Assessment.where(group_id:groups)
-    test = Test.where('archive!=? AND shorthand!= "PF1" AND shorthand!= "PF2" AND shorthand!= "PF3" AND shorthand!= "ZF1" AND shorthand!= "ZF2" AND shorthand!= "ZF3"', true).pluck(:id, :shorthand)
+    test = Test.where('archive != true AND shorthand!= "PF1" AND shorthand!= "PF2" AND shorthand!= "PF3" AND shorthand!= "ZF1" AND shorthand!= "ZF2" AND shorthand!= "ZF3"').pluck(:id, :shorthand)
     test_transfer = {}
     items_test = {}
     lookup_table= {
@@ -703,7 +703,7 @@ class ApplicationController < ActionController::Base
           report[:positive] = p_items
           report[:negative] = n_items
           results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
-                                                  results:{Übersicht: r.total}, report:report,
+                                                  results:{'Übersicht': r.total}, report:report,
                                                   data:data, created_at: r.created_at}]
         end
       end
