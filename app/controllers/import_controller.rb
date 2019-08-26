@@ -14,8 +14,7 @@ class ImportController < ApplicationController
     #Importieren des Nutzers
     u = User.find_by(email: user[:email])
     if u.nil?
-      u = User.create(email: user[:email], password_digest: user[:password_digest], institution: user[:institution],
-                      capabilities: user[:capabilities], account_type: user[:account_type], state: user[:state])
+      u = User.create(email: user[:email], password_digest: user[:password_digest], institution: user[:institution], account_type: user[:account_type], state: user[:state], intro_state: 3)
     end
 
 
@@ -24,10 +23,17 @@ class ImportController < ApplicationController
     map_old_stu_to_new_stu = {}
     #Importieren der Gruppen, der GroupShare-Objekte und mappen der alten GroupIDs auf die neuen GroupIDs
     groups.each do |key, valueG|
-      #Erstellen Group, GroupShare, Assessments und Studens
-      g = Group.create(label: valueG[:label], auth_token: valueG[:auth_token])
-      GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
-      map_old_group_to_new_group[key] = g.id
+      if key == -1
+        #Erstellen Group, GroupShare, Assessments und Studens
+        g = Group.create(label: valueG[:label], demo: true, auth_token: valueG[:auth_token])
+        GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
+        map_old_group_to_new_group[key] = g.id
+      else
+        #Erstellen Group, GroupShare, Assessments und Studens
+        g = Group.create(label: valueG[:label], auth_token: valueG[:auth_token])
+        GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
+        map_old_group_to_new_group[key] = g.id
+      end
     end
 
     #Erstellen der Assessments und mappen der alten MesurementIDs auf die neuen AssessmentIDs
