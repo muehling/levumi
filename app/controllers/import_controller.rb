@@ -1,8 +1,10 @@
+#TEMPCODE
 class ImportController < ApplicationController
 
   skip_before_action :set_login
   skip_before_action :verify_authenticity_token
   before_action :import_params, only: :import
+
   #PUT /students/:student_id/results/:id
   def import
     user = params[:data][:user]
@@ -88,7 +90,7 @@ class ImportController < ApplicationController
   end
 
 private
-def import_params
-  params.require(:data).permit(:user, :groups, :students, :assessments, :results)
-end
+  def import_params
+    params.require(:data).permit(:user, :groups, :students, :assessments, :results)
+  end
 end
