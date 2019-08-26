@@ -102,6 +102,7 @@ class ApplicationController < ActionController::Base
 
   def transfer_data
     client_data = JSON.parse(params[:data])
+    test_klasse = JSON.parse(params[:test_klasse])
     data_to_transfer = {}
 
     #prepare user for tranfer
@@ -115,9 +116,10 @@ class ApplicationController < ActionController::Base
     students_transfer = {}
     assessments_transfer = {}
     groups = @login_user.groups.where('(archive IS NULL OR archive =?) AND name != "Testklasse"', false)
+    groups_transfer[-1] = {label: 'Testklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
     groups.each do |g|
       if !g.demo
-        groups_transfer[g.id] = {label: g.name, archive: g.archive, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
+        groups_transfer[g.id] = {label: g.name, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
         students_transfer[g.id] = {}
         assessments_transfer[g.id] = {}
       end
@@ -713,7 +715,7 @@ class ApplicationController < ActionController::Base
 
 
     #send data to new Levumi
-    uri = URI.parse('https://www.levumi.de:4433/import')
+    uri = URI.parse('')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = false
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
