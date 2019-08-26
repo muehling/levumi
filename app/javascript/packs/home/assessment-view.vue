@@ -134,7 +134,7 @@
             <!-- Vorschläge für Fördermaterial -->
              <b-tab title='Fördern'>
                 <support-view
-                        :group="group"
+                        :group="group.id"
                         :test="test.id"
                 >
                 </support-view>
@@ -156,7 +156,7 @@
         props: {
             annotations: Array,
             configuration: Object,
-            group: Number,
+            group: Object,
             read_only: Boolean,
             results: Array,
             student_test: Boolean,
@@ -209,13 +209,13 @@
                 this.results.splice(index, 1);
             },
             student_name(id) {   //Student-Objekt aus globaler Variable holen
-                return get_student(this.group, id).name;
+                return get_student(this.group.id, id).name;
             }
         },
         data: function () {
             return {
                 deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-                students: groups[this.group] || [],   //Zugriff auf globale Variable "groups"
+                students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }
         },
         provide: function () {

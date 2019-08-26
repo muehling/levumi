@@ -64,7 +64,7 @@
                     </b-button>
                     <b-collapse id='annotation_collapse' v-on:shown="auto_scroll('#annotation_collapse')">
                         <b-form class='mt-2'
-                                :action="'/groups/' + group + '/assessments/' + test.id + '/annotations'"
+                                :action="'/groups/' + group.id + '/assessments/' + test.id + '/annotations'"
                                 accept-charset='UTF-8'
                                 method='post'
                                 data-remote='true'
@@ -87,7 +87,7 @@
                                     <!-- Hidden Field mit user bzw group id -->
                                     <input v-if="student_selected == -1"
                                            type='hidden'
-                                           :value="group"
+                                           :value="group.id"
                                            name='annotation[group_id]'
                                     />
                                     <input v-else
@@ -144,7 +144,7 @@
                                 <td v-if="!read_only">
                                     <!-- rails-ujs Link -->
                                     <a class='btn btn-block btn-sm btn-outline-danger'
-                                       :href="'/groups/' + group + '/assessments/' + test.id + '/annotations/' + a.id"
+                                       :href="'/groups/' + group.id + '/assessments/' + test.id + '/annotations/' + a.id"
                                        data-method='delete'
                                        data-remote='true'
                                        data-confirm='Anmerkung löschen! Sind Sie sicher?'
@@ -177,7 +177,7 @@
         props: {
             annotations: Array,
             configuration: Object,
-            group: Number,
+            group: Object,
             results: Array,
             students: Array,
             test: Object
@@ -292,12 +292,17 @@
                 var dataURL = this.apexchart.dataURI().then((uri) => {
                     let pdf = new jsPDF({orientation: 'landscape'})
                         pdf.text(this.test.full_name, 10, 10)
-                    if (this.student_selected == -1)
+                    if (this.student_selected == -1) {
                         pdf.text('Ganze Klasse - ' + this.configuration.views[this.view_selected].label, 10, 20)
-                    else
-                        pdf.text(this.students[this.student_selected].name + ' - ' + this.configuration.views[this.view_selected].label, 10, 10)
-                    pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
-                    pdf.save(this.test.shorthand + '.pdf')
+                        pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
+                        pdf.save(this.group.label + '_' + this.test.shorthand + this.test.level + '_' + 'Klassenansicht' +  '.pdf')
+                    }
+                    else{
+                        pdf.text(this.students[this.student_selected].name + ' - ' + this.configuration.views[this.view_selected].label, 10, 20)
+                        pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
+                        pdf.save(this.group.label + '_' + this.test.shorthand + this.test.level + '_' + 'Kindansicht' +  '.pdf')
+
+                    }
                 })
             },
             updateView() {
