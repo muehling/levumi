@@ -13,7 +13,14 @@ class ImportController < ApplicationController
 
     #Importieren des Nutzers
     u = User.find_by(email: user[:email])
+    create_test_class = false
+    if u. intro_state < 3
+      create_test_class = true
+      u.intro_state = 3
+      u.save
+    end
     if u.nil?
+      create_test_class = true
       u = User.create(email: user[:email], password_digest: user[:password_digest], institution: user[:institution], account_type: user[:account_type], state: user[:state], intro_state: 3)
     end
 
@@ -23,7 +30,7 @@ class ImportController < ApplicationController
     map_old_stu_to_new_stu = {}
     #Importieren der Gruppen, der GroupShare-Objekte und mappen der alten GroupIDs auf die neuen GroupIDs
     groups.each do |key, valueG|
-      if key == -1
+      if key == -1 && create_test_class
         #Erstellen Group, GroupShare, Assessments und Studens
         g = Group.create(label: valueG[:label], demo: true, auth_token: valueG[:auth_token])
         GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
