@@ -44,12 +44,12 @@
                            :value="generate_token()"
                            name='group[auth_token]'
                     />
-                    <label class='sr-only' for='label'>Klassenbezeichner</label>
+                    <label class='sr-only' for='label'>Klassenbezeichnung</label>
                     <b-input class='mr-2'
                              id='label'
                              v-model="label"
                              name='group[label]'
-                             placeholder='Klassenbezeichner'
+                             placeholder='Klassenbezeichnung'
                              size='sm'
                     />
                     <div v-if="index === 0">
