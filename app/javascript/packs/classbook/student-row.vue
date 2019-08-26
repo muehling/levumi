@@ -70,7 +70,7 @@
                 <small id="focusHelp" class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
             </div>
             <div v-else>
-                <span v-for="tag in student.tags">{{tag}} </span>
+                <span v-for="(tag, index) in student.tags">{{index > 0 ? ', ' : ''}}{{tag}}</span>
                 <span v-if="student.tags.length == 0 && !empty" class="text-muted">nichts erfasst</span>
             </div>
         </td>

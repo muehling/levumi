@@ -46,6 +46,7 @@ class Student < ApplicationRecord
   def tags=(value)
     unless value.nil?
       val = JSON.parse(value)
+      val.sort!
       super(val)
     end
   end

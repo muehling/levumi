@@ -30,6 +30,8 @@
           Informationen
         </a>
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
+          <a id='help_menu' class='dropdown-item' href='#' onclick='toggleHelp()'>Hilfe einblenden</a>
+          <div class="dropdown-divider"></div>
           <a class='dropdown-item disabled' href='#'>Handbücher</a>
           <a class='dropdown-item disabled' href='#'>Videos</a>
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
@@ -108,4 +110,17 @@
         }
         document.getElementById(item).className += ' active';
     }
+
+    //Hilfe div ein-/ausblenden
+    function toggleHelp() {
+        $('#help').toggleClass('collapse')
+        if ($('#help').hasClass('collapse'))
+            $('#help_menu').html('Hilfe einblenden')
+        else
+            $('#help_menu').html('Hilfe ausblenden')
+    }
+
+    <%if @login.intro_state > 3 && @login.groups.size == 1 %>
+    toggleHelp()
+    <% end %>
 </script>

@@ -66,7 +66,7 @@
                         <!-- Geteilte Klassen -->
                         <b-tab>
                             <template slot='title'>
-                                Geteilte Klassen <span v-if="new_shares" class="badge badge-info">Neu!</span>
+                                Mit mir geteilte Klassen <span v-if="new_shares" class="badge badge-info">Neu!</span>
                             </template>
 
                             <b-card no-body class='mt-3'>
@@ -105,7 +105,7 @@
                         <!-- Klassenarchiv -->
                         <b-tab>
                             <template slot='title'>
-                                Klassenarchiv
+                                Archivierte Klassen
                             </template>
 
                             <b-card no-body class='mt-3'>
