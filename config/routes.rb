@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   #Normaler Login
   post '/login', to: 'application#login'
   post '/logout', to: 'application#logout'
+  post '/import', to: 'import#import'
 
   #Login für SuS
   get '/testen', to: 'application#frontend'

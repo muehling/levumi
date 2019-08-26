@@ -29,5 +29,15 @@ module Levumi2
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    #origins ggf. auf Ip setzen?
+    config.middleware.use Rack::Cors do
+      allow do
+        origins 'levumi.de'
+        resource '*',
+                 headers: :any,
+                 methods: [:post]
+      end
+    end
   end
 end

@@ -36,8 +36,10 @@ class Student < ApplicationRecord
 
   #Setter für "birthmonth" - Damit Format "YYYY-MM" akzeptiert wird
   def birthmonth=(value)
-    val = Date.strptime(value, '%Y-%m')
-    super(val)
+    unless value.nil?
+      val = Date.strptime(value, '%Y-%m')
+      super(val)
+    end
   end
 
   #Setter für Tags als Serialisiertes Array, das als JSON-Format geschickt wird
