@@ -48,7 +48,7 @@
                     <tbody>
                         <tr v-for="entry in table_data">
                             <td>{{print_date(entry.week)}}</td>
-                            <td v-for="col in columns">{{entry[col]}}</td>
+                            <td v-for="col in columns"><span v-html="entry[col]"></span></td>
                         </tr>
                     </tbody>
                 </table>
