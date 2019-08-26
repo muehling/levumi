@@ -65,12 +65,12 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-checkbox-group id="tags" v-model="tags" :options="options_tags" name='tags'>
+                <b-form-checkbox-group id="tags" v-model="tags" :options="options_tags" name='tags' stacked>
                 </b-form-checkbox-group>
-                <small id="focusHelp" class="form-text text-muted">Kind oder Eltern im Ausland geboren?</small>
+                <small id="focusHelp" class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
             </div>
             <div v-else>
-                <span v-for="tag in student.tags">{{tag}}</span>
+                <span v-for="tag in student.tags">{{tag}} </span>
                 <span v-if="student.tags.length == 0 && !empty" class="text-muted">nichts erfasst</span>
             </div>
         </td>
@@ -272,7 +272,14 @@
             ];
 
             this.options_tags = [
-                {text: 'Migrationshintergrund', value: 'Migrationshintergrund'},
+                {text: 'AD(H)S', value: 'AD(H)S'},
+                {text: 'Deutsch als Zweitsprache', value: 'Deutsch als Zweitsprache'},
+                {text: 'Dyskalkulie', value: 'Dyskalkulie'},
+                {text: 'Fluchtgeschichte', value: 'Fluchtgeschichte'},
+                {text: 'Hochbegabung', value: 'Hochbegabung'},
+                {text: 'Integrationskraft', value: 'Integrationskraft'},
+                {text: 'LRS', value: 'LRS'},
+                {text: 'Migrationshintergrund', value: 'Migrationshintergrund'}
             ];
         },
         name: 'student-row'
