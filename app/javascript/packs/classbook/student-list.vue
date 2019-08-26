@@ -25,7 +25,7 @@
                 ></student-row>
             <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
                 <student-row v-if="!read_only"
-                             :student="{name: '', login: ''}"
+                             :student="{name: '', login: '', tags: []}"
                              :key="0"
                              :group="group"
                              :index="-1"

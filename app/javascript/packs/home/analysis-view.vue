@@ -48,6 +48,7 @@
                     <tbody>
                         <tr v-for="entry in table_data">
                             <td>{{print_date(entry.week)}}</td>
+                            <!-- TODO: Was passiert hier bei Javascript in entry[col] ? -->
                             <td v-for="col in columns"><span v-html="entry[col]"></span></td>
                         </tr>
                     </tbody>
