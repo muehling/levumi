@@ -54,4 +54,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'rubyzip'
 
-gem 'rack-cors', :require => 'rack/cors'
+#TEMPCODE (vielleicht trotzdem nützlich wegen Blog?)
+gem 'rack-cors', require: 'rack/cors'

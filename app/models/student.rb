@@ -44,8 +44,10 @@ class Student < ApplicationRecord
 
   #Setter für Tags als Serialisiertes Array, das als JSON-Format geschickt wird
   def tags=(value)
-    val = JSON.parse(value)
-    super(val)
+    unless value.nil?
+      val = JSON.parse(value)
+      super(val)
+    end
   end
 
   #Liefert die aktuellen Assessments eines Schülers zurück. Archivierte Tests werden ignoriert.

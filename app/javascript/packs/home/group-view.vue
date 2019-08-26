@@ -108,7 +108,7 @@
             <assessment-view v-else-if="results"
                              :annotations="results.annotations"
                              :configuration="results.configuration"
-                             :group="{'id':group.id, 'label':group.label}"
+                             :group="group"
                              :read_only="group.read_only"
                              :results="results.series"
                              :student_test="results.student_test"

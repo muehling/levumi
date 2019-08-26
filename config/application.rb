@@ -30,7 +30,8 @@ module Levumi2
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    #origins ggf. auf Ip setzen?
+    #TEMPCODE (vielleicht trotzdem nützlich wegen Blog?)
+    #Ggf. auf IP setzen?
     config.middleware.use Rack::Cors do
       allow do
         origins 'levumi.de'

@@ -72,7 +72,7 @@ function next(res) {
                 'Übersicht': (sum[0] + sum[1]) / result.length,
                 'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
                 },
-            {'total': total, 'postive': p_items, 'negative': n_items},
+            {'total': total, 'positive': p_items, 'negative': n_items},
             result,
             function (data) {}
         )
