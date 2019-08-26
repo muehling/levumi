@@ -25,7 +25,7 @@ class ImportController < ApplicationController
     #Importieren der Gruppen, der GroupShare-Objekte und mappen der alten GroupIDs auf die neuen GroupIDs
     groups.each do |key, valueG|
       #Erstellen Group, GroupShare, Assessments und Studens
-      g = Group.create(label: valueG[:label], archive: false, demo: false, auth_token: valueG[:auth_token])
+      g = Group.create(label: valueG[:label], auth_token: valueG[:auth_token])
       GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
       map_old_group_to_new_group[key] = g.id
     end
