@@ -11,21 +11,20 @@ class ImportController < ApplicationController
     groups = params[:data][:groups]
     students = params[:data][:students]
     assessments = params[:data][:assessments]
-    results =params[:data][:results]
+    results = params[:data][:results]
 
     #Importieren des Nutzers
     u = User.find_by(email: user[:email])
     create_test_class = false
-    if u. intro_state < 3
-      create_test_class = true
-      u.intro_state = 3
-      u.save
-    end
     if u.nil?
       create_test_class = true
       u = User.create(email: user[:email], password_digest: user[:password_digest], institution: user[:institution], account_type: user[:account_type], state: user[:state], intro_state: 3)
     end
-
+    if u.intro_state < 3
+      create_test_class = true
+      u.intro_state = 3
+      u.save
+    end
 
     map_old_meas_to_new_ass = {}
     map_old_group_to_new_group = {}

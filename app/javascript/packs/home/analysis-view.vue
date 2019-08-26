@@ -54,7 +54,7 @@
                 </table>
             </div>
         </b-row>
-        <b-row>
+        <b-row :hidden="!graph_visible">
             <b-col>
                 <div class='ml-2'>
                     <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
