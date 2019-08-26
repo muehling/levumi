@@ -1,4 +1,5 @@
 # -*- encoding : utf-8 -*-
+require 'Net'
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -716,7 +717,7 @@ class ApplicationController < ActionController::Base
     #send data to new Levumi
     uri = URI.parse('https://www.levumi.de:4433/import')
     http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = false
+    http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
 
     data_to_send = {data: data_to_transfer}
