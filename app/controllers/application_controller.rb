@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-require 'Net'
+require 'net/http'
 class ApplicationController < ActionController::Base
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
@@ -731,7 +731,7 @@ class ApplicationController < ActionController::Base
       @login_user.transferred = true
       @login_user.save
 
-      flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
+      flash[:notice] = 'Ihre Daten wurden übertragen! Biite loggen Sie sich jetzt in der neuen Version (www.levumi.de) ein und überprüfen Sie ob alles geklappt hat.'
       respond_to do |format|
         format.js   {}
       end
