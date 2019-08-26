@@ -107,8 +107,7 @@ class ApplicationController < ActionController::Base
 
     #prepare user for tranfer
     user_transfer =  {id: @login_user.id, email: @login_user.email, password_digest: @login_user.password_digest,
-                      institution: @login_user.school, capabilities: @login_user.capabilities,
-                      account_type: @login_user.account_type, state: @login_user.state}
+                      institution: @login_user.school, account_type: @login_user.account_type, state: @login_user.state}
     data_to_transfer[:user] = user_transfer
 
     #prepare groups for tranfer
