@@ -72,7 +72,13 @@ class ImportController < ApplicationController
 
     #Erstellen der Result-Objekte
     results.each do |r|
-      result = {Übersicht: r[:results][:Übersicht]}
+      result = {}
+      if r[:results][:Detailauswertung].nil?
+        result = {Übersicht: r[:results][:Übersicht]}
+      else
+        detail = r.require(:results).permit(:Übersicht, :Detailauswertung=>{})
+        result = {Übersicht: r[:results][:Übersicht], Detailauswertung: detail[:Detailauswertung].to_h}
+      end
       report_params = r.require(:report).permit(:total, :positive =>[], :negative => [])
       report = {total:report_params[:total], positive: report_params[:positive], negative: report_params[:negative] }
 
