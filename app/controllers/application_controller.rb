@@ -713,23 +713,26 @@ class ApplicationController < ActionController::Base
                 end
               end
               if r.responses[index] == 1
-                if r.measurement.assessment.test.shorthand == "SEL4"
+                if r.measurement.assessment.test.shorthand == "SEL6"
                   sum += 1
                   if items_test[item][:group] == 1
                     complex_str_cor += 1
-                    if complex_str_cor_items += items_test[item][:itemtext]
+                    if complex_str_cor_items == ''
+                    complex_str_cor_items += items_test[item][:itemtext]
                     else
                       complex_str_cor_items += ', ' + items_test[item][:itemtext]
                     end
                   elsif items_test[item][:group] == 2
                     inf_cor += 1
-                    if inf_cor_items += items_test[item][:itemtext]
+                    if inf_cor_items ==''
+                    inf_cor_items += items_test[item][:itemtext]
                     else
                       inf_cor_items += ', ' + items_test[item][:itemtext]
                     end
                   else
                     coh_cor += 1
-                    if coh_cor_items += items_test[item][:itemtext]
+                    if coh_cor_items ==''
+                    coh_cor_items += items_test[item][:itemtext]
                     else
                       coh_cor_items += ', ' + items_test[item][:itemtext]
                     end
@@ -740,19 +743,22 @@ class ApplicationController < ActionController::Base
                 if r.measurement.assessment.test.shorthand == "SEL6"
                   if items_test[item][:group] == 1
                     complex_str_fal += 1
-                    if complex_str_fal_items += items_test[item][:itemtext]
+                    if complex_str_fal_items == ''
+                      complex_str_fal_items += items_test[item][:itemtext]
                     else
                       complex_str_fal_items += ', ' + items_test[item][:itemtext]
                     end
                   elsif items_test[item][:group] == 2
                     inf_fal += 1
-                    if inf_fal_items += items_test[item][:itemtext]
+                    if inf_fal_items == ''
+                      inf_fal_items += items_test[item][:itemtext]
                     else
                       inf_fal_items += ', ' + items_test[item][:itemtext]
                     end
                   else
                     coh_fal += 1
-                    if coh_fal_items += items_test[item][:itemtext]
+                    if coh_fal_items == ''
+                      coh_fal_items += items_test[item][:itemtext]
                     else
                       coh_fal_items += ', ' + items_test[item][:itemtext]
                     end
