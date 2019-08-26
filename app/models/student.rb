@@ -2,6 +2,7 @@ class Student < ApplicationRecord
   belongs_to :group
   has_many :results, dependent: :destroy
 
+  serialize :tags, Array
   serialize :settings, Hash
 
   validates_presence_of :name
@@ -19,16 +20,16 @@ class Student < ApplicationRecord
 
   #Schattenkopie anlegen, wird im Zuge des Löschen von Results aufgerufen.
   def create_shadow
-    ShadowStudent.create(original_id: self.id, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, migration: self.migration)
+    ShadowStudent.create(original_id: self.id, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, tags: self.tags)
   end
 
   #JSON Export, nur relevante Attribute übernehmen. Falls zusätzliche Daten vorhanden sind, diese auch exportieren.
   def as_json(options = {})
-    json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :migration, :settings])
+    json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :tags, :settings])
     json['gender'] = self.gender unless self.gender.nil?
     json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%b %Y') unless self.birthmonth.nil?
     json['sen'] = self.sen unless self.sen.nil?
-    json['migration'] = (self.migration ? 1 : 0) unless self.migration.nil?
+    json['tags'] = self.tags.nil? ? [] : self.tags
     json['settings'] = self.settings unless self.settings.nil?
     json
   end
@@ -39,6 +40,12 @@ class Student < ApplicationRecord
       val = Date.strptime(value, '%Y-%m')
       super(val)
     end
+  end
+
+  #Setter für Tags als Serialisiertes Array, das als JSON-Format geschickt wird
+  def tags=(value)
+    val = JSON.parse(value)
+    super(val)
   end
 
   #Liefert die aktuellen Assessments eines Schülers zurück. Archivierte Tests werden ignoriert.

@@ -116,9 +116,13 @@ class UsersController < ApplicationController
     if request.patch?
       if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
-        @user.intro_state = 1
+        @user.intro_state = 1 if @user.intro_state == 0
         @user.save
-        render 'users/intro/forms', layout: 'minimal' and return
+        if @user.intro_state == 1
+          render 'users/intro/forms', layout: 'minimal' and return
+        else
+          redirect_to @user
+        end
       else
         if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
           render 'users/intro/terms_and_conditions', layout: 'minimal' and return
@@ -131,7 +135,7 @@ class UsersController < ApplicationController
           render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
         end
         if @user.intro_state == 2 #TC Accept + erste Form => Zweite Form wird akzeptiert
-          @user.update_attributes(user_attributes)  #Unkritische Attribute, deswegen kein Fehlercheck
+          @user.update_attributes(user_attributes) if params.has_key?(:user)  #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
           @user.intro_state = 3
           @user.save
           @user.create_demo(params[:key], params[:auth_token])

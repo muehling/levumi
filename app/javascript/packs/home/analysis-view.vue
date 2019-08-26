@@ -6,14 +6,14 @@
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == -1"
-                          @click="student_selected = -1; view_selected = 0; updateGraph();">Ganze Klasse</b-button>
+                          @click="student_selected = -1; view_selected = 0; updateView();">Ganze Klasse</b-button>
                 <b-button v-for="(student, index) in students"
                           :key="student.id"
                           class='mr-2'
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == index"
-                          @click="student_selected = index; updateGraph();"
+                          @click="student_selected = index; updateView();"
                 >
                     {{student.name}}
                 </b-button>
@@ -29,14 +29,30 @@
                         size='sm'
                         variant='outline-secondary'
                         :pressed="view_selected == index"
-                        @click="view_selected = index; updateGraph();"
+                        @click="view_selected = index; updateView();"
                 >
                     {{ view.label }}
                 </b-button>
             </b-button-group>
         </b-row>
         <b-row>
-            <div id='chart' style='width: 100%;'></div>
+            <div :hidden="!graph_visible" id='chart' style='min-width: 100%;'></div>
+            <div class='m-4' :hidden="graph_visible" id='table' style='width: 100%;'>
+                <table class='table table-sm table-striped table-borderless mt-1 text-small'>
+                    <thead>
+                        <tr>
+                            <th>Woche ab dem</th>
+                            <th v-for="col in columns">{{col}}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="entry in table_data">
+                            <td>{{print_date(entry.week)}}</td>
+                            <td v-for="col in columns">{{entry[col]}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </b-row>
         <b-row>
             <b-col>
@@ -53,6 +69,7 @@
                                 method='post'
                                 data-remote='true'
                                 v-on:ajax:success="success"
+                                v-if="!read_only"
                         >
                             <b-form-row class='text-small'>
                                 <b-col>
@@ -113,7 +130,7 @@
                                 <th>Von</th>
                                 <th>Bis</th>
                                 <th>Anmerkung</th>
-                                <th>Aktionen</th>
+                                <th v-if="!read_only">Aktionen</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -124,7 +141,7 @@
                                 <td>{{print_date(a.start)}}</td>
                                 <td>{{print_date(a.end)}}</td>
                                 <td>{{a.content}}</td>
-                                <td>
+                                <td v-if="!read_only">
                                     <!-- rails-ujs Link -->
                                     <a class='btn btn-block btn-sm btn-outline-danger'
                                        :href="'/groups/' + group + '/assessments/' + test.id + '/annotations/' + a.id"
@@ -164,6 +181,36 @@
             results: Array,
             students: Array,
             test: Object
+        },
+        computed: {
+            columns() {
+                return this.configuration.views[this.view_selected].columns || []
+            },
+            graph_visible() {
+              return this.configuration.views[this.view_selected].type === 'graph'
+            },
+            table_data() {
+                if (this.configuration.views[this.view_selected].type === 'graph')
+                    return []
+                let weeks = this.weeks.slice().reverse()
+                let res = []
+                for (let w = 0; w < weeks.length; ++w) {
+                    let found = false
+                    for (let r = 0; r < this.results.length; ++r)
+                        if (this.results[r].student_id == this.students[this.student_selected].id && this.results[r].test_week === weeks[w]) {
+                            res.push(deepmerge({'week': weeks[w]}, this.results[r].results[this.configuration.views[this.view_selected].label]))
+                            found = true
+                            break
+                        }
+                    if (!found) {
+                        let temp = {}
+                        for (let c = 0; c < this.columns.length; ++c)
+                            temp[this.columns[c]] = '-'
+                        res.push(deepmerge({'week': weeks[w]}, temp))
+                    }
+                }
+                return res
+            }
         },
         data: function () {
             return {
@@ -253,9 +300,9 @@
                     pdf.save(this.test.shorthand + '.pdf')
                 })
             },
-            updateGraph() {
-                //Options für die gewählte Ansicht mit den globalen Options vereinen
-
+            updateView() {
+                if (this.configuration.views[this.view_selected].type === 'table')
+                    return
                 //Optionen für Graph aus Default Werten und gewählten Werten bauen
                 //Aktuell Unterscheidung bar/line wegen Bug in Apexcharts
                 let opt = JSON.parse(JSON.stringify(
@@ -372,14 +419,13 @@
                     this.apexchart.destroy()
                 this.apexchart = new ApexCharts(document.querySelector('#chart'), deepmerge(opt, {series: res}))
                 this.apexchart.render()
-
             },
             success(event) {  //Attributwerte aus AJAX Antwort übernehmen und View updaten
                 this.annotations.splice(0, 0, event.detail[0])
                 this.annotation_start = null
                 this.annotation_end = null
                 this.annotation_text = ''
-                this.updateGraph()
+                this.updateView()
             },
             week_labels(start) {
                 let res = [{value: null, text: start ? 'Von...' : 'Bis...'}]
@@ -389,10 +435,10 @@
             },
         },
         mounted() {
-            this.updateGraph()
+            this.updateView()
         },
-        inject: ['student_name', 'weeks', 'print_date', 'auto_scroll'],
-        name: "graph-view.vue"
+        inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks'],
+        name: "analysis-view.vue"
     }
 </script>
 

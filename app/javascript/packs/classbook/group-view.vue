@@ -2,7 +2,7 @@
 
     <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
     <div v-if="groups[index].archive == false">
-        <div class='mb-1'>
+        <div class='mb-1' v-if="!single">
             <!-- Form zur Umbenennung -->
             <group-form
                     v-if="groups[index].owner"
@@ -11,7 +11,7 @@
                     v-on:update:groups="update($event)"
             ></group-form>
         </div>
-        <div class='mb-2'>
+        <div class='mb-2' v-if="!single">
             <!-- Info/Form für Klassen teilen -->
             <share-form
                     v-if="index > 0"
@@ -69,6 +69,7 @@
         props: {
             groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
             index: Number,
+            single: Boolean
         },
         computed: {
             date: function() {

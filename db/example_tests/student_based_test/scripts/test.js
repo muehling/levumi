@@ -73,7 +73,7 @@ function next(btn) {
         saveResults(
             {
                 'Übersicht': (sum[0] + sum[1]) / result.length,
-                'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'Tabelle': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
             },
             {'total': total, 'positive': p_items, 'negative': n_items},
             result,

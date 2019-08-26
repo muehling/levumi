@@ -44,9 +44,11 @@
   <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
     <a class='navbar-brand' href='#'><img src='favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
 
+    <a class='nav-item btn btn-outline-secondary nav-link ml-auto' href='/testen'>Zugang für Schülerinnen und Schüler</a>
+
     <ul class='navbar-nav ml-auto'>
       <li class='nav-item dropdown <%= @retry ? 'show':'' %>'>
-        <a class='nav-link dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
+        <a class='nav-item btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
           Einloggen
         </a>
         <div class='dropdown-menu dropdown-menu-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
@@ -67,8 +69,6 @@
           <% end %>
           <div class='dropdown-divider'></div>
           <a class='dropdown-item' href='#', onclick="$('#modal').modal('show');">Noch keinen Zugang? Hier kostenlos registrieren...</a>
-          <div class='dropdown-divider'></div>
-          <a class='dropdown-item' href='/testen'>Hier geht's zum Zugang für Schüler*innen...</a>
         </div>
       </li>
     </ul>
@@ -89,64 +89,66 @@
 <% end %>
 
 <%= content_for :body do %>
-  <!-- Page unter Navbar -->
-  <header class='masthead text-white text-center'>
-    <div class='overlay'>
-      <img src='<%= url_to_image 'shared/Levumi-transparent.png' %>' width='75%'/>
-    </div>
-    <h1>Lernverlaufsdiagnostik leicht gemacht! </h1>
-  </header>
-
   <div class="container-fluid">
-    <div class="row">
-      <div class="col-6">
-        <img src='<%= url_to_image 'kinder.jpg' %>' width='100%'/>
+    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <div class="container"><div class='row'>
+            <div class="col-md-9">
+              <img src="<%= url_to_image 'alphabet.jpg' %>" class="">
+            </div>
+            <div class="col-md-3">
+              <p class='lead'>
+                Levumi - Kompetenzorientierte Lernverlaufsdiagnostik
+              </p>
+            </div>
+          </div></div>
+        </div>
+        <div class="carousel-item">
+          <div class="container">
+            <div class="flex-fill">
+              <p class='lead'>
+                Levumi unterstützt Sie bei der Diagnose und Förderung Ihrer Schulklasse.<br/>
+                Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler*innen sichtbar machen und Probleme frühzeitig erkennen.<br/>
+                Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von Levumi!
+                Alle Daten werden auf Servern der Universität Kiel gespeichert und wir setzen Verschlüsselungstechnik zur Anonymisierung der Daten ein.
+              </p>
+            </div>
+            <div class="flex-fill">
+              <img src="<%= url_to_image 'kinder.jpg' %>" class="d-block">
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="container">
+            <div class="flex-fill">
+              <img src="<%= url_to_image 'erwachsene.jpg' %>" class="d-block">
+            </div>
+            <div class="flex-fill">
+              <p class='lead'>
+                Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar. Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik an.<br/>
+                Wenn es Fördermaterial gibt, so wird Ihnen dieses spezifisch für Ihre Schüler*innen empfohlen.<br/>
+                Sie können sich auch Notizen zu den Lernverläufen direkt in Levumi machen!<br/>
+                Zusammenarbeit im Team wird effektiv unterstützt!<br/>
+                Teilen Sie die Ergebnisse mit Kolleg*innen oder Eltern oder arbeiten Sie zusammen an Ihren Klassen!
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-      <div class="col-6">
-        <p class='lead'>
-          Levumi unterstützt Sie bei der Diagnose und Förderung Ihrer Schulklasse.<br/>
-          Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler*innen sichtbar machen und Probleme frühzeitig erkennen.<br/>
-          Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von Levumi!
-          Alle Daten werden auf Server der Universität Kiel gespeichert und wir setzten Verschlüsselungstechnik zur Anonymisierung der Daten ein.
-        </p>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-4">
-        <p class='lead'>
-          Zusammenarbeit im Team wird effektiv unterstützt!<br/>
-          Teilen Sie die Ergebnisse mit Kolleg*innen oder Eltern oder arbeiten Sie zusammen an Ihren Klassen!
-        </p>
-      </div>
-      <div class="col-8">
-        <img src='<%= url_to_image 'erwachsene.jpg' %>' width='100%'/>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-4">
-        <img src='<%= url_to_image 'graph.png' %>' width='100%'/>
-      </div>
-      <div class="col-6">
-        <p class='lead'>
-          Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar. Wir bieten aktuell unter Anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik an.<br/>
-          Wenn es Fördermaterial gibt, so wird Ihnen dieses spezifisch für Ihre Schüler*innen empfohlen.<br/>
-          Sie können sich auch Notizen zu den Lernverläufen direkt in Levumi machen!<br/>
-
-          Interesse? Dann einfach  <a href='#', onclick="$('#modal').modal('show');">gleich hier</a> kostenlos registrieren...
-        </p>
-
-      </div>
-      <div class="col-1">
-        <img src='<%= url_to_image 'buchstapel.png' %>' height='400px'/>
-      </div>
+      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+      </a>
+      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+      </a>
     </div>
   </div>
 
   <footer>
-    <ul class="list-inline text-center ">
+    <ul class="list-inline text-center">
       <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
       <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
     </ul>
   </footer>
-
 <% end %>

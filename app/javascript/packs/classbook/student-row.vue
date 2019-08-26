@@ -65,13 +65,13 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-radio-group id="migration" v-model="migration" :options="options_migration" name='migration'>
-                </b-form-radio-group>
+                <b-form-checkbox-group id="tags" v-model="tags" :options="options_tags" name='tags'>
+                </b-form-checkbox-group>
                 <small id="focusHelp" class="form-text text-muted">Kind oder Eltern im Ausland geboren?</small>
             </div>
             <div v-else>
-                <span v-if="student.migration != undefined">{{ options_migration[student.migration].text }}</span>
-                <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
+                <span v-for="tag in student.tags">{{tag}}</span>
+                <span v-if="student.tags.length == 0 && !empty" class="text-muted">nichts erfasst</span>
             </div>
         </td>
 
@@ -196,9 +196,9 @@
                 font_family: this.student.settings == undefined || this.student.settings['font_family'] == undefined ? 'Fibel Nord' : this.student.settings['font_family'],
                 font_size: this.student.settings == undefined || this.student.settings['font_size'] == undefined ? '1' : this.student.settings['font_size'],
                 gender: this.student.gender != undefined ? this.student.gender : null,
-                migration: this.student.migration != undefined ? this.student.migration : null,
                 month: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getMonth() : null,
                 sen: this.student.sen != undefined ? this.student.sen : null,
+                tags: this.student.tags != undefined ? this.student.tags : [],
                 year: this.student.birthmonth != undefined ? (new Date(this.student.birthmonth)).getFullYear() : null
             }
         },
@@ -207,13 +207,13 @@
                let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name, this.group));  //Namen vor dem Senden verschlüsseln
                 //Restliche Attribute anfügen, falls vorhanden
                if (this.gender != null)
-                   res += '&student[gender]=' + this.gender;
+                   res += '&student[gender]=' + this.gender
                if (this.year != null && this.month != null)
-                   res += '&student[birthmonth]=' +  this.year + '-' + (this.month + 1);
+                   res += '&student[birthmonth]=' +  this.year + '-' + (this.month + 1)
                if (this.sen != null)
-                   res += '&student[sen]=' + this.sen;
-               if (this.migration != null)
-                   res += '&student[migration]=' + this.migration;
+                   res += '&student[sen]=' + this.sen
+               if (this.tags != null)
+                   res += '&student[tags]=' + encodeURIComponent(JSON.stringify(this.tags))
                return res;
             },
             loadData(student) {
@@ -271,9 +271,8 @@
                 { text: 'Autismus', value: 8 }
             ];
 
-            this.options_migration = [
-                {text: 'Nein', value: '0', disabled: 0},
-                {text: 'Ja', value: '1', disabled: 0}
+            this.options_tags = [
+                {text: 'Migrationshintergrund', value: 'Migrationshintergrund'},
             ];
         },
         name: 'student-row'

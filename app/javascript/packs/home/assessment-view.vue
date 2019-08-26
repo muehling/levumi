@@ -2,128 +2,125 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card>
 
-            <!-- Tab für neue Messungen -->
-            <b-tab v-if="!read_only"
-                   title='Neue Messung'
-                   :active="deep_link"
-                   class='m-3'
-            >
-                <div v-if="test.archive">
-                    <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
+            <b-tab title='Messungen' :active="deep_link" class='m-3'>
+                <!-- Neue Messungen -->
+                <div class='alert alert-secondary' v-if="!read_only">
+                    <div v-if="test.archive">
+                        <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
+                    </div>
+                    <div v-else-if="students.length == 0">
+                        <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
+                    </div>
+                    <div v-else-if="!student_test">
+                        <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
+                        <p class='text-small'>{{test.description.usage}}</p>
+                        <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
+                        <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
+                            Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!</p>
+                        <!-- Schüler anzeigen um Messung zu starten. -->
+                        <b-button-group>
+                            <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
+                            <b-button v-for="student in students"
+                                      :key="student.id"
+                                      :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
+                                      :disabled="get_result(student.id) > 0"
+                                      class='mr-2'
+                                      :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
+                                      :href="'/students/' + student.id + '/results?test_id='+ test.id"
+                                      data-method='post'
+                            >
+                                {{student.name}}
+                            </b-button>
+                        </b-button-group>
+                    </div>
+                    <div v-else>
+                        <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
+                        <p>{{test.description.usage}}</p>
+                        <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
+                        <p>Diesen Test müssen die Schüler*innen in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                        <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                        <!-- Schüler nur als Info anzeigen -->
+                        <b-button-group class='mt-3'>
+                            <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
+                            <b-button v-for="student in students"
+                                      :key="student.id"
+                                      :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
+                                      disabled
+                            >
+                                {{student.name}}
+                            </b-button>
+                        </b-button-group>
+                    </div>
                 </div>
-                <div v-else-if="students.length == 0">
-                    <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
-                </div>
-                <div v-else-if="!student_test">
-                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
-                    <p class='text-small'>{{test.description.usage}}</p>
-                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                    <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
-                    Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung!</p>
-                    <!-- Schüler anzeigen um Messung zu starten. -->
-                    <b-button-group>
-                        <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
-                        <b-button v-for="student in students"
-                                  :key="student.id"
-                                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                                  :disabled="get_result(student.id) > 0"
-                                  class='mr-2'
-                                  :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                  :href="'/students/' + student.id + '/results?test_id='+ test.id"
-                                  data-method='post'
-                        >
-                            {{student.name}}
-                        </b-button>
-                    </b-button-group>
-                </div>
-                <div v-else>
-                    <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
-                    <p>{{test.description.usage}}</p>
-                    <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                    <p>Diesen Test müssen die Schüler*innen in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
-                    <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
-                    <!-- Schüler nur als Info anzeigen -->
-                    <b-button-group class='mt-3'>
-                        <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
-                        <b-button v-for="student in students"
-                                  :key="student.id"
-                                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                                  disabled
-                        >
-                            {{student.name}}
-                        </b-button>
-                    </b-button-group>
-                </div>
-            </b-tab>
-
-            <!-- Liste der Messungen -->
-            <b-tab v-if="!read_only" title='Bisherige Messungen' class='m-3' :disabled="weeks.length == 0">
-                <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
-                <!-- Header -->
-                <b-row>
-                    <b-col><b>Woche ab dem</b></b-col>
-                    <b-col><b>Anzahl Ergebnisse</b></b-col>
-                    <b-col><b>Details</b></b-col>
-                </b-row>
-                <!-- Nach Wochen gruppierte Einträge -->
-                <div v-for="(date, index) in weeks" class='mt-2'>
+                <!-- Liste der alten Messungen -->
+                <div v-if="weeks.length > 0">
+                    <!-- Tabellen durch Rows nachbauen, wegen Collapse -->
+                    <!-- Header -->
                     <b-row>
-                        <b-col>{{ print_date(date) }}</b-col>
-                        <b-col>{{ grouped_results[date].length }}</b-col>
-                        <b-col>
-                            <b-btn v-b-toggle="'collapse_' + index" size='sm' variant='outline-secondary'>
-                                <i class='when-closed fas fa-caret-down'></i>
-                                <i class='when-opened fas fa-caret-up'></i>
-                            </b-btn>
-                        </b-col>
+                        <b-col><b>Woche ab dem</b></b-col>
+                        <b-col><b>Anzahl Ergebnisse</b></b-col>
+                        <b-col><b>Details</b></b-col>
                     </b-row>
-                    <!-- Aufklappbare Details -->
-                    <b-collapse :id="'collapse_' + index" v-on:shown="auto_scroll('#collapse_' + index)">
-                        <b-card class='mt-2'>
-                            <table class='table table-striped table-sm table-borderless'>
-                                <thead>
-                                <th>Datum</th>
-                                <th>Schüler*in</th>
-                                <th>Positive Items</th>
-                                <th>Negative Items</th>
-                                <th>Trend</th>
-                                <th>Aktionen</th>
-                                </thead>
-                                <tbody>
-                                <tr v-for="result in grouped_results[date]">
-                                    <td>{{ print_date(result.data.test_date) }}</td>
-                                    <td>{{ student_name(result.data.student_id) }}</td>
-                                    <td><span v-for="(item, index) in result.data.report.positive">{{(index > 0 ? ', ' : '') + item}}</span></td>
-                                    <td><span v-for="(item, index) in result.data.report.negative">{{(index > 0 ? ', ' : '') + item}}</span></td>
-                                    <td>
-                                        <i class='fas fa-arrow-up' v-if="result.data.report.total > 0"></i>
-                                        <i class='fas fa-arrow-right' v-else-if="result.data.report.total == 0"></i>
-                                        <i class='fas fa-arrow-down' v-else></i>
-                                    </td>
-                                    <td>
-                                        <b-btn small
-                                               variant='outline-danger'
-                                               title='Diese Messung löschen'
-                                               :href="'/students/' + result.data.student_id + '/results/' + result.data.id"
-                                               data-remote='true'
-                                               data-method='delete'
-                                               data-confirm='Diese Messung unwiderruflich löschen! Sind Sie sicher?'
-                                               v-on:ajax:success="remove(result.index, index)"
-                                        >
-                                            <i class='fas fa-trash'></i>
-                                        </b-btn>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </b-card>
-                    </b-collapse>
+                    <!-- Nach Wochen gruppierte Einträge -->
+                    <div v-for="(date, index) in weeks.slice().reverse()" class='mt-2'>
+                        <b-row>
+                            <b-col>{{ print_date(date) }}</b-col>
+                            <b-col>{{ grouped_results[date].length }}</b-col>
+                            <b-col>
+                                <b-btn v-b-toggle="'collapse_' + index" size='sm' variant='outline-secondary'>
+                                    <i class='when-closed fas fa-caret-down'></i>
+                                    <i class='when-opened fas fa-caret-up'></i>
+                                </b-btn>
+                            </b-col>
+                        </b-row>
+                        <!-- Aufklappbare Details -->
+                        <b-collapse :id="'collapse_' + index" v-on:shown="auto_scroll('#collapse_' + index)">
+                            <b-card class='mt-2'>
+                                <table class='table table-striped table-sm table-borderless'>
+                                    <thead>
+                                    <th>Datum</th>
+                                    <th>Schüler*in</th>
+                                    <th>Positive Items</th>
+                                    <th>Negative Items</th>
+                                    <th>Trend</th>
+                                    <th v-if="!read_only" >Aktionen</th>
+                                    </thead>
+                                    <tbody>
+                                    <tr v-for="result in grouped_results[date]">
+                                        <td>{{ print_date(result.data.test_date) }}</td>
+                                        <td>{{ student_name(result.data.student_id) }}</td>
+                                        <td><span v-for="(item, index) in result.data.report.positive">{{(index > 0 ? ', ' : '') + item}}</span></td>
+                                        <td><span v-for="(item, index) in result.data.report.negative">{{(index > 0 ? ', ' : '') + item}}</span></td>
+                                        <td>
+                                            <i class='fas fa-arrow-up' v-if="result.data.report.total > 0"></i>
+                                            <i class='fas fa-arrow-right' v-else-if="result.data.report.total == 0"></i>
+                                            <i class='fas fa-arrow-down' v-else></i>
+                                        </td>
+                                        <td v-if="!read_only">
+                                            <b-btn small
+                                                   variant='outline-danger'
+                                                   title='Diese Messung löschen'
+                                                   :href="'/students/' + result.data.student_id + '/results/' + result.data.id"
+                                                   data-remote='true'
+                                                   data-method='delete'
+                                                   data-confirm='Diese Messung unwiderruflich löschen! Sind Sie sicher?'
+                                                   v-on:ajax:success="remove(result.index, index)"
+                                            >
+                                                <i class='fas fa-trash'></i>
+                                            </b-btn>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </b-card>
+                        </b-collapse>
+                    </div>
                 </div>
             </b-tab>
 
             <!-- Auswertungstab mit Graph -->
-            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3' :disabled="weeks.length == 0">
-                <graph-view
+            <b-tab title='Auswertung' :active="!deep_link" @click="auto_scroll('#comment_btn')" class='m-3' :disabled="weeks.length == 0 || configuration.views.length == 0">
+                <analysis-view
                         :key="test.id"
                         :annotations="annotations"
                         :configuration="configuration"
@@ -131,7 +128,7 @@
                         :results="results"
                         :students="students"
                         :test="test"
-                ></graph-view>
+                ></analysis-view>
             </b-tab>
 
             <!-- Vorschläge für Fördermaterial -->
@@ -152,10 +149,10 @@
 </template>
 
 <script>
-    import GraphView from './graph-view'
+    import AnalysisView from './analysis-view'
     import SupportView from './support-view'
     export default {
-        components: {GraphView, SupportView},
+        components: {AnalysisView, SupportView},
         props: {
             annotations: Array,
             configuration: Object,
@@ -223,10 +220,11 @@
         },
         provide: function () {
             return {
-                student_name: this.student_name,
-                weeks: this.weeks,
                 auto_scroll: this.auto_scroll,
                 print_date: this.print_date,
+                read_only: this.read_only,
+                student_name: this.student_name,
+                weeks: this.weeks,
             }
         },
         name: 'assessment-view'

@@ -42,7 +42,7 @@ class Material < ApplicationRecord
     end
     items.each do |i|
       item = Item.where(shorthand: i['item'], test_id: Test.find_by_shorthand(i['test']).id)
-      MaterialSupport.create(material_id: self.id, item_id: item.first.id) unless item.nil?
+      MaterialSupport.create(material_id: self.id, item_id: item.first.id) unless item.first.nil?
     end
   end
 
