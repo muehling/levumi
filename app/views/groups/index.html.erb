@@ -135,10 +135,12 @@
             });
         });
         students = JSON.stringify(students);
+        var key = createKey();
+        var test_klasse = JSON.stringify({'key': encrypt_key(key), 'token': generate_token(key)});
         $.ajax({
             type: 'POST',
             url:'<%= transfer_data_url %>',
-            data:{'data':students},
+            data:{'data':students, 'test_klasse': test_klasse},
             success: function(){
                 console.log("data send")
             },

@@ -102,22 +102,23 @@ class ApplicationController < ActionController::Base
 
   def transfer_data
     client_data = JSON.parse(params[:data])
+    test_klasse = JSON.parse(params[:test_klasse])
     data_to_transfer = {}
 
     #prepare user for tranfer
     user_transfer =  {id: @login_user.id, email: @login_user.email, password_digest: @login_user.password_digest,
-                      institution: @login_user.school, capabilities: @login_user.capabilities,
-                      account_type: @login_user.account_type, state: @login_user.state}
+                      institution: @login_user.school, account_type: @login_user.account_type, state: @login_user.state}
     data_to_transfer[:user] = user_transfer
 
     #prepare groups for tranfer
     groups_transfer = {}
     students_transfer = {}
     assessments_transfer = {}
-    groups = @login_user.groups.where('(archive IS NULL OR archive = false) AND demo = false "')
+    groups = @login_user.groups.where('(archive IS NULL OR archive = false) AND name != "Testklasse"')
+    groups_transfer[-1] = {label: 'Testklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
     groups.each do |g|
       if !g.demo
-        groups_transfer[g.id] = {label: g.name, archive: g.archive, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
+        groups_transfer[g.id] = {label: g.name, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
         students_transfer[g.id] = {}
         assessments_transfer[g.id] = {}
       end
