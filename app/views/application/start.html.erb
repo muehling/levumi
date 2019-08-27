@@ -1,41 +1,51 @@
 <%= content_for :head do %>
     <!-- Zusätzliche Styles für Landing Page -->
     <style>
-      header>h1 {
-        color: #7c6df9;
-        background-color: #f8f9fa;
-        font-style: oblique;
-        font-weight: bolder;
-      }
-
-      header.masthead {
+      /* Container holding the image and the text */
+      .img_container {
         position: relative;
-        background-color: #f8f9fa;
-        background: url('<%= url_to_image 'alphabet.jpg' %>') no-repeat center center;
-        background-size: cover;
-        padding-top: 16rem;
-        padding-bottom: 16rem;
       }
 
-      .overlay {
+      /* Bottom left text */
+      .bottom-left {
         position: absolute;
-        top: 25%;
-        left: 75%;
+        bottom: 8px;
+        left: 8px;
       }
 
-      .container-fluid {
-        padding: 0;
+      /* Top left text */
+      .top-left {
+        position: absolute;
+        top: 8px;
+        left: 8px;
       }
 
-      .row {
-        padding-top: 35px;
+      /* Top right text */
+      .top-right {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+      }
+
+      /* Bottom right text */
+      .bottom-right {
+        position: absolute;
+        bottom: 8px;
+        right: 8px;
+      }
+
+      /* Centered text */
+      .centered {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
 
       .lead {
-          padding: 15px;
-          position: absolute;
-          top: 30%;
-        }
+        padding: 15px; color: black; background-color: #f0f8ffdd;
+        font-size: 1.2em;
+      }
     </style>
 <% end %>
 
@@ -92,49 +102,53 @@
   <div class="container-fluid">
     <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
       <div class="carousel-inner">
+
         <div class="carousel-item active">
-          <div class="container"><div class='row'>
-            <div class="col-md-9">
-              <img src="<%= url_to_image 'alphabet.jpg' %>" class="">
-            </div>
-            <div class="col-md-3">
-              <p class='lead'>
-                Levumi - Kompetenzorientierte Lernverlaufsdiagnostik
-              </p>
-            </div>
-          </div></div>
-        </div>
-        <div class="carousel-item">
           <div class="container">
             <div class="flex-fill">
-              <p class='lead'>
-                Levumi unterstützt Sie bei der Diagnose und Förderung Ihrer Schulklasse.<br/>
-                Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler*innen sichtbar machen und Probleme frühzeitig erkennen.<br/>
-                Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von Levumi!
-                Alle Daten werden auf Servern der Universität Kiel gespeichert und wir setzen Verschlüsselungstechnik zur Anonymisierung der Daten ein.
-              </p>
-            </div>
-            <div class="flex-fill">
-              <img src="<%= url_to_image 'kinder.jpg' %>" class="d-block">
+              <div class='img_container'>
+                <img src="<%= url_to_image 'alphabet.jpg' %>" width='100%' height='667px'>
+                <p class='lead centered text-center'>
+                  Levumi - Kompetenzorientierte Lernverlaufsdiagnostik, einfach gemacht!
+                </p>
+              </div>
             </div>
           </div>
         </div>
+
         <div class="carousel-item">
           <div class="container">
             <div class="flex-fill">
-              <img src="<%= url_to_image 'erwachsene.jpg' %>" class="d-block">
-            </div>
-            <div class="flex-fill">
-              <p class='lead'>
-                Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar. Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik an.<br/>
+              <div class='img_container'>
+              <img src="<%= url_to_image 'erwachsene.jpg' %>" width='100%' height='667px'>
+              <p class='lead top-left' style="width: 80%">
+                Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar.<br/>
+                Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik an.<br/>
                 Wenn es Fördermaterial gibt, so wird Ihnen dieses spezifisch für Ihre Schüler*innen empfohlen.<br/>
                 Sie können sich auch Notizen zu den Lernverläufen direkt in Levumi machen!<br/>
-                Zusammenarbeit im Team wird effektiv unterstützt!<br/>
-                Teilen Sie die Ergebnisse mit Kolleg*innen oder Eltern oder arbeiten Sie zusammen an Ihren Klassen!
+                Zusammenarbeit im Team wird effektiv unterstützt: Teilen Sie die Ergebnisse mit Kolleg*innen oder Eltern oder arbeiten Sie zusammen an Ihren Klassen!
               </p>
+              </div>
             </div>
           </div>
         </div>
+
+        <div class="carousel-item">
+          <div class="container">
+            <div class="flex-fill">
+              <div class='img_container'>
+                <img src="<%= url_to_image 'kinder.jpg' %>"  width='100%' height='667px'>
+                <p class='lead bottom-right' style="width: 66%">
+                  Levumi unterstützt Sie bei der Diagnose und Förderung Ihrer Schulklasse.<br/>
+                  Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler*innen sichtbar machen und Probleme frühzeitig erkennen.<br/>
+                  Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von Levumi!<br/>
+                  Alle Daten werden auf Servern der Universität Kiel gespeichert und wir setzen Verschlüsselungstechnik zur Anonymisierung der Daten ein.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
       <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -145,7 +159,7 @@
     </div>
   </div>
 
-  <footer>
+  <footer class='mt-2'>
     <ul class="list-inline text-center">
       <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
       <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
