@@ -1,6 +1,7 @@
 class ShadowResult < ApplicationRecord
   belongs_to :shadow_student
 
-  serialize :results, Hash
+  serialize :views, Hash
+  serialize :report, Hash
   serialize :data, Array
 end

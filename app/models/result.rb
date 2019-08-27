@@ -3,7 +3,7 @@ class Result < ApplicationRecord
   belongs_to :assessment
   has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result_id'
 
-  serialize :results, Hash
+  serialize :views, Hash
   serialize :report, Hash
   serialize :data, Array
 
@@ -27,7 +27,7 @@ class Result < ApplicationRecord
     if (!result.test_date.nil? && result.test_date < Date.today)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
-      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, results: result.results, report: result.report, data: result.data)
+      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, views: result.views, report: result.report, data: result.data)
     end
     r = Result.where(prior_result_id: result.id).first
     unless r.nil?
@@ -44,7 +44,8 @@ class Result < ApplicationRecord
   #Textdarstellung für CSV Export
   def as_csv
     start = "#{self.id},#{self.student_id},#{self.assessment.group_id},#{self.assessment.test_id},#{self.assessment.test_date},#{self.assessment.test_week},"
-    res = ""
+    res = ''
+    #TODO: Alles Keys exportieren!
     self.data.each do |d|
       res = res + start + "'#{d['item']}','#{d['result']}'" + (d.has_key?('time') ? ",#{d['time']}\n" : "\n")
     end

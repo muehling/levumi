@@ -199,7 +199,7 @@
                     let found = false
                     for (let r = 0; r < this.results.length; ++r)
                         if (this.results[r].student_id == this.students[this.student_selected].id && this.results[r].test_week === weeks[w]) {
-                            res.push(deepmerge({'week': weeks[w]}, this.results[r].results[this.configuration.views[this.view_selected].label]))
+                            res.push(deepmerge({'week': weeks[w]}, this.results[r].views[this.configuration.views[this.view_selected].key]))
                             found = true
                             break
                         }
@@ -281,6 +281,7 @@
                             labels: {
                                 minHeight: 20
                             },
+                            title: {text: 'Testwoche'}
                         }
                     }
                 },
@@ -399,11 +400,11 @@
                             if (res[r].name == student) {
                                 //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
                                 if (view.options.chart.type === 'bar')
-                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label].toFixed(2) //Macht das Runden hier immer Sinn?
+                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
                                 else
                                     res[r].data.push({
                                         x: this.weeks.indexOf(this.results[i].test_week),
-                                        y: this.results[i].results[view.label].toFixed(2), //Macht das Runden hier immer Sinn?
+                                        y: this.results[i].views[view.key].toFixed(2), //Macht das Runden hier immer Sinn?
                                     })
                                 break
                             }
@@ -412,11 +413,11 @@
                         for (let r = 0; r < view.series.length; ++r) {
                             //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
                             if (view.options.chart.type === 'bar')
-                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].results[view.label][view.series[r]].toFixed(2) //Macht das Runden hier immer Sinn?
+                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key][view.series[r]].toFixed(2) //Macht das Runden hier immer Sinn?
                             else
                                 res[r].data.push({
                                     x: this.weeks.indexOf(this.results[i].test_week),
-                                    y: this.results[i].results[view.label][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
+                                    y: this.results[i].views[view.key][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
                                 })
                         }
                     }

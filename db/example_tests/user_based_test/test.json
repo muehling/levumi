@@ -13,6 +13,7 @@
   "student_test": 0,
   "configuration": {
     "views": [{
+        "key": "V1",
         "label": "Übersicht",
         "student": true,
         "group": true,
@@ -24,6 +25,7 @@
         }
       },
       {
+        "key": "V2",
         "label": "Detailauswertung",
         "student": true,
         "group": false,

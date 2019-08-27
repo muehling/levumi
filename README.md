@@ -8,9 +8,9 @@ Die Funktion saveResults() muss am Ende der Testung aufgerufen werden, um die Da
 Mit der Funktion exit() wird die Testdurchführung beendet und eine Weiterleitung an Levumi veranlasst.
 Alle anderen Funktionen sind optional.
 
-#### function saveResults(view, report, data, callback)
+#### function saveResults(views, report, data, callback)
 
-##### view - Ergebnisse des Tests für Darstellung in Levumi aufbereitet
+##### views - Ergebnisse des Tests für Darstellung in Levumi aufbereitet
     Hash mit genau einem Eintrag pro definierter "View" des Tests (vgl. test.json - configuration/views).
     Key des entsprechenden Eintrags muss mit dem Wert für "label" des Views übereinstimmen.
     Die Daten die unter diesem Key gespeichert werden, werden unverändert für die Anzeige in Graph oder Tabelle verwendet.
@@ -83,7 +83,7 @@ Außerdem kann neben den oben beschriebenen Javascript Funktionen auf die folgen
     *font_family: CSS-Name der für dieses Kind bevorzugten Schriftart (sind alle verfügbar).
     *font_size: Ein Wert zwischen 1 und 3, der die bevorzugte Schriftgröße des Kindes angibt (normal, größer, sehr groß). Muss vom Test selbstständig in sinnvolle Größenangaben umgerechnet werden.
     *media_paths: Hash der alle Dateien aus dem Unterverzeichnis 'media' beinhaltet. Jeder Eintrag hat als Key den Dateinamen aus der ZIP-Datei und als Wert den Pfad zur Datei auf dem Server.
-    *last_result: Das im letzten Testdurchgang gespeicherte Objekt des Kindes.
+    *last_result: Das im letzten Testdurchgang gespeicherte Objekt des Kindes. Enthält die keys 'views', 'report' und 'data', wie sie saveResults übergeben wurden.
 
 ### Struktur von test.json
 

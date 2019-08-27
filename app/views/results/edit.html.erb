@@ -23,7 +23,11 @@
 
     //Vorheriges Ergebnis als Objekt
     <% unless @result.prior_result.nil? %>
-    const lastResult = JSON.parse("<%= escape_javascript(raw @result.prior_result.results.to_json) %>")
+    const lastResult = {
+        views: JSON.parse("<%= escape_javascript(raw @result.prior_result.views.to_json) %>"),
+        report: JSON.parse("<%= escape_javascript(raw @result.prior_result.report.to_json) %>"),
+        data: JSON.parse("<%= escape_javascript(raw @result.prior_result.data.to_json) %>")
+    }
     <% else %>
     const lastResult = undefined
     <% end %>
@@ -33,14 +37,14 @@
     const font_size = <%= @result.student.get_setting(:font_size) %>
 
         //Funktionen für Testumgebung bereitstellen
-        function saveResults(result, report, extra_data, callback) {
+        function saveResults(views, report, data, callback) {
             let url = '<%= student_result_url(@student, @result)%>'
             let header = {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             }
-            let body = 'results=' + encodeURIComponent(JSON.stringify(result)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&extra=' + encodeURIComponent(JSON.stringify(extra_data))
+            let body = 'views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
             fetch(url, {
                 method: 'put',
                 headers: header,

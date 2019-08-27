@@ -64,13 +64,13 @@ function next(res) {
                 p_items.push(result[i].item)
         }
 
-        let total = lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0
+        let total = lastResult ? sum[0] + sum[1] >= lastResult.views['Übersicht'] ? 1 : -1 : 0
 
         //Ergebnisse speichern
         saveResults(
             {
-                'Übersicht': (sum[0] + sum[1]) / result.length,
-                'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'V1': (sum[0] + sum[1]) / result.length,
+                'V2': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
                 },
             {'total': total, 'positive': p_items, 'negative': n_items},
             result,

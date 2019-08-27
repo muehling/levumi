@@ -134,7 +134,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
-    t.text "results"
+    t.text "views"
     t.text "report"
     t.text "data"
     t.datetime "created_at", null: false
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "test"
     t.date "test_date"
     t.date "test_week"
-    t.text "results"
+    t.text "views"
     t.text "report"
     t.text "data"
     t.datetime "created_at", null: false

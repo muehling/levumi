@@ -68,12 +68,12 @@ function next(btn) {
                 p_items.push(result[i].item)
         }
 
-        let total = lastResult ? sum[0] + sum[1] >= lastResult['Übersicht'] ? 1 : -1 : 0
+        let total = lastResult ? sum[0] + sum[1] >= lastResult.views['Übersicht'] ? 1 : -1 : 0
 
         saveResults(
             {
-                'Übersicht': (sum[0] + sum[1]) / result.length,
-                'Detailauswertung': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'V1': (sum[0] + sum[1]) / result.length,
+                'V2': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
             },
             {'total': total, 'positive': p_items, 'negative': n_items},
             result,
@@ -89,14 +89,14 @@ function next(btn) {
         );
 
         if (lastResult == undefined) {
-            $('#levumi').attr('src', '/images/shared/Levumi-normal.gif')
+            $('#levumi').attr('src', '/images/shared/Levumi-normal.jpg')
             $('#evaluation').html('„Nun bist du fertig, du kannst den Test jetzt beenden.“')
         }
-        else if(sum[0] + sum[1] == lastResult['Übersicht']) {
+        else if(sum[0] + sum[1] == lastResult.views['Übersicht']) {
             $('#levumi').attr('src', '/images/shared/Levumi-spricht.gif')
             $('#evaluation').html('„Du hast genauso viele Tiere richtig zugeordnet, wie beim letzten Mal.“')
         }
-        else if(sum[0] + sum[1] > lastResult['Übersicht']) {
+        else if(sum[0] + sum[1] > lastResult.views['Übersicht']) {
             $('#levumi').attr('src', '/images/shared/Levumi-jubelt.gif')
             $('#evaluation').html('„Gut gemacht, du hast dich verbessert!“')
         }

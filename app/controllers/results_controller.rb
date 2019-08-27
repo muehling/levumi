@@ -26,9 +26,9 @@ class ResultsController < ApplicationController
   #PUT /students/:student_id/results/:id
   def update
     @result = Result.find(params[:id])
-    @result.results = JSON.parse(params[:results])
+    @result.views = JSON.parse(params[:views])
     @result.report = JSON.parse(params[:report])
-    @result.data = JSON.parse(params[:extra])
+    @result.data = JSON.parse(params[:data])
     @result.test_date = DateTime.now
     @result.save
     head :ok

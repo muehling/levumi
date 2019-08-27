@@ -65,9 +65,9 @@
 
   results = [
       {
-          results: {
-              'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33}
+          views: {
+              'V1': 0.5,
+              'V2': {'Katzen': 0.66, 'Vögel': 0.33}
           },
           report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
@@ -80,9 +80,9 @@
           ]
       },
       {
-          results: {
-              'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 0.66, 'Vögel': 0.33}
+          views: {
+              'V1': 0.5,
+              'V2': {'Katzen': 0.66, 'Vögel': 0.33}
           },
           report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
@@ -95,9 +95,9 @@
           ]
       },
       {
-          results: {
-              'Übersicht': 0.5,
-              'Detailauswertung': {'Katzen': 1, 'Vögel': 0}
+          views: {
+              'V1': 0.5,
+              'V2': {'Katzen': 1, 'Vögel': 0}
           },
           report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
@@ -156,7 +156,7 @@
   Group.find(1).students.each do |s|
     7.times do |i|
       if (rand > 0.3)
-        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), results: {'Übersicht': rand, 'Detailauswertung': {'Katzen': rand*3, 'Vögel': rand*3}})
+        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), views: {'V1': rand, 'V2': {'Katzen': rand*3, 'Vögel': rand*3}})
         r.save
       end
     end
@@ -166,7 +166,7 @@
   s = Student.find(1)
   i = 1
   results.each do |r|
-    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, results: r[:results], report: r[:report], data: r[:data])
+    a2.results.create(student_id: s.id, test_date: DateTime.now - results.size*7 + 7*i, views: r[:views], report: r[:report], data: r[:data])
     i = i+1
   end
 

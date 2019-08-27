@@ -12,7 +12,7 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.references :prior_result
       t.date :test_date
       t.date :test_week
-      t.text :results
+      t.text :views
       t.text :report
       t.text :data
       t.timestamps
@@ -24,7 +24,7 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.integer :test
       t.date :test_date
       t.date :test_week
-      t.text :results
+      t.text :views
       t.text :report
       t.text :data
       t.timestamps
