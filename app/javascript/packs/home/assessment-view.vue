@@ -2,7 +2,8 @@
     <b-card no-body class='mt-3 pb-0 mb-1'>
         <b-tabs pills card>
 
-            <b-tab title='Messungen' :active="deep_link" class='m-3'>
+            <b-tab :active="deep_link" class='m-3'>
+                <div slot='title'>Messungen <span v-if="!is_active" class="badge badge-danger"><i class='fas fa-pause'></i></span></div>
                 <!-- Neue Messungen -->
                 <div class='alert alert-secondary' v-if="!read_only">
                     <div v-if="test.archive">
@@ -18,7 +19,7 @@
                         <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
                             Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!</p>
                         <!-- Schüler anzeigen um Messung zu starten. -->
-                        <b-button-group>
+                        <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
                             <b-button v-for="student in students"
                                       :key="student.id"
@@ -37,19 +38,42 @@
                         <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                         <p>{{test.description.usage}}</p>
                         <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                        <p>Diesen Test müssen die Schüler*innen in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode (unter dem Namen) in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                        <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
                         <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                         <!-- Schüler nur als Info anzeigen -->
-                        <b-button-group class='mt-3'>
+                        <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                             <b-button v-for="student in students"
                                       :key="student.id"
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
                                       disabled
                             >
-                                {{student.name}}
+                                {{student.name}}<br/>{{student.login}}
                             </b-button>
                         </b-button-group>
+                        <br/>
+                        <!-- rails-ujs Link beinhaltet Auth_Token-->
+                        <a v-if="is_active"
+                           class='btn btn-sm btn-danger mt-3'
+                           :href="'/groups/' + group.id + '/assessments/' + test.id"
+                           data-method='put'
+                           data-remote='true'
+                           data-params='assessment[active]=0'
+                           v-on:ajax:success="is_active = false"
+                        >
+                            <i class='fas fa-pause'></i> Wöchentliche Testung pausieren
+                        </a>
+                        <a v-else
+                           class='btn btn-sm btn-success mt-3'
+                           :href="'/groups/' + group.id + '/assessments/' + test.id"
+                           data-method='put'
+                           data-remote='true'
+                           data-params='assessment[active]=1'
+                           v-on:ajax:success="is_active = true"
+                        >
+                            <i class='fas fa-play'></i> Wöchentliche Testung aktivieren
+                        </a>
                     </div>
                 </div>
                 <!-- Liste der alten Messungen -->
@@ -154,6 +178,7 @@
     export default {
         components: {AnalysisView, SupportView},
         props: {
+            active: Boolean,
             annotations: Array,
             configuration: Object,
             group: Object,
@@ -214,6 +239,7 @@
         },
         data: function () {
             return {
+                is_active: this.active, //Als Datum, damit es geändert werden kann
                 deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }

@@ -106,6 +106,7 @@
             </div>
 
             <assessment-view v-else-if="results"
+                             :active="results.active"
                              :annotations="results.annotations"
                              :configuration="results.configuration"
                              :group="group"

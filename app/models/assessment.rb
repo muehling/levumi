@@ -8,6 +8,7 @@ class Assessment < ApplicationRecord
   #Rückgabe: Hash
   def get_data
     res = {}
+    res['active'] = self.active
     res['test'] = self.test
     res['student_test'] = self.test.student_test
     res['configuration'] = self.test.configuration
