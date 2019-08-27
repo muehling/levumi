@@ -47,7 +47,7 @@
                 </b-form-select>
             </div>
             <div v-else>
-                <span v-if="student.birthmonth != undefined">{{ student.birthmonth }}</span>
+                <span v-if="student.birthmonth != undefined">{{months[month]}} {{year}}</span>
                 <span v-else-if="!empty" class='text-muted'>nicht erfasst</span>
             </div>
         </td>

@@ -27,7 +27,7 @@ class Student < ApplicationRecord
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :tags, :settings])
     json['gender'] = self.gender unless self.gender.nil?
-    json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%b %Y') unless self.birthmonth.nil?
+    json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%Y-%m') unless self.birthmonth.nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['tags'] = self.tags.nil? ? [] : self.tags
     json['settings'] = self.settings unless self.settings.nil?
@@ -54,7 +54,7 @@ class Student < ApplicationRecord
   #Liefert die aktuellen Assessments eines Schülers zurück. Archivierte Tests werden ignoriert.
   def get_assessments
     tests = Test.where(archive: false)
-    all_assessments = Assessment.where(group_id: self.group_id, test_id: tests)
+    all_assessments = Assessment.where(group_id: self.group_id, test_id: tests, active: true)
     week = Date.commercial(Date.today.year, Date.today.cweek)
     result = []
     all_assessments.each do |a|

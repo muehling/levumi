@@ -26,6 +26,15 @@ class AssessmentsController < ApplicationController
     end
   end
 
+  #PUT /groups/:group_id/assessments/:id
+  def update    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
+    if @assessment.update_attributes(params.require(:assessment).permit(:active))
+      head 200
+    else
+      head 304
+    end
+  end
+
   private
 
   #Gruppenummer aus Parametern holen und Gruppe laden

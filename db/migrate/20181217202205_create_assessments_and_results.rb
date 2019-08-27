@@ -3,6 +3,7 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
     create_table :assessments do |t|
       t.belongs_to :group, index: true
       t.belongs_to :test, index: true
+      t.boolean :active, default: true
       t.timestamps
     end
 

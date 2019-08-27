@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
   create_table "assessments", force: :cascade do |t|
     t.integer "group_id"
     t.integer "test_id"
+    t.boolean "active", default: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_assessments_on_group_id"

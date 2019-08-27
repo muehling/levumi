@@ -1,22 +1,22 @@
 <template>
     <div>
         <b-row>
-            <b-button-group class='ml-3'>
+            <b-button-group class='ml-3' size='sm'>
                 <b-button class='mr-2'
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == -1"
                           @click="student_selected = -1; view_selected = 0; updateView();">Ganze Klasse</b-button>
-                <b-button v-for="(student, index) in students"
-                          :key="student.id"
-                          class='mr-2'
-                          size='sm'
-                          variant='outline-primary'
-                          :pressed="student_selected == index"
-                          @click="student_selected = index; updateView();"
+                <b-dropdown right split :text="student_selected == -1 ? 'Einzelansicht' : students[student_selected].name"
+                            :variant="student_selected > -1 ? 'primary' : 'outline-primary'"
                 >
-                    {{student.name}}
-                </b-button>
+                    <b-dropdown-item v-for="(student, index) in students"
+                                     :key="student.id"
+                                     @click="student_selected = index; updateView();"
+                    >
+                        {{student.name}}
+                    </b-dropdown-item>
+                </b-dropdown>
             </b-button-group>
         </b-row>
         <b-row class='mt-2'>
@@ -222,12 +222,17 @@
                 default_options: {
                     bar: {
                         chart: {
+                            animations: {
+                                animateGradually: {
+                                    enabled: false,
+                                },
+                            },
                             id: 'chart',
                             height: '500px',
                             width: '100%',
                             type: 'bar',
                             toolbar: {show:false},
-                            zoom: {enabled: false},
+                            zoom: {enabled: false}
                         },
                         legend: {position: 'top'},
                         grid: {
@@ -246,12 +251,17 @@
                     },
                     line: {
                         chart: {
+                            animations: {
+                                animateGradually: {
+                                    enabled: false,
+                                },
+                            },
                             id: 'chart',
                             height: '500px',
                             width: '100%',
                             type: 'line',
                             toolbar: {show:false},
-                            zoom: {enabled: false},
+                            zoom: {enabled: false}
                         },
                         legend: {position: 'top'},
                         stroke: {
