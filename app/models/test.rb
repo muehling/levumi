@@ -1,6 +1,9 @@
 require 'zip'
 
 class Test < ApplicationRecord
+  # Muss vor has_many stehen, da ansonsten die Kindelemente schon vor before_destroy gelöscht werden und ShadowResults angelegt werden.
+  before_destroy :cleanup
+
   has_many :assessments, dependent: :destroy
   belongs_to :test_family
   has_many :items, dependent: :destroy
@@ -10,9 +13,6 @@ class Test < ApplicationRecord
   has_many_attached :media_files
   has_many_attached :script_files
   has_many_attached :style_files
-
-  #Dateien beim Löschen ebenfalls löschen
-  before_destroy :purge_files
 
   #Entspricht dem Testnamen
   validates_presence_of :level
@@ -48,12 +48,17 @@ class Test < ApplicationRecord
     json
   end
 
-  #Ggf. zum Test gehörende Dateien löschen
-  def purge_files
+  #Ggf. zum Test gehörende Dateien löschen, alle Results vorbereiten, so dass keine Schattenkopien angelegt werden.
+  def cleanup
     entry_point.purge
     media_files.purge
     script_files.purge
     style_files.purge
+    results = Result.where(assessment_id: Assessment.where(test_id: id).all.pluck(:id)).all
+    results.each do |r|
+      r.test_date = nil
+      r.save
+    end
   end
 
   #Test Objekt als Import aus ZIP-Datei erzeugen
