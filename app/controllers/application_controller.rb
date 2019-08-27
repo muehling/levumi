@@ -770,9 +770,9 @@ class ApplicationController < ActionController::Base
           end
           results = nil
           if r.measurement.assessment.test.shorthand == "SEL6"
-            coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+coh_fal_items
-            complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+complex_str_fal_items
-            inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+inf_fal_items
+            coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+coh_fal_items
+            complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+complex_str_fal_items
+            inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+inf_fal_items
             results = {'Übersicht': r.total, 'Detailauswertung': {'Rate insgesamt':''+sum.to_s + ' von 93', 'Komplexe Satzstruktur': complex_structure, 'Inferenzen (Schlussfolgerungen)': inferenz, 'Kohärenzen (Zusammenhänge)': coherence}}
           else
             results = {'Übersicht': r.total}
