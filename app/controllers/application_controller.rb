@@ -675,6 +675,23 @@ class ApplicationController < ActionController::Base
           report = {total:total, positive:[], negative:[]}
           p_items = []
           n_items = []
+          coh_cor = 0
+          complex_str_cor = 0
+          inf_cor = 0
+
+          coh_cor_items = ""
+          complex_str_cor_items = ""
+          inf_cor_items = ""
+
+          coh_fal = 0
+          complex_str_fal = 0
+          inf_fal = 0
+
+          coh_fal_items = ""
+          complex_str_fal_items = ""
+          inf_fal_items = ""
+          sum = 0
+
           r.items.each_with_index do |item, index|
             if !items_test[item].nil?
               if r.extra_data['times'].nil?
@@ -696,16 +713,74 @@ class ApplicationController < ActionController::Base
                 end
               end
               if r.responses[index] == 1
+                if r.measurement.assessment.test.shorthand == "SEL6"
+                  sum += 1
+                  if items_test[item][:group] == 1
+                    complex_str_cor += 1
+                    if complex_str_cor_items == ''
+                    complex_str_cor_items += items_test[item][:itemtext]
+                    else
+                      complex_str_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  elsif items_test[item][:group] == 2
+                    inf_cor += 1
+                    if inf_cor_items ==''
+                    inf_cor_items += items_test[item][:itemtext]
+                    else
+                      inf_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    coh_cor += 1
+                    if coh_cor_items ==''
+                    coh_cor_items += items_test[item][:itemtext]
+                    else
+                      coh_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                end
                 p_items += [data.last[:item]]
               elsif r.responses[index] == 0
+                if r.measurement.assessment.test.shorthand == "SEL6"
+                  if items_test[item][:group] == 1
+                    complex_str_fal += 1
+                    if complex_str_fal_items == ''
+                      complex_str_fal_items += items_test[item][:itemtext]
+                    else
+                      complex_str_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  elsif items_test[item][:group] == 2
+                    inf_fal += 1
+                    if inf_fal_items == ''
+                      inf_fal_items += items_test[item][:itemtext]
+                    else
+                      inf_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    coh_fal += 1
+                    if coh_fal_items == ''
+                      coh_fal_items += items_test[item][:itemtext]
+                    else
+                      coh_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                end
                 n_items += [data.last[:item]]
               end
             end
           end
+          results = nil
+          if r.measurement.assessment.test.shorthand == "SEL6"
+            coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+coh_fal_items
+            complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+complex_str_fal_items
+            inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+inf_fal_items
+            results = {'Übersicht': r.total, 'Detailauswertung': {'Rate insgesamt':''+sum.to_s + ' von 93', 'Komplexe Satzstruktur': complex_structure, 'Inferenzen (Schlussfolgerungen)': inferenz, 'Kohärenzen (Zusammenhänge)': coherence}}
+          else
+            results = {'Übersicht': r.total}
+          end
           report[:positive] = p_items
           report[:negative] = n_items
           results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
-                                                  results:{'Übersicht': r.total}, report:report,
+                                                  results: results, report:report,
                                                   data:data, created_at: r.created_at}]
         end
       end
