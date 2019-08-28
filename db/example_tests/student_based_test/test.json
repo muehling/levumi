@@ -31,7 +31,8 @@
         "student": true,
         "group": false,
         "type": "table",
-        "columns": ["Katzen", "Vögel"]
+        "columns": ["Katzen", "Vögel"],
+        "column_keys": ["K", "V"]
       }
     ]
   },

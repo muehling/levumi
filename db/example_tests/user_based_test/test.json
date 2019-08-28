@@ -30,7 +30,10 @@
         "label": "Detailauswertung",
         "student": true,
         "group": false,
-        "type": "graph",
+        "type": "graph_table",
+        "column_keys": ["KT", "VT"],
+        "columns": ["Katzen", "Vögel"],
+        "series_keys": ["VG", "KG"],
         "series": ["Vögel", "Katzen"],
         "options": {
           "chart": {

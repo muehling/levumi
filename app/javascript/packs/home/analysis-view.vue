@@ -37,25 +37,8 @@
                 </b-button>
             </b-button-group>
         </b-row>
-        <b-row>
-            <div :hidden="!graph_visible" id='chart' style='min-width: 100%;'></div>
-            <div class='m-4' :hidden="graph_visible" id='table' style='width: 100%;'>
-                <table class='table table-sm table-striped table-borderless mt-1 text-small'>
-                    <thead>
-                        <tr>
-                            <th>Woche ab dem</th>
-                            <th v-for="col in columns">{{col}}</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="entry in table_data">
-                            <td>{{print_date(entry.week)}}</td>
-                            <!-- TODO: Was passiert hier bei Javascript in entry[col] ? -->
-                            <td v-for="col in columns"><span v-html="entry[col]"></span></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+        <b-row :hidden="!graph_visible">
+            <div id='chart' style='min-width: 100%;'></div>
         </b-row>
         <b-row :hidden="!graph_visible">
             <b-col>
@@ -169,6 +152,25 @@
                 </b-button>
             </b-col>
          </b-row>
+        <b-row :hidden="!table_visible">
+            <div class='m-4' id='table' style='width: 100%;'>
+                <table class='table table-sm table-striped table-borderless mt-1 text-small'>
+                    <thead>
+                    <tr>
+                        <th>Woche ab dem</th>
+                        <th v-for="col in columns">{{col}}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="entry in table_data">
+                        <td>{{print_date(entry.week)}}</td>
+                        <!-- TODO: Was passiert hier bei Javascript in entry[col] ? -->
+                        <td v-for="col in columns"><span v-html="entry[col]"></span></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </b-row>
     </div>
 </template>
 
@@ -190,7 +192,10 @@
                 return this.configuration.views[this.view_selected].columns || []
             },
             graph_visible() {
-              return this.configuration.views[this.view_selected].type === 'graph'
+                return this.configuration.views[this.view_selected].type === 'graph' || this.configuration.views[this.view_selected].type === 'graph_table'
+            },
+            table_visible() {
+                return this.configuration.views[this.view_selected].type === 'table' || this.configuration.views[this.view_selected].type === 'graph_table'
             },
             table_data() {
                 if (this.configuration.views[this.view_selected].type === 'graph')
@@ -201,7 +206,15 @@
                     let found = false
                     for (let r = 0; r < this.results.length; ++r)
                         if (this.results[r].student_id == this.students[this.student_selected].id && this.results[r].test_week === weeks[w]) {
-                            res.push(deepmerge({'week': weeks[w]}, this.results[r].views[this.configuration.views[this.view_selected].key]))
+                            let temp = {}
+                            for (let i = 0; i < this.configuration.views[this.view_selected].column_keys.length; ++i) {
+                                let key = this.configuration.views[this.view_selected].column_keys[i]
+                                let name = this.configuration.views[this.view_selected].columns[i]
+                                temp[name] = this.results[r].views[this.configuration.views[this.view_selected].key][key]
+                                if (temp[name] === undefined)
+                                    temp[name] = '-'
+                            }
+                            res.push(deepmerge({'week': weeks[w]}, temp))
                             found = true
                             break
                         }
@@ -425,11 +438,11 @@
                         for (let r = 0; r < view.series.length; ++r) {
                             //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
                             if (view.options.chart.type === 'bar')
-                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key][view.series[r]].toFixed(2) //Macht das Runden hier immer Sinn?
+                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
                             else
                                 res[r].data.push({
                                     x: this.weeks.indexOf(this.results[i].test_week),
-                                    y: this.results[i].views[view.key][view.series[r]].toFixed(2), //Macht das Runden hier immer Sinn?
+                                    y: this.results[i].views[view.key][view.series_keys[r]].toFixed(2), //Macht das Runden hier immer Sinn?
                                 })
                         }
                     }

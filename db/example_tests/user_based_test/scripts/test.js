@@ -70,7 +70,7 @@ function next(res) {
         saveResults(
             {
                 'V1': (sum[0] + sum[1]) / result.length,
-                'V2': {'Vögel': sum[0] / 3, 'Katzen': sum[1] / 3},
+                'V2': {'VT': sum[0] / 3, 'KT': sum[1] / 3, 'VG': sum[0] / 3, 'KG': sum[1] / 3},
                 },
             {'total': total, 'positive': p_items, 'negative': n_items},
             result,
