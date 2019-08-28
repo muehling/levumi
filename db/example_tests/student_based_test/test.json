@@ -11,7 +11,7 @@
     "usage": "Die Schüler*innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Zu jedem Bild gibt es vier Antwortoptionen, die Schüler*innen wählen selbstständig eine aus und klicken auf weiter, bis alle Bilder bearbeitet wurden."
   },
   "time_limit": "Keine",
-  "student_test": 1,
+  "student_test": true,
   "configuration": {
     "views": [{
         "label": "Übersicht",
