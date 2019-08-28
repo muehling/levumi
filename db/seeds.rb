@@ -148,8 +148,8 @@
   end
 
   #Spieltest anlegen (später per Upload)
-  Test.import('db/example_tests/user_based_test/test.zip', false, false, true )
-  Test.import('db/example_tests/student_based_test/test.zip', false, false, true )
+  Test.import('db/example_tests/user_based_test/test.zip', false, false)
+  Test.import('db/example_tests/student_based_test/test.zip', false, false)
 
   #Spielergebnisse anlegen
   a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
@@ -181,7 +181,7 @@
   Material.import('db/example_material/cats_and_birds/training.zip', false)
 
   #Test durch neue Version ersetzen
-  Test.import('db/example_tests/student_based_test/test.zip', true, true, false )
+  Test.import('db/example_tests/student_based_test/test.zip', true, true)
 
 #elsif Rails.env.production?
   #Admin Account anlegen

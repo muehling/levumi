@@ -13,6 +13,16 @@
     <tr>
       <td>Durchführung</td><td><p><%= test.description['usage'] %></p></td>
     </tr>
+    <tr>
+      <td>Items</td>
+      <td>
+        <p>
+        <% test.items.each_with_index do |item, i| %>
+            <% if i > 0 %>, <% end %><%= item.description %>
+        <% end %>
+        </p>
+      </td>
+    </tr>
   </table>
   </b-col>
   <b-col cols='2'>

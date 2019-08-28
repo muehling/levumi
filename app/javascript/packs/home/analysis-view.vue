@@ -6,13 +6,15 @@
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == -1"
-                          @click="student_selected = -1; view_selected = 0; updateView();">Ganze Klasse</b-button>
+                          @click="student_selected = -1; view_selected = 0; updateView()">Ganze Klasse</b-button>
                 <b-dropdown right split :text="student_selected == -1 ? 'Einzelansicht' : students[student_selected].name"
                             :variant="student_selected > -1 ? 'primary' : 'outline-primary'"
+                            size='sm'
                 >
                     <b-dropdown-item v-for="(student, index) in students"
                                      :key="student.id"
-                                     @click="student_selected = index; updateView();"
+                                     @click="student_selected = index; updateView()"
+                                     class='text-small'
                     >
                         {{student.name}}
                     </b-dropdown-item>
