@@ -18,73 +18,73 @@
 
    %>
 
-    groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>");
-    keys = JSON.parse("<%= escape_javascript(raw keys.to_json)%>");
+    groups = JSON.parse("<%= escape_javascript(raw groups.to_json)%>")
+    keys = JSON.parse("<%= escape_javascript(raw keys.to_json)%>")
 
     //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
     // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
     function decrypt(text, alt, group) {
-        let res = "";
-        try{
-            let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
-            res = sjcl.decrypt(tempkey, text);
+        let res = ""
+        try {
+            let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group])
+            res = sjcl.decrypt(tempkey, text)
         }
-        catch(e){
-            console.error(e.toString());
-            console.log('Entschlüsselung fehlgeschlagen'); //Log-Output (evtl. nicht in Production?)
-            res = alt;
+        catch(e) {
+            console.error(e.toString())
+            console.log('Entschlüsselung fehlgeschlagen') //Log-Output (evtl. nicht in Production?)
+            res = alt
         }
         return res;
     }
 
     //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
     function encrypt(text, group) {
-        let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group]);
-        return sjcl.encrypt(tempkey, text);
+        let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group])
+        return sjcl.encrypt(tempkey, text)
     }
 
     //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey"
     function decrypt_key(text) {
-        let res = '';
-        try{
-            res = sjcl.decrypt(sessionStorage['login'], text);
+        let res = ''
+        try {
+            res = sjcl.decrypt(sessionStorage['login'], text)
         }
         catch(e){
-            console.error(e.toString());
-            console.log('Entschlüsselung fehlgeschlagen'); //Log-Output (evtl. nicht in Production?)
-            res = '';
+            console.error(e.toString())
+            console.log('Entschlüsselung fehlgeschlagen') //Log-Output (evtl. nicht in Production?)
+            res = ''
         }
-        return res;
+        return res
     }
 
     //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey".
     function encrypt_key(text) {
-        return sjcl.encrypt(sessionStorage['login'], text);
+        return sjcl.encrypt(sessionStorage['login'], text)
     }
 
     //Liefert das Student-Objekt zu einer ID in dessen Gruppe zurück.
     function get_student(group, id) {
         for (let j = 0; j < groups[group].length; ++j)
             if (groups[group][j].id == id)
-                return groups[group][j];
-        return null;
+                return groups[group][j]
+        return null
     }
 
     function recode_keys(new_password) {
         //Alle Keys mit altem PW entschlüsseln
         let new_keys = []
         Object.keys(keys).forEach(function(key, index) {
-            new_keys.push({id: key, key: decrypt_key(this[key])});
-        }, keys);
+            new_keys.push({id: key, key: decrypt_key(this[key])})
+        }, keys)
 
         //Key aktualisieren
         sessionStorage['old_login'] = sessionStorage['login']
-        sessionStorage['login'] = new_password;
+        sessionStorage['login'] = new_password
 
         //Key neu verschlüsseln und globales Array aktualisieren
         for (let i = 0; i < new_keys.length; ++i) {
-            new_keys[i].key = encrypt_key(new_keys[i].key);
-            keys[new_keys[i].id] = new_keys[i].key;
+            new_keys[i].key = encrypt_key(new_keys[i].key)
+            keys[new_keys[i].id] = new_keys[i].key
         }
     }
 
@@ -92,8 +92,9 @@
     if (sessionStorage['login'] != undefined) {
         Object.keys(groups).forEach(function(key, index) {
             for (let i = 0; i < this[key].length; ++i)
-                this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key);
-        }, groups);
+                this[key][i].name = decrypt(this[key][i].name, 'Kind_' + this[key][i].id, key)
+            //Nach Namen sortieren
+            this[key].sort(function(a, b){return a.name < b.name ? -1 : a.name > b.name ? 1 : 0})
+        }, groups)
     }
-
 </script>

@@ -240,7 +240,7 @@
         data: function () {
             return {
                 is_active: this.active, //Als Datum, damit es geändert werden kann
-                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id ? true : false,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }
         },
