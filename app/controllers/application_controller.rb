@@ -779,7 +779,7 @@ class ApplicationController < ActionController::Base
           end
           report[:positive] = p_items
           report[:negative] = n_items
-          results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.created_at,
+          results_transfer = results_transfer + [{student_id: r.student_id, measurement_id: r.measurement_id, test_date: r.updated_at,
                                                   results: results, report:report,
                                                   data:data, created_at: r.created_at}]
         end
