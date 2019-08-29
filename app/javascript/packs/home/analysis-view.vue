@@ -7,7 +7,7 @@
                           variant='outline-primary'
                           :pressed="student_selected == -1"
                           @click="student_selected = -1, view_selected = 0, updateView()">Ganze Klasse</b-button>
-                <b-dropdown right split :text="student_selected == -1 ? 'Einzelansicht' : students[student_selected].name"
+                <b-dropdown right :text="student_selected == -1 ? 'Individualgraph' : students[student_selected].name"
                             :variant="student_selected > -1 ? 'primary' : 'outline-primary'"
                             size='sm'
                 >
@@ -479,15 +479,5 @@
     .collapsed > .when-opened,
     :not(.collapsed) > .when-closed {
         display: none;
-    }
-
-    .b-dropdown.show > .dropdown-toggle {
-        border-color: var(--levumi-color) !important;
-        background-color: var(--levumi-color) !important;
-    }
-
-    .dropdown-toggle.btn-primary {
-        border-left-color: white !important;
-        border-left: 0.1rem;
     }
 </style>
