@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   before_action :set_locale
 
   #Normaler Zugang
-  #
+
   #GET '/'
   def start
     reset_session #Alte Daten ggf. entfernen
@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
 
 
   #Zugang für Schülerinnen und Schüler
-  #
+
   #GET '/testen'
   def frontend
     if session.has_key?(:student)
@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
 
   #POST '/login_frontend'
   def login_frontend
-    s = Student.find_by_login(params[:login])
+    s = Student.find_by_login(params[:login].upcase)
     unless s.nil?
       session[:student] = s.id
       render json: {tests: s.get_assessments, student: s.id}

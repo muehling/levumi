@@ -51,7 +51,14 @@
                             v-on:ajax:success="success"
                     >
                         <b-form-group>
-                            <b-form-input :state="retry ? false : null" type='text' name='login' id='login' placeholder='Zugangscode' style="font-size:1.5em"/>
+                            <b-form-input :state="retry ? false : null"
+                                          type='text'
+                                          name='login'
+                                          id='login'
+                                          placeholder='Zugangscode'
+                                          style="font-size:1.5em"
+                                          :formatter="format"
+                            />
                             <div class='invalid-feedback'>
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
@@ -81,17 +88,6 @@
             }
         },
         methods: {
-            no_tests() {
-              for (let i = 0; i < this.tests.length; ++i)
-                  if (this.tests[i].test_info.student_test)
-                      return false
-              return true
-            },
-            success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
-                this.tests = event.detail[0]['tests']
-                this.student = event.detail[0]['student']
-                this.loading = false
-            },
             auto_logout: function handler(event) {
                 if(this.logout){
                     fetch('/testen_logout', {
@@ -104,6 +100,20 @@
                         credentials: 'include'
                     });
                 }
+            },
+            format(val) {
+                return val.toUpperCase()
+            },
+            no_tests() {
+              for (let i = 0; i < this.tests.length; ++i)
+                  if (this.tests[i].test_info.student_test)
+                      return false
+              return true
+            },
+            success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
+                this.tests = event.detail[0]['tests']
+                this.student = event.detail[0]['student']
+                this.loading = false
             }
         },
         name: 'frontend-app'

@@ -121,7 +121,7 @@
       students.each_with_index do |s, j|
         x = group.students.create(s)
         if (j == 0)
-          x.login = 'test'
+          x.login = 'TEST'
           x.save
         end
       end

@@ -12,7 +12,7 @@ class Student < ApplicationRecord
   after_create do |student|
     if student.login.nil? || student.login.blank?
       loop do
-        student.login = (('0'..'9').to_a + ('a'..'z').to_a).shuffle.first(6).join
+        student.login = (('0'..'9').to_a + ('A'..'Z').to_a).shuffle.first(6).join
         break if student.save
       end
     end
