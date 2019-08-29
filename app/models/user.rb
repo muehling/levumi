@@ -52,7 +52,7 @@ class User < ApplicationRecord
   end
 
   #Informationen für Userübersicht sammeln: Pro Gruppe alle verwendeten Tests, Familien, Kompetenzen und Bereiche und alle noch verfügbaren sammeln. Vermeidet redundante Anfragen.
-  # TODO: Optimmierbar?
+  # TODO: Optimmierbar? - Zumindest nicht alle Attribute benötigt...Zwischenspeichern von Anfragen auch möglich?
   def get_home_info
     all_tests = Test.all.pluck(:id)
     all_families = TestFamily.all.pluck(:id)
@@ -60,7 +60,7 @@ class User < ApplicationRecord
     all_areas = Area.all.pluck(:id)
 
     result = []
-    groups.each do |group|
+    groups.where(archive: false).order(id: :desc).each do |group|
       used = group.assessments.map{|a| a.test_id}
 
       used_tests = Test.where(id: used)
@@ -118,9 +118,9 @@ class User < ApplicationRecord
     return !security_digest.nil? && !security_digest.blank?
   end
 
-  #Testklasse anlegen
+  #Beispielklasse anlegen
   def create_demo(key, token)
-    g = Group.create(label: 'Testklasse', demo: true, auth_token: token)
+    g = Group.create(label: 'Beispielklasse', demo: true, auth_token: token)
     GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 

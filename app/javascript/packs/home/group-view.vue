@@ -11,7 +11,7 @@
                                 v-if="area.used || !group.read_only"
                                 :key="area.info.id"
                                 :active="area.info.id == area_selected"
-                                @click="area.used = true;select_area(area.info.id)"
+                                @click="area.used = true; select_area(area.info.id)"
                     >
                         <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{area.info.name}}</span>
                     </b-nav-item>

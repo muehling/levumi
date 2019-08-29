@@ -19,9 +19,9 @@
           <% else %>
             <p>Das war's schon!</p>
           <% end %>
-          <!-- Hidden Field mit generiertem Key für die Testklasse -->
+          <!-- Hidden Field mit generiertem Key für die Beispielklasse -->
           <input type='hidden' id='key' name='key'/>
-          <!-- Hidden Field mit generiertem Auth_Token für die Testklasse -->
+          <!-- Hidden Field mit generiertem Auth_Token für die Beispielklasse -->
           <input type='hidden' id='token' name='auth_token'/>
         <% end %>
         <%= f.submit @user.intro_state == 1 ? 'Weiter' : 'Registrierung abschließen', class: 'btn btn-outline-success'%>
@@ -35,7 +35,7 @@
 
 <% if @user.intro_state == 2 %>
     <script>
-      //Zufallsstring für Key und Auth_Token der Testklasse generieren
+      //Zufallsstring für Key und Auth_Token der Beispielklasse generieren
       let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
       $('#key').val(encrypt_key(key));
       $('#token').val(sjcl.encrypt(key, key));

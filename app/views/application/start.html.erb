@@ -94,11 +94,28 @@
     </button>
   </div>
   <div class='modal-body' id='modal-body'>
+
+    <!-- TEMPCODE -->
+    <div class='alert alert-danger'>
+      <p>
+        Wenn Sie bereits einen Zugang für Levumi besitzen und ihre Daten umziehen möchten, legen Sie sich bitte KEINEN neuen Zugang an.
+        Melden Sie sich in der alten Seite (<a href='https://www.levumi.de:4433'>www.levumi.de:8080</a>) an und folgen den Anweisungen!
+      </p>
+    </div>
+
     <%= render 'users/form/form_register', user: User.new %>
   </div>
 <% end %>
 
 <%= content_for :body do %>
+
+  <!-- TEMPCODE -->
+  <div class='alert alert-danger'>
+    <p class='lead'>Willkommen zur neuen Levumi Version ab dem Schuljahr 2019!</p>
+    <p class='lead'>Falls Sie bereits einen Levumi Zugang besitzen, können Sie diesen mit allen Daten in die neue Version umziehen.</p>
+    <p class='lead'>Dazu melden Sie sich bitte in der alten Version (<a href='https://www.levumi.de:4433'>www.levumi.de:8080</a>) an und folgen den Anweisungen.</p>
+  </div>
+
   <div class="container-fluid">
     <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
       <div class="carousel-inner">
@@ -157,7 +174,17 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
       </a>
     </div>
+
+    <div class='text-center mt-3'>
+      <p class='lead'>Im Video stellen wir Ihnen Levumi kurz vor</p>
+        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </div>
+
+    <div class='text-center mt-3'>
+      <p class='lead'>Interessiert? Dann einfach einen kostenfreien <a href='#', onclick="$('#modal').modal('show');">Zugang anlegen</a></p>
+    </div>
   </div>
+
 
   <footer class='mt-2'>
     <ul class="list-inline text-center">

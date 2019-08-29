@@ -79,6 +79,7 @@
     --secondary-color:#616970;
     --danger-color: #b73631;
     --success-color: #34823e;
+    --levumi-color: rgba(81, 80, 126, 0.5)
 }
 /* Buttons */
 
@@ -99,7 +100,7 @@
 .btn-primary,
 .btn-primary:focus,
 .btn-outline-primary:focus {
-    box-shadow: 0 0 0 0.2rem rgba(81, 80, 126, 0.5) !important;
+   box-shadow: 0 0 0 0.2rem var(--levumi-color) !important;
 }
 
 

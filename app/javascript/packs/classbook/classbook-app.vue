@@ -47,7 +47,7 @@
                                             :title-link-class="{ update_trigger_hack: group.label }"
                                             class='m-3'
                                     >
-                                        <!-- Testklasse kursiv darstellen -->
+                                        <!-- Beispielklasse kursiv darstellen -->
                                         <template slot='title'>
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>
@@ -85,7 +85,7 @@
                                             :active="index == firstSharedIndex"
                                             class='m-3'
                                     >
-                                        <!-- Testklasse kursiv darstellen -->
+                                        <!-- Beispielklasse kursiv darstellen -->
                                         <template slot='title'>
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>
@@ -123,7 +123,7 @@
                                             :key="group.id"
                                             class='m-3'
                                     >
-                                        <!-- Testklasse kursiv darstellen -->
+                                        <!-- Beispielklasse kursiv darstellen -->
                                         <template slot='title'>
                                             <i v-if="group.demo">{{group.label}}</i>
                                             <span v-else>{{group.label}}</span>

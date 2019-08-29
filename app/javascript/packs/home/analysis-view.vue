@@ -27,7 +27,7 @@
                         v-for="(view, index) in configuration.views"
                         v-if="(student_selected == -1 && view.group) || (student_selected > -1 && view.student)"
                         :key="index"
-                        class='mr-2'
+                        class='mr-2 shadow-none'
                         size='sm'
                         variant='outline-secondary'
                         :pressed="view_selected == index"
@@ -479,5 +479,16 @@
     .collapsed > .when-opened,
     :not(.collapsed) > .when-closed {
         display: none;
+    }
+
+    .b-dropdown.show .btn.btn-outline-primary.dropdown-toggle {
+        border-color: var(--levumi-color) !important;
+        background-color: var(--levumi-color) !important;
+    }
+
+    .btn-outline-primary:focus,
+    .btn-outline-primary:active,
+    .b-dropdown btn-primary {
+        box-shadow: 0 0 0 0 !important;
     }
 </style>
