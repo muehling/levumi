@@ -675,22 +675,36 @@ class ApplicationController < ActionController::Base
           report = {total:total, positive:[], negative:[]}
           p_items = []
           n_items = []
+          #SEL2 und 4
+          ada_cor = 0
+          avp_cor = 0
+          avk_cor = 0
+          ada_cor_items = ""
+          avp_cor_items = ""
+          avk_cor_items = ""
+          ada_fal = 0
+          avp_fal = 0
+          avk_fal = 0
+          ada_fal_items = ""
+          avp_fal_items = ""
+          avk_fal_items = ""
+          #SEL6
           coh_cor = 0
           complex_str_cor = 0
           inf_cor = 0
-
           coh_cor_items = ""
           complex_str_cor_items = ""
           inf_cor_items = ""
-
           coh_fal = 0
           complex_str_fal = 0
           inf_fal = 0
-
           coh_fal_items = ""
           complex_str_fal_items = ""
           inf_fal_items = ""
           sum = 0
+          correct_items = ""
+          false_items = ""
+          n_sum = 0
 
           r.items.each_with_index do |item, index|
             if !items_test[item].nil?
@@ -737,6 +751,64 @@ class ApplicationController < ActionController::Base
                       coh_cor_items += ', ' + items_test[item][:itemtext]
                     end
                   end
+                elsif r.measurement.assessment.test.shorthand == "SEL4"
+                  sum += 1
+                  if items_test[item][:group] == 1
+                    ada_cor += 1
+                    if ada_cor_items == ''
+                      ada_cor_items += items_test[item][:itemtext]
+                    else
+                      ada_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  elsif items_test[item][:group] == 2
+                    avp_cor += 1
+                    if avp_cor_items ==''
+                      avp_cor_items += items_test[item][:itemtext]
+                    else
+                      avp_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    avk_cor += 1
+                    if avk_cor_items ==''
+                      avk_cor_items += items_test[item][:itemtext]
+                    else
+                      avk_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                elsif r.measurement.assessment.test.shorthand == "SEL2"
+                  sum += 1
+                  if items_test[item][:group] == 1
+                    ada_cor += 1
+                    if ada_cor_items == ''
+                      ada_cor_items += items_test[item][:itemtext]
+                    else
+                      ada_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    avp_cor += 1
+                    if avp_cor_items ==''
+                      avp_cor_items += items_test[item][:itemtext]
+                    else
+                      avp_cor_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                else
+                  if r.measurement.assessment.test.shorthand == "ZR"
+                    variables = items_test[item][:itemtext].split(",")
+                    correctAnswer = variables[4]
+                    possibleAnswer = variables[0,4].join(',')
+                    if correct_items == ""
+                      correct_items += possibleAnswers.sub!('-', "(" + correctAnswer + ")")
+                    else
+                      correct_items += ', ' + possibleAnswers.sub!('-', "(" + correctAnswer + ")")
+                    end
+                  else
+                    if correct_items == ""
+                      correct_items += items_test[item][:itemtext]
+                    else
+                      correct_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
                 end
                 p_items += [data.last[:item]]
               elsif r.responses[index] == 0
@@ -763,6 +835,63 @@ class ApplicationController < ActionController::Base
                       coh_fal_items += ', ' + items_test[item][:itemtext]
                     end
                   end
+                elsif r.measurement.assessment.test.shorthand == "SEL4"
+                  if items_test[item][:group] == 1
+                    ada_fal += 1
+                    if ada_fal_items == ''
+                      ada_fal_items += items_test[item][:itemtext]
+                    else
+                      ada_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  elsif items_test[item][:group] == 2
+                    avp_fal += 1
+                    if avp_fal_items == ''
+                      avp_fal_items += items_test[item][:itemtext]
+                    else
+                      avp_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    avk_fal += 1
+                    if avk_fal_items == ''
+                      avk_fal_items += items_test[item][:itemtext]
+                    else
+                      avk_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                elsif r.measurement.assessment.test.shorthand == "SEL2"
+                  if items_test[item][:group] == 1
+                    ada_fal += 1
+                    if ada_fal_items == ''
+                      ada_fal_items += items_test[item][:itemtext]
+                    else
+                      ada_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  else
+                    avp_fal += 1
+                    if avp_fal_items == ''
+                      avp_fal_items += items_test[item][:itemtext]
+                    else
+                      avp_fal_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
+                else
+                  n_sum +=1
+                  if r.measurement.assessment.test.shorthand == "ZR"
+                    variables = items_test[item][:itemtext].split(",")
+                    correctAnswer = variables[4]
+                    possibleAnswer = variables[0,4].join(',')
+                    if false_items == ""
+                      false_items += possibleAnswers.sub!('-', "(" + correctAnswer + ")") + '<' + r.extra_data['answers'][index]  + '>'
+                    else
+                      false_items += ', ' + possibleAnswers.sub!('-', "(" + correctAnswer + ")") + '<' + r.extra_data['answers'][index]  + '>'
+                    end
+                  else
+                    if false_items == ""
+                      false_items += items_test[item][:itemtext]
+                    else
+                      false_items += ', ' + items_test[item][:itemtext]
+                    end
+                  end
                 end
                 n_items += [data.last[:item]]
               end
@@ -773,9 +902,20 @@ class ApplicationController < ActionController::Base
             coherence = '<strong>Anzahl richtig gelöster Items:</strong> '+coh_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+coh_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+coh_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+coh_fal_items
             complex_structure = '<strong>Anzahl richtig gelöster Items:</strong> '+complex_str_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+complex_str_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+complex_str_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+complex_str_fal_items
             inferenz = '<strong>Anzahl richtig gelöster Items:</strong> '+inf_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+inf_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+inf_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+inf_fal_items
-            results = {'Übersicht': r.total, 'Detailauswertung': {'Rate insgesamt':''+sum.to_s + ' von 93', 'Komplexe Satzstruktur': complex_structure, 'Inferenzen (Schlussfolgerungen)': inferenz, 'Kohärenzen (Zusammenhänge)': coherence}}
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 93', 'KOMS': complex_structure, 'INF': inferenz, 'KO': coherence, 'LG': r.total, 'LGM': "-"} }
+          elsif r.measurement.assessment.test.shorthand == "SEL4"
+            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+ada_fal_items
+            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avp_fal_items
+            avk = '<strong>Anzahl richtig gelöster Items:</strong> '+avk_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avk_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avk_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avk_fal_items
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 60', 'ADA': ada, 'AVP': avp, 'AVK': avk, 'LG': r.total, 'LGM': "-"} }
+          elsif r.measurement.assessment.test.shorthand == "SEL2"
+            ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+ada_fal_items
+            avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avp_fal_items
+            results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"} }
           else
-            results = {'Übersicht': r.total}
+            correct = '<strong>Anzahl richtig gelöster Items:</strong> '+sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+correct_items
+            wrong = '<strong>Anzahl falsch gelöster Items:</strong> '+n_sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+false_items
+            results = {'V1': sum, 'V2': {'RGI': correct, 'FGI': wrong, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RGI': correct, 'FGI': wrong, 'LG': r.total, 'LGM': "-"} }
           end
           report[:positive] = p_items
           report[:negative] = n_items
