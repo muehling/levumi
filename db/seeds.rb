@@ -1,9 +1,9 @@
-#if Rails.env.development?
+if Rails.env.development?
 
   #Spieldaten anlegen
 
   users = [
-      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 1, state: 1, tc_accepted: DateTime.now, intro_state: 4} ,
+      {email: "admin@admin.de", password: "123", password_confirmation: "123", capabilities: "admin", account_type: 1, state: 1, tc_accepted: DateTime.now, intro_state: 4},
       {email: "user@user.de", password: "123", password_confirmation: "123", capabilities: "", account_type: 0, state: 1}
   ]
 
@@ -183,6 +183,19 @@
   #Test durch neue Version ersetzen
   Test.import('db/example_tests/student_based_test/test.zip', true, true)
 
-#elsif Rails.env.production?
-  #Admin Account anlegen
-#end
+elsif Rails.env.production?
+  #Admin Account erzeugen
+  STDOUT.puts "Enter e-mail for admin:"
+  email = STDIN.gets.strip.downcase
+  STDOUT.puts "Enter password for admin:"
+  pw = STDIN.gets.strip
+  STDOUT.puts "Re-enter password for admin:"
+  pwc = STDIN.gets.strip
+
+  u = User.create(email: email, password: pw, password_confirmation: pwc, capabilities: 'admin', state: 15, account_type: 1)
+  if u.save
+    STDOUT.puts "Admin account created!"
+  else
+    STDOUT.puts "Something went wrong!"
+  end
+end
