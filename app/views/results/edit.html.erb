@@ -1,15 +1,6 @@
 <div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em; display: none">
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
-<%if @test.student_test%>
-    <script>
-        //possible Hack
-        //setting anchor to page. Jump to anchor when backspace pressed
-        window.location.hash="no-back-button";
-        window.location.hash="Again-No-back-button";//again because google chrome don't insert first hash into history
-        window.onhashchange=function(){window.location.hash="no-back-button";};
-    </script>
-<%end%>
 
 <!-- Test-Styles einbinden -->
 <style>
@@ -144,4 +135,11 @@
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
                 .css('margin-top','0%')
     }
+
+    <%if @test.student_test%>
+      //Backspace als "Zurück" verhindern
+      window.location.hash="no-back-button"
+      window.location.hash="Again-No-back-button"
+      window.onhashchange=function(){window.location.hash="no-back-button"}
+    <%end%>
 </script>
