@@ -74,13 +74,15 @@
 }
 
 /* Bootstrap Theming */
+
 :root {
     --primary-color: #5a598c;
     --secondary-color:#616970;
     --danger-color: #b73631;
     --success-color: #34823e;
-    --levumi-color: rgba(81, 80, 126, 0.5)
+    --levumi-color: rgba(94, 86, 187, 0.7);
 }
+
 /* Buttons */
 
 .btn-outline-primary,
@@ -97,12 +99,14 @@
     border-color: var(--primary-color) !important;
 }
 
-.btn-primary,
 .btn-primary:focus,
 .btn-outline-primary:focus {
-   box-shadow: 0 0 0 0.2rem var(--levumi-color) !important;
+   box-shadow: 0 0 0 0.1rem var(--levumi-color) !important;
 }
 
+.btn:hover, .btn:active, .btn:focus {
+    box-shadow: none !important;
+}
 
 .btn-outline-primary:hover,
 .btn-outline-primary:not(:disabled):not(.disabled).active,
@@ -201,4 +205,11 @@
 .navbar-light .navbar-nav .nav-link.active {
     color: white;
     background-color: var(--primary-color);
+}
+
+/* Forms */
+
+input:focus, select:focus {
+    border-color: var(--levumi-color) !important;
+    box-shadow: 0 0 0 0.1rem var(--levumi-color) !important;
 }
