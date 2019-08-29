@@ -72,12 +72,15 @@ class ImportController < ApplicationController
 
     #Erstellen der Result-Objekte
     results.each do |r|
+      detail = r.require(:results).permit(:V1, :V2=>{}, :V3=>{})
+      puts detail
       result = {}
-      if r[:results][:Detailauswertung].nil?
-        result = {Übersicht: r[:results][:Übersicht]}
+      if detail.key?('V3')
+        result = {'V1': detail[:V1], 'V2':detail[:V2].to_h , 'V3':detail[:V3].to_h }
+      elsif detail.key?('V2')
+        result = {'V1': detail[:V1], 'V2':detail[:V2].to_h}
       else
-        detail = r.require(:results).permit(:Übersicht, :Detailauswertung=>{})
-        result = {Übersicht: r[:results][:Übersicht], Detailauswertung: detail[:Detailauswertung].to_h}
+        result = {'V1': detail[:V1]}
       end
       report_params = r.require(:report).permit(:total, :positive =>[], :negative => [])
       report = {total:report_params[:total], positive: report_params[:positive], negative: report_params[:negative] }
@@ -89,7 +92,7 @@ class ImportController < ApplicationController
       end
 
       res = Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
-                    test_date:r[:test_date], results: result, report: report, data: data, created_at: r[:created_at])
+                    test_date:r[:test_date], views: result, report: report, data: data, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200
   end
