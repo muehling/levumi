@@ -18,7 +18,7 @@
       <td>
         <p>
         <% test.items.each_with_index do |item, i| %>
-            <% if i > 0 %>, <% end %><%= item.description %>
+            <% if i > 0 %>, <% end %><%= item[:description] %>
         <% end %>
         </p>
       </td>

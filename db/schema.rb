@@ -95,28 +95,17 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "items", force: :cascade do |t|
-    t.integer "test_id"
-    t.string "shorthand"
-    t.string "description"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["shorthand"], name: "index_items_on_shorthand"
-    t.index ["test_id"], name: "index_items_on_test_id"
-  end
-
   create_table "material_supports", force: :cascade do |t|
     t.integer "material_id"
     t.integer "area_id"
     t.integer "competence_id"
     t.integer "test_family_id"
     t.integer "test_id"
-    t.integer "item_id"
+    t.text "items"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["area_id"], name: "index_material_supports_on_area_id"
     t.index ["competence_id"], name: "index_material_supports_on_competence_id"
-    t.index ["item_id"], name: "index_material_supports_on_item_id"
     t.index ["material_id"], name: "index_material_supports_on_material_id"
     t.index ["test_family_id"], name: "index_material_supports_on_test_family_id"
     t.index ["test_id"], name: "index_material_supports_on_test_id"
@@ -201,6 +190,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.boolean "student_test"
     t.boolean "archive", default: false
     t.text "configuration"
+    t.text "items"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

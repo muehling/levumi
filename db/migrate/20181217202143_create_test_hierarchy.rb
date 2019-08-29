@@ -28,13 +28,7 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.boolean :student_test
       t.boolean :archive, default: false
       t.text :configuration
-      t.timestamps
-    end
-
-    create_table :items do |t|
-      t.belongs_to :test, index: true
-      t.string :shorthand, index: true
-      t.string :description
+      t.text :items
       t.timestamps
     end
   end

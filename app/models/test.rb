@@ -6,7 +6,6 @@ class Test < ApplicationRecord
 
   has_many :assessments, dependent: :destroy
   belongs_to :test_family
-  has_many :items, dependent: :destroy
 
   #Zu einem Test gehörende Dateien => Active_Storage
   has_one_attached :entry_point
@@ -21,6 +20,7 @@ class Test < ApplicationRecord
   #Konfiguration der Views und Beschreibung als Hash
   serialize :configuration, Hash
   serialize :description, Hash
+  serialize :items, Hash
 
   #Ggf. "veraltet" zum Namen dazufügen
   def name
@@ -97,27 +97,14 @@ class Test < ApplicationRecord
         test = old_test
         test.update_attributes(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
       end
+      test.items = vals['items']
 
       if !test.nil? && test.save
-        #MaterialSupport-Einträge auf Testebene für neue Version kopieren
+        #MaterialSupport-Einträge auf Testebene für neue Version kopieren - Items dürfen sich nicht verändert haben.
         if update_material && !old_test.nil? && old_test != test
           todo = MaterialSupport.where(test_id: old_test.id)
           todo.each do |m|
-            MaterialSupport.create(test_id: test.id, item_id: m.item_id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
-          end
-        end
-
-        #Ggf. Items anlegen und MaterialSupport-Einträge auf Itemebene kopieren
-        if old_test.nil? || old_test.archive  #Items anlegen, falls Test neu oder alter Test archviert
-          vals['items'].each do |key, value|
-            new_item = test.items.create(shorthand: key, description: value)
-            if update_material && !old_test.nil?     #old_test != test ist hier immer erfüllt wegen archive
-              item = old_test.items.find_by_shorthand(key)
-              todo = item.nil? ? [] : MaterialSupport.where(item_id: item.id)
-              todo.each do |m|
-                MaterialSupport.create(test_id: m.test_id, item_id: new_item.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id)
-              end
-            end
+            MaterialSupport.create(test_id: test.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id, items: m.items)
           end
         end
 

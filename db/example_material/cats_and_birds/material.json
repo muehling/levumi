@@ -15,27 +15,11 @@
       "items": [
         {
           "test": "Ex_S_1",
-          "item": "I4"
-        },
-        {
-          "test": "Ex_S_1",
-          "item": "I5"
-        },
-        {
-          "test": "Ex_S_1",
-          "item": "I6"
+          "items": ["I4", "I5", "I6"]
         },
         {
           "test": "Ex_U_1",
-          "item": "I4"
-        },
-        {
-          "test": "Ex_U_1",
-          "item": "I5"
-        },
-        {
-          "test": "Ex_U_1",
-          "item": "I6"
+          "items": ["I4", "I5", "I6"]
         }
       ]
     },
@@ -54,27 +38,11 @@
       "items": [
         {
           "test": "Ex_S_1",
-          "item": "I1"
-        },
-        {
-          "test": "Ex_S_1",
-          "item": "I2"
-        },
-        {
-          "test": "Ex_S_1",
-          "item": "I3"
+          "items": ["I1", "I2", "I3"]
         },
         {
           "test": "Ex_U_1",
-          "item": "I1"
-        },
-        {
-          "test": "Ex_U_1",
-          "item": "I2"
-        },
-        {
-          "test": "Ex_U_1",
-          "item": "I3"
+          "items": ["I1", "I2", "I3"]
         }
       ]
     },

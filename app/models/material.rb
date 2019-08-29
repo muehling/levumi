@@ -41,8 +41,7 @@ class Material < ApplicationRecord
       MaterialSupport.create(material_id: self.id, test_id: test.id) unless test.nil?
     end
     items.each do |i|
-      item = Item.where(shorthand: i['item'], test_id: Test.find_by_shorthand(i['test']).id)
-      MaterialSupport.create(material_id: self.id, item_id: item.first.id) unless item.first.nil?
+      MaterialSupport.create(material_id: self.id, test_id: Test.find_by_shorthand(i['test']).id, items: i['items'])
     end
   end
 
@@ -67,14 +66,12 @@ class Material < ApplicationRecord
   #Liefert die Informationen für die Material-App SPA
   def self.get_material_info
     materials = Material.all
-    items = Item.where(id: MaterialSupport.all.pluck(:item_id))
-    tests = (Test.where(id: MaterialSupport.all.pluck(:test_id)).where.not(archive: true) + Test.where(id: items.pluck(:test_id)).where.not(archive: true)).uniq
+    tests = Test.where(id: MaterialSupport.all.pluck(:test_id)).where.not(archive: true)
     test_families = (TestFamily.where(id: MaterialSupport.all.pluck(:test_family_id)) + TestFamily.where(id: tests.pluck(:test_family_id))).uniq
     competences = (Competence.where(id: MaterialSupport.all.pluck(:competence_id)) + Competence.where(id: test_families.pluck(:competence_id))).uniq
     areas = (Area.where(id: MaterialSupport.all.pluck(:area_id)) + Area.where(id: competences.pluck(:area_id))).uniq
     {
         'materials': materials,
-        'items': items,
         'tests': tests,
         'test_families': test_families,
         'competences': competences,
@@ -118,7 +115,12 @@ class Material < ApplicationRecord
       #Zusätzlich: Alle Items, die mindestens 3 Mal in supports auftauchen
       item_map.each do |k, v|
         if v > 2
-          specific = Material.find(MaterialSupport.where(item_id: test.items.where(shorthand: k).first).pluck(:material_id))
+          todo = MaterialSupport.where(test_id: test.id).where.not(items: nil)
+          todo.each do |m|
+            unless m.items.index(k).nil?
+              specific = specific + [Material.find(m.material_id)]
+            end
+          end
         end
       end
       specific = specific.uniq
