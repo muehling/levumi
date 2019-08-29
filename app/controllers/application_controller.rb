@@ -150,7 +150,7 @@ class ApplicationController < ActionController::Base
     data_to_transfer[:students] = students_transfer
     #prepare assessments for transfer and merge relevant data from test
     assessments = Assessment.where(group_id:groups)
-    test = Test.where('archive != true AND shorthand!= "PF1" AND shorthand!= "PF2" AND shorthand!= "PF3" AND shorthand!= "ZF1" AND shorthand!= "ZF2" AND shorthand!= "ZF3"').pluck(:id, :shorthand)
+    test = Test.where('archive != true AND shorthand!= "PF1" AND shorthand!= "ZR" AND shorthand!= "PF2" AND shorthand!= "PF3" AND shorthand!= "ZF1" AND shorthand!= "ZF2" AND shorthand!= "ZF3"').pluck(:id, :shorthand)
     test_transfer = {}
     items_test = {}
     lookup_table= {
@@ -622,7 +622,7 @@ class ApplicationController < ActionController::Base
 
     test.each do |t|
       test_transfer[t[0]] = {shorthand:t[1]}
-      items = Item.where(test_id: t[0]).pluck(:id, :difficulty, :shorthand)
+      items = Item.where(test_id: t[0]).pluck(:id, :difficulty, :shorthand, :itemtext)
       count = 1
 
       items.each do |i|
@@ -634,7 +634,7 @@ class ApplicationController < ActionController::Base
           if t[1] == 'SL2a' || t[1] == 'SL3' || t[1] == 'PL2a' || t[1] == 'PL3a'
             items_test[i[0]] = {id: lookup_table[t[1]][i[2]], group: i[1], itemtext: i[2]}
           else
-            items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2]}
+            items_test[i[0]] = {id: "I" + count.to_s, group: i[1], itemtext: i[2], zr_only: i[3]}
           end
           count += 1
         end
@@ -793,10 +793,11 @@ class ApplicationController < ActionController::Base
                     end
                   end
                 else
+                  sum += 1
                   if r.measurement.assessment.test.shorthand == "ZR"
-                    variables = items_test[item][:itemtext].split(",")
+                    variables = items_test[item][:zr_only].split(",")
                     correctAnswer = variables[4]
-                    possibleAnswer = variables[0,4].join(',')
+                    possibleAnswers = variables[0,4].join(',')
                     if correct_items == ""
                       correct_items += possibleAnswers.sub!('-', "(" + correctAnswer + ")")
                     else
@@ -877,9 +878,9 @@ class ApplicationController < ActionController::Base
                 else
                   n_sum +=1
                   if r.measurement.assessment.test.shorthand == "ZR"
-                    variables = items_test[item][:itemtext].split(",")
+                    variables = items_test[item][:zr_only].split(",")
                     correctAnswer = variables[4]
-                    possibleAnswer = variables[0,4].join(',')
+                    possibleAnswers = variables[0,4].join(',')
                     if false_items == ""
                       false_items += possibleAnswers.sub!('-', "(" + correctAnswer + ")") + '<' + r.extra_data['answers'][index]  + '>'
                     else
@@ -912,6 +913,10 @@ class ApplicationController < ActionController::Base
             ada = '<strong>Anzahl richtig gelöster Items:</strong> '+ada_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+ada_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+ada_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+ada_fal_items
             avp = '<strong>Anzahl richtig gelöster Items:</strong> '+avp_cor.to_s+'<br/><strong>Richtig gelöste Items: </strong><br/>'+avp_cor_items+'<br/><br/><strong>Anzahl falsch gelöster Items:</strong> '+avp_fal.to_s+'<br/><strong>Richtig gelöste Items:</strong><br/>'+avp_fal_items
             results = {'V1': sum, 'V2': {'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"},'V3': {'SUM':sum ,'RI':''+sum.to_s + ' von 66', 'ADA': ada, 'AVP': avp, 'LG': r.total, 'LGM': "-"} }
+          elsif r.measurement.assessment.test.shorthand == "TS0"
+            results = {'V1': 1 }
+            p_item = ["I1"]
+            n_items = []
           else
             correct = '<strong>Anzahl richtig gelöster Items:</strong> '+sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+correct_items
             wrong = '<strong>Anzahl falsch gelöster Items:</strong> '+n_sum.to_s+'<hr style="margin-top:0; margin-bottom:0"/>'+false_items
