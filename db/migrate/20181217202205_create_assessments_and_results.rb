@@ -23,6 +23,7 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
     create_table :shadow_results do |t|
       t.belongs_to :shadow_student, index: true
       t.integer :test
+      t.integer :group
       t.date :test_date
       t.date :test_week
       t.json :views, default: {}

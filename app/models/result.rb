@@ -23,7 +23,7 @@ class Result < ApplicationRecord
     if (!result.test_date.nil? && result.test_date < Date.today)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
-      student.shadow_results.create(test: result.assessment.test.id, test_date: result.test_date, test_week: result.test_week, views: result.views, report: result.report, data: result.data)
+      student.shadow_results.create(test: result.assessment.test.id, group: result.assessment.group.id, test_date: result.test_date, test_week: result.test_week, views: result.views, report: result.report, data: result.data)
     end
     r = Result.where(prior_result_id: result.id).first
     unless r.nil?
