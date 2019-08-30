@@ -31,7 +31,7 @@ class ImportController < ApplicationController
     map_old_stu_to_new_stu = {}
     #Importieren der Gruppen, der GroupShare-Objekte und mappen der alten GroupIDs auf die neuen GroupIDs
     groups.each do |key, valueG|
-      if key == -1
+      if key == '-1'
         if create_test_class
           #Erstellen Group, GroupShare, Assessments und Studens
           g = Group.create(label: valueG[:label], demo: true, auth_token: valueG[:auth_token])

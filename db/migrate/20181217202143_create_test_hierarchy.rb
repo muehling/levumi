@@ -27,8 +27,8 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.text :description
       t.boolean :student_test
       t.boolean :archive, default: false
-      t.text :configuration
-      t.text :items
+      t.text :configuration, limit: 16777215
+      t.text :items, limit: 16777215
       t.timestamps
     end
   end

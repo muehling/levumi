@@ -13,9 +13,9 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.references :prior_result
       t.date :test_date
       t.date :test_week
-      t.text :views
-      t.text :report
-      t.text :data
+      t.text :views, limit: 16777215
+      t.text :report, limit: 16777215
+      t.text :data, limit: 16777215
       t.timestamps
     end
 
@@ -25,9 +25,9 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.integer :test
       t.date :test_date
       t.date :test_week
-      t.text :views
-      t.text :report
-      t.text :data
+      t.text :views, limit: 16777215
+      t.text :report, limit: 16777215
+      t.text :data, limit: 16777215
       t.timestamps
     end
   end
