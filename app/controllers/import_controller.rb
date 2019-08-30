@@ -60,6 +60,7 @@ class ImportController < ApplicationController
 
     #Erstellen der Students
     students.each do |keyS, valueS|
+      s = nil
       if valueS[:migration]
         s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
                            birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: ['Migrationshintergrund'].to_json)
