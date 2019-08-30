@@ -61,12 +61,11 @@ class ImportController < ApplicationController
     #Erstellen der Students
     students.each do |keyS, valueS|
       if valueS[:migration]
-
-        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login].upcase, gender: valueS[:gender],
-                           birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: ['Migrationshintergrund'].to_json)
+        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
+                           birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: ['Migrationshintergrund'])
       else
-        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login].upcase, gender: valueS[:gender],
-                           birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: [].to_json)
+        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
+                           birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: [])
       end
 
       map_old_stu_to_new_stu[keyS] = s.id
@@ -94,7 +93,7 @@ class ImportController < ApplicationController
       end
 
       res = Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
-                    test_date:r[:test_date], views: views.to_json, report: report.to_json, data: data.to_json, created_at: r[:created_at])
+                    test_date:r[:test_date], views: views, report: report, data: data, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200
   end
