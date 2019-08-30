@@ -2,7 +2,7 @@ class CreateMaterials < ActiveRecord::Migration[5.2]
   def change
     create_table :materials do |t|
       t.string :name
-      t.json :description, default: {}
+      t.json :description
       t.timestamps
     end
 
@@ -12,7 +12,7 @@ class CreateMaterials < ActiveRecord::Migration[5.2]
       t.belongs_to :competence, index: true
       t.belongs_to :test_family, index: true
       t.belongs_to :test, index: true
-      t.json :items, default: []
+      t.json :items
       t.timestamps
     end
   end

@@ -66,7 +66,7 @@ class Student < ApplicationRecord
 
   #Liefert den Wert einer der möglichen Einstellungen falls er existiert oder einen Defaultwert
   def get_setting key
-    if settings.has_key? key
+    if !settings.nil? && settings.has_key?(key)
       return settings[key]
     else
       defs = {                             #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
