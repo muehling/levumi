@@ -116,7 +116,7 @@ class ApplicationController < ActionController::Base
     students_transfer = {}
     assessments_transfer = {}
     groups = @login_user.groups.where('(archive IS NULL OR archive = false) AND name != "Testklasse"')
-    groups_transfer[-1] = {label: 'Testklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
+    groups_transfer[-1] = {label: 'Beispielklasse', key:test_klasse['key'], auth_token: test_klasse['token']}
     groups.each do |g|
       if !g.demo
         groups_transfer[g.id] = {label: g.name, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
