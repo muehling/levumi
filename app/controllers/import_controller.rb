@@ -7,10 +7,10 @@ class ImportController < ApplicationController
 
   #PUT /students/:student_id/results/:id
   def import
-    user = JSON.parse(params[:data][:user])
-    groups = JSON.parse(params[:data][:groups])
-    students = JSON.parse(params[:data][:students])
-    assessments = JSON.parse(params[:data][:assessments])
+    user = params[:data][:user]
+    groups = params[:data][:groups]
+    students = params[:data][:students]
+    assessments = params[:data][:assessments]
     results = JSON.parse(params[:data][:results])
 
     #Importieren des Nutzers
