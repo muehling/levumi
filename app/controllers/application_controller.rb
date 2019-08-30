@@ -672,7 +672,7 @@ class ApplicationController < ActionController::Base
             total = -1
           end
           data = []
-          report = {total:total, positive:[], negative:[]}
+          report = {trend:total, positive:[], negative:[]}
           p_items = []
           n_items = []
           #SEL2 und 4
