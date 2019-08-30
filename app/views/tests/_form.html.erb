@@ -15,10 +15,6 @@
           <%= check_box_tag 'update_material', true, false, {class: 'form-check-input', id: 'update'}%>
           <%= label_tag 'update_material', 'Existierendes Fördermaterial beibehalten (nur bei Archivierung)', class: 'form-check-label' %>
         </div>
-        <div class='form-check'>
-          <%= check_box_tag 'create', true, false, {class: 'form-check-input', id: 'create'}%>
-          <%= label_tag 'create', 'Fehlende Bereiche/Konstrukte/Testfamilien anlegen', class: 'form-check-label' %>
-        </div>
       </div>
       <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-primary disabled' do%>
         <i class='fas fa-file-upload'></i> Hochladen
