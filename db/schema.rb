@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "competence_id"
     t.integer "test_family_id"
     t.integer "test_id"
-    t.json "items"
+    t.json "items", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["area_id"], name: "index_material_supports_on_area_id"
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
 
   create_table "materials", force: :cascade do |t|
     t.string "name"
-    t.json "description"
+    t.json "description", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -124,9 +124,9 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
-    t.json "views"
-    t.json "report"
-    t.json "data"
+    t.json "views", default: {}
+    t.json "report", default: {}
+    t.json "data", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assessment_id"], name: "index_results_on_assessment_id"
@@ -139,9 +139,9 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "test"
     t.date "test_date"
     t.date "test_week"
-    t.json "views"
-    t.json "report"
-    t.json "data"
+    t.json "views", default: {}
+    t.json "report", default: {}
+    t.json "data", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shadow_student_id"], name: "index_shadow_results_on_shadow_student_id"
@@ -153,7 +153,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.json "tags"
+    t.json "tags", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["original_id"], name: "index_shadow_students_on_original_id"
@@ -166,8 +166,8 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.json "tags"
-    t.json "settings"
+    t.json "tags", default: []
+    t.json "settings", default: {}
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_students_on_group_id"
@@ -189,8 +189,8 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.json "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
-    t.json "configuration"
-    t.json "items"
+    t.json "configuration", default: {}
+    t.json "items", default: []
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

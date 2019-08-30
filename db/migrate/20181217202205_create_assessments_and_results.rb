@@ -13,9 +13,9 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.references :prior_result
       t.date :test_date
       t.date :test_week
-      t.json :views
-      t.json :report
-      t.json :data
+      t.json :views, default: {}
+      t.json :report, default: {}
+      t.json :data, default: []
       t.timestamps
     end
 
@@ -25,9 +25,9 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.integer :test
       t.date :test_date
       t.date :test_week
-      t.json :views
-      t.json :report
-      t.json :data
+      t.json :views, default: {}
+      t.json :report, default: {}
+      t.json :data, default: []
       t.timestamps
     end
   end

@@ -7,11 +7,11 @@ class ImportController < ApplicationController
 
   #PUT /students/:student_id/results/:id
   def import
-    user = params[:data][:user]
-    groups = params[:data][:groups]
-    students = params[:data][:students]
-    assessments = params[:data][:assessments]
-    results = params[:data][:results]
+    user = JSON.parse(params[:data][:user])
+    groups = JSON.parse(params[:data][:groups])
+    students = JSON.parse(params[:data][:students])
+    assessments = JSON.parse(params[:data][:assessments])
+    results = JSON.parse(params[:data][:results])
 
     #Importieren des Nutzers
     u = User.find_by(email: user[:email])
@@ -67,14 +67,14 @@ class ImportController < ApplicationController
         s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
                            birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: [])
       end
-
+      s.login = s.login.upcase
+      s.save
       map_old_stu_to_new_stu[keyS] = s.id
     end
 
     #Erstellen der Result-Objekte
     results.each do |r|
       detail = r.require(:results).permit(:V1, :V2=>{}, :V3=>{})
-      puts detail
       views = {}
       if detail.key?('V3')
         views = {'V1': detail[:V1], 'V2':detail[:V2].to_h , 'V3':detail[:V3].to_h }
@@ -92,7 +92,7 @@ class ImportController < ApplicationController
         data += [data_obj.permit(:item, :group, :answer, :time).to_h]
       end
 
-      res = Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
+      Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
                     test_date:r[:test_date], views: views, report: report, data: data, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200

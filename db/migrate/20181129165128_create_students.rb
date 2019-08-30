@@ -7,8 +7,8 @@ class CreateStudents < ActiveRecord::Migration[5.2]
       t.integer :gender
       t.date :birthmonth
       t.integer :sen
-      t.json :tags
-      t.json :settings
+      t.json :tags, default: []
+      t.json :settings, default: {}
       t.timestamps
     end
 
@@ -19,7 +19,7 @@ class CreateStudents < ActiveRecord::Migration[5.2]
       t.integer :gender
       t.date :birthmonth
       t.integer :sen
-      t.json :tags
+      t.json :tags, default: []
       t.timestamps
     end
   end

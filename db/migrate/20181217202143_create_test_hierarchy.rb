@@ -27,8 +27,8 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.json :description
       t.boolean :student_test
       t.boolean :archive, default: false
-      t.json :configuration
-      t.json :items
+      t.json :configuration, default: {}
+      t.json :items, default: []
       t.timestamps
     end
   end
