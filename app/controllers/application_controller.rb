@@ -952,7 +952,7 @@ class ApplicationController < ActionController::Base
       @login_user.save
       @login_user = nil
       session.delete(:user_id)
-      redirect_to 'https://www.levumi.de:4433/login'
+      redirect_to 'https://www.levumi.de:4433/start'
 
       #flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
       #respond_to do |format|
