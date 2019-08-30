@@ -12,7 +12,7 @@ class CreateMaterials < ActiveRecord::Migration[5.2]
       t.belongs_to :competence, index: true
       t.belongs_to :test_family, index: true
       t.belongs_to :test, index: true
-      t.text :items
+      t.text :items, limit: 16777215
       t.timestamps
     end
   end

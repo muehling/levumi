@@ -31,11 +31,13 @@ class ImportController < ApplicationController
     map_old_stu_to_new_stu = {}
     #Importieren der Gruppen, der GroupShare-Objekte und mappen der alten GroupIDs auf die neuen GroupIDs
     groups.each do |key, valueG|
-      if key == -1 && create_test_class
-        #Erstellen Group, GroupShare, Assessments und Studens
-        g = Group.create(label: valueG[:label], demo: true, auth_token: valueG[:auth_token])
-        GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
-        map_old_group_to_new_group[key] = g.id
+      if key == '-1'
+        if create_test_class
+          #Erstellen Group, GroupShare, Assessments und Studens
+          g = Group.create(label: valueG[:label], demo: true, auth_token: valueG[:auth_token])
+          GroupShare.create(group_id:g.id, user_id: u.id, owner: true, read_only: false, key: valueG[:key])
+          map_old_group_to_new_group[key] = g.id
+        end
       else
         #Erstellen Group, GroupShare, Assessments und Studens
         g = Group.create(label: valueG[:label], auth_token: valueG[:auth_token])

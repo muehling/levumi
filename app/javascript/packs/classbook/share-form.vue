@@ -69,7 +69,7 @@
                         <b-form-invalid-feedback v-if="not_found">E-Mail Adresse nicht bekannt!</b-form-invalid-feedback>
                         <b-form-invalid-feedback v-else-if="exists">Klasse bereits mit dieser E-Mail geteilt!</b-form-invalid-feedback>
                     </div>
-                    <b-form-radio-group id='rights' v-model="rights_selected" :options="options_rights" name='group_share[read_only]'>
+                    <b-form-radio-group v-model="rights_selected" :options="options_rights" name='group_share[read_only]'>
                     </b-form-radio-group>
                     <b-button
                             type='submit'
