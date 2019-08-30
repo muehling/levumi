@@ -76,16 +76,16 @@ class ImportController < ApplicationController
     results.each do |r|
       detail = r.require(:results).permit(:V1, :V2=>{}, :V3=>{})
       puts detail
-      result = {}
+      views = {}
       if detail.key?('V3')
-        result = {'V1': detail[:V1], 'V2':detail[:V2].to_h , 'V3':detail[:V3].to_h }
+        views = {'V1': detail[:V1], 'V2':detail[:V2].to_h , 'V3':detail[:V3].to_h }
       elsif detail.key?('V2')
-        result = {'V1': detail[:V1], 'V2':detail[:V2].to_h}
+        views = {'V1': detail[:V1], 'V2':detail[:V2].to_h}
       else
-        result = {'V1': detail[:V1]}
+        views = {'V1': detail[:V1]}
       end
-      report_params = r.require(:report).permit(:total, :positive =>[], :negative => [])
-      report = {total:report_params[:total], positive: report_params[:positive], negative: report_params[:negative] }
+      report_params = r.require(:report).permit(:trend, :positive =>[], :negative => [])
+      report = {trend:report_params[:trend], positive: report_params[:positive], negative: report_params[:negative] }
 
       data = []
       data_params  = r[:data]
@@ -94,7 +94,7 @@ class ImportController < ApplicationController
       end
 
       res = Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
-                    test_date:r[:test_date], views: result, report: report, data: data, created_at: r[:created_at])
+                    test_date:r[:test_date], views: views.to_json, report: report.to_json, data: data.to_json, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200
   end
