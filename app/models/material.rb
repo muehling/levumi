@@ -12,8 +12,6 @@ class Material < ApplicationRecord
 
   validates_uniqueness_of :name
 
-  serialize :description, Hash
-
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
     json = super(except: [:created_at, :updated_at])
@@ -54,7 +52,7 @@ class Material < ApplicationRecord
       vals['elements'].each do |val|
         material = Material.where(name: val['name']).first
         material.destroy unless (material.nil? || !replace)
-        material = Material.create(name: val['name'], description: val['description'])
+        material = Material.create(val.slice('name', 'description'))
         zip.glob("files/#{val['path']}/*").each do |f|
           material.files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
         end

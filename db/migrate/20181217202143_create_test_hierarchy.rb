@@ -24,11 +24,11 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.belongs_to :test_family, index: true
       t.string :level
       t.string :shorthand
-      t.text :description
+      t.json :description
       t.boolean :student_test
       t.boolean :archive, default: false
-      t.text :configuration, limit: 16777215
-      t.text :items, limit: 16777215
+      t.json :configuration
+      t.json :items
       t.timestamps
     end
   end

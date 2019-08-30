@@ -17,11 +17,6 @@ class Test < ApplicationRecord
   validates_presence_of :level
   validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
-  #Konfiguration der Views und Beschreibung als Hash
-  serialize :configuration, Hash
-  serialize :description, Hash
-  serialize :items, Hash
-
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     if archive then level + " (veraltet)" else level end

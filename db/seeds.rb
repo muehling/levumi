@@ -156,7 +156,9 @@ if Rails.env.development?
   Group.find(1).students.each do |s|
     7.times do |i|
       if (rand > 0.3)
-        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), views: {'V1': rand, 'V2': {'KT': rand*3, 'VT': rand*3, 'KG': rand*3, 'VG': rand*3}})
+        v = rand*3
+        k = 6-v
+        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), views: {'V1': (v+k), 'V2': {'KT': k, 'VT': v, 'KG': k, 'VG': v}}, report: {'trend': 0, 'positive': ['I1', 'I2', 'I3'], 'negative': ['I4', 'I5', 'I6'] })
         r.save
       end
     end

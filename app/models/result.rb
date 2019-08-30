@@ -3,10 +3,6 @@ class Result < ApplicationRecord
   belongs_to :assessment
   has_one :prior_result, class_name: 'Result', foreign_key: 'prior_result_id'
 
-  serialize :views, Hash
-  serialize :report, Hash
-  serialize :data, Array
-
   #Nach dem Anlegen das letzte Ergebnis desselben Assessment finden und verlinken (ggf. nil)
   after_create do |result|
     result.prior_result = Result.where(["id != ? and student_id = ? and assessment_id = ?",result.id, result.student_id, result.assessment_id]).order(:test_date).last
@@ -52,10 +48,10 @@ class Result < ApplicationRecord
     return res
   end
 
-  #Eintrag 'total' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
+  #Eintrag 'trend' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_trend
-    unless report.nil? || !report.has_key?(:total)
-      report[:total]
+    unless report.nil? || report['trend'].nil?
+      report['trend']
     else
       0
     end
@@ -63,8 +59,8 @@ class Result < ApplicationRecord
 
   #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_support_items
-    unless report.nil? || !report.has_key?(:negative)
-      report[:negative]
+    unless report.nil? || report['negative'].nil?
+      report['negative']
     else
       []
     end

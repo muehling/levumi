@@ -72,7 +72,7 @@ function next(res) {
                 'V1': (sum[0] + sum[1]) / result.length,
                 'V2': {'VT': sum[0] / 3, 'KT': sum[1] / 3, 'VG': sum[0] / 3, 'KG': sum[1] / 3},
                 },
-            {'total': total, 'positive': p_items, 'negative': n_items},
+            {'trend': total, 'positive': p_items, 'negative': n_items},
             result,
             function (data) {}
         )
