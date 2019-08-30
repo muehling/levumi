@@ -950,11 +950,14 @@ class ApplicationController < ActionController::Base
     if response['status']
       @login_user.transferred = true
       @login_user.save
+      @login_user = nil
+      session.delete(:user_id)
+      redirect_to 'https://www.levumi.de:4433'
 
-      flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
-      respond_to do |format|
-        format.js   {}
-      end
+      #flash[:notice] = 'Ihre Daten wurden erfolgreich übertragen. Viel Spaß bei der Benutzung von Levumi 2.0!'
+      #respond_to do |format|
+      #  format.js   {}
+      #end
     end
   end
 
