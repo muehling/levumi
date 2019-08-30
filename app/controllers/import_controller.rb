@@ -93,7 +93,7 @@ class ImportController < ApplicationController
       end
 
       Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
-                    test_date:r[:test_date], views: views, report: report, data: data, created_at: r[:created_at])
+                    test_date:r[:test_date], views: views.to_json, report: report.to_json, data: data.to_json, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200
   end
