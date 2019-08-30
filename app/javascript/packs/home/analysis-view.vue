@@ -43,7 +43,8 @@
         <b-row :hidden="!graph_visible">
             <b-col>
                 <div class='ml-2'>
-                    <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
+                    <!-- TEMPCODE Kommentare! -->
+                    <b-button :hidden="true" id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
                         Anmerkungen
                         <i class='when-closed fas fa-caret-down'></i>
                         <i class='when-opened fas fa-caret-up'></i>
