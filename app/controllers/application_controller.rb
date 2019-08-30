@@ -120,8 +120,6 @@ class ApplicationController < ActionController::Base
     groups.each do |g|
       if !g.demo
         groups_transfer[g.id] = {label: g.name, key: client_data[g.id.to_s]['key'], auth_token: client_data[g.id.to_s]['token']}
-        students_transfer[g.id] = {}
-        assessments_transfer[g.id] = {}
       end
     end
     data_to_transfer[:groups] = groups_transfer
