@@ -43,8 +43,7 @@
         <b-row :hidden="!graph_visible">
             <b-col>
                 <div class='ml-2'>
-                    <!-- TEMPCODE Kommentare! -->
-                    <b-button :hidden="true" id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
+                    <b-button id='comment_btn' size='sm' variant='outline-secondary' v-b-toggle="'annotation_collapse'">
                         Anmerkungen
                         <i class='when-closed fas fa-caret-down'></i>
                         <i class='when-opened fas fa-caret-up'></i>
@@ -55,6 +54,7 @@
                                 accept-charset='UTF-8'
                                 method='post'
                                 data-remote='true'
+                                @submit="encode_text()"
                                 v-on:ajax:success="success"
                                 v-if="!read_only"
                         >
@@ -127,7 +127,7 @@
                             >
                                 <td>{{print_date(a.start)}}</td>
                                 <td>{{print_date(a.end)}}</td>
-                                <td>{{a.content}}</td>
+                                <td>{{decode_text(a.content)}}</td>
                                 <td v-if="!read_only">
                                     <!-- rails-ujs Link -->
                                     <a class='btn btn-block btn-sm btn-outline-danger'
@@ -165,7 +165,6 @@
                     <tbody>
                     <tr v-for="entry in table_data">
                         <td>{{print_date(entry.week)}}</td>
-                        <!-- TODO: Was passiert hier bei Javascript in entry[col] ? -->
                         <td v-for="col in columns"><span v-html="entry[col]"></span></td>
                     </tr>
                     </tbody>
@@ -316,6 +315,32 @@
             }
         },
         methods: {
+            decode_text(text) {
+                const id = this.group.id
+                return text.replace(/\{[^\}]*\}/g, function(match, p1, p2, p3, offset, string) {
+                        return decrypt(match, 'Name', id)
+                    })
+            },
+            encode_text() {
+                const id = this.group.id
+                for (let i = 0; i < this.student_name_parts.length; ++i) {
+                    let re = new RegExp('[ ,\\.\\!\\?\\-\\(\\)\\[\\]](' + this.student_name_parts[i] + ')[ ,\\.\\!\\?\\-\\(\\)\\[\\]]|' +
+                        '^(' + this.student_name_parts[i] + ')[ ,\\.\\!\\?\\-\\(\\)\\[\\]]|' +
+                        '[ ,\\.\\!\\?\\-\\(\\)\\[\\]](' + this.student_name_parts[i] + ')$', 'gi')
+                    const match = re.exec(this.annotation_text)
+                    if (match.length != undefined)
+                        for (let m = 0; m < match.length; ++m)
+                            this.annotation_text = this.annotation_text.replace(re, function(match, p1, p2, p3, offset, string) {
+                                if (p1 != undefined)
+                                    return match.replace(p1, encrypt(p1, id))
+                                if (p2 != undefined)
+                                    return match.replace(p2, encrypt(p2, id))
+                                if (p3 != undefined)
+                                    return match.replace(p3, encrypt(p3, id))
+                            })
+                }
+                return true;
+            },
             export_graph() {
                 var dataURL = this.apexchart.dataURI().then((uri) => {
                     let pdf = new jsPDF({orientation: 'landscape'})
@@ -374,7 +399,7 @@
                             label: {
                                 borderColor: '#c2c2c2',
                                 borderWidth: 1,
-                                text: this.annotations[i].content,
+                                text: this.decode_text(this.annotations[i].content),
                                 textAnchor: 'middle',
                                 position: 'top',
                                 orientation: 'horizontal',
@@ -470,7 +495,7 @@
         mounted() {
             this.updateView()
         },
-        inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks'],
+        inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks', 'student_name_parts'],
         name: "analysis-view.vue"
     }
 </script>

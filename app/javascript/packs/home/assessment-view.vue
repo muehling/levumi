@@ -205,6 +205,13 @@
                 return weeks;
             }
         },
+        data: function () {
+            return {
+                is_active: this.active, //Als Datum, damit es geändert werden kann
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+                students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
+            }
+        },
         methods: {
             auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
                 window.$(element)[0].scrollIntoView(false);
@@ -234,13 +241,6 @@
             },
             student_name(id) {   //Student-Objekt aus globaler Variable holen
                 return get_student(this.group.id, id).name;
-            }
-        },
-        data: function () {
-            return {
-                is_active: this.active, //Als Datum, damit es geändert werden kann
-                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-                students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }
         },
         provide: function () {

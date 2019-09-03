@@ -136,10 +136,11 @@
                 area_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.area : 0,
                 competence_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.competence : 0,
                 family_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.family : 0,
+                results: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.assessment : undefined,
+                student_name_parts: [],
                 test_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0,
-                version_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
                 updating: false,
-                results: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.assessment : undefined
+                version_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0 //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
             }
         },
         computed: {
@@ -234,6 +235,15 @@
                 this.test_selected = -1
                 this.version_selected = -1
                 this.results = null
+            }
+        },
+        provide: function () { //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.
+            let todo = groups[this.group.id] || []
+            for (let i = 0; i < todo.length; ++i)
+                this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/, | |,/))
+            this.student_name_parts = this.student_name_parts.filter(word => word !== "von")
+            return {
+                student_name_parts: this.student_name_parts
             }
         },
         name: 'group-view'
