@@ -30,7 +30,6 @@
           Weiteres
         </a>
         <div class='dropdown-menu' aria-labelledby='navbarHelp'>
-          <a id='help_menu' class='dropdown-item disabled' href='#' onclick='toggleHelp()'>Hilfe einblenden</a>
           <a class='dropdown-item' href='https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg', target='_blank'>Videos</a>
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
           <div class="dropdown-divider"></div>
@@ -119,17 +118,4 @@
         }
         document.getElementById(item).className += ' active';
     }
-
-    //Hilfe div ein-/ausblenden
-    function toggleHelp() {
-        $('#help').toggleClass('collapse')
-        if ($('#help').hasClass('collapse'))
-            $('#help_menu').html('Hilfe einblenden')
-        else
-            $('#help_menu').html('Hilfe ausblenden')
-    }
-
-    <%if @login.intro_state > 3 && @login.groups.size == 1 %>
-    toggleHelp()
-    <% end %>
 </script>

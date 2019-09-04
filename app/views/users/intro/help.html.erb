@@ -11,29 +11,33 @@
   ]
    %>
 
-  let ids = ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'];
+  let ids = ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6']
   let texts = [
       <% texts.each_with_index do |t, i| %>
-        "<%= escape_javascript render 'users/intro/popover', text: t, last: i == texts.size-1 %>",
+        "<%= escape_javascript render 'shared/popover', text: t, last: i == texts.size-1, remote: false, link: '/willkommen' %>",
       <% end %>
-  ];
+  ]
 
   function next() {
-      if (i > 0)
-          $(ids[i-1]).popover('hide');
-      if (i < ids.length) {
-          $(ids[i]).data('toggle', 'popover');
-          $(ids[i]).data('content', texts[i]);
-          $(ids[i]).popover({
+      if (intro > 0)
+          $(ids[intro-1]).popover('hide')
+      if (intro < ids.length) {
+          $(ids[intro]).data('toggle', 'popover')
+          $(ids[intro]).data('content', texts[intro])
+          $(ids[intro]).popover({
               html: true,
               sanitizeFn: function(content) {return content}
-          });
-          $(ids[i]).popover('show');
+          })
+          $(ids[intro]).popover('show')
       }
-      ++i;
-  };
+      else {
+          for (let i = 0; i < ids.length; ++i)
+              $(ids[intro]).data('toggle', 'popover')
+      }
+      ++intro
+  }
 
-  let i = 0;
-  next();
+  let intro = 0
 
+  $(window).on( "load", function() {next()})
 </script>

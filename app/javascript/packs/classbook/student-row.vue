@@ -1,6 +1,6 @@
 <template>
     <!-- Eine Zeile der Schülerübersicht -->
-    <tr>
+    <tr id='intro_cb_5'>
         <td>
             <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
@@ -17,7 +17,7 @@
             </div>
         </td>
 
-        <td>
+        <td id='intro_cb_6'>
             <div v-if="editMode">
                 <small class='form-text text-muted'>nicht änderbar</small>
             </div>
@@ -137,6 +137,7 @@
                         <b-link class='btn btn-sm btn-outline-success mr-1'
                                 :href="'/students' + (empty ? '' : '/' + student.id)"
                                 title='Speichern'
+                                id='intro_cb_7'
                                 :disabled="name.length == 0"
                                 :data-method="empty ? 'post' : 'put'"
                                 data-remote='true'
@@ -175,12 +176,13 @@
             empty: Boolean,
             group: Number,
             index: Number,
+            open: Boolean,
             read_only: Boolean,
             student: Object,
         },
         data: function () {
             return {
-                editMode: false,
+                editMode: this.empty && this.open,
                 loading: false,
                 name: this.student.name,
                 results: undefined,

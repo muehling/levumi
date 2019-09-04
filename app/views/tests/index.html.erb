@@ -79,9 +79,9 @@
                               <b-card no-body class='mt-3'>
                                 <b-tabs pills card vertical>
 
-                                  <% f.tests.where(archive: false).order(:name).all.each do |t|  %>
+                                  <% f.tests.where(archive: false).order(:level).all.each do |t|  %>
                                     <!-- Vierte Ebene Niveaustufen -->
-                                    <b-tab title='<%= t.name %>'>
+                                    <b-tab title='<%= t.level %>'>
 
                                       <!-- Testinfo rendern -->
                                       <div id='info_<%= t.id %>'>

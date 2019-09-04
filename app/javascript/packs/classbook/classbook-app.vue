@@ -17,7 +17,7 @@
 
                         <b-tab active>
                             <template slot='title'>
-                                Eigene Klassen
+                                <span id='intro_cb_1'>Eigene Klassen ({{count_regular}})</span>
                             </template>
 
                             <b-card no-body class='mt-3'>
@@ -26,7 +26,7 @@
                                     <!-- Neue Klasse anlegen -->
                                     <b-tab>
                                         <template slot='title'>
-                                            <i class='fas fa-folder-plus fa-lg' title='Neue Klasse anlegen'></i>
+                                            <i id='intro_cb_2' class='fas fa-folder-plus fa-lg' title='Neue Klasse anlegen'></i>
                                         </template>
                                         <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
                                         <group-form
@@ -63,20 +63,13 @@
                         </b-tab>
 
                         <!-- Geteilte Klassen -->
-                        <b-tab>
+                        <b-tab :disabled='count_shared == 0'>
                             <template slot='title'>
-                                Mit mir geteilte Klassen <span v-if="new_shares" class="badge badge-info">Neu!</span>
+                                Mit mir geteilte Klassen <span v-if="new_shares" class="badge badge-info">Neu!</span><span v-else>({{count_shared}})</span>
                             </template>
 
                             <b-card no-body class='mt-3'>
                                 <b-tabs pills card>
-
-                                    <!-- Hinweistext falls keine Klasse vorhanden -->
-                                    <div slot='empty'>
-                                        <div v-cloak class='text-center text-muted'>
-                                            Keine geteilten Klassen vorhanden.
-                                        </div>
-                                    </div>
                                     <b-tab
                                             v-for="(group, index) in groups"
                                             v-if="index > 0 && !group.owner"
@@ -102,9 +95,9 @@
 
 
                         <!-- Klassenarchiv -->
-                        <b-tab>
+                        <b-tab :disabled='count_archive == 0'>
                             <template slot='title'>
-                                Archivierte Klassen
+                                Archivierte Klassen ({{count_archive}})
                             </template>
 
                             <b-card no-body class='mt-3'>
@@ -169,24 +162,45 @@
             }
         },
         computed: {
-          firstOwnIndex: function() {
-              for (let i = 1; i < this.groups.length; ++i)
-                  if (this.groups[i].owner && !this.groups[i].archive)
-                      return i;
-              return 0;
-          },
-          firstSharedIndex: function() {
-              for (let i = 1; i < this.groups.length; ++i)
-                  if (!this.groups[i].owner)
-                      return i;
-              return 0;
-          },
-          new_shares: function() {
-              for (let i = 1; i < this.groups.length; ++i)
-                  if (this.groups[i].key == null)
-                      return true;
-              return false;
-          }
+            count_archive: function() {
+                let c = 0
+                for (let i = 1; i < this.groups.length; ++i)
+                    if (this.groups[i].archive)
+                        ++c
+                return c
+            },
+            count_regular: function() {
+                let c = 0
+                for (let i = 1; i < this.groups.length; ++i)
+                    if (this.groups[i].owner && !this.groups[i].archive)
+                        ++c
+                return c
+            },
+            count_shared: function() {
+                let c = 0
+                for (let i = 1; i < this.groups.length; ++i)
+                    if (!this.groups[i].owner)
+                        ++c
+                return c
+            },
+            firstOwnIndex: function() {
+                  for (let i = 1; i < this.groups.length; ++i)
+                      if (this.groups[i].owner && !this.groups[i].archive)
+                          return i
+                  return 0
+            },
+            firstSharedIndex: function() {
+                  for (let i = 1; i < this.groups.length; ++i)
+                      if (!this.groups[i].owner)
+                          return i
+                  return 0
+            },
+            new_shares: function() {
+                  for (let i = 1; i < this.groups.length; ++i)
+                      if (this.groups[i].key == null)
+                          return true
+                  return false
+            }
         },
         data: function () {
             return {
