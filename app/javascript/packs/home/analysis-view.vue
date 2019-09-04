@@ -317,26 +317,29 @@
         methods: {
             decode_text(text) {
                 const id = this.group.id
-                return text.replace(/\{[^\}]*\}/g, function(match, p1, p2, p3, offset, string) {
-                        return decrypt(match, 'Name', id)
+                return text.replace(/\{"iv[^\}]*\}/g, function(match, p1, p2, p3, offset, string) {
+                        return decrypt(match, '{Name}', id)
                     })
             },
             encode_text() {
                 const id = this.group.id
                 for (let i = 0; i < this.student_name_parts.length; ++i) {
-                    let re = new RegExp('[ ,\\.\\!\\?\\-\\(\\)\\[\\]](' + this.student_name_parts[i] + ')[ ,\\.\\!\\?\\-\\(\\)\\[\\]]|' +
-                        '^(' + this.student_name_parts[i] + ')[ ,\\.\\!\\?\\-\\(\\)\\[\\]]|' +
-                        '[ ,\\.\\!\\?\\-\\(\\)\\[\\]](' + this.student_name_parts[i] + ')$', 'gi')
+                    const re = new RegExp('[^a-zaöüß_](' + this.student_name_parts[i] + ')[^a-zaöüß_]|' +
+                        '^(' + this.student_name_parts[i] + ')[^a-zaöüß_]|' +
+                        '[^a-zaöüß_](' + this.student_name_parts[i] + ')$|' +
+                        '^(' + this.student_name_parts[i] + ')$', 'gi')
                     const match = re.exec(this.annotation_text)
-                    if (match.length != undefined)
+                    if (match != null)
                         for (let m = 0; m < match.length; ++m)
-                            this.annotation_text = this.annotation_text.replace(re, function(match, p1, p2, p3, offset, string) {
+                            this.annotation_text = this.annotation_text.replace(re, function(match, p1, p2, p3, p4, offset, string) {
                                 if (p1 != undefined)
                                     return match.replace(p1, encrypt(p1, id))
                                 if (p2 != undefined)
                                     return match.replace(p2, encrypt(p2, id))
                                 if (p3 != undefined)
                                     return match.replace(p3, encrypt(p3, id))
+                                else
+                                    return match.replace(p4, encrypt(p4, id))
                             })
                 }
                 return true;

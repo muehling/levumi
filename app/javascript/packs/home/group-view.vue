@@ -240,8 +240,9 @@
         provide: function () { //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.
             let todo = groups[this.group.id] || []
             for (let i = 0; i < todo.length; ++i)
-                this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/, | |,/))
-            this.student_name_parts = this.student_name_parts.filter(word => word !== "von")
+                this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/[^a-zäöüß_]/i))
+            const stopwords = ['von', 'und', 'auf', 'der', 'zu']
+            this.student_name_parts = this.student_name_parts.filter(word => !stopwords.includes(word)).filter((v, i, a) => a.indexOf(v) === i)
             return {
                 student_name_parts: this.student_name_parts
             }

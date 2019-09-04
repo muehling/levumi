@@ -23,7 +23,7 @@
         <b-tabs pills>
 
           <% first = true %>
-          <% Area.all.each do |a| %>
+          <% Area.order(:name).all.each do |a| %>
             <!-- Oberste Ebene Lernbereiche -->
             <b-tab <% if first %> active <% end %> >
             <% first = false %>
@@ -42,7 +42,7 @@
                     </div>
                   </div>
 
-                  <% a.competences.each do |c| %>
+                  <% a.competences.order(:name).each do |c| %>
                     <!-- Zweite Ebene Kompetenzen -->
                     <b-tab>
 
@@ -64,7 +64,7 @@
                             </div>
                           </div>
 
-                          <% c.test_families.each do |f| %>
+                          <% c.test_families.order(:name).each do |f| %>
                             <!-- Dritte Ebene Tests -->
                             <b-tab>
 
@@ -79,7 +79,7 @@
                               <b-card no-body class='mt-3'>
                                 <b-tabs pills card vertical>
 
-                                  <% f.tests.select{ |a| !a.archive }.each do |t|  # to_s damit "false" < "true" %>
+                                  <% f.tests.where(archive: false).order(:name).all.each do |t|  %>
                                     <!-- Vierte Ebene Niveaustufen -->
                                     <b-tab title='<%= t.name %>'>
 
