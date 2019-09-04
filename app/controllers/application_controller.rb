@@ -50,18 +50,18 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #POST '/login_frontend'
+  #POST '/testen_login'
   def login_frontend
     s = Student.find_by_login(params[:login].upcase)
     unless s.nil?
       session[:student] = s.id
-      render json: {tests: s.get_assessments, student: s.id}
+      render json: {tests: s.get_assessments, student: {id: s.id, login: s.login}}
     else
       head 403
     end
   end
 
-  #POST '/logout_frontend'
+  #POST '/testen_logout'
   def logout_frontend
     session.delete(:student)
     head 200
