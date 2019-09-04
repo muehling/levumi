@@ -64,7 +64,7 @@ class User < ApplicationRecord
       used = group.assessments.map{|a| a.test_id}
 
       used_tests = Test.where(id: used)
-      unused_tests = Test.where(id: all_tests - used)
+      unused_tests = Test.where(id: all_tests - used, archive: false)
 
       used = used_tests.map{|a| a.test_family_id}
       used_families = TestFamily.where(id: used)

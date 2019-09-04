@@ -37,16 +37,18 @@
                         <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                         <p>{{test.description.usage}}</p>
                         <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode (unter dem Namen) in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler*in.</p>
                         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
-                        <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                        <p>Sie können sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                         <!-- Schüler nur als Info anzeigen -->
                         <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                             <b-button v-for="student in students"
                                       :key="student.id"
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                                      disabled
+                                      :href="'/testen_login?login=' + student.login"
+                                      data-method='post'
+                                      target='_blank'
                             >
                                 {{student.name}}<br/>{{student.login}}
                             </b-button>

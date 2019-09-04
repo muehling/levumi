@@ -11,7 +11,7 @@
                                 v-if="area.used || !group.read_only"
                                 :key="area.info.id"
                                 :active="area.info.id == area_selected"
-                                @click="area.used = true; select_area(area.info.id)"
+                                @click="area.used = true, select_area(area.info.id)"
                     >
                         <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{area.info.name}}</span>
                     </b-nav-item>
@@ -24,7 +24,7 @@
                                 :id="group.id + '_competence_' + competence.info.id"
                                 :active="competence.info.id == competence_selected"
                                 v-if="(competence.used || !group.read_only) && (competence.info.area_id == area_selected)"
-                                @click="competence.used = true; select_competence(competence.info.id)"
+                                @click="competence.used = true, select_competence(competence.info.id)"
                     >
                         <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{competence.info.name}}</span>
                         <b-popover v-if="!competence.used && competence.info.description != undefined"
@@ -43,7 +43,7 @@
                                 :id="group.id + '_family_' + family.info.id"
                                 :active="family.info.id == family_selected"
                                 v-if="(family.used || !group.read_only) && (family.info.competence_id == competence_selected)"
-                                @click="family.used=true; select_family(family.info.id)"
+                                @click="family.used=true, select_family(family.info.id)"
                     >
                         <span :class="family.used ? 'font-weight-bold' : 'text-muted'">{{family.info.name}}</span>
                         <b-popover v-if="!family.used && family.info.description != undefined"
@@ -98,6 +98,18 @@
     </b-card>
     <b-row>
         <b-col>
+            <div v-if="!updating && empty">
+                <p class='m-5 text-center text-muted'>
+                    <span v-if="this.student_name_parts.length == 0">
+                        In der Klasse sind noch keine Schüler*innen angelegt. Bitte legen Sie diese zuerst im Klassenbuch an, damit Sie testen können!
+                    </span>
+                    <span v-else>
+                        Wählen Sie zuerst oben einen Lernbereich und dann den Konstrukt, einen Test und die gewünschte Niveaustufe aus, mit der Sie testen möchten.
+                        <br/>
+                        Informationen über alle Tests finden Sie oben unter dem Menüpunkt Testübersicht.
+                    </span>
+                </p>
+            </div>
             <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
             <div class='spinner' style='padding-bottom: 75px' v-if="updating">
                 <div class='bounce1'></div>
@@ -144,6 +156,12 @@
             }
         },
         computed: {
+            empty: function() {   //Ist überhaupt ein Assessment vorhanden?
+                for (let i = 0; i < this.group_info.areas.length; ++i)
+                    if (this.group_info.areas[i].used)
+                        return false
+                return true
+            },
             //Alle zur aktuellen Familie passenden Tests, jeweils nur die aktuelle Version
             tests: function() {
                 let res = []
@@ -163,7 +181,7 @@
             },
             //Alle Versionen des gewählten Tests
             versions: function() {
-                let level = ""
+                let level = ''
                 for (let i = 0; i < this.group_info.tests.length; ++i)
                     if (this.group_info.tests[i].info.id == this.test_selected)
                         level = this.group_info.tests[i].info.level
