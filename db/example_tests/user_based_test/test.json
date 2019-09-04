@@ -17,7 +17,7 @@
         "key": "V1",
         "label": "Übersicht",
         "student": true,
-        "group": true,
+        "group": false,
         "type": "graph",
         "options": {
           "chart": {

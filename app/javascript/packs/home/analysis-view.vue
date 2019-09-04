@@ -6,9 +6,11 @@
                           size='sm'
                           variant='outline-primary'
                           :pressed="student_selected == -1"
+                          :disabled='!has_group_views'
                           @click="student_selected = -1, view_selected = 0, updateView()">Ganze Klasse</b-button>
                 <b-dropdown right :text="student_selected == -1 ? 'Individualgraph' : students[student_selected].name"
                             :variant="student_selected > -1 ? 'primary' : 'outline-primary'"
+                            :disabled='!has_student_views'
                             size='sm'
                 >
                     <b-dropdown-item v-for="(student, index) in students"
@@ -31,7 +33,7 @@
                         size='sm'
                         variant='outline-secondary'
                         :pressed="view_selected == index"
-                        @click="view_selected = index; updateView();"
+                        @click="view_selected = index, updateView()"
                 >
                     {{ view.label }}
                 </b-button>
@@ -194,6 +196,18 @@
             graph_visible() {
                 return this.configuration.views[this.view_selected].type === 'graph' || this.configuration.views[this.view_selected].type === 'graph_table'
             },
+            has_group_views() {
+                for (let i = 0; i < this.configuration.views.length; ++i)
+                  if (this.configuration.views[i].group == true)
+                      return true
+                return false
+            },
+            has_student_views() {
+                for (let i = 0; i < this.configuration.views.length; ++i)
+                    if (this.configuration.views[i].student == true)
+                        return true
+                return false
+            },
             table_visible() {
                 return this.configuration.views[this.view_selected].type === 'table' || this.configuration.views[this.view_selected].type === 'graph_table'
             },
@@ -310,7 +324,7 @@
                         }
                     }
                 },
-                student_selected: -1,
+                student_selected: this.has_group_views ? -1 : 0,
                 view_selected: 0
             }
         },
