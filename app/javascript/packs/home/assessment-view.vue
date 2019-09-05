@@ -5,8 +5,11 @@
             <b-tab :active="deep_link" class='m-3'>
                 <div slot='title'>Messungen <span v-if="!is_active" class="badge badge-danger"><i class='fas fa-pause'></i></span></div>
                 <!-- Neue Messungen -->
-                <div class='alert alert-secondary' v-if="!read_only">
-                    <div v-if="test.archive">
+                <div class='alert alert-secondary'>
+                    <div v-if="read_only">
+                        <p> Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen durchführen.</p>
+                    </div>
+                    <div v-else-if="test.archive">
                         <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                     </div>
                     <div v-else-if="students.length == 0">
@@ -105,8 +108,8 @@
                                     <thead>
                                     <th>Datum</th>
                                     <th>Schüler*in</th>
-                                    <th>Positive Items</th>
-                                    <th>Negative Items</th>
+                                    <th>Positiv</th>
+                                    <th>Negativ</th>
                                     <th>Trend</th>
                                     <th v-if="!read_only" >Aktionen</th>
                                     </thead>

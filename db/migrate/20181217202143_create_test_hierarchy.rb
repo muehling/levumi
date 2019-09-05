@@ -24,6 +24,7 @@ class CreateTestHierarchy < ActiveRecord::Migration[5.2]
       t.belongs_to :test_family, index: true
       t.string :level
       t.string :shorthand
+      t.integer :version
       t.json :description
       t.boolean :student_test
       t.boolean :archive, default: false

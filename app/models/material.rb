@@ -35,7 +35,7 @@ class Material < ApplicationRecord
       MaterialSupport.create(material_id: self.id, test_family_id: test_family.id) unless test_family.nil?
     end
     tests.each do |t|
-      test = Test.find(shorthand: t, archive: false)
+      test = Test.where(shorthand: t, archive: false).first
       MaterialSupport.create(material_id: self.id, test_id: test.id) unless test.nil?
     end
     items.each do |i|

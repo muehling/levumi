@@ -4,6 +4,7 @@
   "family": "Katzen und Vögel",
   "level": "Lehrkräfte",
   "shorthand": "Ex_U_1",
+  "version": 1,
   "description": {
     "full": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
     "short": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
@@ -17,7 +18,7 @@
         "key": "V1",
         "label": "Übersicht",
         "student": true,
-        "group": false,
+        "group": true,
         "type": "graph",
         "options": {
           "chart": {

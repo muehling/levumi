@@ -6,18 +6,20 @@
     <th scope='col'>Kompetenz</th>
     <th scope='col'>Testfamilie</th>
     <th scope='col'>Niveaustufe</th>
+    <th scope='col'>Version</th>
     <th scope='col'>Archiv</th>
     <th scope='col'>Aktionen</th>
   </tr>
   </thead>
   <tbody>
-  <% Test.all.sort_by{ |t| [t.test_family.competence.area.id, t.test_family.competence.id, t.test_family.id, t.archive.to_s] }.each do |test| %>
+  <% Test.all.sort_by{ |t| [t.test_family.competence.area.id, t.test_family.competence.id, t.test_family.id, t.archive.to_s, t.version,] }.each do |test| %>
     <tr <% if test.archive %>class='text-secondary'<% end %>>
       <th scope='row'><%= test.id %></th>
       <td><%= test.test_family.competence.area.name %></td>
       <td><%= test.test_family.competence.name %></td>
       <td><%= test.test_family.name %></td>
       <td><%= test.level %></td>
+      <td><%= test.version %></td>
       <td><%= test.archive ? 'Ja' : '' %></td>
       <td>
         <div id='test_<%= test.id %>' hidden='true'>

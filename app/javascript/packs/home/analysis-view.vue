@@ -324,7 +324,7 @@
                         }
                     }
                 },
-                student_selected: this.has_group_views ? -1 : 0,
+                student_selected: -1,
                 view_selected: 0
             }
         },
@@ -384,8 +384,9 @@
                     this.configuration.views[this.view_selected].options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
                 ))
                 opt = deepmerge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
+                const view = this.configuration.views[this.view_selected]
 
-                if (this.configuration.views[this.view_selected].options.chart.type === 'line') {
+                if (view.options.chart.type === 'line') {
                     opt.xaxis.labels.formatter = function (value, timestamp, index) {
                         if (index >= this.weeks.length)
                             return ""
@@ -397,40 +398,7 @@
                     for (let i = 0; i < opt.xaxis.categories.length; ++i)
                         opt.xaxis.categories[i] = this.print_date(opt.xaxis.categories[i])
 
-                //Kommentare einfügen
-                opt['annotations'] = {
-                    position: 'front',
-                    xaxis: []
-                }
-                for (let i = 0; i < this.annotations.length; ++i)
-                    if (this.annotations[i].view == this.view_selected &&
-                        ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
-                            (this.student_selected == -1 && this.annotations[i].group_id != null))) {
-                        opt['annotations']['xaxis'].push({
-                            x: this.weeks.indexOf(this.annotations[i].start),
-                            x2: this.annotations[i].start == this.annotations[i].end ? null : this.weeks.indexOf(this.annotations[i].end),
-                            strokeDashArray: 1,
-                            borderColor: '#c2c2c2',
-                            fillColor: '#c2c2c2',
-                            opacity: 0.3,
-                            label: {
-                                borderColor: '#c2c2c2',
-                                borderWidth: 1,
-                                text: this.decode_text(this.annotations[i].content),
-                                textAnchor: 'middle',
-                                position: 'top',
-                                orientation: 'horizontal',
-                                style: {
-                                    background: '#fff',
-                                    color: '#777',
-                                    fontSize: '12px',
-                                    cssClass: 'apexcharts-xaxis-annotation-label',
-                                },
-                            },
-                        })
-                    }
-                let res = []
-                const view = this.configuration.views[this.view_selected]
+               let res = []
                 //Ein "leeres" Objekt für alle Datenserien anlegen
                 if (this.student_selected == -1) {
                     for (let s = 0; s < this.students.length; ++s)
@@ -460,36 +428,105 @@
                     }
                 }
 
+                let maxY = view.options.yaxis ? view.options.yaxis.max ? view.options.yaxis.max : 0 : 0 //Für Platzierung der Kommentare
+
                 //Leere Objekte füllen
                 for (let i = 0; i < this.results.length; ++i) {
                     if (this.student_selected == -1 || view.series == undefined) {
                         let student = this.student_name(this.results[i].student_id)
+                        let yVal = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
+                        if (yVal > maxY)
+                            maxY = yVal
                         for (let r = 0; r < res.length; ++r) {
                             if (res[r].name == student) {
                                 //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
                                 if (view.options.chart.type === 'bar')
-                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
+                                    res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
                                 else
                                     res[r].data.push({
                                         x: this.weeks.indexOf(this.results[i].test_week),
-                                        y: this.results[i].views[view.key].toFixed(2), //Macht das Runden hier immer Sinn?
+                                        y: yVal
                                     })
                                 break
                             }
                         }
                     } else if (this.results[i].student_id == this.students[this.student_selected].id) {
                         for (let r = 0; r < view.series.length; ++r) {
-                            //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                            if (view.options.chart.type === 'bar')
-                                res[r].data[this.weeks.indexOf(this.results[i].test_week)] = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
-                            else
-                                res[r].data.push({
-                                    x: this.weeks.indexOf(this.results[i].test_week),
-                                    y: this.results[i].views[view.key][view.series_keys[r]].toFixed(2), //Macht das Runden hier immer Sinn?
-                                })
+                            let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
+                            if (yVal > maxY)
+                                maxY = yVal
+                            if (this.results[i].views[view.key][view.series_keys[r]] != undefined)
+                                //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+                                if (view.options.chart.type === 'bar')
+                                        res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
+                                else
+                                    res[r].data.push({
+                                        x: this.weeks.indexOf(this.results[i].test_week),
+                                        y: yVal
+                                    })
                         }
                     }
                 }
+
+                //Kommentare einfügen
+                opt['annotations'] = {
+                    position: 'front',
+                    xaxis: [],
+                    points: []
+                }
+                for (let i = 0; i < this.annotations.length; ++i)
+                    if (this.annotations[i].view == this.view_selected &&
+                        ((this.student_selected != -1 && this.students[this.student_selected].id == this.annotations[i].student_id) ||
+                            (this.student_selected == -1 && this.annotations[i].group_id != null))) {
+                        if (this.annotations[i].start != this.annotations[i].end && view.options.chart.type === 'line')
+                            opt['annotations']['xaxis'].push({         //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
+                                x: this.weeks.indexOf(this.annotations[i].start),
+                                x2: this.weeks.indexOf(this.annotations[i].end),
+                                strokeDashArray: 1,
+                                borderColor: '#c2c2c2',
+                                fillColor: '#c2c2c2',
+                                opacity: 0.3,
+                                label: {
+                                    borderColor: '#c2c2c2',
+                                    borderWidth: 1,
+                                    text: this.decode_text(this.annotations[i].content),
+                                    textAnchor: this.weeks.indexOf(this.annotations[i].start) < 2 ? 'right' : this.weeks.indexOf(this.annotations[i].start) > this.weeks.length-2 ? 'left' : 'middle',
+                                    position: 'top',
+                                    orientation: 'horizontal',
+                                    style: {
+                                        background: '#fff',
+                                        color: '#777',
+                                        fontSize: '12px',
+                                        cssClass: 'apexcharts-xaxis-annotation-label',
+                                    },
+                                },
+                            })
+                        else  //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
+                            opt['annotations']['points'].push({
+                                x: view.options.chart.type === 'line' ? this.weeks.indexOf(this.annotations[i].start) : this.print_date(this.annotations[i].start),
+                                y: 1.025*maxY,
+                                strokeDashArray: 1,
+                                borderColor: '#c2c2c2',
+                                fillColor: '#c2c2c2',
+                                opacity: 0.3,
+                                label: {
+                                    borderColor: '#c2c2c2',
+                                    borderWidth: 1,
+                                    text: this.decode_text(this.annotations[i].content),
+                                    textAnchor: 'middle',
+                                    position: 'top',
+                                    orientation: 'horizontal',
+                                    offsetY: 15,
+                                    style: {
+                                        background: '#fff',
+                                        color: '#777',
+                                        fontSize: '12px',
+                                        cssClass: 'apexcharts-xaxis-annotation-label',
+                                    },
+                                },
+                            })
+                    }
+
                 if (this.apexchart != null)
                     this.apexchart.destroy()
                 this.apexchart = new ApexCharts(document.querySelector('#chart'), deepmerge(opt, {series: res}))
@@ -510,6 +547,7 @@
             },
         },
         mounted() {
+            this.student_selected = this.has_group_views ? -1 : 0
             this.updateView()
         },
         inject: ['auto_scroll', 'print_date', 'read_only', 'student_name', 'weeks', 'student_name_parts'],
