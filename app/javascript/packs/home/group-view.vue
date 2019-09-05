@@ -203,7 +203,7 @@
                     credentials: 'include',
                     body: 'test_id=' + test.info.id
                 })
-                    .then(response => {test.used = true; this.loadAssessment(test.info.id, isVersion)});
+                    .then(response => {this.use_test(test.info.id); this.loadAssessment(test.info.id, isVersion)});
             },
             //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
             loadAssessment(test, isVersion) {
@@ -251,6 +251,13 @@
                 this.test_selected = -1
                 this.version_selected = -1
                 this.results = null
+            },
+            use_test(test) {
+                for (let i = 0; i < this.group_info.tests.length; ++i)
+                   if (this.group_info.tests[i].info.id == test) {
+                       this.group_info.tests[i].used = true
+                       return
+                   }
             }
         },
         provide: function () { //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.

@@ -51,7 +51,7 @@
                 </b-card>
                 <b-card v-else>
                     <div class='text-center text-muted'>
-                        Kein Material zur aktuellen Auswahl vorhanden.
+                        Wählen Sie aus, wofür sie Fördermaterial suchen. Es werden Ihnen immer alle passenden Materialen für Ihre aktuelle Auswahl angezeigt.
                     </div>
                 </b-card>
             </b-col>

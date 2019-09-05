@@ -124,8 +124,8 @@ class User < ApplicationRecord
     GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 
-  #Hat der Nutzer bereits alle Intro-Phasen durchlaufen?
+  #Hat der Nutzer bereits alle (wichtigen) Intro-Phasen durchlaufen?
   def is_registered
-    return intro_state == 4
+    return intro_state > 2
   end
 end

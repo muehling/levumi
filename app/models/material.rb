@@ -53,7 +53,7 @@ class Material < ApplicationRecord
         material = Material.where(name: val['name']).first
         material.destroy unless (material.nil? || !replace)
         material = Material.create(val.slice('name', 'description'))
-        zip.glob("files/#{val['path']}/*").each do |f|
+        zip.glob("#{val['path']}/*").each do |f|
           material.files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
         end
         material.attach_to(areas: val['areas'], competences: val['competences'], test_families: val['test_families'], tests: val['tests'], items: val['items'])

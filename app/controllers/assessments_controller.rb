@@ -22,7 +22,7 @@ class AssessmentsController < ApplicationController
     t = Test.find(params[:test_id])
     unless t.nil? || @group.read_only(@login)
       @group.assessments.create(test: t)
-      render json: @assessment.get_data
+      head 200
     end
   end
 
