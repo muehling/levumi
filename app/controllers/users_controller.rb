@@ -145,7 +145,7 @@ class UsersController < ApplicationController
           redirect_to '/start'
         else
           if params.has_key?(:classbook)
-            @user.intro_state += 10
+            @user.intro_state = 5
             @user.save
             head 200 and return
           end
