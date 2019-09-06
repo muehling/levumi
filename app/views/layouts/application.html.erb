@@ -283,21 +283,26 @@
       <% end %>
     </div>
 
-    <% if @login_user.hasCapability?('transfer') && (@login_user.transferred.nil?|| !@login_user.transferred) %>
-      <div id="transfer">
-        <p class='lead'>
-          Es gibt eine neue Version von Levumi. Nur dort können Sie zukünftig weiter Messungen durchführen. Um Ihren Zugang und Ihre Daten zu übertragen, folgen Sie bitte diesen Schritten:<br/>
-          1. Überprüfen Sie, was Sie umziehen: Es werden Ihre Nutzerdaten und alle aktuellen (nicht archivierten) Klassen, Schüler*innen und allen aktuellen Testversionen umgezogen. Ihre Testklasse wird nicht umgezogen.<br/>
-          2. Klicken Sie unten auf "Daten übertragen" und warten Sie, bis Sie eine Erfolgsmeldung sehen. <br/>
-          3. Loggen Sie sich mit ihren alten Nutzerdaten im neuen System (www.levumi.de) ein und überprüfen Sie dort, ob alles geklappt hat. <br/>
-          <br/>
-          Bei Problemen kontaktieren Sie uns. Ihre Daten werden kopiert und bleiben im alten System noch einige Zeit für Sie verfügbar bis dieses abgeschaltet wird. <br/>
-        </p>
-        <button class="btn btn-block btn-primary" style ="font-size:20px" onclick="transfer_data()">Daten übertragen!</button>
-      </div>
-      <br/>
+    <% if @login_user.account_type == 2 %>
+      <p class='lead'>
+        Es gibt eine neue Version von Levumi (www.levumi.de). Nur dort können Sie zukünftig weiter Messungen durchführen. Bitte legen Sie sich dort einen neuen Zugang an, wenn Sie Levumi weiterhin nutzen möchten!
+      </p>
+    <% else %>
+      <% if @login_user.hasCapability?('transfer') && (@login_user.transferred.nil?|| !@login_user.transferred) %>
+        <div id="transfer">
+          <p class='lead'>
+            Es gibt eine neue Version von Levumi. Nur dort können Sie zukünftig weiter Messungen durchführen. Um Ihren Zugang und Ihre Daten zu übertragen, folgen Sie bitte diesen Schritten:<br/>
+            1. Überprüfen Sie, was Sie umziehen: Es werden Ihre Nutzerdaten und alle aktuellen (nicht archivierten) Klassen, Schüler*innen und allen aktuellen Testversionen umgezogen. Ihre Testklasse wird nicht umgezogen.<br/>
+            2. Klicken Sie unten auf "Daten übertragen" und warten Sie, bis Sie eine Erfolgsmeldung sehen. <br/>
+            3. Loggen Sie sich mit ihren alten Nutzerdaten im neuen System (www.levumi.de) ein und überprüfen Sie dort, ob alles geklappt hat. <br/>
+            <br/>
+            Bei Problemen kontaktieren Sie uns. Ihre Daten werden kopiert und bleiben im alten System noch einige Zeit für Sie verfügbar bis dieses abgeschaltet wird. <br/>
+          </p>
+          <button class="btn btn-block btn-primary" style ="font-size:20px" onclick="transfer_data()">Daten übertragen!</button>
+        </div>
+        <br/>
+      <% end %>
     <% end %>
-
     <%= yield %>
   </div>
 </div>
