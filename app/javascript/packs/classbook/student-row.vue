@@ -1,6 +1,6 @@
 <template>
     <!-- Eine Zeile der Schülerübersicht -->
-    <tr>
+    <tr id='intro_cb_5'>
         <td>
             <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
             <div v-if="!empty && !editMode">
@@ -17,7 +17,7 @@
             </div>
         </td>
 
-        <td>
+        <td id='intro_cb_6'>
             <div v-if="editMode">
                 <small class='form-text text-muted'>nicht änderbar</small>
             </div>
@@ -137,6 +137,7 @@
                         <b-link class='btn btn-sm btn-outline-success mr-1'
                                 :href="'/students' + (empty ? '' : '/' + student.id)"
                                 title='Speichern'
+                                id='intro_cb_7'
                                 :disabled="name.length == 0"
                                 :data-method="empty ? 'post' : 'put'"
                                 data-remote='true'
@@ -175,21 +176,22 @@
             empty: Boolean,
             group: Number,
             index: Number,
+            open: Boolean,
             read_only: Boolean,
             student: Object,
         },
         data: function () {
             return {
-                editMode: false,
+                editMode: this.empty && this.open,
                 loading: false,
                 name: this.student.name,
                 results: undefined,
                 years: function() {
-                    let years = [];
-                    let cur = (new Date()).getFullYear();
+                    let years = []
+                    let cur = (new Date()).getFullYear()
                     for (let i = cur - 3; i > cur - 30; --i)
-                        years.push(i);
-                    return years;
+                        years.push(i)
+                    return years
                 },
 
                 //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
@@ -204,7 +206,7 @@
         },
         methods: {
             collectData() { //Daten aus den Inputs codieren für AJAX Request
-               let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name, this.group));  //Namen vor dem Senden verschlüsseln
+               let res ='group=' + this.group + '&student[name]=' + encodeURIComponent(encrypt(this.name, this.group))  //Namen vor dem Senden verschlüsseln
                 //Restliche Attribute anfügen, falls vorhanden
                if (this.gender != null)
                    res += '&student[gender]=' + this.gender
@@ -214,10 +216,10 @@
                    res += '&student[sen]=' + this.sen
                if (this.tags != null)
                    res += '&student[tags]=' + encodeURIComponent(JSON.stringify(this.tags))
-               return res;
+               return res
             },
             loadData(student) {
-              this.loading = true;
+              this.loading = true
                 //AJAX-Request senden
                 fetch('/students/' + student, {
                     headers: {
@@ -229,10 +231,10 @@
                 })
                     .then(response => {
                         return response.text().then(text =>  {
-                            this.results = JSON.parse(text);
-                            this.loading = false;  //Spinner verstecken
-                        });
-                    });
+                            this.results = JSON.parse(text)
+                            this.loading = false  //Spinner verstecken
+                        })
+                    })
 
             },
             remove() {
@@ -242,9 +244,15 @@
                 //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
                 this.$emit('update:students', {index: this.index, object: event.detail[0]})
                 if (this.index >= 0)
-                    this.editMode = false;
-                else  //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
-                    this.name = "";
+                    this.editMode = false
+                else { //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
+                    this.name = ""
+                    this.gender = null
+                    this.year = null
+                    this.month = null
+                    this.sen = null
+                    this.tags = []
+                }
                 //Falls Update aus Settings: Modal schließen
                 this.$bvModal.hide('modal_settings_' + this.student.id)
             }
@@ -255,9 +263,9 @@
                 {text: 'weiblich', value: '0', disabled: 0},
                 {text: 'männlich', value: '1', disabled: 0},
                 {text: 'divers', value: '2', disabled: 0}
-            ];
+            ]
 
-            this.months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember'];
+            this.months = ['Januar', 'Februar', 'März', 'April', 'Mai', 'Juni', 'Juli', 'August', 'September', 'Oktober', 'November', 'Dezember']
 
             this.options_sen = [
                 { text: 'Keiner', value: 0 },
@@ -269,7 +277,7 @@
                 { text: 'Sehen', value: 6 },
                 { text: 'Hören', value: 7 },
                 { text: 'Autismus', value: 8 }
-            ];
+            ]
 
             this.options_tags = [
                 {text: 'AD(H)S', value: 'AD(H)S'},
@@ -280,7 +288,7 @@
                 {text: 'Integrationskraft', value: 'Integrationskraft'},
                 {text: 'LRS', value: 'LRS'},
                 {text: 'Migrationshintergrund', value: 'Migrationshintergrund'}
-            ];
+            ]
         },
         name: 'student-row'
     }

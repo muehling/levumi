@@ -75,7 +75,7 @@ function next(btn) {
                 'V1': (sum[0] + sum[1]) / result.length,
                 'V2': {'V': sum[0] / 3, 'K': sum[1] / 3},
             },
-            {'total': total, 'positive': p_items, 'negative': n_items},
+            {'trend': total, 'positive': p_items, 'negative': n_items},
             result,
             function (data) {}
         )

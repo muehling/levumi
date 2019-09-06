@@ -64,7 +64,7 @@ class User < ApplicationRecord
       used = group.assessments.map{|a| a.test_id}
 
       used_tests = Test.where(id: used)
-      unused_tests = Test.where(id: all_tests - used)
+      unused_tests = Test.where(id: all_tests - used, archive: false)
 
       used = used_tests.map{|a| a.test_family_id}
       used_families = TestFamily.where(id: used)
@@ -124,8 +124,8 @@ class User < ApplicationRecord
     GroupShare.create(user: self, group: g, owner: true, key: key)
   end
 
-  #Hat der Nutzer bereits alle Intro-Phasen durchlaufen?
+  #Hat der Nutzer bereits alle (wichtigen) Intro-Phasen durchlaufen?
   def is_registered
-    return intro_state == 4
+    return intro_state > 2
   end
 end

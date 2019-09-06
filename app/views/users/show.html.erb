@@ -1,7 +1,7 @@
 <%
   data = {
       groups: @groups,
-      group_info: @info
+      group_info: @login.get_home_info #Wird von mehreren Actions aufgerufen, deswegen hier anstelle von Doppelung
   }
   if @assessment
     data[:pre_select] = {

@@ -46,7 +46,7 @@
                     </tr>
                 </tbody>
             </table>
-            <b-btn  v-b-toggle="'collapse_share_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-handshake'></i> Klasse teilen</b-btn>
+            <b-btn id='intro_cb_4' v-b-toggle="'collapse_share_' + group.id" variant='outline-secondary' size='sm'><i class='fas fa-handshake'></i> Klasse teilen</b-btn>
             <b-collapse :id="'collapse_share_' + group.id" class='mt-2 mb-4' :visible="false">
                 <b-form inline
                         :action="'/groups/' + group.id + '/group_shares'"
@@ -78,6 +78,14 @@
                             v-on:click="not_found = false; exists = false;"
                     >
                         <i class='fas fa-check'></i> Teilen
+                    </b-button>
+                    <b-button class='ml-3'
+                              size='sm'
+                              variant='info'
+                              title='Klasse teilen'
+                              v-b-popover.hover="'Um die Klasse mit einer anderen Lehrkraft zu teilen, benötigen Sie die E-Mail Adresse mit der diese Person bei Levumi registriert ist. <br/> Geben Sie die Adresse ein und wählen Sie, ob die Person mit der Klasse selbst Testungen durchführen und Sie verändern darf, oder lediglich die existierenden Messungen ansehen kann. Sie müssen der Person selbstständig den Klassenschlüssel mitteilen, der Ihnen nach dem Teilen angezeigt wird. Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet.'"
+                    >
+                        <span><i class='fas fa-question'></i></span>
                     </b-button>
                 </b-form>
             </b-collapse>

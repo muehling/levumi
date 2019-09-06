@@ -50,18 +50,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  #POST '/login_frontend'
+  #POST '/testen_login'
   def login_frontend
     s = Student.find_by_login(params[:login].upcase)
     unless s.nil?
       session[:student] = s.id
-      render json: {tests: s.get_assessments, student: s.id}
+      respond_to do |format|
+        format.html {
+          @student = s
+          render :frontend, layout: 'minimal'
+        }
+        format.json {
+          render json: {tests: s.get_assessments, student: {id: s.id, login: s.login}}
+        }
+      end
     else
       head 403
     end
   end
 
-  #POST '/logout_frontend'
+  #POST '/testen_logout'
   def logout_frontend
     session.delete(:student)
     head 200
@@ -98,10 +106,8 @@ class ApplicationController < ActionController::Base
     else
       if session.has_key?('user')               #Session existiert
         @login = User.find(session[:user])
-        if (@login.tc_accepted.nil? || @login.intro_state < 4)  #Registrierung noch nicht vollständig abgeschlossen
-          redirect_to '/willkommen' and return if @login.intro_state < 4
-          @user = @login
-          render 'users/intro/terms_and_conditions', layout: 'minimal' and return #Geänderte Nutzungsbedingungen
+        if (@login.tc_accepted.nil? || @login.intro_state < 4)  #Registrierung noch nicht vollständig abgeschlossen oder neue Nutzungsbedingungen
+          redirect_to '/willkommen'
         end
       else                                      #Sonst: Startseite
         redirect_to '/'

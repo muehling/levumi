@@ -24,7 +24,7 @@
                     <h6>{{test.test_info.area}}</h6>
                 </template>
                 <b-button block variant='primary'
-                          :href="'/students/' + student + '/results?test_id='+ test.test_info.id"
+                          :href="'/students/' + student.id + '/results?test_id='+ test.test_info.id"
                           data-method='post'
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
@@ -47,7 +47,7 @@
                             accept-charset='UTF-8'
                             data-remote='true'
                             method='post'
-                            v-on:ajax:error="loading=false; retry=true"
+                            v-on:ajax:error="loading=false, retry=true"
                             v-on:ajax:success="success"
                     >
                         <b-form-group>
@@ -114,6 +114,7 @@
                 this.tests = event.detail[0]['tests']
                 this.student = event.detail[0]['student']
                 this.loading = false
+                window.$('#navbar_text').html('Dein Login Code: ' + this.student.login)
             }
         },
         name: 'frontend-app'

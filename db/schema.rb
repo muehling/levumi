@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_05_111439) do
+ActiveRecord::Schema.define(version: 2019_07_25_203450) do
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
@@ -101,7 +101,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "competence_id"
     t.integer "test_family_id"
     t.integer "test_id"
-    t.text "items", limit: 16777215
+    t.json "items"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["area_id"], name: "index_material_supports_on_area_id"
@@ -113,7 +113,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
 
   create_table "materials", force: :cascade do |t|
     t.string "name"
-    t.text "description"
+    t.json "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -124,9 +124,9 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
-    t.text "views", limit: 16777215
-    t.text "report", limit: 16777215
-    t.text "data", limit: 16777215
+    t.json "views"
+    t.json "report"
+    t.json "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assessment_id"], name: "index_results_on_assessment_id"
@@ -136,12 +136,14 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
 
   create_table "shadow_results", force: :cascade do |t|
     t.integer "shadow_student_id"
-    t.integer "test"
+    t.string "shorthand"
+    t.integer "version"
+    t.integer "group"
     t.date "test_date"
     t.date "test_week"
-    t.text "views", limit: 16777215
-    t.text "report", limit: 16777215
-    t.text "data", limit: 16777215
+    t.json "views"
+    t.json "report"
+    t.json "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["shadow_student_id"], name: "index_shadow_results_on_shadow_student_id"
@@ -153,7 +155,7 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.string "tags"
+    t.json "tags"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["original_id"], name: "index_shadow_students_on_original_id"
@@ -166,8 +168,8 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
-    t.string "tags"
-    t.string "settings"
+    t.json "tags"
+    t.json "settings"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id"], name: "index_students_on_group_id"
@@ -186,11 +188,12 @@ ActiveRecord::Schema.define(version: 2019_06_05_111439) do
     t.integer "test_family_id"
     t.string "level"
     t.string "shorthand"
-    t.text "description"
+    t.integer "version"
+    t.json "description"
     t.boolean "student_test"
     t.boolean "archive", default: false
-    t.text "configuration", limit: 16777215
-    t.text "items", limit: 16777215
+    t.json "configuration"
+    t.json "items"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"

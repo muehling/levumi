@@ -1,8 +1,14 @@
 <%
   data = {'tests': nil, student: 0}
   data['tests'] = @student.get_assessments unless @student.nil?
-  data['student'] = @student.id unless @student.nil?
+  data['student'] = {id: @student.id, login: @student.login} unless @student.nil?
 %>
+
+<% unless @student.nil? %>
+  <script>
+      window.$('#navbar_text').html('Dein Login Code: <%= @student.login %>')
+  </script>
+<% end %>
 
 <div id='levumi' data="<%= data.to_json%>">
 

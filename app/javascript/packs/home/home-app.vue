@@ -17,9 +17,13 @@
                         <!-- Oberste Ebene - aktuelle Klassen, falls pre_select gesetzt, direkt auswählen -->
                         <b-tab v-for="(group, index) in groups"
                                :key="group.id"
-                               :title="group.label"
                                :active="$root.pre_select && ($root.pre_select.group == group.id)"
                         >
+                            <!-- Beispielklasse kursiv darstellen -->
+                            <template slot='title'>
+                                <i v-if="group.demo">{{group.label}}</i>
+                                <span v-else>{{group.label}}</span>
+                            </template>
 
                             <!-- Zweite Ebene - gewählte Klasse -->
                             <group-view

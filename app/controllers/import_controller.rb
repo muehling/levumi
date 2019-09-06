@@ -60,22 +60,21 @@ class ImportController < ApplicationController
 
     #Erstellen der Students
     students.each do |keyS, valueS|
+      s = nil
       if valueS[:migration]
-
-        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
+        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login].upcase, gender: valueS[:gender],
                            birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: ['Migrationshintergrund'].to_json)
       else
-        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login], gender: valueS[:gender],
+        s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login].upcase, gender: valueS[:gender],
                            birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: [].to_json)
       end
-
+      s.save
       map_old_stu_to_new_stu[keyS] = s.id
     end
 
     #Erstellen der Result-Objekte
     results.each do |r|
       detail = r.require(:results).permit(:V1, :V2=>{}, :V3=>{})
-      puts detail
       views = {}
       if detail.key?('V3')
         views = {'V1': detail[:V1], 'V2':detail[:V2].to_h , 'V3':detail[:V3].to_h }
@@ -93,8 +92,8 @@ class ImportController < ApplicationController
         data += [data_obj.permit(:item, :group, :answer, :time).to_h]
       end
 
-      res = Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
-                    test_date:r[:test_date], views: views.to_json, report: report.to_json, data: data.to_json, created_at: r[:created_at])
+      Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
+                    test_date:r[:test_date], views: views, report: report, data: data, created_at: r[:created_at])
     end
     render json: {status: true}, status: 200
   end

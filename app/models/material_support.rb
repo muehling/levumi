@@ -4,6 +4,4 @@ class MaterialSupport < ApplicationRecord
   belongs_to :competence, optional: true
   belongs_to :test_family, optional: true
   belongs_to :test, optional: true
-
-  serialize :items, Array
 end

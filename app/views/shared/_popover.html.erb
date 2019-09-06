@@ -1,0 +1,10 @@
+<p class='text-justify'>
+  <%= text %>
+</p>
+<p class='text-center'>
+  <% if last %>
+    <%=link_to "Los geht's", link, method: :patch, remote: remote, onclick: 'next()', class: 'btn btn-sm btn-outline-success'%>
+  <% else %>
+    <button class='btn btn-sm btn-outline-primary' onclick='next()'>Weiter</button>
+  <% end %>
+</p>

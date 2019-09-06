@@ -30,6 +30,7 @@
                              :group="group"
                              :index="-1"
                              :empty="true"
+                             :open="students.length === 0"
                              v-on:update:students="update($event)"
                 ></student-row>
             </tbody>

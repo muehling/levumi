@@ -4,6 +4,7 @@
   "family": "Katzen und Vögel",
   "level": "Schüler*innen",
   "shorthand": "Ex_S_1",
+  "version": 1,
   "description": {
     "full": "Beispiel für einen Test in Levumi für <b>Schüler*innen</b>",
     "short": "Beispiel für einen Test in Levumi für <b>Schüler*innen</b>",
@@ -17,7 +18,7 @@
       "key": "V1",
       "label": "Übersicht",
         "student": true,
-        "group": true,
+        "group": false,
         "type": "graph",
         "options": {
           "chart": {

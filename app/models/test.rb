@@ -17,11 +17,6 @@ class Test < ApplicationRecord
   validates_presence_of :level
   validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
-  #Konfiguration der Views und Beschreibung als Hash
-  serialize :configuration, Hash
-  serialize :description, Hash
-  serialize :items, Hash
-
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     if archive then level + " (veraltet)" else level end
@@ -83,19 +78,23 @@ class Test < ApplicationRecord
         family.save
       else
         old_test = family.tests.where(level: vals['level']).where.not(archive: true).first
-        if !old_test.nil? && archive
-          old_test.archive = true
-          old_test.save
+        unless old_test.nil?
+          if old_test.version < vals['version'] || archive        #Falls kleiner Version, automatisch archivert.
+            old_test.archive = true
+            old_test.save
+          elsif old_test.version > vals['version']            #Ältere Version darf neuere nicht ersetzen.
+            return nil
+          end
         end
       end
 
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
         #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
-        test = family.tests.build(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+        test = family.tests.build(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
       else
         test = old_test
-        test.update_attributes(vals.slice('description', 'level', 'shorthand', 'student_test', 'configuration'))
+        test.update_attributes(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
       end
       test.items = vals['items']
 

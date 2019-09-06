@@ -203,7 +203,7 @@
 .btn-outline-success.disabled,
 .btn-outline-danger:disabled,
 .btn-outline-danger.disabled {
-    background-color: white;
+    background-color: white !important;
 }
 
 /* Sonderfälle */

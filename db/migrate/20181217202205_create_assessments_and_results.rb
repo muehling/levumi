@@ -13,21 +13,23 @@ class CreateAssessmentsAndResults < ActiveRecord::Migration[5.2]
       t.references :prior_result
       t.date :test_date
       t.date :test_week
-      t.text :views, limit: 16777215
-      t.text :report, limit: 16777215
-      t.text :data, limit: 16777215
+      t.json :views
+      t.json :report
+      t.json :data
       t.timestamps
     end
 
     #Tabelle für anonymiserte Altdaten
     create_table :shadow_results do |t|
       t.belongs_to :shadow_student, index: true
-      t.integer :test
+      t.string :shorthand
+      t.integer :version
+      t.integer :group
       t.date :test_date
       t.date :test_week
-      t.text :views, limit: 16777215
-      t.text :report, limit: 16777215
-      t.text :data, limit: 16777215
+      t.json :views
+      t.json :report
+      t.json :data
       t.timestamps
     end
   end

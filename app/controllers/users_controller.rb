@@ -8,7 +8,6 @@ class UsersController < ApplicationController
   def show
     #Daten für die "Home"-Ansicht laden.
     @groups = @login.groups.where(archive: false).order(id: :desc).map {|g| g.as_hash(@login)}
-    @info = @login.get_home_info
   end
 
   #GET /users/edit/:id
@@ -102,23 +101,21 @@ class UsersController < ApplicationController
 
     #GET Anfrage standardmäßig nur am Anfang und Ende, oder bei Unterbrechung des Prozesses
     if request.get?
-      if @user.intro_state == 1 || @user.intro_state == 2
-        render 'users/intro/forms', layout: 'minimal'
-      else
-        if @user.intro_state == 0  #Anfang des Intros
-          render 'users/intro/terms_and_conditions', layout: 'minimal'
-        else  #Ende => Weiterleiten zu show - Ggf. Fall intro_state == 3 noch abfragen, damit Popovers nochmal neu gestartet werden bei Abbruch
-          @user.intro_state = 4
-          @user.save
-          redirect_to '/start'
-        end
+      case @user.intro_state
+      when 0 #Anfang des Intros
+        render 'users/intro/terms_and_conditions', layout: 'minimal' and return
+      when 1..2
+        render 'users/intro/forms', layout: 'minimal' and return
+      when 3 #Intro neu starten
+        @login = @user
+        render 'users/intro/help' and return
       end
     end
 
     if request.patch?
       if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
-        @user.intro_state = 1 if @user.intro_state == 0
+        @user.intro_state = 1 if @user.intro_state == 0 #Abfrage für spätere TC-Änderungen, dort kein Ändern von intro_state mehr!
         @user.save
         if @user.intro_state == 1
           render 'users/intro/forms', layout: 'minimal' and return
@@ -126,23 +123,32 @@ class UsersController < ApplicationController
           redirect_to @user
         end
       else
-        if @user.intro_state == 0  #TC Accept hat noch nicht stattgefunden!
+        case @user.intro_state
+        when 0 #TC Accept hat noch nicht stattgefunden!
           render 'users/intro/terms_and_conditions', layout: 'minimal' and return
-        end
-        if @user.intro_state == 1 #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
+        when 1 #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
           if @user.update_attributes(user_attributes)
             @user.intro_state = 2
             @user.save
           end
           render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
-        end
-        if @user.intro_state == 2 #TC Accept + erste Form => Zweite Form wird akzeptiert
+        when 2 #TC Accept + erste Form => Zweite Form wird geschickt
           @user.update_attributes(user_attributes) if params.has_key?(:user)  #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
+          @user.create_demo(params[:key], params[:auth_token])
           @user.intro_state = 3
           @user.save
-          @user.create_demo(params[:key], params[:auth_token])
           @login = @user
-          render 'users/intro/help'
+          render 'users/intro/help' and return
+        when 3
+          @user.intro_state = 4
+          @user.save
+          redirect_to '/start'
+        else
+          if params.has_key?(:classbook)
+            @user.intro_state = 5
+            @user.save
+            head 200 and return
+          end
         end
       end
     end

@@ -22,18 +22,14 @@
 
         <b-tabs pills>
 
-          <% first = true %>
-          <% Area.all.each do |a| %>
+          <% Area.order(:name).all.each do |a| %>
             <!-- Oberste Ebene Lernbereiche -->
-            <b-tab <% if first %> active <% end %> >
-            <% first = false %>
-
+            <b-tab>
               <template slot='title'>
                 <%= a.name %>
               </template>
 
-              <b-card no-body class='mt-3'>
-                <b-tabs pills card>
+                <b-tabs pills class='mt-3'>
 
                   <!-- Hinweistext falls keine Tests vorhanden -->
                   <div slot='empty'>
@@ -42,7 +38,7 @@
                     </div>
                   </div>
 
-                  <% a.competences.each do |c| %>
+                  <% a.competences.order(:name).each do |c| %>
                     <!-- Zweite Ebene Kompetenzen -->
                     <b-tab>
 
@@ -50,12 +46,12 @@
                         <%= c.name %>
                       </template>
 
-                      <b-alert show variant="secondary">
+                      <b-alert show variant='secondary' class='mt-2'>
                         <span class='text-small'><%= c.description%></span>
                       </b-alert>
 
-                      <div class='mt-3'>
-                        <b-tabs pills>
+
+                        <b-tabs pills class='mt-3'>
 
                           <!-- Hinweistext falls keine Tests vorhanden -->
                           <div slot='empty'>
@@ -64,7 +60,7 @@
                             </div>
                           </div>
 
-                          <% c.test_families.each do |f| %>
+                          <% c.test_families.order(:name).each do |f| %>
                             <!-- Dritte Ebene Tests -->
                             <b-tab>
 
@@ -72,16 +68,16 @@
                                 <%= f.name %>
                               </template>
 
-                              <b-alert show variant="secondary" class='mt-3'>
+                              <b-alert show variant="secondary" class='mt-2'>
                                 <span class='text-small'><%= f.description%></span>
                               </b-alert>
 
                               <b-card no-body class='mt-3'>
                                 <b-tabs pills card vertical>
 
-                                  <% f.tests.select{ |a| !a.archive }.each do |t|  # to_s damit "false" < "true" %>
+                                  <% f.tests.where(archive: false).order(:level).all.each do |t|  %>
                                     <!-- Vierte Ebene Niveaustufen -->
-                                    <b-tab title='<%= t.name %>'>
+                                    <b-tab title='<%= t.level %>'>
 
                                       <!-- Testinfo rendern -->
                                       <div id='info_<%= t.id %>'>
@@ -100,14 +96,11 @@
                           <% end %>
 
                         </b-tabs>
-                      </div>
 
                     </b-tab>
                   <% end %>
 
                 </b-tabs>
-              </b-card>
-
             </b-tab>
           <% end %>
 

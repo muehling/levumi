@@ -5,8 +5,11 @@
             <b-tab :active="deep_link" class='m-3'>
                 <div slot='title'>Messungen <span v-if="!is_active" class="badge badge-danger"><i class='fas fa-pause'></i></span></div>
                 <!-- Neue Messungen -->
-                <div class='alert alert-secondary' v-if="!read_only">
-                    <div v-if="test.archive">
+                <div class='alert alert-secondary'>
+                    <div v-if="read_only">
+                        <p> Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen durchführen.</p>
+                    </div>
+                    <div v-else-if="test.archive">
                         <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
                     </div>
                     <div v-else-if="students.length == 0">
@@ -26,7 +29,7 @@
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
                                       :disabled="get_result(student.id) > 0"
                                       :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                      :href="'/students/' + student.id + '/results?test_id='+ test.id"
+                                      :href="'/students/' + student.id + '/results?test_id='+ test.id + '#' + student.name"
                                       data-method='post'
                             >
                                 {{student.name}}
@@ -37,16 +40,18 @@
                         <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                         <p>{{test.description.usage}}</p>
                         <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode (unter dem Namen) in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen!</p>
+                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler*in.</p>
                         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
-                        <p>Hier können Sie sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                        <p>Sie können sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                         <!-- Schüler nur als Info anzeigen -->
                         <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                             <b-button v-for="student in students"
                                       :key="student.id"
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                                      disabled
+                                      :href="'/testen_login?login=' + student.login"
+                                      data-method='post'
+                                      target='_blank'
                             >
                                 {{student.name}}<br/>{{student.login}}
                             </b-button>
@@ -103,8 +108,8 @@
                                     <thead>
                                     <th>Datum</th>
                                     <th>Schüler*in</th>
-                                    <th>Positive Items</th>
-                                    <th>Negative Items</th>
+                                    <th>Positiv</th>
+                                    <th>Negativ</th>
                                     <th>Trend</th>
                                     <th v-if="!read_only" >Aktionen</th>
                                     </thead>
@@ -115,8 +120,8 @@
                                         <td><span v-for="(item, index) in result.data.report.positive">{{(index > 0 ? ', ' : '') + test.items[item]}}</span></td>
                                         <td><span v-for="(item, index) in result.data.report.negative">{{(index > 0 ? ', ' : '') + test.items[item]}}</span></td>
                                         <td>
-                                            <i class='fas fa-arrow-up' v-if="result.data.report.total > 0"></i>
-                                            <i class='fas fa-arrow-right' v-else-if="result.data.report.total == 0"></i>
+                                            <i class='fas fa-arrow-up' v-if="result.data.report.trend > 0"></i>
+                                            <i class='fas fa-arrow-right' v-else-if="result.data.report.trend == 0"></i>
                                             <i class='fas fa-arrow-down' v-else></i>
                                         </td>
                                         <td v-if="!read_only">
@@ -205,6 +210,13 @@
                 return weeks;
             }
         },
+        data: function () {
+            return {
+                is_active: this.active, //Als Datum, damit es geändert werden kann
+                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+                students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
+            }
+        },
         methods: {
             auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
                 window.$(element)[0].scrollIntoView(false);
@@ -234,13 +246,6 @@
             },
             student_name(id) {   //Student-Objekt aus globaler Variable holen
                 return get_student(this.group.id, id).name;
-            }
-        },
-        data: function () {
-            return {
-                is_active: this.active, //Als Datum, damit es geändert werden kann
-                deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-                students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }
         },
         provide: function () {
