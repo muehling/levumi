@@ -97,15 +97,18 @@
         </b-card>
         <b-row>
             <b-col>
-                <div v-if="!updating && empty">
+                <div v-if="!updating && !results">
                     <p class='m-5 text-center text-muted'>
                         <span v-if="this.student_name_parts.length == 0">
                             Aktuell sind noch keine Schüler*innen für die Klasse angelegt. Bitte legen Sie diese zuerst im Klassenbuch an, damit Sie testen können!
                         </span>
-                        <span v-else>
+                        <span v-else-if="empty">
                             Wählen Sie zuerst einen Lernbereich und dann aus der sich erweiternden Liste das Konstrukt, die Testfamilie und die Niveaustufe mit der Sie arbeiten möchten.
                             <br/>
                             Informationen über alle Tests finden Sie oben unter dem Menüpunkt Testübersicht.
+                        </span>
+                        <span v-else>
+                            Kehren Sie zu Ihren vorherigen Tests zurück (fett gedruckt) oder wählen Sie einen neuen Test aus der Liste.
                         </span>
                     </p>
                 </div>

@@ -2,6 +2,7 @@
   <thead class='thead-light'>
   <tr>
     <th scope='col'>ID</th>
+    <th scope='col'>Kurzbezeichnung</th>
     <th scope='col'>Bereich</th>
     <th scope='col'>Kompetenz</th>
     <th scope='col'>Testfamilie</th>
@@ -12,9 +13,10 @@
   </tr>
   </thead>
   <tbody>
-  <% Test.all.sort_by{ |t| [t.test_family.competence.area.id, t.test_family.competence.id, t.test_family.id, t.archive.to_s, t.version,] }.each do |test| %>
+  <% Test.all.sort_by{ |t| [t.test_family.competence.area.id, t.test_family.competence.id, t.test_family.id, t.shorthand, t.version,] }.each do |test| %>
     <tr <% if test.archive %>class='text-secondary'<% end %>>
       <th scope='row'><%= test.id %></th>
+      <td><%= test.shorthand %></td>
       <td><%= test.test_family.competence.area.name %></td>
       <td><%= test.test_family.competence.name %></td>
       <td><%= test.test_family.name %></td>
