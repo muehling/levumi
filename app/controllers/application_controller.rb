@@ -949,7 +949,7 @@ class ApplicationController < ActionController::Base
       @login_user.transferred = true
       @login_user.save
 
-      flash[:notice] = 'Ihre Daten wurden übertragen! Bitte loggen Sie sich jetzt in der neuen Version (<a href="www.levumi.de">www.levumi.de</a>) ein und überprüfen Sie ob alles geklappt hat.'
+      flash[:notice] = 'Ihre Daten wurden übertragen! Bitte loggen Sie sich jetzt in der neuen Version (<a href="https://www.levumi.de">www.levumi.de</a>) ein und überprüfen Sie ob alles geklappt hat.'
       respond_to do |format|
         format.js   {}
       end
