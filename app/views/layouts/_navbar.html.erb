@@ -102,9 +102,7 @@
       </div>
       <div class='modal-body'>
         <%= render 'application/terms_and_conditions' %>
-        <% unless @login.nil? || @login.tc_accepted.nil? %>
-          <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
-        <% end %>
+        <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
       </div>
     </div>
   </div>
