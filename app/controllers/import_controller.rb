@@ -61,7 +61,7 @@ class ImportController < ApplicationController
     #Erstellen der Students
     students.each do |keyS, valueS|
       s = nil
-      if valueS[:migration]
+      if valueS[:migration] == true  #Fängt nur den "nil" Fall ab, sonst wird bei 0 oder 1 das Flag gesetzt.
         s = Student.create(group_id: map_old_group_to_new_group[valueS[:group_id].to_s], name: valueS[:name], login: valueS[:login].upcase, gender: valueS[:gender],
                            birthmonth: valueS[:birthmonth], sen: valueS[:sen], tags: ['Migrationshintergrund'].to_json)
       else
