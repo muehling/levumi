@@ -33,16 +33,17 @@
         <%= measurement.date.to_date.strftime("%d.%m.%Y") %>
       </td>
 
-      <%if !@assessment.test.student_access && @user.transferred != true %>
+      <%if !@assessment.test.student_access %>
         <td>
-
-          <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :html),
-                      :title => "Messung online durchführen", :data => {:remote => true} do %>
-            <span class="glyphicon glyphicon-expand"></span>
-          <% end %>
-          <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text),
-                      :title => "Messung offline durchführen", :data => {:remote => true} do %>
-            <span class="glyphicon glyphicon-print"></span>
+          <% if @user.transferred != true %>
+            <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :html),
+                        :title => "Messung online durchführen", :data => {:remote => true} do %>
+              <span class="glyphicon glyphicon-expand"></span>
+            <% end %>
+            <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :text),
+                        :title => "Messung offline durchführen", :data => {:remote => true} do %>
+              <span class="glyphicon glyphicon-print"></span>
+            <% end %>
           <% end %>
         </td>
       <%end%>
