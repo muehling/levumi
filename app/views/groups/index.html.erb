@@ -1,6 +1,7 @@
 <script>
   //Eintrag in der Navleiste markieren
-  highlightNavItem('navbarKlassenbuch');
+    highlightNavItem('navbarKlassenbuch')
+    showIntro = false
 </script>
 
 <div id='levumi' data="<%= @data.to_json%>">
@@ -17,11 +18,8 @@
   <class-book-app></class-book-app>
 </div>
 
-
+<% if @login.intro_state < 5 %>
   <script>
-    showIntro = false
-
-    <% if @login.intro_state < 5 %>
       showIntro = true
       <%
      texts =  [

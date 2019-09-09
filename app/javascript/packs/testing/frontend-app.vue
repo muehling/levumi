@@ -46,6 +46,7 @@
                             action='/testen_login'
                             accept-charset='UTF-8'
                             data-remote='true'
+                            data-type='json'
                             method='post'
                             v-on:ajax:error="loading=false, retry=true"
                             v-on:ajax:success="success"
@@ -63,7 +64,7 @@
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
                         </b-form-group>
-                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
+                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Starten</b-button>
                     </b-form>
                 </b-card>
             </b-col>
