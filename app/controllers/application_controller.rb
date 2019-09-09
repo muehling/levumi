@@ -933,7 +933,7 @@ class ApplicationController < ActionController::Base
 
 
     #send data to new Levumi
-    uri = URI.parse('https://www.levumi.de:4433/import')
+    uri = URI.parse('https://www.levumi.de/import')
     http = Net::HTTP.new(uri.host, uri.port)
     http.use_ssl = true
     request = Net::HTTP::Post.new(uri.request_uri, initheader = {'Content-Type' =>'application/json'})
