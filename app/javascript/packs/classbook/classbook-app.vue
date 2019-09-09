@@ -183,11 +183,14 @@
                         ++c
                 return c
             },
-            firstOwnIndex: function() {
-                  for (let i = 1; i < this.groups.length; ++i)
-                      if (this.groups[i].owner && !this.groups[i].archive)
-                          return i
-                  return 0
+            firstOwnIndex: function() {  //Liefert Demoklasse falls Intro gezeigt wird, ansonsten erste "eigene" Klasse.
+                for (let i = 1; i < this.groups.length; ++i)
+                    if (showIntro && this.groups[i].demo)
+                        return i
+                    else
+                        if (this.groups[i].owner && !this.groups[i].archive)
+                            return i
+                    return 0
             },
             firstSharedIndex: function() {
                   for (let i = 1; i < this.groups.length; ++i)

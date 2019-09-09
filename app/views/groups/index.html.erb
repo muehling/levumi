@@ -17,9 +17,12 @@
   <class-book-app></class-book-app>
 </div>
 
-<% if @login.intro_state < 5 %>
-  <script>
 
+  <script>
+    showIntro = false
+
+    <% if @login.intro_state < 5 %>
+      showIntro = true
       <%
      texts =  [
      'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',
