@@ -18,9 +18,10 @@ class Result < ApplicationRecord
     end
   end
 
-  # Schattenkopie anlegen. falls Result-Objekt nicht leer und länger als 24h in der Datenbank (sonst vermutlich fehlerhaft). Prior Verweis aktualisieren
+  # Schattenkopie anlegen. falls Result-Objekt nicht zur Beispielklasse gehört, nicht leer ist und länger als 24h in der Datenbank (sonst vermutlich einfach fehlerhafte Messung).
+  # In jedem Fall aber Prior Verweis aktualisieren
   before_destroy do |result|
-    if (!result.test_date.nil? && result.test_date < Date.today)
+    if (!result.test_date.nil? && result.test_date < Date.today && !result.assessment.group.demo)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
       student.shadow_results.create(shorthand: result.assessment.test.shorthand, version: result.assessment.test.version, group: result.assessment.group.id, test_date: result.test_date, test_week: result.test_week, views: result.views, report: result.report, data: result.data)
