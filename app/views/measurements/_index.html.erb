@@ -33,7 +33,7 @@
         <%= measurement.date.to_date.strftime("%d.%m.%Y") %>
       </td>
 
-      <%if !@assessment.test.student_access%>
+      <%if !@assessment.test.student_access && @user.transferred != true %>
         <td>
 
           <%= link_to new_user_group_assessment_measurement_results_path(@user, @group, @assessment, measurement, :format => :html),
