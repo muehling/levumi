@@ -26,31 +26,31 @@
     }
 
     //Vorheriges Ergebnis als Objekt
-    <% unless @result.prior_result.nil? %>
+    <% unless @last_result.nil? %>
     const lastResult = {
-        views: JSON.parse("<%= escape_javascript(raw @result.prior_result.views.to_json) %>"),
-        report: JSON.parse("<%= escape_javascript(raw @result.prior_result.report.to_json) %>"),
-        data: JSON.parse("<%= escape_javascript(raw @result.prior_result.data.to_json) %>")
+        views: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.views.to_json) %>"),
+        report: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.report.to_json) %>"),
+        data: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.data.to_json) %>")
     }
     <% else %>
     const lastResult = undefined
     <% end %>
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @result.student.get_setting(:font_family) %>'
-    const font_size = <%= @result.student.get_setting(:font_size) %>
+    const font_family = '<%= @student.get_setting(:font_family) %>'
+    const font_size = <%= @student.get_setting(:font_size) %>
 
         //Funktionen für Testumgebung bereitstellen
         function saveResults(views, report, data, callback) {
-            let url = '<%= student_result_url(@student, @result)%>'
+            let url = '<%= student_results_url(@student)%>'
             let header = {
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
             }
-            let body = 'views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
+            let body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
             fetch(url, {
-                method: 'put',
+                method: 'post',
                 headers: header,
                 credentials: 'include',
                 body: body
