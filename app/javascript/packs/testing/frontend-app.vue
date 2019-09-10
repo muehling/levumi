@@ -24,8 +24,7 @@
                     <h6>{{test.test_info.area}}</h6>
                 </template>
                 <b-button block variant='primary'
-                          :href="'/students/' + student.id + '/results?test_id='+ test.test_info.id"
-                          data-method='post'
+                          :href="'/students/' + student.id + '/results/new?test_id='+ test.test_info.id"
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
                           @click="logout = false"

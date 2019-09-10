@@ -29,8 +29,7 @@
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
                                       :disabled="get_result(student.id) > 0"
                                       :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                                      :href="'/students/' + student.id + '/results?test_id='+ test.id + '#' + student.name"
-                                      data-method='post'
+                                      :href="'/students/' + student.id + '/results/new?test_id='+ test.id + '#' + student.name"
                             >
                                 {{student.name}}
                             </b-button>

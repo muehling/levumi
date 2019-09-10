@@ -1,11 +1,11 @@
 class ResultsController < ApplicationController
   before_action :set_student
 
-  before_action :check_login, only: [:create]
-  skip_before_action :set_login, only: [:create]
+  before_action :check_login, only: [:create, :new]
+  skip_before_action :set_login, only: [:create, :new]
 
-  #POST /students/:student_id/results
-  def create
+  #GET /students/:student_id/results/new
+  def new
     if params.has_key?(:test_id)           #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
       @test = Test.find(params[:test_id])
       unless @test.nil?
@@ -22,7 +22,14 @@ class ResultsController < ApplicationController
         end
         render 'edit', layout: 'testing'
       end
-    else      #Ergebnis eines Tests => Objekt anlegen
+    else
+      head 304
+    end
+  end
+
+  #POST /students/:student_id/results
+  def create
+    if params.has_key?(:assessment_id)
       @result = @student.results.build(assessment_id: params[:assessment_id])
       @result.views = JSON.parse(params[:views])
       @result.report = JSON.parse(params[:report])
