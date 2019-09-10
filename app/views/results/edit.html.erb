@@ -28,9 +28,9 @@
     //Vorheriges Ergebnis als Objekt
     <% unless @last_result.nil? %>
     const lastResult = {
-        views: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.views.to_json) %>"),
-        report: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.report.to_json) %>"),
-        data: JSON.parse("<%= escape_javascript(raw @last_result.prior_result.data.to_json) %>")
+        views: JSON.parse("<%= escape_javascript(raw @last_result.views.to_json) %>"),
+        report: JSON.parse("<%= escape_javascript(raw @last_result.report.to_json) %>"),
+        data: JSON.parse("<%= escape_javascript(raw @last_result.data.to_json) %>")
     }
     <% else %>
     const lastResult = undefined
