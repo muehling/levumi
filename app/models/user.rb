@@ -3,7 +3,7 @@ class User < ApplicationRecord
   has_many :groups, -> { where.not(group_shares: {key: nil}) }, through: :group_shares
 
   has_secure_password
-  #TODO: Kommentar entfernen und Fehler-Validierung in _password anpassen.
+  #TODO: Ggf. Kommentar entfernen und Fehler-Validierung in _password anpassen, falls gewünscht.
   #validates :password, length: { minimum: 5 }
 
   validates_presence_of :email, message: 'E-Mail darf nicht leer sein!'

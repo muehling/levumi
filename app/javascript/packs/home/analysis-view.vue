@@ -276,6 +276,9 @@
                             categories: this.weeks,
                             tickPlacement: 'between'
                         },
+                        yaxis: {
+                            min: 0
+                        },
                         tooltip: {shared: true}
                     },
                     line: {
@@ -292,6 +295,7 @@
                             toolbar: {show:false},
                             zoom: {enabled: false}
                         },
+                        colors: ['#449DD1', '#F86624', '#EA3546', '#662E9B', '#C5D86D', '#4ECDC4', '#C7F464', '#81D4FA', '#546E7A', '#FD6A6A', '#5C4742', '#A5978B', '#8D5B4C', '#5A2A27', '#C4BBAF'],
                         legend: {position: 'top'},
                         stroke: {
                             curve: 'straight',
@@ -321,6 +325,9 @@
                                 minHeight: 20
                             },
                             title: {text: 'Testwoche'}
+                        },
+                        yaxis: {
+                            min: 0
                         }
                     }
                 },

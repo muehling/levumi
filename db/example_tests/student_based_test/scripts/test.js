@@ -68,7 +68,7 @@ function next(btn) {
                 p_items.push(result[i].item)
         }
 
-        let total = lastResult ? sum[0] + sum[1] >= lastResult.views['Übersicht'] ? 1 : -1 : 0
+        let total = lastResult ? sum[0] + sum[1] >= lastResult.views['V1'] ? 1 : -1 : 0
 
         saveResults(
             {

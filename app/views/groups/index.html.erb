@@ -1,6 +1,7 @@
 <script>
   //Eintrag in der Navleiste markieren
-  highlightNavItem('navbarKlassenbuch');
+    highlightNavItem('navbarKlassenbuch')
+    showIntro = false  //Wird in ClassBookApp verwendet
 </script>
 
 <div id='levumi' data="<%= @data.to_json%>">
@@ -19,7 +20,7 @@
 
 <% if @login.intro_state < 5 %>
   <script>
-
+      showIntro = true
       <%
      texts =  [
      'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',

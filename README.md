@@ -17,7 +17,7 @@ Alle anderen Funktionen sind optional.
 
 ##### report - Qualitative Aufbereitung für Verarbeitung durch Levumi
     Hash mit drei Einträgen:
-		* total: 1 / 0 / -1 für "Verbesserung", "Keine Änderung" und "Verschlechterung", aus Sicht des Tests.
+		* trend: 1 / 0 / -1 für "Verbesserung", "Keine Änderung" und "Verschlechterung", aus Sicht des Tests.
 		* positive: Array mit Shorthand der Items, die in dieser Testung "gut" waren.
 		* negative: Array mit Shorthand der Items, die in dieser Testung "schlecht" waren.
 	

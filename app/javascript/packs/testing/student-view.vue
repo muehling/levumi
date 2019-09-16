@@ -13,8 +13,7 @@
                     <b-list-group-item
                             v-for="test in tests_for_area(area)"
                             :key="test.id"
-                            :href="'/students/' + student + '/results?test_id='+ test.test_info.id + '&student=1'"
-                            data-method='post'
+                            :href="'/students/' + student + '/results/new?test_id='+ test.test_info.id + '&student=1'"
                             :disabled="!test.open"
                             :variant="test.open ? 'success' : ''"
                     >

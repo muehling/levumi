@@ -69,7 +69,7 @@ if Rails.env.development?
               'V1': 0.5,
               'V2': {'K': 0.66, 'V': 0.33}
           },
-          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
+          report: {'trend': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 1},
               {item: 'I2', result: 0},
@@ -84,7 +84,7 @@ if Rails.env.development?
               'V1': 0.5,
               'V2': {'K': 0.66, 'V': 0.33}
           },
-          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
+          report: {'trend': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 1},
               {item: 'I2', result: 0},
@@ -99,7 +99,7 @@ if Rails.env.development?
               'V1': 0.5,
               'V2': {'K': 1, 'V': 0}
           },
-          report: {'total': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
+          report: {'trend': 0, 'negative': ['I2', 'I3', 'I6'], 'positive': ['I1', 'I4', 'I5']},
           data: [
               {item: 'I1', result: 0},
               {item: 'I2', result: 0},

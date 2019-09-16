@@ -6,8 +6,6 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
-    #Daten für die "Home"-Ansicht laden.
-    @groups = @login.groups.where(archive: false).order(id: :desc).map {|g| g.as_hash(@login)}
   end
 
   #GET /users/edit/:id
@@ -98,15 +96,13 @@ class UsersController < ApplicationController
   def register
     @user = User.find(session[:user])               #Login nicht gesetzt, da before action nicht ausgeführt.
     redirect_to '/' if @user.nil?
-
     #GET Anfrage standardmäßig nur am Anfang und Ende, oder bei Unterbrechung des Prozesses
     if request.get?
-      case @user.intro_state
-      when 0 #Anfang des Intros
+      if @user.tc_accepted.nil? || @user.intro_state == 0
         render 'users/intro/terms_and_conditions', layout: 'minimal' and return
-      when 1..2
+      elsif @user.intro_state < 3
         render 'users/intro/forms', layout: 'minimal' and return
-      when 3 #Intro neu starten
+      else
         @login = @user
         render 'users/intro/help' and return
       end

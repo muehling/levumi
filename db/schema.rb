@@ -121,7 +121,6 @@ ActiveRecord::Schema.define(version: 2019_07_25_203450) do
   create_table "results", force: :cascade do |t|
     t.integer "student_id"
     t.integer "assessment_id"
-    t.integer "prior_result_id"
     t.date "test_date"
     t.date "test_week"
     t.json "views"
@@ -130,7 +129,6 @@ ActiveRecord::Schema.define(version: 2019_07_25_203450) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assessment_id"], name: "index_results_on_assessment_id"
-    t.index ["prior_result_id"], name: "index_results_on_prior_result_id"
     t.index ["student_id"], name: "index_results_on_student_id"
   end
 

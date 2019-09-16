@@ -24,8 +24,7 @@
                     <h6>{{test.test_info.area}}</h6>
                 </template>
                 <b-button block variant='primary'
-                          :href="'/students/' + student.id + '/results?test_id='+ test.test_info.id"
-                          data-method='post'
+                          :href="'/students/' + student.id + '/results/new?test_id='+ test.test_info.id"
                           :disabled="!test.open"
                           :variant="test.open ? 'outline-success' : 'success'"
                           @click="logout = false"
@@ -46,6 +45,7 @@
                             action='/testen_login'
                             accept-charset='UTF-8'
                             data-remote='true'
+                            data-type='json'
                             method='post'
                             v-on:ajax:error="loading=false, retry=true"
                             v-on:ajax:success="success"
@@ -63,7 +63,7 @@
                                 Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
                             </div>
                         </b-form-group>
-                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Einloggen</b-button>
+                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Starten</b-button>
                     </b-form>
                 </b-card>
             </b-col>
