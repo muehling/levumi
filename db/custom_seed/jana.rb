@@ -2541,7 +2541,7 @@ results ={
 			}
 		]
 }
-group_id = Student.find(3).group_id
+group_id = Student.find(1006).group_id
 
 a_sl4 = Assessment.create(group_id: group_id, test_id: Test.find_by_shorthand('SL4').id)
 a_wl4 = Assessment.create(group_id: group_id, test_id: Test.find_by_shorthand('WL4').id)
