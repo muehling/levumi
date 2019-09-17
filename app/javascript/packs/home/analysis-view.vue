@@ -14,6 +14,7 @@
                             size='sm'
                 >
                     <b-dropdown-item v-for="(student, index) in students"
+                                     v-if="has_results(student)"
                                      :key="student.id"
                                      @click="student_selected = index, updateView()"
                                      class='text-small'
@@ -385,18 +386,26 @@
             updateView() {
                 if (this.configuration.views[this.view_selected].type === 'table')
                     return
+
+                const view = this.configuration.views[this.view_selected]
                 //Optionen für Graph aus Default Werten und gewählten Werten bauen
                 //Aktuell Unterscheidung bar/line wegen Bug in Apexcharts
                 let opt = JSON.parse(JSON.stringify(
-                    this.configuration.views[this.view_selected].options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
+                    view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
                 ))
-                opt = deepmerge(opt, JSON.parse(JSON.stringify(this.configuration.views[this.view_selected].options)))
-                const view = this.configuration.views[this.view_selected]
+                opt = deepmerge(opt, JSON.parse(JSON.stringify(view.options)))
 
+                //Default für y-Achse: 10% Luft nach oben
+                if (opt.yaxis === undefined)
+                    opt.yaxis = {}
+                if (opt.yaxis.max === undefined)
+                    opt.yaxis.max = function(max) {return 1.1*max}
+
+                //x-Achsen Beschriftung mit Testwochen
                 if (view.options.chart.type === 'line') {
                     opt.xaxis.labels.formatter = function (value, timestamp, index) {
                         if (index >= this.weeks.length)
-                            return ""
+                            return ''
                         else
                             return this.print_date(this.weeks[index])
                     }.bind(this)
@@ -405,14 +414,16 @@
                     for (let i = 0; i < opt.xaxis.categories.length; ++i)
                         opt.xaxis.categories[i] = this.print_date(opt.xaxis.categories[i])
 
+               //Ergebnisse aufbereiten
                let res = []
                 //Ein "leeres" Objekt für alle Datenserien anlegen
                 if (this.student_selected == -1) {
                     for (let s = 0; s < this.students.length; ++s)
-                        res.push({
-                            'name': this.student_name(this.students[s].id),
-                            'data': []
-                        })
+                        if (this.has_results(this.students[s]))
+                            res.push({
+                                'name': this.student_name(this.students[s].id),
+                                'data': []
+                            })
                 } else {
                     if (view.series == undefined) {
                         res.push({
@@ -434,6 +445,7 @@
                         res[r].data.fill(null)
                     }
                 }
+
 
                 let maxY = view.options.yaxis ? view.options.yaxis.max ? view.options.yaxis.max : 0 : 0 //Für Platzierung der Kommentare
 
@@ -552,6 +564,12 @@
                     res.push({value: this.weeks[i], text: this.print_date(this.weeks[i])})
                 return res
             },
+            has_results(student) {
+                for (let i = 0; i < this.results.length; ++i)
+                    if (this.results[i].student_id == student.id)
+                        return true
+                return false
+            }
         },
         mounted() {
             this.student_selected = this.has_group_views ? -1 : 0
