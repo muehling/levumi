@@ -89,7 +89,7 @@ class ImportController < ApplicationController
       data = []
       data_params  = r[:data]
       data_params.each do |data_obj|
-        data += [data_obj.permit(:item, :group, :answer, :time).to_h]
+        data += [data_obj.permit(:item, :group, :answer, :time, :result, :description).to_h]
       end
 
       Result.create(student_id: map_old_stu_to_new_stu[r[:student_id].to_s], assessment_id: map_old_meas_to_new_ass[r[:measurement_id]],
