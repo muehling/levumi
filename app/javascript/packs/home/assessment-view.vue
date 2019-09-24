@@ -119,9 +119,9 @@
                                         <td><span v-for="(item, index) in result.data.report.positive">{{(index > 0 ? ', ' : '') + test.items[item]}}</span></td>
                                         <td><span v-for="(item, index) in result.data.report.negative">{{(index > 0 ? ', ' : '') + test.items[item]}}</span></td>
                                         <td>
-                                            <i class='fas fa-arrow-up' v-if="result.data.report.trend > 0"></i>
-                                            <i class='fas fa-arrow-right' v-else-if="result.data.report.trend == 0"></i>
-                                            <i class='fas fa-arrow-down' v-else></i>
+                                            <i class='fas fa-arrow-up' style='color: var(--success-color)' v-if="result.data.report.trend > 0"></i>
+                                            <i class='fas fa-arrow-right' style='color: var(--secondary-color)' v-else-if="result.data.report.trend == 0"></i>
+                                            <i class='fas fa-arrow-down' style='color: var(--danger-color)' v-else></i>
                                         </td>
                                         <td v-if="!read_only">
                                             <b-btn small
