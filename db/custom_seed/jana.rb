@@ -1,4 +1,5 @@
 results = Result.all
+date_before_new_levumi = Date.parse('2019-09-01')
 results.each do |r|
 
 	if r.assessment.test.shorthand != 'WS1' && r.assessment.test.shorthand != 'TS0' && r.assessment.test.shorthand != 'FB-PIQ-STU' &&
@@ -15,7 +16,7 @@ results.each do |r|
 		r.views['V2']['LGM'] = read_words
 		r.views['V3']['LGM'] = read_words
 
-    date_before_new_levumi = Date.parse('2019-09-01')
+
 
 		new_data = []
 		p_items =  []
