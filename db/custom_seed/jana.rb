@@ -2,7 +2,7 @@ results = Result.all
 results.each do |r|
 	#Zusätzliche Sicherheitsabfrage: Kann an meinen Datensatz gelegen haben, aber manchmal gab es keine Assessments und falls Daten vom Beispieltest in der Datenabank liegen
 	#Sollte in der Live-Version eigentlich nicht vorkommen
-	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at < Date.parse('2019-09-26'))
+	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at > Date.parse('2019-09-30'))
 		next
   end
 	#Folgende Tests besitzen keine LG oder LGM, also rausfiltern
@@ -110,14 +110,14 @@ results.each do |r|
 						sum += 1
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']][1], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
 						p_items = p_items + [items[d['item']][0]]
-						if d['group'] == 1
+						if d['group'] == '1'
 							ada_cor += 1
 							if ada_cor_items == ""
 								ada_cor_items = "" + items[d['item']][1]
 							else
 								ada_cor_items += ", " + items[d['item']][1]
 							end
-						elsif d['group'] == 2
+						elsif d['group'] == '2'
 							avp_cor += 1
 							if avp_cor_items == ""
 								avp_cor_items = "" + items[d['item']][1]
@@ -129,14 +129,14 @@ results.each do |r|
 						n_sum += 1
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']][1], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
 						n_items = n_items + [items[d['item']][0]]
-						if d['group'] == 1
+						if d['group'] == '1'
 							ada_fal += 1
 							if ada_fal_items == ""
 								ada_fal_items = "" + items[d['item']][1]
 							else
 								ada_fal_items += ", " + items[d['item']][1]
 							end
-						elsif d['group'] == 2
+						elsif d['group'] == '2'
 							avp_fal += 1
 							if avp_fal_items == ""
 								avp_fal_items = "" + items[d['item']][1]
@@ -167,7 +167,7 @@ results.each do |r|
 					else
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
           end
-					if d['group'] == 1
+					if d['group'] == '1'
             if items[d['item']] == 'runde'
 							avp_cor += 1
 							if avp_cor_items == ""
@@ -183,14 +183,14 @@ results.each do |r|
 								ada_cor_items += ", " + items[d['item']]
 							end
             end
-					elsif d['group'] == 2
+					elsif d['group'] == '2'
 						avp_cor += 1
 						if avp_cor_items == ""
 							avp_cor_items = "" + items[d['item']]
 						else
 							avp_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 3
+					elsif d['group'] == '3'
 						avk_cor += 1
 						if avk_cor_items == ""
 							avk_cor_items = "" + items[d['item']]
@@ -205,7 +205,7 @@ results.each do |r|
 					else
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
 					end
-					if d['group'] == 1
+					if d['group'] == '1'
             if items[d['item']] == 'runde'
 							avp_fal += 1
 							if avp_fal_items == ""
@@ -221,14 +221,14 @@ results.each do |r|
 								ada_fal_items += ", " + items[d['item']]
 							end
             end
-					elsif d['group'] == 2
+					elsif d['group'] == '2'
 						avp_fal += 1
 						if avp_fal_items == ""
 							avp_fal_items = "" + items[d['item']]
 						else
 							avp_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 3
+					elsif d['group'] == '3'
 						avk_fal += 1
 						if avk_fal_items == ""
 							avk_fal_items = "" + items[d['item']]
@@ -253,21 +253,21 @@ results.each do |r|
 				if r.report['positive'].include?(d['item'])
 					sum += 1
 					new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
-					if d['group'] == 1
+					if d['group'] == '1'
 						complex_str_cor += 1
 						if complex_str_cor_items == ""
 							complex_str_cor_items = "" + items[d['item']]
 						else
 							complex_str_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 2
+					elsif d['group'] == '2'
 						inf_cor += 1
 						if inf_cor_items == ""
 							inf_cor_items = "" + items[d['item']]
 						else
 							inf_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 3
+					elsif d['group'] == '3'
 						coh_cor += 1
 						if coh_cor_items == ""
 							coh_cor_items = "" + items[d['item']]
@@ -278,21 +278,21 @@ results.each do |r|
 				elsif r.report['negative'].include?(d['item'])
 					n_sum += 1
 					new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
-					if d['group'] == 1
+					if d['group'] == '1'
 						complex_str_fal += 1
 						if complex_str_fal_items == ""
 							complex_str_fal_items = "" + items[d['item']]
 						else
 							complex_str_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 2
+					elsif d['group'] == '2'
 						inf_fal += 1
 						if inf_fal_items == ""
 							inf_fal_items = "" + items[d['item']]
 						else
 							inf_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == 3
+					elsif d['group'] == '3'
 						coh_fal += 1
 						if coh_fal_items == ""
 							coh_fal_items = "" + items[d['item']]
