@@ -2,11 +2,11 @@ results = Result.all
 results.each do |r|
 	#Zusätzliche Sicherheitsabfrage: Kann an meinen Datensatz gelegen haben, aber manchmal gab es keine Assessments und falls Daten vom Beispieltest in der Datenabank liegen
 	#Sollte in der Live-Version eigentlich nicht vorkommen
-	if r.assessment.nil? || r.data.nil?
+	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at < Date.parse('2019-09-26'))
 		next
-	end
+  end
 	#Folgende Tests besitzen keine LG oder LGM, also rausfiltern
-	if (r.assessment.test.shorthand == 'SEL2' || r.assessment.test.shorthand == 'SEL6') && r.test_date < Date.parse('2019-09-05') && (r.assessment.group.user.created_at < Date.parse('2019-09-26'))
+	if (r.assessment.test.shorthand == 'SEL2' || r.assessment.test.shorthand == 'SEL6') && r.test_date < Date.parse('2019-09-05')
 		new_data = []
 		p_items =  []
 		n_items = []
