@@ -6,6 +6,14 @@ results.each do |r|
 	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at > Date.parse('2019-09-25'))
 		next
   end
+  #Mir fällt gerade nichts besseres ein^^'
+  test_example_data = true
+  if r.data[0]['description'].nil?
+  else
+    	if r.data[0]['description'] == "Beispielitem"
+        test_example_data = false
+      end
+  end
 	#Nur die folgenden Daten müssen betrachtet werden
 	if (r.assessment.test.shorthand == 'SEL2' || r.assessment.test.shorthand == 'SEL4' ||r.assessment.test.shorthand == 'SEL6') && r.test_date < Date.parse('2019-09-05')
 		new_data = []
@@ -111,14 +119,14 @@ results.each do |r|
 						sum += 1
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']][1], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
 						p_items = p_items + [items[d['item']][0]]
-						if d['group'] == '1'
+						if d['group'] == '1' || d['group'] == 1
 							ada_cor += 1
 							if ada_cor_items == ""
 								ada_cor_items = "" + items[d['item']][1]
 							else
 								ada_cor_items += ", " + items[d['item']][1]
 							end
-						elsif d['group'] == '2'
+						elsif d['group'] == '2' || d['group'] == 2
 							avp_cor += 1
 							if avp_cor_items == ""
 								avp_cor_items = "" + items[d['item']][1]
@@ -130,14 +138,14 @@ results.each do |r|
 						n_sum += 1
 						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']][1], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
 						n_items = n_items + [items[d['item']][0]]
-						if d['group'] == '1'
+						if d['group'] == '1' || d['group'] == 1
 							ada_fal += 1
 							if ada_fal_items == ""
 								ada_fal_items = "" + items[d['item']][1]
 							else
 								ada_fal_items += ", " + items[d['item']][1]
 							end
-						elsif d['group'] == '2'
+						elsif d['group'] == '2' || d['group'] == 2
 							avp_fal += 1
 							if avp_fal_items == ""
 								avp_fal_items = "" + items[d['item']][1]
@@ -158,17 +166,17 @@ results.each do |r|
 			r.report['positive'] = p_items
 			r.report['negative'] = n_items
 			r.views = views
-		elsif r.assessment.test.shorthand == 'SEL4' && r.data[0]['description'] != "Beispielitem"
+    elsif r.assessment.test.shorthand == 'SEL4' && test_example_data
 			items = r.assessment.test.items
 			r.data.each do |d|
 				if r.report['positive'].include?(d['item'])
 					sum += 1
           if items[d['item']] == 'runde'
-						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":"2", "answer":d['answer'], "time":d['time'], "result": 1}]
+						new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":"2", "answer":d['answer'], "time": d['time'], "result": 1}]
 					else
-						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
+						new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer": d['answer'], "time":d['time'], "result": 1}]
           end
-					if d['group'] == '1'
+					if d['group'] == '1' || d['group'] == 1
             if items[d['item']] == 'runde'
 							avp_cor += 1
 							if avp_cor_items == ""
@@ -184,14 +192,14 @@ results.each do |r|
 								ada_cor_items += ", " + items[d['item']]
 							end
             end
-					elsif d['group'] == '2'
+					elsif d['group'] == '2' || d['group'] == 2
 						avp_cor += 1
 						if avp_cor_items == ""
 							avp_cor_items = "" + items[d['item']]
 						else
 							avp_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '3'
+					elsif d['group'] == '3' || d['group'] == 3
 						avk_cor += 1
 						if avk_cor_items == ""
 							avk_cor_items = "" + items[d['item']]
@@ -202,11 +210,11 @@ results.each do |r|
 				elsif r.report['negative'].include?(d['item'])
 					n_sum += 1
           if items[d['item']] == 'runde'
-						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":'2', "answer":d['answer'], "time":d['time'], "result": 0}]
+						new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":'2', "answer":d['answer'], "time":d['time'], "result": 0}]
 					else
-						new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
+						new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
 					end
-					if d['group'] == '1'
+					if d['group'] == '1' || d['group'] == 1
             if items[d['item']] == 'runde'
 							avp_fal += 1
 							if avp_fal_items == ""
@@ -222,14 +230,14 @@ results.each do |r|
 								ada_fal_items += ", " + items[d['item']]
 							end
             end
-					elsif d['group'] == '2'
+					elsif d['group'] == '2' || d['group'] == 2
 						avp_fal += 1
 						if avp_fal_items == ""
 							avp_fal_items = "" + items[d['item']]
 						else
 							avp_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '3'
+					elsif d['group'] == '3' || d['group'] == 3
 						avk_fal += 1
 						if avk_fal_items == ""
 							avk_fal_items = "" + items[d['item']]
@@ -238,7 +246,7 @@ results.each do |r|
 						end
 					end
 				else
-					new_data = new_data + [{'item':  items[d['item']][0], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 'NA'}]
+					new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 'NA'}]
 				end
 			end
 			lg = ((sum.to_f/(sum + n_sum).to_f)*100).round(1).to_s
@@ -254,21 +262,21 @@ results.each do |r|
 				if r.report['positive'].include?(d['item'])
 					sum += 1
 					new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 1}]
-					if d['group'] == '1'
+					if d['group'] == '1' || d['group'] == 1
 						complex_str_cor += 1
 						if complex_str_cor_items == ""
 							complex_str_cor_items = "" + items[d['item']]
 						else
 							complex_str_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '2'
+					elsif d['group'] == '2' || d['group'] == 2
 						inf_cor += 1
 						if inf_cor_items == ""
 							inf_cor_items = "" + items[d['item']]
 						else
 							inf_cor_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '3'
+					elsif d['group'] == '3' || d['group'] == 3
 						coh_cor += 1
 						if coh_cor_items == ""
 							coh_cor_items = "" + items[d['item']]
@@ -279,21 +287,21 @@ results.each do |r|
 				elsif r.report['negative'].include?(d['item'])
 					n_sum += 1
 					new_data = new_data + [{'item': d['item'], 'description': items[d['item']], "group":d['group'].to_s, "answer":d['answer'], "time":d['time'], "result": 0}]
-					if d['group'] == '1'
+					if d['group'] == '1' || d['group'] == 1
 						complex_str_fal += 1
 						if complex_str_fal_items == ""
 							complex_str_fal_items = "" + items[d['item']]
 						else
 							complex_str_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '2'
+					elsif d['group'] == '2' || d['group'] == 2
 						inf_fal += 1
 						if inf_fal_items == ""
 							inf_fal_items = "" + items[d['item']]
 						else
 							inf_fal_items += ", " + items[d['item']]
 						end
-					elsif d['group'] == '3'
+					elsif d['group'] == '3' || d['group'] == 3
 						coh_fal += 1
 						if coh_fal_items == ""
 							coh_fal_items = "" + items[d['item']]
@@ -324,6 +332,8 @@ r = Result.find(3290)
 r.report['positive'] = ["I27", "I38", "I43", "I56", "I47", "I12", "I19", "I50", "I30", "I59", "I28", "I25", "I39", "I45", "I29", "I34", "I53", "I54", "I3", "I4", "I11", "I21", "I46", "I36", "I6", "I10", "I5"]
 r.report['negative'] = ["I57", "I17", "I16", "I58", "I32", "I55", "I9", "I35", "I20", "I52"]
 r.views['V1'] = 27
+r.views['V2']['RI'] = "27 von 60"
+r.views['V2']['RI'] = "27 von 60"
 r.views['V3']['SUM'] = 27
 r.save
 
