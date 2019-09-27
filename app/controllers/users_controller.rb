@@ -6,6 +6,12 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
+    respond_to do |format|
+      format.text {
+        send_file @login.as_zip, filename: 'Levumi_Export_' + DateTime.now.strftime("%Y_%m_%d") + '.zip', type: 'application/zip'
+      }
+      format.html {}
+    end
   end
 
   #GET /users/edit/:id

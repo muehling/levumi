@@ -62,12 +62,18 @@
               <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('test'), 'Testverwaltung', tests_path(admin: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('material'), 'Materialverwaltung', materials_path(admin: true), class: 'dropdown-item'%>
-              <a class='dropdown-item disabled' href='#'>Datenexport</a>
+              <%= link_to_if @login.has_capability?('test'), 'Datenexport', tests_path(export: true), class: 'dropdown-item'%>
             </div>
           </li>
         <% end %>
-        <li class='nav-item' id='intro6'>
-          <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
+        <li class='nav-item dropdown' id='intro6'>
+          <a class='nav-link dropdown-toggle' href='#' id='navbarMyData' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+            Meine Daten
+          </a>
+          <div class='dropdown-menu' aria-labelledby='navbarMyData'>
+            <%= link_to 'Profildaten ändern', edit_user_path(@login), class: 'dropdown-item', remote: true%>
+            <%= link_to 'Testungen exportieren', user_path(@login, format: :text), class: 'dropdown-item'%>
+          </div>
         </li>
         <li class='nav-item dropdown'>
           <a class='nav-link dropdown-toggle' href='#' id='navbarLegal' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>

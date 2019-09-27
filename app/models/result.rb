@@ -25,13 +25,29 @@ class Result < ApplicationRecord
     json = super(except: [:created_at, :updated_at])
   end
 
+  #TODO: Schülermerkmale exportieren!
+
   #Textdarstellung für CSV Export
   def as_csv
-    start = "#{self.id},#{self.student_id},#{self.assessment.group_id},#{self.assessment.test_id},#{self.assessment.test_date},#{self.assessment.test_week},"
+    start = "\"#{self.id}\",\"#{self.student_id}\",\"#{self.assessment.group_id}\",\"#{self.assessment.test_id}\",\"#{self.test_date}\",\"#{self.test_week}\","
     res = ''
-    #TODO: Alles Keys exportieren!
     self.data.each do |d|
-      res = res + start + "'#{d['item']}','#{d['result']}'" + (d.has_key?('time') ? ",#{d['time']}\n" : "\n")
+      res = res + start
+      d.each do |k, v|
+        res = res + '"' + v.to_s + '",'
+      end
+      res = res.slice(0, res.length-1) + "\n"
+    end
+    return res
+  end
+
+  #Spaltenbezeichner für CSV-Export, nimmt an, dass alle Result-Objekte eines Tests ein einheitliches Format haben!
+  def csv_header
+    res = '"Ergebnis_ID","Kind_ID","Klassen_ID","Test_ID","Testdatum","Testwoche"'
+    if self.data.size > 0
+      self.data[0].each do |k,v|
+        res = res + ',"' + k + '"'
+      end
     end
     return res
   end

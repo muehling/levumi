@@ -133,4 +133,19 @@ class Test < ApplicationRecord
     return nil
   end
 
+  #Gibt es (exportierbare) Ergebnisse?
+  def has_results
+    Result.where(assessment_id: Assessment.where(test_id: self.id).all.pluck(:id)).count > 0
+  end
+
+  #Alle Ergebnisse eines Tests als CSV-Export
+  def as_csv
+    res = Result.where(assessment_id: Assessment.where(test_id: self.id).all.pluck(:id)).all
+    csv = ''
+    csv = res[0].csv_header + "\n" if res.size > 0
+    res.each do |r|
+      csv = csv + r.as_csv
+    end
+    return csv
+  end
 end

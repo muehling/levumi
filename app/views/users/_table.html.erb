@@ -12,7 +12,7 @@
   </thead>
   <tbody>
   <% @users.each do |user| %>
-    <tr>
+    <tr <% if user.last_login.nil? && user.created_at < (DateTime.now - 14)  %>class='table-warning' <% end %>>
       <th scope='row'><%= user.id %></th>
       <td><%= user.email %></td>
       <td><%= user.get_account_type %></td>

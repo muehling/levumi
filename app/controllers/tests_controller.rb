@@ -7,12 +7,22 @@ class TestsController < ApplicationController
     if params[:admin] && @login.has_capability?('test')
       render 'index_admin'
     else
-      render 'index'
+      if params[:export] && @login.has_capability?('export')
+        render 'index_export'
+      else
+        render 'index'
+      end
     end
   end
 
   #GET /tests/:id/edit
   def edit
+  end
+
+  #GET /test/:id
+  def show
+    #TODO: Sicherheitscheck ob erlaubt?
+    send_data @test.as_csv, filename: @test.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv' , type: :text
   end
 
   #POST /tests

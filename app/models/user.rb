@@ -13,11 +13,12 @@ class User < ApplicationRecord
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
 
-  # Eigene Gruppen löschen
+  # Eigene Gruppen und Shares löschen
   before_destroy do |user|
-    shares = GroupShare.where(user_id: user.id, owner: true)
+    shares = GroupShare.where(user_id: user.id).all
     shares.each do |s|
-      s.group.destroy
+      s.group.destroy if shares.owner
+      s.destroy
     end
   end
 
@@ -127,5 +128,28 @@ class User < ApplicationRecord
   #Hat der Nutzer bereits alle (wichtigen) Intro-Phasen durchlaufen?
   def is_registered
     return intro_state > 2
+  end
+
+  #Alle Testungen eines Users als Zip-Archiv, eine Datei pro verwendetem Test
+  def as_zip
+    groups = Group.where(id: GroupShare.where(user_id: self.id).all.pluck(:group_id)).where.not(demo: true).all.pluck(:id)
+    students = Student.where(group_id: groups).all.pluck(:id)
+    tests = Test.find(Assessment.where(group_id: groups).all.pluck(:test_id))
+    temp = Tempfile.new("Levumi")
+    Zip::OutputStream.open(temp.path) do |zip|
+      tests.each do |t|
+        res = Result.where(student_id: students, assessment_id: Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).all.pluck(:id))
+        if (res.size > 0)
+          zip.put_next_entry((t.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv').encode!('CP437', undefined: :replace, replace: '_'))
+          csv = res[0].csv_header + "\n"
+          res.each do |r|
+            csv = csv + r.as_csv
+          end
+          zip.print csv
+        end
+      end
+    end
+    temp.close
+    return temp.path
   end
 end
