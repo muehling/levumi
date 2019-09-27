@@ -144,7 +144,7 @@ class Test < ApplicationRecord
     csv = ''
     csv = res[0].csv_header + "\n" if res.size > 0
     res.each do |r|
-      csv = csv + r.as_csv
+      csv = csv + r.as_csv(false)
     end
     return csv
   end

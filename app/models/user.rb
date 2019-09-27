@@ -143,7 +143,7 @@ class User < ApplicationRecord
           zip.put_next_entry((t.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv').encode!('CP437', undefined: :replace, replace: '_'))
           csv = res[0].csv_header + "\n"
           res.each do |r|
-            csv = csv + r.as_csv
+            csv = csv + r.as_csv(true)
           end
           zip.print csv
         end

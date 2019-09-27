@@ -150,6 +150,8 @@ ActiveRecord::Schema.define(version: 2019_07_25_203450) do
   create_table "shadow_students", force: :cascade do |t|
     t.integer "original_id"
     t.integer "group"
+    t.integer "account_type"
+    t.integer "state"
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
