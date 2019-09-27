@@ -2,11 +2,12 @@ results = Result.all
 results.each do |r|
 	#Zusätzliche Sicherheitsabfrage: Kann an meinen Datensatz gelegen haben, aber manchmal gab es keine Assessments und falls Daten vom Beispieltest in der Datenabank liegen
 	#Sollte in der Live-Version eigentlich nicht vorkommen
-	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at > Date.parse('2019-09-30'))
+  #Daten checken, da Daten von Usern, die nach dem letzten Update dazu gekommen sind nicht überprüft werden müssen/sollten(Umparsen der Daten!)
+	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at > Date.parse('2019-09-25'))
 		next
   end
-	#Folgende Tests besitzen keine LG oder LGM, also rausfiltern
-	if (r.assessment.test.shorthand == 'SEL2' || r.assessment.test.shorthand == 'SEL6') && r.test_date < Date.parse('2019-09-05')
+	#Nur die folgenden Daten müssen betrachtet werden
+	if (r.assessment.test.shorthand == 'SEL2' || r.assessment.test.shorthand == 'SEL4' ||r.assessment.test.shorthand == 'SEL6') && r.test_date < Date.parse('2019-09-05')
 		new_data = []
 		p_items =  []
 		n_items = []
@@ -157,7 +158,7 @@ results.each do |r|
 			r.report['positive'] = p_items
 			r.report['negative'] = n_items
 			r.views = views
-		elsif r.assessment.test.shorthand == 'SEL4'
+		elsif r.assessment.test.shorthand == 'SEL4' && r.data[0]['description'] != "Beispielitem"
 			items = r.assessment.test.items
 			r.data.each do |d|
 				if r.report['positive'].include?(d['item'])
@@ -317,4 +318,12 @@ results.each do |r|
   end
 	r.save
 end
+
+#Janas Testresult anpassen
+r = Result.find(3290)
+r.report['positive'] = ["I27", "I38", "I43", "I56", "I47", "I12", "I19", "I50", "I30", "I59", "I28", "I25", "I39", "I45", "I29", "I34", "I53", "I54", "I3", "I4", "I11", "I21", "I46", "I36", "I6", "I10", "I5"]
+r.report['negative'] = ["I57", "I17", "I16", "I58", "I32", "I55", "I9", "I35", "I20", "I52"]
+r.views['V1'] = 27
+r.views['V3']['SUM'] = 27
+r.save
 
