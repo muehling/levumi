@@ -1,9 +1,19 @@
+#Janas Testresult anpassen
+r = Result.find(3290)
+r.report['positive'] = ["I27", "I38", "I43", "I56", "I47", "I12", "I19", "I50", "I30", "I59", "I28", "I25", "I39", "I45", "I29", "I34", "I53", "I54", "I3", "I4", "I11", "I21", "I46", "I36", "I6", "I10", "I5"]
+r.report['negative'] = ["I57", "I17", "I16", "I58", "I32", "I55", "I9", "I35", "I20", "I52"]
+r.views['V1'] = 27
+r.views['V2']['RI'] = "27 von 60"
+r.views['V2']['RI'] = "27 von 60"
+r.views['V3']['SUM'] = 27
+r.save
+
 results = Result.all
 results.each do |r|
 	#Zusätzliche Sicherheitsabfrage: Kann an meinen Datensatz gelegen haben, aber manchmal gab es keine Assessments und falls Daten vom Beispieltest in der Datenabank liegen
 	#Sollte in der Live-Version eigentlich nicht vorkommen
   #Daten checken, da Daten von Usern, die nach dem letzten Update dazu gekommen sind nicht überprüft werden müssen/sollten(Umparsen der Daten!)
-	if r.assessment.nil? || r.data.nil? || (r.assessment.group.owner.created_at > Date.parse('2019-09-25'))
+	if r.assessment.nil? || r.data.nil? || (r.student.group.owner.created_at > Date.parse('2019-09-25'))
 		next
   end
   #Mir fällt gerade nichts besseres ein^^'
@@ -326,14 +336,4 @@ results.each do |r|
   end
 	r.save
 end
-
-#Janas Testresult anpassen
-r = Result.find(3290)
-r.report['positive'] = ["I27", "I38", "I43", "I56", "I47", "I12", "I19", "I50", "I30", "I59", "I28", "I25", "I39", "I45", "I29", "I34", "I53", "I54", "I3", "I4", "I11", "I21", "I46", "I36", "I6", "I10", "I5"]
-r.report['negative'] = ["I57", "I17", "I16", "I58", "I32", "I55", "I9", "I35", "I20", "I52"]
-r.views['V1'] = 27
-r.views['V2']['RI'] = "27 von 60"
-r.views['V2']['RI'] = "27 von 60"
-r.views['V3']['SUM'] = 27
-r.save
 
