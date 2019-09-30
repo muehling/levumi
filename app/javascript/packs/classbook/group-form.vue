@@ -93,28 +93,24 @@
         data: function () {
             return {
                 label: this.index == 0 ? '' : this.group.label,
-                key: ''
+                key: this.index == 0 ? this.new_key() : ''
             }
         },
         methods: {
             success(event) { //Attributwerte aus AJAX Antwort übernehmen und View updaten
-                this.$emit('update:groups', {index: this.index, object: event.detail[0]});
+                this.$emit('update:groups', {index: this.index, object: event.detail[0]})
                 if (this.index == 0)
-                    this.refresh_key();
+                    this.key = this.new_key()
             },
-            refresh_key() {
-                this.key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
+            new_key() {
+                return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6)
             },
             generate_key() {
-                return encrypt_key(this.key);
+                return encrypt_key(this.key)
             },
             generate_token() {
                 return sjcl.encrypt(this.key, this.key)
-            },
-        },
-        created() {
-            if (this.index == 0)
-                this.refresh_key();
+            }
         },
         name: 'group-form'
     }
