@@ -13,7 +13,7 @@ results.each do |r|
 	#Zusätzliche Sicherheitsabfrage: Kann an meinen Datensatz gelegen haben, aber manchmal gab es keine Assessments und falls Daten vom Beispieltest in der Datenabank liegen
 	#Sollte in der Live-Version eigentlich nicht vorkommen
   #Daten checken, da Daten von Usern, die nach dem letzten Update dazu gekommen sind nicht überprüft werden müssen/sollten(Umparsen der Daten!)
-	if r.assessment.nil? || r.data.nil? || (r.student.group.owner.created_at > Date.parse('2019-09-25')) || (r.update_at != false && r.updated_at > Date.parse("2019-09-25"))
+	if r.assessment.nil? || r.data.nil? || (r.student.group.owner.created_at > Date.parse('2019-09-25')) || (r.update_at != false && r.updated_at > Date.parse("2019-09-29"))
 		next
   end
   #Mir fällt gerade nichts besseres ein^^'
