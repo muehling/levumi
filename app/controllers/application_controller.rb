@@ -6,7 +6,6 @@ class ApplicationController < ActionController::Base
 
   #GET '/'
   def start
-    reset_session #Alte Daten ggf. entfernen
     respond_to do |format|
       format.html {
         render :start
@@ -18,7 +17,6 @@ class ApplicationController < ActionController::Base
   def login
     u = User.find_by_email(params[:email])
     if !u.nil? && u.authenticate(params[:password])
-      reset_session           #Alte Daten ggf. entfernen
       session[:user] = u.id
       u.last_login = Time.now
       u.save
