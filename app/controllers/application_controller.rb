@@ -70,7 +70,14 @@ class ApplicationController < ActionController::Base
   #POST '/testen_logout'
   def logout_frontend
     session.delete(:student)
-    head 200
+    respond_to do |format|
+      format.html {
+        redirect_to '/testen'
+      }
+      format.js {
+        head 200
+      }
+    end
   end
 
   #Masquerading
