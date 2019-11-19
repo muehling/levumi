@@ -26,12 +26,26 @@ class Result < ApplicationRecord
   end
 
   #Textdarstellung für CSV Export
-  def as_csv
-    start = "#{self.id},#{self.student_id},#{self.assessment.group_id},#{self.assessment.test_id},#{self.assessment.test_date},#{self.assessment.test_week},"
+  def as_csv(for_user)
+    start = "\"#{id}\",\"#{student_id}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
     res = ''
-    #TODO: Alles Keys exportieren!
     self.data.each do |d|
-      res = res + start + "'#{d['item']}','#{d['result']}'" + (d.has_key?('time') ? ",#{d['time']}\n" : "\n")
+      res = res + start
+      d.each do |k, v|
+        res = res + '"' + v.to_s + '",'
+      end
+      res = res.slice(0, res.length-1) + "\n"
+    end
+    return res
+  end
+
+  #Spaltenbezeichner für CSV-Export, nimmt an, dass alle Result-Objekte eines Tests ein einheitliches Format haben!
+  def csv_header
+    res = '"Ergebnis_ID","Kind_ID","Klassen_ID","Geschlecht","Geburtsdatum","SPF","Tags","Test_ID","Testdatum","Testwoche"'
+    if self.data.size > 0
+      self.data[0].each do |k,v|
+        res = res + ',"' + k + '"'
+      end
     end
     return res
   end

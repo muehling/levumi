@@ -158,7 +158,10 @@ if Rails.env.development?
       if (rand > 0.3)
         v = rand*3
         k = 6-v
-        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i), views: {'V1': (v+k), 'V2': {'KT': k, 'VT': v, 'KG': k, 'VG': v}}, report: {'trend': 0, 'positive': ['I1', 'I2', 'I3'], 'negative': ['I4', 'I5', 'I6'] })
+        r = a1.results.build(student_id: s.id, test_date: DateTime.now-7*(7-i),
+                             views: {'V1': (v+k), 'V2': {'KT': k, 'VT': v, 'KG': k, 'VG': v}},
+                             report: {'trend': 0, 'positive': ['I1', 'I2', 'I3'], 'negative': ['I4', 'I5', 'I6']},
+                             data: [{'item': 'I1', 'result': 0}, {'item': 'I2', 'result': 0}, {'item': 'I3', 'result': 0}, {'item': 'I4', 'result': 1}, {'item': 'I5', 'result': 1}, {'item': 'I6', 'result': 1}])
         r.save
       end
     end

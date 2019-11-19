@@ -6,6 +6,12 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
+    respond_to do |format|
+      format.text {
+        send_file @login.as_zip, filename: 'Levumi_Export_' + DateTime.now.strftime("%Y_%m_%d") + '.zip', type: 'application/zip'
+      }
+      format.html {}
+    end
   end
 
   #GET /users/edit/:id
@@ -17,17 +23,17 @@ class UsersController < ApplicationController
     if params.has_key?('text') && @login.id == @user.id       #Send mail to all users
       if params.has_key?('teacher')
         User.where(account_type: 0).each do |u|
-          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+          UserMailer.with(user: u, body: params['text']).notify.deliver_later
         end
       end
       if params.has_key?('researcher')
         User.where(account_type: 1).each do |u|
-          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+          UserMailer.with(user: u, body: params['text']).notify.deliver_later
         end
       end
       if params.has_key?('private')
         User.where(account_type: 2).each do |u|
-          UserMailer.with(user: @user, body: params['text']).notify.deliver_later
+          UserMailer.with(user: u, body: params['text']).notify.deliver_later
         end
       end
       render js: "alert('Nachricht wurde verschickt!')"

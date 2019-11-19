@@ -88,7 +88,7 @@
             }
         },
         methods: {
-            auto_logout: function handler(event) {
+            auto_logout: function handler(event) {  //Falls Tab geschlossen ohne vorher auszuloggen
                 if(this.logout){
                     fetch('/testen_logout', {
                         method: 'POST',
@@ -114,7 +114,9 @@
                 this.tests = event.detail[0]['tests']
                 this.student = event.detail[0]['student']
                 this.loading = false
+                //Details für eingeloggten student anzeigen
                 window.$('#navbar_text').html('Dein Login Code: ' + this.student.login)
+                window.$('#navbar_button').html("<a class='btn btn-outline-secondary' href='/testen_logout' data-method='post'>Abmelden</a>")
             }
         },
         name: 'frontend-app'

@@ -10,7 +10,7 @@
             </div>
             <div v-else-if="editMode"> <!-- Form anzeigen -->
                 <b-form-input type='text' class='form-control' v-model="name" size='sm' />
-                <small id="nameHelp" class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
+                <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
             </div>
             <div v-else> <!-- Anlegen Button anzeigen -->
                 <b-btn variant='outline-secondary' size='sm' @click="editMode = true"><i class='fas fa-user-plus'></i> Anlegen</b-btn>
@@ -28,7 +28,7 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-select size="sm" id="gender" v-model="gender" :options="options_gender" name='gender'>
+                <b-form-select size="sm" v-model="gender" :options="options_gender" name='gender'>
                 </b-form-select>
             </div>
             <div v-else>
@@ -54,8 +54,8 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-select id="sen" v-model="sen" :options="options_sen" size='sm' />
-                <small id="focusHelp" class="form-text text-muted">Diagnostizierter sonderpädagogischer Förderbedarf?</small>
+                <b-form-select v-model="sen" :options="options_sen" size='sm' />
+                <small class="form-text text-muted">Diagnostizierter sonderpädagogischer Förderbedarf?</small>
             </div>
             <div v-else>
                 <span v-if="student.sen != undefined">{{ options_sen[student.sen].text }}</span>
@@ -65,9 +65,9 @@
 
         <td>
             <div v-if="editMode">
-                <b-form-checkbox-group id="tags" v-model="tags" :options="options_tags" name='tags' stacked>
+                <b-form-checkbox-group v-model="tags" :options="options_tags" name='tags' stacked>
                 </b-form-checkbox-group>
-                <small id="focusHelp" class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
+                <small class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
             </div>
             <div v-else>
                 <span v-for="(tag, index) in student.tags">{{index > 0 ? ', ' : ''}}{{tag}}</span>
@@ -102,7 +102,7 @@
                          hide-footer
                          lazy
                 >
-                    <p id='example' class='mt-5 mb-5 text-center' :style="'font-size:' + font_size*3 + 'em;font-family:\'' + font_family+'\''">
+                    <p class='mt-5 mb-5 text-center' :style="'font-size:' + font_size*3 + 'em;font-family:\'' + font_family+'\''">
                         Das ist ein Beispieltext!
                     </p>
                     <b-button-toolbar justify>

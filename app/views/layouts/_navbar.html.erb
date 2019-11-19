@@ -34,7 +34,8 @@
           <a class='dropdown-item' href='https://www.levumi-blog.uni-kiel.de/', target='_blank'>Blog</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Handbücher</h6>
-          <a class='dropdown-item' href='/files/Handbuch_Deutsch.pdf'>Handbuch Lernbereich Deutsch</a>
+          <a class='dropdown-item' href='/files/Testhandbuch_Deutsch.pdf'>Handbuch Lernbereich Deutsch</a>
+          <a class='dropdown-item' href='/files/Foerderansaetze_Deutsch.pdf'>Handbuch Fördermaterial Deutsch</a>
           <div class="dropdown-divider"></div>
           <h6 class="dropdown-header">Druckvorlagen</h6>
           <a class='dropdown-item' href='/files/A4_Levumi_normal.pdf' target='_blank'>A4 Levumi normal</a>
@@ -62,12 +63,18 @@
               <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('test'), 'Testverwaltung', tests_path(admin: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('material'), 'Materialverwaltung', materials_path(admin: true), class: 'dropdown-item'%>
-              <a class='dropdown-item disabled' href='#'>Datenexport</a>
+              <%= link_to_if @login.has_capability?('test'), 'Datenexport', tests_path(export: true), class: 'dropdown-item'%>
             </div>
           </li>
         <% end %>
-        <li class='nav-item' id='intro6'>
-          <%= link_to 'Meine Daten', edit_user_path(@login), class: 'nav-link', id: 'navbarMyData', remote: true%>
+        <li class='nav-item dropdown' id='intro6'>
+          <a class='nav-link dropdown-toggle' href='#' id='navbarMyData' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
+            Meine Daten
+          </a>
+          <div class='dropdown-menu' aria-labelledby='navbarMyData'>
+            <%= link_to 'Profildaten ändern', edit_user_path(@login), class: 'dropdown-item', remote: true%>
+            <%= link_to 'Testungen exportieren', user_path(@login, format: :text), class: 'dropdown-item'%>
+          </div>
         </li>
         <li class='nav-item dropdown'>
           <a class='nav-link dropdown-toggle' href='#' id='navbarLegal' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>

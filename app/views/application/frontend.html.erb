@@ -7,6 +7,7 @@
 <% unless @student.nil? %>
   <script>
       window.$('#navbar_text').html('Dein Login Code: <%= @student.login %>')
+      window.$('#navbar_button').html("<a class='btn btn-outline-secondary' href='/testen_logout' data-method='post'>Abmelden</a>")
   </script>
 <% end %>
 

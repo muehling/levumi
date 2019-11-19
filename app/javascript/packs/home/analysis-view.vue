@@ -41,7 +41,7 @@
             </b-button-group>
         </b-row>
         <b-row :hidden="!graph_visible">
-            <div id='chart' style='min-width: 100%;'></div>
+            <div :id="'chart_' + group.id + '_' + test.id" style='min-width: 100%;'></div>
         </b-row>
         <b-row :hidden="!graph_visible">
             <b-col>
@@ -548,7 +548,8 @@
 
                 if (this.apexchart != null)
                     this.apexchart.destroy()
-                this.apexchart = new ApexCharts(document.querySelector('#chart'), deepmerge(opt, {series: res}))
+                opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
+                this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), deepmerge(opt, {series: res}))
                 this.apexchart.render()
             },
             success(event) {  //Attributwerte aus AJAX Antwort übernehmen und View updaten
