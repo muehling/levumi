@@ -70,20 +70,20 @@ items_sel2 = {"I1"=> { "group"=> "1", "correct_answer"=> "Taschen"},
               "I66"=> { "group"=> "1", "correct_answer"=> "Fibel"}
 }
 results.each do |r|
-  negative = [] #check
-  positive = [] #check
+  negative = []
+  positive = []
   data = []
-  p_sum = 0 #check
-  n_sum = 0 #check
-  ada_correct_items = "" #check
-  ada_false_items = "" #check
-  ada_positve = 0 #check
-  ada_negative = 0 #check
+  p_sum = 0
+  n_sum = 0
+  ada_correct_items = ""
+  ada_false_items = ""
+  ada_positve = 0
+  ada_negative = 0
 
-  avp_correct_items = "" #check
-  avp_false_items = "" #check
-  avp_positve = 0 #check
-  avp_negative = 0 #check
+  avp_correct_items = ""
+  avp_false_items = ""
+  avp_positve = 0
+  avp_negative = 0
 
   r.data.each do |d|
     result = 0
@@ -635,7 +635,7 @@ end
 #Lösung falsch abgegebene Results, Key TS0, Zeit ARTH
 results_removed = 0
 results_to_remove = []
-Result.where('test_date > 2019-09-25').each do |r|
+Result.where('test_date > 2019-09-08').each do |r|
   begin
     if r.views["V1"].include?("NA")
       if r.data.size > Test.find(Assessment.find(r.assessment_id).test_id).items.size
@@ -741,13 +741,13 @@ end
 
 
 #Falsch exportierte Results ehemals "Position finden" löschen
-t = Test.find_by shorthand: "ZS2"
-assessments = Assessment.where(test_id: t.id)
-results = Result.where(assessment_id: assessments.ids).where('test_date < "2019-09-02"')
+t = Test.where("shorthand= 'ZS1' OR shorthand= 'ZS2'")
+assessments = Assessment.where(test_id: t.ids)
+results = Result.where(assessment_id: assessments.ids).where('test_date < "2019-09-09"')
 results.each do |r|
   a = r.assessment
   r.destroy
-  if a.result == []
+  if a.results == []
     a.destroy
   end
 end
@@ -758,7 +758,7 @@ end
 
 results_removed = 0
 results_to_remove = []
-Result.where('test_date > 2019-09-25').each do |r|
+Result.where('test_date > 2019-09-08').each do |r|
   begin
     if r.views["V1"].include?("NA")
       if r.data.size > Test.find(Assessment.find(r.assessment_id).test_id).items.size
