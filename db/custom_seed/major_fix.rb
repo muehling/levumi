@@ -635,7 +635,7 @@ end
 #Lösung falsch abgegebene Results, Key TS0, Zeit ARTH
 results_removed = 0
 results_to_remove = []
-Result.where('test_date > 2019-09-08').each do |r|
+Result.where('test_date > 2019-09-07').each do |r|
   begin
     if r.views["V1"].include?("NA")
       if r.data.size > Test.find(Assessment.find(r.assessment_id).test_id).items.size
@@ -743,7 +743,7 @@ end
 #Falsch exportierte Results ehemals "Position finden" löschen
 t = Test.where("shorthand= 'ZS1' OR shorthand= 'ZS2'")
 assessments = Assessment.where(test_id: t.ids)
-results = Result.where(assessment_id: assessments.ids).where('test_date < "2019-09-09"')
+results = Result.where(assessment_id: assessments.ids).where('test_date < "2019-09-08"')
 results.each do |r|
   a = r.assessment
   r.destroy
