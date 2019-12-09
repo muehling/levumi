@@ -137,7 +137,7 @@ results.each do |r|
     end
     data += [{"item": d["item"], "result": result, "group": item["group"], "description": item["correct_answer"], "answer": d["answer"].gsub(/\u00AD/, ''), "time": d["time"] }]
   end
-  if r.id > 283 && r.id < 14157 && r.data[0]["time"] != "NA" && r.data[0]["time"] > 300000
+  if r.data[0]["time"] != "NA" && r.id > 283 && r.id < 14157 && r.data[0]["time"] != "NA" && r.data[0]["time"] > 300000
       data[0] = {"item": data[0][:item], "result": data[0][:result], "group": data[0][:group], "description": data[0][:description], "answer": data[0][:answer], "time": "NA" }
   end
   last_result = Result.where(assessment_id: r.assessment_id, student_id: r.student_id).where.not(id: r.id).where("test_date < ? ", r.test_date).order(:test_week).last
@@ -344,7 +344,7 @@ results.each do |r|
     end
     data += [{"item": d["item"], "result": result, "group": item["group"], "description": item["correct_answer"], "answer": d["answer"].gsub(/\u00AD/, ''), "time": d["time"] }]
   end
-  if r.id > 611 && r.id < 14204 && r.data[0]["time"] > 300000
+  if r.data[0]["time"] != "NA" && r.id > 611 && r.id < 14204 && r.data[0]["time"] > 300000
     data[0] = {"item": data[0][:item], "result": data[0][:result], "group": data[0][:group], "description": data[0][:description], "answer": data[0][:answer], "time": "NA"}
   end
   last_result = Result.where(assessment_id: r.assessment_id, student_id: r.student_id).where.not(id: r.id).where("test_date < ? ", r.test_date).order(:test_week).last
@@ -586,7 +586,7 @@ results.each do |r|
     end
     data += [{"item": d["item"], "result": result, "group": item["group"], "description": item["correct_answer"], "answer": d["answer"].gsub(/\u00AD/, ''), "time": d["time"] }]
   end
-  if r.id > 257 && r.id < 14324 && r.data[0]["time"] > 300000
+  if  r.data[0]["time"] != "NA" && r.id > 257 && r.id < 14324 && r.data[0]["time"] > 300000
     data[0] = {"item": data[0][:item], "result": data[0][:result], "group": data[0][:group], "description": data[0][:description], "answer": data[0][:answer], "time": "NA"}
   end
   last_result = Result.where(assessment_id: r.assessment_id, student_id: r.student_id).where.not(id: r.id).where("test_date < ? ", r.test_date).order(:test_week).last
@@ -632,7 +632,7 @@ results.each do |r|
   r.save
 end
 
-#Lösung falsch abgegebene Results, Key TS0, Zeit ARTH
+#Lösung falsch abgegebene Results, Key TS0, Zeit ARTH, Zeit erstes Item ZR, ZS1/2, ZZ1/2
 results_removed = 0
 results_to_remove = []
 Result.where('test_date > 2019-09-07').each do |r|
@@ -758,7 +758,7 @@ end
 
 results_removed = 0
 results_to_remove = []
-Result.where('test_date > 2019-09-08').each do |r|
+Result.where('test_date > 2019-09-07').each do |r|
   begin
     if r.views["V1"].include?("NA")
       if r.data.size > Test.find(Assessment.find(r.assessment_id).test_id).items.size
