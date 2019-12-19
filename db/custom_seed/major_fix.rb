@@ -632,7 +632,7 @@ results.each do |r|
   r.save
 end
 
-#Lösung falsch abgegebene Results, Key TS0, Zeit ARTH, Zeit erstes Item ZR, ZS1/2, ZZ1/2
+#Lösung falsch abgegebene Results, Key TS0, Zeit ARTH, Zeit erstes Item ZR, ZS1/2, ZZ1/2 jetzt ZZ0/1
 results_removed = 0
 results_to_remove = []
 Result.where('test_date > 2019-09-07').each do |r|
@@ -662,8 +662,8 @@ Result.where('test_date > 2019-09-07').each do |r|
     r.data = newData
     r.save
   elsif (r.assessment.test.shorthand == "ZR" && r.id > 2162 && r.id < 14135) || (r.assessment.test.shorthand == "ZS1" && r.id > 13 && r.id < 14113) ||
-      (r.assessment.test.shorthand == "ZS2" && r.id > 14 && r.id < 14114) || (r.assessment.test.shorthand == "ZZ1" && r.id > 17 && r.id < 14115) ||
-      (r.assessment.test.shorthand == "ZZ2" && r.id > 8172 && r.id < 14116)
+      (r.assessment.test.shorthand == "ZS2" && r.id > 14 && r.id < 14114) || (r.assessment.test.shorthand == "ZZ0" && r.id > 17 && r.id < 14115) ||
+      (r.assessment.test.shorthand == "ZZ1" && r.id > 8172 && r.id < 14116)
     r.data[0] = {"item": r.data[0]["item"], "time": 'NA', "group": r.data[0]["group"], "answer": r.data[0]["answer"], "result": r.data[0]["result"], "description": r.data[0]["description"]}
   end
   r.save
