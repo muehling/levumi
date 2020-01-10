@@ -22,7 +22,7 @@ class TestsController < ApplicationController
   #GET /test/:id
   def show
     #TODO: Sicherheitscheck ob erlaubt?
-    send_data @test.as_csv, filename: @test.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv' , type: :text
+    send_data @test.as_csv, filename: @test.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv' , type: :csv
   end
 
   #POST /tests
