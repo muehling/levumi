@@ -150,6 +150,6 @@ class Test < ApplicationRecord
     res.each do |r|
       csv = csv + r.as_csv(false)
     end
-    return csv.encode!('CP437', undefined: :replace, replace: '_')
+    return csv
   end
 end
