@@ -27,7 +27,7 @@ class Result < ApplicationRecord
 
   #Textdarstellung für CSV Export
   def as_csv(for_user)
-    start = "\"#{id}\",\"#{GroupShare.where(group_id: 1).order(owner: :desc).pluck(:user_id).join(',')}\",\"#{student_id}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
+    start = "\"#{id}\",\"#{GroupShare.where(group_id: self.student.group.id).order(owner: :desc).pluck(:user_id).join(',')}\",\"#{student_id}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
     res = ''
     self.data.each do |d|
       res = res + start

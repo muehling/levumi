@@ -135,17 +135,21 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
-    Result.where(assessment_id: Assessment.where(test_id: self.id).all.pluck(:id)).count > 0
+    s = Student.where(group_id: Group.where.not(demo: true).pluck(:id)) #Keine Demoklassen exportieren
+    #Keine alten Messungen exportieren
+    Result.where("test_date > '2020-09-09'").where(student_id: s, assessment_id: Assessment.where(test_id: self.id).pluck(:id)).count > 0
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
-    res = Result.where(assessment_id: Assessment.where(test_id: self.id).all.pluck(:id)).all
+    s = Student.where(group_id: Group.where.not(demo: true).pluck(:id)) #Keine Demoklassen exportieren
+    #Keine alten Messungen exportieren
+    res = Result.where("test_date > '2020-09-09'").where(student_id: s, assessment_id: Assessment.where(test_id: self.id).pluck(:id)).all
     csv = ''
     csv = res[0].csv_header + "\n" if res.size > 0
     res.each do |r|
       csv = csv + r.as_csv(false)
     end
-    return csv
+    return csv.encode!('CP437', undefined: :replace, replace: '_')
   end
 end
