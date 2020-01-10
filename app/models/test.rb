@@ -146,7 +146,7 @@ class Test < ApplicationRecord
     #Keine alten Messungen exportieren
     res = Result.where("test_date > '2020-09-09'").where(student_id: s, assessment_id: Assessment.where(test_id: self.id).pluck(:id)).all
     csv = ''
-    csv = res[0].csv_header + "\n" if res.size > 0
+    csv = res[0].csv_header(false) + "\n" if res.size > 0
     res.each do |r|
       csv = csv + r.as_csv(false)
     end

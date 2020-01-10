@@ -142,7 +142,7 @@ class User < ApplicationRecord
         res = Result.where("test_date > '2020-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).pluck(:id)).all
         if (res.size > 0)
           zip.put_next_entry((t.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv').encode!('CP437', undefined: :replace, replace: '_'))
-          csv = res[0].csv_header + "\n"
+          csv = res[0].csv_header(true) + "\n"
           res.each do |r|
             csv = csv + r.as_csv(true)
           end
