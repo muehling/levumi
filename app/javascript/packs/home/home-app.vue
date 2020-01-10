@@ -37,7 +37,7 @@
                     </b-tabs>
 
                     <!-- Ansonsten Klasse vorauswählen -->
-                    <group-view v-else-if="groups > 0"
+                    <group-view v-else-if="groups.length > 0"
                                 :group="groups[0]"
                                 :group_info="group_info[0]">
                     </group-view>

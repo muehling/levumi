@@ -23,7 +23,7 @@
         <student-list
                 v-if="groups[index].key != null"
                 :group="groups[index].id"
-                :read_only="groups[index].read_only"
+                :read_only="read_only"
         >
         </student-list>
     </div>
@@ -75,6 +75,10 @@
             date: function() {
                 let date = new Date(this.groups[this.index].updated_at);
                 return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear()
+            },
+            read_only: function() {
+                //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
+                return this.groups[this.index].read_only || masquerade
             }
         },
         methods: {

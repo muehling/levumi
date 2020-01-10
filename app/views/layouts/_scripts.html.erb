@@ -1,5 +1,9 @@
 <script>
-
+    <% if @masquerade %>
+      masquerade = true
+    <% else %>
+      masquerade = false
+    <% end %>
     //TODO: woanders? Teil von Webpack?
     <%
       #Schülernamen und Gruppen-Keys verfügbar machen
