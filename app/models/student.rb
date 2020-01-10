@@ -17,7 +17,7 @@ class Student < ApplicationRecord
 
   #Schattenkopie anlegen, wird im Zuge des Löschen von Results aufgerufen.
   def create_shadow
-    ShadowStudent.create(original_id: self.id, account_type: self.group.user.account_type, state: self.group.user.state, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, tags: self.tags)
+    ShadowStudent.create(original_id: self.id, account_type: self.group.owner.account_type, state: self.group.owner.state, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, tags: self.tags)
   end
 
   #JSON Export, nur relevante Attribute übernehmen. Falls zusätzliche Daten vorhanden sind, diese auch exportieren.
