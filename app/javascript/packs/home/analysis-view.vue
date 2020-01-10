@@ -264,7 +264,10 @@
                             toolbar: {show:false},
                             zoom: {enabled: false}
                         },
-                        legend: {position: 'top'},
+                        legend: {
+                            position: 'top',
+                            offsetY: 5
+                        },
                         grid: {
                             padding: {
                                 right: 15,
@@ -297,7 +300,10 @@
                             zoom: {enabled: false}
                         },
                         colors: ['#449DD1', '#F86624', '#EA3546', '#662E9B', '#C5D86D', '#4ECDC4', '#C7F464', '#81D4FA', '#546E7A', '#FD6A6A', '#5C4742', '#A5978B', '#8D5B4C', '#5A2A27', '#C4BBAF'],
-                        legend: {position: 'top'},
+                        legend: {
+                            position: 'top',
+                            offsetY: 5
+                        },
                         stroke: {
                             curve: 'straight',
                             width: 1
@@ -513,6 +519,8 @@
                                     text: this.decode_text(this.annotations[i].content),
                                     textAnchor: this.weeks.indexOf(this.annotations[i].start) < 2 ? 'right' : this.weeks.indexOf(this.annotations[i].start) > this.weeks.length-2 ? 'left' : 'middle',
                                     position: 'top',
+                                    offsetY: 100,
+                                    offsetX: 10,
                                     orientation: 'horizontal',
                                     style: {
                                         background: '#fff',
@@ -538,6 +546,7 @@
                                     position: 'top',
                                     orientation: 'horizontal',
                                     offsetY: 15,
+                                    offsetX: 10,
                                     style: {
                                         background: '#fff',
                                         color: '#777',

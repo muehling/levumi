@@ -37,10 +37,14 @@
                     </b-tabs>
 
                     <!-- Ansonsten Klasse vorauswählen -->
-                    <group-view v-else
+                    <group-view v-else-if="groups > 0"
                                 :group="groups[0]"
                                 :group_info="group_info[0]">
                     </group-view>
+
+                    <div v-else class='text-center text-muted'>
+                        Keine Klassen vorhanden! Legen Sie eine Klasse an um testen zu können oder verschieben Sie eine Klasse aus dem Archiv.
+                    </div>
 
                 </b-col>
             </b-row>
