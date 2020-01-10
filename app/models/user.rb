@@ -132,14 +132,14 @@ class User < ApplicationRecord
 
   #Alle Testungen eines Users als Zip-Archiv, eine Datei pro verwendetem Test
   def as_zip
-    groups = Group.where(id: GroupShare.where(user_id: self.id).pluck(:group_id)).where.not(demo: true).pluck(:id) #Keine Beispielklassen exportieren
-    students = Student.where(group_id: groups).all.pluck(:id)
-    tests = Test.find(Assessment.where(group_id: groups).all.pluck(:test_id))
+    groups = Group.where(id: GroupShare.where(user_id: self.id).select('group_id')).where.not(demo: true).select('id') #Keine Beispielklassen exportieren
+    students = Student.where(group_id: groups).select('id')
+    tests = Test.find(Assessment.where(group_id: groups).select('test_id'))
     temp = Tempfile.new("Levumi")
     Zip::OutputStream.open(temp.path) do |zip|
       tests.each do |t|
         #Keine alten Messungen exportieren
-        res = Result.where("test_date > '2020-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).pluck(:id)).all
+        res = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).select('id')).all
         if (res.size > 0)
           zip.put_next_entry((t.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv').encode!('CP437', undefined: :replace, replace: '_'))
           csv = res[0].csv_header(true) + "\n"
