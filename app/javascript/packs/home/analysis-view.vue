@@ -471,6 +471,8 @@
                         }
                     } else if (this.results[i].student_id == this.students[this.student_selected].id) {
                         for (let r = 0; r < view.series.length; ++r) {
+                            if(!(view.series_keys[r] in this.results[i].views[view.key]))
+                                continue
                             let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
                             if (yVal > maxY)
                                 maxY = yVal
