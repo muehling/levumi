@@ -63,7 +63,7 @@
               <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('test'), 'Testverwaltung', tests_path(admin: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('material'), 'Materialverwaltung', materials_path(admin: true), class: 'dropdown-item'%>
-              <%= link_to_if @login.has_capability?('test'), 'Datenexport', tests_path(export: true), class: 'dropdown-item'%>
+              <%= link_to_if @login.has_capability?('export'), 'Datenexport', tests_path(export: true), class: 'dropdown-item'%>
             </div>
           </li>
         <% end %>
