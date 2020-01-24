@@ -331,7 +331,10 @@
                             labels: {
                                 minHeight: 20
                             },
-                            title: {text: 'Testwoche'}
+                            title: {
+                                text: 'Testwoche',
+                                offsetY: 10
+                            }
                         },
                         yaxis: {
                             min: 0
