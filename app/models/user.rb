@@ -17,7 +17,7 @@ class User < ApplicationRecord
   before_destroy do |user|
     shares = GroupShare.where(user_id: user.id).all
     shares.each do |s|
-      s.group.destroy if shares.owner
+      s.group.destroy if s.owner
       s.destroy
     end
   end
