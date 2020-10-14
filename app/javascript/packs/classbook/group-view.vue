@@ -67,7 +67,7 @@
     export default {
         components: {StudentList, GroupForm, ShareForm},
         props: {
-            groups: Array,       //Alle benötigt, um Klassen aus archiv zu verschieben
+            groups: Array,       //Alle benötigt, um Klassen aus Archiv zu verschieben
             index: Number,
             single: Boolean
         },

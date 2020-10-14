@@ -32,6 +32,14 @@ class AssessmentsController < ApplicationController
     end
   end
 
+  #GET /groups/:group_id/assessments
+  def index
+    data = @group.assessments.map{|a| {active: a.active, test: a.test.id, name: a.test.full_name, student_test: a.test.student_test}}
+    respond_to do |format|
+      format.js {render json: data}
+    end
+  end
+
   private
 
   #Gruppenummer aus Parametern holen und Gruppe laden

@@ -1,5 +1,25 @@
 <template>
     <div>
+        <div class='mb-2 mt-2'>
+          <b-btn v-b-toggle="'collapse_test_' + group.id" variant='outline-secondary' size='sm' @click="toggleAssessments()"><i class='fas fa-list'></i> Testübersicht der Klasse</b-btn>
+          <b-collapse :id="'collapse_test_' + group.id" class='mt-2 mb-4' :visible="false">
+            <!-- Spinner für die AJAX-Requests zum Laden der Liste -->
+            <div class='spinner' style='padding-bottom: 75px' v-if="update_list">
+              <div class='bounce1'></div>
+              <div class='bounce2'></div>
+              <div class='bounce3'></div>
+            </div>
+            <!-- Listenansicht für alle Tests -->
+            <list-view v-else-if="list"
+                       :list="list"
+                       :group="group"
+                       :read_only="group.read_only"
+                       v-on:update:list="list = undefined, toggleAssessments()"
+            >
+            </list-view>
+
+          </b-collapse>
+        </div>
         <b-card bg-variant='light' class='mt-3'>
             <b-row>
                 <b-col md='12'>
@@ -97,7 +117,7 @@
         </b-card>
         <b-row>
             <b-col>
-                <div v-if="!updating && !results">
+                <div v-if="!update_assessment && !results">
                     <p class='m-5 text-center text-muted'>
                         <span v-if="this.student_name_parts.length == 0">
                             Aktuell sind noch keine Schüler*innen für die Klasse angelegt. Bitte legen Sie diese zuerst im Klassenbuch an, damit Sie testen können!
@@ -113,7 +133,7 @@
                     </p>
                 </div>
                 <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
-                <div class='spinner' style='padding-bottom: 75px' v-if="updating">
+                <div class='spinner' style='padding-bottom: 75px' v-if="update_assessment">
                     <div class='bounce1'></div>
                     <div class='bounce2'></div>
                     <div class='bounce3'></div>
@@ -138,8 +158,9 @@
 
 <script>
     import AssessmentView from './assessment-view';
+    import ListView from './list-view';
     export default {
-        components: {AssessmentView},
+        components: {AssessmentView, ListView},
         props: {
             group: Object,
             group_info: Object
@@ -149,10 +170,12 @@
                 area_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.area : 0,
                 competence_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.competence : 0,
                 family_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.family : 0,
+                list: undefined,
                 results: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.assessment : undefined,
                 student_name_parts: [],
                 test_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0,
-                updating: false,
+                update_assessment: false,
+                update_list: false,
                 version_selected: (this.$root.pre_select && this.$root.pre_select.group == this.group.id) ? this.$root.pre_select.test : 0 //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
             }
         },
@@ -214,7 +237,7 @@
                     this.version_selected = test
                 else
                     this.test_selected = test
-                this.updating = true  //Spinner anzeigen
+                this.update_assessment = true  //Spinner anzeigen
                 //AJAX-Request senden
                 fetch('/groups/' + this.group.id + '/assessments/' + test, {
                     headers: {
@@ -227,9 +250,31 @@
                     .then(response => {
                         return response.text().then(text =>  {
                             this.results = JSON.parse(text);
-                            this.updating = false;  //Spinner verstecken
+                            this.update_assessment = false;  //Spinner verstecken
                         });
                     });
+            },
+            toggleAssessments() {
+              if (this.list != undefined) {
+                this.list = undefined
+                return
+              }
+              this.update_list = true  //Spinner anzeigen
+              //AJAX-Request senden
+              fetch('/groups/' + this.group.id + '/assessments/', {
+                headers: {
+                  'Accept': 'text/javascript',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                credentials: 'include'
+              })
+                  .then(response => {
+                    return response.text().then(text =>  {
+                      this.list = JSON.parse(text);
+                      this.update_list = false;  //Spinner verstecken
+                    });
+                  });
             },
             //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
             select_area(area) {

@@ -22,6 +22,10 @@ class Test < ApplicationRecord
     if archive then level + " (veraltet)" else level end
   end
 
+  def full_name
+    test_family.competence.area.name + " - " + test_family.competence.name + " - " + test_family.name + " - " + name
+  end
+
   #Kurzdarstellung des Tests
   def info
     {
