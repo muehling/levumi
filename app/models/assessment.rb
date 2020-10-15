@@ -4,6 +4,12 @@ class Assessment < ApplicationRecord
   has_many :results, dependent: :destroy
   has_many :annotations, dependent: :destroy
 
+  #Startwert für Student-Test setzen - standardmäßig inaktiv
+  after_create do |assessment|
+    if assessment.test.student_test
+      assessment.active = false
+    end
+  end
   #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
   #Rückgabe: Hash
   def get_data

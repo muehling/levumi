@@ -18,7 +18,7 @@ class AssessmentsController < ApplicationController
   def create
     t = Test.find(params[:test_id])
     unless t.nil? || @group.read_only(@login)
-      @group.assessments.create(test: t)
+      @group.assessments.create(test: t) if @group.assessments.find_by_test_id(t.id).nil?
       head 200
     end
   end
@@ -34,7 +34,8 @@ class AssessmentsController < ApplicationController
 
   #GET /groups/:group_id/assessments
   def index
-    data = @group.assessments.map{|a| {active: a.active, test: a.test.id, name: a.test.full_name, student_test: a.test.student_test}}
+    #Nur nicht-leere Assessments anzeigen.
+    data = @group.assessments.select{|a| !Results.find_by_assessment_id(a.id).nil?}.map{|a| {active: a.active, test: a.test.id, name: a.test.full_name, student_test: a.test.student_test}}
     respond_to do |format|
       format.js {render json: data}
     end
