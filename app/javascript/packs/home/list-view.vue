@@ -2,7 +2,7 @@
 
     <div v-if="list.length == 0">
       <p class='m-5 text-center text-muted'>
-        Noch keine aktiven Tests vorhanden! <br/>
+        Keine aktiven Tests mit Messungen vorhanden! <br/>
         Legen Sie zunächst über die Auswahl unten einen Test für diese Klasse an.
       </p>
     </div>
