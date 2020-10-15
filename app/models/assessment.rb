@@ -8,6 +8,7 @@ class Assessment < ApplicationRecord
   after_create do |assessment|
     if assessment.test.student_test
       assessment.active = false
+      assessment.save
     end
   end
   #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
