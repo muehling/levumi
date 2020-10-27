@@ -6,16 +6,27 @@ class Assessment < ApplicationRecord
 
   #Startwert für Student-Test setzen - standardmäßig inaktiv
   after_create do |assessment|
-    if assessment.test.student_test
-      assessment.active = false
-      assessment.save
-    end
+    assessment.active = false if assessment.test.student_test
+    assessment.excludes = []
+    assessment.save
   end
+
+  def exclude(id)
+    self.excludes = (self.excludes + [id.to_i]).uniq
+    self.save
+  end
+
+  def include(id)
+    self.excludes.delete(id.to_i)
+    self.save
+  end
+
   #Result-Objekte nach Wochennummer gruppieren und Test-Konfiguration zurückliefern
   #Rückgabe: Hash
   def get_data
     res = {}
     res['active'] = self.active
+    res['excludes'] = self.excludes
     res['test'] = self.test
     res['student_test'] = self.test.student_test
     res['configuration'] = self.test.configuration

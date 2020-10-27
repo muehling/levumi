@@ -25,7 +25,11 @@ class AssessmentsController < ApplicationController
 
   #PUT /groups/:group_id/assessments/:id
   def update    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    if @assessment.update_attributes(params.require(:assessment).permit(:active))
+    if params.require(:assessment).has_key?(:exclude) && @assessment.exclude(params.require(:assessment)[:exclude])
+      head 200
+    elsif params.require(:assessment).has_key?(:include) && @assessment.include(params.require(:assessment)[:include])
+        head 200
+    elsif @assessment.update_attributes(params.require(:assessment).permit(:active))
       head 200
     else
       head 304

@@ -63,11 +63,13 @@ class Student < ApplicationRecord
     week = Date.commercial(Date.today.year, Date.today.cweek)
     result = []
     all_assessments.each do |a|
-      result += [
-          {id: a.id,
-           test_info: a.test.info,
-           open: !Result.exists?(assessment_id: a.id, student_id: self.id, test_week: week)}
-      ]
+      unless a.excludes.include?(self.id)
+        result += [
+            {id: a.id,
+             test_info: a.test.info,
+             open: !Result.exists?(assessment_id: a.id, student_id: self.id, test_week: week)}
+        ]
+      end
     end
     result
   end

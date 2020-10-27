@@ -143,6 +143,7 @@
                                  :active="results.active"
                                  :annotations="results.annotations"
                                  :configuration="results.configuration"
+                                 :excludes="results.excludes"
                                  :group="group"
                                  :read_only="group.read_only"
                                  :results="results.series"
@@ -246,8 +247,7 @@
                         'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                     },
                     credentials: 'include'
-                })
-                    .then(response => {
+                }).then(response => {
                         return response.text().then(text =>  {
                             this.results = JSON.parse(text);
                             this.update_assessment = false;  //Spinner verstecken
@@ -268,8 +268,7 @@
                   'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
                 },
                 credentials: 'include'
-              })
-                  .then(response => {
+              }).then(response => {
                     return response.text().then(text =>  {
                       this.list = JSON.parse(text);
                       this.update_list = false;  //Spinner verstecken

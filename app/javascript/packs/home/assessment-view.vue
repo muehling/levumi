@@ -10,8 +10,7 @@
                         <p> Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen durchführen.</p>
                     </div>
                     <div v-else-if="test.archive">
-                        <p>
-                          Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste Testversion, in der Sie ab jetzt die Testungen durchführen können.                        </p>
+                        <p>Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste Testversion, in der Sie ab jetzt die Testungen durchführen können.</p>
                     </div>
                     <div v-else-if="students.length == 0">
                         <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
@@ -48,6 +47,7 @@
                             <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
                             <b-button v-for="student in students"
                                       :key="student.id"
+                                      v-if="!exclude_list.includes(student.id)"
                                       :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
                                       :href="'/testen_login?login=' + student.login"
                                       data-method='post'
@@ -78,6 +78,24 @@
                         >
                             <i class='fas fa-play'></i> Wöchentliche Testung aktivieren
                         </a>
+                        <b-dropdown size="sm" text="Schüler*innen zuweisen" class="mt-3">
+                          <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
+                            <b-dropdown-item v-for="student in students" v-if="!exclude_list.includes(student.id)"
+                                             :key="student.id"
+                                             @click="exclude(student.id)"
+                            >
+                              {{student.name}}
+                            </b-dropdown-item>
+                          </b-dropdown-group>
+                          <b-dropdown-group id="dropdown-group-2" header="In Test einschließen">
+                            <b-dropdown-item v-for="student in students" v-if="exclude_list.includes(student.id)"
+                                             :key="student.id"
+                                             @click="include(student.id)"
+                            >
+                              {{student.name}}
+                            </b-dropdown-item>
+                          </b-dropdown-group>
+                        </b-dropdown>
                     </div>
                 </div>
                 <!-- Liste der alten Messungen -->
@@ -185,6 +203,7 @@
             active: Boolean,
             annotations: Array,
             configuration: Object,
+            excludes: Array,
             group: Object,
             read_only: Boolean,
             results: Array,
@@ -213,6 +232,7 @@
         data: function () {
             return {
                 is_active: this.active, //Als Datum, damit es geändert werden kann
+                exclude_list: this.excludes || [], //Als Datum, damit es geändert werden kann
                 deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id,  //Wurde eine Anfrage für ein/dieses Assessment gestartet?
                 students: groups[this.group.id] || [],   //Zugriff auf globale Variable "groups"
             }
@@ -221,6 +241,21 @@
             auto_scroll(element) { //Scrollt Seite, bis übergebenes Element sichtbar ist.
                 window.$(element)[0].scrollIntoView(false);
             },
+            exclude(student) {
+              //AJAX-Request senden
+              fetch('/groups/' + this.group.id + '/assessments/' + this.test.id + "?assessment[exclude]=" + student, {
+                method: 'PUT',
+                headers: {
+                  'Accept': 'text/javascript',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                credentials: 'include'
+              }).then(response => {
+                if (response.ok)
+                  this.exclude_list.push(student)
+              })
+            },
             get_result(student) { //Prüft ob es für "heute" schon ein Ergebnis gibt.
                 let d = new Date();
                 let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)));
@@ -228,6 +263,21 @@
                     if (this.results[i].student_id == student && (new Date(this.results[i].test_week).toDateString() == bow.toDateString()))
                         return this.results[i].id;
                 return 0;
+            },
+            include(student) {
+              //AJAX-Request senden
+              fetch('/groups/' + this.group.id + '/assessments/' + this.test.id + "?assessment[include]=" + student, {
+                method: 'PUT',
+                headers: {
+                  'Accept': 'text/javascript',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+                },
+                credentials: 'include'
+              }).then(response => {
+                if (response.ok)
+                  this.exclude_list = this.exclude_list.filter(item => item !== student)
+              })
             },
             print_date(date) {   //Datumsanzeige formatieren
                 let d = new Date(date);
