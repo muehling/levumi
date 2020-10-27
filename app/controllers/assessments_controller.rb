@@ -38,7 +38,7 @@ class AssessmentsController < ApplicationController
 
   #GET /groups/:group_id/assessments
   def index
-    #Nur nicht-leere Assessments anzeigen.
+    #Nur nicht-leere Assessments anzeigen (=> Neue Assessments fehlen in der Liste...?)
     data = @group.assessments.select{|a| !Result.find_by_assessment_id(a.id).nil? && !a.test.archive}.map{|a| {active: a.active, test: a.test.id, name: a.test.full_name, student_test: a.test.student_test}}
     respond_to do |format|
       format.js {render json: data}
