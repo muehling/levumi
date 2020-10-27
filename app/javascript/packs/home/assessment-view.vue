@@ -10,7 +10,8 @@
                         <p> Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen durchführen.</p>
                     </div>
                     <div v-else-if="test.archive">
-                        <p>Dieser Test wurde durch eine neuere Version ersetzt. Bitte verwenden Sie ab jetzt diese Version zum Testen, sie finden den neuen Test direkt oberhalb in der Auswahlliste!</p>
+                        <p>
+                          Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste Testversion, in der Sie ab jetzt die Testungen durchführen können.                        </p>
                     </div>
                     <div v-else-if="students.length == 0">
                         <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>

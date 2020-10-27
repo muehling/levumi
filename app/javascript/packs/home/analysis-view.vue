@@ -281,7 +281,8 @@
                             tickPlacement: 'between'
                         },
                         yaxis: {
-                            min: 0
+                            min: 0,
+                            forceNiceScale: true
                         },
                         tooltip: {shared: true}
                     },
@@ -337,7 +338,8 @@
                             }
                         },
                         yaxis: {
-                            min: 0
+                            min: 0,
+                            forceNiceScale: true
                         }
                     }
                 },
