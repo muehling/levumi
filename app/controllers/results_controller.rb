@@ -65,7 +65,8 @@ class ResultsController < ApplicationController
   def check_login
     #Fall 1: User Login
     if session.has_key?(:user)
-      if @student.group.owner.id == session[:user]
+      #Entweder die eigene Klasse, oder eine geteilte Klasse mit entsprechender Berechtigung
+      if @student.group.owner.id == session[:user] || GroupShare.exists?(user: session[:user], group: @student.group, read_only: false)
         return true
       end
     end
