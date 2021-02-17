@@ -333,8 +333,7 @@
                                 minHeight: 20
                             },
                             title: {
-                                text: 'Testwoche',
-                                offsetY: 10
+                                text: 'Testwoche'
                             }
                         },
                         yaxis: {
