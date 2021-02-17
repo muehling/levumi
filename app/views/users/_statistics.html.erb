@@ -1,0 +1,108 @@
+<h4>Nutzer gesamt</h4>
+<table class='table table-hover table-sm text-small'>
+  <thead class='thead-light'>
+  <tr>
+    <th scope='col'></th>
+    <th scope='col'>Forscher:in</th>
+    <th scope='col'>Lehrkraft</th>
+    <th scope='col'>Privat</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr>
+    <td>
+      Anzahl gesamt
+    </td>
+    <% @userinfo[:count].each do |i| %>
+      <td>
+        <%= i %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td>
+      In den letzten 14 Tagen aktiv
+    </td>
+    <% @userinfo[:alive].each do |i| %>
+      <td>
+        <%= i %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td>
+      Mit echten Messungen
+    </td>
+    <% @userinfo[:active].each do |i| %>
+      <td>
+        <%= i %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td>
+      Aktiv und echte Messungen (produktiv)
+    </td>
+    <% @userinfo[:regular].each do |i| %>
+      <td>
+        <%= i %>
+      </td>
+    <% end %>
+  </tr>
+  <tr>
+    <td>
+      Anteil (nur produktiv)
+    </td>
+    <% @userinfo[:regular].each do |i| %>
+      <td>
+        <%= (i / @userinfo[:regular].sum * 100).round(2)  %>%
+      </td>
+    <% end %>
+  </tr>
+  </tbody>
+</table>
+
+<h4>Produktive Nutzer nach Bundesland</h4>
+<table class='table table-hover table-sm text-small'>
+  <thead class='thead-light'>
+  <tr>
+    <th scope='col'>Bundesland</th>
+    <th scope='col'>Forscher:in</th>
+    <th scope='col'>Lehrkraft</th>
+    <th scope='col'>Privat</th>
+  </thead>
+  <tbody>
+  <% federal_states.each do |s| %>
+    <% next if @userinfo[:state][s[1]].nil? %>
+    <tr>
+      <td>
+        <%= s[0] %>
+      </td>
+      <% @userinfo[:state][s[1]].each do |i| %>
+        <td>
+          <%= i %>
+        </td>
+      <% end %>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<h4>Ergebnisse nach Tests aller Lehrkräfte</h4>
+<table class='table table-hover table-sm text-small'>
+  <thead class='thead-light'>
+  <tr>
+    <th scope='col'>Test</th>
+    <th scope='col'>Messungen gesamt</th>
+    <th scope='col'>Anzahl Klassen</th>
+  </thead>
+  <tbody>
+  <% @testinfo.each do |k, v| %>
+    <tr>
+      <td><%= k %></td>
+      <td><%= v[:count] %></td>
+      <td><%= v[:groups] %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -46,7 +46,7 @@ class User < ApplicationRecord
     when 0
       'Lehrkraft'
     when 1
-      'Forscher*in'
+      'Forscher:in'
     else
       'Privat'
     end
@@ -152,5 +152,42 @@ class User < ApplicationRecord
     end
     temp.close
     return temp.path
+  end
+
+  #Infos über alle Nutzer ermitteln
+  def self.get_statistics
+    users = User.all
+    count = [0, 0, 0]
+    alive = [0, 0, 0]
+    active = [0, 0, 0]
+    regular = [0, 0, 0]
+    state = {}
+    users.each do |u|
+      al = false
+      ac = false
+      count[u.account_type] += 1
+      if u.last_login.nil? && u.created_at < (DateTime.now - 14)
+        alive[u.account_type] += 1
+        al = true
+      end
+      groups = Group.where(id: GroupShare.where(user_id: u.id).select('group_id')).where.not(demo: true).select('id').pluck(:id)
+      students = Student.where(group_id: groups).select('id').pluck(:id)
+      if Result.where(student_id: students).exists?
+        active[u.account_type] += 1
+        ac = true
+      end
+      if al && ac
+        regular[u.account_type] += 1
+        state[u.state] = [0, 0, 0] if state[u.state].nil?
+        state[u.state][u.account_type] += 1
+      end
+    end
+    return {
+      count: count,
+      alive: alive,
+      active: active,
+      regular: regular,
+      state: state
+    }
   end
 end

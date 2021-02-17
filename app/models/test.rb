@@ -156,4 +156,21 @@ class Test < ApplicationRecord
     end
     return csv
   end
+
+  #Infos über Messungen von Lehrkräften
+  def self.get_statsitics
+    users = User.where(account_type: 0).select('id').pluck(:id)
+    groups = Group.where(id: GroupShare.where(user_id: users, owner: true).select('group_id')).where.not(demo: true).select('id').pluck(:id)
+    students = Student.where(group_id: groups).select('id').pluck(:id)
+    tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
+    res = {}
+    tests.each do |t|
+      results = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id'))
+      res[t.full_name] = {
+        count: results.count,
+        groups: results.group(:assessment_id).count.keys.size
+      }
+    end
+    return res
+  end
 end

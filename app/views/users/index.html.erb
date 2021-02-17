@@ -16,6 +16,9 @@
     <li class='nav-item'>
       <a class='nav-link' id='mail-tab' data-toggle='tab' href='#mail' role='tab' aria-controls='mail' aria-selected='false'>Nachricht an Nutzer</a>
     </li>
+    <li class='nav-item'>
+      <a class='nav-link' id='info-tab' data-toggle='tab' href='#info' role='tab' aria-controls='info' aria-selected='false'>Nutzungsstatistik</a>
+    </li>
   </ul>
 
   <!-- Tabinhalte -->
@@ -55,7 +58,7 @@
                   </label>
                   <label>
                     <input type="checkbox" name="researcher" value="1">
-                    Forscher*innen
+                    Forscher:innen
                   </label>
                   <label>
                     <input type="checkbox" name="private" value="1">
@@ -68,6 +71,10 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class='tab-pane' id='info' role='tabpanel' aria-labelledby='info-tab'>
+      <!-- Nutzungsstatistik -->
+      <%= render 'statistics' %>
     </div>
   </div>
 

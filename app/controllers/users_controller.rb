@@ -65,6 +65,8 @@ class UsersController < ApplicationController
   #GET /users
   def index
     @users = User.all
+    @userinfo = User.get_statistics
+    @testinfo = Test.get_statsitics
   end
 
   #DEL /users/:id

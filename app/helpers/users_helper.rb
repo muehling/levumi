@@ -13,7 +13,7 @@ module UsersHelper
   end
 
   def account_types
-    ['Lehrkraft', 'Forscher*in', 'Privatperson']
+    ['Lehrkraft', 'Forscher:in', 'Privatperson']
   end
 
   def state_to_s(state)
