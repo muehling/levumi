@@ -166,7 +166,7 @@ class User < ApplicationRecord
       al = false
       ac = false
       count[u.account_type] += 1
-      if u.last_login.nil? && u.created_at < (DateTime.now - 14)
+      if u.last_login.nil? && u.created_at < (DateTime.now - 30)
         alive[u.account_type] += 1
         al = true
       end

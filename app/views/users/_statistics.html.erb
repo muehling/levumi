@@ -55,7 +55,11 @@
     </td>
     <% @userinfo[:regular].each do |i| %>
       <td>
-        <%= (i / @userinfo[:regular].sum * 100).round(2)  %>%
+        <% if @userinfo[:regular].sum == 0 %>
+          -
+        <% else %>
+          <%= (i / @userinfo[:regular].sum * 100).round(2)  %>%
+        <% end %>
       </td>
     <% end %>
   </tr>

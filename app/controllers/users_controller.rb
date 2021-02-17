@@ -66,7 +66,7 @@ class UsersController < ApplicationController
   def index
     @users = User.all
     @userinfo = User.get_statistics
-    @testinfo = Test.get_statsitics
+    @testinfo = Test.get_statistics
   end
 
   #DEL /users/:id

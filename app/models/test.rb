@@ -158,7 +158,7 @@ class Test < ApplicationRecord
   end
 
   #Infos über Messungen von Lehrkräften
-  def self.get_statsitics
+  def self.get_statistics
     users = User.where(account_type: 0).select('id').pluck(:id)
     groups = Group.where(id: GroupShare.where(user_id: users, owner: true).select('group_id')).where.not(demo: true).select('id').pluck(:id)
     students = Student.where(group_id: groups).select('id').pluck(:id)
