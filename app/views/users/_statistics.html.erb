@@ -31,7 +31,7 @@
   </tr>
   <tr>
     <td>
-      Mit echten Messungen
+      Mit echten Messungen (produktiv)
     </td>
     <% @userinfo[:active].each do |i| %>
       <td>
@@ -41,24 +41,14 @@
   </tr>
   <tr>
     <td>
-      Aktiv und echte Messungen (produktiv)
-    </td>
-    <% @userinfo[:regular].each do |i| %>
-      <td>
-        <%= i %>
-      </td>
-    <% end %>
-  </tr>
-  <tr>
-    <td>
       Anteil (nur produktiv)
     </td>
-    <% @userinfo[:regular].each do |i| %>
+    <% @userinfo[:active].each do |i| %>
       <td>
-        <% if @userinfo[:regular].sum == 0 %>
+        <% if @userinfo[:active].sum == 0 %>
           -
         <% else %>
-          <%= (i / @userinfo[:regular].sum * 100).round(2)  %>%
+          <%= (i / @userinfo[:active].sum * 100).round(2)  %>%
         <% end %>
       </td>
     <% end %>
