@@ -9,7 +9,7 @@
     "full": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
     "short": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
     "time_limit": "Keine",
-    "usage": "Die Schüler*innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Die Schüler*innen sagen, was sie erkennen, die Lehrkraft bewertet die Antwort als richtig oder falsch."
+    "usage": "Die Schüler:innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Die Schüler:innen sagen, was sie erkennen, die Lehrkraft bewertet die Antwort als richtig oder falsch."
   },
   "time_limit": "Keine",
   "student_test": false,

@@ -32,7 +32,7 @@
     <div v-else>
         <p class='text-small'>
             <em>Ins Archiv verschoben am {{ date }}</em><br/>
-            <span >Schüler*innen: {{groups[index].size}}</span>
+            <span >Schüler:innen: {{groups[index].size}}</span>
         </p>
         <!-- rails-ujs Link beinhaltet Auth_Token-->
         <a class='btn btn-sm btn-outline-primary'
@@ -50,7 +50,7 @@
            :href="'/groups/' + groups[index].id"
            data-method='delete'
            data-remote='true'
-           data-confirm='Die Klasse wird mit allen Schüler*innen und allen Messergebnissen gelöscht! Sind Sie sicher?'
+           data-confirm='Die Klasse wird mit allen Schüler:innen und allen Messergebnissen gelöscht! Sind Sie sicher?'
            v-on:ajax:success="remove(index)"
         >
             <i class='fas fa-trash'></i> Klasse löschen

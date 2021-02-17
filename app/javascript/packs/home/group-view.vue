@@ -120,7 +120,7 @@
                 <div v-if="!update_assessment && !results">
                     <p class='m-5 text-center text-muted'>
                         <span v-if="this.student_name_parts.length == 0">
-                            Aktuell sind noch keine Schüler*innen für die Klasse angelegt. Bitte legen Sie diese zuerst im Klassenbuch an, damit Sie testen können!
+                            Aktuell sind noch keine Schüler:innen für die Klasse angelegt. Bitte legen Sie diese zuerst im Klassenbuch an, damit Sie testen können!
                         </span>
                         <span v-else-if="empty">
                             Wählen Sie zuerst einen Lernbereich und dann aus der sich erweiternden Liste das Konstrukt, die Testfamilie und die Niveaustufe mit der Sie arbeiten möchten.

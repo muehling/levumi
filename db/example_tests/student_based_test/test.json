@@ -2,14 +2,14 @@
   "area": "Beispieltests",
   "competence": "Tiere erkennen",
   "family": "Katzen und Vögel",
-  "level": "Schüler*innen",
+  "level": "Schüler:innen",
   "shorthand": "Ex_S_1",
   "version": 1,
   "description": {
-    "full": "Beispiel für einen Test in Levumi für <b>Schüler*innen</b>",
-    "short": "Beispiel für einen Test in Levumi für <b>Schüler*innen</b>",
+    "full": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
     "time_limit": "Keine",
-    "usage": "Die Schüler*innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Zu jedem Bild gibt es vier Antwortoptionen, die Schüler*innen wählen selbstständig eine aus und klicken auf weiter, bis alle Bilder bearbeitet wurden."
+    "usage": "Die Schüler:innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Zu jedem Bild gibt es vier Antwortoptionen, die Schüler:innen wählen selbstständig eine aus und klicken auf weiter, bis alle Bilder bearbeitet wurden."
   },
   "time_limit": "Keine",
   "student_test": true,

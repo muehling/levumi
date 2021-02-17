@@ -13,7 +13,7 @@
                         <p>Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste Testversion, in der Sie ab jetzt die Testungen durchführen können.</p>
                     </div>
                     <div v-else-if="students.length == 0">
-                        <p>Es sind in dieser Klasse noch keine Schüler*innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler*innen im Klassenbuch an.</p>
+                        <p>Es sind in dieser Klasse noch keine Schüler:innen angelegt. Um in dieser Klasse Testen zu können, legen Sie bitte neue Schüler:innen im Klassenbuch an.</p>
                     </div>
                     <div v-else-if="!student_test">
                         <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
@@ -39,9 +39,9 @@
                         <p class='text-light bg-secondary'>&nbsp;Durchführung</p>
                         <p>{{test.description.usage}}</p>
                         <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
-                        <p>Diesen Test müssen die Schüler*innen mit ihrem Logincode in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler*in.</p>
+                        <p>Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem <a href='/testen' target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler:in.</p>
                         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
-                        <p>Sie können sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
+                        <p>Sie können sehen, welche Schüler:innen den Test in dieser Woche bereits durchgeführt haben - ihre Namen sind grün hinterlegt.</p>
                         <!-- Schüler nur als Info anzeigen -->
                         <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
@@ -78,7 +78,7 @@
                         >
                             <i class='fas fa-play'></i> Wöchentliche Testung aktivieren
                         </a>
-                        <b-dropdown size="sm" text="Schüler*innen zuweisen" class="mt-3">
+                        <b-dropdown size="sm" text="Schüler:innen zuweisen" class="mt-3">
                           <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
                             <b-dropdown-item v-for="student in students" v-if="!exclude_list.includes(student.id)"
                                              :key="student.id"
@@ -125,7 +125,7 @@
                                 <table class='table table-striped table-sm table-borderless'>
                                     <thead>
                                     <th>Datum</th>
-                                    <th>Schüler*in</th>
+                                    <th>Schüler:in</th>
                                     <th>Positiv</th>
                                     <th>Negativ</th>
                                     <th>Trend</th>
