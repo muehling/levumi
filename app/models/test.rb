@@ -162,7 +162,7 @@ class Test < ApplicationRecord
     users = User.where(account_type: 0).select('id').pluck(:id)
     groups = Group.where(id: GroupShare.where(user_id: users, owner: true).select('group_id')).where.not(demo: true).select('id').pluck(:id)
     students = Student.where(group_id: groups).select('id').pluck(:id)
-    tests = Test.find(Assessment.where(group_id: groups).order(test_family_id: :asc).select('test_id').pluck(:test_id))
+    tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id)).order(test_family_id: :asc)
     res = {}
     tests.each do |t|
       results = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id'))
