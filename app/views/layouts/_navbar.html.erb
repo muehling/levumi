@@ -61,6 +61,7 @@
               System
             </a>
             <div class='dropdown-menu dropdown-menu' aria-labelledby='navbarSystem'>
+              <%= link_to_if @login.has_capability?('stats'), 'Statistik', users_path(stats: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('user'), 'Benutzerverwaltung', users_path, class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('test'), 'Testverwaltung', tests_path(admin: true), class: 'dropdown-item'%>
               <%= link_to_if @login.has_capability?('material'), 'Materialverwaltung', materials_path(admin: true), class: 'dropdown-item'%>

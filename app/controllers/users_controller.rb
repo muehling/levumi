@@ -64,9 +64,14 @@ class UsersController < ApplicationController
 
   #GET /users
   def index
-    @users = User.all
-    @userinfo = User.get_statistics
-    @testinfo = Test.get_statistics
+    if params[:stats] && @login.has_capability?('stats')
+      @userinfo = User.get_statistics
+      @testinfo = Test.get_statistics
+      render 'statistics'
+    else
+      @users = User.all
+      render 'index'
+    end
   end
 
   #DEL /users/:id
