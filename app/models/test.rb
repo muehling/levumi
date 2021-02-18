@@ -168,7 +168,8 @@ class Test < ApplicationRecord
       results = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id'))
       res[t.full_name] = {
         count: results.count,
-        groups: results.group(:assessment_id).count.keys.size
+        groups: results.group(:assessment_id).count.keys.size,
+        progressions: results.group(:student_id).having('COUNT(*) > 1').count.keys.size
       }
     end
     return res

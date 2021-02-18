@@ -158,27 +158,26 @@ class User < ApplicationRecord
   def self.get_statistics
     users = User.all
     count = [0, 0, 0]
-    alive = [0, 0, 0]
     active = [0, 0, 0]
-    regular = [0, 0, 0]
+    productive = [0, 0, 0]
     state = {}
     users.each do |u|
       count[u.account_type] += 1
-      if u.last_login.nil? && u.created_at < (DateTime.now - 30)
-        alive[u.account_type] += 1
+      if !u.last_login.nil? && u.last_login > (DateTime.now - 30)
+        active[u.account_type] += 1
       end
       groups = Group.where(id: GroupShare.where(user_id: u.id).select('group_id')).where.not(demo: true).select('id').pluck(:id)
       students = Student.where(group_id: groups).select('id').pluck(:id)
       if Result.where(student_id: students).exists?
-        active[u.account_type] += 1
+        productive[u.account_type] += 1
         state[u.state] = [0, 0, 0] if state[u.state].nil?
         state[u.state][u.account_type] += 1
       end
     end
     return {
       count: count,
-      alive: alive,
       active: active,
+      productive: productive,
       state: state
     }
   end

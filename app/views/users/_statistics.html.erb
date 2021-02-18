@@ -23,7 +23,7 @@
     <td>
       In den letzten 30 Tagen aktiv
     </td>
-    <% @userinfo[:alive].each do |i| %>
+    <% @userinfo[:active].each do |i| %>
       <td>
         <%= i %>
       </td>
@@ -33,7 +33,7 @@
     <td>
       Mit echten Messungen (produktiv)
     </td>
-    <% @userinfo[:active].each do |i| %>
+    <% @userinfo[:productive].each do |i| %>
       <td>
         <%= i %>
       </td>
@@ -43,12 +43,12 @@
     <td>
       Anteil (nur produktiv)
     </td>
-    <% @userinfo[:active].each do |i| %>
+    <% @userinfo[:productive].each do |i| %>
       <td>
-        <% if @userinfo[:active].sum == 0 %>
+        <% if @userinfo[:productive].sum == 0 %>
           -
         <% else %>
-          <%= (i / @userinfo[:active].sum.to_f * 100).round(2)  %>%
+          <%= (i / @userinfo[:productive].sum.to_f * 100).round(2)  %>%
         <% end %>
       </td>
     <% end %>
@@ -89,6 +89,7 @@
     <th scope='col'>Test</th>
     <th scope='col'>Messungen gesamt</th>
     <th scope='col'>Anzahl Klassen</th>
+    <th scope='col'>Anzahl Lernverläufe</th>
   </thead>
   <tbody>
   <% @testinfo.each do |k, v| %>
@@ -96,6 +97,7 @@
       <td><%= k %></td>
       <td><%= v[:count] %></td>
       <td><%= v[:groups] %></td>
+      <td><%= v[:progressions] %></td>
     </tr>
   <% end %>
   </tbody>
