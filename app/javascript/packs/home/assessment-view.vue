@@ -20,7 +20,7 @@
                         <p class='text-small'>{{test.description.usage}}</p>
                         <p class='text-light bg-secondary'>&nbsp;Hinweise</p>
                         <p class='text-small'>Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie auf diese Seite zurückgeleitet.<br/>
-                            Grün hinterlege Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!</p>
+                            Grün hinterlegte Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!</p>
                         <!-- Schüler anzeigen um Messung zu starten. -->
                         <b-button-group size='sm' class='flex-wrap'>
                             <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->

@@ -382,12 +382,12 @@
                         pdf.text(this.test.full_name, 10, 10)
                     if (this.student_selected == -1) {
                         pdf.text('Ganze Klasse - ' + this.configuration.views[this.view_selected].label, 10, 20)
-                        pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
+                        pdf.addImage(uri["imgURI"], 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
                         pdf.save(this.group.label + '_' + this.test.shorthand + this.test.level + '_' + 'Klassenansicht' +  '.pdf')
                     }
                     else{
                         pdf.text(this.students[this.student_selected].name + ' - ' + this.configuration.views[this.view_selected].label, 10, 20)
-                        pdf.addImage(uri, 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
+                        pdf.addImage(uri["imgURI"], 'PNG', 10, 40, pdf.internal.pageSize.getWidth() - 15, pdf.internal.pageSize.getHeight() - 120)
                         pdf.save(this.group.label + '_' + this.test.shorthand + this.test.level + '_' + 'Kindansicht' +  '.pdf')
 
                     }
