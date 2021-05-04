@@ -126,7 +126,6 @@
                     if (this.supports[s].test_id === this.selected_test)
                         ids.push(this.supports[s].material_id)
                 }
-                console.log(ids)
                 let res = []
                 for (let i = 0; i < ids.length; ++i)
                     for (let m = 0; m < this.materials.length; ++m)
