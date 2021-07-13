@@ -1,0 +1,5 @@
+Rails-Server:
+rails s -b 'ssl://0.0.0.0:3000?key=localhost.key&cert=localhost.crt'
+
+Webpack-Server:
+.bin/webpack-dev-server
