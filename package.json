@@ -12,10 +12,13 @@
     "deepmerge": "^3.3.0",
     "jquery": "^3.4.1",
     "jspdf": "^1.5.3",
+    "mobile-device-detect": "^0.4.3",
     "popper.js": "^1.15.0",
+    "qr-scanner": "^1.2.0",
     "rails-ujs": "^5.2.3",
     "vue": "^2.6.10",
     "vue-loader": "^15.7.0",
+    "vue-qrcode-component": "^2.1.1",
     "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
