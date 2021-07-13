@@ -93,8 +93,27 @@
                         >
                             <i class='fas fa-user-edit'></i>
                         </b-btn>
+                        <b-btn variant='outline-secondary'
+                               size='sm'
+                               title='QRCode'
+                               v-b-modal="'qr_code_'+student.id"
+                        >
+                            <i class='fas fa-qrcode'></i>
+                        </b-btn>
                     </b-button-group>
                 </b-button-toolbar>
+                <b-modal :id="'qr_code_'+student.id"
+                         :title="'QRCode für ' + student.name"
+                         scrollable
+                         hide-footer
+                         lazy
+                >
+                  <p>
+                    Code: {{ student.login }} <br>
+                    QR-Code:
+                  </p>
+                  <qr-code :text="student.login"></qr-code>
+                </b-modal>
                 <b-modal :id="'modal_settings_' + student.id"
                          :title="'Schrifteinstellungen für ' + student.name"
                          size='xl'
