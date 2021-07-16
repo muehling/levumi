@@ -186,7 +186,7 @@ class UsersController < ApplicationController
   #Nutzernummer aus Parametern holen und User laden
   def set_user
     @user = User.find(params[:id])
-    unless @user != nil || (@user.id != @login.id && !@login.has_capability?('user')) #Entweder es ist der eigene Nutzer oder die entsprechende Berechtigung ist vorhanden
+    unless @user != nil && (@user.id == @login.id || @login.has_capability?('user')) #Entweder es ist der eigene Nutzer oder die entsprechende Berechtigung ist vorhanden
       redirect_to '/'
     end
   end
