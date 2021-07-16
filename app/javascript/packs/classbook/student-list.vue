@@ -50,7 +50,7 @@
 
 <script>
     import StudentRow from './student-row';
-    import jsPDF from "jspdf";
+    import jsPDF from 'jspdf';
 
     export default {
         components: {StudentRow},
