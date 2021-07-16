@@ -35,12 +35,22 @@
                 ></student-row>
             </tbody>
         </table>
+      <b-button @click="export_qrcodes"><i class="fas fa-print"></i> QR-Code PDF</b-button>
+      <!-- Bereich der später ins PDF kommt -->
+      <div id="pdfdiv" v-for="(student, index) in this.students" style="display: none">
+        <qr-code :id="'qr_code_'+student.id"
+                 :text= student.login
+        ></qr-code>
+        <br>
+        <hr>
+      </div>
     </div>
 
 </template>
 
 <script>
     import StudentRow from './student-row';
+    import jsPDF from 'jspdf';
 
     export default {
         components: {StudentRow},
@@ -67,7 +77,24 @@
 
                 //Global updaten - vermutlich unnötig?
                 groups[this.group] = this.students;
+            },
+          export_qrcodes() {
+            let pdf = new jsPDF()
+            let height = 10
+            for(let i = 0; i < this.students.length; i++){
+              let base64Image = $('#qr_code_'+ this.students[i].id +' img').attr('src')
+              pdf.addImage(base64Image, 'png', 10, height, 40, 40)
+              pdf.text("Name: " + this.students[i].name, 60, height+10)
+              pdf.text("Code: " + this.students[i].login, 60, height+30)
+              pdf.line(0,height+43,210,height+45)
+              height = height + 46
+              if (height >= 250){
+                height = 10
+                pdf.addPage()
+              }
             }
+            pdf.save('qr_codes.pdf')
+          },
         },
         name: 'student-list'
     }

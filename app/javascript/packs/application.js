@@ -16,6 +16,10 @@ import Rails from 'rails-ujs' //Rails-UJS für Links etc.
 import Vue from 'vue'
 import BootstrapVue from 'bootstrap-vue'
 
+// Import des QR-Code-Generators
+// Quelle: https://github.com/gerardreches/vue-qrcode-component
+import VueQRCodeComponent from 'vue-qrcode-component'
+
 //Eigene Vue Komponenten
 import ClassBookApp from './classbook/classbook-app'
 import FrontendApp from './testing/frontend-app'
@@ -39,6 +43,8 @@ Rails.start();         //Rails-ujs für die SPAs verfügbar machen
 
 Vue.use(BootstrapVue);
 
+// Registrierung des QR-Code-Generators
+Vue.component('qr-code', VueQRCodeComponent)
 //Setup für Vue-SPAs
 
 document.addEventListener('DOMContentLoaded', () => {

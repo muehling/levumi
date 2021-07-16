@@ -40,32 +40,78 @@
             <b-col md='3'>
             </b-col>
             <b-col md='6'>
+              <div v-if="manually">
                 <b-card class='mt-5' style="font-size:1.2em" header='Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein.'>
-                    <b-form
-                            action='/testen_login'
-                            accept-charset='UTF-8'
-                            data-remote='true'
-                            data-type='json'
-                            method='post'
-                            v-on:ajax:error="loading=false, retry=true"
-                            v-on:ajax:success="success"
-                    >
-                        <b-form-group>
-                            <b-form-input :state="retry ? false : null"
-                                          type='text'
-                                          name='login'
-                                          id='login'
-                                          placeholder='Zugangscode'
-                                          style="font-size:1.5em"
-                                          :formatter="format"
-                            />
-                            <div class='invalid-feedback'>
-                                Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
-                            </div>
-                        </b-form-group>
-                        <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Starten</b-button>
-                    </b-form>
+                  <b-form
+                      action='/testen_login'
+                      accept-charset='UTF-8'
+                      data-remote='true'
+                      data-type='json'
+                      method='post'
+                      v-on:ajax:error="loading=false, retry=true"
+                      v-on:ajax:success="success"
+                      id='form'
+                  >
+                    <b-form-group>
+                      <b-form-input :state="retry ? false : null"
+                                    type='text'
+                                    name='login'
+                                    id='login'
+                                    placeholder='Zugangscode'
+                                    style="font-size:1.5em"
+                                    :formatter="format"
+                      />
+                      <div class='invalid-feedback'>
+                        Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
+                      </div>
+                    </b-form-group>
+                    <b-button style="font-size:1.2em" type='submit' variant='primary' v-on:submit="loading=true">Starten</b-button>
+                    <b-button style="font-size:1.2em; float:right" type='button' variant='primary' @click="switchQr()">QR-Code</b-button>
+                  </b-form>
                 </b-card>
+              </div>
+              <div v-else>
+                <!--QR-Code scannen-->
+                <b-card class='mt-5' style="font-size:1.2em"
+                        header='Gleich geht es los! Halte den QR-Code vor die Kamera.'>
+                  <b-form
+                      action='/testen_login'
+                      accept-charset='UTF-8'
+                      data-remote='true'
+                      data-type='json'
+                      method='post'
+                      v-on:ajax:error="$bvModal.show('invalid_qr_code'),retry=true"
+                      v-on:ajax:success="success"
+                      id='form'
+                  >
+                    <b-form-group>
+                      <b-form-input :state="retry ? false : null"
+                                    type='text'
+                                    name='login'
+                                    id='login'
+                                    placeholder='Zugangscode'
+                                    style="display: none"
+                                    :formatter="format"
+                      />
+                      <div class='invalid-feedback'>
+                        Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
+                      </div>
+                      <b-modal :id="'invalid_qr_code'"
+                               :title="'Der gelesene QR-Code existiert nicht.'"
+                               scrollable
+                               hide-footer
+                               lazy>
+                      </b-modal>
+                    </b-form-group>
+                    <qr-reader></qr-reader>
+                    <b-button style="display: none" type='submit' variant='primary' v-on:submit="loading=true" id='starten'>Starten
+                    </b-button>
+                    <b-button style="font-size:1.2em;" type='button' variant='primary' @click="switchQr()">
+                      Zugangscode eintippen
+                    </b-button>
+                  </b-form>
+                </b-card>
+              </div>
             </b-col>
             <b-col md='3'>
             </b-col>
@@ -74,9 +120,18 @@
 </template>
 
 <script>
+import QrReader from './qr-reader';
+import { isMobile, isTablet } from 'mobile-device-detect'
     export default {
+      components: {
+        QrReader
+      },
         created() {
             window.addEventListener('beforeunload', this.auto_logout)
+          // QR-Reader Standardansicht für Tablet und Smartphones
+          if(isMobile || isTablet){
+            this.manually = false
+          }
         },
         data: function () {
             return {
@@ -84,7 +139,8 @@
                 student: this.$root.student,
                 retry: false,
                 loading: false,
-                logout: true
+                logout: true,
+                manually: true
             }
         },
         methods: {
@@ -117,6 +173,9 @@
                 //Details für eingeloggten student anzeigen
                 window.$('#navbar_text').html('Dein Login Code: ' + this.student.login)
                 window.$('#navbar_button').html("<a class='btn btn-outline-secondary' href='/testen_logout' data-method='post'>Abmelden</a>")
+            },
+            switchQr() {
+              this.manually = !this.manually
             }
         },
         name: 'frontend-app'
