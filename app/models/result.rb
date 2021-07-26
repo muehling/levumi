@@ -28,8 +28,12 @@ class Result < ApplicationRecord
   #Textdarstellung für CSV Export
   def as_csv(for_user)
     start = "\"#{id}\","
-    start += "\"#{GroupShare.where(group_id: self.student.group.id).order(owner: :desc).pluck(:user_id).join(',')}\"," unless  for_user
-    start += "\"#{student_id}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
+    unless for_user
+      ids = GroupShare.where(group_id: self.student.group.id).order(owner: :desc).pluck(:user_id)
+      types = User.find(ids).pluck(:account_type)
+      start += "\"#{ids.join(',')}\",\"#{types.join(',')}\","
+    end
+    start += "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
     res = ''
     self.data.each do |d|
       res = res + start
@@ -44,8 +48,8 @@ class Result < ApplicationRecord
   #Spaltenbezeichner für CSV-Export, nimmt an, dass alle Result-Objekte eines Tests ein einheitliches Format haben!
   def csv_header(for_user)
     res = '"Ergebnis_ID",'
-    res += '"User_ID",' unless for_user
-    res +='"Kind_ID","Klassen_ID","Geschlecht","Geburtsdatum","SPF","Tags","Test_ID","Testdatum","Testwoche"'
+    res += '"User_ID","User_Typ",' unless for_user
+    res +='"Kind_ID","Kind_Login","Klassen_ID","Geschlecht","Geburtsdatum","SPF","Tags","Test_ID","Testdatum","Testwoche"'
     if self.data.size > 0
       self.data[0].each do |k,v|
         res = res + ',"' + k + '"'
