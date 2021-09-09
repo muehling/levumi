@@ -7,7 +7,7 @@ class User < ApplicationRecord
   #validates :password, length: { minimum: 5 }
 
   validates_presence_of :email, message: 'E-Mail darf nicht leer sein!'
-  validates_uniqueness_of :email, message: 'E-Mail Adresse ist bereits registriert!'
+  validates_uniqueness_of :email, case_sensitive: false,  message: 'E-Mail Adresse ist bereits registriert!'
   #validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, message: 'Bitte eine gültige E-Mail Adresse eingeben'
   
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
