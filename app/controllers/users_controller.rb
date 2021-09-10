@@ -46,7 +46,7 @@ class UsersController < ApplicationController
       else
         if (@login.id == @user.id) #Eigenes Update, ggf. keys Recodieren
           if (params.has_key?(:user) && params[:user].has_key?(:keys) && !params[:user][:keys].blank?)
-            todo = JSON.parse(params[:user][:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupAccess-Objekte.
+            todo = JSON.parse(params[:user][:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupShare-Objekte.
             todo.each do |k, v|
               ga = GroupShare.where(user: @login, group_id: k).first
               unless ga.nil? || ga.key.nil? || ga.key.blank?

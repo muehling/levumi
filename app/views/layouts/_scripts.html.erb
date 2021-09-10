@@ -28,7 +28,7 @@
     //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
     // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
     function decrypt(text, alt, group) {
-        let res = ""
+        let res = ''
         try {
             let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group])
             res = sjcl.decrypt(tempkey, text)
@@ -101,4 +101,6 @@
             this[key].sort(function(a, b){return a.name < b.name ? -1 : a.name > b.name ? 1 : 0})
         }, groups)
     }
+    else
+        window.location.replace("https://www.levumi.de")     //Ohne Passwort, zurück zum Login (z.B. durch Tab)
 </script>
