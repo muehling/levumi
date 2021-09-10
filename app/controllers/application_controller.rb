@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   def start
     respond_to do |format|
       format.html {
-        @no_script = true
+        @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
         render :start
       }
     end
