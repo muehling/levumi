@@ -102,5 +102,6 @@
         }, groups)
     }
     else
-        window.location.replace("https://www.levumi.de")     //Ohne Passwort, zurück zum Login (z.B. durch Tab)
+        if (window.location != "https://www.levumi.de")
+          window.location.replace("https://www.levumi.de")     //Ohne Passwort, zurück zum Login (z.B. durch Tab)
 </script>
