@@ -10,8 +10,7 @@
 
     <!-- sonstige Libaries -->
     <%= javascript_include_tag 'sjcl.js' %>
-
-    <%= render 'layouts/scripts' %>
+    <%= render 'layouts/scripts' unless @no_script%>
 
     <%= yield :head if content_for? :head %>
   </head>

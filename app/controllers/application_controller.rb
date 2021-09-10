@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
   def start
     respond_to do |format|
       format.html {
+        @no_script = true
         render :start
       }
     end
