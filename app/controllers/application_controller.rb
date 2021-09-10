@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
       redirect_to '/start'
     else
       @retry = true
+      @no_script = true
       render :start
     end
   end
@@ -44,6 +45,7 @@ class ApplicationController < ActionController::Base
     end
     respond_to do |format|
       format.html {
+        @no_script = true
         render :frontend, layout: 'minimal'
       }
     end
@@ -57,6 +59,7 @@ class ApplicationController < ActionController::Base
       respond_to do |format|
         format.html {
           @student = s
+          @no_script = true
           render :frontend, layout: 'minimal'
         }
         format.json {
