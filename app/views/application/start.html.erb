@@ -96,6 +96,9 @@
   <div class='modal-body' id='modal-body'>
     <%= render 'users/form/form_register', user: User.new %>
   </div>
+  <div class='modal-footer'>
+    <a href='#' onclick="$('#t_and_c').modal('show')">Nutzungsbedingungen</a></li>
+  </div>
 <% end %>
 
 <%= content_for :body do %>
