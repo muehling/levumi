@@ -1,0 +1,48 @@
+<%= content_for :head do %>
+    <!-- Zusätzliche Styles für Landing Page -->
+    <style>
+      .info {
+          padding: 15px; color: black; background-color: #f0f8ffdd;
+      }
+      .lead {
+          padding: 15px; color: black; background-color: #f0f8ffdd;
+          font-size: 1.2em;
+      }
+    </style>
+<% end %>
+
+<%= content_for :navbar do %>
+  <!-- Navbar mit Login-Dialog -->
+  <nav class='navbar sticky-top navbar-expand-lg navbar-light bg-light'>
+    <a class='navbar-brand' href='#'><img src='favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
+    <a class='nav-item btn btn-outline-secondary nav-link ml-auto' href='https://www.levumi.de'>Kostenlos starten auf der Hauptseite</a>
+  </nav>
+<% end %>
+
+
+<%= content_for :body do %>
+
+  <div class="container-fluid">
+
+    <p class='info mt-5'>
+      Mehr Informationen über die in Levumi vorhandenen Tests finden Sie <a href='https://www.uni-regensburg.de/humanwissenschaften/lernbehindertenpaedagogik/instrumente/index.html'>hier</a>.
+    </p>
+
+    <p class='info'>
+      Der <a href='https://www.levumi-blog.uni-kiel.de' target='_blank'>Levumi Blog</a> unterstützt Sie bei allen Fragen rund um die Plattform und informiert über praxisrelevante Forschungsergebnisse. <br/>
+    </p>
+
+    <p class="text-center">
+      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+    </p>
+  </div>
+
+
+  <footer class='mt-2'>
+    <ul class="list-inline text-center">
+      <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
+      <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
+      <li class="list-inline-item"><a href='#' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
+    </ul>
+  </footer>
+<% end %>

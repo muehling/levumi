@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: [:start, :login, :frontend, :login_frontend, :logout_frontend]
+  before_action :set_login, except: [:start, :info, :login, :frontend, :login_frontend, :logout_frontend]
   before_action :set_locale
 
   #Normaler Zugang
@@ -10,6 +10,16 @@ class ApplicationController < ActionController::Base
       format.html {
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
         render :start
+      }
+    end
+  end
+
+  #GET '/info'
+  def info
+    respond_to do |format|
+      format.html {
+        @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
+        render :info
       }
     end
   end

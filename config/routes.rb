@@ -2,11 +2,12 @@ Rails.application.routes.draw do
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
   root 'application#start'
 
+  #Werbeseite
+  get '/info', to: 'application#info'
+
   #Normaler Login
   post '/login', to: 'application#login'
   post '/logout', to: 'application#logout'
-  #TEMPCODE
-  post '/import', to: 'import#import'
 
   #Login für SuS
   get '/testen', to: 'application#frontend'
