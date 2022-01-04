@@ -65,32 +65,29 @@ class Test < ApplicationRecord
     #Infos aus ZIP lesen
     zip = Zip::File.open(file)
     f = zip.glob('test.json').first
-
-    #Benötigte Strukturen finden / erzeugen
-    old_test = nil
-    test = nil
     unless f.nil?
+      #Benötigte Strukturen finden / erzeugen
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
-      family = TestFamily.find_by_name(vals['family'])
-      if family.nil?
-        #Benötigte Strukturen anlegen
-        area = Area.find_by_name(vals['area'])
-        area = Area.create(name: vals['area']) if area.nil?
-        competence = Competence.find_by_name(vals['competence'])
-        competence = area.competences.build(name: vals['competence']) if competence.nil?
-        family = competence.test_families.build(name: vals['family'])
-        family.save
-      else
-        old_test = family.tests.where(level: vals['level']).where.not(archive: true).first
-        unless old_test.nil?
-          if old_test.version < vals['version'] || archive        #Falls kleiner Version, automatisch archivert.
-            old_test.archive = true
-            old_test.save
-          elsif old_test.version > vals['version']            #Ältere Version darf neuere nicht ersetzen.
-            return nil
-          end
+
+      #Automatische Archivierung
+      old_test = Test.where(shorthand: vals['shorthand']).where.not(archive: true).first
+      unless old_test.nil?
+        if old_test.version < vals['version'] || archive        #Falls kleiner Version, automatisch archivert.
+          old_test.archive = true
+          old_test.save
+        elsif old_test.version > vals['version']            #Ältere Version darf neuere nicht ersetzen.
+          return nil
         end
       end
+
+      #Ggf. benötigte Strukturen anlegen
+      area = Area.find_by_name(vals['area'])
+      area = Area.create(name: vals['area']) if area.nil?
+      competence = area.competences.find_by_name(vals['competence'])
+      competence = area.competences.build(name: vals['competence']) if competence.nil?
+      family = competence.test_families.find_by_name(vals['family'])
+      family = competence.test_families.build(name: vals['family']) if family.nil?
+      family.save
 
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
