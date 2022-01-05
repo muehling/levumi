@@ -87,7 +87,6 @@ class Test < ApplicationRecord
       competence = area.competences.build(name: vals['competence']) if competence.nil?
       family = competence.test_families.find_by_name(vals['family'])
       family = competence.test_families.build(name: vals['family']) if family.nil?
-      family.save
 
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
