@@ -47,6 +47,10 @@
         font-size: 1.2em;
       }
     </style>
+
+  <script>
+      window.onload = function() {$(window.location.hash).modal('show')}
+  </script>
 <% end %>
 
 <%= content_for :navbar do %>
@@ -178,9 +182,9 @@
 
   <footer class='mt-2'>
     <ul class="list-inline text-center">
-      <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
-      <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
-      <li class="list-inline-item"><a href='#' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
+      <li class="list-inline-item"><a href='#imprint' data-toggle='modal' data-target='#imprint'>Impressum</a></li>
+      <li class="list-inline-item"><a href='#privacy' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
+      <li class="list-inline-item"><a href='#projects' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
     </ul>
   </footer>
 <% end %>
