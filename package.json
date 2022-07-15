@@ -3,7 +3,7 @@
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.8.2",
-    "@rails/webpacker": "^4.0.2",
+    "@rails/webpacker": "^5.4.3",
     "apexcharts": "^3.8.2",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.21",
@@ -11,7 +11,7 @@
     "css-loader": "^2.1.1",
     "deepmerge": "^3.3.0",
     "jquery": "^3.4.1",
-    "jspdf": "^1.5.3",
+    "jspdf": "^2.5.1",
     "mobile-device-detect": "^0.4.3",
     "popper.js": "^1.15.0",
     "qr-scanner": "^1.2.0",
@@ -22,6 +22,15 @@
     "vue-template-compiler": "^2.6.10"
   },
   "devDependencies": {
-    "webpack-dev-server": "^3.4.1"
+    "webpack-cli": "^4.3.0",
+    "webpack-dev-server": "^4.9.3"
+  },
+  "resolutions": {
+    "minimist": "^1.2.6",
+    "follow-redirects": "^1.4.7",
+    "node-fetch": "^2.6.7",
+    "ansi-regex": "^4.1.1",
+    "glob-parent": "^5.1.2",
+    "nth-check": "^2.0.1"
   }
 }
