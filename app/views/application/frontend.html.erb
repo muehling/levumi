@@ -5,9 +5,27 @@
 %>
 
 <% unless @student.nil? %>
-  <script>
-      window.$('#navbar_text').html('Dein Login Code: <%= @student.login %>')
-      window.$('#navbar_button').html("<a class='btn btn-outline-secondary' href='/testen_logout' data-method='post'>Abmelden</a>")
+  <script type="module">
+      const logout = ()=>{
+        //TODO needs to be handled in frontend-app
+        fetch('/testen_logout', {
+            method: 'POST',
+            headers: {
+              Accept: 'text/javascript',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+            },
+            credentials: 'include',
+          }).then(res=>{
+            if (res.status ===200){
+              window.location.replace("/")
+              sessionStorage.removeItem("login")
+              sessionStorage.removeItem("old_login")
+            }
+          })
+      }
+      $('#navbar_text').html('Dein Login Code: <%= @student.login %>')
+      $('#navbar_button').html("<button class='btn btn-outline-secondary' >Abmelden</button>").on("click", logout)
   </script>
 <% end %>
 

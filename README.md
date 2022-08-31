@@ -20,23 +20,23 @@ Alle anderen Funktionen sind optional.
 		* trend: 1 / 0 / -1 für "Verbesserung", "Keine Änderung" und "Verschlechterung", aus Sicht des Tests.
 		* positive: Array mit Shorthand der Items, die in dieser Testung "gut" waren.
 		* negative: Array mit Shorthand der Items, die in dieser Testung "schlecht" waren.
-	
+
 ##### data - Rohdaten der Testung für statistische Auswertung
 	Array mit genau einem Eintrag pro Item der Testung in der Reihenfolge der Testung
 	Eintrag im Array ist ein Hash mit den folgenden Keys und Werten:
-		* item: Shorthand des Items 
+		* item: Shorthand des Items
 		* result: Item-Rohwert (wird in diesem Format exportiert)
 		* (optional) time: Bearbeitungszeit des Items in ms
 		* (optional) answer: Gegebene Antwort
-		* (optional) ... 
+		* (optional) ...
 	Die verwendeten Keys müssen pro Test einheitlich sein und werden als eigene Spalte exportiert.
 
 ##### callback
     Zeiger auf parameterlose Funktion, die nach erfolgreichem Speichern der Ergebnisse aufgerufen wird.
     Diese Funktion kann z.B. dafür verwendet werden, den Test final zu beenden.
-		
+
 ### function exit()
-    Beendet den Testablauf. 
+    Beendet den Testablauf.
     Darf im Falle einer erfolgreichen Testung erst aufgerufen werden, wenn die Messung erfolgreich gespeichert wurd.
 
 ### function startTimer()
@@ -47,7 +47,7 @@ Alle anderen Funktionen sind optional.
 
 ### function shuffleArray(array)
     Ordnet die Elemente des übergebenen Arrays zufällig neu an. Mutiert das übergebene Array!
- 
+
 ### function showFeedback(result, timedout)
     Zeigt eine generische Ergebnisseite, die durch die Werte von result und timedout gestaltet wird.
         * result: -1, falls das aktuelle Ergebnis eine Verschlechterung darstellt, 0 falls keine Änderung erfolgt ist und 1, falls eine Verbesserung zur letzten Messung vorliegt.
@@ -69,7 +69,7 @@ Darüberhinaus dürfen drei Unterverzeichnisse existieren. Alle dort existierend
 
     *media - Hier sollen alle Arten von Mediendateien gespeichert werden (Bilder, Audio, Video)
     *scripts - Hier sollen ggf. notwendige Javascript-Dateien gespeichert werden.
-    *styles - Hier können eigene CSS-Dateien abgelegt werden.   
+    *styles - Hier können eigene CSS-Dateien abgelegt werden.
 
 ### Struktur von test.html
 

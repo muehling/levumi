@@ -1,15 +1,15 @@
 class AssessmentsController < ApplicationController
   before_action :set_group
-  before_action :set_assessment, only: [:show, :update]
+  before_action :set_assessment, only: %i[show update]
 
   #GET /groups/:group_id/assessments/:id
-  def show                #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
+  def show #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
     if @assessment.nil?
       head 404
     else
       respond_to do |format|
-        format.html {render 'users/show'}
-        format.js {render json: @assessment.get_data}
+        format.html { render 'users/show' }
+        format.json { render json: @assessment.get_data }
       end
     end
   end
@@ -24,12 +24,14 @@ class AssessmentsController < ApplicationController
   end
 
   #PUT /groups/:group_id/assessments/:id
-  def update    #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    if params.require(:assessment).has_key?(:exclude) && @assessment.exclude(params.require(:assessment)[:exclude])
+  def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
+    if params.require(:assessment).has_key?(:exclude) &&
+         @assessment.exclude(params.require(:assessment)[:exclude])
       head 200
-    elsif params.require(:assessment).has_key?(:include) && @assessment.include(params.require(:assessment)[:include])
-        head 200
-    elsif @assessment.update_attributes(params.require(:assessment).permit(:active))
+    elsif params.require(:assessment).has_key?(:include) &&
+          @assessment.include(params.require(:assessment)[:include])
+      head 200
+    elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200
     else
       head 304
@@ -39,10 +41,19 @@ class AssessmentsController < ApplicationController
   #GET /groups/:group_id/assessments
   def index
     #Nur nicht-leere Assessments anzeigen (=> Neue Assessments fehlen in der Liste...?)
-    data = @group.assessments.select{|a| !Result.find_by_assessment_id(a.id).nil? && !a.test.archive}.map{|a| {active: a.active, test: a.test.id, name: a.test.full_name, student_test: a.test.student_test}}
-    respond_to do |format|
-      format.js {render json: data}
-    end
+    data =
+      @group
+        .assessments
+        .select { |a| !Result.find_by_assessment_id(a.id).nil? && !a.test.archive }
+        .map do |a|
+          {
+            active: a.active,
+            test: a.test.id,
+            name: a.test.full_name,
+            student_test: a.test.student_test
+          }
+        end
+    render json: data
   end
 
   private
@@ -50,13 +61,11 @@ class AssessmentsController < ApplicationController
   #Gruppenummer aus Parametern holen und Gruppe laden
   def set_group
     @group = @login.groups.find(params[:group_id])
-    if @group.nil?
-      redirect_to '/'
-    end
+    redirect_to '/' if @group.nil?
   end
 
   #Assessment laden
-  def set_assessment  #:id meint Test.id, nicht Assessment.id (aus Auswahldialog)
+  def set_assessment #:id meint Test.id, nicht Assessment.id (aus Auswahldialog)
     @assessment = @group.assessments.where(test_id: params[:id]).first
   end
 end

@@ -1,0 +1,281 @@
+@import '../styles/variables.scss';
+@import '~bootstrap';
+@import '@fortawesome/fontawesome-free/css/all.css';
+
+.spinner {
+  margin: 100px auto 0;
+  width: 70px;
+  text-align: center;
+}
+
+.spinner > div {
+  width: 18px;
+  height: 18px;
+  background-color: #333;
+
+  border-radius: 100%;
+  display: inline-block;
+  -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+  animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+  -webkit-animation-delay: -0.32s;
+  animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+  -webkit-animation-delay: -0.16s;
+  animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes sk-bouncedelay {
+  0%,
+  80%,
+  100% {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+  40% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+/* Verstecken von noch nicht geladenen Vue-Komponenten */
+[v-cloak] {
+  display: none;
+}
+
+/* Schriftarten */
+@font-face {
+  font-family: 'Fibel Nord';
+  src: url('../../assets/fonts/FibelNord.woff2') format('woff2'),
+    url('../../assets/fonts/FibelNord.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grundschrift';
+  src: url('../../assets/fonts/Grundschrift.woff2') format('woff2'),
+    url('../../assets/fonts/Grundschrift.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Grundschrift Grundlinie';
+  src: url('../../assets/fonts/GrundschriftGrundlinie.woff2') format('woff2'),
+    url('../../assets/fonts/GrundschriftGrundlinie.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.text-small {
+  font-size: 0.875rem;
+}
+
+/* Bootstrap Theming */
+
+/* Buttons */
+
+.btn:hover,
+.btn:active,
+.btn:focus {
+  box-shadow: none !important;
+}
+
+/* btn-xxx Varianten */
+
+.btn-primary.btn-primary,
+.btn-primary.btn-primary:active {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+}
+.btn-primary:hover {
+  background-color: $primary-color-dark !important;
+  border-color: $primary-color-dark !important;
+}
+
+.btn-secondary.btn-secondary {
+  background-color: $secondary-color !important;
+  border-color: $secondary-color !important;
+  &:hover {
+    background-color: $secondary-color-dark !important;
+    border-color: $secondary-color-dark !important;
+  }
+}
+
+.btn-danger,
+.btn-danger:active {
+  background-color: $danger-color !important;
+  border-color: $danger-color !important;
+}
+.btn-danger:hover {
+  background-color: $danger-color-dark !important;
+  border-color: $danger-color-dark !important;
+}
+
+.btn-success,
+.btn-success:active {
+  background-color: $success-color !important;
+  border-color: $success-color !important;
+}
+.btn-success:hover {
+  background-color: $success-color-dark !important;
+  border-color: $success-color-dark !important;
+}
+
+/* btn-outline-xxx Varianten */
+
+.btn-outline-primary,
+.btn-outline-primary.disabled,
+.btn-outline-primary:disabled {
+  color: $primary-color;
+  border-color: $primary-color !important;
+}
+.btn-outline-primary:active,
+.btn-outline-primary:hover,
+.btn-outline-primary:not(:disabled):not(.disabled).active {
+  background-color: $primary-color !important;
+  border-color: $primary-color !important;
+}
+
+.btn-outline-secondary,
+.btn-outline-secondary.disabled,
+.btn-outline-secondary:disabled {
+  color: $secondary-color;
+  border-color: $secondary-color !important;
+}
+.btn-outline-secondary.btn-outline-secondary:active,
+.btn-outline-secondary.btn-outline-secondary:hover,
+.btn-outline-secondary.btn-outline-secondary:not(:disabled):not(.disabled).active {
+  background-color: $secondary-color !important;
+  border-color: $secondary-color !important;
+}
+
+.btn-outline-danger,
+.btn-outline-danger.disabled,
+.btn-outline-danger:disabled {
+  color: $danger-color;
+  border-color: $danger-color !important;
+}
+.btn-outline-danger:active,
+.btn-outline-danger:hover,
+.btn-outline-danger:not(:disabled):not(.disabled).active {
+  background-color: $danger-color !important;
+  border-color: $danger-color !important;
+}
+
+.btn-outline-success.btn-outline-success,
+.btn-outline-success.btn-outline-success.disabled,
+.btn-outline-success.btn-outline-success:disabled {
+  color: $success-color;
+  border-color: $success-color !important;
+}
+.btn-outline-success:active,
+.btn-outline-success:hover,
+.btn-outline-success:not(:disabled):not(.disabled).active {
+  background-color: $success-color !important;
+  border-color: $success-color !important;
+}
+
+.btn-outline-primary:disabled,
+.btn-outline-primary.disabled,
+.btn-outline-secondary:disabled,
+.btn-outline-secondary.disabled,
+.btn-outline-success:disabled,
+.btn-outline-success.disabled,
+.btn-outline-danger:disabled,
+.btn-outline-danger.disabled {
+  background-color: $white !important;
+}
+
+/* Sonderfälle */
+.dropdown.show > .btn.btn-outline-primary.dropdown-toggle {
+  background-color: $primary-color-dark !important;
+}
+
+/* Navs etc. */
+
+.nav > li > a,
+.btn {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.nav-pills .nav-link {
+  color: $primary-color;
+}
+
+.nav-link.disabled {
+  color: $secondary-color;
+  font-style: italic;
+}
+
+.nav-pills .nav-link.active,
+.dropdown-item:active {
+  background-color: $primary-color;
+}
+
+.navbar-light .navbar-nav .nav-link {
+  color: $secondary-color;
+}
+
+.navbar-light .navbar-nav .nav-link:not(.active):hover,
+.nav-pills .nav-link:not(.active):hover,
+.nav-pills .nav-link:not(.active) .text-muted:hover {
+  color: #252547 !important;
+}
+
+.navbar-light .navbar-nav .nav-link.active,
+.nav-pills .nav-link.active {
+  color: white;
+  background-color: $primary-color;
+}
+
+/* Forms */
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: $levumi-color !important;
+  box-shadow: 0 0 0 0.075rem $secondary-color !important;
+}
+
+#toast-wrapper {
+  position: absolute;
+  top: 0;
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+  z-index: 2000;
+  height: 0;
+}
+
+#toast-wrapper .toast {
+  background-color: $white;
+  position: absolute;
+  height: 0;
+  overflow: hidden;
+  &.show {
+    height: unset;
+    overflow: auto;
+  }
+}
+
+.modal-backdrop {
+  opacity: 0.5;
+}

@@ -1,8 +1,0 @@
-<% if @login.id == @user.id %>
-  //Update erfolgreich, temporäres Passwort löschen
-  sessionStorage['old_login'] = undefined
-<% else %>
-  //Update für einen anderen Nutzer => Nutzertabelle neu rendern und Modal schließen.
-  $('#list_content').html("<%= escape_javascript render 'table' %>")
-<% end %>
-$('#modal').modal('hide')

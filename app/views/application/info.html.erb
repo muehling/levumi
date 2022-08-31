@@ -40,9 +40,19 @@
 
   <footer class='mt-2'>
     <ul class="list-inline text-center">
-      <li class="list-inline-item"><a href='#' onclick="$('#imprint').modal('show')">Impressum</a></li>
-      <li class="list-inline-item"><a href='#' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
-      <li class="list-inline-item"><a href='#' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
+      <li id="imprint-button"class="list-inline-item"><a href='#'>Impressum</a></li>
+      <li id="privacy-button"class="list-inline-item"><a href='#'>Datenschutzerklärung</a></li>
+      <li id="projects-button"class="list-inline-item"><a href='#'>Über das Projekt</a></li>
     </ul>
   </footer>
+  <script type="module">
+    const showModal = (e, target)=>{
+      e.preventDefault()
+      e.stopPropagation()
+      $(target).modal('show')
+    }
+    $('imprint-button').on('click', (e)=>showModal(e, '#imprint'))
+    $('privacy-button').on('click', (e)=>showModal(e, '#privacy'))
+    $('projects-button').on('click', (e)=>showModal(e, '#projects'))
+  </script>
 <% end %>

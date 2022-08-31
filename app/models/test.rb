@@ -94,7 +94,7 @@ class Test < ApplicationRecord
         test = family.tests.build(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
       else
         test = old_test
-        test.update_attributes(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
+        test.update(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
       end
       test.items = vals['items']
 

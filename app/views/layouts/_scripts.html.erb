@@ -43,15 +43,18 @@
 
     //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
     function encrypt(text, group) {
-        let tempkey = sjcl.decrypt(sessionStorage['login'], keys[group])
+        let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), keys[group])
         return sjcl.encrypt(tempkey, text)
     }
 
     //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey"
     function decrypt_key(text) {
+        if (!text){
+            return ''
+        }
         let res = ''
         try {
-            res = sjcl.decrypt(sessionStorage['login'], text)
+            res = sjcl.decrypt(sessionStorage.getItem('login'), text)
         }
         catch(e){
             console.error(e.toString())
@@ -63,7 +66,10 @@
 
     //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey".
     function encrypt_key(text) {
-        return sjcl.encrypt(sessionStorage['login'], text)
+        if (!text){
+            return null
+        }
+        return sjcl.encrypt(sessionStorage.getItem('login'), text)
     }
 
     //Liefert das Student-Objekt zu einer ID in dessen Gruppe zurück.
@@ -75,24 +81,19 @@
     }
 
     function recode_keys(new_password) {
-        //Alle Keys mit altem PW entschlüsseln
-        let new_keys = []
-        Object.keys(keys).forEach(function(key, index) {
-            new_keys.push({id: key, key: decrypt_key(this[key])})
-        }, keys)
+        // decrypt keys with current password
+        const new_keys = Object.entries(keys).map(k=> ({id: k[0], key:  decrypt_key(k[1])}))
 
-        //Key aktualisieren
+        // update login data
         sessionStorage['old_login'] = sessionStorage['login']
         sessionStorage['login'] = new_password
 
-        //Key neu verschlüsseln und globales Array aktualisieren
-        for (let i = 0; i < new_keys.length; ++i) {
-            new_keys[i].key = encrypt_key(new_keys[i].key)
-            keys[new_keys[i].id] = new_keys[i].key
-        }
+        // recode with new password, update in global namespace
+        keys = Object.entries(keys).map(k=> ({id: k[0], key:  encrypt_key(k[1])}))
     }
 
     //Namen der Schüler entschlüsseln, evtl. nicht bei jedem Reload?
+    // TODO groups and students need to be in global store instead of the global namespace
     if (sessionStorage['login'] != undefined) {
         Object.keys(groups).forEach(function(key, index) {
             for (let i = 0; i < this[key].length; ++i)
@@ -100,6 +101,7 @@
             //Nach Namen sortieren
             this[key].sort(function(a, b){return a.name < b.name ? -1 : a.name > b.name ? 1 : 0})
         }, groups)
+
     }
     else
         if (window.location != "https://www.levumi.de")

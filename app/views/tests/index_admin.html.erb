@@ -1,6 +1,6 @@
-<script>
+<script type="module">
     //Eintrag in der Navleiste markieren
-    highlightNavItem('navbarSystem');
+    window.highlightNavItem('navbarSystem');
 </script>
 
 <% if @import_failure %>
@@ -31,7 +31,7 @@
     </div>
     <div class='tab-pane' id='new' role='tabpanel' aria-labelledby='new-tab'>
       <div class='row'>
-        <div class='col-4'>
+        <div class='col-lg-8 col-xl-6'>
           <div class='card card-body' id='new_content'>
             <!-- Test anlegen-->
             <%= render 'form', test: nil %>

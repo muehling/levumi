@@ -1,7 +1,0 @@
-try {
-    $('#res').html("<button class='btn btn-primary' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>Überprüfung erfolgreich! Passwort anzeigen</button><div class='collapse alert alert-success mt-3' id='collapse'></div>")
-    $('#collapse').html(sjcl.decrypt(sessionStorage['answer'], "<%= escape_javascript(raw @user.nil? ? '' : @user.security_digest)%>"))
-}
-catch(e) {
-    $('#res').html("<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>")
-}

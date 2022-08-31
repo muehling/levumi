@@ -17,7 +17,8 @@
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 
 <!-- Testskripte laden und Testumgebung definieren -->
-<script>
+<script type="module">
+
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
         <% @test.media_files.each do |f| %>
@@ -124,21 +125,21 @@
         )
         if (result == 0) {
             $('#pic').attr('src', '/images/shared/Levumi-normal.jpg')
-        }
-        else if (result == 1) {
+        } else if (result == 1) {
             $('#pic').attr('src', '/images/shared/Levumi-jubelt.gif')
-        }
-        else {
+        } else {
             $('#pic').attr('src', '/images/shared/Levumi-liest.gif')
-        }
-        if (timedout)
+        } if (timedout) {
             $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster' +
-                ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
+                ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg exit-button">Fenster schließen!</button>')
                 .css('margin-top','0%')
-        else
+        } else {
             $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
-                ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg " onclick="exit()">Fenster schließen!</button>')
+                ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg exit-button">Fenster schließen!</button>')
                 .css('margin-top','0%')
+        }
+
+        $(".exit-button").on("click", exit)
     }
 
     <%if @test.student_test%>

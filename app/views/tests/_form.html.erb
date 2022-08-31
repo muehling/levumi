@@ -1,41 +1,22 @@
-<% if test.nil? %>
-  <!-- Form für Import -->
-  <b-card class='mt-3'>
-    <%= form_for Test.new, multipart: true, class: 'form' do |f| %>
-      <div class='form-group'>
-        <label for='fileInput'>Test aus Archivdatei(en) importieren</label>
-        <%= f.file_field 'file', id: 'fileInput', class: 'form-control-file', accept: '.zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
-      </div>
-      <div class='form-group'>
-        <div class='form-check'>
-          <%= check_box_tag 'update_test', true, false, {class: 'form-check-input', id: 'archive'}%>
-          <%= label_tag 'update_test', 'Nur update (sonst archivieren von existierendem Test) ', class: 'form-check-label' %>
-        </div>
-        <div class='form-check'>
-          <%= check_box_tag 'update_material', true, false, {class: 'form-check-input', id: 'update'}%>
-          <%= label_tag 'update_material', 'Existierendes Fördermaterial beibehalten (nur bei Archivierung)', class: 'form-check-label' %>
-        </div>
-      </div>
-      <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-primary disabled' do%>
-        <i class='fas fa-file-upload'></i> Hochladen
-      <% end %>
-    <% end %>
-  </b-card>
-<% else %>
-  <!-- Form für Ändern -->
-  <%= form_for test, remote: true, class: 'form form-inline' do |f| %>
+<!-- Form für Import -->
+<b-card class='mt-3'>
+  <%= form_for Test.new, multipart: true, class: 'form' do |f| %>
     <div class='form-group'>
-      <%= f.fields_for :description, test.description do |fields| %>
-        <%= fields.label 'full', 'Beschreibung', class: 'form-label' %>
-        <%= fields.text_area "full", value: test.description['full'], id: 'full', class: 'form-control'%>
-        <%= fields.label 'short', 'Kurzbeschreibung', class: 'form-label' %>
-        <%= fields.text_area "short", value: test.description['short'], id: 'short', class: 'form-control'%>
-      <% end %>
+      <label for='fileInput'>Test aus Archivdatei(en) importieren</label>
+      <%= f.file_field 'file', id: 'fileInput', class: 'form-control-file', accept: '.zip', multiple: true, onchange: "$('#submit').removeClass('disabled');" %>
     </div>
-    <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-success' do%>
-      <i class='fas fa-check'></i> Aktualisieren
+    <div class='form-group'>
+      <div class='form-check'>
+        <%= check_box_tag 'update_test', true, false, {class: 'form-check-input', id: 'archive'}%>
+        <%= label_tag 'update_test', 'Nur update (sonst archivieren von existierendem Test) ', class: 'form-check-label' %>
+      </div>
+      <div class='form-check'>
+        <%= check_box_tag 'update_material', true, false, {class: 'form-check-input', id: 'update'}%>
+        <%= label_tag 'update_material', 'Existierendes Fördermaterial beibehalten (nur bei Archivierung)', class: 'form-check-label' %>
+      </div>
+    </div>
+    <%= button_tag type: 'submit', id: 'submit', class: 'btn btn-outline-primary disabled' do%>
+      <i class='fas fa-file-upload'></i> Hochladen
     <% end %>
-    <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide'); return false;"><i class='fas fa-times'></i> Abbrechen</button>
   <% end %>
-
-<% end %>
+</b-card>

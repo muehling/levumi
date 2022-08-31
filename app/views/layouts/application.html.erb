@@ -5,14 +5,26 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= javascript_pack_tag 'application' %>
-    <%= stylesheet_pack_tag 'application' %>
+    <%= vite_javascript_tag 'application' %>
+    <%= vite_stylesheet_tag 'application' %>
+
 
     <!-- sonstige Libaries -->
     <%= javascript_include_tag 'sjcl.js' unless @no_script %>
     <%= render 'layouts/scripts' unless @no_script%>
 
     <%= yield :head if content_for? :head %>
+    <%= vite_client_tag %>
+    <!--
+      If using a TypeScript entrypoint file:
+        vite_typescript_tag 'application'
+
+      If using a .jsx or .tsx entrypoint, add the extension:
+        vite_javascript_tag 'application.jsx'
+
+      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
+    -->
+
   </head>
 
   <body>
@@ -37,6 +49,17 @@
           </div>
         <% end %>
       </div>
+    </div>
+  </div>
+  <div id='toast-wrapper'>
+    <div id='user-messages' role='alert' class='toast mt-4'>
+      <div class='toast-header d-flex justify-content-between align-items-center'>
+        <h5 class=''>Registrierung</h5>
+        <button type='button' class='close' data-dismiss='toast' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='toast-body' id='user-messages-body'></div>
     </div>
   </div>
 

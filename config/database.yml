@@ -12,6 +12,7 @@ default: &default
 development:
   <<: *default
   database: db/development.sqlite3
+  pool: 50
 
 production:
   <<: *default

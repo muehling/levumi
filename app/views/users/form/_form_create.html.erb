@@ -8,6 +8,7 @@
 
   <%= render 'users/form/state', f: f, user: user, label: 'Bundesland' %>
 
+  <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
   <%= button_tag class: 'btn btn-outline-success' do %>
     <i class='fas fa-plus'></i> Anlegen
   <% end %>

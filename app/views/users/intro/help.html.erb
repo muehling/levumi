@@ -1,6 +1,5 @@
-<script>
-
-    <%
+<script type="module">
+   <%
    texts =  [
    'Diese Ansicht sehen Sie zukünftig nach dem Einloggen. Dort können Sie die Testergebnisse ansehen und neue Testungen durchführen.',
   'Hier verwalten Sie die Schülerinnen und Schüler. Sie müssen diese vor dem ersten Testen anlegen.',
@@ -10,34 +9,69 @@
   'Hier können Sie Ihre Profildaten bearbeiten.'
   ]
    %>
+  let selectors = [
+    '#intro1',
+    '#intro2',
+    '#intro3',
+    '#intro4',
+    '#intro5',
+    '#intro6',
+  ];
+  let textHtml = [
+    <% texts.each_with_index do |t, i| %>
+      "<%= escape_javascript render 'shared/popover', text: t, last: i == texts.size-1, remote: false, link: '/willkommen' %>",
+    <% end %>
+  ];
 
-  let ids = ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6']
-  let texts = [
-      <% texts.each_with_index do |t, i| %>
-        "<%= escape_javascript render 'shared/popover', text: t, last: i == texts.size-1, remote: false, link: '/willkommen' %>",
-      <% end %>
-  ]
+  let currentPopover = 0;
 
   function next() {
-      if (intro > 0)
-          $(ids[intro-1]).popover('hide')
-      if (intro < ids.length) {
-          $(ids[intro]).data('toggle', 'popover')
-          $(ids[intro]).data('content', texts[intro])
-          $(ids[intro]).popover({
-              html: true,
-              sanitizeFn: function(content) {return content}
-          })
-          $(ids[intro]).popover('show')
+    if (currentPopover > 0) {
+      $(selectors[currentPopover - 1]).popover('hide');
+    }
+    if (currentPopover <= selectors.length) {
+      const popoverEl = $(selectors[currentPopover]).first();
+      let clickHandlerAttached = false;
+      popoverEl.data('toggle', 'popover');
+        popoverEl.data('content', textHtml[currentPopover]);
+        popoverEl.popover({
+        html: true,
+        sanitize: false,
+      });
+      popoverEl.popover('show');
+
+      // attach click handler for "Weiter"-button to button in modal content
+      popoverEl.on('shown.bs.popover', () => {
+        if (clickHandlerAttached) {
+          return; // for reasons, shown.bs.popover occasionally fires twice. If so, don't attach another.
+        }
+        clickHandlerAttached = true;
+        $('#popover-next-button').on('click', () => {
+          if (currentPopover === selectors.length) {
+            fetch('/willkommen', {
+              method: 'PATCH',
+              headers: {
+                'Accept': 'text/html',
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+              },
+              credentials: 'include',
+            }).then(next);
+          } else {
+            next();
+          }
+        });
+      });
+    } else {
+      for (let i = 0; i < selectors.length; ++i) {
+        $(selectors[i]).popover('disable');
       }
-      else {
-          for (let i = 0; i < ids.length; ++i)
-              $(ids[intro]).data('toggle', 'popover')
-      }
-      ++intro
+    }
+    currentPopover++;
   }
 
-  let intro = 0
-
-  $(window).on( "load", function() {next()})
+  $(window).on('load', function () {
+    next();
+  });
 </script>

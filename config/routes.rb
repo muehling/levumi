@@ -28,6 +28,8 @@ Rails.application.routes.draw do
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
 
+  put '/users/:id/mail', to: 'users#user_mail'
+
   #Reguläres REST-Routing
   resources :users
 
@@ -44,5 +46,4 @@ Rails.application.routes.draw do
 
   resources :tests
   resources :materials
-
 end

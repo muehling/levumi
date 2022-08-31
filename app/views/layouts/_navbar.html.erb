@@ -75,10 +75,10 @@
         <% end %>
         <li class='nav-item dropdown' id='intro6'>
           <a class='nav-link dropdown-toggle' href='#' id='navbarMyData' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>
-            Meine Daten
+            Meine Daten (<%=@login.email%>)
           </a>
           <div class='dropdown-menu' aria-labelledby='navbarMyData'>
-            <%= link_to 'Profildaten ändern', edit_user_path(@login), class: 'dropdown-item', remote: true%>
+            <%= link_to 'Profildaten ändern', users_path() + "?edit_profile", class: 'dropdown-item'%>
             <%= link_to 'Testungen exportieren', user_path(@login, format: :text), class: 'dropdown-item'%>
           </div>
         </li>
@@ -95,7 +95,10 @@
           </div>
         </li>
         <li class='nav-item'>
-          <a class='nav-link' href='/logout' data-method='post'>Ausloggen</a>
+          <form action='/logout' method='post'>
+            <input name="authenticity_token" type="hidden" value="<%= form_authenticity_token %>"/>
+            <button type='submit' class='nav-link border-0 bg-transparent' href='/logout'>Ausloggen</button>
+          </form>
         </li>
       <% end %>
     </ul>
@@ -120,15 +123,3 @@
     </div>
   </div>
 </div>
-
-<script>
-    //Setzt einen Eintrag der Navbar auf 'aktiv'
-    function highlightNavItem(item) {
-        //Klasse 'active' von allen nav-items entfernen und dann bei übergebenem Element hinzufügen
-        let btns = document.getElementById('navbarContent').getElementsByClassName('active');
-        for (let i = 0; i < btns.length; i++) {
-            btns[i].className = btns[i].className.replace(' active', "");
-        }
-        document.getElementById(item).className += ' active';
-    }
-</script>

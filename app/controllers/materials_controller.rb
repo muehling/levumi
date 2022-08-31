@@ -1,6 +1,6 @@
 class MaterialsController < ApplicationController
-  before_action :set_material, except: [:index, :create]
-  before_action :is_allowed, only: [:create, :destroy]
+  before_action :set_material, except: %i[index create]
+  before_action :is_allowed, only: %i[create destroy]
 
   #GET /materials
   def index
@@ -20,25 +20,23 @@ class MaterialsController < ApplicationController
   def create
     if params.has_key?(:material) && !params[:material][:file].nil?
       params[:material][:file].each do |f|
-        Material.import(f.tempfile, params.has_key?(:replace))
+        Material.import(f.tempfile, params.has_key?(:replace)) if f.present?
       end
-      render 'index_admin'
+      redirect_to '/materials?admin=true', status: :see_other
     end
   end
 
   #DEL /tests/:id
   def destroy
     @material.destroy
-    render'index_admin'
+    render 'index_admin'
   end
 
   private
 
   #Prüfen ob Nutzer die Berechtigung für Testaktualisierungen hat
   def is_allowed
-    unless @login.has_capability?('material')
-      redirect_to '/'
-    end
+    redirect_to '/' unless @login.has_capability?('material')
   end
 
   #Test laden
