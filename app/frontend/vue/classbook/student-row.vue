@@ -78,7 +78,9 @@
         <small class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
       </div>
       <div v-else>
-        <span v-for="(tag, index) in student.tags">{{ index > 0 ? ', ' : '' }}{{ tag }}</span>
+        <span v-for="(tag, i) in student.tags" :key="`${tag}/${i}`"
+          >{{ i > 0 ? ', ' : '' }}{{ tag }}</span
+        >
         <span v-if="student.tags?.length == 0 && !empty" class="text-muted">nichts erfasst</span>
       </div>
     </td>

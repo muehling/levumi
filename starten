@@ -3,3 +3,6 @@ rails s -b 'ssl://0.0.0.0:3000?key=localhost.key&cert=localhost.crt'
 
 vite-Server:
 vite dev
+
+Lint:
+yarn lint

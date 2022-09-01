@@ -96,7 +96,7 @@
                 :class="'btn btn-sm mt-3' + is_active ? 'btn-danger' : 'btn_success'"
                 @click="toggleAssessment()"
               >
-                <i :class="is_active ? 'fas fa-pause' : 'fas-fa-play'"></i>
+                <i :class="is_active ? 'fas fa-pause' : 'fas fa-play'"></i>
                 {{
                   is_active ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
                 }}
@@ -383,22 +383,15 @@
         //Student-Objekt aus globaler Variable holen
         return get_student(this.group.id, id).name
       },
-      toggleAssessment() {
-        fetch('/groups/' + this.group.id + '/assessments/' + this.test.id, {
-          method: 'PUT',
-          headers: {
-            Accept: 'text/javascript',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-          },
-          body: JSON.stringify({ assessment: { active: this.is_active ? 0 : 1 } }),
-          credentials: 'include',
-        }).then(response => {
-          if (response.ok) {
-            this.is_active = !this.is_active
-          }
+      async toggleAssessment() {
+        const res = await ajax({
+          url: `/groups/${this.group.id}/assessments/${this.test.id}`,
+          method: 'put',
+          data: { assessment: { active: this.is_active ? 0 : 1 } },
         })
+        if (res.status === 200) {
+          this.is_active = !this.is_active
+        }
       },
     },
   }

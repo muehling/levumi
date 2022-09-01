@@ -12,9 +12,7 @@
           <b-tabs pills>
             <b-tab active>
               <template slot="title">
-                <span id="intro_cb_1"
-                  >Eigene Klassen ({{ count_regular }})</span
-                >
+                <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
               </template>
 
               <b-card no-body class="mt-3">
@@ -34,13 +32,13 @@
                       :index="0"
                       :active="firstOwnIndex == 0"
                       @update:groups="create"
-                    ></group-form>
+                    >
+                    </group-form>
                   </b-tab>
                   <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                   <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                   <b-tab
-                    v-for="(group, index) in groups"
-                    v-if="(index > 0) & !group.archive && group.owner"
+                    v-for="(group, index) in ownActiveGroups"
                     :key="group.id"
                     :active="index == firstOwnIndex"
                     :title-link-class="{ update_trigger_hack: group.label }"
@@ -56,25 +54,25 @@
                       :index="index"
                       :single="false"
                       @update:groups="updateGroups"
-                    ></group-view>
+                    >
+                    </group-view>
                   </b-tab>
                 </b-tabs>
               </b-card>
             </b-tab>
 
             <!-- Geteilte Klassen -->
-            <b-tab :disabled="count_shared == 0">
+            <b-tab :disabled="sharedGroups.length === 0">
               <template slot="title">
                 Mit mir geteilte Klassen
                 <span v-if="new_shares" class="badge badge-info">Neu!</span
-                ><span v-else>({{ count_shared }})</span>
+                ><span v-else>({{ sharedGroups.length }})</span>
               </template>
 
               <b-card no-body class="mt-3">
                 <b-tabs pills card>
                   <b-tab
-                    v-for="(group, index) in groups"
-                    v-if="index > 0 && !group.owner"
+                    v-for="(group, index) in sharedGroups"
                     :key="group.id"
                     :active="index == firstSharedIndex"
                     class="m-3"
@@ -83,9 +81,7 @@
                     <template slot="title">
                       <i v-if="group.demo">{{ group.label }}</i>
                       <span v-else>{{ group.label }}</span>
-                      <span v-if="group.key == null" class="badge badge-info"
-                        >Neu!</span
-                      >
+                      <span v-if="group.key == null" class="badge badge-info">Neu!</span>
                     </template>
                     <group-view :groups="groups" :index="index"></group-view>
                   </b-tab>
@@ -94,10 +90,8 @@
             </b-tab>
 
             <!-- Klassenarchiv -->
-            <b-tab :disabled="count_archive == 0">
-              <template slot="title">
-                Archivierte Klassen ({{ count_archive }})
-              </template>
+            <b-tab :disabled="archivedGroups.length === 0">
+              <template slot="title"> Archivierte Klassen ({{ archivedGroups.length }}) </template>
 
               <b-card no-body class="mt-3">
                 <b-tabs pills card vertical>
@@ -107,12 +101,7 @@
                       Keine Klassen im Archiv vorhanden.
                     </div>
                   </div>
-                  <b-tab
-                    v-for="(group, index) in groups"
-                    v-if="index > 0 && group.archive"
-                    :key="group.id"
-                    class="m-3"
-                  >
+                  <b-tab v-for="(group, index) in archivedGroups" :key="group.id" class="m-3">
                     <!-- Beispielklasse kursiv darstellen -->
                     <template slot="title">
                       <i v-if="group.demo">{{ group.label }}</i>
@@ -151,39 +140,41 @@
       }
     },
     computed: {
-      count_archive: function () {
-        let c = 0
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (this.groups[i].archive) {++c}}
-        return c
+      ownActiveGroups() {
+        return this.groups.filter((group, index) => index > 0 && group.owner && !group.archive)
       },
-      count_regular: function () {
-        let c = 0
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (this.groups[i].owner && !this.groups[i].archive) {++c}}
-        return c
+      sharedGroups() {
+        return this.groups.filter((group, index) => index > 0 && !group.owner)
       },
-      count_shared: function () {
-        let c = 0
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (!this.groups[i].owner) {++c}}
-        return c
+      archivedGroups() {
+        return this.groups.filter((group, index) => index > 0 && group.archive)
       },
+
       firstOwnIndex: function () {
         //Liefert Demoklasse falls Intro gezeigt wird, ansonsten erste "eigene" Klasse.
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (window.showIntro && this.groups[i].demo) {return i}
-          else if (this.groups[i].owner && !this.groups[i].archive) {return i}}
+        for (let i = 1; i < this.groups.length; ++i) {
+          if (window.showIntro && this.groups[i].demo) {
+            return i
+          } else if (this.groups[i].owner && !this.groups[i].archive) {
+            return i
+          }
+        }
         return 0
       },
       firstSharedIndex: function () {
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (!this.groups[i].owner) {return i}}
+        for (let i = 1; i < this.groups.length; ++i) {
+          if (!this.groups[i].owner) {
+            return i
+          }
+        }
         return 0
       },
       new_shares: function () {
-        for (let i = 1; i < this.groups.length; ++i)
-          {if (this.groups[i].key == null) {return true}}
+        for (let i = 1; i < this.groups.length; ++i) {
+          if (this.groups[i].key == null) {
+            return true
+          }
+        }
         return false
       },
     },

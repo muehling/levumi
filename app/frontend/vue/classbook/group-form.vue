@@ -20,34 +20,14 @@
       </b-button>
     </div>
     <!-- Ausklappbare Edit-Form - falls index == 0, direkt anzeigen -->
-    <b-collapse
-      v-if="!group.demo"
-      :id="'collapse_edit_' + group.id"
-      :visible="index == 0"
-    >
-      <b-form
-        id="group-form"
-        inline
-        accept-charset="UTF-8"
-        class="mb-4"
-        @submit="handleSubmit"
-      >
+    <b-collapse v-if="!group.demo" :id="'collapse_edit_' + group.id" :visible="index == 0">
+      <b-form id="group-form" inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
         <!-- Hidden Field für Rails/Update, damit POST/PUT unterschieden wird -->
         <input v-if="index > 0" type="hidden" value="put" name="_method" />
         <!-- Hidden Field mit generiertem Key für die Klasse -->
-        <input
-          v-if="index == 0"
-          type="hidden"
-          :value="generate_key()"
-          name="group[key]"
-        />
+        <input v-if="index == 0" v-model="groupKey" type="hidden" name="group[key]" />
         <!-- Hidden Field mit generiertem Auth_Token für die Klasse -->
-        <input
-          v-if="index == 0"
-          type="hidden"
-          :value="generate_token()"
-          name="group[auth_token]"
-        />
+        <input v-if="index == 0" v-model="authToken" type="hidden" name="group[auth_token]" />
         <label class="sr-only" for="label">Klassenbezeichnung</label>
         <b-form-input
           id="label"
@@ -106,6 +86,8 @@
       return {
         label: this.index === 0 ? '' : this.group.label,
         key: this.index === 0 ? this.new_key() : '',
+        authToken: this.generate_token(),
+        groupKey: this.generate_key(),
       }
     },
     methods: {
@@ -118,8 +100,8 @@
           const data = {
             group: {
               label: this.label,
-              key: $("input[name='group[key]']").val(),
-              auth_token: $("input[name='group[auth_token]']").val(),
+              key: this.groupKey,
+              auth_token: this.authToken,
             },
           }
           res = await ajax({ url: '/groups', method: 'post', data: data })

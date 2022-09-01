@@ -13,7 +13,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="share in group.shares">
+          <tr v-for="share in group.shares" :key="share.id">
             <td>
               {{ share.user }}
             </td>
@@ -32,11 +32,7 @@
               >
                 <i class="fas fa-edit"></i> Ansicht und verwenden
               </b-button>
-              <b-button
-                class="btn btn-sm mr-1"
-                variant="outline-danger"
-                @click="unshare(share.id)"
-              >
+              <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
                 <i class="fas fa-trash"></i> Nicht mehr teilen
               </b-button>
             </td>
@@ -59,11 +55,7 @@
         @click="toggleForm"
         ><i class="fas fa-handshake"></i> Klasse teilen
       </b-btn>
-      <b-collapse
-        :id="'collapse_share_' + group.id"
-        class="mt-2 mb-4"
-        :visible="isShown"
-      >
+      <b-collapse :id="'collapse_share_' + group.id" class="mt-2 mb-4" :visible="isShown">
         <b-form inline class="text-small" @submit="submitNewShare">
           <label for="email">Teilen mit&nbsp;&nbsp;</label>
           <div>
@@ -112,12 +104,7 @@
       <div v-if="group.key == null">
         <b-form inline :validated="checkKey()" @submit="acceptShare">
           <b-input v-model="key" class="mr-2" placeholder="Code" size="sm" />
-          <b-button
-            type="submit"
-            variant="outline-primary"
-            size="sm"
-            :disabled="!checkKey()"
-          >
+          <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
           </b-button>
         </b-form>
@@ -127,11 +114,7 @@
           Sie können die Klasse
           {{ group.read_only ? ' nur ansehen' : ' ansehen und verwenden' }}
         </p>
-        <b-btn
-          class="btn btn-sm"
-          variant="outline-danger"
-          @click="requestDelete"
-        >
+        <b-btn class="btn btn-sm" variant="outline-danger" @click="requestDelete">
           <i class="fas fa-trash"></i> Teilen beenden
         </b-btn>
       </div>
@@ -199,7 +182,7 @@
           return null
         }
       },
-      async acceptShare(e) {
+      async acceptShare() {
         /**
          * For the moment, we need to rely on the form's default behaviour to get
          * the data for the newly shared students - these are currently rendered
@@ -266,8 +249,11 @@
         }
       },
       failure(err) {
-        if (err.status == 404) {this.notFound = true}
-        else {this.exists = true}
+        if (err.status == 404) {
+          this.notFound = true
+        } else {
+          this.exists = true
+        }
       },
       prepareKey() {
         return encrypt_key(this.key)

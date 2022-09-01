@@ -38,11 +38,9 @@
         ></student-row>
       </tbody>
     </table>
-    <b-button @click="exportQrCodes"
-      ><i class="fas fa-print"></i> QR-Code PDF</b-button
-    >
+    <b-button @click="exportQrCodes"><i class="fas fa-print"></i> QR-Code PDF</b-button>
     <!-- Bereich der später ins PDF kommt -->
-    <div v-for="student in students" style="display: none">
+    <div v-for="student in students" :key="student.id" style="display: none">
       <qr-code :id="'qr_code_' + student.id" :value="student.login" />
       <br />
       <hr />
@@ -71,11 +69,7 @@
       update(val) {
         //Student einfügen, updaten oder löschen und View aktualisieren
         if (val.object !== null) {
-          val.object.name = decrypt(
-            val.object.name,
-            'Kind_' + val.object.id,
-            this.group
-          ) //Namen für weitere Verwendung entschlüsseln
+          val.object.name = decrypt(val.object.name, 'Kind_' + val.object.id, this.group) //Namen für weitere Verwendung entschlüsseln
           if (val.index > -1) {
             // update
             this.$set(this.students, val.index, val.object)
@@ -95,7 +89,7 @@
         const pdf = new jsPDF()
         let height = 10
         for (let i = 0; i < this.students.length; i++) {
-          const qrElement = $('#qr_code_' + this.students[i].id + ' canvas')[0]
+          const qrElement = this.jQuery('#qr_code_' + this.students[i].id + ' canvas')[0]
           if (qrElement) {
             const base64Image = qrElement.toDataURL('image/jpeg', 1)
             pdf.addImage(base64Image, 'png', 10, height, 40, 40)

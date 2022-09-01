@@ -21,7 +21,7 @@
           <b-dropdown-item
             v-for="s in studentsWithResults"
             :key="s.id"
-            class="text-small wtf"
+            class="text-small"
             @click="updateView(s.id)"
           >
             {{ s.name }}
@@ -32,8 +32,7 @@
     <b-row class="mt-2">
       <b-button-group class="ml-3">
         <b-button
-          v-for="(view, index) in configuration.views"
-          v-if="(studentSelected === -1 && view.group) || (studentSelected !== -1 && view.student)"
+          v-for="(view, index) in viewsWithGroupAndStudent"
           :key="index"
           class="mr-2 shadow-none"
           size="sm"
@@ -249,6 +248,13 @@
       }
     },
     computed: {
+      viewsWithGroupAndStudent() {
+        return this.configuration.views.filter(
+          view =>
+            (this.studentSelected === -1 && view.group) ||
+            (this.studentSelected !== -1 && view.student)
+        )
+      },
       columns() {
         return this.configuration.views[this.view_selected].columns || []
       },
@@ -337,7 +343,7 @@
     methods: {
       decode_text(text) {
         const id = this.group.id
-        return text.replace(/\{"iv[^\}]*\}/g, function (match, p1, p2, p3, offset, string) {
+        return text.replace(/\{"iv[^\}]*\}/g, function (match) {
           return decrypt(match, '{Name}', id)
         })
       },
@@ -364,7 +370,7 @@
             for (let m = 0; m < match.length; ++m) {
               this.annotation_text = this.annotation_text.replace(
                 re,
-                function (match, p1, p2, p3, p4, offset, string) {
+                function (match, p1, p2, p3, p4) {
                   if (p1 != undefined) {
                     return match.replace(p1, encrypt(p1, id))
                   }
