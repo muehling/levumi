@@ -164,12 +164,12 @@
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
                         <span v-for="(item, n) in result.data.report.positive" :key="item">{{
-                          (n > 0 ? ', ' : '') + test.items[item]
+                          (n > 0 ? ', ' : '') + getItemName(item, test.items[item])
                         }}</span>
                       </td>
                       <td>
                         <span v-for="(item, m) in result.data.report.negative" :key="item">{{
-                          (m > 0 ? ', ' : '') + test.items[item]
+                          (m > 0 ? ', ' : '') + getItemName(item, test.items[item])
                         }}</span>
                       </td>
                       <td>
@@ -241,6 +241,7 @@
   import AnalysisView from './analysis-view.vue'
   import SupportView from './support-view.vue'
   import uniq from 'lodash/uniq'
+  import isObject from 'lodash/isObject'
   import compact from 'lodash/compact'
   import { ajax } from '../../utils/ajax'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
@@ -391,6 +392,13 @@
         })
         if (res.status === 200) {
           this.is_active = !this.is_active
+        }
+      },
+      getItemName(item, fallback) {
+        if (isObject(this.test.items[0])) {
+          return this.test.items.find(n => n.id === item).label
+        } else {
+          return fallback
         }
       },
     },

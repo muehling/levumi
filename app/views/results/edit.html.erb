@@ -108,10 +108,18 @@
         }
     }
 
+    // TODO this can't be rendered with tests that have a `const items = [...]` in their js files
+    const items = <%= @test.items.to_json.html_safe %>
+
+
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>
     <%= raw f.download.force_encoding('UTF-8') %>
     <% end %>
+
+
+
+
 
 
     //Anzeigen des Feedbacks
