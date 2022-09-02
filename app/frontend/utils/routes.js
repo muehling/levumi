@@ -4,4 +4,7 @@ export default {
     create: { url: '/users', method: 'post' },
     usersMail: id => ({ url: `/users/${id}/mail`, method: 'put' }),
   },
+  classbook: {
+    finishIntro: '/willkommen?classbook=true',
+  },
 }

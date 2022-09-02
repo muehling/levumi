@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
-    <div v-if="index > 0" class="mb-2">
+    <div v-if="group.id" class="mb-2">
       <b-btn
         v-if="!group.demo"
         v-b-toggle="'collapse_edit_' + group.id"
@@ -19,15 +19,9 @@
         <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
       </b-button>
     </div>
-    <!-- Ausklappbare Edit-Form - falls index == 0, direkt anzeigen -->
-    <b-collapse v-if="!group.demo" :id="'collapse_edit_' + group.id" :visible="index == 0">
+    <!-- Ausklappbare Edit-Form - falls neue Klasse, direkt anzeigen -->
+    <b-collapse v-if="!group.demo" :id="'collapse_edit_' + group.id" :visible="!group.id">
       <b-form id="group-form" inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
-        <!-- Hidden Field für Rails/Update, damit POST/PUT unterschieden wird -->
-        <input v-if="index > 0" type="hidden" value="put" name="_method" />
-        <!-- Hidden Field mit generiertem Key für die Klasse -->
-        <input v-if="index == 0" v-model="groupKey" type="hidden" name="group[key]" />
-        <!-- Hidden Field mit generiertem Auth_Token für die Klasse -->
-        <input v-if="index == 0" v-model="authToken" type="hidden" name="group[auth_token]" />
         <label class="sr-only" for="label">Klassenbezeichnung</label>
         <b-form-input
           id="label"
@@ -37,7 +31,7 @@
           placeholder="Klassenbezeichnung"
           size="sm"
         />
-        <div v-if="index === 0">
+        <div v-if="!group.id">
           <!-- Button für neue Klasse, Validierung Name nicht leer -->
           <b-button
             type="submit"
@@ -80,14 +74,11 @@
     name: 'GroupForm',
     props: {
       group: Object,
-      index: Number,
     },
     data: function () {
       return {
-        label: this.index === 0 ? '' : this.group.label,
-        key: this.index === 0 ? this.new_key() : '',
-        authToken: this.generate_token(),
-        groupKey: this.generate_key(),
+        label: !this.group.id ? '' : this.group.label,
+        key: !this.group.id ? this.newKey() : '',
       }
     },
     methods: {
@@ -96,12 +87,12 @@
         e.stopPropagation()
 
         let res
-        if (this.index === 0) {
+        if (!this.group.id) {
           const data = {
             group: {
               label: this.label,
-              key: this.groupKey,
-              auth_token: this.authToken,
+              key: this.generate_key(),
+              auth_token: this.generate_token(),
             },
           }
           res = await ajax({ url: '/groups', method: 'post', data: data })
@@ -131,12 +122,12 @@
       },
       success(event) {
         // propagate new data from ajax call to parent component
-        this.$emit('update:groups', { index: this.index, object: event })
-        if (this.index === 0) {
-          this.key = this.new_key()
+        this.$emit('update:groups', { object: event })
+        if (!this.group.id) {
+          this.key = this.newKey()
         }
       },
-      new_key() {
+      newKey() {
         return Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, '')
@@ -146,7 +137,8 @@
         return encrypt_key(this.key)
       },
       generate_token() {
-        return sjcl.encrypt(this.key, this.key)
+        const key = this.key ? this.key : this.newKey()
+        return sjcl.encrypt(key, key)
       },
     },
   }

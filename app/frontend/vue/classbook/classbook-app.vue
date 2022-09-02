@@ -4,7 +4,7 @@
       <b-col md="12">
         <div v-if="single">
           <!-- nur eine Gruppe darstellen -->
-          <group-view :groups="groups" :index="1" :single="true"></group-view>
+          <group-view :groups="groups" :single="true"></group-view>
         </div>
 
         <div v-else>
@@ -18,7 +18,7 @@
               <b-card no-body class="mt-3">
                 <b-tabs pills card>
                   <!-- Neue Klasse anlegen -->
-                  <b-tab>
+                  <b-tab :active="firstOwnIndex === 0">
                     <template slot="title">
                       <i
                         id="intro_cb_2"
@@ -27,20 +27,14 @@
                       ></i>
                     </template>
                     <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
-                    <group-form
-                      :group="groups[0]"
-                      :index="0"
-                      :active="firstOwnIndex == 0"
-                      @update:groups="create"
-                    >
-                    </group-form>
+                    <group-form :group="groups[0]" @update:groups="create"> </group-form>
                   </b-tab>
                   <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                   <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                   <b-tab
                     v-for="(group, index) in ownActiveGroups"
                     :key="group.id"
-                    :active="index == firstOwnIndex"
+                    :active="index + 1 === firstOwnIndex"
                     :title-link-class="{ update_trigger_hack: group.label }"
                     class="m-3"
                   >
@@ -51,7 +45,7 @@
                     </template>
                     <group-view
                       :groups="groups"
-                      :index="index"
+                      :group="group"
                       :single="false"
                       @update:groups="updateGroups"
                     >
@@ -74,7 +68,7 @@
                   <b-tab
                     v-for="(group, index) in sharedGroups"
                     :key="group.id"
-                    :active="index == firstSharedIndex"
+                    :active="index === firstSharedIndex"
                     class="m-3"
                   >
                     <!-- Beispielklasse kursiv darstellen -->
@@ -83,7 +77,7 @@
                       <span v-else>{{ group.label }}</span>
                       <span v-if="group.key == null" class="badge badge-info">Neu!</span>
                     </template>
-                    <group-view :groups="groups" :index="index"></group-view>
+                    <group-view :groups="groups" :group="group"></group-view>
                   </b-tab>
                 </b-tabs>
               </b-card>
@@ -109,7 +103,7 @@
                     </template>
                     <group-view
                       :groups="groups"
-                      :index="index"
+                      :group="group"
                       @update:groups="updateGroups"
                     ></group-view>
                   </b-tab>
@@ -120,18 +114,23 @@
         </div>
       </b-col>
     </b-row>
+    <intro-popover v-if="showIntro" ref="introPopover" />
   </b-container>
 </template>
 
 <script>
+  import { ajax } from '../../utils/ajax'
   import GroupForm from './group-form.vue'
   import GroupView from './group-view.vue'
+  import IntroPopover from '../shared/intro-popover.vue'
+  import routes from '../../utils/routes'
 
   export default {
     name: 'ClassBookApp',
     components: {
       GroupView,
       GroupForm,
+      IntroPopover,
     },
     data() {
       return {
@@ -152,14 +151,11 @@
 
       firstOwnIndex: function () {
         //Liefert Demoklasse falls Intro gezeigt wird, ansonsten erste "eigene" Klasse.
-        for (let i = 1; i < this.groups.length; ++i) {
-          if (window.showIntro && this.groups[i].demo) {
-            return i
-          } else if (this.groups[i].owner && !this.groups[i].archive) {
-            return i
-          }
+        if (this.showIntro) {
+          return this.groups.findIndex(g => g.demo)
+        } else {
+          return this.groups.findIndex(g => g.owner && !g.archive) || 0
         }
-        return 0
       },
       firstSharedIndex: function () {
         for (let i = 1; i < this.groups.length; ++i) {
@@ -177,6 +173,34 @@
         }
         return false
       },
+      showIntro: function () {
+        return this.$root.login.intro_state < 5
+      },
+    },
+    mounted() {
+      if (this.showIntro) {
+        this.$refs.introPopover.show({
+          messages: [
+            'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',
+            'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
+            'Wenn Sie mit Klassen nicht mehr länger aktiv arbeiten, können Sie sie in ihr Archiv verschieben. Die Klasse wird nicht mehr unter Diagnostik angezeigt. Sie können Klassen auch wieder aus dem Archiv zurückholen. Probieren Sie das gerne mit Ihrer Beispielklasse aus!',
+            'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
+            'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
+            'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
+            'Hier können Sie die Schüler:in speichern.',
+          ],
+          targets: [
+            '#intro_cb_1',
+            '#intro_cb_2',
+            '#intro_cb_3',
+            '#intro_cb_4',
+            '#intro_cb_5',
+            '#intro_cb_6',
+            '#intro_cb_7',
+          ],
+          onFinish: this.finishIntro,
+        })
+      }
     },
     methods: {
       create(val) {
@@ -194,6 +218,9 @@
       },
       updateGroups(newGroups) {
         this.groups = newGroups
+      },
+      async finishIntro() {
+        await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
       },
     },
   }

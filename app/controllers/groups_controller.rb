@@ -5,7 +5,8 @@ class GroupsController < ApplicationController
   def index
     @data = {
       'groups': [Group.new] + @login.get_classbook_info,
-      'single': @login.account_type == 2
+      'single': @login.account_type == 2,
+      'login': @login
     }
   end
 
