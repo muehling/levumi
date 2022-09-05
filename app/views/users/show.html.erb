@@ -2,7 +2,8 @@
   data = {
       #Wird von mehreren Actions aufgerufen, deswegen hier anstelle von Doppelung
       groups: @login.groups.where(archive: false).order(id: :desc).map {|g| g.as_hash(@login)},
-      group_info: @login.get_home_info
+      group_info: @login.get_home_info,
+      login: @login
   }
   if @assessment
     data[:pre_select] = {

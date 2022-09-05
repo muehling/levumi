@@ -6,10 +6,12 @@
     :show="true"
     :target="targets[currentIndex]"
   >
-    <p>{{ currentMessage }}</p>
-    <b-btn @click="next">
-      {{ currentIndex === targets.length - 1 ? "Los geht's" : 'Weiter' }}
-    </b-btn>
+    <p>{{ messages[currentIndex] }}</p>
+    <div class="text-center">
+      <b-btn @click="next">
+        {{ currentIndex === targets.length - 1 ? "Los geht's" : 'Weiter' }}
+      </b-btn>
+    </div>
   </b-popover>
 </template>
 
@@ -21,7 +23,6 @@
       messages: [],
       targets: [],
       currentIndex: undefined,
-      currentMessage: '',
       isOpen: false,
       onFinish: undefined,
     }),
@@ -32,7 +33,6 @@
         this.messages = messages
         this.isOpen = true
         this.currentIndex = 0
-        this.currentMessage = this.messages[0]
         this.onFinish = onFinish
       },
       next() {

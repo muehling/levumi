@@ -7,4 +7,7 @@ export default {
   classbook: {
     finishIntro: '/willkommen?classbook=true',
   },
+  home: {
+    finishIntro: '/willkommen',
+  },
 }

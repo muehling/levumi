@@ -103,6 +103,7 @@ class UsersController < ApplicationController
         render json: { message: 'Validation failed', errors: @user.errors }, status: 400
       else
         @users = User.all #Benötigt für Tabelle in der Benutzerverwaltung
+        UserMailer.with(user: @user, password: pw).welcome.deliver_later
         head :ok
       end
     else
@@ -130,7 +131,7 @@ class UsersController < ApplicationController
         render 'users/intro/forms', layout: 'minimal' and return
       else
         @login = @user
-        render 'users/intro/help' and return
+        render 'users/show' and return
       end
     end
 
@@ -163,7 +164,7 @@ class UsersController < ApplicationController
           @user.intro_state = 3
           @user.save
           @login = @user
-          render 'users/intro/help' and return
+          render 'users/show' and return
         when 3
           @user.intro_state = 4
           @user.save

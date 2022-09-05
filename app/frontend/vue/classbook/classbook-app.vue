@@ -95,7 +95,7 @@
                       Keine Klassen im Archiv vorhanden.
                     </div>
                   </div>
-                  <b-tab v-for="(group, index) in archivedGroups" :key="group.id" class="m-3">
+                  <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3">
                     <!-- Beispielklasse kursiv darstellen -->
                     <template slot="title">
                       <i v-if="group.demo">{{ group.label }}</i>
