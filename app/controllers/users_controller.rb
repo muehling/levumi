@@ -168,7 +168,7 @@ class UsersController < ApplicationController
         when 3
           @user.intro_state = 4
           @user.save
-          redirect_to '/start', status: 303
+          redirect_to start_path(format: 'html'), status: 303
         else
           if params.has_key?(:classbook)
             @user.intro_state = 5
