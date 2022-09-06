@@ -51,6 +51,7 @@
 <script>
   import StudentRow from './student-row.vue'
   import jsPDF from 'jspdf'
+  import { decryptStudentName } from '../../utils/encryption'
 
   export default {
     name: 'StudentList',
@@ -62,14 +63,19 @@
     data() {
       return {
         // TODO this needs to go in some global store instead of the global namespace
-        students: groups[this.group] || [],
+        students: this.$root.store.studentsInGroups[this.group] || [],
       }
     },
     methods: {
       update(val) {
         //Student einfügen, updaten oder löschen und View aktualisieren
         if (val.object !== null) {
-          val.object.name = decrypt(val.object.name, 'Kind_' + val.object.id, this.group) //Namen für weitere Verwendung entschlüsseln
+          val.object.name = decryptStudentName(
+            val.object.name,
+            'Kind_' + val.object.id,
+            this.group,
+            keys
+          ) //Namen für weitere Verwendung entschlüsseln
           if (val.index > -1) {
             // update
             this.$set(this.students, val.index, val.object)
@@ -83,7 +89,7 @@
         }
 
         //Global updaten - vermutlich unnötig?
-        groups[this.group] = this.students
+        this.$root.store.studentsInGroups[this.group] = this.students
       },
       exportQrCodes() {
         const pdf = new jsPDF()

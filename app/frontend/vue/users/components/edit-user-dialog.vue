@@ -121,7 +121,9 @@
 <script>
   import { ajax } from '../../../utils/ajax'
   import { hasCapability } from '../../../utils/user'
+  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
   import apiRoutes from '../../../utils/routes'
+
   export default {
     name: 'EditUserDialog',
 
@@ -222,14 +224,14 @@
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
             // Password and security question
-            recode_keys(this.password)
+            recodeKeys(this.password, keys)
             data.keys = JSON.stringify(keys)
             formData.password = this.password
             formData.password_confirmation = this.passwordConfirm
-            formData.security_digest = sjcl.encrypt(this.securityAnswer, this.password)
+            formData.security_digest = encryptWithKey(this.securityAnswer, this.password)
           } else if (this.password === '' && this.securityAnswer !== '') {
             // only security question
-            formData.security_digest = sjcl.encrypt(
+            formData.security_digest = encryptWithKey(
               this.securityAnswer,
               sessionStorage.getItem('login')
             )

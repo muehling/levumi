@@ -18,6 +18,8 @@ import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
 
 import '../styles/application.scss'
+import { decryptStudentName } from '../utils/encryption'
+import { store } from '../utils/store'
 
 window.bootstrap = bootstrap
 
@@ -25,6 +27,19 @@ const element = document.getElementById('levumi')
 
 if (element) {
   const data = JSON.parse(element.getAttribute('data'))
+
+  if (data.groups) {
+    const studentsInGroups = data.groups.reduce((acc, group) => {
+      acc[group.id] = group.students?.map(student => {
+        return {
+          ...student,
+          name: decryptStudentName(student.name, `Kind_${student.id}`, group.id, keys),
+        }
+      })
+      return acc
+    }, {})
+    store.setStudentsInGroups(studentsInGroups)
+  }
 
   Vue.component('QrCode', VueQRCodeComponent)
   Vue.use(BootstrapVue)
@@ -35,6 +50,7 @@ if (element) {
         get jQuery() {
           return window.$
         },
+        store,
       }
     },
   })

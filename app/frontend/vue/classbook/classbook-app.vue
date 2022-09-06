@@ -27,7 +27,7 @@
                       ></i>
                     </template>
                     <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
-                    <group-form :group="groups[0]" @update:groups="create"> </group-form>
+                    <group-form :group="groups[0]" @update:groups="createGroup"> </group-form>
                   </b-tab>
                   <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                   <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
@@ -203,12 +203,12 @@
       }
     },
     methods: {
-      create(val) {
+      createGroup(val) {
         this.groups.splice(1, 0, val.object)
         //Globale Daten aktualisieren
         //TODO: Classbook-App autark halten?
         keys[val.object.id] = val.object.key
-        groups[val.object.id] = []
+        this.$root.store.studentsInGroups[val.object.id] = []
       },
       sort: function (groups) {
         let empty = groups.shift() //Erstes Element ist leere Gruppe für "new"

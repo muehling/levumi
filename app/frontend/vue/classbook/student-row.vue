@@ -191,7 +191,7 @@
         </b-modal>
       </span>
       <span v-else-if="!readOnly && editMode">
-        <b-button-toolbar>
+        <b-button-toolbar class="flex-nowrap">
           <b-button-group>
             <b-button
               id="intro_cb_7"
@@ -233,7 +233,9 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+
   export default {
     name: 'StudentRow',
     components: { ConfirmDialog },
@@ -367,7 +369,9 @@
 
       collectData() {
         //Daten aus den Inputs codieren für AJAX Request
-        const encodedName = encodeURIComponent(encrypt(this.name, this.group)) //Namen vor dem Senden verschlüsseln
+        const encodedName = encodeURIComponent(
+          encryptWithMasterKeyAndGroup(this.name, this.group, keys)
+        ) //Namen vor dem Senden verschlüsseln
         let res = `group=${this.group}&student[name]=${encodedName}`
 
         //Restliche Attribute anfügen, falls vorhanden

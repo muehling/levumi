@@ -69,6 +69,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { encryptKey, encryptWithKey } from '../../utils/encryption'
 
   export default {
     name: 'GroupForm',
@@ -134,11 +135,11 @@
           .substr(0, 6)
       },
       generate_key() {
-        return encrypt_key(this.key)
+        return encryptKey(this.key, keys)
       },
       generate_token() {
         const key = this.key ? this.key : this.newKey()
-        return sjcl.encrypt(key, key)
+        return encryptWithKey(key, key)
       },
     },
   }

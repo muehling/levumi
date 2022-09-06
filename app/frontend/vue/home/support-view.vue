@@ -17,7 +17,7 @@
         <b-tab
           v-for="entry in suggestions"
           :key="entry.student.id"
-          :title="student_name(entry.student)"
+          :title="getStudentName(entry.student)"
         >
           <b-tabs pills card vertical class="mt-2">
             <b-tab
@@ -41,7 +41,9 @@
 
 <script>
   import { getCSRFToken } from '../../utils/ajax'
+  import { getStudent } from '../../utils/helpers'
   import MaterialView from '../materials/material-view.vue'
+
   export default {
     name: 'SupportView',
     components: { MaterialView },
@@ -71,9 +73,10 @@
       })
     },
     methods: {
-      student_name(id) {
+      getStudentName(id) {
         //Student-Objekt aus globaler Variable holen
-        return get_student(this.group, id).name
+        console.log('getstudentname', getStudent(this.group, id))
+        return getStudent(this.group, id).name
       },
       generic(entry) {
         if (entry.materials.length == 0) {

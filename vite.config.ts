@@ -3,12 +3,22 @@ import RubyPlugin from 'vite-plugin-ruby'
 import { createVuePlugin } from 'vite-plugin-vue2'
 import FullReload from 'vite-plugin-full-reload'
 
+import commonjsExternals from "vite-plugin-commonjs-externals"
+import { builtinModules } from 'module'
+
 
 export default defineConfig({
+
+  optimizeDeps: {
+    exclude: builtinModules,
+  },
   plugins: [
     RubyPlugin(),
     createVuePlugin(),
-    FullReload(['config/routes.rb', 'app/views/**/*'], { delay: 200 })
+    FullReload(['config/routes.rb', 'app/views/**/*'], { delay: 200 }),
+    commonjsExternals({
+      externals: builtinModules,
+    }),
   ],
   server: {
     host: '0.0.0.0',

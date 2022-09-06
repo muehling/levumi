@@ -86,7 +86,7 @@
           </b-button>
           <b-button
             v-b-popover.hover="
-              'Um die Klasse mit einer anderen Lehrkraft zu teilen, benötigen Sie die E-Mail Adresse mit der diese Person bei Levumi registriert ist. <br/> Geben Sie die Adresse ein und wählen Sie, ob die Person mit der Klasse selbst Testungen durchführen und Sie verändern darf, oder lediglich die existierenden Messungen ansehen kann. Sie müssen der Person selbstständig den Klassenschlüssel mitteilen, der Ihnen nach dem Teilen angezeigt wird. Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet.'
+              'Um die Klasse mit einer anderen Lehrkraft zu teilen, benötigen Sie die E-Mail Adresse, mit der diese Person bei Levumi registriert ist. <br/> Geben Sie die Adresse ein und wählen Sie, ob die Person mit der Klasse selbst Testungen durchführen und Sie verändern darf, oder lediglich die existierenden Messungen ansehen kann. Sie müssen der Person selbstständig den Klassenschlüssel mitteilen, der Ihnen nach dem Teilen angezeigt wird. Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet.'
             "
             class="ml-3"
             size="sm"
@@ -125,7 +125,9 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { encryptKey, decryptKey, decryptWithKey } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+
   export default {
     name: 'ShareForm',
     components: { ConfirmDialog },
@@ -139,7 +141,7 @@
         exists: false,
         rightsSelected: 1,
         key: '',
-        shareKey: keys[this.group.id] ? decrypt_key(keys[this.group.id]) : null,
+        shareKey: keys[this.group.id] ? decryptKey(keys[this.group.id]) : null,
         email: '',
         isShown: false,
       }
@@ -201,7 +203,7 @@
           data,
         })
 
-        groups[result.id] = result.students
+        this.$root.store.studentsInGroups[result.id] = result.students
       },
       submitNewShare(e) {
         e.preventDefault()
@@ -237,14 +239,17 @@
         })
       },
       checkKey() {
-        try {
-          if (this.key !== undefined && this.key !== '') {
-            sjcl.decrypt(this.key, this.group.auth_token)
-            return true
-          } else {
+        if (this.key !== undefined && this.key !== '') {
+          // The Accept button will remain disabled until the key can be successfully decrypted with the auth_token
+          // TODO add user message
+          // TODO discuss: decryptWithKey uses a try/catch for control flow :-/
+          try {
+            decryptWithKey(this.group.auth_token, this.key)
+          } catch (e) {
             return false
           }
-        } catch (e) {
+          return true
+        } else {
           return false
         }
       },
@@ -256,7 +261,7 @@
         }
       },
       prepareKey() {
-        return encrypt_key(this.key)
+        return encryptKey(this.key)
       },
       success(object) {
         //Klasse updaten und View aktualisieren

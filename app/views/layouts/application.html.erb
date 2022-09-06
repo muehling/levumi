@@ -10,7 +10,7 @@
 
 
     <!-- sonstige Libaries -->
-    <%= javascript_include_tag 'sjcl.js' unless @no_script %>
+    <!--<%= javascript_include_tag 'sjcl.js' unless @no_script %>-->
     <%= render 'layouts/scripts' unless @no_script%>
 
     <%= yield :head if content_for? :head %>

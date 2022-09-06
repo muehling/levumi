@@ -197,12 +197,14 @@
   import { ajax } from '../../utils/ajax'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
+
   export default {
     name: 'GroupView',
     components: { AssessmentView, ListView },
     provide: function () {
       //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.
-      let todo = groups[this.group.id] || []
+      let todo = this.$root.store.studentsInGroups[this.group.id] || []
+
       for (let i = 0; i < todo.length; ++i) {
         this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/[^a-zäöüß_]/i))
       }

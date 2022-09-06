@@ -225,6 +225,8 @@
   import ApexCharts from 'apexcharts'
   import jsPDF from 'jspdf'
   import { apexChartOptions } from './apexChartHelpers'
+  import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
+
   export default {
     name: 'AnalysisView',
     inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
@@ -343,8 +345,8 @@
     methods: {
       decode_text(text) {
         const id = this.group.id
-        return text.replace(/\{"iv[^\}]*\}/g, function (match) {
-          return decrypt(match, '{Name}', id)
+        return text.replace(/\{"iv[^}]*\}/g, function (match) {
+          return decryptStudentName(match, '{Name}', id)
         })
       },
       encode_text() {
@@ -372,15 +374,15 @@
                 re,
                 function (match, p1, p2, p3, p4) {
                   if (p1 != undefined) {
-                    return match.replace(p1, encrypt(p1, id))
+                    return match.replace(p1, encryptWithMasterKeyAndGroup(p1, id, keys))
                   }
                   if (p2 != undefined) {
-                    return match.replace(p2, encrypt(p2, id))
+                    return match.replace(p2, encryptWithMasterKeyAndGroup(p2, id, keys))
                   }
                   if (p3 != undefined) {
-                    return match.replace(p3, encrypt(p3, id))
+                    return match.replace(p3, encryptWithMasterKeyAndGroup(p3, id, keys))
                   } else {
-                    return match.replace(p4, encrypt(p4, id))
+                    return match.replace(p4, encryptWithMasterKeyAndGroup(p4, id, keys))
                   }
                 }
               )

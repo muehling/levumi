@@ -238,13 +238,14 @@
 </template>
 
 <script>
+  import { ajax } from '../../utils/ajax'
+  import { getStudent } from '../../utils/helpers'
   import AnalysisView from './analysis-view.vue'
+  import compact from 'lodash/compact'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import isObject from 'lodash/isObject'
   import SupportView from './support-view.vue'
   import uniq from 'lodash/uniq'
-  import isObject from 'lodash/isObject'
-  import compact from 'lodash/compact'
-  import { ajax } from '../../utils/ajax'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
 
   export default {
     name: 'AssessmentView',
@@ -274,7 +275,7 @@
         is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-        students: groups[this.group.id] || [], //Zugriff auf globale Variable "groups"
+        students: this.$root.store.studentsInGroups[this.group.id] || [],
       }
     },
     computed: {
@@ -382,7 +383,7 @@
       },
       studentName(id) {
         //Student-Objekt aus globaler Variable holen
-        return get_student(this.group.id, id).name
+        return getStudent(this.group.id, id).name
       },
       async toggleAssessment() {
         const res = await ajax({

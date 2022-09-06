@@ -94,6 +94,7 @@
        ******************************/
       async requestDeleteGroup() {
         const ok = await this.$refs.confirmDialog.open({
+          title: 'Klasse löschen',
           message: `Die Klasse wird mit allen Schüler:innen und allen Messergebnissen gelöscht! Sind Sie sicher?`,
           okText: 'Klasse löschen',
         })
