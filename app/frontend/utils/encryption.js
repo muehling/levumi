@@ -57,14 +57,17 @@ export const encryptKey = text => {
   return sjcl.encrypt(sessionStorage.getItem('login'), text)
 }
 
-export const recodeKeys = (new_password, keys) => {
+export const recodeKeys = (newPassword, keys) => {
   // decrypt keys with current password
-  const newKeys = Object.entries(keys).map(k => ({ id: k[0], key: decryptKey(k[1]) }))
+  const oldPassword = sessionStorage.getItem('login')
+  const newKeys = Object.entries(keys).reduce((acc, k) => {
+    acc[k[0]] = decryptWithKey(k[1], oldPassword)
+    return acc
+  }, {})
 
-  // update login data
-  sessionStorage['old_login'] = sessionStorage['login']
-  sessionStorage['login'] = new_password
-
-  // recode with new password, update in global namespace
-  keys = Object.entries(newKeys).map(k => ({ id: k[0], key: encryptKey(k[1]) }))
+  // recode with new password
+  return Object.entries(newKeys).reduce((acc, k) => {
+    acc[k[0]] = encryptWithKey(k[1], newPassword)
+    return acc
+  }, {})
 }

@@ -146,7 +146,7 @@
         states: this.$root.states,
         accountTypes: this.$root.accountTypes,
         stateOptions: this.$root.states.map(s => ({ value: s.id, text: s.label })),
-        login: this.$root.login,
+        login: this.$root.login
       }
     },
     computed: {
@@ -188,7 +188,7 @@
       },
       isSubmitDisabled() {
         return this.isPasswordValid && (this.isPasswordValid ? this.securityAnswer === '' : false)
-      },
+      }
     },
     methods: {
       open(data = {}) {
@@ -212,45 +212,48 @@
             email: this.email,
             account_type: this.accountType,
             state: this.state,
-            institution: this.institution,
-          },
+            institution: this.institution
+          }
         }
 
         const formData = data.user
 
         let res
+        let newKeys
         if (this.isNew) {
           res = await ajax({ ...apiRoutes.users.create, data })
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
             // Password and security question
-            recodeKeys(this.password, keys)
-            data.keys = JSON.stringify(keys)
+            newKeys = recodeKeys(this.password, keys)
+            data.keys = JSON.stringify(newKeys)
             formData.password = this.password
             formData.password_confirmation = this.passwordConfirm
             formData.security_digest = encryptWithKey(this.securityAnswer, this.password)
           } else if (this.password === '' && this.securityAnswer !== '') {
             // only security question
             formData.security_digest = encryptWithKey(
-              this.securityAnswer,
-              sessionStorage.getItem('login')
+              sessionStorage.getItem('login'),
+              this.securityAnswer
             )
           }
 
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),
-            data: data,
+            data: data
           })
         }
         if (res.status === 200) {
           this.user = undefined
+          sessionStorage.setItem('login', this.password)
           this.$refs.editUserDialog.hide()
           this.$emit('refetch')
+          keys = newKeys
         } else {
           const data = await res.json()
           this.errors = data.errors
         }
-      },
-    },
+      }
+    }
   }
 </script>
