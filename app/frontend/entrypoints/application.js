@@ -27,6 +27,7 @@ const element = document.getElementById('levumi')
 
 if (element) {
   const data = JSON.parse(element.getAttribute('data'))
+  console.log('data', data.students, data)
 
   if (data.groups) {
     const studentsInGroups = data.groups.reduce((acc, group) => {

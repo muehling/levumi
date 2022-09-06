@@ -130,12 +130,12 @@
     components: {
       GroupView,
       GroupForm,
-      IntroPopover,
+      IntroPopover
     },
     data() {
       return {
         groups: this.sort(this.$root.groups),
-        single: this.$root.single,
+        single: this.$root.single
       }
     },
     computed: {
@@ -175,7 +175,12 @@
       },
       showIntro: function () {
         return this.$root.login.intro_state < 5
-      },
+      }
+    },
+    async created() {
+      //TODO not working yet
+      const res = await ajax({ url: '/users/group_shares' })
+      const groupShares = await res.json()
     },
     mounted() {
       if (this.showIntro) {
@@ -187,7 +192,7 @@
             'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
             'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
             'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
-            'Hier können Sie die Schüler:in speichern.',
+            'Hier können Sie die Schüler:in speichern.'
           ],
           targets: [
             '#intro_cb_1',
@@ -196,9 +201,9 @@
             '#intro_cb_4',
             '#intro_cb_5',
             '#intro_cb_6',
-            '#intro_cb_7',
+            '#intro_cb_7'
           ],
-          onFinish: this.finishIntro,
+          onFinish: this.finishIntro
         })
       }
     },
@@ -221,7 +226,7 @@
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
-      },
-    },
+      }
+    }
   }
 </script>

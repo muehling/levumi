@@ -13,6 +13,7 @@ class UsersController < ApplicationController
                   type: 'application/zip'
       end
       format.html {}
+      format.json {}
     end
   end
 
@@ -178,6 +179,10 @@ class UsersController < ApplicationController
         end
       end
     end
+  end
+
+  def get_group_shares
+    render 'users/group_shares'
   end
 
   #GET /passwort

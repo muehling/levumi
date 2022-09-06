@@ -44,6 +44,14 @@ Rails.application.routes.draw do
     resources :group_shares
   end
 
+  
   resources :tests
   resources :materials
+  
+  namespace :api do
+    namespace :v1 do
+      resources :group_shares
+      get 'users/group_shares', to: 'users#get_group_shares'
+    end
+  end
 end
