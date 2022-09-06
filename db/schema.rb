@@ -11,11 +11,14 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
-    t.integer "record_id", null: false
-    t.integer "blob_id", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
     t.datetime "created_at", precision: nil, null: false
     t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
     t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
@@ -26,7 +29,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
     t.string "filename", null: false
     t.string "content_type"
     t.text "metadata"
-    t.integer "byte_size", null: false
+    t.bigint "byte_size", null: false
     t.string "checksum"
     t.datetime "created_at", precision: nil, null: false
     t.string "service_name", null: false
@@ -34,15 +37,15 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   end
 
   create_table "active_storage_variant_records", force: :cascade do |t|
-    t.integer "blob_id", null: false
+    t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
   create_table "annotations", force: :cascade do |t|
-    t.integer "assessment_id"
-    t.integer "student_id"
-    t.integer "group_id"
+    t.bigint "assessment_id"
+    t.bigint "student_id"
+    t.bigint "group_id"
     t.integer "view"
     t.text "content"
     t.date "start"
@@ -62,8 +65,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   end
 
   create_table "assessments", force: :cascade do |t|
-    t.integer "group_id"
-    t.integer "test_id"
+    t.bigint "group_id"
+    t.bigint "test_id"
     t.boolean "active", default: true
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -75,7 +78,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   create_table "competences", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.integer "area_id"
+    t.bigint "area_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["area_id"], name: "index_competences_on_area_id"
@@ -85,8 +88,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
     t.boolean "owner"
     t.boolean "read_only"
     t.string "key"
-    t.integer "user_id"
-    t.integer "group_id"
+    t.bigint "user_id"
+    t.bigint "group_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["group_id"], name: "index_group_shares_on_group_id"
@@ -103,11 +106,11 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   end
 
   create_table "material_supports", force: :cascade do |t|
-    t.integer "material_id"
-    t.integer "area_id"
-    t.integer "competence_id"
-    t.integer "test_family_id"
-    t.integer "test_id"
+    t.bigint "material_id"
+    t.bigint "area_id"
+    t.bigint "competence_id"
+    t.bigint "test_family_id"
+    t.bigint "test_id"
     t.json "items"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
@@ -126,8 +129,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   end
 
   create_table "results", force: :cascade do |t|
-    t.integer "student_id"
-    t.integer "assessment_id"
+    t.bigint "student_id"
+    t.bigint "assessment_id"
     t.date "test_date"
     t.date "test_week"
     t.json "views"
@@ -140,7 +143,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   end
 
   create_table "shadow_results", force: :cascade do |t|
-    t.integer "shadow_student_id"
+    t.bigint "shadow_student_id"
     t.string "shorthand"
     t.integer "version"
     t.integer "group"
@@ -171,7 +174,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   create_table "students", force: :cascade do |t|
     t.string "name"
     t.string "login"
-    t.integer "group_id"
+    t.bigint "group_id"
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
@@ -185,14 +188,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
   create_table "test_families", force: :cascade do |t|
     t.string "name"
     t.text "description"
-    t.integer "competence_id"
+    t.bigint "competence_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["competence_id"], name: "index_test_families_on_competence_id"
   end
 
   create_table "tests", force: :cascade do |t|
-    t.integer "test_family_id"
+    t.bigint "test_family_id"
     t.string "level"
     t.string "shorthand"
     t.integer "version"

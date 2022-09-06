@@ -35,6 +35,18 @@ services:
     volumes:
       - ./:/usr/src/app
       - ./node_modules:/app/node_modules
+  db:
+    image: postgres:13
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  redis:
+    image: redis
+    volumes:
+      - redis_data:/data
   mailhog:
     container_name: mailhog
     image: mailhog/mailhog:latest
@@ -44,3 +56,5 @@ services:
       - 8025:8025
 volumes:
   bundle:
+  pg_data:
+  redis_data:

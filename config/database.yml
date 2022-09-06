@@ -6,13 +6,17 @@
 #
 default: &default
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: 5
   timeout: 5000
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  host: db
+  adapter: postgresql
+  database: levumi2_dev
   pool: 50
+  username: postgres
+  password: postgres
 
 production:
   <<: *default
