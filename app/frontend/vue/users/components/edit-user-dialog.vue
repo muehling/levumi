@@ -179,6 +179,7 @@
 
       // validation
       isPasswordValid() {
+        // returns null instead of boolean because this is expected for the bootstrap validation
         return this.password !== '' || this.passwordConfirm !== ''
           ? this.password === this.passwordConfirm
           : null
@@ -187,7 +188,11 @@
         return this.password !== '' && this.securityAnswer === ''
       },
       isSubmitDisabled() {
-        return this.isPasswordValid && (this.isPasswordValid ? this.securityAnswer === '' : false)
+        return (
+          this.password === '' ||
+          this.password !== this.passwordConfirm ||
+          this.securityAnswer === ''
+        )
       }
     },
     methods: {
