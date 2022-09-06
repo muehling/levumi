@@ -54,7 +54,7 @@ export const encryptKey = text => {
   if (!text) {
     return null
   }
-  return sjcl.encrypt(text, sessionStorage.getItem('login'))
+  return sjcl.encrypt(sessionStorage.getItem('login'), text)
 }
 
 export const recodeKeys = (new_password, keys) => {

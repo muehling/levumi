@@ -133,7 +133,7 @@
     components: { ConfirmDialog },
     props: {
       group: Object,
-      index: Number,
+      index: Number
     },
     data() {
       return {
@@ -143,26 +143,26 @@
         key: '',
         shareKey: keys[this.group.id] ? decryptKey(keys[this.group.id]) : null,
         email: '',
-        isShown: false,
+        isShown: false
       }
     },
     beforeCreate() {
       // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
       this.options_rights = [
         { text: 'Nur Ansicht', value: 1, disabled: 0 },
-        { text: 'Ansicht und verwenden', value: 0, disabled: 0 },
+        { text: 'Ansicht und verwenden', value: 0, disabled: 0 }
       ]
     },
     methods: {
       async requestDelete() {
         const ok = await this.$refs.confirmDialog.open({
           message: `Damit können Sie nicht weiter auf die Klasse und ihre Messergebnisse zugreifen! Sind Sie sicher?`,
-          okText: 'Teilen beenden',
+          okText: 'Teilen beenden'
         })
         if (ok) {
           const res = await ajax({
             url: `/groups/${this.group.id}/group_shares/${this.group.share_id}`,
-            method: 'delete',
+            method: 'delete'
           })
           if (res.status === 200) {
             this.$parent.remove(this.index)
@@ -195,12 +195,12 @@
         //e.preventDefault()
         //e.stopPropagation()
         const data = {
-          group_share: { key: this.prepareKey() },
+          group_share: { key: this.prepareKey() }
         }
         const result = await this.submitData({
           url: `/groups/${this.group.id}/group_shares/${this.group.share_id}`,
           method: 'put',
-          data,
+          data
         })
 
         this.$root.store.studentsInGroups[result.id] = result.students
@@ -213,12 +213,12 @@
         this.exists = false
         const data = {
           email: this.email,
-          group_share: { read_only: this.rightsSelected },
+          group_share: { read_only: this.rightsSelected }
         }
         const result = this.submitData({
           url: `/groups/${this.group.id}/group_shares/`,
           method: 'post',
-          data,
+          data
         })
         if (result) {
           this.email = ''
@@ -229,13 +229,13 @@
         this.submitData({
           url: `/groups/${this.group.id}/group_shares/${shareId}`,
           method: 'put',
-          data: { group_share: { read_only: accessLevel } },
+          data: { group_share: { read_only: accessLevel } }
         })
       },
       unshare(shareId) {
         this.submitData({
           url: `/groups/${this.group.id}/group_shares/${shareId}`,
-          method: 'delete',
+          method: 'delete'
         })
       },
       checkKey() {
@@ -267,7 +267,7 @@
         //Klasse updaten und View aktualisieren
         this.$emit('update:groups', { index: this.index, object })
         this.isShown = false
-      },
-    },
+      }
+    }
   }
 </script>
