@@ -233,6 +233,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { store } from '../../utils/store'
   import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
 
@@ -370,7 +371,7 @@
       collectData() {
         //Daten aus den Inputs codieren für AJAX Request
         const encodedName = encodeURIComponent(
-          encryptWithMasterKeyAndGroup(this.name, this.group, keys)
+          encryptWithMasterKeyAndGroup(this.name, this.group, store.shareKeys)
         ) //Namen vor dem Senden verschlüsseln
         let res = `group=${this.group}&student[name]=${encodedName}`
 

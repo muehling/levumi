@@ -4,11 +4,9 @@ import { store } from '../utils/store'
 //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
 // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
 export const decryptStudentName = (text, alt, group) => {
-  const keys = store.shareKeys
-
   let res = ''
   try {
-    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), keys[group])
+    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
     res = sjcl.decrypt(tempkey, text)
   } catch (e) {
     console.error(e.toString())
@@ -20,8 +18,7 @@ export const decryptStudentName = (text, alt, group) => {
 
 //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
 export const encryptWithMasterKeyAndGroup = (text, group) => {
-  const keys = store.shareKeys
-  let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), keys[group])
+  let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
   return sjcl.encrypt(tempkey, text)
 }
 
@@ -61,10 +58,10 @@ export const encryptKey = text => {
   return sjcl.encrypt(sessionStorage.getItem('login'), text)
 }
 
-export const recodeKeys = (newPassword, keys) => {
+export const recodeKeys = newPassword => {
   // decrypt keys with current password
   const oldPassword = sessionStorage.getItem('login')
-  const newKeys = Object.entries(keys).reduce((acc, k) => {
+  const newKeys = Object.entries(store.keys).reduce((acc, k) => {
     acc[k[0]] = decryptWithKey(k[1], oldPassword)
     return acc
   }, {})

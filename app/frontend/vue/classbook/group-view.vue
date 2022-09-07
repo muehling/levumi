@@ -34,11 +34,12 @@
 </template>
 
 <script>
+  import { ajax } from '../../utils/ajax'
+  import { store } from '../../utils/store'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-form.vue'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import { ajax } from '../../utils/ajax'
 
   export default {
     name: 'GroupView',
@@ -82,7 +83,7 @@
        ******************************/
       updateGroup({ object }) {
         this.$set(this.group, object)
-        keys[object.id] = object.key
+        store.shareKeys[object.id] = object.key
         const groups = [...this.groups]
         const index = groups.findIndex(g => g.id === object.id)
         groups[index] = object

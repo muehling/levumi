@@ -135,7 +135,7 @@
           .substr(0, 6)
       },
       generate_key() {
-        return encryptKey(this.key, keys)
+        return encryptKey(this.key)
       },
       generate_token() {
         const key = this.key ? this.key : this.newKey()
