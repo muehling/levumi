@@ -23,12 +23,23 @@
               </template>
 
               <!-- Zweite Ebene - gewählte Klasse -->
-              <group-view :group="group" :group-info="group_info[index]"> </group-view>
+              <group-view
+                :group="group"
+                :index="index"
+                :group-info="groupInfo[index]"
+                @test-used="markTestAsUsed"
+              />
             </b-tab>
           </b-tabs>
 
           <!-- Ansonsten Klasse vorauswählen -->
-          <group-view v-else-if="groups.length > 0" :group="groups[0]" :group-info="group_info[0]">
+          <group-view
+            v-else-if="groups.length > 0"
+            :group="groups[0]"
+            :group-info="groupInfo[0]"
+            :index="index"
+            @test-used="markTestAsUsed"
+          >
           </group-view>
 
           <div v-else class="text-center text-muted">
@@ -44,6 +55,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { store } from '../../utils/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../../utils/routes'
@@ -53,14 +65,14 @@
     components: { GroupView, IntroPopover },
     data: function () {
       return {
-        groups: this.$root.groups,
-        group_info: this.$root.group_info,
+        groups: store.groups.filter(group => group.id),
+        groupInfo: this.$root.group_info
       }
     },
     computed: {
       showIntro: function () {
-        return this.$root.login.intro_state < 4
-      },
+        return store.login.intro_state < 4
+      }
     },
     mounted() {
       if (this.showIntro) {
@@ -71,10 +83,10 @@
             'Hier finden Sie Fördermaterial passend zu den Tests.',
             'Informieren Sie sich über die Tests, die zur Verfügung stehen.',
             'Unter diesem Punkt finden Sie weiteres Material, Hilfestellungen und den Blog mit Neuigkeiten.',
-            'Hier können Sie Ihre Profildaten bearbeiten.',
+            'Hier können Sie Ihre Profildaten bearbeiten.'
           ],
           targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'],
-          onFinish: this.finishIntro,
+          onFinish: this.finishIntro
         })
       }
     },
@@ -85,6 +97,13 @@
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
       },
-    },
+
+      markTestAsUsed(testId, groupInfoIndex) {
+        console.log('marktestas used', testId, this.groupInfo, groupInfoIndex)
+
+        const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
+        test.used = true
+      }
+    }
   }
 </script>

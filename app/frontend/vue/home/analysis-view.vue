@@ -346,7 +346,7 @@
       decode_text(text) {
         const id = this.group.id
         return text.replace(/\{"iv[^}]*\}/g, function (match) {
-          return decryptStudentName(match, '{Name}', id, keys)
+          return decryptStudentName(match, '{Name}', id)
         })
       },
       encode_text() {
@@ -374,15 +374,15 @@
                 re,
                 function (match, p1, p2, p3, p4) {
                   if (p1 != undefined) {
-                    return match.replace(p1, encryptWithMasterKeyAndGroup(p1, id, keys))
+                    return match.replace(p1, encryptWithMasterKeyAndGroup(p1, id))
                   }
                   if (p2 != undefined) {
-                    return match.replace(p2, encryptWithMasterKeyAndGroup(p2, id, keys))
+                    return match.replace(p2, encryptWithMasterKeyAndGroup(p2, id))
                   }
                   if (p3 != undefined) {
-                    return match.replace(p3, encryptWithMasterKeyAndGroup(p3, id, keys))
+                    return match.replace(p3, encryptWithMasterKeyAndGroup(p3, id))
                   } else {
-                    return match.replace(p4, encryptWithMasterKeyAndGroup(p4, id, keys))
+                    return match.replace(p4, encryptWithMasterKeyAndGroup(p4, id))
                   }
                 }
               )

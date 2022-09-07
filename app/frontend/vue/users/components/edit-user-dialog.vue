@@ -120,8 +120,9 @@
 
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { hasCapability } from '../../../utils/user'
   import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
+  import { hasCapability } from '../../../utils/user'
+  import { store } from '../../../utils/store'
   import apiRoutes from '../../../utils/routes'
 
   export default {
@@ -221,8 +222,6 @@
           }
         }
 
-        const formData = data.user
-
         let res
         let newKeys
         if (this.isNew) {
@@ -230,14 +229,14 @@
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
             // Password and security question
-            newKeys = recodeKeys(this.password, keys)
+            newKeys = recodeKeys(this.password)
             data.keys = JSON.stringify(newKeys)
-            formData.password = this.password
-            formData.password_confirmation = this.passwordConfirm
-            formData.security_digest = encryptWithKey(this.securityAnswer, this.password)
+            data.user.password = this.password
+            data.user.password_confirmation = this.passwordConfirm
+            data.user.security_digest = encryptWithKey(this.securityAnswer, this.password)
           } else if (this.password === '' && this.securityAnswer !== '') {
             // only security question
-            formData.security_digest = encryptWithKey(
+            data.user.security_digest = encryptWithKey(
               sessionStorage.getItem('login'),
               this.securityAnswer
             )
@@ -253,7 +252,7 @@
           sessionStorage.setItem('login', this.password)
           this.$refs.editUserDialog.hide()
           this.$emit('refetch')
-          keys = newKeys
+          store.setKeys(newKeys)
         } else {
           const data = await res.json()
           this.errors = data.errors

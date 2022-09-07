@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="mb-2 mt-2">
+    <div v-if="!!group.id" class="mb-2 mt-2">
       <b-btn
         v-b-toggle="'collapse_test_' + group.id"
         variant="outline-secondary"
@@ -38,7 +38,10 @@
               v-for="area in usedAreas"
               :key="area.info.id"
               :active="area.info.id == areaSelected"
-              @click=";(area.used = true), select_area(area.info.id)"
+              @click="
+                area.used = true
+                select_area(area.info.id)
+              "
             >
               <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{
                 area.info.name
@@ -195,6 +198,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { store } from '../../utils/store'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
 
@@ -203,7 +207,7 @@
     components: { AssessmentView, ListView },
     provide: function () {
       //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.
-      let todo = this.$root.store.studentsInGroups[this.group.id] || []
+      let todo = store.studentsInGroups[this.group.id] || []
 
       for (let i = 0; i < todo.length; ++i) {
         this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/[^a-zäöüß_]/i))
@@ -213,12 +217,13 @@
         .filter(word => !stopwords.includes(word))
         .filter((v, i, a) => a.indexOf(v) === i)
       return {
-        student_name_parts: this.student_name_parts,
+        student_name_parts: this.student_name_parts
       }
     },
     props: {
       group: Object,
       groupInfo: Object,
+      index: Number
     },
     data: function () {
       return {
@@ -249,14 +254,14 @@
         version_selected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
-            : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
+            : 0 //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
       }
     },
     computed: {
       empty: function () {
         //Ist überhaupt ein Assessment vorhanden?
-        for (let i = 0; i < this.groupInfo.areas.length; ++i) {
-          if (this.groupInfo.areas[i].used) {
+        for (let i = 0; i < this.groupInfo?.areas.length; ++i) {
+          if (this.groupInfo?.areas[i].used) {
             return false
           }
         }
@@ -265,25 +270,25 @@
       //Alle zur aktuellen Familie passenden Tests, jeweils nur die aktuelle Version
       tests: function () {
         let res = []
-        for (let i = 0; i < this.groupInfo.tests.length; ++i) {
+        for (let i = 0; i < this.groupInfo?.tests.length; ++i) {
           if (
-            this.groupInfo.tests[i].info.test_family_id == this.family_selected &&
-            this.groupInfo.tests[i].info.label === 'Aktuell'
+            this.groupInfo?.tests[i].info.test_family_id == this.family_selected &&
+            this.groupInfo?.tests[i].info.label === 'Aktuell'
           ) {
             let versions = []
             let used = false
-            for (let j = 0; j < this.groupInfo.tests.length; ++j) {
+            for (let j = 0; j < this.groupInfo?.tests.length; ++j) {
               if (
-                this.groupInfo.tests[i].info.level == this.groupInfo.tests[j].info.level &&
-                this.groupInfo.tests[j].info.test_family_id == this.family_selected
+                this.groupInfo?.tests[i].info.level == this.groupInfo?.tests[j].info.level &&
+                this.groupInfo?.tests[j].info.test_family_id == this.family_selected
               ) {
-                versions.push(this.groupInfo.tests[j])
-                if (this.groupInfo.tests[j].used) {
+                versions.push(this.groupInfo?.tests[j])
+                if (this.groupInfo?.tests[j].used) {
                   used = true
                 }
               }
             }
-            res.push({ info: this.groupInfo.tests[i].info, used: used, versions: versions })
+            res.push({ info: this.groupInfo?.tests[i].info, used: used, versions: versions })
           }
         }
 
@@ -292,34 +297,34 @@
       //Alle Versionen des gewählten Tests
       versions() {
         let level = ''
-        for (let i = 0; i < this.groupInfo.tests.length; ++i) {
-          if (this.groupInfo.tests[i].info.id == this.test_selected) {
-            level = this.groupInfo.tests[i].info.level
+        for (let i = 0; i < this.groupInfo?.tests.length; ++i) {
+          if (this.groupInfo?.tests[i].info.id == this.test_selected) {
+            level = this.groupInfo?.tests[i].info.level
           }
         }
         let res = []
-        for (let i = 0; i < this.groupInfo.tests.length; ++i) {
+        for (let i = 0; i < this.groupInfo?.tests.length; ++i) {
           if (
-            this.groupInfo.tests[i].info.level === level &&
-            this.groupInfo.tests[i].info.test_family_id == this.family_selected
+            this.groupInfo?.tests[i].info.level === level &&
+            this.groupInfo?.tests[i].info.test_family_id == this.family_selected
           ) {
-            res.push(this.groupInfo.tests[i])
+            res.push(this.groupInfo?.tests[i])
           }
         }
         return res.sort((a, b) => b.info.id - a.info.id)
       },
       usedAreas() {
-        return this.groupInfo.areas.filter(area => area.used || !this.group.read_only)
+        return this.groupInfo?.areas.filter(area => area.used || !this.group.read_only)
       },
       usedCompetences() {
-        return this.groupInfo.competences.filter(
+        return this.groupInfo?.competences.filter(
           competence =>
             (competence.used || !this.group.read_only) &&
             competence.info.area_id == this.areaSelected
         )
       },
       usedFamilies() {
-        return this.groupInfo.families.filter(
+        return this.groupInfo?.families.filter(
           family =>
             (family.used || !this.group.read_only) &&
             family.info.competence_id == this.competenceSelected
@@ -332,7 +337,7 @@
         return this.versions.filter(
           version => version.used || (!version.info.archive && !this.group.read_only)
         )
-      },
+      }
     },
     methods: {
       //Neues Assessment anlegen und, bei Erfolg, laden.
@@ -342,7 +347,7 @@
           contentType: 'application/x-www-form-urlencoded',
           data: `test_id=${test.info.id}`,
           method: 'post',
-          url: `/groups/${this.group.id}/assessments/`,
+          url: `/groups/${this.group.id}/assessments/`
         }).then(() => {
           this.use_test(test.info.id)
           this.loadAssessment(test.info.id, isVersion)
@@ -364,6 +369,7 @@
         }
       },
       async toggleAssessments() {
+        console.log('groupView', this.group)
         if (this.list != undefined) {
           this.list = undefined
           return
@@ -401,17 +407,12 @@
         this.version_selected = -1
         this.results = null
       },
-      use_test(test) {
-        for (let i = 0; i < this.groupInfo.tests.length; ++i) {
-          if (this.groupInfo.tests[i].info.id == test) {
-            this.groupInfo.tests[i].used = true
-            return
-          }
-        }
+      use_test(testId) {
+        this.$emit('test-used', testId, this.index)
       },
       removeEntry(index) {
         this.results.series.splice(index, 1)
-      },
-    },
+      }
+    }
   }
 </script>
