@@ -124,18 +124,19 @@
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../../utils/routes'
+  import { store } from '../../utils/store'
 
   export default {
     name: 'ClassBookApp',
     components: {
       GroupView,
       GroupForm,
-      IntroPopover
+      IntroPopover,
     },
     data() {
       return {
-        groups: this.sort(this.$root.groups),
-        single: this.$root.single
+        groups: this.sort(store.groups),
+        single: store.login.account_type === 2,
       }
     },
     computed: {
@@ -174,13 +175,8 @@
         return false
       },
       showIntro: function () {
-        return this.$root.login.intro_state < 5
-      }
-    },
-    async created() {
-      //TODO not working yet
-      const res = await ajax({ url: '/users/group_shares' })
-      const groupShares = await res.json()
+        return store.login.intro_state < 5
+      },
     },
     mounted() {
       if (this.showIntro) {
@@ -192,7 +188,7 @@
             'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
             'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
             'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
-            'Hier können Sie die Schüler:in speichern.'
+            'Hier können Sie die Schüler:in speichern.',
           ],
           targets: [
             '#intro_cb_1',
@@ -201,9 +197,9 @@
             '#intro_cb_4',
             '#intro_cb_5',
             '#intro_cb_6',
-            '#intro_cb_7'
+            '#intro_cb_7',
           ],
-          onFinish: this.finishIntro
+          onFinish: this.finishIntro,
         })
       }
     },
@@ -212,8 +208,8 @@
         this.groups.splice(1, 0, val.object)
         //Globale Daten aktualisieren
         //TODO: Classbook-App autark halten?
-        keys[val.object.id] = val.object.key
-        this.$root.store.studentsInGroups[val.object.id] = []
+        store.shareKeys[val.object.id] = val.object.key
+        store.studentsInGroups[val.object.id] = []
       },
       sort: function (groups) {
         let empty = groups.shift() //Erstes Element ist leere Gruppe für "new"
@@ -226,7 +222,7 @@
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
-      }
-    }
+      },
+    },
   }
 </script>

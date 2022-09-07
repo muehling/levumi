@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   post '/passwort', to: 'users#recover'
 
   put '/users/:id/mail', to: 'users#user_mail'
+  get '/users/core_data', to: 'users#get_core_data'
 
   #Reguläres REST-Routing
   resources :users
@@ -44,14 +45,6 @@ Rails.application.routes.draw do
     resources :group_shares
   end
 
-  
   resources :tests
   resources :materials
-  
-  namespace :api do
-    namespace :v1 do
-      resources :group_shares
-      get 'users/group_shares', to: 'users#get_group_shares'
-    end
-  end
 end

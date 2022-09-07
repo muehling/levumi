@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: %i[index show create register recover]
+  before_action :set_user, except: %i[index show create register recover get_core_data]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -181,8 +181,13 @@ class UsersController < ApplicationController
     end
   end
 
-  def get_group_shares
-    render 'users/group_shares'
+  def get_core_data
+    @groups_object = [Group.new] + @login.get_classbook_info
+
+    @shares_object = {}
+    @login.group_shares.map { |c| @shares_object[c.group_id] = c.key }
+
+    render 'users/core_data'
   end
 
   #GET /passwort

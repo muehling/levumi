@@ -20,25 +20,35 @@ import UsersApp from '../vue/users/users-app.vue'
 import '../styles/application.scss'
 import { decryptStudentName } from '../utils/encryption'
 import { store } from '../utils/store'
+import { ajax } from '../utils/ajax'
 
 window.bootstrap = bootstrap
 
 const element = document.getElementById('levumi')
 
-if (element) {
-  const data = JSON.parse(element.getAttribute('data'))
-  console.log('data', data.students, data)
+const init = async () => {
+  // TODO remove once all data is fetched from API
+  const data = JSON.parse(element.getAttribute('data')) || {}
 
-  if (data.groups) {
-    const studentsInGroups = data.groups.reduce((acc, group) => {
+  // get core data
+  const res = await ajax({ url: `/users/core_data` })
+  const studentsData = await res.json()
+
+  store.setShareKeys(studentsData.share_keys)
+  store.setGroups(studentsData.groups)
+
+  // decrypt student names
+  if (studentsData.groups) {
+    const studentsInGroups = studentsData.groups.reduce((acc, group) => {
       acc[group.id] = group.students?.map(student => {
         return {
           ...student,
-          name: decryptStudentName(student.name, `Kind_${student.id}`, group.id, keys),
+          name: decryptStudentName(student.name, `Kind_${student.id}`, group.id),
         }
       })
       return acc
     }, {})
+
     store.setStudentsInGroups(studentsInGroups)
   }
 
@@ -69,6 +79,10 @@ if (element) {
     },
     data: data,
   })
+}
+
+if (element) {
+  init()
 }
 
 window.highlightNavItem = item => {

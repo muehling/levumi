@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: [:start, :info, :login, :frontend, :login_frontend, :logout_frontend]
+  before_action :set_login, except: %i[start info login frontend login_frontend logout_frontend]
   before_action :set_locale
 
   #Normaler Zugang
@@ -7,20 +7,20 @@ class ApplicationController < ActionController::Base
   #GET '/'
   def start
     respond_to do |format|
-      format.html {
+      format.html do
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
         render :start
-      }
+      end
     end
   end
 
   #GET '/info'
   def info
     respond_to do |format|
-      format.html {
+      format.html do
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
         render :info
-      }
+      end
     end
   end
 
@@ -41,23 +41,20 @@ class ApplicationController < ActionController::Base
 
   #POST '/logout'
   def logout
-    reset_session    #Session löschen
+    reset_session #Session löschen
     redirect_to '/'
   end
-
 
   #Zugang für Schülerinnen und Schüler
 
   #GET '/testen'
   def frontend
-    if session.has_key?(:student)
-      @student = Student.find(session[:student])
-    end
+    @student = Student.find(session[:student]) if session.has_key?(:student)
     respond_to do |format|
-      format.html {
+      format.html do
         @no_script = true
         render :frontend, layout: 'minimal'
-      }
+      end
     end
   end
 
@@ -67,14 +64,14 @@ class ApplicationController < ActionController::Base
     unless s.nil?
       session[:student] = s.id
       respond_to do |format|
-        format.html {
+        format.html do
           @student = s
           @no_script = true
           render :frontend, layout: 'minimal'
-        }
-        format.json {
-          render json: {tests: s.get_assessments, student: {id: s.id, login: s.login}}
-        }
+        end
+        format.json do
+          render json: { tests: s.get_assessments, student: { id: s.id, login: s.login } }
+        end
       end
     else
       head 403
@@ -85,12 +82,8 @@ class ApplicationController < ActionController::Base
   def logout_frontend
     session.delete(:student)
     respond_to do |format|
-      format.html {
-        redirect_to '/testen'
-      }
-      format.js {
-        head 200
-      }
+      format.html { redirect_to '/testen' }
+      format.js { head 200 }
     end
   end
 
@@ -98,7 +91,7 @@ class ApplicationController < ActionController::Base
 
   #GET '/login'
   def start_masquerade
-    u = User.find(params[:user])  #User wird als Parameter übergeben
+    u = User.find(params[:user]) #User wird als Parameter übergeben
     if !u.nil? && @login.has_capability?('user')
       session[:masquerading] = u.id
       redirect_to '/start'
@@ -109,26 +102,31 @@ class ApplicationController < ActionController::Base
 
   #GET '/logout'
   def end_masquerade
-    if (session.has_key?(:masquerading))     #Nur Key aus Session löschen, damit alter Login erhalten bleibt.
+    if (session.has_key?(:masquerading))
+      #Nur Key aus Session löschen, damit alter Login erhalten bleibt.
       session.delete(:masquerading)
     end
-    redirect_to users_path    #Zurück zum Ausgangspunkt (Nutzer muss Berechtigung user sowieso haben)
+    redirect_to users_path #Zurück zum Ausgangspunkt (Nutzer muss Berechtigung user sowieso haben)
   end
 
   private
 
   #Login aus Session holen und ggf. Masquerading aktivieren
   def set_login
-    if (session.has_key?('masquerading'))       #Masquerading aktiv
+    if (session.has_key?('masquerading'))
+      #Masquerading aktiv
       @login = User.find(session[:masquerading])
       @masquerade = true
     else
-      if session.has_key?('user')               #Session existiert
+      if session.has_key?('user')
+        #Session existiert
         @login = User.find(session[:user])
-        if (@login.tc_accepted.nil? || @login.intro_state < 4)  #Registrierung noch nicht vollständig abgeschlossen oder neue Nutzungsbedingungen
+        if (@login.tc_accepted.nil? || @login.intro_state < 4)
+          #Registrierung noch nicht vollständig abgeschlossen oder neue Nutzungsbedingungen
           redirect_to '/willkommen'
         end
-      else                                      #Sonst: Startseite
+      else
+        #Sonst: Startseite
         redirect_to '/'
       end
     end
@@ -137,5 +135,4 @@ class ApplicationController < ActionController::Base
   def set_locale
     I18n.locale = :de
   end
-
 end
