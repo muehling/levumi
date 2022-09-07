@@ -37,7 +37,7 @@
             v-else-if="groups.length > 0"
             :group="groups[0]"
             :group-info="groupInfo[0]"
-            :index="index"
+            :index="0"
             @test-used="markTestAsUsed"
           >
           </group-view>

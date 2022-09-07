@@ -47,12 +47,12 @@
       StudentList,
       GroupForm,
       ShareForm,
-      ConfirmDialog,
+      ConfirmDialog
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
       group: Object,
-      single: Boolean,
+      single: Boolean
     },
     computed: {
       date: function () {
@@ -61,20 +61,20 @@
       },
       read_only: function () {
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
-        return this.group.read_only || masquerade
-      },
+        return this.group.read_only || store.masquerade
+      }
     },
     methods: {
       // Klasse aus dem Archiv holen
       async reactivateGroup() {
         const res = await ajax({
           url: '/groups/' + this.group.id + '?group[archive]=0',
-          method: 'put',
+          method: 'put'
         })
         const data = await res.json()
         if (data && res.status === 200) {
           this.updateGroup({
-            object: data,
+            object: data
           })
         }
       },
@@ -97,12 +97,12 @@
         const ok = await this.$refs.confirmDialog.open({
           title: 'Klasse löschen',
           message: `Die Klasse wird mit allen Schüler:innen und allen Messergebnissen gelöscht! Sind Sie sicher?`,
-          okText: 'Klasse löschen',
+          okText: 'Klasse löschen'
         })
         if (ok) {
           const res = await ajax({
             url: `/groups/${this.group.id}`,
-            method: 'delete',
+            method: 'delete'
           })
 
           if (res.status === 200) {
@@ -110,7 +110,7 @@
             this.$emit('update:groups', remainingGroups)
           }
         }
-      },
-    },
+      }
+    }
   }
 </script>

@@ -37,14 +37,14 @@
             <b-btn
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
-              @click="requestDeleteGroup(user.id)"
+              @click="requestDeleteUser(user.id)"
               ><i class="fas fa-trash"></i> Löschen</b-btn
             >
             <b-btn
               v-if="$root.login.id !== user.id && user.tc_accepted && checkRegistration(user)"
               variant="outline-secondary"
               class="delete-user btn btn-sm mr-1"
-              @click="loginAs(user)"
+              @click="loginAs(user.id)"
               ><i class="fas fa-user-md"></i> Einloggen als</b-btn
             >
           </td>
@@ -66,28 +66,28 @@
     name: 'UsersList',
     components: { ConfirmDialog, EditUserDialog },
     props: {
-      users: Array,
+      users: Array
     },
     data() {
       return {
         states: this.$root.states,
         focusTypes: this.$root.focusTypes,
         schoolTypes: this.$root.schoolTypes,
-        accountTypes: this.$root.accountTypes,
+        accountTypes: this.$root.accountTypes
       }
     },
 
     methods: {
-      async requestDeleteGroup(id) {
+      async requestDeleteUser(id) {
         const ok = await this.$refs.confirmDialog.open({
           message: `Der Benutzer wird mit allen Daten gelöscht. Sind Sie sicher?`,
           okText: 'Ja, Benutzer löschen',
-          title: 'Benutzer löschen',
+          title: 'Benutzer löschen'
         })
         if (ok) {
           const res = await ajax({
             url: `/users/${id}`,
-            method: 'delete',
+            method: 'delete'
           })
 
           if (res.status === 200) {
@@ -106,7 +106,7 @@
       },
       checkRegistration(user) {
         return isRegistered(user)
-      },
-    },
+      }
+    }
   }
 </script>

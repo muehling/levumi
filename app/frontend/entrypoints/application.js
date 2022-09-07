@@ -32,14 +32,15 @@ const init = async () => {
 
   // get core data
   const res = await ajax({ url: `/users/core_data` })
-  const studentsData = await res.json()
+  const coreData = await res.json()
 
-  store.setShareKeys(studentsData.share_keys)
-  store.setGroups(studentsData.groups)
+  store.setShareKeys(coreData.share_keys)
+  store.setGroups(coreData.groups)
+  store.setMasquerade(coreData.masquerade)
 
   // decrypt student names
-  if (studentsData.groups) {
-    const studentsInGroups = studentsData.groups.reduce((acc, group) => {
+  if (coreData.groups) {
+    const studentsInGroups = coreData.groups.reduce((acc, group) => {
       acc[group.id] = group.students?.map(student => {
         return {
           ...student,
