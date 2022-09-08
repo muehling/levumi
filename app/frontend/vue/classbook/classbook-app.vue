@@ -119,11 +119,11 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { store } from '../../utils/store'
   import GroupForm from './group-form.vue'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
-  import routes from '../../utils/routes'
-  import { store } from '../../utils/store'
+  import routes from '../routes/api-routes'
 
   export default {
     name: 'ClassBookApp',

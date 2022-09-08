@@ -30,7 +30,7 @@
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
-  import apiRoutes from '../../../utils/routes'
+  import apiRoutes from '../../routes/api-routes'
 
   export default {
     name: 'UsersMailDialog',

@@ -58,7 +58,7 @@
   import { store } from '../../utils/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
-  import routes from '../../utils/routes'
+  import routes from '../routes/api-routes'
 
   export default {
     name: 'HomeApp',
@@ -66,13 +66,13 @@
     data: function () {
       return {
         groups: store.groups.filter(group => group.id),
-        groupInfo: this.$root.group_info
+        groupInfo: this.$root.group_info,
       }
     },
     computed: {
       showIntro: function () {
         return store.login.intro_state < 4
-      }
+      },
     },
     mounted() {
       if (this.showIntro) {
@@ -83,10 +83,10 @@
             'Hier finden Sie Fördermaterial passend zu den Tests.',
             'Informieren Sie sich über die Tests, die zur Verfügung stehen.',
             'Unter diesem Punkt finden Sie weiteres Material, Hilfestellungen und den Blog mit Neuigkeiten.',
-            'Hier können Sie Ihre Profildaten bearbeiten.'
+            'Hier können Sie Ihre Profildaten bearbeiten.',
           ],
           targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'],
-          onFinish: this.finishIntro
+          onFinish: this.finishIntro,
         })
       }
     },
@@ -103,7 +103,7 @@
 
         const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
         test.used = true
-      }
-    }
+      },
+    },
   }
 </script>

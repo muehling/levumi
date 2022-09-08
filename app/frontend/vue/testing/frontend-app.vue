@@ -111,7 +111,7 @@
                 >
                 </b-modal>
               </b-form-group>
-              <qr-reader></qr-reader>
+              <qr-reader />
               <b-button
                 id="starten"
                 style="display: none"
@@ -163,6 +163,8 @@
       },
     },
     created() {
+      console.log('frontend app created')
+
       window.addEventListener('beforeunload', this.auto_logout)
       // QR-Reader Standardansicht für Tablet und Smartphones
       if (isMobile || isTablet) {
@@ -203,6 +205,8 @@
         return true
       },
       success(event) {
+        console.log('frontend app success', event)
+
         //Attributwerte aus AJAX Antwort übernehmen und View updaten
         this.tests = event.detail[0]['tests']
         this.student = event.detail[0]['student']

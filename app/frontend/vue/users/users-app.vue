@@ -21,6 +21,7 @@
   import EditUserDialog from './components/edit-user-dialog.vue'
   import UsersMailDialog from './components/users-mail-dialog.vue'
   import { hasCapability } from '../../utils/user'
+  import { store } from '../../utils/store'
   export default {
     name: 'UsersApp',
     components: { UsersList, EditUserDialog, UsersMailDialog },
@@ -35,13 +36,13 @@
     },
     computed: {
       canViewUsersList() {
-        return hasCapability('user', this.$root.login?.capabilities)
+        return hasCapability('user', store.login?.capabilities)
       },
     },
     mounted() {
       this.refetch()
       if (window.location.search.includes('edit_profile')) {
-        this.$refs.editUserDialog.open({ user: this.$root.login, isNew: false })
+        this.$refs.editUserDialog.open({ user: store.login, isNew: false })
       }
     },
     methods: {

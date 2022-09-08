@@ -123,7 +123,7 @@
   import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
   import { store } from '../../../utils/store'
-  import apiRoutes from '../../../utils/routes'
+  import apiRoutes from '../../routes/api-routes'
 
   export default {
     name: 'EditUserDialog',
@@ -147,7 +147,7 @@
         states: this.$root.states,
         accountTypes: this.$root.accountTypes,
         stateOptions: this.$root.states.map(s => ({ value: s.id, text: s.label })),
-        login: this.$root.login
+        login: store.login,
       }
     },
     computed: {
@@ -194,7 +194,7 @@
           this.password !== this.passwordConfirm ||
           this.securityAnswer === ''
         )
-      }
+      },
     },
     methods: {
       open(data = {}) {
@@ -218,8 +218,8 @@
             email: this.email,
             account_type: this.accountType,
             state: this.state,
-            institution: this.institution
-          }
+            institution: this.institution,
+          },
         }
 
         let res
@@ -244,7 +244,7 @@
 
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),
-            data: data
+            data: data,
           })
         }
         if (res.status === 200) {
@@ -257,7 +257,7 @@
           const data = await res.json()
           this.errors = data.errors
         }
-      }
-    }
+      },
+    },
   }
 </script>
