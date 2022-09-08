@@ -33,9 +33,8 @@
                   <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                   <b-tab
                     v-for="(group, index) in ownActiveGroups"
-                    :key="group.id"
+                    :key="`${group.id}/${group.label}`"
                     :active="index + 1 === firstOwnIndex"
-                    :title-link-class="{ update_trigger_hack: group.label }"
                     class="m-3"
                   >
                     <!-- Beispielklasse kursiv darstellen -->
