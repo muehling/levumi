@@ -30,27 +30,30 @@ const init = async () => {
   // TODO remove once all data is fetched from API
   const data = JSON.parse(element.getAttribute('data')) || {}
 
-  // get core data
-  const res = await ajax({ url: `/users/core_data` })
-  const coreData = await res.json()
+  const path = window.location.pathname
+  if (path !== '/testen' && path !== '/testen_login') {
+    // get core data
+    const res = await ajax({ url: `/users/core_data` })
+    const coreData = await res.json()
 
-  store.setShareKeys(coreData.share_keys)
-  store.setGroups(coreData.groups)
-  store.setMasquerade(coreData.masquerade)
+    store.setShareKeys(coreData.share_keys)
+    store.setGroups(coreData.groups)
+    store.setMasquerade(coreData.masquerade)
 
-  // decrypt student names
-  if (coreData.groups) {
-    const studentsInGroups = coreData.groups.reduce((acc, group) => {
-      acc[group.id] = group.students?.map(student => {
-        return {
-          ...student,
-          name: decryptStudentName(student.name, `Kind_${student.id}`, group.id),
-        }
-      })
-      return acc
-    }, {})
+    // decrypt student names
+    if (coreData.groups) {
+      const studentsInGroups = coreData.groups.reduce((acc, group) => {
+        acc[group.id] = group.students?.map(student => {
+          return {
+            ...student,
+            name: decryptStudentName(student.name, `Kind_${student.id}`, group.id),
+          }
+        })
+        return acc
+      }, {})
 
-    store.setStudentsInGroups(studentsInGroups)
+      store.setStudentsInGroups(studentsInGroups)
+    }
   }
 
   Vue.component('QrCode', VueQRCodeComponent)
