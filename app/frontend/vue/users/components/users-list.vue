@@ -57,23 +57,24 @@
 </template>
 
 <script>
-  import ConfirmDialog from '../../shared/confirm-dialog.vue'
-  import EditUserDialog from './edit-user-dialog.vue'
   import { ajax } from '../../../utils/ajax'
   import { isRegistered } from '../../../utils/user'
+  import { store } from '../../../utils/store'
+  import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import EditUserDialog from './edit-user-dialog.vue'
 
   export default {
     name: 'UsersList',
     components: { ConfirmDialog, EditUserDialog },
     props: {
-      users: Array
+      users: Array,
     },
     data() {
       return {
-        states: this.$root.states,
-        focusTypes: this.$root.focusTypes,
-        schoolTypes: this.$root.schoolTypes,
-        accountTypes: this.$root.accountTypes
+        states: store.staticData.states,
+        focusTypes: store.staticData.focusTypes,
+        schoolTypes: store.staticData.schoolTypes,
+        accountTypes: store.staticData.accountTypes,
       }
     },
 
@@ -82,12 +83,12 @@
         const ok = await this.$refs.confirmDialog.open({
           message: `Der Benutzer wird mit allen Daten gelöscht. Sind Sie sicher?`,
           okText: 'Ja, Benutzer löschen',
-          title: 'Benutzer löschen'
+          title: 'Benutzer löschen',
         })
         if (ok) {
           const res = await ajax({
             url: `/users/${id}`,
-            method: 'delete'
+            method: 'delete',
           })
 
           if (res.status === 200) {
@@ -106,7 +107,7 @@
       },
       checkRegistration(user) {
         return isRegistered(user)
-      }
-    }
+      },
+    },
   }
 </script>

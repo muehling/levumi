@@ -23,6 +23,7 @@
     "qrcode.vue": "1.7",
     "sjcl": "^1.0.8",
     "vue": "^2.6.10",
+    "vue-router": "3",
     "vue-template-compiler": "^2.7.7"
   },
   "devDependencies": {

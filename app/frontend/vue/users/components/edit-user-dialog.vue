@@ -144,15 +144,15 @@
         securityAnswer: '',
 
         // parent data
-        states: this.$root.states,
-        accountTypes: this.$root.accountTypes,
-        stateOptions: this.$root.states.map(s => ({ value: s.id, text: s.label })),
+        states: store.staticData.states,
+        accountTypes: store.staticData.accountTypes,
+        stateOptions: store.staticData.states.map(s => ({ value: s.id, text: s.label })),
         login: store.login,
       }
     },
     computed: {
       canEditUser() {
-        return hasCapability('user', this.$root.login?.capabilities)
+        return hasCapability('user', store.login?.capabilities)
       },
       accountTypeText() {
         return this.accountTypes.find(at => at.id === this.accountType)?.label

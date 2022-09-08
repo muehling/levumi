@@ -99,8 +99,6 @@
       },
 
       markTestAsUsed(testId, groupInfoIndex) {
-        console.log('marktestas used', testId, this.groupInfo, groupInfoIndex)
-
         const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
         test.used = true
       },

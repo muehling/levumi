@@ -1,7 +1,7 @@
 import { reactive } from 'vue'
 //TODO the vue onboard solution allows mutating the contents without
-//TODO restrictions (e. g. directly overwriting a stored key). This
-//TODO is rather too side-effecty for my taste. This might be replaced by
+//TODO restrictions (e. g. directly overwriting a stored key or function). This
+//TODO is rather too side-effecty and error-prone for my taste. This might be replaced by
 //TODO Pinia, the official Vue state package
 export const store = reactive({
   login: {},
@@ -27,5 +27,10 @@ export const store = reactive({
   masquerade: false,
   setMasquerade(val) {
     this.masquerade = val
+  },
+
+  staticData: {},
+  setStaticData(data) {
+    this.staticData = data
   },
 })

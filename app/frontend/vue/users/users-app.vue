@@ -28,9 +28,9 @@
     data: function () {
       return {
         users: [],
-        states: this.$root.states,
-        focusTypes: this.$root.focusTypes,
-        schoolTypes: this.$root.schoolTypes,
+        states: store.staticData.states,
+        focusTypes: store.staticData.focusTypes,
+        schoolTypes: store.staticData.schoolTypes,
         tabIndex: 0,
       }
     },

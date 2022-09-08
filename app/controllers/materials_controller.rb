@@ -1,5 +1,5 @@
 class MaterialsController < ApplicationController
-  before_action :set_material, except: %i[index create]
+  before_action :set_material, except: %i[index create get_material_data]
   before_action :is_allowed, only: %i[create destroy]
 
   #GET /materials
@@ -30,6 +30,10 @@ class MaterialsController < ApplicationController
   def destroy
     @material.destroy
     render 'index_admin'
+  end
+
+  def get_material_data
+    @data = Material.get_material_info
   end
 
   private

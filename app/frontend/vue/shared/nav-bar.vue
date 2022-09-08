@@ -1,0 +1,221 @@
+<template>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="/start"
+      ><img src="/favicon.ico" alt="Levumi" width="48" height="48" />Levumi</a
+    >
+
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarContent"
+      aria-controls="navbarContent"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div id="navbarContent" class="collapse navbar-collapse">
+      <ul class="navbar-nav ml-3">
+        <li id="intro1" class="nav-item active">
+          <router-link class="nav-link" to="/start">Diagnostik</router-link>
+        </li>
+        <li id="intro2" class="nav-item">
+          <router-link class="nav-link" to="/willkommen">Klassenbuch</router-link>
+          <span v-if="login.new_shares" class="badge badge-info">Neu!</span>
+        </li>
+        <li id="intro3" class="nav-item">
+          <router-link class="nav-link" to="/materials">Fördermaterialien</router-link>
+        </li>
+        <li id="intro4" class="nav-item">
+          <a href="/tests" class="nav-link">Testübersicht</a>
+        </li>
+        <li id="intro5" class="nav-item dropdown">
+          <a
+            id="navbarHelp"
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Weiteres
+            <!-- TODO: Badge wieder entfernen -->
+            <span class="badge badge-info">Neu!</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarHelp">
+            <!-- TODO: Badge wieder entfernen -->
+            <a
+              class="dropdown-item"
+              href="https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi"
+              target="_blank"
+              >Levumi Newsletter <span class="badge badge-info">Neu!</span></a
+            >
+            <a
+              class="dropdown-item"
+              href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
+              target="_blank"
+              >Videos</a
+            >
+            <a class="dropdown-item" href="https://www.levumi-blog.uni-kiel.de/" target="_blank"
+              >Blog</a
+            >
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Handbücher</h6>
+            <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf"
+              >Handbuch Lernbereich Empfinden & Verhalten</a
+            >
+            <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf"
+              >Handbuch Lernbereich Deutsch</a
+            >
+            <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf"
+              >Handbuch Fördermaterial Deutsch</a
+            >
+            <div class="dropdown-divider"></div>
+            <h6 class="dropdown-header">Druckvorlagen</h6>
+            <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank"
+              >A4 Levumi normal</a
+            >
+            <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank"
+              >A4 Levumi jubelt</a
+            >
+            <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank"
+              >A4 Levumi liest</a
+            >
+            <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank"
+              >A3 Levumi normal</a
+            >
+            <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank"
+              >A3 Levumi jubelt</a
+            >
+            <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank"
+              >A3 Levumi liest</a
+            >
+          </div>
+        </li>
+      </ul>
+
+      <ul class="navbar-nav ml-auto">
+        <li v-if="masquerade" class="nav-item">
+          <a href="logout" class="nav-link btn btn-outline-secondary"
+            >Sitzung als {{ login.email }} beenden</a
+          >
+        </li>
+        <li v-if="!login.is_regular_user" class="nav-item dropdown">
+          <a
+            id="navbarSystem"
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            System
+          </a>
+          <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
+            <a href="/users?stats=true" class="dropdown-item">Statistik</a>
+            <router-link to="/users" class="dropdown-item">Benutzerverwaltung</router-link>
+            <a
+              v-if="hasCapability('test', login.capabilities)"
+              href="/tests?admin=true"
+              class="dropdown-item"
+              >Testverwaltung</a
+            >
+            <a
+              v-if="hasCapability('material', login.capabilities)"
+              href="/materials?admin=true"
+              class="dropdown-item"
+              >Materialverwaltung</a
+            >
+            <a
+              v-if="hasCapability('export', login.capabilities)"
+              href="/tests?export=true"
+              class="dropdown-item"
+              >Export</a
+            >
+          </div>
+        </li>
+        <li id="intro6" class="nav-item dropdown">
+          <a
+            id="navbarMyData"
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Meine Daten {{ login.email }}
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarMyData">
+            <!--TODO Userdialog öffnen, nicht die Route ändern-->
+            <a href="/users?edit_profile" class="dropdown-item">Profildaten ändern</a>
+            <a href="/users?edit_profile" class="dropdown-item">TODO Testungen exportieren</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a
+            id="navbarLegal"
+            class="nav-link dropdown-toggle"
+            href="#"
+            role="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Rechtliches
+          </a>
+          <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarLegal">
+            <a class="dropdown-item" href="/files/Vorlage_Elternbrief.doc"
+              >Vorlage Einwilligungserklärung</a
+            >
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#" onclick="$('#imprint').modal('show')">Impressum</a>
+            <a class="dropdown-item" href="#" onclick="$('#privacy').modal('show')"
+              >Datenschutzerklärung</a
+            >
+            <a class="dropdown-item" href="#" onclick="$('#tc').modal('show')"
+              >Nutzungsbedingungen</a
+            >
+          </div>
+        </li>
+        <li class="nav-item">
+          <form action="/logout" method="post">
+            <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
+            <button type="submit" class="nav-link border-0 bg-transparent" href="/logout">
+              Ausloggen
+            </button>
+          </form>
+        </li>
+      </ul>
+    </div>
+    <!-- some modal with terms and conditions -->
+  </nav>
+</template>
+<script>
+  import { store } from '../../utils/store'
+  import { hasCapability } from '../../utils/user'
+  import { RouterLink } from 'vue-router'
+  import { getCSRFToken } from '../../utils/ajax'
+
+  export default {
+    name: 'NavBar',
+    components: {
+      RouterLink,
+    },
+    data() {
+      return {
+        login: store.login,
+        masquerade: store.masquerade,
+      }
+    },
+
+    methods: {
+      hasCapability,
+      getCSRFToken,
+    },
+  }
+</script>
