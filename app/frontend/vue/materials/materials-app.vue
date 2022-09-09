@@ -111,74 +111,53 @@
   export default {
     name: 'MaterialsApp',
     components: { MaterialView },
+
     data: function () {
+      console.log('materialsapp data', store)
       return {
-        areas: store.materialsData.areas,
-        competences: store.materialsData.competences,
-        materials: store.materialsData.materials,
         selected_area: -1,
         selected_competence: -1,
         selected_family: -1,
         selected_test: -1,
-        supports: store.materialsData.supports,
-        tests: store.materialsData.tests,
-        families: store.materialsData.families,
+        areas: store.materialsData.areas,
+        mData: store.materialsData,
       }
     },
     computed: {
       filtered_competences() {
-        let res = []
-        for (let i = 0; i < this.competences.length; ++i) {
-          if (this.competences[i].area_id == this.selected_area) {
-            res.push(this.competences[i])
-          }
-        }
-        return res
+        return Object.values(this.mData.competences).filter(
+          competence => competence.area_id === this.selected_area
+        )
       },
       filtered_families() {
-        let res = []
-        for (let i = 0; i < this.families.length; ++i) {
-          if (this.families[i].competence_id == this.selected_competence) {
-            res.push(this.families[i])
-          }
-        }
-        return res
+        return Object.values(this.mData.test_families).filter(
+          family => family.competence_id === this.selected_competence
+        )
       },
       filtered_tests() {
-        let res = []
-        for (let i = 0; i < this.tests.length; ++i) {
-          if (this.tests[i].test_family_id == this.selected_family) {
-            res.push(this.tests[i])
-          }
-        }
-        return res
+        return Object.values(this.mData.tests).filter(
+          test => test.test_family_id === this.selected_family
+        )
       },
       filtered_materials() {
-        let ids = []
-        for (let s = 0; s < this.supports.length; ++s) {
-          if (this.supports[s].area_id === this.selected_area) {
-            ids.push(this.supports[s].material_id)
-          }
-          if (this.supports[s].competence_id === this.selected_competence) {
-            ids.push(this.supports[s].material_id)
-          }
-          if (this.supports[s].test_family_id === this.selected_family) {
-            ids.push(this.supports[s].material_id)
-          }
-          if (this.supports[s].test_id === this.selected_test) {
-            ids.push(this.supports[s].material_id)
-          }
-        }
-        let res = []
-        for (let i = 0; i < ids.length; ++i) {
-          for (let m = 0; m < this.materials.length; ++m) {
-            if (this.materials[m].id == ids[i]) {
-              res.push(this.materials[m])
-            }
-          }
-        }
+        const materialIds = [
+          ...Object.values(this.mData.supports)
+            .filter(support => support.area_id === this.selected_area)
+            .map(n => n.material_id),
+          ...Object.values(this.mData.supports)
+            .filter(support => support.competence_id === this.selected_competence)
+            .map(n => n.material_id),
+          ...Object.values(this.mData.supports)
+            .filter(support => support.test_family_id === this.selected_family)
+            .map(n => n.material_id),
+          ...Object.values(this.mData.supports)
+            .filter(support => support.test_id === this.selected_test)
+            .map(n => n.material_id),
+        ]
 
-        return res.filter((x, i, a) => a.indexOf(x) == i) //Doppelte Einträge entfernen, klappt wegen Objektidentität
+        return Object.values(this.mData.materials).filter(
+          material => materialIds.findIndex(m => m === material.id) !== -1
+        )
       },
     },
     async beforeCreate() {
