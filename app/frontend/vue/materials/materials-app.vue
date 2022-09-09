@@ -107,23 +107,22 @@
 
 <script>
   import MaterialView from './material-view.vue'
-  import { ajax } from '../../utils/ajax'
-  import apiRoutes from '../routes/api-routes'
+  import { getMaterialsData, store } from '../../utils/store'
   export default {
     name: 'MaterialsApp',
     components: { MaterialView },
     data: function () {
       return {
-        areas: [],
-        competences: [],
-        materials: [],
+        areas: store.materialsData.areas,
+        competences: store.materialsData.competences,
+        materials: store.materialsData.materials,
         selected_area: -1,
         selected_competence: -1,
         selected_family: -1,
         selected_test: -1,
-        supports: [],
-        tests: [],
-        families: [],
+        supports: store.materialsData.supports,
+        tests: store.materialsData.tests,
+        families: store.materialsData.families,
       }
     },
     computed: {
@@ -183,14 +182,7 @@
       },
     },
     async beforeCreate() {
-      const res = await ajax({ url: apiRoutes.materials.info })
-      const data = await res.json()
-      this.areas = data.materials.areas
-      this.competences = data.materials.competences
-      this.materials = data.materials.materials
-      this.supports = data.materials.supports
-      this.families = data.materials.test_families
-      this.tests = data.materials.tests
+      await getMaterialsData()
     },
   }
 </script>
