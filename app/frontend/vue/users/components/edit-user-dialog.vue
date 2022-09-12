@@ -146,7 +146,7 @@
         // parent data
         states: store.staticData.states,
         accountTypes: store.staticData.accountTypes,
-        stateOptions: store.staticData.states.map(s => ({ value: s.id, text: s.label })),
+        stateOptions: store.staticData.states?.map(s => ({ value: s.id, text: s.label })),
         login: store.login,
       }
     },
@@ -155,7 +155,7 @@
         return hasCapability('user', store.login?.capabilities)
       },
       accountTypeText() {
-        return this.accountTypes.find(at => at.id === this.accountType)?.label
+        return this.accountTypes?.find(at => at.id === this.accountType)?.label
       },
       buttonText() {
         return this.isNew ? 'Anlegen' : 'Aktualisieren'

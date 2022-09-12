@@ -31,6 +31,7 @@ Rails.application.routes.draw do
   put '/users/:id/mail', to: 'users#user_mail'
   get '/users/core_data', to: 'users#get_core_data'
   get '/materials/info', to: 'materials#get_material_data'
+  get '/tests/info', to: 'tests#get_tests_data'
 
   #Reguläres REST-Routing
   resources :users
