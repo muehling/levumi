@@ -13,4 +13,7 @@ export default {
   materials: {
     info: '/materials/info',
   },
+  tests: {
+    info: 'tests/info',
+  },
 }

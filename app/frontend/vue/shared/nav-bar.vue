@@ -29,7 +29,7 @@
           <router-link class="nav-link" to="/materials">Fördermaterialien</router-link>
         </li>
         <li id="intro4" class="nav-item">
-          <a href="/tests" class="nav-link">Testübersicht</a>
+          <router-link to="/tests" class="nav-link">Testübersicht</router-link>
         </li>
         <li id="intro5" class="nav-item dropdown">
           <a

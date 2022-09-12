@@ -1,5 +1,5 @@
 class TestsController < ApplicationController
-  before_action :set_test, except: %i[index create]
+  before_action :set_test, except: %i[index create get_tests_data]
   before_action :is_allowed, only: %i[create edit update destroy]
 
   #GET /tests
@@ -56,6 +56,10 @@ class TestsController < ApplicationController
 
     #render 'index_admin'
     head :ok
+  end
+
+  def get_tests_data
+    @data = Area.includes(competences: [{ test_families: [:tests] }]).all
   end
 
   private
