@@ -240,6 +240,7 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { getStudent } from '../../utils/helpers'
+  import { useGlobalStore } from '../../store/store'
   import AnalysisView from './analysis-view.vue'
   import compact from 'lodash/compact'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
@@ -270,15 +271,22 @@
       studentTest: Boolean,
       test: Object,
     },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data: function () {
       return {
         is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-        students: this.$root.store.studentsInGroups[this.group.id] || [],
+        //students: store.studentsInGroups[this.group.id] || [],
       }
     },
     computed: {
+      students() {
+        return this.globalStore.studentsInGroups[this.group.id] || []
+      },
       grouped_results() {
         //Results nach Wochen gruppieren, für die Ergebnisliste
         let res = {}

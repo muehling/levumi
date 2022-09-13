@@ -1,16 +1,14 @@
 import * as sjcl from 'sjcl'
-import { store } from '../utils/store'
+import { useGlobalStore } from '../store/store'
 
 //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
 // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
-export const decryptStudentName = (text, alt, group, keys) => {
+export const decryptStudentName = (text, alt, group) => {
   let res = ''
 
-  if (!keys) {
-    return
-  }
+  const store = useGlobalStore()
   try {
-    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), keys[group])
+    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
     res = sjcl.decrypt(tempkey, text)
   } catch (e) {
     console.error(e.toString())
@@ -22,6 +20,7 @@ export const decryptStudentName = (text, alt, group, keys) => {
 
 //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
 export const encryptWithMasterKeyAndGroup = (text, group) => {
+  const store = useGlobalStore()
   let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
   return sjcl.encrypt(tempkey, text)
 }
@@ -63,6 +62,7 @@ export const encryptKey = text => {
 }
 
 export const recodeKeys = newPassword => {
+  const store = useGlobalStore()
   // decrypt keys with current password
   const oldPassword = sessionStorage.getItem('login')
   const newKeys = Object.entries(store.shareKeys).reduce((acc, k) => {

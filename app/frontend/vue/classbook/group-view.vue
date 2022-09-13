@@ -35,7 +35,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-form.vue'
   import ShareForm from './share-form.vue'
@@ -47,12 +47,16 @@
       StudentList,
       GroupForm,
       ShareForm,
-      ConfirmDialog
+      ConfirmDialog,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
       group: Object,
-      single: Boolean
+      single: Boolean,
+    },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
     },
     computed: {
       date: function () {
@@ -61,20 +65,20 @@
       },
       read_only: function () {
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
-        return this.group.read_only || store.masquerade
-      }
+        return this.group.read_only || this.globalStore.masquerade
+      },
     },
     methods: {
       // Klasse aus dem Archiv holen
       async reactivateGroup() {
         const res = await ajax({
           url: '/groups/' + this.group.id + '?group[archive]=0',
-          method: 'put'
+          method: 'put',
         })
         const data = await res.json()
         if (data && res.status === 200) {
           this.updateGroup({
-            object: data
+            object: data,
           })
         }
       },
@@ -83,11 +87,12 @@
        ******************************/
       updateGroup({ object }) {
         this.$set(this.group, object)
-        store.shareKeys[object.id] = object.key
-        const groups = [...this.groups]
-        const index = groups.findIndex(g => g.id === object.id)
-        groups[index] = object
-        this.$emit('update:groups', groups)
+        //store.shareKeys[object.id] = object.key
+        this.globalStore.setShareKey({ key: object.id, value: object.key })
+        //const groups = [...this.groups]
+        //const index = groups.findIndex(g => g.id === object.id)
+        //groups[index] = object
+        //this.$emit('update:groups', groups)
       },
 
       /*****************************
@@ -97,12 +102,12 @@
         const ok = await this.$refs.confirmDialog.open({
           title: 'Klasse löschen',
           message: `Die Klasse wird mit allen Schüler:innen und allen Messergebnissen gelöscht! Sind Sie sicher?`,
-          okText: 'Klasse löschen'
+          okText: 'Klasse löschen',
         })
         if (ok) {
           const res = await ajax({
             url: `/groups/${this.group.id}`,
-            method: 'delete'
+            method: 'delete',
           })
 
           if (res.status === 200) {
@@ -110,7 +115,7 @@
             this.$emit('update:groups', remainingGroups)
           }
         }
-      }
-    }
+      },
+    },
   }
 </script>

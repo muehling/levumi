@@ -17,32 +17,36 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import UsersList from './components/users-list.vue'
-  import EditUserDialog from './components/edit-user-dialog.vue'
-  import UsersMailDialog from './components/users-mail-dialog.vue'
   import { hasCapability } from '../../utils/user'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
+  import EditUserDialog from './components/edit-user-dialog.vue'
+  import UsersList from './components/users-list.vue'
+  import UsersMailDialog from './components/users-mail-dialog.vue'
   export default {
     name: 'UsersApp',
     components: { UsersList, EditUserDialog, UsersMailDialog },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data: function () {
       return {
         users: [],
-        states: store.staticData.states,
-        focusTypes: store.staticData.focusTypes,
-        schoolTypes: store.staticData.schoolTypes,
+        states: this.globalStore.staticData.states,
+        focusTypes: this.globalStore.staticData.focusTypes,
+        schoolTypes: this.globalStore.staticData.schoolTypes,
         tabIndex: 0,
       }
     },
     computed: {
       canViewUsersList() {
-        return hasCapability('user', store.login?.capabilities)
+        return hasCapability('user', this.globalStore.login?.capabilities)
       },
     },
     mounted() {
       this.refetch()
       if (window.location.search.includes('edit_profile')) {
-        this.$refs.editUserDialog.open({ user: store.login, isNew: false })
+        this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
       }
     },
     methods: {

@@ -59,7 +59,7 @@
 <script>
   import { ajax } from '../../../utils/ajax'
   import { isRegistered } from '../../../utils/user'
-  import { store } from '../../../utils/store'
+  import { useGlobalStore } from '../../../store/store'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import EditUserDialog from './edit-user-dialog.vue'
 
@@ -69,13 +69,23 @@
     props: {
       users: Array,
     },
-    data() {
-      return {
-        states: store.staticData.states,
-        focusTypes: store.staticData.focusTypes,
-        schoolTypes: store.staticData.schoolTypes,
-        accountTypes: store.staticData.accountTypes,
-      }
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
+    computed: {
+      states() {
+        return this.globalStore.staticData.states
+      },
+      focusTypes() {
+        return this.globalStore.staticData.focusTypes
+      },
+      schoolTypes() {
+        return this.globalStore.staticData.schoolTypes
+      },
+      accountTypes() {
+        return this.globalStore.staticData.accountTypes
+      },
     },
 
     methods: {

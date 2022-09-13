@@ -233,7 +233,6 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { store } from '../../utils/store'
   import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
 
@@ -334,6 +333,7 @@
     methods: {
       async requestDelete() {
         const ok = await this.$refs.confirmDialog.open({
+          title: 'Schüler löschen',
           message: `${this.student.name} mit allen Messergebnissen löschen! Sind Sie sicher?`,
           okText: 'Löschen',
         })
@@ -370,9 +370,7 @@
 
       collectData() {
         //Daten aus den Inputs codieren für AJAX Request
-        const encodedName = encodeURIComponent(
-          encryptWithMasterKeyAndGroup(this.name, this.group, store.shareKeys)
-        ) //Namen vor dem Senden verschlüsseln
+        const encodedName = encodeURIComponent(encryptWithMasterKeyAndGroup(this.name, this.group)) //Namen vor dem Senden verschlüsseln
         let res = `group=${this.group}&student[name]=${encodedName}`
 
         //Restliche Attribute anfügen, falls vorhanden

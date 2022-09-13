@@ -78,8 +78,8 @@
     },
     data: function () {
       return {
-        label: !this.group.id ? '' : this.group.label,
-        key: !this.group.id ? this.newKey() : '',
+        label: !this.group?.id ? '' : this.group.label,
+        key: !this.group?.id ? this.newKey() : '',
       }
     },
     methods: {

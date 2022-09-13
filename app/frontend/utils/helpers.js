@@ -1,7 +1,9 @@
-import { store } from './store'
+import { useGlobalStore } from '../store/store'
 
-//Liefert das Student-Objekt zu einer ID in dessen Gruppe zurück.
+// Returns the student object for the passed group and student id
 export const getStudent = (groupId, studentId) => {
+  const store = useGlobalStore()
+
   const group = store.studentsInGroups[groupId]
   const student = group?.find(student => student.id === studentId)
 

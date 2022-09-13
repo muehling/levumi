@@ -198,7 +198,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
 
@@ -207,7 +207,7 @@
     components: { AssessmentView, ListView },
     provide: function () {
       //Alle Teile der Kindnamen speichern, damit sie in Kommentaren verschlüsselt werden können.
-      let todo = store.studentsInGroups[this.group.id] || []
+      let todo = this.globalStore.studentsInGroups[this.group.id] || []
 
       for (let i = 0; i < todo.length; ++i) {
         this.student_name_parts = this.student_name_parts.concat(todo[i].name.split(/[^a-zäöüß_]/i))
@@ -224,6 +224,10 @@
       group: Object,
       groupInfo: Object,
       index: Number,
+    },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
     },
     data: function () {
       return {

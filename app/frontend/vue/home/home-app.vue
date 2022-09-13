@@ -55,7 +55,7 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
@@ -63,15 +63,25 @@
   export default {
     name: 'HomeApp',
     components: { GroupView, IntroPopover },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data: function () {
       return {
-        groups: store.groups.filter(group => group.id),
-        groupInfo: this.$root.group_info,
+        //groups: this.globalStore.groups.filter(group => group.id),
+        //groupInfo: this.$root.group_info,
       }
     },
     computed: {
-      showIntro: function () {
-        return store.login.intro_state < 4
+      groups() {
+        return this.globalStore.groups.filter(group => group.id)
+      },
+      groupInfo() {
+        return this.$root.group_info
+      },
+      showIntro() {
+        return this.globalStore.login.intro_state < 4
       },
     },
     mounted() {
@@ -99,6 +109,7 @@
       },
 
       markTestAsUsed(testId, groupInfoIndex) {
+        //FIXME entirely too sideeffecty
         const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
         test.used = true
       },

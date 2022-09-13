@@ -49,10 +49,10 @@
 </template>
 
 <script>
-  import StudentRow from './student-row.vue'
-  import jsPDF from 'jspdf'
   import { decryptStudentName } from '../../utils/encryption'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
+  import jsPDF from 'jspdf'
+  import StudentRow from './student-row.vue'
 
   export default {
     name: 'StudentList',
@@ -61,9 +61,13 @@
       group: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
       readOnly: Boolean,
     },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
       return {
-        students: store.studentsInGroups[this.group] || [],
+        students: [...this.globalStore.studentsInGroups[this.group]] || [],
       }
     },
     methods: {
@@ -83,7 +87,7 @@
           this.students.splice(val.index, 1)
         }
 
-        store.studentsInGroups[this.group] = this.students
+        this.globalStore.setStudentsInGroup({ groupId: this.group, students: this.students })
       },
       exportQrCodes() {
         const pdf = new jsPDF()

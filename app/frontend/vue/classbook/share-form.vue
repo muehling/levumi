@@ -114,7 +114,7 @@
           Sie können die Klasse
           {{ group.read_only ? ' nur ansehen' : ' ansehen und verwenden' }}
         </p>
-        <b-btn class="btn btn-sm" variant="outline-danger" @click="requestDelete">
+        <b-btn class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
           <i class="fas fa-trash"></i> Teilen beenden
         </b-btn>
       </div>
@@ -126,7 +126,7 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { encryptKey, decryptKey, decryptWithKey } from '../../utils/encryption'
-  import { store } from '../../utils/store'
+  import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
 
   export default {
@@ -136,18 +136,26 @@
       group: Object,
       index: Number,
     },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
       return {
         notFound: false,
         exists: false,
         rightsSelected: 1,
         key: '',
-        shareKey: store.shareKeys[this.group.id]
-          ? decryptKey(store.shareKeys[this.group.id])
-          : null,
         email: '',
         isShown: false,
       }
+    },
+    computed: {
+      shareKey() {
+        return this.globalStore.shareKeys[this.group.id]
+          ? decryptKey(this.globalStore.shareKeys[this.group.id])
+          : null
+      },
     },
     beforeCreate() {
       // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
@@ -157,7 +165,7 @@
       ]
     },
     methods: {
-      async requestDelete() {
+      async requestUnshare() {
         const ok = await this.$refs.confirmDialog.open({
           message: `Damit können Sie nicht weiter auf die Klasse und ihre Messergebnisse zugreifen! Sind Sie sicher?`,
           okText: 'Teilen beenden',
@@ -205,8 +213,8 @@
           method: 'put',
           data,
         })
-
-        store.studentsInGroups[result.id] = result.students
+        this.globalStore.setStudentsInGroups({ groupId: result.id, students: result.students })
+        //store.studentsInGroups[result.id] = result.students
       },
       submitNewShare(e) {
         e.preventDefault()

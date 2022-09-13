@@ -19,6 +19,15 @@ export const useGlobalStore = defineStore('global', {
     setGroups(groups) {
       this.groups = groups
     },
+    setShareKeys(keys) {
+      this.shareKeys = keys
+    },
+    setShareKey({ key, value }) {
+      this.shareKeys = { ...this.shareKeys, [key]: value }
+    },
+    setStudentsInGroup({ groupId, students }) {
+      this.studentsInGroups[groupId] = students
+    },
     async fetch() {
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.users.coreData })

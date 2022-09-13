@@ -122,12 +122,15 @@
   import { ajax } from '../../../utils/ajax'
   import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
-  import { store } from '../../../utils/store'
+  import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
 
   export default {
     name: 'EditUserDialog',
-
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
       return {
         // local state
@@ -142,17 +145,24 @@
         password: '',
         passwordConfirm: '',
         securityAnswer: '',
-
-        // parent data
-        states: store.staticData.states,
-        accountTypes: store.staticData.accountTypes,
-        stateOptions: store.staticData.states?.map(s => ({ value: s.id, text: s.label })),
-        login: store.login,
       }
     },
     computed: {
+      states() {
+        return this.globalStore.staticData.states
+      },
+      accountTypes() {
+        return this.globalStore.staticData.accountTypes
+      },
+      stateOptions() {
+        return this.globalStore.staticData.states?.map(s => ({ value: s.id, text: s.label }))
+      },
+      login() {
+        return this.globalStore.login
+      },
+
       canEditUser() {
-        return hasCapability('user', store.login?.capabilities)
+        return hasCapability('user', this.globalStore.login?.capabilities)
       },
       accountTypeText() {
         return this.accountTypes?.find(at => at.id === this.accountType)?.label
@@ -252,7 +262,7 @@
           sessionStorage.setItem('login', this.password)
           this.$refs.editUserDialog.hide()
           this.$emit('refetch')
-          store.setKeys(newKeys)
+          this.globalStore.setShareKeys(newKeys)
         } else {
           const data = await res.json()
           this.errors = data.errors
