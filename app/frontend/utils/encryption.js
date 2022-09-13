@@ -3,10 +3,14 @@ import { store } from '../utils/store'
 
 //Entschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe
 // Falls die Entschlüsselung fehlschlägt, wird der Wert von alt zurückgegeben.
-export const decryptStudentName = (text, alt, group) => {
+export const decryptStudentName = (text, alt, group, keys) => {
   let res = ''
+
+  if (!keys) {
+    return
+  }
   try {
-    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
+    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), keys[group])
     res = sjcl.decrypt(tempkey, text)
   } catch (e) {
     console.error(e.toString())
