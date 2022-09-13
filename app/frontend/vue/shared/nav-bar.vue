@@ -118,22 +118,13 @@
           <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
             <a href="/users?stats=true" class="dropdown-item">Statistik</a>
             <router-link to="/users" class="dropdown-item">Benutzerverwaltung</router-link>
-            <a
-              v-if="hasCapability('test', login.capabilities)"
-              href="/tests?admin=true"
-              class="dropdown-item"
+            <a v-if="checkCapability('test')" href="/tests?admin=true" class="dropdown-item"
               >Testverwaltung</a
             >
-            <a
-              v-if="hasCapability('material', login.capabilities)"
-              href="/materials?admin=true"
-              class="dropdown-item"
+            <a v-if="checkCapability('material')" href="/materials?admin=true" class="dropdown-item"
               >Materialverwaltung</a
             >
-            <a
-              v-if="hasCapability('export', login.capabilities)"
-              href="/tests?export=true"
-              class="dropdown-item"
+            <a v-if="checkCapability('export')" href="/tests?export=true" class="dropdown-item"
               >Export</a
             >
           </div>
@@ -196,25 +187,34 @@
   </nav>
 </template>
 <script>
-  import { store } from '../../utils/store'
+  import { getCSRFToken } from '../../utils/ajax'
   import { hasCapability } from '../../utils/user'
   import { RouterLink } from 'vue-router'
-  import { getCSRFToken } from '../../utils/ajax'
+  import { useGlobalStore } from '../../store/store'
 
   export default {
     name: 'NavBar',
     components: {
       RouterLink,
     },
-    data() {
-      return {
-        login: store.login,
-        masquerade: store.masquerade,
-      }
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
+
+    computed: {
+      login() {
+        return this.globalStore.login
+      },
+      masquerade() {
+        return this.globalStore.masquerade
+      },
     },
 
     methods: {
-      hasCapability,
+      checkCapability(capability) {
+        return hasCapability(capability, this.globalStore.login.capabilities)
+      },
       getCSRFToken,
     },
   }
