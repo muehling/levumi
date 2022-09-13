@@ -143,7 +143,7 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarMyData">
             <!--TODO Userdialog öffnen, nicht die Route ändern-->
-            <a href="/users?edit_profile" class="dropdown-item">Profildaten ändern</a>
+            <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
             <a href="/users?edit_profile" class="dropdown-item">TODO Testungen exportieren</a>
           </div>
         </li>
@@ -184,6 +184,7 @@
       </ul>
     </div>
     <!-- some modal with terms and conditions -->
+    <edit-user-dialog ref="editUserDialog" />
   </nav>
 </template>
 <script>
@@ -192,10 +193,13 @@
   import { RouterLink } from 'vue-router'
   import { useGlobalStore } from '../../store/store'
 
+  import EditUserDialog from '../users/components/edit-user-dialog.vue'
+
   export default {
     name: 'NavBar',
     components: {
       RouterLink,
+      EditUserDialog,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -216,6 +220,9 @@
         return hasCapability(capability, this.globalStore.login.capabilities)
       },
       getCSRFToken,
+      editOwnProfile() {
+        this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
+      },
     },
   }
 </script>

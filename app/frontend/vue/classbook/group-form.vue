@@ -21,10 +21,9 @@
     </div>
     <!-- Ausklappbare Edit-Form - falls neue Klasse, direkt anzeigen -->
     <b-collapse v-if="!group.demo" :id="'collapse_edit_' + group.id" :visible="!group.id">
-      <b-form id="group-form" inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
+      <b-form inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
         <label class="sr-only" for="label">Klassenbezeichnung</label>
         <b-form-input
-          id="label"
           v-model="label"
           class="mr-2"
           name="group[label]"

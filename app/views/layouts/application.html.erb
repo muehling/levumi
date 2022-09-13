@@ -8,23 +8,11 @@
     <%= vite_javascript_tag 'application' %>
     <%= vite_stylesheet_tag 'application' %>
 
-
     <!-- sonstige Libaries -->
-    <!--<%= javascript_include_tag 'sjcl.js' unless @no_script %>-->
     <%= render 'layouts/scripts' unless @no_script%>
 
     <%= yield :head if content_for? :head %>
     <%= vite_client_tag %>
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-
   </head>
 
   <body>

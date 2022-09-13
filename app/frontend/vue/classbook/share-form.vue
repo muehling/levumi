@@ -60,7 +60,6 @@
           <label for="email">Teilen mit&nbsp;&nbsp;</label>
           <div>
             <b-input
-              id="email"
               v-model="email"
               class="mr-2"
               name="email"

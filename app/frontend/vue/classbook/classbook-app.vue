@@ -32,7 +32,6 @@
                       <group-form :group="groups[0]" @update:groups="createGroup"> </group-form>
                     </b-tab>
                     <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
-                    <!-- "title-link-class" ist workaround, damit ein Re-render nach Umbennenen getriggert wird. TODO: Überflüssig bei neuer Version von BootstrapVue? -->
                     <b-tab
                       v-for="(group, index) in ownActiveGroups"
                       :key="`${group.id}/${group.label}`"
@@ -228,7 +227,6 @@
       createGroup(val) {
         this.globalStore.groups.splice(1, 0, val.object)
         //Globale Daten aktualisieren
-        //TODO: Classbook-App autark halten?
         this.globalStore.shareKeys[val.object.id] = val.object.key
         this.globalStore.studentsInGroups[val.object.id] = []
       },

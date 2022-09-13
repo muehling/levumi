@@ -134,47 +134,56 @@
         selected_competence: -1,
         selected_family: -1,
         selected_test: -1,
-        mData: this.materialsStore.materials,
       }
     },
     computed: {
       isLoading() {
         return this.materialsStore.isLoading
       },
+      mData() {
+        return this.materialsStore.materials
+      },
       filtered_competences() {
-        return Object.values(this.mData.competences).filter(
-          competence => competence.area_id === this.selected_area
-        )
+        return this.mData.competences
+          ? Object.values(this.mData.competences).filter(
+              competence => competence.area_id === this.selected_area
+            )
+          : []
       },
       filtered_families() {
-        return Object.values(this.mData.test_families).filter(
-          family => family.competence_id === this.selected_competence
-        )
+        return this.mData.test_families
+          ? Object.values(this.mData.test_families).filter(
+              family => family.competence_id === this.selected_competence
+            )
+          : []
       },
       filtered_tests() {
-        return Object.values(this.mData.tests).filter(
-          test => test.test_family_id === this.selected_family
-        )
+        return this.mData.tests
+          ? Object.values(this.mData.tests).filter(
+              test => test.test_family_id === this.selected_family
+            )
+          : []
       },
       filtered_materials() {
+        const supports = this.mData.supports ? Object.values(this.mData.supports) : []
+
         const materialIds = [
-          ...Object.values(this.mData.supports)
+          supports
             .filter(support => support.area_id === this.selected_area)
             .map(n => n.material_id),
-          ...Object.values(this.mData.supports)
+          supports
             .filter(support => support.competence_id === this.selected_competence)
             .map(n => n.material_id),
-          ...Object.values(this.mData.supports)
+          supports
             .filter(support => support.test_family_id === this.selected_family)
             .map(n => n.material_id),
-          ...Object.values(this.mData.supports)
+          supports
             .filter(support => support.test_id === this.selected_test)
             .map(n => n.material_id),
         ]
 
-        return Object.values(this.mData.materials).filter(
-          material => materialIds.findIndex(m => m === material.id) !== -1
-        )
+        const materials = this.mData.materials ? Object.values(this.mData.materials) : []
+        return materials.filter(material => materialIds.findIndex(m => m === material.id) !== -1)
       },
     },
     async created() {
