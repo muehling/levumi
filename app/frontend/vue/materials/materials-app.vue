@@ -120,22 +120,27 @@
 
 <script>
   import MaterialView from './material-view.vue'
-  import { getMaterialsData, store } from '../../utils/store'
+  import { useMaterialsStore } from '../../store/materialsStore'
   export default {
     name: 'MaterialsApp',
     components: { MaterialView },
-
+    setup() {
+      const materialsStore = useMaterialsStore()
+      return { materialsStore }
+    },
     data: function () {
       return {
         selected_area: -1,
         selected_competence: -1,
         selected_family: -1,
         selected_test: -1,
-        mData: store.materialsData,
-        isLoading: true,
+        mData: this.materialsStore.materials,
       }
     },
     computed: {
+      isLoading() {
+        return this.materialsStore.isLoading
+      },
       filtered_competences() {
         return Object.values(this.mData.competences).filter(
           competence => competence.area_id === this.selected_area
@@ -173,9 +178,7 @@
       },
     },
     async created() {
-      await getMaterialsData()
-      this.isLoading = false
-      this.mData = store.materialsData
+      await this.materialsStore.fetch()
     },
   }
 </script>

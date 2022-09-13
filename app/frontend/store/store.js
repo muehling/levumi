@@ -67,16 +67,3 @@ export const useGlobalStore = defineStore('global', {
     },
   },
 })
-
-/*export const getMaterialsData = async () => {
-  const res = await ajax({ url: apiRoutes.materials.info })
-  const data = await res.json()
-  store.setMaterialsData(data.materials)
-}
-
-export const getTestsData = async () => {
-  const res = await ajax({ url: apiRoutes.tests.info })
-  const data = await res.json()
-  store.setTestsData(data.tests)
-}
-*/

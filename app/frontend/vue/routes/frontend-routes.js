@@ -9,7 +9,7 @@ const routes = [
   { path: '/start', component: HomeApp }, // Diagnostik
   { path: '/willkommen', component: ClassBookApp }, // Klassenbuch
   { path: '/materials', component: MaterialsApp }, // Fördermaterialien
-  { path: '/tests', component: TestsApp }, // Tests, still rendered by Rails
+  { path: '/tests', component: TestsApp }, // Tests
   { path: '/users', component: UsersApp }, // Benutzerverwaltung
 ]
 

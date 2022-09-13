@@ -77,7 +77,7 @@
                                         <td>
                                           <span>{{
                                             test.is_student_test
-                                              ? 'Selbstständig durch dieSchüler:innen'
+                                              ? 'Selbstständig durch die Schüler:innen'
                                               : 'Durch die Lehrkraft'
                                           }}</span>
                                         </td>
@@ -137,19 +137,23 @@
 </template>
 
 <script>
-  import { getTestsData, store } from '../../utils/store'
+  import { useTestsStore } from '../../store/testsStore'
   export default {
     name: 'TestsApp',
-    data() {
-      return {
-        tData: store.testsData,
-        isLoading: true,
-      }
+    setup() {
+      const testsStore = useTestsStore()
+      return { testsStore }
+    },
+    computed: {
+      tData() {
+        return this.testsStore.tests
+      },
+      isLoading() {
+        return this.testsStore.isLoading
+      },
     },
     async created() {
-      await getTestsData()
-      this.isLoading = false
-      this.tData = store.testsData
+      await this.testsStore.fetch()
     },
   }
 </script>

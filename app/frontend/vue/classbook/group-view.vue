@@ -89,10 +89,10 @@
         this.$set(this.group, object)
         //store.shareKeys[object.id] = object.key
         this.globalStore.setShareKey({ key: object.id, value: object.key })
-        //const groups = [...this.groups]
-        //const index = groups.findIndex(g => g.id === object.id)
-        //groups[index] = object
-        //this.$emit('update:groups', groups)
+        const groups = [...this.groups]
+        const index = groups.findIndex(g => g.id === object.id)
+        groups[index] = object
+        this.$emit('update:groups', groups)
       },
 
       /*****************************
