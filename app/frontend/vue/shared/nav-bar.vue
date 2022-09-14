@@ -22,8 +22,10 @@
           <router-link class="nav-link" to="/start">Diagnostik</router-link>
         </li>
         <li id="intro2" class="nav-item">
-          <router-link class="nav-link" to="/willkommen">Klassenbuch</router-link>
-          <span v-if="login?.new_shares" class="badge badge-info">Neu!</span>
+          <router-link class="nav-link" to="/willkommen"
+            >Klassenbuch
+            <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
+          </router-link>
         </li>
         <li id="intro3" class="nav-item">
           <router-link class="nav-link" to="/materials">Fördermaterialien</router-link>
@@ -208,10 +210,22 @@
 
     computed: {
       login() {
+        console.log('miau', this.globalStore.login)
+
         return this.globalStore.login
       },
       masquerade() {
         return this.globalStore.masquerade
+      },
+      hasNewShares: function () {
+        console.log('arghg', this.globalStore.groups)
+        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+        /* for (let i = 1; i < this.globalStore.groups.length; ++i) {
+          if (this.groups[i].key == null) {
+            return true
+          }
+        }
+        return false*/
       },
     },
 

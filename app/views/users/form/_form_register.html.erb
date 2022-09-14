@@ -50,7 +50,7 @@
             break
           default:
             const data = await res.json()
-
+            //TODO less than optimal - needs to be replaced with proper messages
             const errors = data.errors.join ("\n")
             $('#user-messages-body').html("<p>Etwas ist schiefgegangen!<br/>Bitte überprüfen Sie Ihre Eingaben und versuchen es erneut.</p>" + errors)
             $('#user-messages').toast('show')
