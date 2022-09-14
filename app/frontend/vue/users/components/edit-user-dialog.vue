@@ -1,132 +1,22 @@
 <template>
-  <b-modal id="edit-user-dialog" ref="editUserDialog" hide-footer>
-    <template #modal-title>
-      {{ title }}
-    </template>
-    <b-container>
-      <b-form @submit="_handleSubmit">
-        <b-form-group label-cols="4" label="E-Mail-Adresse*">
-          <b-form-input
-            v-model="email"
-            :class="hasEmailErrors && 'is-invalid'"
-            :readonly="!canEditUser"
-          />
-          <div v-if="hasEmailErrors" class="invalid-feedback">{{ errors['email'].join('\n') }}</div>
-        </b-form-group>
-        <b-form-group v-if="canEditUser" label-cols="4" label="Typ" class="mt-3">
-          <b-form-radio
-            v-for="at in accountTypes"
-            :key="at.id"
-            v-model="accountType"
-            :value="at.id"
-            >{{ at.label }}</b-form-radio
-          >
-          <div v-if="hasAccountTypeErrors" class="invalid-feedback">
-            Bitte wählen Sie einen Account-Typen aus!
-          </div>
-        </b-form-group>
-        <b-form-group v-if="!canEditUser" label-cols="4" label="Typ">
-          <b-form-input :value="accountTypeText" :readonly="true" />
-        </b-form-group>
-        <div v-if="!canEditUser" class="form-group row">
-          <div class="col-sm-12">
-            <small class="form-text text-muted"
-              >Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich
-              bitte an uns.</small
-            >
-          </div>
-        </div>
-
-        <b-form-group>
-          <b-button v-b-toggle.password-section variant="outline-secondary"
-            >Passwort ändern</b-button
-          >
-          <b-collapse id="password-section" class="mt-2">
-            <b-card>
-              <b-form-group label="Passwort">
-                <b-form-input
-                  v-model="password"
-                  type="password"
-                  :class="hasPasswordErrors && 'is-invalid'"
-                  :state="isPasswordValid"
-                  placeholder="Neues Passwort"
-                ></b-form-input>
-                <small id="passwordHelp" class="form-text text-muted"
-                  >Passwort bleibt unverändert, wenn nichts eingegeben wird.</small
-                >
-              </b-form-group>
-              <b-form-group>
-                <b-form-input
-                  v-model="passwordConfirm"
-                  type="password"
-                  :class="hasPasswordErrors && 'is-invalid'"
-                  :state="isPasswordValid"
-                  placeholder="Neues Passwort bestätigen"
-                ></b-form-input>
-                <div v-if="hasPasswordErrors || !isPasswordValid" class="invalid-feedback">
-                  Passwörter stimmen nicht überein!
-                </div>
-              </b-form-group>
-              <b-form-group>
-                <label>In welcher Stadt wurden Sie geboren?</label>
-                <b-form-input
-                  id=">security"
-                  v-model="securityAnswer"
-                  type="text"
-                  class="form-control"
-                  placeholder="Antwort"
-                />
-                <b-form-invalid-feedback
-                  :state="!hasSecurityQuestionErrors && !isSecurityHintVisible"
-                >
-                  Bitte geben Sie die Antwort bei einer Passwortänderung erneut ein!
-                </b-form-invalid-feedback>
-                <b-form-valid-feedback :state="!hasSecurityQuestionErrors && password === ''">
-                  <small id="securityHelp" class="form-text text-muted">
-                    Wenn Sie Ihr Passwort vergessen, können Sie es mit Hilfe der Antwort auf die
-                    Sicherheitsfrage wiederherstellen. Ihre Antwort wird nicht gespeichert, daher
-                    muss sie bei einer Passwortänderung erneut eingegeben werden!
-                  </small>
-                </b-form-valid-feedback>
-              </b-form-group>
-            </b-card>
-          </b-collapse>
-        </b-form-group>
-
-        <b-form-group label-cols="4" label="Bundesland*">
-          <b-form-select
-            id="state-input"
-            v-model="state"
-            :class="hasStateErrors && 'is-invalid'"
-            :options="stateOptions"
-          />
-          <div v-if="hasStateErrors" class="invalid-feedback">
-            Bitte wählen Sie ein Bundesland aus!
-          </div>
-        </b-form-group>
-        <b-form-group label-cols="4" label="Institution">
-          <b-form-input id="institution-input" v-model="institution" />
-        </b-form-group>
-      </b-form>
-    </b-container>
-    <div class="d-flex justify-content-end">
-      <b-button class="m-1" @click="_close">Schließen</b-button>
-      <b-button class="m-1" :disabled="isSubmitDisabled" @click="_handleSubmit">{{
-        buttonText
-      }}</b-button>
-    </div>
-  </b-modal>
+  <div>
+    <b-modal id="edit-user-dialog" ref="editUserDialog" hide-footer>
+      <template #modal-title> Benutzerdaten ändern </template>
+      <user-form :is-new="isNew" :user="user" @submitSuccessful="handleSuccess" />
+    </b-modal>
+    <info-dialog ref="infoDialog" />
+  </div>
 </template>
 
 <script>
-  import { ajax } from '../../../utils/ajax'
-  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
-  import apiRoutes from '../../routes/api-routes'
+  import UserForm from '../../shared/forms/user-form.vue'
+  import InfoDialog from '../../shared/info-dialog.vue'
 
   export default {
     name: 'EditUserDialog',
+    components: { UserForm, InfoDialog },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -141,7 +31,6 @@
         institution: '',
         errors: [],
         isNew: false,
-        title: '',
         password: '',
         passwordConfirm: '',
         securityAnswer: '',
@@ -160,7 +49,6 @@
       login() {
         return this.globalStore.login
       },
-
       canEditUser() {
         return hasCapability('user', this.globalStore.login?.capabilities)
       },
@@ -170,7 +58,6 @@
       buttonText() {
         return this.isNew ? 'Anlegen' : 'Aktualisieren'
       },
-
       // error states come from the backend, e. g. when changing the email to an already existing one
       hasEmailErrors() {
         return Object.keys(this.errors).find(e => e === 'email')
@@ -187,7 +74,6 @@
       hasSecurityQuestionErrors() {
         return Object.keys(this.errors).find(e => e === 'security_digest')
       },
-
       // validation
       isPasswordValid() {
         // returns null instead of boolean because this is expected for the bootstrap validation
@@ -210,63 +96,19 @@
       open(data = {}) {
         this.$refs.editUserDialog.show()
         this.user = data.user
-        this.email = data.user.email || ''
-        this.accountType = data.user.account_type
-        this.state = data.user.state
-        this.institution = data.user.institution
-        this.isNew = data.isNew
-        this.title = data.isNew ? 'Benutzer anlegen' : 'Benutzer bearbeiten'
-        this.securityAnswer = ''
+      },
+      handleSuccess() {
+        this.$emit('refetch')
+        this.$refs.infoDialog.open({
+          message: 'Ihre Daten wurden erfolgreich geändert!',
+          title: 'Speichern erfolgreich',
+          okText: 'Schließen',
+        })
+        this._close()
       },
       _close() {
         this.$refs.editUserDialog.hide()
         this.user = undefined
-      },
-      async _handleSubmit() {
-        const data = {
-          user: {
-            email: this.email,
-            account_type: this.accountType,
-            state: this.state,
-            institution: this.institution,
-          },
-        }
-
-        let res
-        let newKeys
-        if (this.isNew) {
-          res = await ajax({ ...apiRoutes.users.create, data })
-        } else {
-          if (this.password !== '' && this.securityAnswer !== '') {
-            // Password and security question
-            newKeys = recodeKeys(this.password)
-            data.keys = JSON.stringify(newKeys)
-            data.user.password = this.password
-            data.user.password_confirmation = this.passwordConfirm
-            data.user.security_digest = encryptWithKey(this.securityAnswer, this.password)
-          } else if (this.password === '' && this.securityAnswer !== '') {
-            // only security question
-            data.user.security_digest = encryptWithKey(
-              sessionStorage.getItem('login'),
-              this.securityAnswer
-            )
-          }
-
-          res = await ajax({
-            ...apiRoutes.users.update(this.user.id),
-            data: data,
-          })
-        }
-        if (res.status === 200) {
-          this.user = undefined
-          sessionStorage.setItem('login', this.password)
-          this.$refs.editUserDialog.hide()
-          this.$emit('refetch')
-          this.globalStore.setShareKeys(newKeys)
-        } else {
-          const data = await res.json()
-          this.errors = data.errors
-        }
       },
     },
   }

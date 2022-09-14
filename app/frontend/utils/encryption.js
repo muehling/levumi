@@ -66,7 +66,9 @@ export const recodeKeys = newPassword => {
   // decrypt keys with current password
   const oldPassword = sessionStorage.getItem('login')
   const newKeys = Object.entries(store.shareKeys).reduce((acc, k) => {
-    acc[k[0]] = decryptWithKey(k[1], oldPassword)
+    if (k[1]) {
+      acc[k[0]] = decryptWithKey(k[1], oldPassword)
+    }
     return acc
   }, {})
 
