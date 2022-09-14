@@ -20,7 +20,9 @@
               @change-focus-type="ft => (focusType = ft)"
             ></extra-data>
           </b-card>
-          <b-btn class="mt-4" variant="outline-success" @click="submit">Fertig!</b-btn>
+          <b-btn class="mt-4" :disabled="!isSubmitEnabled" variant="outline-success" @click="submit"
+            >Fertig!</b-btn
+          >
         </b-card>
       </div>
     </div>
@@ -55,6 +57,16 @@
         schoolType: '',
         focusType: '',
       }
+    },
+    computed: {
+      isSubmitEnabled() {
+        return (
+          this.password !== '' &&
+          this.passwordConfirm !== '' &&
+          this.password === this.passwordConfirm &&
+          this.securityAnswer !== ''
+        )
+      },
     },
     methods: {
       async submit() {
