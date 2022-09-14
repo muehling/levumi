@@ -23,7 +23,7 @@
         </li>
         <li id="intro2" class="nav-item">
           <router-link class="nav-link" to="/willkommen">Klassenbuch</router-link>
-          <span v-if="login.new_shares" class="badge badge-info">Neu!</span>
+          <span v-if="login?.new_shares" class="badge badge-info">Neu!</span>
         </li>
         <li id="intro3" class="nav-item">
           <router-link class="nav-link" to="/materials">Fördermaterialien</router-link>
@@ -100,10 +100,10 @@
       <ul class="navbar-nav ml-auto">
         <li v-if="masquerade" class="nav-item">
           <a href="logout" class="nav-link btn btn-outline-secondary"
-            >Sitzung als {{ login.email }} beenden</a
+            >Sitzung als {{ login?.email }} beenden</a
           >
         </li>
-        <li v-if="!login.is_regular_user" class="nav-item dropdown">
+        <li v-if="!login?.is_regular_user" class="nav-item dropdown">
           <a
             id="navbarSystem"
             class="nav-link dropdown-toggle"
@@ -139,7 +139,7 @@
             aria-haspopup="true"
             aria-expanded="false"
           >
-            Meine Daten {{ login.email }}
+            Meine Daten ({{ login?.email }})
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarMyData">
             <!--TODO Userdialog öffnen, nicht die Route ändern-->

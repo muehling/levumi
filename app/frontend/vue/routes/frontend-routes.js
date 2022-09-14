@@ -13,4 +13,4 @@ const routes = [
   { path: '/users', component: UsersApp }, // Benutzerverwaltung
 ]
 
-export default new VueRouter({ routes, linkActiveClass: 'active' })
+export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

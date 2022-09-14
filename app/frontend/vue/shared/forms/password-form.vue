@@ -1,5 +1,5 @@
 <template>
-  <b-card>
+  <div>
     <b-form-group label="Passwort">
       <b-form-input
         v-model="password"
@@ -47,7 +47,7 @@
         </small>
       </b-form-valid-feedback>
     </b-form-group>
-  </b-card>
+  </div>
 </template>
 
 <script>

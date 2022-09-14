@@ -142,7 +142,7 @@ class UsersController < ApplicationController
         @user.intro_state = 1 if @user.intro_state == 0 #Abfrage für spätere TC-Änderungen, dort kein Ändern von intro_state mehr!
         @user.save
         if @user.intro_state == 1
-          render 'users/intro/forms', layout: 'minimal' and return
+          head :ok and return
         else
           redirect_to @user
         end
@@ -150,26 +150,42 @@ class UsersController < ApplicationController
         case @user.intro_state
         when 0
           #TC Accept hat noch nicht stattgefunden!
-          render 'users/intro/terms_and_conditions', layout: 'minimal' and return
-        when 1
-          #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
-          if @user.update(user_attributes)
-            @user.intro_state = 2
-            @user.save
-          end
-          render 'users/intro/forms', layout: 'minimal' and return #Hier entweder zurück wegen Fehler, oder weiter
-        when 2
-          #TC Accept + erste Form => Zweite Form wird geschickt
-          @user.update(user_attributes) if params.has_key?(:user) #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
-          @user.create_demo(params[:key], params[:auth_token])
-          @user.intro_state = 3
+          @user.intro_state = 1
           @user.save
-          @login = @user
-          render 'users/show' and return
+          head :ok and return
+        when 1
+          if @user.update(user_attributes)
+            @user.intro_state = 3
+            @user.save
+            @user.create_demo(params[:key], params[:auth_token])
+            @login = @user
+            head :ok and return
+          end
+
+          ##TODO not sure about the intro states - password_form and extra_data are now in one form, so 3 should be correct
+          #when 1
+          #  #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
+          #  if @user.update(user_attributes)
+          #    @user.intro_state = 2
+          #    @user.save
+          #  end
+          #  head :ok and return #Hier entweder zurück wegen Fehler, oder weiter
+          #when 2
+          #  #TC Accept + erste Form => Zweite Form wird geschickt
+          #  @user.update(user_attributes) if params.has_key?(:user) #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
+          #  @user.create_demo(params[:key], params[:auth_token])
+          #  @user.intro_state = 3
+          #  @user.save
+          #  @login = @user
+          #
+          #  #render 'users/show' and return
+          #  head :ok and return
         when 3
           @user.intro_state = 4
           @user.save
-          redirect_to start_path(format: 'html'), status: 303
+
+          #redirect_to start_path(format: 'html'), status: 303
+          head :ok and return
         else
           if params.has_key?(:classbook)
             @user.intro_state = 5
