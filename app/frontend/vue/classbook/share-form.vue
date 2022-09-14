@@ -168,6 +168,7 @@
         const ok = await this.$refs.confirmDialog.open({
           message: `Damit können Sie nicht weiter auf die Klasse und ihre Messergebnisse zugreifen! Sind Sie sicher?`,
           okText: 'Teilen beenden',
+          title: 'Teilen beenden',
         })
         if (ok) {
           const res = await ajax({
@@ -252,13 +253,8 @@
         if (this.key !== undefined && this.key !== '') {
           // The Accept button will remain disabled until the key can be successfully decrypted with the auth_token
           // TODO add user message
-          // TODO discuss: decryptWithKey uses a try/catch for control flow :-/
-          try {
-            decryptWithKey(this.group.auth_token, this.key)
-          } catch (e) {
-            return false
-          }
-          return true
+          const decrypted = decryptWithKey(this.group.auth_token, this.key)
+          return decrypted ? true : false
         } else {
           return false
         }

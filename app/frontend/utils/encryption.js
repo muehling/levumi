@@ -34,6 +34,7 @@ export const decryptWithKey = (text, key) => {
     return sjcl.decrypt(key, text)
   } catch (e) {
     console.error('decryptWithKey::', e)
+    return ''
   }
 }
 
