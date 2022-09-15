@@ -12,13 +12,13 @@
             />
           </b-card>
           <b-card title="Helfen Sie uns bei der Forschung" class="mt-4">
-            <extra-data
+            <extra-data-form
               :account-type="accountType"
               @change-institution="inst => (institution = inst)"
               @change-town="t => (town = t)"
               @change-school-type="st => (schoolType = st)"
               @change-focus-type="ft => (focusType = ft)"
-            ></extra-data>
+            ></extra-data-form>
           </b-card>
           <b-btn class="mt-4" :disabled="!isSubmitEnabled" variant="outline-success" @click="submit"
             >Fertig!</b-btn
@@ -34,11 +34,11 @@
   import { encryptWithKey } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
-  import ExtraData from '../shared/forms/extra-data.vue'
+  import ExtraDataForm from '../shared/forms/extra-data-form.vue'
   import PasswordForm from '../shared/forms/password-form.vue'
   export default {
     name: 'CompleteRegistration',
-    components: { PasswordForm, ExtraData },
+    components: { PasswordForm, ExtraDataForm },
     props: {
       accountType: Number,
     },

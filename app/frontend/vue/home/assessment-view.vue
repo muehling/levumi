@@ -280,7 +280,6 @@
         is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-        //students: store.studentsInGroups[this.group.id] || [],
       }
     },
     computed: {
@@ -306,7 +305,7 @@
         return this.students.filter(student => this.excludeList.includes(student.id))
       },
       weeks: function () {
-        return compact(uniq(this.results.map(w => w.test_week)))
+        return compact(uniq(this.results?.map(w => w.test_week)))
       },
     },
     methods: {

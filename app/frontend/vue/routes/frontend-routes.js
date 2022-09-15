@@ -7,10 +7,10 @@ import VueRouter from 'vue-router'
 
 const routes = [
   { path: '/start', component: HomeApp }, // Diagnostik
-  { path: '/willkommen', component: ClassBookApp }, // Klassenbuch
-  { path: '/materials', component: MaterialsApp }, // Fördermaterialien
-  { path: '/tests', component: TestsApp }, // Tests
-  { path: '/users', component: UsersApp }, // Benutzerverwaltung
+  { path: '/klassenbuch', component: ClassBookApp }, // Klassenbuch
+  { path: '/materialien', component: MaterialsApp }, // Fördermaterialien
+  { path: '/testuebersicht', component: TestsApp }, // Tests
+  { path: '/nutzerverwaltung', component: UsersApp }, // Benutzerverwaltung
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

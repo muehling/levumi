@@ -106,7 +106,8 @@ class ApplicationController < ActionController::Base
       #Nur Key aus Session löschen, damit alter Login erhalten bleibt.
       session.delete(:masquerading)
     end
-    redirect_to users_path #Zurück zum Ausgangspunkt (Nutzer muss Berechtigung user sowieso haben)
+
+    head :ok
   end
 
   private

@@ -56,14 +56,6 @@
           const data = await res.json()
           this.users = data.users
         }
-        //TODO this is only necessary because the "Edit own Profile" button currently does not reside inside this Vue app
-        //TODO this will be superfluous once the admin area is fully Vue.
-        if (window.location.search.includes('edit_profile')) {
-          let url = new URL(window.location.href)
-          let params = new URLSearchParams(url.search)
-          params.delete('edit_profile')
-          history.replaceState(null, '', '?' + params + location.hash)
-        }
       },
       createUser() {
         this.tabIndex = 0

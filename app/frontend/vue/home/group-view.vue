@@ -370,6 +370,9 @@
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
+        } else {
+          // only hide spinner, nothing to show
+          this.isLoadingUpdate = false
         }
       },
       async toggleAssessments() {

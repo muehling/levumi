@@ -7,14 +7,14 @@
         label="Institution"
       >
         <b-form-input
-          v-model="institution"
+          :value="institution"
           @input="$emit('change-institution', $event)"
         ></b-form-input>
       </b-form-group>
     </div>
     <div v-if="accountType === 0">
       <b-form-group label-cols="3" description="Wo befindet sich Ihre Schule?" label="Ort">
-        <b-form-input v-model="town" @input="$emit('change-town', $event)"></b-form-input>
+        <b-form-input :value="town" @input="$emit('change-town', $event)"></b-form-input>
       </b-form-group>
       <b-form-group label-cols="3" label="Schulart">
         <b-dropdown
@@ -23,15 +23,12 @@
           toggle-class="d-flex justify-content-between align-items-center w-100"
         >
           <template #button-content>
-            {{ schoolType || '&nbsp;' }}
+            {{ schoolTypeDisplay || '&nbsp;' }}
           </template>
           <b-dropdown-item
             v-for="st in schoolTypes"
             :key="st.label"
-            @click="
-              schoolType = st.label
-              $emit('change-school-type', st.id)
-            "
+            @click="$emit('change-school-type', st.id)"
             >{{ st.label }}
           </b-dropdown-item>
         </b-dropdown>
@@ -47,15 +44,12 @@
           toggle-class="d-flex justify-content-between align-items-center w-100"
         >
           <template #button-content>
-            {{ focusType || '&nbsp;' }}
+            {{ focusTypeDisplay || '&nbsp;' }}
           </template>
           <b-dropdown-item
             v-for="ft in focusTypes"
             :key="ft.label"
-            @click="
-              focusType = ft.label
-              $emit('change-focus-type', ft.id)
-            "
+            @click="$emit('change-focus-type', ft.id)"
             >{{ ft.label }}</b-dropdown-item
           >
         </b-dropdown>
@@ -69,25 +63,28 @@
     name: 'ExtraData',
     props: {
       accountType: Number,
+      institution: String,
+      focusType: Number,
+      schoolType: Number,
+      town: String,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    data() {
-      return {
-        institution: '',
-        town: '',
-        schoolType: '',
-        focusType: '',
-      }
-    },
+
     computed: {
       schoolTypes() {
         return this.globalStore.staticData.schoolTypes
       },
+      schoolTypeDisplay() {
+        return this.globalStore.staticData.schoolTypes.find(st => st.id === this.schoolType)?.label
+      },
       focusTypes() {
         return this.globalStore.staticData.focusTypes
+      },
+      focusTypeDisplay() {
+        return this.globalStore.staticData.focusTypes.find(ft => ft.id === this.focusType)?.label
       },
     },
   }

@@ -33,7 +33,7 @@
         </div>
       </div>
 
-      <b-form-group>
+      <b-form-group v-if="isOwnProfile">
         <b-button v-b-toggle.password-section variant="outline-secondary">Passwort ändern</b-button>
         <b-collapse id="password-section" class="mt-2">
           <password-form
@@ -43,7 +43,6 @@
             @change-security-answer="a => (securityAnswer = a)"
         /></b-collapse>
       </b-form-group>
-
       <b-form-group label-cols="4" label="Bundesland*">
         <b-form-select
           id="state-input"
@@ -51,19 +50,28 @@
           :class="hasStateErrors && 'is-invalid'"
           :options="stateOptions"
         />
-        <div v-if="hasStateErrors" class="invalid-feedback">
-          Bitte wählen Sie ein Bundesland aus!
-        </div>
       </b-form-group>
-      <b-form-group label-cols="4" label="Institution">
-        <b-form-input id="institution-input" v-model="institution" />
-      </b-form-group>
+      <extra-data-form
+        :account-type="accountType"
+        :town="town"
+        :school-type="schoolType"
+        :focus-type="focusType"
+        :institution="institution"
+        @change-institution="inst => (institution = inst)"
+        @change-town="t => (town = t)"
+        @change-school-type="st => (schoolType = st)"
+        @change-focus-type="ft => (focusType = ft)"
+      ></extra-data-form>
     </b-form>
     <div class="d-flex justify-content-end">
-      <b-button class="m-1" @click="_close">Schließen</b-button>
-      <b-button class="m-1" :disabled="isSubmitDisabled" @click="_handleSubmit">{{
-        buttonText
-      }}</b-button>
+      <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
+      <b-button
+        variant="outline-success"
+        class="m-1"
+        :disabled="isSubmitDisabled"
+        @click="_handleSubmit"
+        >{{ buttonText }}</b-button
+      >
     </div>
   </b-container>
 </template>
@@ -75,10 +83,11 @@
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
   import PasswordForm from './password-form.vue'
+  import ExtraDataForm from './extra-data-form.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm },
+    components: { PasswordForm, ExtraDataForm },
     props: {
       isNew: Boolean,
       user: Object,
@@ -99,6 +108,9 @@
         password: '',
         passwordConfirm: '',
         securityAnswer: '',
+        town: this.user.town,
+        schoolType: this.user.school_type,
+        focusType: this.user.focus,
       }
     },
     computed: {
@@ -113,6 +125,9 @@
       },
       login() {
         return this.globalStore.login
+      },
+      isOwnProfile() {
+        return this.globalStore.login.id === this.user.id
       },
       canEditUser() {
         return hasCapability('user', this.globalStore.login?.capabilities)
@@ -134,28 +149,27 @@
         return Object.keys(this.errors).find(e => e === 'state')
       },
 
-      // validation
+      /********************************
+       * checks whether the submit button needs to be disabled
+       ********************************/
       isSubmitDisabled() {
-        return (
+        const hasPasswordRelatedChange =
+          this.password !== '' || this.passwordConfirm !== '' || this.securityAnswer !== ''
+
+        const isIncomplete = this.email === '' || !this.state || this.accountType === undefined
+
+        const isPasswordInvalid =
           this.password === '' ||
           this.password !== this.passwordConfirm ||
           this.securityAnswer === ''
-        )
+
+        return hasPasswordRelatedChange ? isPasswordInvalid && isIncomplete : isIncomplete
       },
     },
 
-    // todo user und krams müssen als props reingegeben werden. machen wir schön morgen, jetzt gehen wir bücher und minis kaufen.
     methods: {
-      open(data = {}) {
-        this.$refs.editUserDialog.show()
-        this.email = data.user.email || ''
-        this.accountType = data.user.account_type
-        this.state = data.user.state
-        this.institution = data.user.institution
-        this.securityAnswer = ''
-      },
       _close() {
-        this.$refs.editUserDialog.hide()
+        this.$emit('cancelEdit')
       },
       async _handleSubmit() {
         const data = {
@@ -163,9 +177,17 @@
             email: this.email,
             account_type: this.accountType,
             state: this.state,
-            institution: this.institution,
           },
         }
+
+        if (this.accountType === 1) {
+          data.user.institution = this.institution
+        } else if (this.accountType === 0) {
+          data.user.town = this.town
+          data.user.school_type = this.schoolType
+          data.user.focus = this.focusType
+        }
+
         let res
         let newKeys
         if (this.isNew) {
@@ -190,6 +212,7 @@
             data: data,
           })
         }
+
         if (res.status === 200) {
           sessionStorage.setItem('login', this.password)
           this.$emit('submitSuccessful')

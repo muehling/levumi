@@ -22,16 +22,16 @@
           <router-link class="nav-link" to="/start">Diagnostik</router-link>
         </li>
         <li id="intro2" class="nav-item">
-          <router-link class="nav-link" to="/willkommen"
+          <router-link class="nav-link" to="/klassenbuch"
             >Klassenbuch
             <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
           </router-link>
         </li>
         <li id="intro3" class="nav-item">
-          <router-link class="nav-link" to="/materials">Fördermaterialien</router-link>
+          <router-link class="nav-link" to="/materialien">Fördermaterialien</router-link>
         </li>
         <li id="intro4" class="nav-item">
-          <router-link to="/tests" class="nav-link">Testübersicht</router-link>
+          <router-link to="/testuebersicht" class="nav-link">Testübersicht</router-link>
         </li>
         <li id="intro5" class="nav-item dropdown">
           <a
@@ -101,11 +101,11 @@
 
       <ul class="navbar-nav ml-auto">
         <li v-if="masquerade" class="nav-item">
-          <a href="logout" class="nav-link btn btn-outline-secondary"
+          <a href="#" class="nav-link btn btn-outline-secondary" @click="endMasquerade"
             >Sitzung als {{ login?.email }} beenden</a
           >
         </li>
-        <li v-if="!login?.is_regular_user" class="nav-item dropdown">
+        <li v-if="!isRegularUser" class="nav-item dropdown">
           <a
             id="navbarSystem"
             class="nav-link dropdown-toggle"
@@ -119,7 +119,9 @@
           </a>
           <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
             <a href="/users?stats=true" class="dropdown-item">Statistik</a>
-            <router-link to="/users" class="dropdown-item">Benutzerverwaltung</router-link>
+            <router-link to="/nutzerverwaltung" class="dropdown-item"
+              >Benutzerverwaltung</router-link
+            >
             <a v-if="checkCapability('test')" href="/tests?admin=true" class="dropdown-item"
               >Testverwaltung</a
             >
@@ -190,12 +192,13 @@
   </nav>
 </template>
 <script>
-  import { getCSRFToken } from '../../utils/ajax'
-  import { hasCapability } from '../../utils/user'
+  import { ajax, getCSRFToken } from '../../utils/ajax'
+  import { isRegularUser, hasCapability } from '../../utils/user'
   import { RouterLink } from 'vue-router'
   import { useGlobalStore } from '../../store/store'
-
+  import apiRoutes from '../routes/api-routes'
   import EditUserDialog from '../users/components/edit-user-dialog.vue'
+  import router from '../routes/frontend-routes'
 
   export default {
     name: 'NavBar',
@@ -210,22 +213,16 @@
 
     computed: {
       login() {
-        console.log('miau', this.globalStore.login)
-
         return this.globalStore.login
       },
       masquerade() {
         return this.globalStore.masquerade
       },
       hasNewShares: function () {
-        console.log('arghg', this.globalStore.groups)
         return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
-        /* for (let i = 1; i < this.globalStore.groups.length; ++i) {
-          if (this.groups[i].key == null) {
-            return true
-          }
-        }
-        return false*/
+      },
+      isRegularUser() {
+        return isRegularUser(this.login.capabilities)
       },
     },
 
@@ -236,6 +233,13 @@
       getCSRFToken,
       editOwnProfile() {
         this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
+      },
+      async endMasquerade() {
+        const res = await ajax({ url: apiRoutes.users.logout, method: 'GET' })
+        if (res.status === 200) {
+          this.globalStore.fetch()
+          router.push('/nutzerverwaltung')
+        }
       },
     },
   }

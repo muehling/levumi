@@ -12,7 +12,7 @@
 
             <!-- Oberste Ebene - aktuelle Klassen, falls pre_select gesetzt, direkt auswählen -->
             <b-tab
-              v-for="(group, index) in activeGroups"
+              v-for="(group, index) in ownActiveGroups"
               :key="group.id"
               :active="$root.pre_select && $root.pre_select.group == group.id"
             >
@@ -74,8 +74,10 @@
       }
     },
     computed: {
-      activeGroups() {
-        return this.globalStore.groups.filter(group => group.id && !group.archive)
+      ownActiveGroups() {
+        return this.globalStore.groups.filter(
+          (group, index) => index > 0 && group.owner && !group.archive
+        )
       },
       groups() {
         return this.globalStore.groups.filter(group => group.id)
