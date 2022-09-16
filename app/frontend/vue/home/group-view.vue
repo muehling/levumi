@@ -201,6 +201,7 @@
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
+  import rest from 'lodash.rest'
 
   export default {
     name: 'GroupView',
@@ -346,7 +347,6 @@
     methods: {
       //Neues Assessment anlegen und, bei Erfolg, laden.
       createAssessment(test, isVersion) {
-        //TODO not tested yet
         ajax({
           contentType: 'application/x-www-form-urlencoded',
           data: `test_id=${test.info.id}`,
@@ -364,15 +364,20 @@
         } else {
           this.test_selected = test
         }
+
         this.isLoadingUpdate = true //Spinner anzeigen
         const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test}` })
         if (res.status === 200) {
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
+        } else if (res.status === 404) {
+          // safety net in case no assessment could be found.
+          this.createAssessment(test, isVersion)
         } else {
           // only hide spinner, nothing to show
           this.isLoadingUpdate = false
+          this.results = {}
         }
       },
       async toggleAssessments() {
