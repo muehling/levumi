@@ -13,6 +13,7 @@ export const useGlobalStore = defineStore('global', {
     masquerade: false,
     shareKeys: {},
     staticData: {},
+    errorMessage: '',
   }),
 
   actions: {
@@ -28,6 +29,10 @@ export const useGlobalStore = defineStore('global', {
     setStudentsInGroup({ groupId, students }) {
       this.studentsInGroups[groupId] = students
     },
+    setErrorMessage(msg) {
+      this.errorMessage = msg
+    },
+
     async fetch() {
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.users.coreData })

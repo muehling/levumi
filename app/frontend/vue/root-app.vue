@@ -8,6 +8,7 @@
   <div v-else-if="isRegistrationComplete">
     <nav-bar />
     <router-view />
+    <error-dialog />
   </div>
   <div v-else>
     <accept-terms v-if="!areTermsAccepted" />
@@ -20,6 +21,7 @@
   import AcceptTerms from './registration/accept-terms.vue'
   import NavBar from './shared/nav-bar.vue'
   import CompleteRegistration from './registration/complete-registration.vue'
+  import ErrorDialog from './shared/error-dialog.vue'
   export default {
     name: 'RootApp',
     components: {
@@ -27,6 +29,7 @@
       RouterView,
       AcceptTerms,
       CompleteRegistration,
+      ErrorDialog,
     },
     setup() {
       const globalStore = useGlobalStore()
