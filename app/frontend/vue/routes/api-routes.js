@@ -16,6 +16,9 @@ export default {
     info: '/materials/info',
   },
   tests: {
+    index: '/tests',
     info: 'tests/info',
+    import: { url: '/tests', method: 'POST' },
+    update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
   },
 }

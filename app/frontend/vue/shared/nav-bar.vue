@@ -119,12 +119,12 @@
           </a>
           <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
             <a href="/users?stats=true" class="dropdown-item">Statistik</a>
-            <router-link to="/nutzerverwaltung" class="dropdown-item"
-              >Benutzerverwaltung</router-link
-            >
-            <a v-if="checkCapability('test')" href="/tests?admin=true" class="dropdown-item"
-              >Testverwaltung</a
-            >
+            <router-link to="/nutzerverwaltung" class="dropdown-item">
+              Benutzerverwaltung
+            </router-link>
+            <router-link v-if="checkCapability('test')" to="/testverwaltung" class="dropdown-item">
+              Testverwaltung
+            </router-link>
             <a v-if="checkCapability('material')" href="/materials?admin=true" class="dropdown-item"
               >Materialverwaltung</a
             >

@@ -28,6 +28,11 @@ Rails.application.routes.draw do
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
 
+  # Vue Router routes TBD
+  get '/testverwaltung', to: 'users#show'
+  get '/testuebersicht', to: 'users#show'
+
+  # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'
   get '/users/core_data', to: 'users#get_core_data'
   get '/materials/info', to: 'materials#get_material_data'
