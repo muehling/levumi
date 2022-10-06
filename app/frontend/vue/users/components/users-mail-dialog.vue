@@ -45,6 +45,8 @@
         this.$refs.usersMailDialog.show()
       },
       async sendMails() {
+        // this will add `[<key>]: true` to the data object if the corresponding checkbox is checked
+        // to avoid sending unnecessary `[<key>]: false` entries.
         const data = {
           ...(this.teachers && { teacher: this.teachers }),
           ...(this.researchers && { researcher: this.researchers }),

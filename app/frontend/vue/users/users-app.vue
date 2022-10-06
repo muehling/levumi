@@ -45,9 +45,6 @@
     },
     mounted() {
       this.refetch()
-      if (window.location.search.includes('edit_profile')) {
-        this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
-      }
     },
     methods: {
       async refetch() {

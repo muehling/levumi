@@ -3,8 +3,10 @@
     <template #modal-title>
       {{ title }}
     </template>
+
     <div class="d-block text-center mb-4">
       {{ message }}
+      <slot></slot>
     </div>
     <div class="d-flex justify-content-end">
       <b-button class="m-1" @click="_close">Schließen</b-button>
