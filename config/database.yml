@@ -22,8 +22,8 @@ production:
   <<: *default
   adapter: mysql2
   host: localhost
-  url: <%= ENV["mysql2://mysql:levumi2@dokku.mysql.levumidb:3306/dokku.mysql.levumidb"] %>
+  url: mysql2://mysql:levumi2@dokku.mysql.levumidb:3306/dokku.mysql.levumidb
   database: levumidb
   encoding: utf8
   username: levumi2
-  password: <%= Rails.application.credentials.dig(:database, :production, :password) %>
+  password: imuvel
