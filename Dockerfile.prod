@@ -12,7 +12,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   git \
   yarn \
   libmariadb-dev \
-
+  libpq-dev \
+  postgresql-client \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
