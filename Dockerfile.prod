@@ -11,6 +11,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   gnupg2 \
   git \
   yarn \
+  sqlite3 \
+  libsqlite3-dev \
   libmariadb-dev \
   libpq-dev \
   postgresql-client \
