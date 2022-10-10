@@ -21,9 +21,8 @@ development:
 production:
   <<: *default
   adapter: mysql2
-  host: localhost
-  url: mysql2://mysql:levumi2@dokku.mysql.levumidb:3306/dokku.mysql.levumidb
+  host: dokku.mysql.levumidb
   database: levumidb
   encoding: utf8
-  username: levumi2
-  password: imuvel
+  username: mysql
+  password: 04fc57d02965355f
