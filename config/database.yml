@@ -22,7 +22,7 @@ production:
   <<: *default
   adapter: mysql2
   host: localhost
-  database: levumi2
+  database: levumidb
   encoding: utf8
   username: levumi2
   password: <%= Rails.application.credentials.dig(:database, :production, :password) %>
