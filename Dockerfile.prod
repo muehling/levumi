@@ -26,6 +26,7 @@ ENV LANG=C.UTF-8 \
   BUNDLE_RETRY=3 \
   RAILS_ENV=production \
   RAILS_SERVE_STATIC_FILES=true \
+  RAILS_RELATIVE_URL_ROOT='/levumi2' \
   NODE_ENV=production
 
 
