@@ -11,6 +11,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   gnupg2 \
   git \
   yarn \
+  nano \
   sqlite3 \
   libsqlite3-dev \
   #libmariadb-dev \
