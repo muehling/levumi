@@ -21,8 +21,8 @@ development:
 production:
   <<: *default
   adapter: mysql2
-  host: dokku.mysql.levumi2_db
-  database: levumi2_db
   encoding: utf8
-  username: mysql
-  password: 78bec44881219f97
+  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
+  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
+  username: <%= ENV['DB_USER'] || 'root' %>
+  password: <%= ENV['DB_PASSWORD'] || '' %>
