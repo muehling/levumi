@@ -1,23 +1,47 @@
 {
+  "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.eot": {
+    "file": "assets/fa-brands-400.e4299464.eot",
+    "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.eot"
+  },
   "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot": {
     "file": "assets/fa-regular-400.79d08806.eot",
     "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.eot"
   },
-  "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.eot": {
-    "file": "assets/fa-brands-400.e4299464.eot",
-    "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.eot"
+  "../assets/fonts/FibelNord.woff2": {
+    "file": "assets/FibelNord.c9fd4591.woff2",
+    "src": "../assets/fonts/FibelNord.woff2"
   },
   "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot": {
     "file": "assets/fa-solid-900.373c04fd.eot",
     "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.eot"
   },
+  "../assets/fonts/Grundschrift.woff2": {
+    "file": "assets/Grundschrift.5233da49.woff2",
+    "src": "../assets/fonts/Grundschrift.woff2"
+  },
+  "../assets/fonts/GrundschriftGrundlinie.woff2": {
+    "file": "assets/GrundschriftGrundlinie.ff241a85.woff2",
+    "src": "../assets/fonts/GrundschriftGrundlinie.woff2"
+  },
   "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2": {
     "file": "assets/fa-regular-400.e42a8844.woff2",
     "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-regular-400.woff2"
   },
+  "../assets/fonts/FibelNord.woff": {
+    "file": "assets/FibelNord.4c8eb377.woff",
+    "src": "../assets/fonts/FibelNord.woff"
+  },
   "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2": {
     "file": "assets/fa-brands-400.8ea87917.woff2",
     "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-brands-400.woff2"
+  },
+  "../assets/fonts/Grundschrift.woff": {
+    "file": "assets/Grundschrift.5cceb41b.woff",
+    "src": "../assets/fonts/Grundschrift.woff"
+  },
+  "../assets/fonts/GrundschriftGrundlinie.woff": {
+    "file": "assets/GrundschriftGrundlinie.a6286ff9.woff",
+    "src": "../assets/fonts/GrundschriftGrundlinie.woff"
   },
   "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.woff2": {
     "file": "assets/fa-solid-900.9834b82a.woff2",
@@ -60,12 +84,16 @@
     "src": "../../node_modules/@fortawesome/fontawesome-free/webfonts/fa-solid-900.svg"
   },
   "entrypoints/add_jquery.js": {
-    "file": "assets/add_jquery.7146f79f.js",
+    "file": "assets/add_jquery.c108625b.js",
     "src": "entrypoints/add_jquery.js",
     "isEntry": true
   },
+  "entrypoints/application.css": {
+    "file": "assets/application.a16713f5.css",
+    "src": "entrypoints/application.css"
+  },
   "entrypoints/application.js": {
-    "file": "assets/application.24aabb79.js",
+    "file": "assets/application.6ccabbdd.js",
     "src": "entrypoints/application.js",
     "isEntry": true,
     "imports": [
@@ -78,7 +106,30 @@
       "../../node_modules/qr-scanner/qr-scanner-worker.min.js"
     ],
     "css": [
-      "assets/application.ec1a3a4b.css"
+      "assets/application.a16713f5.css"
+    ],
+    "assets": [
+      "assets/fa-brands-400.e4299464.eot",
+      "assets/fa-brands-400.8ea87917.woff2",
+      "assets/fa-brands-400.f9217f66.woff",
+      "assets/fa-brands-400.cda59d6e.ttf",
+      "assets/fa-brands-400.a3b98177.svg",
+      "assets/fa-regular-400.79d08806.eot",
+      "assets/fa-regular-400.e42a8844.woff2",
+      "assets/fa-regular-400.cb9e9e69.woff",
+      "assets/fa-regular-400.e8711bbb.ttf",
+      "assets/fa-regular-400.be0a0849.svg",
+      "assets/fa-solid-900.373c04fd.eot",
+      "assets/fa-solid-900.9834b82a.woff2",
+      "assets/fa-solid-900.3f6d3488.woff",
+      "assets/fa-solid-900.af639750.ttf",
+      "assets/fa-solid-900.9674eb1b.svg",
+      "assets/FibelNord.c9fd4591.woff2",
+      "assets/FibelNord.4c8eb377.woff",
+      "assets/Grundschrift.5233da49.woff2",
+      "assets/Grundschrift.5cceb41b.woff",
+      "assets/GrundschriftGrundlinie.ff241a85.woff2",
+      "assets/GrundschriftGrundlinie.a6286ff9.woff"
     ]
   },
   "../../node_modules/qr-scanner/qr-scanner-worker.min.js": {
@@ -97,16 +148,11 @@
     "isDynamicEntry": true
   },
   "../../node_modules/canvg/lib/index.es.js": {
-    "file": "assets/index.665fe2bd.js",
+    "file": "assets/index.f01c76b3.js",
     "src": "../../node_modules/canvg/lib/index.es.js",
     "isDynamicEntry": true,
     "imports": [
       "entrypoints/add_jquery.js"
     ]
-  },
-  "entrypoints/application.css": {
-    "file": "assets/application.e753bd5c.css",
-    "src": "entrypoints/application.css",
-    "isEntry": true
   }
 }
