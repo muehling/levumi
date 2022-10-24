@@ -36,3 +36,7 @@ yarn-debug.log*
 
 #Rubymine
 /.idea/*
+
+/config/credentials/production.key
+
+/config/credentials/development.key

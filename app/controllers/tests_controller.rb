@@ -38,7 +38,7 @@ class TestsController < ApplicationController
               params.has_key?(:update_material)
             ).nil?
       end
-      redirect_to '/tests?admin=true', status: :see_other
+      redirect_to '/testvewraltung', status: :see_other
     end
   end
 

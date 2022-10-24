@@ -1,9 +1,14 @@
 <template>
   <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
     <div class="card card-body">
-      <b-form>
-        <b-btn variant="primary" @click="importTest">Hochladen</b-btn>
-      </b-form>
+      <b-form-file
+        v-model="file"
+        accept=".zip"
+        :state="Boolean(file)"
+        placeholder="Datei wählen oder hier ablegen..."
+        drop-placeholder="Datei hier ablegen..."
+      ></b-form-file>
+      <b-btn variant="primary" @click="importTest">Hochladen</b-btn>
     </div>
   </b-modal>
 </template>
@@ -27,7 +32,11 @@
         this.$refs.testImportDialog.hide()
       },
       async importTest() {
-        const res = await ajax({ ...apiRoutes.tests.import })
+        console.log('meh', this.file)
+        const formData = new FormData()
+        formData.append('file', this.file)
+
+        const res = await ajax({ ...apiRoutes.tests.import, data: { test: formData } })
         if (res.status === 200) {
           console.log('yay, imported')
         }

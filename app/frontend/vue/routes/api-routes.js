@@ -18,7 +18,7 @@ export default {
   tests: {
     index: '/tests',
     info: 'tests/info',
-    import: { url: '/tests', method: 'POST' },
+    import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
   },
 }

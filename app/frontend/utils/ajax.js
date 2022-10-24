@@ -9,7 +9,7 @@ export const ajax = async ({
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'X-CSRF-Token': getCSRFToken(),
-      'Content-Type': contentType,
+      ...(contentType !== 'omit' && { 'Content-Type': contentType }),
       Accept: accept,
     },
     credentials: 'include',
