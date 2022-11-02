@@ -1,5 +1,5 @@
 <template>
-  <b-container class="yippie" fluid>
+  <b-container fluid>
     <div v-if="isLoading">
       <div class="spinner">
         <div class="bounce1"></div>

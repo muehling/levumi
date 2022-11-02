@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
-    <div v-if="group.id" class="mb-2">
+    <div v-if="group && group.id" class="mb-2">
       <b-btn
         v-if="!group.demo"
         v-b-toggle="'collapse_edit_' + group.id"
@@ -20,7 +20,7 @@
       </b-button>
     </div>
     <!-- Ausklappbare Edit-Form - falls neue Klasse, direkt anzeigen -->
-    <b-collapse v-if="!group.demo" :id="'collapse_edit_' + group.id" :visible="!group.id">
+    <b-collapse v-if="group && !group.demo" :id="'collapse_edit_' + group.id" :visible="!group.id">
       <b-form inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
         <label class="sr-only" for="label">Klassenbezeichnung</label>
         <b-form-input
@@ -54,7 +54,7 @@
             <i class="fas fa-check"></i>
           </b-button>
           <b-button
-            v-b-toggle="'collapse_edit_' + group.id"
+            v-b-toggle="'collapse_edit_' + group?.id"
             variant="outline-secondary"
             size="sm"
             title="Abbrechen"

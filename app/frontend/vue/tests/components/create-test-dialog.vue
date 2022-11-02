@@ -1,28 +1,44 @@
 <template>
-  <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
-    <div class="card card-body">
-      <b-form-file
-        v-model="file"
-        accept=".zip"
-        :state="Boolean(file)"
-        placeholder="Datei wählen oder hier ablegen..."
-        drop-placeholder="Datei hier ablegen..."
-      ></b-form-file>
-      <b-btn variant="primary" @click="importTest">Hochladen</b-btn>
-    </div>
-  </b-modal>
+  <div>
+    <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
+      <div class="card card-body">
+        <b-form-file
+          v-model="file"
+          class="mb-3"
+          accept=".zip"
+          :state="Boolean(file)"
+          placeholder="Datei wählen oder hier ablegen..."
+          drop-placeholder="Datei hier ablegen..."
+        ></b-form-file>
+        <b-form-checkbox v-model="updateOnly"
+          >Nur Update (sonst Archivieren von existierendem Test)</b-form-checkbox
+        >
+        <b-form-checkbox v-model="keepMaterials"
+          >Existierendes Fördermaterial beibehalten (nur bei Archivierung)</b-form-checkbox
+        >
+        <b-btn class="mt-3" variant="outline-primary" @click="importTest"
+          ><i class="fas fa-file-upload mr-2"></i>Hochladen</b-btn
+        >
+      </div>
+    </b-modal>
+  </div>
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
   import apiRoutes from '../../routes/api-routes'
+  import { useGlobalStore } from '../../../store/store'
 
   export default {
     name: 'CreateTestDialog',
     props: {
       users: Array,
     },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
-      return { file: undefined }
+      return { file: undefined, updateOnly: false, keepMaterials: false }
     },
     methods: {
       open() {
@@ -32,14 +48,35 @@
         this.$refs.testImportDialog.hide()
       },
       async importTest() {
-        console.log('meh', this.file)
         const formData = new FormData()
-        formData.append('file', this.file)
-
-        const res = await ajax({ ...apiRoutes.tests.import, data: { test: formData } })
-        if (res.status === 200) {
-          console.log('yay, imported')
+        formData.append('test[file]', this.file)
+        if (this.updateOnly) {
+          formData.append('update_test', true)
         }
+        if (this.keepMaterials) {
+          formData.append('update_material', true)
+        }
+
+        const res = await ajax({
+          ...apiRoutes.tests.import,
+          contentType: 'omit',
+          data: formData,
+        })
+        switch (res.status) {
+          case 200:
+            this.globalStore.setGenericMessage({
+              title: 'Import erfolgreich',
+              message: 'Der Test wurde erfolgreich importiert!',
+            })
+            this.$emit('test-import:success')
+            break
+          case 406:
+            this.globalStore.setErrorMessage('Beim Import ist ein Fehler aufgetreten!')
+            break
+          default:
+            this.globalStore.setErrorMessage('Ein unbekannter Fehler ist aufgetreten!')
+        }
+        this._close()
       },
     },
   }

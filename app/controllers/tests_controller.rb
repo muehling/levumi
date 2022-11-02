@@ -29,16 +29,16 @@ class TestsController < ApplicationController
   #POST /tests
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
-      params[:test][:file].each do |f|
-        @import_failure =
-          !f.present? ||
-            Test.import(
-              f.tempfile,
-              !params.has_key?(:update_test),
-              params.has_key?(:update_material)
-            ).nil?
+      f = params[:test][:file]
+      @import_failure =
+        !f.present? ||
+          Test.import(f.tempfile, !params.has_key?(:update_test), params.has_key?(:update_material))
+            .nil?
+      if @import_failure
+        head :unprocessable_entity
+      else
+        head :ok
       end
-      redirect_to '/testvewraltung', status: :see_other
     end
   end
 

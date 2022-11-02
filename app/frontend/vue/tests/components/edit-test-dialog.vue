@@ -21,8 +21,8 @@
           ></b-form-textarea>
         </b-form-group>
         <div class="d-flex justify-content-end">
-          <b-btn class="m-1" variant="outline-success" @click="saveChanges">Aktualisieren</b-btn>
           <b-btn class="m-1" variant="outline-primary" @click="cancel">Abbrechen</b-btn>
+          <b-btn class="m-1" variant="outline-success" @click="saveChanges">Aktualisieren</b-btn>
         </div>
       </b-form>
     </div>
@@ -64,9 +64,10 @@
       async saveChanges() {
         const data = { description: { full: this.description, short: this.shortDescription } }
         const res = await ajax({ ...apiRoutes.tests.update(this.testId), data })
+
         if (res.status === 200) {
           this._close()
-          this.globalStore.setErrorMessage('Miau.')
+          this.$emit('update:test_success')
         } else {
           this.globalStore.setErrorMessage(
             'Etwas ist schiefgegangen. Bitte überprüfen Sie Ihre Eingaben.'

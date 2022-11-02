@@ -48,9 +48,6 @@
 
     methods: {
       open({ test }) {
-        console.log('meh', test)
-        console.log('muh', Object.values(test.items).join(', '))
-
         this.test = test
         this.$refs.testDetails.open({ title: 'Testbeschreibung' })
       },

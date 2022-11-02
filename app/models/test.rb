@@ -19,30 +19,32 @@ class Test < ApplicationRecord
 
   #Ggf. "veraltet" zum Namen dazufügen
   def name
-    if archive then level + " (veraltet)" else level end
+    archive ? level + ' (veraltet)' : level
   end
 
   def full_name
-    test_family.competence.area.name + " - " + test_family.competence.name + " - " + test_family.name + " - " + name
+    test_family.competence.area.name + ' - ' + test_family.competence.name + ' - ' +
+      test_family.name + ' - ' + name
   end
 
   #Kurzdarstellung des Tests
   def info
     {
-        id: id,
-        level: level,
-        family: test_family.name,
-        competence: test_family.competence.name,
-        area: test_family.competence.area.name,
-        student_test: student_test
+      id: id,
+      level: level,
+      family: test_family.name,
+      competence: test_family.competence.name,
+      area: test_family.competence.area.name,
+      student_test: student_test
     }
   end
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
-    json = super(except: [:created_at, :updated_at])
+    json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
-    json['label'] = self.archive ? "Bis #{I18n.localize(self.updated_at, :format => '%B %Y')}" : 'Aktuell'
+    json['label'] =
+      self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
     json
   end
@@ -63,7 +65,11 @@ class Test < ApplicationRecord
   #Test Objekt als Import aus ZIP-Datei erzeugen
   def self.import(file, archive, update_material)
     #Infos aus ZIP lesen
-    zip = Zip::File.open(file)
+    begin
+      zip = Zip::File.open(file)
+    rescue StandardError
+      return nil
+    end
     f = zip.glob('test.json').first
     unless f.nil?
       #Benötigte Strukturen finden / erzeugen
@@ -72,10 +78,12 @@ class Test < ApplicationRecord
       #Automatische Archivierung
       old_test = Test.where(shorthand: vals['shorthand']).where.not(archive: true).first
       unless old_test.nil?
-        if old_test.version < vals['version'] || archive        #Falls kleiner Version, automatisch archivert.
+        if old_test.version < vals['version'] || archive
+          #Falls kleiner Version, automatisch archivert.
           old_test.archive = true
           old_test.save
-        elsif old_test.version > vals['version']            #Ältere Version darf neuere nicht ersetzen.
+        elsif old_test.version > vals['version']
+          #Ältere Version darf neuere nicht ersetzen.
           return nil
         end
       end
@@ -91,10 +99,29 @@ class Test < ApplicationRecord
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
         #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
-        test = family.tests.build(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
+        test =
+          family.tests.build(
+            vals.slice(
+              'description',
+              'version',
+              'level',
+              'shorthand',
+              'student_test',
+              'configuration'
+            )
+          )
       else
         test = old_test
-        test.update(vals.slice('description', 'version', 'level', 'shorthand', 'student_test', 'configuration'))
+        test.update(
+          vals.slice(
+            'description',
+            'version',
+            'level',
+            'shorthand',
+            'student_test',
+            'configuration'
+          )
+        )
       end
       test.items = vals['items']
 
@@ -103,29 +130,57 @@ class Test < ApplicationRecord
         if update_material && !old_test.nil? && old_test != test
           todo = MaterialSupport.where(test_id: old_test.id)
           todo.each do |m|
-            MaterialSupport.create(test_id: test.id, test_family_id: m.test_family_id, competence_id: m.competence_id, area_id: m.area_id, material_id: m.material_id, items: m.items)
+            MaterialSupport.create(
+              test_id: test.id,
+              test_family_id: m.test_family_id,
+              competence_id: m.competence_id,
+              area_id: m.area_id,
+              material_id: m.material_id,
+              items: m.items
+            )
           end
         end
 
         #Dateien aus ZIP lesen und zu Test dazufügen bzw. updaten
         f = zip.glob('test.html').first
         test.entry_point.purge if old_test == test
-        test.entry_point.attach(io: StringIO.new(f.get_input_stream.read), filename: 'test.html', content_type: 'text/html')
+        test.entry_point.attach(
+          io: StringIO.new(f.get_input_stream.read),
+          filename: 'test.html',
+          content_type: 'text/html'
+        )
 
         test.media_files.purge if old_test == test
-        zip.glob('media/*').each do |f|
-          test.media_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last)
-        end
+        zip
+          .glob('media/*')
+          .each do |f|
+            test.media_files.attach(
+              io: StringIO.new(f.get_input_stream.read),
+              filename: f.name.split('/').last
+            )
+          end
 
         test.script_files.purge if old_test == test
-        zip.glob('scripts/*').each do |f|
-          test.script_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last, content_type: 'text/javascript')
-        end
+        zip
+          .glob('scripts/*')
+          .each do |f|
+            test.script_files.attach(
+              io: StringIO.new(f.get_input_stream.read),
+              filename: f.name.split('/').last,
+              content_type: 'text/javascript'
+            )
+          end
 
         test.style_files.purge if old_test == test
-        zip.glob('styles/*').each do |f|
-          test.style_files.attach(io: StringIO.new(f.get_input_stream.read), filename: f.name.split('/').last, content_type: 'text/css')
-        end
+        zip
+          .glob('styles/*')
+          .each do |f|
+            test.style_files.attach(
+              io: StringIO.new(f.get_input_stream.read),
+              filename: f.name.split('/').last,
+              content_type: 'text/css'
+            )
+          end
 
         return test
       end
@@ -136,32 +191,54 @@ class Test < ApplicationRecord
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
     s = Student.where(group_id: Group.where.not(demo: true)).select('id').pluck(:id) #Keine Demoklassen exportieren
+
     #Keine alten Messungen exportieren
-    Result.where("test_date > '2019-09-09'").where(student_id: s, assessment_id: Assessment.where(test_id: self.id).select('id')).count > 0
+    Result
+      .where("test_date > '2019-09-09'")
+      .where(student_id: s, assessment_id: Assessment.where(test_id: self.id).select('id'))
+      .count > 0
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
     s = Student.where(group_id: Group.where.not(demo: true)).select('id').pluck(:id) #Keine Demoklassen exportieren
+
     #Keine alten Messungen exportieren
-    res = Result.where("test_date > '2019-09-09'").where(student_id: s, assessment_id: Assessment.where(test_id: self.id).select('id')).all
+    res =
+      Result
+        .where("test_date > '2019-09-09'")
+        .where(student_id: s, assessment_id: Assessment.where(test_id: self.id).select('id'))
+        .all
     csv = ''
     csv = res[0].csv_header(false) + "\n" if res.size > 0
-    res.each do |r|
-      csv = csv + r.as_csv(false)
-    end
+    res.each { |r| csv = csv + r.as_csv(false) }
     return csv
   end
 
   #Infos über Messungen von Lehrkräften
   def self.get_statistics
     users = User.where(account_type: 0).select('id').pluck(:id)
-    groups = Group.where(id: GroupShare.where(user_id: users, owner: true).select('group_id')).where.not(demo: true).select('id').pluck(:id)
+    groups =
+      Group
+        .where(id: GroupShare.where(user_id: users, owner: true).select('group_id'))
+        .where.not(demo: true)
+        .select('id')
+        .pluck(:id)
     students = Student.where(group_id: groups).select('id').pluck(:id)
-    tests = Test.where(id: Assessment.where(group_id: groups).select('test_id').pluck(:test_id)).order(test_family_id: :asc).all
+    tests =
+      Test
+        .where(id: Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
+        .order(test_family_id: :asc)
+        .all
     res = {}
     tests.each do |t|
-      results = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id'))
+      results =
+        Result
+          .where("test_date > '2019-09-09'")
+          .where(
+            student_id: students,
+            assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id')
+          )
       res[t.full_name] = {
         count: results.count,
         groups: results.group(:assessment_id).count.keys.size,

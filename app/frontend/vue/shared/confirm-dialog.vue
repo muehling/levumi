@@ -7,8 +7,8 @@
       {{ message }}
     </div>
     <div class="d-flex justify-content-end">
-      <b-button class="m-1" @click="_close">Schließen</b-button>
-      <b-button class="m-1" @click="_confirm">{{ okText }}</b-button>
+      <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
+      <b-button :variant="okIntent" class="m-1" @click="_confirm">{{ okText }}</b-button>
     </div>
   </b-modal>
 </template>
@@ -21,6 +21,7 @@
       message: '',
       title: '',
       okText: '',
+      okIntent: '',
       resolvePromise: undefined,
       rejectPromise: undefined,
     }),
@@ -31,6 +32,7 @@
         this.message = data.message
         this.title = data.title || ''
         this.okText = data.okText
+        this.okIntent = data.okIntent || 'outline-danger'
         return new Promise((resolve, reject) => {
           this.resolvePromise = resolve
           this.rejectPromise = reject

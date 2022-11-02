@@ -19,7 +19,7 @@ Rails.application.routes.draw do
   get '/logout', to: 'application#end_masquerade'
 
   #Einfache URLs für Haupt-SPAs
-  get '/klassenbuch', to: 'groups#index'
+  get '/klassenbuch', to: 'users#show'
   get '/start', to: 'users#show'
 
   #Einfache URLs für andere Seiten/Funktionen

@@ -14,6 +14,7 @@ export const useGlobalStore = defineStore('global', {
     shareKeys: {},
     staticData: {},
     errorMessage: '',
+    genericMessage: { title: '', message: '' },
   }),
 
   actions: {
@@ -31,6 +32,12 @@ export const useGlobalStore = defineStore('global', {
     },
     setErrorMessage(msg) {
       this.errorMessage = msg
+    },
+    setGenericMessage(msg) {
+      this.genericMessage = msg
+    },
+    resetGenericMessage() {
+      this.genericMessage = { title: '', message: '' }
     },
 
     async fetch() {

@@ -20,7 +20,7 @@
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
                     <!-- Neue Klasse anlegen -->
-                    <b-tab :active="firstOwnIndex === 0">
+                    <b-tab :key="firstOwnIndex" :active="false">
                       <template slot="title">
                         <i
                           id="intro_cb_2"
@@ -35,7 +35,7 @@
                     <b-tab
                       v-for="(group, index) in ownActiveGroups"
                       :key="`${group.id}/${group.label}`"
-                      :active="index + 1 === firstOwnIndex"
+                      :active="index === firstOwnIndex"
                       class="m-3"
                     >
                       <!-- Beispielklasse kursiv darstellen -->
@@ -172,11 +172,14 @@
 
       firstOwnIndex: function () {
         //Liefert Demoklasse falls Intro gezeigt wird, ansonsten erste "eigene" Klasse.
+        let a
+
         if (this.showIntro) {
-          return this.groups?.findIndex(g => g.demo)
+          a = this.ownActiveGroups?.findIndex(g => g.demo)
         } else {
-          return this.groups?.findIndex(g => g.owner && !g.archive) || 0
+          a = this.ownActiveGroups?.findIndex(g => g.owner && !g.archive && g.id) || 0
         }
+        return a
       },
       firstSharedIndex: function () {
         for (let i = 1; i < this.groups.length; ++i) {

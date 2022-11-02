@@ -9,6 +9,7 @@
     <nav-bar />
     <router-view />
     <error-dialog />
+    <generic-message />
   </div>
   <div v-else>
     <accept-terms v-if="!areTermsAccepted" />
@@ -22,6 +23,7 @@
   import NavBar from './shared/nav-bar.vue'
   import CompleteRegistration from './registration/complete-registration.vue'
   import ErrorDialog from './shared/error-dialog.vue'
+  import GenericMessage from './shared/generic-message.vue'
   export default {
     name: 'RootApp',
     components: {
@@ -30,6 +32,7 @@
       AcceptTerms,
       CompleteRegistration,
       ErrorDialog,
+      GenericMessage,
     },
     setup() {
       const globalStore = useGlobalStore()

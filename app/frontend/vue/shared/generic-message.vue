@@ -1,9 +1,9 @@
 <template>
   <b-modal id="error-dialog" ref="errorDialog" v-model="isOpen" hide-footer>
-    <template #modal-title> Fehler </template>
+    <template #modal-title> {{ globalStore.genericMessage.title }} </template>
 
     <div class="d-block text-center mb-4">
-      {{ globalStore.errorMessage }}
+      {{ globalStore.genericMessage.message }}
       <slot></slot>
     </div>
     <div class="d-flex justify-content-end">
@@ -27,12 +27,12 @@
     },
     computed: {
       isOpen() {
-        return this.globalStore.errorMessage !== ''
+        return this.globalStore.genericMessage.message !== ''
       },
     },
     methods: {
       _close() {
-        this.globalStore.setErrorMessage('')
+        this.globalStore.resetGenericMessage()
       },
     },
   }
