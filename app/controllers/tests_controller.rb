@@ -53,8 +53,6 @@ class TestsController < ApplicationController
     @test.destroy
     family = TestFamily.find(id)
     family.destroy if family.tests.empty?
-
-    #render 'index_admin'
     head :ok
   end
 

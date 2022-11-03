@@ -125,8 +125,11 @@
             <router-link v-if="checkCapability('test')" to="/testverwaltung" class="dropdown-item">
               Testverwaltung
             </router-link>
-            <a v-if="checkCapability('material')" href="/materials?admin=true" class="dropdown-item"
-              >Materialverwaltung</a
+            <router-link
+              v-if="checkCapability('materials')"
+              to="/materialverwaltung"
+              class="dropdown-item"
+              >MaterialVerwaltung</router-link
             >
             <a v-if="checkCapability('export')" href="/tests?export=true" class="dropdown-item"
               >Export</a

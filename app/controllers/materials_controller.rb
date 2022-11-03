@@ -19,17 +19,21 @@ class MaterialsController < ApplicationController
   #POST /materials
   def create
     if params.has_key?(:material) && !params[:material][:file].nil?
-      params[:material][:file].each do |f|
-        Material.import(f.tempfile, params.has_key?(:replace)) if f.present?
+      f = params[:material][:file]
+      @import_failure = !f.present? || Material.import(f.tempfile, params.has_key?(:replace)).nil?
+
+      if @import_failure
+        head :unprocessable_entity
+      else
+        head :ok
       end
-      redirect_to '/materials?admin=true', status: :see_other
     end
   end
 
   #DEL /tests/:id
   def destroy
     @material.destroy
-    render 'index_admin'
+    head :ok
   end
 
   def get_material_data

@@ -4,6 +4,7 @@ import MaterialsApp from '../materials/materials-app.vue'
 import UsersApp from '../users/users-app.vue'
 import TestsApp from '../tests/tests-app.vue'
 import TestsAdmin from '../tests/tests-admin.vue'
+import MaterialsAdmin from '../materials/materials-admin.vue'
 
 import VueRouter from 'vue-router'
 
@@ -14,6 +15,7 @@ const routes = [
   { path: '/testuebersicht', component: TestsApp }, // Tests
   { path: '/testverwaltung', component: TestsAdmin },
   { path: '/nutzerverwaltung', component: UsersApp }, // Benutzerverwaltung
+  { path: '/materialverwaltung', component: MaterialsAdmin }, // Benutzerverwaltung
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

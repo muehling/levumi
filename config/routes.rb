@@ -18,10 +18,6 @@ Rails.application.routes.draw do
   get '/login', to: 'application#start_masquerade'
   get '/logout', to: 'application#end_masquerade'
 
-  #Einfache URLs für Haupt-SPAs
-  get '/klassenbuch', to: 'users#show'
-  get '/start', to: 'users#show'
-
   #Einfache URLs für andere Seiten/Funktionen
   get '/willkommen', to: 'users#register'
   patch '/willkommen', to: 'users#register'
@@ -31,6 +27,10 @@ Rails.application.routes.draw do
   # Vue Router routes TBD
   get '/testverwaltung', to: 'users#show'
   get '/testuebersicht', to: 'users#show'
+  get '/klassenbuch', to: 'users#show'
+  get '/start', to: 'users#show'
+  get '/materialverwaltung', to: 'users#show'
+  get '/materialien', to: 'users#show'
 
   # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'

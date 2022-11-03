@@ -9,7 +9,7 @@
       <slot></slot>
     </div>
     <div class="d-flex justify-content-end">
-      <b-button class="m-1" @click="_close">Schließen</b-button>
+      <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
     </div>
   </b-modal>
 </template>

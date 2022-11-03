@@ -14,6 +14,8 @@ export default {
   },
   materials: {
     info: '/materials/info',
+    index: '/materials',
+    import: { url: '/materials', method: 'POST', contentType: 'omit' },
   },
   tests: {
     index: '/tests',

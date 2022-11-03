@@ -1,27 +1,22 @@
 <template>
   <div>
-    <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
-      <div v-if="!isLoading" class="card card-body align-items-center">
+    <b-modal
+      id="users-mail-dialog"
+      ref="materialImportDialog"
+      title="Material importieren"
+      hide-footer
+      ><div v-if="isLoading" class="card card-body align-items-center">
         <b-spinner></b-spinner>Hochladen...
       </div>
       <div v-else class="card card-body">
         <b-form-file
           v-model="file"
-          class="mb-3"
           accept=".zip"
           :state="Boolean(file)"
           placeholder="Datei wählen oder hier ablegen..."
           drop-placeholder="Datei hier ablegen..."
         ></b-form-file>
-        <b-form-checkbox v-model="updateOnly"
-          >Nur Update (sonst Archivieren von existierendem Test)</b-form-checkbox
-        >
-        <b-form-checkbox v-model="keepMaterials"
-          >Existierendes Fördermaterial beibehalten (nur bei Archivierung)</b-form-checkbox
-        >
-        <b-btn class="mt-3" variant="outline-primary" @click="importTest"
-          ><i class="fas fa-file-upload mr-2"></i>Hochladen</b-btn
-        >
+        <b-btn class="mt-3" variant="primary" @click="importMaterial">Hochladen</b-btn>
       </div>
     </b-modal>
   </div>
@@ -32,7 +27,7 @@
   import { useGlobalStore } from '../../../store/store'
 
   export default {
-    name: 'CreateTestDialog',
+    name: 'CreateMaterialDialog',
     props: {
       users: Array,
     },
@@ -41,28 +36,22 @@
       return { globalStore }
     },
     data() {
-      return { file: undefined, updateOnly: false, keepMaterials: false, isLoading: false }
+      return { file: undefined, isLoading: false }
     },
     methods: {
       open() {
-        this.$refs.testImportDialog.show()
+        this.$refs.materialImportDialog.show()
       },
       _close() {
-        this.$refs.testImportDialog.hide()
+        this.$refs.materialImportDialog.hide()
       },
-      async importTest() {
+      async importMaterial() {
         const formData = new FormData()
-        formData.append('test[file]', this.file)
-        if (this.updateOnly) {
-          formData.append('update_test', true)
-        }
-        if (this.keepMaterials) {
-          formData.append('update_material', true)
-        }
-
+        formData.append('material[file]', this.file)
         this.isLoading = true
         const res = await ajax({
-          ...apiRoutes.tests.import,
+          ...apiRoutes.materials.import,
+          contentType: 'omit',
           data: formData,
         })
         this.isLoading = false
@@ -70,9 +59,9 @@
           case 200:
             this.globalStore.setGenericMessage({
               title: 'Import erfolgreich',
-              message: 'Der Test wurde erfolgreich importiert!',
+              message: 'Das Übungsmaterial wurde erfolgreich importiert!',
             })
-            this.$emit('test-import:success')
+            this.$emit('material-import:success')
             break
           case 406:
             this.globalStore.setErrorMessage('Beim Import ist ein Fehler aufgetreten!')

@@ -121,6 +121,7 @@
 <script>
   import MaterialView from './material-view.vue'
   import { useMaterialsStore } from '../../store/materialsStore'
+  import flatten from 'lodash/flatten'
   export default {
     name: 'MaterialsApp',
     components: { MaterialView },
@@ -167,7 +168,7 @@
       filtered_materials() {
         const supports = this.mData.supports ? Object.values(this.mData.supports) : []
 
-        const materialIds = [
+        const materialIds = flatten([
           supports
             .filter(support => support.area_id === this.selected_area)
             .map(n => n.material_id),
@@ -180,9 +181,9 @@
           supports
             .filter(support => support.test_id === this.selected_test)
             .map(n => n.material_id),
-        ]
+        ])
 
-        const materials = this.mData.materials ? Object.values(this.mData.materials) : []
+        const materials = this.mData.materials ? this.mData.materials : []
         return materials.filter(material => materialIds.findIndex(m => m === material.id) !== -1)
       },
     },

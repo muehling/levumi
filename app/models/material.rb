@@ -59,7 +59,12 @@ class Material < ApplicationRecord
 
   #Material Objekt als Import aus ZIP-Datei erzeugen und passende Verknüpfungen anlegen, vorhandenes Material ggf. vorher löschen
   def self.import(file, replace)
-    zip = Zip::File.open(file)
+    begin
+      zip = Zip::File.open(file)
+    rescue StandardError
+      return nil
+    end
+
     f = zip.glob('material.json').first
     unless f.nil?
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
