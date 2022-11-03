@@ -150,9 +150,10 @@
             Meine Daten ({{ login?.email }})
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarMyData">
-            <!--TODO Userdialog öffnen, nicht die Route ändern-->
             <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
-            <a href="/users?edit_profile" class="dropdown-item">TODO Testungen exportieren</a>
+            <b-link :href="`/users/${login.id}.text`" class="dropdown-item">
+              Testungen exportieren
+            </b-link>
           </div>
         </li>
         <li class="nav-item dropdown">
@@ -216,6 +217,8 @@
 
     computed: {
       login() {
+        console.log('miau', this.globalStore.login)
+
         return this.globalStore.login
       },
       masquerade() {
