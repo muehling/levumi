@@ -27,6 +27,7 @@ Rails.application.routes.draw do
   # Vue Router routes TBD
   get '/testverwaltung', to: 'users#show'
   get '/testuebersicht', to: 'users#show'
+  get '/testexport', to: 'users#show'
   get '/klassenbuch', to: 'users#show'
   get '/start', to: 'users#show'
   get '/materialverwaltung', to: 'users#show'

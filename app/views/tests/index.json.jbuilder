@@ -21,4 +21,5 @@ json.tests Test
   json.description test.description
   json.student_test test.student_test
   json.items test.items
+  json.has_results test.has_results
 end

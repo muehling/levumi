@@ -129,11 +129,12 @@
               v-if="checkCapability('materials')"
               to="/materialverwaltung"
               class="dropdown-item"
-              >MaterialVerwaltung</router-link
             >
-            <a v-if="checkCapability('export')" href="/tests?export=true" class="dropdown-item"
-              >Export</a
-            >
+              Materialverwaltung
+            </router-link>
+            <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
+              Export
+            </router-link>
           </div>
         </li>
         <li id="intro6" class="nav-item dropdown">
@@ -190,7 +191,6 @@
         </li>
       </ul>
     </div>
-    <!-- some modal with terms and conditions -->
     <edit-user-dialog ref="editUserDialog" />
   </nav>
 </template>

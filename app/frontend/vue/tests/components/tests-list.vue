@@ -2,18 +2,43 @@
   <div>
     <b-table class="text-small" small striped hover :fields="fields" :items="tests">
       <template #cell(actions)="data">
-        <b-btn class="btn-sm mr-1" variant="outline-primary" @click="showTestDetails(data.item.id)">
+        <b-btn
+          v-if="!showExport"
+          class="btn-sm mr-1"
+          variant="outline-primary"
+          @click="showTestDetails(data.item.id)"
+        >
           <i class="fas fa-glasses"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Details</span></b-btn
+          <span class="text-small d-none d-xl-inline pl-2">Details</span>
+        </b-btn>
+        <b-btn
+          v-if="!showExport"
+          class="btn-sm mr-1"
+          variant="outline-success"
+          @click="editTest(data.item.id)"
         >
-        <b-btn class="btn-sm mr-1" variant="outline-success" @click="editTest(data.item.id)">
           <i class="fas fa-edit"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span></b-btn
+          <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
+        </b-btn>
+        <b-btn
+          v-if="!showExport"
+          class="btn-sm mr-1"
+          variant="outline-danger"
+          @click="deleteTest(data.item.id)"
         >
-        <b-btn class="btn-sm mr-1" variant="outline-danger" @click="deleteTest(data.item.id)">
           <i class="fas fa-trash"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Löschen</span></b-btn
+          <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
+        </b-btn>
+        <b-link
+          v-if="showExport"
+          class="btn btn-sm btn-outline-primary"
+          variant="outline-secondary"
+          :disabled="!data.item.has_results"
+          :href="`/tests/${data.item.id}`"
         >
+          <i class="fas fa-save"></i>
+          <span class="text-small d-none d-xl-inline pl-2">Export</span>
+        </b-link>
       </template>
     </b-table>
     <test-details-dialog ref="detailsDialog" />
@@ -35,7 +60,7 @@
       EditTestDialog,
       TestDetailsDialog,
     },
-    props: { fetchTrigger: Symbol },
+    props: { fetchTrigger: Symbol, showExport: Boolean },
     data() {
       return {
         tests: [],
@@ -51,8 +76,8 @@
           { key: 'competence', label: 'Kompetenz' },
           { key: 'test_family', label: 'Testfamilie' },
           { key: 'level', label: 'Niveaustufe' },
-          { key: 'version', label: 'Version' },
-          { key: 'archive', label: 'Archiv' },
+          this.showExport && { key: 'version', label: 'Version' },
+          this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'actions', label: 'Aktionen' },
         ]
       },
@@ -73,7 +98,7 @@
           const data = await res.json()
           this.tests = data.tests.map(t => ({
             ...t,
-            _rowVariant: t.archive ? 'outline-secondary' : '',
+            _rowVariant: (this.showExport ? !t.has_results : t.archive) ? 'outline-secondary' : '',
           }))
         }
       },
