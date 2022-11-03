@@ -8,29 +8,34 @@
   <div v-else-if="tests">
     <b-alert :show="no_tests()" variant="secondary"> Gerade gibt es keine Tests für dich! </b-alert>
     <!-- Übersicht anzeigen -->
-    <b-card-group deck>
-      <b-card
+    <div class="row">
+      <div
         v-for="test in studentTests"
         :key="test.id"
-        class="mt-3"
-        :title="test.test_info.family"
-        :sub-title="test.test_info.level"
+        class="col-12 col-md-6 col-lg-4 col-xl-2 test-card"
       >
-        <template slot="header">
-          <h4>{{ test.test_info.competence }}</h4>
-          <h6>{{ test.test_info.area }}</h6>
-        </template>
-        <b-button
-          block
-          :href="'/students/' + student.id + '/results/new?test_id=' + test.test_info.id"
-          :disabled="!test.open"
-          :variant="test.open ? 'outline-success' : 'success'"
-          @click="logout = false"
+        <b-card
+          class="w-100 m-2 shadow"
+          body-class="test-card-body"
+          :title="test.test_info.family"
+          :sub-title="test.test_info.level"
         >
-          {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
-        </b-button>
-      </b-card>
-    </b-card-group>
+          <template slot="header">
+            <h4>{{ test.test_info.competence }}</h4>
+            <h6>{{ test.test_info.area }}</h6>
+          </template>
+          <b-button
+            block
+            :href="'/students/' + student.id + '/results/new?test_id=' + test.test_info.id"
+            :disabled="!test.open"
+            :variant="test.open ? 'outline-success' : 'success'"
+            @click="logout = false"
+          >
+            {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
+          </b-button>
+        </b-card>
+      </div>
+    </div>
   </div>
   <div v-else>
     <!-- Login Form anzeigen -->
@@ -219,3 +224,16 @@
     },
   }
 </script>
+
+<style>
+  .test-card {
+    min-width: 8em;
+    display: flex;
+    flex-grow: 1 !important;
+  }
+  .test-card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+</style>

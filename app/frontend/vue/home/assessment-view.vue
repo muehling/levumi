@@ -5,6 +5,7 @@
         <div slot="title">
           Messungen
           <span v-if="!is_active" class="badge badge-danger"><i class="fas fa-pause"></i></span>
+          <span v-if="is_active" class="badge badge-success"><i class="fas fa-play"></i></span>
         </div>
         <!-- Neue Messungen -->
         <div class="alert alert-secondary">
@@ -93,7 +94,7 @@
             <br />
             <div>
               <b-button
-                :class="'btn btn-sm mt-3' + is_active ? 'btn-danger' : 'btn_success'"
+                :class="'btn btn-sm mt-3' + (is_active ? 'btn-danger' : 'btn_success')"
                 @click="toggleAssessment()"
               >
                 <i :class="is_active ? 'fas fa-pause' : 'fas fa-play'"></i>
