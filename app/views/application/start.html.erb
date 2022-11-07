@@ -56,30 +56,34 @@
     <a class='navbar-brand' href='#'><img src='favicon.ico' alt='Levumi' width='48' height='48'/>Levumi</a>
     <%= link_to 'Zugang für Schülerinnen und Schüler', '/testen', class: 'nav-item btn btn-outline-secondary nav-link ml-auto'%>
     <ul class='navbar-nav ml-auto'>
-      <li class='nav-item dropdown <%= @retry ? 'show':'' %>'>
-        <a class='nav-item btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
-          Einloggen
-        </a>
-        <div class='dropdown-menu dropdown-menu-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
-          <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3', onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
-            <div class='form-group'>
-              <input type='email' name='email' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
-            </div>
-            <div class='form-group'>
-              <input type='password' name='password' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
-              <div class='invalid-feedback'>
-                Benutzername oder Passwort ist falsch!
+      <% if @login%>
+        <li><a class="btn btn-outline-secondary" href='/start'><%=@login.email%></a></li>
+      <%else%>
+        <li class='nav-item dropdown <%= @retry ? 'show':'' %>'>
+          <a class='nav-item btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
+            Einloggen
+          </a>
+          <div class='dropdown-menu dropdown-menu-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
+            <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3', onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
+              <div class='form-group'>
+                <input type='email' name='email' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
               </div>
-            </div>
-            <%= submit_tag 'Einloggen', class: 'btn btn-primary'%>
-          <% end %>
-          <% if @retry %>
-            <%= link_to 'Passwort vergessen? Hier klicken!', '/passwort', class: 'dropdown-item' %>
-          <% end %>
-          <div class='dropdown-divider'></div>
-          <a class='dropdown-item' href='#', onclick="$('#modal').modal('show');">Noch keinen Zugang? Hier kostenlos registrieren...</a>
-        </div>
-      </li>
+              <div class='form-group'>
+                <input type='password' name='password' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
+                <div class='invalid-feedback'>
+                  Benutzername oder Passwort ist falsch!
+                </div>
+              </div>
+              <%= submit_tag 'Einloggen', class: 'btn btn-primary'%>
+            <% end %>
+            <% if @retry %>
+              <%= link_to 'Passwort vergessen? Hier klicken!', '/passwort', class: 'dropdown-item' %>
+            <% end %>
+            <div class='dropdown-divider'></div>
+            <a class='dropdown-item' href='#', onclick="$('#modal').modal('show');">Noch keinen Zugang? Hier kostenlos registrieren...</a>
+          </div>
+        </li>
+      <%end%>
     </ul>
   </nav>
 <% end %>
@@ -94,9 +98,6 @@
   </div>
   <div class='modal-body' id='modal-body'>
     <%= render 'users/form/form_register', user: User.new %>
-  </div>
-  <div class='modal-footer'>
-    <a href='#' onclick="$('#t_and_c').modal('show')">Nutzungsbedingungen</a></li>
   </div>
 <% end %>
 

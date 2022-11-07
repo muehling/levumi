@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: %i[start info login frontend login_frontend logout_frontend]
+  before_action :set_login, except: %i[info login frontend login_frontend logout_frontend]
   before_action :set_locale
 
   #Normaler Zugang
@@ -123,9 +123,11 @@ class ApplicationController < ActionController::Base
         #Session existiert
         @login = User.find(session[:user])
       else
-        #TODO might be necessary to return an error here
-        #Sonst: Startseite
-        redirect_to '/'
+        #TODO might be necessary to return an error here for api calls
+        # only redirect to frontpage if not already there to avoid endless cycle
+        if request.fullpath != "/"
+          redirect_to '/'         
+        end
       end
     end
   end
