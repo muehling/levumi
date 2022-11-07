@@ -120,7 +120,7 @@
               System
             </a>
             <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
-              <a href="/users?stats=true" class="dropdown-item">Statistik</a>
+              <router-link to="/statistiken" class="dropdown-item">Statistik</router-link>
               <router-link to="/nutzerverwaltung" class="dropdown-item">
                 Benutzerverwaltung
               </router-link>
@@ -215,7 +215,7 @@
     name: 'NavBar',
     components: {
       RouterLink,
-      EditUserDialog,
+      EditUserDialog
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -234,7 +234,7 @@
       },
       isRegularUser() {
         return isRegularUser(this.login.capabilities)
-      },
+      }
     },
 
     methods: {
@@ -251,7 +251,7 @@
           this.globalStore.fetch()
           router.push('/nutzerverwaltung')
         }
-      },
-    },
+      }
+    }
   }
 </script>

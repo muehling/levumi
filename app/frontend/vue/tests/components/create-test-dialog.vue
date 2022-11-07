@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
-      <div v-if="!isLoading" class="card card-body align-items-center">
+      <div v-if="isLoading" class="card card-body align-items-center">
         <b-spinner></b-spinner>Hochladen...
       </div>
       <div v-else class="card card-body">

@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: %i[index show create register recover get_core_data]
+  before_action :set_user, except: %i[index show create register recover get_core_data statistics]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -77,7 +77,13 @@ class UsersController < ApplicationController
       render 'statistics'
     else
       @users = User.all
-      #render 'index'
+    end
+  end
+
+  def statistics
+    if @login.has_capability?('stats')
+      @userinfo = User.get_statistics
+      @testinfo = Test.get_statistics
     end
   end
 

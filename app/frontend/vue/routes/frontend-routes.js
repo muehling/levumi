@@ -6,6 +6,7 @@ import TestsApp from '../tests/tests-app.vue'
 import TestsAdmin from '../tests/tests-admin.vue'
 import TestsExport from '../tests/tests-export.vue'
 import MaterialsAdmin from '../materials/materials-admin.vue'
+import StatisticsApp from '..//statistics/statistics-app.vue'
 
 import VueRouter from 'vue-router'
 
@@ -18,6 +19,7 @@ const routes = [
   { path: '/testexport', component: TestsExport },
   { path: '/nutzerverwaltung', component: UsersApp }, // Benutzerverwaltung
   { path: '/materialverwaltung', component: MaterialsAdmin }, // Benutzerverwaltung
+  { path: '/statistiken', component: StatisticsApp }, // Statistiken
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

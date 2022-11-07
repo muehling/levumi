@@ -8,6 +8,7 @@ export default {
     usersMail: id => ({ url: `/users/${id}/mail`, method: 'PUT' }),
     coreData: '/users/core_data',
     logout: '/logout',
+    statistics: '/users/statistics',
   },
   home: {
     finishIntro: '/willkommen',

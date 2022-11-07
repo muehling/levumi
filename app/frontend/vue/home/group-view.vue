@@ -201,7 +201,6 @@
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
-  import rest from 'lodash.rest'
 
   export default {
     name: 'GroupView',
@@ -218,13 +217,13 @@
         .filter(word => !stopwords.includes(word))
         .filter((v, i, a) => a.indexOf(v) === i)
       return {
-        student_name_parts: this.student_name_parts,
+        student_name_parts: this.student_name_parts
       }
     },
     props: {
       group: Object,
       groupInfo: Object,
-      index: Number,
+      index: Number
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -259,7 +258,7 @@
         version_selected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
-            : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
+            : 0 //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
       }
     },
     computed: {
@@ -342,7 +341,7 @@
         return this.versions.filter(
           version => version.used || (!version.info.archive && !this.group.read_only)
         )
-      },
+      }
     },
     methods: {
       //Neues Assessment anlegen und, bei Erfolg, laden.
@@ -351,7 +350,7 @@
           contentType: 'application/x-www-form-urlencoded',
           data: `test_id=${test.info.id}`,
           method: 'post',
-          url: `/groups/${this.group.id}/assessments/`,
+          url: `/groups/${this.group.id}/assessments/`
         }).then(() => {
           this.use_test(test.info.id)
           this.loadAssessment(test.info.id, isVersion)
@@ -373,7 +372,7 @@
           this.isLoadingUpdate = false //Spinner verstecken
         } else if (res.status === 404) {
           // safety net in case no assessment could be found.
-          this.createAssessment(test, isVersion)
+          this.createAssessment({ info: { id: test } }, isVersion)
         } else {
           // only hide spinner, nothing to show
           this.isLoadingUpdate = false
@@ -423,7 +422,7 @@
       },
       removeEntry(index) {
         this.results.series.splice(index, 1)
-      },
-    },
+      }
+    }
   }
 </script>

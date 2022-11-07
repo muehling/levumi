@@ -13,14 +13,14 @@
 </template>
 <script>
   /************************************
-   * Displays generic error messages.
+   * Displays generic messages.
    *
    * Usage: in your component, simply set the message to be displayed into the globalStore via
-   * `this.globalStore.setErrorMessage("Something went wrong.")
+   * `this.globalStore.setGenericMessage({message: "Some message", title: "Custom title"})`
    ***********************************/
   import { useGlobalStore } from '../../store/store'
   export default {
-    name: 'ErrorDialog',
+    name: 'GenericMessage',
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -28,12 +28,12 @@
     computed: {
       isOpen() {
         return this.globalStore.genericMessage.message !== ''
-      },
+      }
     },
     methods: {
       _close() {
         this.globalStore.resetGenericMessage()
-      },
-    },
+      }
+    }
   }
 </script>

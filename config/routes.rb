@@ -32,12 +32,14 @@ Rails.application.routes.draw do
   get '/start', to: 'users#show'
   get '/materialverwaltung', to: 'users#show'
   get '/materialien', to: 'users#show'
+  get '/statistiken', to: 'users#show'
 
   # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'
   get '/users/core_data', to: 'users#get_core_data'
   get '/materials/info', to: 'materials#get_material_data'
   get '/tests/info', to: 'tests#get_tests_data'
+  get '/users/statistics', to: 'users#statistics'
 
   #Reguläres REST-Routing
   resources :users
