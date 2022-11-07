@@ -7,11 +7,24 @@
   <%= render 'users/form/type', f: f,  user: user, readOnly: false, label: 'Ich bin...' %>
 
   <%= render 'users/form/state', f: f, user: user, label: 'Aus...' %>
-
-  <button class='btn btn-outline-success' id="main-register">Registrieren</button>
+  <input
+    type="checkbox"
+    id="acceptTerms"
+    name="acceptTerms"
+  />
+  <label for="acceptTerms">Ich bin mit den <a href='#' onclick="$('#t_and_c').modal('show')">Nutzungsbedingungen</a> einverstanden.</label>
+  <button class='btn btn-outline-success' disabled id="main-register">Registrieren</button>
   <button class='btn btn-outline-secondary' id="main-cancel">Abbrechen</button>
 <% end %>
 <script type="module">
+
+  $('#acceptTerms').on("click", function(e){
+    if ($('#acceptTerms').is(':checked')){
+      $('#main-register').prop('disabled', false)
+    } else {
+      $('#main-register').prop('disabled', true)
+    }
+  })
 
   $('#user-messages').toast({animation: true, autohide: false})
 
@@ -51,7 +64,7 @@
           default:
             const data = await res.json()
             //TODO less than optimal - needs to be replaced with proper messages
-            const errors = data.errors.join ("\n")
+            const errors = data.errors.join ("; ")
             $('#user-messages-body').html("<p>Etwas ist schiefgegangen!<br/>Bitte überprüfen Sie Ihre Eingaben und versuchen es erneut.</p>" + errors)
             $('#user-messages').toast('show')
         }

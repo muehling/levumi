@@ -109,6 +109,8 @@ class UsersController < ApplicationController
       end
     else
       #Anfrage kommt von der Registrierungsseite
+      @user.intro_state = 1
+      @user.tc_accepted = Time.now
       if @user.save
         UserMailer.with(user: @user, password: pw).welcome.deliver_later
         head :ok
