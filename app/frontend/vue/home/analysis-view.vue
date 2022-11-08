@@ -236,7 +236,7 @@
       group: Object,
       results: Array,
       students: Array,
-      test: Object
+      test: Object,
     },
     data: function () {
       return {
@@ -246,7 +246,7 @@
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
-        view_selected: 0
+        view_selected: 0,
       }
     },
     computed: {
@@ -332,7 +332,7 @@
       },
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
-      }
+      },
     },
     mounted() {
       this.studentSelected = this.has_group_views
@@ -491,7 +491,7 @@
             if (this.has_results(this.students[s])) {
               res.push({
                 name: this.studentName(this.students[s].id),
-                data: []
+                data: [],
               })
             }
           }
@@ -500,14 +500,14 @@
             if (this.students.length) {
               res.push({
                 name: this.studentName(this.studentSelected),
-                data: []
+                data: [],
               })
             }
           } else {
             for (let s = 0; s < view.series.length; ++s) {
               res.push({
                 name: view.series[s],
-                data: []
+                data: [],
               })
             }
           }
@@ -539,7 +539,7 @@
                 } else {
                   res[r].data.push({
                     x: this.weeks.indexOf(this.results[i].test_week),
-                    y: yVal
+                    y: yVal,
                   })
                 }
                 break
@@ -561,7 +561,7 @@
                 } else {
                   res[r].data.push({
                     x: this.weeks.indexOf(this.results[i].test_week),
-                    y: yVal
+                    y: yVal,
                   })
                 }
               }
@@ -573,7 +573,7 @@
         opt['annotations'] = {
           position: 'front',
           xaxis: [],
-          points: []
+          points: [],
         }
         for (let i = 0; i < this.annotations.length; ++i) {
           if (
@@ -612,9 +612,9 @@
                     background: '#fff',
                     color: '#777',
                     fontSize: '12px',
-                    cssClass: 'apexcharts-xaxis-annotation-label'
-                  }
-                }
+                    cssClass: 'apexcharts-xaxis-annotation-label',
+                  },
+                },
               })
             }
             //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
@@ -642,9 +642,9 @@
                     background: '#fff',
                     color: '#777',
                     fontSize: '12px',
-                    cssClass: 'apexcharts-xaxis-annotation-label'
-                  }
-                }
+                    cssClass: 'apexcharts-xaxis-annotation-label',
+                  },
+                },
               })
             }
           }
@@ -674,7 +674,7 @@
         for (let i = this.weeks.length - 1; i >= 0; --i) {
           res.push({
             value: this.weeks[i],
-            text: this.printDate(this.weeks[i])
+            text: this.printDate(this.weeks[i]),
           })
         }
         return res
@@ -686,8 +686,8 @@
           }
         }
         return false
-      }
-    }
+      },
+    },
   }
 </script>
 

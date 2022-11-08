@@ -49,12 +49,12 @@
     components: { MaterialView },
     props: {
       group: Number,
-      test: Number
+      test: Number,
     },
     data: function () {
       return {
         loading: true,
-        suggestions: []
+        suggestions: [],
       }
     },
     created() {
@@ -62,9 +62,9 @@
         headers: {
           Accept: 'text/javascript',
           'X-Requested-With': 'XMLHttpRequest',
-          'X-CSRF-Token': getCSRFToken()
+          'X-CSRF-Token': getCSRFToken(),
         },
-        credentials: 'include'
+        credentials: 'include',
       }).then(response => {
         return response.text().then(text => {
           this.suggestions = JSON.parse(text)
@@ -102,7 +102,7 @@
           }
           return res
         }
-      }
-    }
+      },
+    },
   }
 </script>

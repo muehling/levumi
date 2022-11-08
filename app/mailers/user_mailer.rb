@@ -1,5 +1,4 @@
 class UserMailer < ApplicationMailer
-
   def welcome
     @user = params[:user]
     @password = params[:password]
@@ -9,6 +8,6 @@ class UserMailer < ApplicationMailer
   def notify
     @user = params[:user]
     @body = params[:body]
-    mail(to: @user.email, subject: "Neuigkeiten von Levumi")
+    mail(to: @user.email, subject: 'Neuigkeiten von Levumi')
   end
 end

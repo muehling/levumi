@@ -1,4 +1,4 @@
-export const apexChartOptions = (weeks) => ({
+export const apexChartOptions = weeks => ({
   bar: {
     chart: {
       animations: {

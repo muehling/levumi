@@ -215,7 +215,7 @@
     name: 'NavBar',
     components: {
       RouterLink,
-      EditUserDialog
+      EditUserDialog,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -234,7 +234,7 @@
       },
       isRegularUser() {
         return isRegularUser(this.login.capabilities)
-      }
+      },
     },
 
     methods: {
@@ -251,7 +251,7 @@
           this.globalStore.fetch()
           router.push('/nutzerverwaltung')
         }
-      }
-    }
+      },
+    },
   }
 </script>

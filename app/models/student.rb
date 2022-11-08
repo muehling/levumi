@@ -17,14 +17,24 @@ class Student < ApplicationRecord
 
   #Schattenkopie anlegen, wird im Zuge des Löschen von Results aufgerufen.
   def create_shadow
-    ShadowStudent.create(original_id: self.id, account_type: self.group.owner.account_type, state: self.group.owner.state, group: self.group_id, gender: self.gender, birthmonth: self.birthmonth, sen: self.sen, tags: self.tags)
+    ShadowStudent.create(
+      original_id: self.id,
+      account_type: self.group.owner.account_type,
+      state: self.group.owner.state,
+      group: self.group_id,
+      gender: self.gender,
+      birthmonth: self.birthmonth,
+      sen: self.sen,
+      tags: self.tags
+    )
   end
 
   #JSON Export, nur relevante Attribute übernehmen. Falls zusätzliche Daten vorhanden sind, diese auch exportieren.
   def as_json(options = {})
-    json = super(except: [:created_at, :updated_at, :gender, :birthmonth, :sen, :tags, :settings])
+    json = super(except: %i[created_at updated_at gender birthmonth sen tags settings])
     json['gender'] = self.gender unless self.gender.nil?
-    json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%Y-%m') unless self.birthmonth.nil?
+    json['birthmonth'] = I18n.l(self.birthmonth.to_date, format: '%Y-%m') unless self.birthmonth
+      .nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['tags'] = self.tags.nil? ? [] : self.tags
     json['settings'] = self.settings unless self.settings.nil?
@@ -65,9 +75,11 @@ class Student < ApplicationRecord
     all_assessments.each do |a|
       unless a.excludes.include?(self.id)
         result += [
-            {id: a.id,
-             test_info: a.test.info,
-             open: !Result.exists?(assessment_id: a.id, student_id: self.id, test_week: week)}
+          {
+            id: a.id,
+            test_info: a.test.info,
+            open: !Result.exists?(assessment_id: a.id, student_id: self.id, test_week: week)
+          }
         ]
       end
     end
@@ -75,16 +87,16 @@ class Student < ApplicationRecord
   end
 
   #Liefert den Wert einer der möglichen Einstellungen falls er existiert oder einen Defaultwert
-  def get_setting key
+  def get_setting(key)
     if !settings.nil? && settings.has_key?(key)
       return settings[key]
     else
-      defs = {                             #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
-          'font_family': 'Fibel Nord',
-          'font_size': 1
+      defs = {
+        #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
+        'font_family': 'Fibel Nord',
+        'font_size': 1
       }
       return defs[key]
     end
   end
-
 end

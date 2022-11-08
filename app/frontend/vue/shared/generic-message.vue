@@ -28,12 +28,12 @@
     computed: {
       isOpen() {
         return this.globalStore.genericMessage.message !== ''
-      }
+      },
     },
     methods: {
       _close() {
         this.globalStore.resetGenericMessage()
-      }
-    }
+      },
+    },
   }
 </script>
