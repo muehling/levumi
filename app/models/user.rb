@@ -1,8 +1,6 @@
 class User < ApplicationRecord
   has_many :group_shares
-  has_many :groups,
-           -> { where.not(group_shares: { key: nil }) },
-           through: :group_shares
+  has_many :groups, -> { where.not(group_shares: { key: nil }) }, through: :group_shares
 
   has_secure_password
 
@@ -16,9 +14,7 @@ class User < ApplicationRecord
 
   #validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, message: 'Bitte eine gültige E-Mail Adresse eingeben'
 
-  validates_numericality_of :account_type,
-                            greater_than_or_equal_to: 0,
-                            less_than_or_equal_to: 2
+  validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
 
   # Eigene Gruppen und Shares löschen
@@ -40,10 +36,7 @@ class User < ApplicationRecord
   #admin -> darf/sieht alles
   #test -> darf Tests verwalten
   def has_capability?(cap)
-    return(
-      !is_regular_user? &&
-        (capabilities.include?(cap) || capabilities.include?('admin'))
-    )
+    return !is_regular_user? && (capabilities.include?(cap) || capabilities.include?('admin'))
   end
 
   #Keine speziellen Capabilities als shortcut
@@ -168,10 +161,7 @@ class User < ApplicationRecord
         .select('id')
         .pluck(:id) #Keine Beispielklassen exportieren
     students = Student.where(group_id: groups).select('id').pluck(:id)
-    tests =
-      Test.find(
-        Assessment.where(group_id: groups).select('test_id').pluck(:test_id)
-      )
+    tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
     temp = Tempfile.new('Levumi')
     Zip::OutputStream.open(temp.path) do |zip|
       tests.each do |t|
@@ -182,15 +172,16 @@ class User < ApplicationRecord
             .where(
               student_id: students,
               assessment_id:
-                Assessment
-                  .where(group_id: self.groups.pluck(:id), test_id: t.id)
-                  .select('id')
+                Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).select('id')
             )
             .all
         if (res.size > 0)
           zip.put_next_entry(
-            (t.shorthand + '_' + DateTime.now.strftime('%Y_%m_%d') + '.csv')
-              .encode!('CP437', undefined: :replace, replace: '_')
+            (t.shorthand + '_' + DateTime.now.strftime('%Y_%m_%d') + '.csv').encode!(
+              'CP437',
+              undefined: :replace,
+              replace: '_'
+            )
           )
           csv = res[0].csv_header(true) + "\n"
           res.each { |r| csv = csv + r.as_csv(true) }
@@ -211,24 +202,19 @@ class User < ApplicationRecord
     state = {}
     users.each do |u|
       count[u.account_type] += 1
-      if !u.last_login.nil? && u.last_login > (DateTime.now - 30)
-        active[u.account_type] += 1
-      end
+      active[u.account_type] += 1 if !u.last_login.nil? && u.last_login > (DateTime.now - 30)
       groups =
         Group
           .where(id: GroupShare.where(user_id: u.id).select('group_id'))
           .where.not(demo: true)
-          .select('id')
           .pluck(:id)
-      students = Student.where(group_id: groups).select('id').pluck(:id)
+      students = Student.where(group_id: groups).pluck(:id)
       if Result.where(student_id: students).exists?
         productive[u.account_type] += 1
         state[u.state] = [0, 0, 0] if state[u.state].nil?
         state[u.state][u.account_type] += 1
       end
     end
-    return(
-      { count: count, active: active, productive: productive, state: state }
-    )
+    return { count: count, active: active, productive: productive, state: state }
   end
 end

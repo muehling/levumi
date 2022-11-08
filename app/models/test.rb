@@ -217,29 +217,30 @@ class Test < ApplicationRecord
 
   #Infos über Messungen von Lehrkräften
   def self.get_statistics
-    users = User.where(account_type: 0).select('id').pluck(:id)
+    users = User.where(account_type: 0).pluck(:id)
     groups =
       Group
         .where(id: GroupShare.where(user_id: users, owner: true).select('group_id'))
         .where.not(demo: true)
-        .select('id')
         .pluck(:id)
-    students = Student.where(group_id: groups).select('id').pluck(:id)
+    students = Student.where(group_id: groups).pluck(:id)
+
     tests =
       Test
-        .where(id: Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
+        .where(id: Assessment.where(group_id: groups).pluck(:test_id))
         .order(test_family_id: :asc)
         .all
-    res = {}
+    res = []
     tests.each do |t|
       results =
         Result
           .where("test_date > '2019-09-09'")
           .where(
             student_id: students,
-            assessment_id: Assessment.where(group_id: groups, test_id: t.id).select('id')
+            assessment_id: Assessment.where(group_id: groups, test_id: t.id).pluck('id')
           )
-      res[t.full_name] = {
+      res << {
+        label: t.full_name,
         count: results.count,
         groups: results.group(:assessment_id).count.keys.size,
         progressions: results.group(:student_id).having('COUNT(*) > 1').count.keys.size
