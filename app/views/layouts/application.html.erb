@@ -8,8 +8,6 @@
     <%= vite_javascript_tag 'application' %>
     <%= vite_stylesheet_tag 'application' %>
 
-    <!-- sonstige Libaries -->
-    <%= render 'layouts/scripts' unless @no_script%>
 
     <%= yield :head if content_for? :head %>
     <%= vite_client_tag %>
