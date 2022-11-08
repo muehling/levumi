@@ -16,7 +16,7 @@
           v-for="user in users"
           :id="`row_${user.id}`"
           :key="user.id"
-          :class="!user.last_login ? 'table-warning' : ''"
+          :class="getUserBackgroundColor(user)"
         >
           <td>{{ user.id }}</td>
           <td>{{ user.email }}</td>
@@ -60,6 +60,7 @@
   import { ajax } from '../../../utils/ajax'
   import { isRegistered } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
+  import { differenceInDays } from 'date-fns'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import EditUserDialog from './edit-user-dialog.vue'
 
@@ -67,7 +68,7 @@
     name: 'UsersList',
     components: { ConfirmDialog, EditUserDialog },
     props: {
-      users: Array,
+      users: Array
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -85,7 +86,7 @@
       },
       accountTypes() {
         return this.globalStore.staticData.accountTypes
-      },
+      }
     },
 
     methods: {
@@ -93,12 +94,12 @@
         const ok = await this.$refs.confirmDialog.open({
           message: `Der Benutzer wird mit allen Daten gelöscht. Sind Sie sicher?`,
           okText: 'Ja, Benutzer löschen',
-          title: 'Benutzer löschen',
+          title: 'Benutzer löschen'
         })
         if (ok) {
           const res = await ajax({
             url: `/users/${id}`,
-            method: 'delete',
+            method: 'delete'
           })
 
           if (res.status === 200) {
@@ -118,6 +119,12 @@
       checkRegistration(user) {
         return isRegistered(user)
       },
-    },
+      getUserBackgroundColor(user) {
+        if (!user.last_login && differenceInDays(new Date(), new Date(user.created_at)) > 30) {
+          return 'table-warning'
+        }
+        return ''
+      }
+    }
   }
 </script>
