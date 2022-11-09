@@ -1,5 +1,6 @@
 json.share_keys @shares_object
 json.groups @groups_object
+json.groupInfo @login.get_home_info
 json.login @login
 json.masquerade @masquerade
 
