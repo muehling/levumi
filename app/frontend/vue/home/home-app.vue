@@ -83,11 +83,11 @@
         return this.globalStore.groups.filter(group => group.id)
       },
       groupInfo() {
-        return this.$root.group_info
+        return this.globalStore.groupInfo
       },
       showIntro() {
         return this.globalStore.login.intro_state < 4
-      },
+      }
     },
     mounted() {
       if (this.showIntro) {
@@ -98,10 +98,10 @@
             'Hier finden Sie Fördermaterial passend zu den Tests.',
             'Informieren Sie sich über die Tests, die zur Verfügung stehen.',
             'Unter diesem Punkt finden Sie weiteres Material, Hilfestellungen und den Blog mit Neuigkeiten.',
-            'Hier können Sie Ihre Profildaten bearbeiten.',
+            'Hier können Sie Ihre Profildaten bearbeiten.'
           ],
           targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'],
-          onFinish: this.finishIntro,
+          onFinish: this.finishIntro
         })
       }
     },
@@ -117,7 +117,7 @@
         //FIXME entirely too sideeffecty
         const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
         test.used = true
-      },
-    },
+      }
+    }
   }
 </script>

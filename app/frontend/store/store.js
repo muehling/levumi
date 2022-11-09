@@ -10,6 +10,7 @@ export const useGlobalStore = defineStore('global', {
     login: {},
     studentsInGroups: {},
     groups: [],
+    groupInfo: [],
     masquerade: false,
     shareKeys: {},
     staticData: {},
@@ -47,6 +48,7 @@ export const useGlobalStore = defineStore('global', {
 
       this.shareKeys = coreData.share_keys
       this.groups = coreData.groups
+      this.groupInfo = coreData.groupInfo
       this.masquerade = coreData.masquerade
       this.login = coreData.login
       this.staticData = {

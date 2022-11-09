@@ -139,7 +139,7 @@
           <div v-for="(date, index) in weeks.slice().reverse()" :key="index" class="mt-2">
             <b-row>
               <b-col>{{ print_date(date) }}</b-col>
-              <b-col>{{ grouped_results[date].length }}</b-col>
+              <b-col>{{ groupedResults[date].length }}</b-col>
               <b-col>
                 <b-btn v-b-toggle="'collapse_' + index" size="sm" variant="outline-secondary">
                   <i class="when-closed fas fa-caret-down"></i>
@@ -160,7 +160,7 @@
                     <th v-if="!readOnly">Aktionen</th>
                   </thead>
                   <tbody>
-                    <tr v-for="(result, resultIndex) in grouped_results[date]" :key="result.id">
+                    <tr v-for="(result, resultIndex) in groupedResults[date]" :key="result.id">
                       <td>{{ print_date(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
@@ -248,6 +248,8 @@
   import isObject from 'lodash/isObject'
   import SupportView from './support-view.vue'
   import uniq from 'lodash/uniq'
+  import apiRoutes from '../routes/api-routes'
+  import format from 'date-fns/format'
 
   export default {
     name: 'AssessmentView',
@@ -258,7 +260,7 @@
         printDate: this.print_date,
         readOnly: this.readOnly,
         studentName: this.studentName,
-        weeks: this.weeks,
+        weeks: this.weeks
       }
     },
     props: {
@@ -270,7 +272,7 @@
       readOnly: Boolean,
       results: Array,
       studentTest: Boolean,
-      test: Object,
+      test: Object
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -280,24 +282,22 @@
       return {
         is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
-        deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+        deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id //Wurde eine Anfrage für ein/dieses Assessment gestartet?
       }
     },
     computed: {
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
-      grouped_results() {
+      groupedResults() {
         //Results nach Wochen gruppieren, für die Ergebnisliste
-        let res = {}
-        for (let i = 0; i < this.results.length; ++i) {
-          if (res[this.results[i].test_week] === undefined) {
-            res[this.results[i].test_week] = [{ index: i, data: this.results[i] }]
-          } else {
-            res[this.results[i].test_week].push({ index: i, data: this.results[i] })
-          }
-        }
-        return res
+        const result = this.results.reduce((acc, res, i) => {
+          acc[res.test_week] = acc[res.test_week] || []
+          acc[res.test_week].push({ index: i, data: res })
+          return acc
+        }, {})
+
+        return result
       },
       includedStudents() {
         return this.students.filter(student => !this.excludeList.includes(student.id))
@@ -307,22 +307,21 @@
       },
       weeks: function () {
         return compact(uniq(this.results?.map(w => w.test_week)))
-      },
+      }
     },
     methods: {
       auto_scroll(element) {
         //Scrollt Seite, bis übergebenes Element sichtbar ist.
         this.jQuery(element)[0].scrollIntoView(false)
       },
-      async exclude(student) {
+      async exclude(studentId) {
         //AJAX-Request senden
 
-        const res = await ajax({
-          url: `/groups/${this.group.id}/assessments/${this.test.id}/?assessment[exclude]=${student}`,
-          method: 'put',
-        })
+        const res = await ajax(
+          apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId)
+        )
         if (res.status === 200) {
-          this.excludeList.push(student)
+          this.excludeList.push(studentId)
         }
       },
       get_result(student) {
@@ -342,33 +341,34 @@
       getCSRFToken() {
         return document.getElementsByName('csrf-token')[0].getAttribute('content')
       },
-      async include(student) {
+      async include(studentId) {
         //AJAX-Request senden
 
-        const res = await ajax({
-          url: `/groups/${this.group.id}/assessments/${this.test.id}/?assessment[include]=${student}`,
-          method: 'put',
-        })
+        const res = await ajax(
+          apiRoutes.assessments.includeStudents(this.group.id, this.test.id, studentId)
+        )
         if (res.status === 200) {
-          this.excludeList = this.excludeList.filter(item => item !== student)
+          this.excludeList = this.excludeList.filter(item => item !== studentId)
         }
       },
       print_date(date) {
         //Datumsanzeige formatieren
-        let d = new Date(date)
-        return d.toLocaleDateString('de-DE')
+        if (date) {
+          return format(new Date(date), 'dd.MM.yyyy')
+        } else {
+          return ''
+        }
       },
       async deleteResult(result, index) {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Messung löschen',
           message: `Diese Messung unwiderruflich löschen! Sind Sie sicher?`,
-          okText: 'Ja, löschen',
+          okText: 'Ja, löschen'
         })
         if (ok) {
-          const res = await ajax({
-            url: `/students/${result.data.student_id}/results/${result.data.id}`,
-            method: 'delete',
-          })
+          const res = await ajax(
+            apiRoutes.assessments.deleteResult(result.data.student_id, result.data.id)
+          )
           if (res.status === 200) {
             this.remove(result.index, index)
           }
@@ -394,11 +394,11 @@
         return getStudent(this.group.id, id).name
       },
       async toggleAssessment() {
-        const res = await ajax({
-          url: `/groups/${this.group.id}/assessments/${this.test.id}`,
-          method: 'put',
-          data: { assessment: { active: this.is_active ? 0 : 1 } },
-        })
+        const res = await ajax(
+          apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
+            assessment: { active: this.is_active ? 0 : 1 }
+          })
+        )
         if (res.status === 200) {
           this.is_active = !this.is_active
         }
@@ -409,8 +409,8 @@
         } else {
           return fallback
         }
-      },
-    },
+      }
+    }
   }
 </script>
 

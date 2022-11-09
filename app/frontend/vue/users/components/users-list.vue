@@ -41,7 +41,7 @@
               ><i class="fas fa-trash"></i> Löschen</b-btn
             >
             <b-btn
-              v-if="$root.login.id !== user.id && user.tc_accepted && checkRegistration(user)"
+              v-if="globalStore.login.id !== user.id && user.tc_accepted && checkRegistration(user)"
               variant="outline-secondary"
               class="delete-user btn btn-sm mr-1"
               @click="loginAs(user.id)"

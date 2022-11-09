@@ -24,4 +24,23 @@ export default {
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
   },
+  assessments: {
+    excludeStudent: (groupId, testId, studentId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/?assessment[exclude]=${studentId}`,
+      method: 'PUT',
+    }),
+    includeStudent: (groupId, testId, studentId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/?assessment[include]=${studentId}`,
+      method: 'PUT',
+    }),
+    deleteResult: (studentId, resultId) => ({
+      url: `/students/${studentId}/results/${resultId}`,
+      method: 'DELETE',
+    }),
+    toggleAssessment: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}`,
+      method: 'PUT',
+      data,
+    }),
+  },
 }

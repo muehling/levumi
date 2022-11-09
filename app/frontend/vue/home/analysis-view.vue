@@ -224,8 +224,13 @@
   import deepmerge from 'deepmerge'
   import ApexCharts from 'apexcharts'
   import jsPDF from 'jspdf'
-  import { apexChartOptions } from './apexChartHelpers'
+  import {
+    apexChartOptions,
+    annotationsLineOptions,
+    annotationsPointOptions
+  } from './apexChartHelpers'
   import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
+  import format from 'date-fns/format'
 
   export default {
     name: 'AnalysisView',
@@ -236,7 +241,7 @@
       group: Object,
       results: Array,
       students: Array,
-      test: Object,
+      test: Object
     },
     data: function () {
       return {
@@ -246,7 +251,7 @@
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
-        view_selected: 0,
+        view_selected: 0
       }
     },
     computed: {
@@ -332,7 +337,7 @@
       },
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
-      },
+      }
     },
     mounted() {
       this.studentSelected = this.has_group_views
@@ -449,14 +454,11 @@
         }
 
         const view = this.configuration.views[this.view_selected]
-        //Optionen für Graph aus Default Werten und gewählten Werten bauen
-        //Aktuell Unterscheidung bar/line wegen Bug in Apexcharts
-        let opt = JSON.parse(
-          JSON.stringify(
-            view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
-          )
-        )
-        opt = deepmerge(opt, JSON.parse(JSON.stringify(view.options)))
+
+        let opt =
+          view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
+
+        opt = deepmerge(opt, view.options)
 
         //Default für y-Achse: 10% Luft nach oben
         if (opt.yaxis === undefined) {
@@ -468,112 +470,27 @@
           }
         }
 
-        //x-Achsen Beschriftung mit Testwochen
-        if (view.options.chart.type === 'line') {
-          opt.xaxis.labels.formatter = function (value, timestamp, index) {
-            if (index >= this.weeks.length) {
-              return
-            } else {
-              return this.printDate(this.weeks[index])
-            }
-          }.bind(this)
-        } else {
-          for (let i = 0; i < opt.xaxis.categories.length; ++i) {
-            opt.xaxis.categories[i] = this.printDate(opt.xaxis.categories[i])
-          }
-        }
+        const applicableStudentData =
+          this.studentSelected === -1
+            ? this.studentsWithResults
+            : [this.students.find(student => student.id === this.studentSelected)]
 
-        //Ergebnisse aufbereiten
-        let res = []
-        //Ein "leeres" Objekt für alle Datenserien anlegen
-        if (this.studentSelected == -1) {
-          for (let s = 0; s < this.studentsWithResults.length; ++s) {
-            if (this.has_results(this.students[s])) {
-              res.push({
-                name: this.studentName(this.students[s].id),
-                data: [],
-              })
-            }
-          }
-        } else {
-          if (view.series == undefined) {
-            if (this.students.length) {
-              res.push({
-                name: this.studentName(this.studentSelected),
-                data: [],
-              })
-            }
-          } else {
-            for (let s = 0; s < view.series.length; ++s) {
-              res.push({
-                name: view.series[s],
-                data: [],
-              })
-            }
-          }
-        }
+        const chartData = applicableStudentData.map(student => {
+          const applicableResults = this.results.filter(result => result.student_id === student.id)
+          const resultData = applicableResults.map(result => ({
+            y: result.views[view.key].toFixed(2),
+            x: format(new Date(result.test_week), 'dd.MM.yyyy')
+          }))
+          const studentData = { name: student.name, data: resultData }
 
-        //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-        if (view.options.chart.type === 'bar') {
-          for (let r = 0; r < res.length; ++r) {
-            res[r].data = JSON.parse(JSON.stringify(this.weeks))
-            res[r].data.fill(null)
-          }
-        }
-
-        let maxY = view.options.yaxis ? (view.options.yaxis.max ? view.options.yaxis.max : 0) : 0 //Für Platzierung der Kommentare
-
-        //Leere Objekte füllen
-        for (let i = 0; i < this.results.length; ++i) {
-          if (this.studentSelected === -1 || view.series == undefined) {
-            let student = this.studentName(this.results[i].student_id)
-            let yVal = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
-            if (yVal > maxY) {
-              maxY = yVal
-            }
-            for (let r = 0; r < res.length; ++r) {
-              if (res[r].name == student) {
-                //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                if (view.options.chart.type === 'bar') {
-                  res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
-                } else {
-                  res[r].data.push({
-                    x: this.weeks.indexOf(this.results[i].test_week),
-                    y: yVal,
-                  })
-                }
-                break
-              }
-            }
-          } else if (this.results[i].student_id == this.studentSelected) {
-            for (let r = 0; r < view.series.length; ++r) {
-              if (!(view.series_keys[r] in this.results[i].views[view.key])) {
-                continue
-              }
-              let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
-              if (yVal > maxY) {
-                maxY = yVal
-              }
-              if (this.results[i].views[view.key][view.series_keys[r]] != undefined) {
-                if (view.options.chart.type === 'bar') {
-                  //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                  res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
-                } else {
-                  res[r].data.push({
-                    x: this.weeks.indexOf(this.results[i].test_week),
-                    y: yVal,
-                  })
-                }
-              }
-            }
-          }
-        }
+          return studentData
+        })
 
         //Kommentare einfügen
         opt['annotations'] = {
           position: 'front',
           xaxis: [],
-          points: [],
+          points: []
         }
         for (let i = 0; i < this.annotations.length; ++i) {
           if (
@@ -586,66 +503,14 @@
               this.annotations[i].start != this.annotations[i].end &&
               view.options.chart.type === 'line'
             ) {
-              opt['annotations']['xaxis'].push({
-                //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
-                x: this.weeks.indexOf(this.annotations[i].start),
-                x2: this.weeks.indexOf(this.annotations[i].end),
-                strokeDashArray: 1,
-                borderColor: '#c2c2c2',
-                fillColor: '#c2c2c2',
-                opacity: 0.3,
-                label: {
-                  borderColor: '#c2c2c2',
-                  borderWidth: 1,
-                  text: this.decode_text(this.annotations[i].content),
-                  textAnchor:
-                    this.weeks.indexOf(this.annotations[i].start) < 2
-                      ? 'right'
-                      : this.weeks.indexOf(this.annotations[i].start) > this.weeks.length - 2
-                      ? 'left'
-                      : 'middle',
-                  position: 'top',
-                  offsetY: 100,
-                  offsetX: 10,
-                  orientation: 'horizontal',
-                  style: {
-                    background: '#fff',
-                    color: '#777',
-                    fontSize: '12px',
-                    cssClass: 'apexcharts-xaxis-annotation-label',
-                  },
-                },
-              })
+              //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
+              opt['annotations']['xaxis'].push(annotationsLineOptions(this.annotations[i]))
             }
             //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
             else {
-              opt['annotations']['points'].push({
-                x:
-                  view.options.chart.type === 'line'
-                    ? this.weeks.indexOf(this.annotations[i].start)
-                    : this.printDate(this.annotations[i].start),
-                y: 1.025 * maxY,
-                strokeDashArray: 1,
-                borderColor: '#c2c2c2',
-                fillColor: '#c2c2c2',
-                opacity: 0.3,
-                label: {
-                  borderColor: '#c2c2c2',
-                  borderWidth: 1,
-                  text: this.decode_text(this.annotations[i].content),
-                  textAnchor: 'middle',
-                  position: 'top',
-                  orientation: 'horizontal',
-                  offsetY: 15,
-                  offsetX: 10,
-                  style: {
-                    background: '#fff',
-                    color: '#777',
-                    fontSize: '12px',
-                    cssClass: 'apexcharts-xaxis-annotation-label',
-                  },
-                },
-              })
+              opt['annotations']['points'].push(
+                annotationsPointOptions(view, this.annotations[i], 1)
+              ) //FIXME hardcoded parameter 1 is certainly not correct
             }
           }
         }
@@ -655,10 +520,9 @@
         }
 
         opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
-        this.apexchart = new ApexCharts(
-          document.querySelector(opt.chart.id),
-          deepmerge(opt, { series: res })
-        )
+        const options = { ...opt, series: chartData }
+
+        this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
         this.apexchart.render()
       },
       success(event) {
@@ -674,7 +538,7 @@
         for (let i = this.weeks.length - 1; i >= 0; --i) {
           res.push({
             value: this.weeks[i],
-            text: this.printDate(this.weeks[i]),
+            text: this.printDate(this.weeks[i])
           })
         }
         return res
@@ -686,8 +550,8 @@
           }
         }
         return false
-      },
-    },
+      }
+    }
   }
 </script>
 

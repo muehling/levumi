@@ -90,20 +90,73 @@ export const apexChartOptions = weeks => ({
     },
     xaxis: {
       tooltip: { enabled: false },
-      type: 'numeric',
-      min: 0,
-      max: weeks.length - 1,
-      tickAmount: weeks.length - 1,
-      labels: {
-        minHeight: 20,
-      },
+      type: 'category',
       title: {
         text: 'Testwoche',
+        offsetY: 90,
       },
     },
     yaxis: {
       min: 0,
       forceNiceScale: true,
+    },
+  },
+})
+
+export const annotationsLineOptions = annotation => ({
+  x: this.weeks.indexOf(annotation.start),
+  x2: this.weeks.indexOf(annotation.end),
+  strokeDashArray: 1,
+  borderColor: '#c2c2c2',
+  fillColor: '#c2c2c2',
+  opacity: 0.3,
+  label: {
+    borderColor: '#c2c2c2',
+    borderWidth: 1,
+    text: this.decode_text(annotation.content),
+    textAnchor:
+      this.weeks.indexOf(annotation.start) < 2
+        ? 'right'
+        : this.weeks.indexOf(annotation.start) > this.weeks.length - 2
+        ? 'left'
+        : 'middle',
+    position: 'top',
+    offsetY: 100,
+    offsetX: 10,
+    orientation: 'horizontal',
+    style: {
+      background: '#fff',
+      color: '#777',
+      fontSize: '12px',
+      cssClass: 'apexcharts-xaxis-annotation-label',
+    },
+  },
+})
+
+export const annotationsPointOptions = (view, annotation, maxY) => ({
+  x:
+    view.options.chart.type === 'line'
+      ? this.weeks.indexOf(annotation.start)
+      : this.printDate(annotation.start),
+  y: 1.025 * maxY,
+  strokeDashArray: 1,
+  borderColor: '#c2c2c2',
+  fillColor: '#c2c2c2',
+  opacity: 0.3,
+  label: {
+    borderColor: '#c2c2c2',
+    borderWidth: 1,
+    text: this.decode_text(annotation.content),
+    textAnchor: 'middle',
+    position: 'top',
+    orientation: 'horizontal',
+    offsetY: 15,
+    offsetX: 10,
+    style: {
+      background: '#fff',
+      color: '#777',
+      fontSize: '12px',
+      cssClass: 'apexcharts-xaxis-annotation-label',
     },
   },
 })
