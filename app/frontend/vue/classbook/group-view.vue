@@ -13,7 +13,7 @@
       <!-- Info/Form für Klassen teilen -->
       <share-form v-if="group.id" :group="group" @update:groups="updateGroup($event)"> </share-form>
     </div>
-    <student-list v-if="group.key != null" :group="group.id" :read_only="read_only"> </student-list>
+    <student-list v-if="group.key != null" :group="group.id" :read-only="read_only"> </student-list>
   </div>
 
   <!-- Darstellung für archivierte Klasse -->
@@ -96,7 +96,7 @@
       },
 
       /*****************************
-       * remove group and propagate to parent component
+       * delete group and propagate to parent component
        ******************************/
       async requestDeleteGroup() {
         const ok = await this.$refs.confirmDialog.open({

@@ -1,5 +1,5 @@
 import { ajax } from '../utils/ajax'
-import { decryptStudentName } from '../utils/encryption'
+import { decryptStudentNames } from '../utils/encryption'
 import apiRoutes from '../vue/routes/api-routes'
 
 import { defineStore } from 'pinia'
@@ -61,17 +61,8 @@ export const useGlobalStore = defineStore('global', {
       // decrypt student names
       if (coreData.groups) {
         const studentsInGroups = coreData.groups.reduce((acc, group) => {
-          acc[group.id] = group.students?.map(student => {
-            return {
-              ...student,
-              name: decryptStudentName(
-                student.name,
-                `Kind_${student.id}`,
-                group.id,
-                coreData.share_keys
-              ),
-            }
-          })
+          acc[group.id] = decryptStudentNames(group)
+
           return acc
         }, {})
 

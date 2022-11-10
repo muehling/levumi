@@ -56,7 +56,7 @@
 
         const res = await ajax({ ...apiRoutes.users.usersMail(this.$root.login.id), data })
         if (res.status === 200) {
-          console.log('yay, sent')
+          //console.log('yay, sent')
         }
       },
     },

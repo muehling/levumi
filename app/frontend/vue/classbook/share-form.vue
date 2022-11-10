@@ -124,9 +124,15 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { encryptKey, decryptKey, decryptWithKey } from '../../utils/encryption'
+  import {
+    encryptKey,
+    decryptKey,
+    decryptWithKey,
+    decryptStudentNames,
+  } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import apiRoutes from '../routes/api-routes'
 
   export default {
     name: 'ShareForm',
@@ -176,7 +182,8 @@
             method: 'delete',
           })
           if (res.status === 200) {
-            this.$parent.remove(this.index)
+            const newGroups = this.globalStore.groups.filter(g => g.id !== this.group.id)
+            this.globalStore.setGroups(newGroups)
           }
         }
       },
@@ -195,16 +202,9 @@
           return null
         }
       },
-      async acceptShare() {
-        /**
-         * For the moment, we need to rely on the form's default behaviour to get
-         * the data for the newly shared students - these are currently rendered
-         * and decrypted by Rails only on page reload.
-         * Thus we can't call preventDefault and stopPropagation here.
-         */
-
-        //e.preventDefault()
-        //e.stopPropagation()
+      async acceptShare(e) {
+        e.preventDefault()
+        e.stopPropagation()
         const data = {
           group_share: { key: this.prepareKey() },
         }
@@ -213,8 +213,16 @@
           method: 'put',
           data,
         })
-        this.globalStore.setStudentsInGroups({ groupId: result.id, students: result.students })
-        //store.studentsInGroups[result.id] = result.students
+        if (result) {
+          const newGroups = this.globalStore.groups.filter(group => group.id !== result.id)
+          newGroups.push(result)
+          this.globalStore.setGroups(newGroups)
+          const decryptedGroup = decryptStudentNames(result)
+          this.globalStore.setStudentsInGroup({
+            groupId: result.id,
+            students: decryptedGroup,
+          })
+        }
       },
       submitNewShare(e) {
         e.preventDefault()

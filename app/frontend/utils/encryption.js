@@ -18,6 +18,18 @@ export const decryptStudentName = (text, alt, group) => {
   return res
 }
 
+// returns an array with the decrypted student names of the passed group
+export const decryptStudentNames = group => {
+  const g = group.students?.map(student => {
+    return {
+      ...student,
+      name: decryptStudentName(student.name, `Kind_${student.id}`, group.id),
+    }
+  })
+
+  return g
+}
+
 //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
 export const encryptWithMasterKeyAndGroup = (text, group) => {
   const store = useGlobalStore()
