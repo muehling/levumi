@@ -18,6 +18,9 @@
 
 <!-- Testskripte laden und Testumgebung definieren -->
 <script type="module">
+    // all variables and functions declared here that are part of the interface of the tests
+    // need to be exposed in the global namespace. Otherwise, not all tests work, depending
+    // on implementation.
 
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
@@ -25,6 +28,7 @@
         '<%= f.filename %>': '<%= rails_blob_path(f) %>',
         <% end %>
     }
+    window.media_paths = media_paths
 
     //Vorheriges Ergebnis als Objekt
     <% unless @last_result.nil? %>
@@ -36,50 +40,55 @@
     <% else %>
     const lastResult = undefined
     <% end %>
+    window.lastResult = lastResult
 
     //Präferenzen des Kindes setzen
     const font_family = '<%= @student.get_setting(:font_family) %>'
-    const font_size = <%= @student.get_setting(:font_size) %>
+    window.font_family = font_family
 
-        //Funktionen für Testumgebung bereitstellen
-        function saveResults(views, report, data, callback) {
-            let url = '<%= student_results_url(@student)%>'
-            let header = {
-                'Content-Type': 'application/x-www-form-urlencoded',
-                'X-Requested-With': 'XMLHttpRequest',
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            }
-            let body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
-            fetch(url, {
-                method: 'post',
-                headers: header,
-                credentials: 'include',
-                body: body
-            })
-                .then(function(response){
-                    if(!response.ok)
-                        throw Error(response.statusText)
-                })
-                .then(data => callback())
-                .catch(error => {
-                    //Bei Fehler versuche die Daten nochmal abzuspeichern
-                    fetch(url, {
-                        method: 'put',
-                        headers: header,
-                        credentials: 'include',
-                        body: body
-                    })
-                        .then(function(response){
-                            if(!response.ok)
-                                throw Error(response.statusText)
-                        })
-                        .then(data => callback())
-                        .catch(error => {
-                            //Zweimal erfolglos => Fehlermeldung anzeigen
-                            $('#error_message').show()
-                        })
-                })
+    const font_size = <%= @student.get_setting(:font_size) %>
+    window.font_size = font_size
+
+    //Funktionen für Testumgebung bereitstellen
+    function saveResults(views, report, data, callback) {
+        let url = '<%= student_results_url(@student)%>'
+        let header = {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
         }
+        let body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
+        fetch(url, {
+            method: 'post',
+            headers: header,
+            credentials: 'include',
+            body: body
+        })
+            .then(function(response){
+                if(!response.ok)
+                    throw Error(response.statusText)
+            })
+            .then(data => callback())
+            .catch(error => {
+                //Bei Fehler versuche die Daten nochmal abzuspeichern
+                fetch(url, {
+                    method: 'put',
+                    headers: header,
+                    credentials: 'include',
+                    body: body
+                })
+                    .then(function(response){
+                        if(!response.ok)
+                            throw Error(response.statusText)
+                    })
+                    .then(data => callback())
+                    .catch(error => {
+                        //Zweimal erfolglos => Fehlermeldung anzeigen
+                        $('#error_message').show()
+                    })
+            })
+    }
+    window.saveResults = saveResults
 
     //Testfenster schließen
     function exit() {
@@ -112,6 +121,8 @@
     }
     window.shuffleArray = shuffleArray
 
+    
+
     //FIXME these variables should to be declared in the tests
     let answer
     let progress
@@ -120,6 +131,15 @@
     <% @test.script_files.each do |f| %>
     <%= raw f.download.force_encoding('UTF-8') %>
     <% end %>
+
+    //FIXME these functions are declared in various test.js files, and referenced in click handlers in the corresponding test.html files
+    //FIXME ideally, the click handlers should be attached with $('el').on('click', someFunction) in the test.js.
+    //FIXME once this is done, these assignments need to be removed.
+
+    // auslautverhaertung_n4
+    window.next = next
+    window.fill_gap = fill_gap
+    window.dk_function = dk_function
 
     //Anzeigen des Feedbacks
     //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))
@@ -149,6 +169,7 @@
 
         $(".exit-button").on("click", exit)
     }
+    window.showFeedback = showFeedback
 
     <%if @test.student_test%>
       //Backspace als "Zurück" verhindern
