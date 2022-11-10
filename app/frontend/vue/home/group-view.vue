@@ -1,32 +1,14 @@
 <template>
   <div>
     <div v-if="!!group.id" class="mb-2 mt-2">
-      <b-btn
-        v-b-toggle="'collapse_test_' + group.id"
-        variant="outline-secondary"
-        size="sm"
-        @click="toggleAssessments()"
+      <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm"
         ><i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
         <!-- Spinner für die AJAX-Requests zum Laden der Liste -->
-        <div v-if="isLoading" class="spinner" style="padding-bottom: 75px">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-        </div>
+
         <!-- Listenansicht für alle Tests -->
-        <list-view
-          v-else-if="list"
-          :list="list"
-          :group="group"
-          :read_only="group.read_only"
-          @update:list="
-            list = undefined
-            toggleAssessments()
-          "
-        >
-        </list-view>
+        <list-view :group="group" :read_only="group.read_only"> </list-view>
       </b-collapse>
     </div>
     <b-card bg-variant="light" class="mt-3">
@@ -217,13 +199,13 @@
         .filter(word => !stopwords.includes(word))
         .filter((v, i, a) => a.indexOf(v) === i)
       return {
-        student_name_parts: this.student_name_parts,
+        student_name_parts: this.student_name_parts
       }
     },
     props: {
       group: Object,
       groupInfo: Object,
-      index: Number,
+      index: Number
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -243,7 +225,6 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.family
             : 0,
-        list: undefined,
         results:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.assessment
@@ -258,7 +239,7 @@
         version_selected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
-            : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
+            : 0 //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
       }
     },
     computed: {
@@ -341,8 +322,9 @@
         return this.versions.filter(
           version => version.used || (!version.info.archive && !this.group.read_only)
         )
-      },
+      }
     },
+
     methods: {
       //Neues Assessment anlegen und, bei Erfolg, laden.
       createAssessment(test, isVersion) {
@@ -350,7 +332,7 @@
           contentType: 'application/x-www-form-urlencoded',
           data: `test_id=${test.info.id}`,
           method: 'post',
-          url: `/groups/${this.group.id}/assessments/`,
+          url: `/groups/${this.group.id}/assessments/`
         }).then(() => {
           this.use_test(test.info.id)
           this.loadAssessment(test.info.id, isVersion)
@@ -379,20 +361,7 @@
           this.results = {}
         }
       },
-      async toggleAssessments() {
-        if (this.list != undefined) {
-          this.list = undefined
-          return
-        }
-        this.isLoading = true //Spinner anzeigen
 
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments` })
-        if (res.status === 200) {
-          const text = await res.text()
-          this.list = JSON.parse(text)
-          this.isLoading = false //Spinner verstecken
-        }
-      },
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
       select_area(area) {
         this.areaSelected = area
@@ -422,7 +391,7 @@
       },
       removeEntry(index) {
         this.results.series.splice(index, 1)
-      },
-    },
+      }
+    }
   }
 </script>

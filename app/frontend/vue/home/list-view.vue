@@ -39,26 +39,44 @@
   export default {
     name: 'ListView',
     props: {
-      group: Object,
-      list: Array,
+      group: Object
     },
-
+    data() {
+      return {
+        list: []
+      }
+    },
     computed: {
       sorted_list() {
         return [...this.list].sort((a, b) => a.name.localeCompare(b.name))
-      },
+      }
+    },
+    mounted() {
+      this.updateList()
     },
     methods: {
       async toggleAssessment(test) {
         const res = await ajax({
           url: `/groups/${this.group.id}/assessments/${test.test}`,
           method: 'put',
-          data: { assessment: { active: test.active ? 0 : 1 } },
+          data: { assessment: { active: test.active ? 0 : 1 } }
         })
         if (res.status === 200) {
-          this.$emit('update:list')
+          this.updateList()
         }
       },
-    },
+      async updateList() {
+        this.isLoading = true //Spinner anzeigen
+
+        const res = await ajax({ url: `/groups/${this.group.id}/assessments` })
+        if (res.status === 200) {
+          const text = await res.text()
+          this.list = JSON.parse(text)
+          this.isLoading = false //Spinner verstecken
+        } else {
+          this.globalStore.setErrorMessage('Assessments konnten nicht geladen werden!')
+        }
+      }
+    }
   }
 </script>
