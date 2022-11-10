@@ -38,7 +38,11 @@
               :id="group.id + '_competence_' + competence.info.id"
               :key="competence.info.id"
               :active="competence.info.id == competenceSelected"
-              @click=";(competence.used = true), select_competence(competence.info.id)"
+              @click="
+                if ((competence.used = true)) {
+                  select_competence(competence.info.id)
+                }
+              "
             >
               <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{
                 competence.info.name
@@ -245,12 +249,7 @@
     computed: {
       empty: function () {
         //Ist überhaupt ein Assessment vorhanden?
-        for (let i = 0; i < this.groupInfo?.areas.length; ++i) {
-          if (this.groupInfo?.areas[i].used) {
-            return false
-          }
-        }
-        return true
+        return this.groupInfo.areas.reduce((acc, area) => acc || area.used, false)
       },
       //Alle zur aktuellen Familie passenden Tests, jeweils nur die aktuelle Version
       tests: function () {

@@ -135,11 +135,12 @@
     //FIXME these functions are declared in various test.js files, and referenced in click handlers in the corresponding test.html files
     //FIXME ideally, the click handlers should be attached with $('el').on('click', someFunction) in the test.js.
     //FIXME once this is done, these assignments need to be removed.
+    //FIXME try/catch is necessary to suppress errors for tests that don't implement the functions
 
     // auslautverhaertung_n4
-    window.next = next
-    window.fill_gap = fill_gap
-    window.dk_function = dk_function
+    try { window.next = next } catch(e) { }
+    try { window.fill_gap = fill_gap } catch(e) { }
+    try { window.dk_function = dk_function } catch(e) { }
 
     //Anzeigen des Feedbacks
     //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))

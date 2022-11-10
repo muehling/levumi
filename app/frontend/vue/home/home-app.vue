@@ -67,12 +67,6 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    data: function () {
-      return {
-        //groups: this.globalStore.groups.filter(group => group.id),
-        //groupInfo: this.$root.group_info,
-      }
-    },
     computed: {
       ownActiveGroups() {
         return this.globalStore.groups.filter(
