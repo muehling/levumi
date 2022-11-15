@@ -94,6 +94,7 @@
               @ajax:success="success"
             >
               <b-form-group>
+                <input type="hidden" name="authenticity_token" :value="includeCSRFToken()" />
                 <b-form-input
                   id="login"
                   :state="retry ? false : null"
