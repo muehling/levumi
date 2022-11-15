@@ -30,12 +30,17 @@
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
+  import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
 
   export default {
     name: 'UsersMailDialog',
     props: {
       users: Array,
+    },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
     },
     data() {
       return { text: '', teachers: false, researchers: false, privatePersons: false }
@@ -54,7 +59,7 @@
           text: this.text,
         }
 
-        const res = await ajax({ ...apiRoutes.users.usersMail(this.$root.login.id), data })
+        const res = await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
         if (res.status === 200) {
           //console.log('yay, sent')
         }
