@@ -31,7 +31,7 @@ COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
 COPY package.json yarn.lock /app/
 
-RUN gem update --system && gem install bundler && bundle install
+RUN gem update --system && gem install bundler && bundle config set --local without test development && bundle install
 RUN yarn
 
 COPY . /usr/src/app
