@@ -13,8 +13,6 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   yarn \
   nano \
   default-libmysqlclient-dev \
-  libpq-dev \
-  postgresql-client \
   msmtp-mta \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
