@@ -12,12 +12,10 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   git \
   yarn \
   nano \
-  sqlite3 \
-  libsqlite3-dev \
-  #libmariadb-dev \
   default-libmysqlclient-dev \
   libpq-dev \
   postgresql-client \
+  msmtp-mta \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
@@ -26,7 +24,7 @@ ENV LANG=C.UTF-8 \
   BUNDLE_RETRY=3 \
   RAILS_ENV=production \
   RAILS_SERVE_STATIC_FILES=true \
-  RAILS_RELATIVE_URL_ROOT='/levumi2' \
+  RAILS_RELATIVE_URL_ROOT='/' \
   NODE_ENV=production
 
 
@@ -39,6 +37,7 @@ RUN gem update --system && gem install bundler && bundle install
 RUN yarn
 
 COPY . /usr/src/app
+COPY .msmtprc ~/
 
 COPY entrypoint.sh /usr/bin/
 RUN chmod +x /usr/bin/entrypoint.sh
