@@ -42,7 +42,7 @@ class ApplicationController < ActionController::Base
   #POST '/logout'
   def logout
     reset_session #Session löschen
-    redirect_to '/'
+    redirect_to '/?logout=true'
   end
 
   #Zugang für Schülerinnen und Schüler
@@ -125,9 +125,7 @@ class ApplicationController < ActionController::Base
       else
         #TODO might be necessary to return an error here for api calls
         # only redirect to frontpage if not already there to avoid endless cycle
-        if request.fullpath != "/"
-          redirect_to '/'         
-        end
+        redirect_to '/' if request.fullpath != '/' && request.fullpath != '/?logout=true'
       end
     end
   end
