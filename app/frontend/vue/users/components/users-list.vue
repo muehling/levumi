@@ -6,6 +6,7 @@
           <th scope="col">ID</th>
           <th scope="col">E-Mail Adresse</th>
           <th scope="col">Account-Typ</th>
+          <th scope="col">Rollen</th>
           <th scope="col">Bundesland</th>
           <th scope="col">Zuletzt eingeloggt</th>
           <th scope="col">Aktionen</th>
@@ -23,6 +24,7 @@
           <td>
             {{ accountTypes.find(accountType => user.account_type === accountType.id).label }}
           </td>
+          <td class="text-capitalize">{{ user.capabilities || '-' }}</td>
           <td>{{ states.find(state => state.id === user.state).label }}</td>
           <td>
             {{ !user.last_login ? 'Nie' : new Date(user.last_login).toLocaleString('de-DE') }}

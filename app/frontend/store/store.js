@@ -23,7 +23,7 @@ export const useGlobalStore = defineStore('global', {
       this.groups = groups
     },
     setShareKeys(keys) {
-      this.shareKeys = keys
+      this.shareKeys = keys || {}
     },
     setShareKey({ key, value }) {
       this.shareKeys = { ...this.shareKeys, [key]: value }

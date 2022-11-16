@@ -260,7 +260,7 @@
         printDate: this.print_date,
         readOnly: this.readOnly,
         studentName: this.studentName,
-        weeks: this.weeks
+        weeks: this.weeks,
       }
     },
     props: {
@@ -272,7 +272,7 @@
       readOnly: Boolean,
       results: Array,
       studentTest: Boolean,
-      test: Object
+      test: Object,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -282,7 +282,7 @@
       return {
         is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
-        deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+        deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
       }
     },
     computed: {
@@ -307,7 +307,7 @@
       },
       weeks: function () {
         return compact(uniq(this.results?.map(w => w.test_week)))
-      }
+      },
     },
     methods: {
       auto_scroll(element) {
@@ -363,7 +363,7 @@
         const ok = await this.$refs.confirmDialog.open({
           title: 'Messung löschen',
           message: `Diese Messung unwiderruflich löschen! Sind Sie sicher?`,
-          okText: 'Ja, löschen'
+          okText: 'Ja, löschen',
         })
         if (ok) {
           const res = await ajax(
@@ -396,7 +396,7 @@
       async toggleAssessment() {
         const res = await ajax(
           apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
-            assessment: { active: this.is_active ? 0 : 1 }
+            assessment: { active: this.is_active ? 0 : 1 },
           })
         )
         if (res.status === 200) {
@@ -409,8 +409,8 @@
         } else {
           return fallback
         }
-      }
-    }
+      },
+    },
   }
 </script>
 

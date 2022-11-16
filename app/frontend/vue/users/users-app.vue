@@ -10,7 +10,6 @@
         <b-nav-item role="presentation" @click="openMailDialog">Nachricht an Nutzer</b-nav-item>
       </template>
     </b-tabs>
-    <edit-user-dialog ref="editUserDialog" @refetch="refetch" />
     <users-mail-dialog ref="usersMailDialog" />
   </b-container>
 </template>
@@ -19,12 +18,11 @@
   import { ajax } from '../../utils/ajax'
   import { hasCapability } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
-  import EditUserDialog from './components/edit-user-dialog.vue'
   import UsersList from './components/users-list.vue'
   import UsersMailDialog from './components/users-mail-dialog.vue'
   export default {
     name: 'UsersApp',
-    components: { UsersList, EditUserDialog, UsersMailDialog },
+    components: { UsersList, UsersMailDialog },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
