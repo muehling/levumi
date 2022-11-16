@@ -26,8 +26,13 @@
       return { globalStore }
     },
     computed: {
-      isOpen() {
-        return this.globalStore.errorMessage !== ''
+      isOpen: {
+        get: function () {
+          return this.globalStore.errorMessage !== ''
+        },
+        set: function () {
+          this.globalStore.setErrorMessage('')
+        },
       },
     },
     methods: {

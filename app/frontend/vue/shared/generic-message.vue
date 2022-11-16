@@ -26,8 +26,13 @@
       return { globalStore }
     },
     computed: {
-      isOpen() {
-        return this.globalStore.genericMessage.message !== ''
+      isOpen: {
+        get: function () {
+          return this.globalStore.genericMessage.message !== ''
+        },
+        set: function () {
+          this.globalStore.resetGenericMessage()
+        },
       },
     },
     methods: {
