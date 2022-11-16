@@ -216,7 +216,9 @@
         if (res.status === 200) {
           sessionStorage.setItem('login', this.password)
           this.$emit('submitSuccessful')
-          this.globalStore.setShareKeys(newKeys)
+          if (newKeys) {
+            this.globalStore.setShareKeys(newKeys)
+          }
         } else {
           const data = await res.json()
           this.errors = data.errors
