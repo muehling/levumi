@@ -73,6 +73,7 @@
               message: 'Der Test wurde erfolgreich importiert!',
             })
             this.$emit('test-import:success')
+            this.globalStore.fetch()
             break
           case 406:
             this.globalStore.setErrorMessage('Beim Import ist ein Fehler aufgetreten!')
