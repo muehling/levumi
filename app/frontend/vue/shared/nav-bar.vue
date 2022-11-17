@@ -46,16 +46,13 @@
               aria-expanded="false"
             >
               Weiteres
-              <!-- TODO: Badge wieder entfernen -->
-              <span class="badge badge-info">Neu!</span>
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarHelp">
-              <!-- TODO: Badge wieder entfernen -->
               <a
                 class="dropdown-item"
                 href="https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi"
                 target="_blank"
-                >Levumi Newsletter <span class="badge badge-info">Neu!</span></a
+                >Levumi Newsletter</a
               >
               <a
                 class="dropdown-item"
