@@ -33,7 +33,7 @@ export const apexChartOptions = weeks => ({
       min: 0,
       forceNiceScale: true,
     },
-    tooltip: { shared: true },
+    tooltip: { shared: true, intersect: false },
   },
   line: {
     chart: {
@@ -82,6 +82,7 @@ export const apexChartOptions = weeks => ({
     },
     tooltip: {
       enabled: true,
+      intersect: false,
       x: { show: false },
     },
     markers: {
