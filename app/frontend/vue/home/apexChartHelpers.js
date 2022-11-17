@@ -95,6 +95,9 @@ export const apexChartOptions = weeks => ({
         text: 'Testwoche',
         offsetY: 90,
       },
+      labels: {
+        minHeight: 20,
+      },
     },
     yaxis: {
       min: 0,

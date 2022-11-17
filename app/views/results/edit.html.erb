@@ -119,7 +119,6 @@
             [array[i], array[j]] = [array[j], array[i]]
         }
     }
-    window.shuffleArray = shuffleArray
 
 
     //Test-Skripte einbinden
@@ -173,8 +172,10 @@
 
     <%if @test.student_test%>
       //Backspace als "Zurück" verhindern
-      window.location.hash = 'no-back-button'
-      window.location.hash = 'Again-No-back-button'
-      window.onhashchange = function() { window.location.hash = 'no-back-button' }
+      // should be obsolete, as even Firefox no longer navigates with backspace
+      //window.location.hash = 'no-back-button'
+      //window.location.hash = 'Again-No-back-button'
+      //window.onhashchange = function() { window.location.hash = 'no-back-button' }
+      document.title = "<%= @test.level %>"
     <%end%>
 </script>

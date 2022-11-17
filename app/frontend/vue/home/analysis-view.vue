@@ -37,13 +37,8 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="view_selected == index"
-          @click="
-            () => {
-              view_selected = index
-              updateView(-1)
-            }
-          "
+          :pressed="view_selected === index"
+          @click="setSelectedView(index)"
         >
           {{ view.label }}
         </b-button>
@@ -227,10 +222,9 @@
   import {
     apexChartOptions,
     annotationsLineOptions,
-    annotationsPointOptions
+    annotationsPointOptions,
   } from './apexChartHelpers'
   import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
-  import format from 'date-fns/format'
 
   export default {
     name: 'AnalysisView',
@@ -241,7 +235,7 @@
       group: Object,
       results: Array,
       students: Array,
-      test: Object
+      test: Object,
     },
     data: function () {
       return {
@@ -251,7 +245,7 @@
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
-        view_selected: 0
+        view_selected: 0,
       }
     },
     computed: {
@@ -337,17 +331,24 @@
       },
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
-      }
+      },
     },
     mounted() {
       this.studentSelected = this.has_group_views
         ? -1
-        : this.studentsWithResults.length
+        : this.studentsWithResults[this.studentsWithResults.length - 1].id
         ? this.studentsWithResults[0].id
         : -1
       this.updateView(this.studentSelected)
     },
     methods: {
+      setSelectedView(index) {
+        this.view_selected = index
+        this.updateView(this.studentSelected)
+      },
+      getStudentName(id) {
+        return this.students.find(student => student.id === id)?.name
+      },
       decode_text(text) {
         const id = this.group.id
         return text.replace(/\{"iv[^}]*\}/g, function (match) {
@@ -452,7 +453,6 @@
         if (this.configuration.views[this.view_selected].type === 'table') {
           return
         }
-
         const view = this.configuration.views[this.view_selected]
 
         let opt =
@@ -470,27 +470,109 @@
           }
         }
 
-        const applicableStudentData =
-          this.studentSelected === -1
-            ? this.studentsWithResults
-            : [this.students.find(student => student.id === this.studentSelected)]
+        //x-Achsen Beschriftung mit Testwochen
+        if (view.options.chart.type === 'line') {
+          opt.xaxis.labels.formatter = function (value, timestamp, index) {
+            if (index >= this.weeks.length) {
+              return ''
+            } else {
+              return this.printDate(this.weeks[index])
+            }
+          }.bind(this)
+        } else {
+          for (let i = 0; i < opt.xaxis.categories.length; ++i) {
+            opt.xaxis.categories[i] = this.printDate(opt.xaxis.categories[i])
+          }
+        }
+        //Ergebnisse aufbereiten
+        let res = []
+        //Ein "leeres" Objekt für alle Datenserien anlegen
+        if (this.studentselected == -1) {
+          for (let s = 0; s < this.students.length; ++s) {
+            if (this.has_results(this.students[s])) {
+              res.push({
+                name: this.getStudentName(this.students[s].id),
+                data: [],
+              })
+            }
+          }
+        } else {
+          if (view.series == undefined) {
+            res.push({
+              name: this.getStudentName(this.studentSelected),
+              data: [],
+            })
+          } else {
+            for (let s = 0; s < view.series.length; ++s) {
+              res.push({
+                name: view.series[s],
+                data: [],
+              })
+            }
+          }
+        }
 
-        const chartData = applicableStudentData.map(student => {
-          const applicableResults = this.results.filter(result => result.student_id === student.id)
-          const resultData = applicableResults.map(result => ({
-            y: result.views[view.key].toFixed(2),
-            x: format(new Date(result.test_week), 'dd.MM.yyyy')
-          }))
-          const studentData = { name: student.name, data: resultData }
+        //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+        if (view.options.chart.type === 'bar') {
+          for (let r = 0; r < res.length; ++r) {
+            res[r].data = JSON.parse(JSON.stringify(this.weeks))
+            res[r].data.fill(null)
+          }
+        }
 
-          return studentData
-        })
+        let maxY = view.options.yaxis ? (view.options.yaxis.max ? view.options.yaxis.max : 0) : 0 //Für Platzierung der Kommentare
+
+        //Leere Objekte füllen
+        for (let i = 0; i < this.results.length; ++i) {
+          if (this.studentSelected == -1 || view.series == undefined) {
+            let student = this.getStudentName(this.results[i].student_id)
+            let yVal = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
+            if (yVal > maxY) {
+              maxY = yVal
+            }
+            for (let r = 0; r < res.length; ++r) {
+              if (res[r].name == student) {
+                //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+                if (view.options.chart.type === 'bar') {
+                  res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
+                } else {
+                  res[r].data.push({
+                    x: this.weeks.indexOf(this.results[i].test_week),
+                    y: yVal,
+                  })
+                }
+                break
+              }
+            }
+          } else if (this.results[i].student_id == this.studentSelected) {
+            for (let r = 0; r < view.series.length; ++r) {
+              if (!(view.series_keys[r] in this.results[i].views[view.key])) {
+                continue
+              }
+              let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
+              if (yVal > maxY) {
+                maxY = yVal
+              }
+              if (this.results[i].views[view.key][view.series_keys[r]] != undefined) {
+                if (view.options.chart.type === 'bar') {
+                  //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
+                  res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
+                } else {
+                  res[r].data.push({
+                    x: this.weeks.indexOf(this.results[i].test_week),
+                    y: yVal,
+                  })
+                }
+              }
+            }
+          }
+        }
 
         //Kommentare einfügen
         opt['annotations'] = {
           position: 'front',
           xaxis: [],
-          points: []
+          points: [],
         }
         for (let i = 0; i < this.annotations.length; ++i) {
           if (
@@ -520,7 +602,7 @@
         }
 
         opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
-        const options = { ...opt, series: chartData }
+        const options = { ...opt, series: res }
 
         this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
         this.apexchart.render()
@@ -538,7 +620,7 @@
         for (let i = this.weeks.length - 1; i >= 0; --i) {
           res.push({
             value: this.weeks[i],
-            text: this.printDate(this.weeks[i])
+            text: this.printDate(this.weeks[i]),
           })
         }
         return res
@@ -550,8 +632,8 @@
           }
         }
         return false
-      }
-    }
+      },
+    },
   }
 </script>
 
