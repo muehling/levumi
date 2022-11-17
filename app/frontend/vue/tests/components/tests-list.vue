@@ -15,6 +15,7 @@
           v-if="!showExport"
           class="btn-sm mr-1"
           variant="outline-success"
+          :disabled="data.item.archive === 'Ja'"
           @click="editTest(data.item.id)"
         >
           <i class="fas fa-edit"></i>
@@ -76,8 +77,8 @@
           { key: 'competence', label: 'Kompetenz' },
           { key: 'test_family', label: 'Testfamilie' },
           { key: 'level', label: 'Niveaustufe' },
-          this.showExport && { key: 'version', label: 'Version' },
-          this.showExport && { key: 'archive', label: 'Archiv' },
+          !this.showExport && { key: 'version', label: 'Version' },
+          !this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'actions', label: 'Aktionen' },
         ]
       },
