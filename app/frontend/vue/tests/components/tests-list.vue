@@ -139,4 +139,7 @@
   .table-outline-secondary {
     color: grey;
   }
+  td:last-child {
+    white-space: nowrap;
+  }
 </style>
