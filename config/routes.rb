@@ -41,6 +41,7 @@ Rails.application.routes.draw do
   get '/materials/info', to: 'materials#get_material_data'
   get '/tests/info', to: 'tests#get_tests_data'
   get '/users/statistics', to: 'users#statistics'
+  post 'renew_login', to: 'application#renew_login'
 
   #Reguläres REST-Routing
   resources :users

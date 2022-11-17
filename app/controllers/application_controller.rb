@@ -39,10 +39,22 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def renew_login
+    u = User.find_by_email(params[:email])
+    if !u.nil? && u.authenticate(params[:password])
+      session[:user] = u.id
+      u.last_login = Time.now
+      u.save
+      head :ok
+    else
+      head :not_found
+    end
+  end
+
   #POST '/logout'
   def logout
     reset_session #Session löschen
-    redirect_to '/?logout=true'
+    redirect_to '/?logout=true' # Query param tells the frontend to delete the sessionStorage entry
   end
 
   #Zugang für Schülerinnen und Schüler

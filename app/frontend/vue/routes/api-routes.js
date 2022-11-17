@@ -8,6 +8,11 @@ export default {
     usersMail: id => ({ url: `/users/${id}/mail`, method: 'PUT' }),
     coreData: '/users/core_data',
     logout: '/logout',
+    renewLogin: ({ email, password }) => ({
+      url: '/renew_login',
+      method: 'POST',
+      data: { email, password },
+    }),
     statistics: '/users/statistics',
   },
   home: {
