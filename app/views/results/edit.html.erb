@@ -121,11 +121,6 @@
     }
     window.shuffleArray = shuffleArray
 
-    
-
-    //FIXME these variables should to be declared in the tests
-    let answer
-    let progress
 
     //Test-Skripte einbinden
     <% @test.script_files.each do |f| %>
@@ -141,6 +136,10 @@
     try { window.next = next } catch(e) { }
     try { window.fill_gap = fill_gap } catch(e) { }
     try { window.dk_function = dk_function } catch(e) { }
+    try { window.start = start } catch(e) { }
+    try { window.save_answer = save_answer } catch(e) { }
+    try { window.start_example = start_example } catch(e) { }
+
 
     //Anzeigen des Feedbacks
     //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))
