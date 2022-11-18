@@ -2,7 +2,7 @@
   <b-container v-cloak fluid>
     <b-row class="mt-3"> </b-row>
     <b-tabs card pills>
-      <b-tab title="Testübersicht"></b-tab>
+      <b-tab title="Übersicht Materialien"></b-tab>
       <template #tabs-end>
         <b-nav-item role="presentation" @click="createTest"> Neues Material </b-nav-item>
       </template>
