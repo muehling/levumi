@@ -12,128 +12,118 @@
       </b-collapse>
     </div>
     <b-card bg-variant="light" class="mt-3">
-      <b-row>
-        <b-col md="12">
-          <b-nav pills>
-            <!-- Alle Lernbereiche -->
-            <b-nav-item
-              v-for="area in usedAreas"
-              :key="area.info.id"
-              :active="area.info.id == areaSelected"
-              @click="
-                area.used = true
-                select_area(area.info.id)
-              "
-            >
-              <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{
-                area.info.name
-              }}</span>
-            </b-nav-item>
-          </b-nav>
-
-          <b-nav pills class="mt-1">
-            <!-- Alle Kompetenzen des gewählten Lernbereichs -->
-            <b-nav-item
-              v-for="competence in usedCompetences"
-              :id="group.id + '_competence_' + competence.info.id"
-              :key="competence.info.id"
-              :active="competence.info.id == competenceSelected"
-              @click="
-                if ((competence.used = true)) {
-                  select_competence(competence.info.id)
-                }
-              "
-            >
-              <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{
-                competence.info.name
-              }}</span>
-              <b-popover
-                v-if="!competence.used && competence.info.description != undefined"
-                :target="group.id + '_competence_' + competence.info.id"
-                triggers="hover"
-              >
-                <div v-html="competence.info.description"></div>
-              </b-popover>
-            </b-nav-item>
-          </b-nav>
-
-          <b-nav pills class="mt-1">
-            <!-- Alle Testfamilien der gewählten Kompetenz  -->
-            <b-nav-item
-              v-for="family in usedFamilies"
-              :id="group.id + '_family_' + family.info.id"
-              :key="family.info.id"
-              :active="family.info.id == family_selected"
-              @click=";(family.used = true), select_family(family.info.id)"
-            >
-              <span :class="family.used ? 'font-weight-bold' : 'text-muted'">{{
-                family.info.name
-              }}</span>
-              <b-popover
-                v-if="!family.used && family.info.description != undefined"
-                :target="group.id + '_family_' + family.info.id"
-                triggers="hover"
-              >
-                <div v-html="family.info.description"></div>
-              </b-popover>
-            </b-nav-item>
-          </b-nav>
-
-          <b-nav pills class="mt-1">
-            <!-- Alle Niveaustufen der gewählten Testfamilie -->
-            <b-nav-item
-              v-for="test in usedTests"
-              :id="group.id + '_test_' + test.info.id"
-              :key="test.info.id"
-              :active="test.info.id == test_selected"
-              @click="
-                test.used
-                  ? test.versions.length == 1
-                    ? loadAssessment(test.info.id, false)
-                    : (test_selected = test.info.id)
-                  : createAssessment(test, false)
-              "
-            >
-              <span :class="test.used ? 'font-weight-bold' : 'text-muted'">{{
-                test.info.level
-              }}</span>
-              <b-popover
-                v-if="!test.used && test.info.description.short != undefined"
-                :target="group.id + '_test_' + test.info.id"
-                triggers="hover"
-              >
-                <div v-html="test.info.description.short"></div>
-              </b-popover>
-            </b-nav-item>
-          </b-nav>
-
-          <b-nav v-if="versions.length > 1" pills class="mt-1">
-            <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
-            <b-nav-item
-              v-for="version in usedVersions"
-              :id="group.id + '_version_' + version.info.id"
-              :key="version.info.id"
-              :active="version.info.id == version_selected"
-              @click="
-                version.used
-                  ? loadAssessment(version.info.id, true)
-                  : createAssessment(version, true)
-              "
-            >
-              <span :class="version.used ? 'font-weight-bold' : 'text-muted'">{{
-                version.info.label
-              }}</span>
-              <b-popover
-                v-if="!version.used && version.info.description.short != undefined"
-                :target="group.id + '_version_' + version.info.id"
-                triggers="hover"
-              >
-                <div v-html="version.info.description.short"></div>
-              </b-popover>
-            </b-nav-item>
-          </b-nav>
-        </b-col>
-      </b-row>
+      <b-nav pills>
+        <!-- Alle Lernbereiche -->
+        <b-nav-item
+          v-for="area in usedAreas"
+          :key="area.info.id"
+          :active="area.info.id == areaSelected"
+          @click="
+            area.used = true
+            setSelectedArea(area.info.id)
+          "
+        >
+          <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{ area.info.name }}</span>
+        </b-nav-item>
+      </b-nav>
+      <hr v-if="areaSelected && areaSelected !== -1" />
+      <b-nav v-if="areaSelected && areaSelected !== -1" pills class="mt-1">
+        <!-- Alle Kompetenzen des gewählten Lernbereichs -->
+        <b-nav-item
+          v-for="competence in usedCompetences"
+          :id="group.id + '_competence_' + competence.info.id"
+          :key="competence.info.id"
+          :active="competence.info.id == competenceSelected"
+          @click="
+            if ((competence.used = true)) {
+              setSelectedCompetence(competence.info.id)
+            }
+          "
+        >
+          <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{
+            competence.info.name
+          }}</span>
+          <b-popover
+            v-if="!competence.used && competence.info.description != undefined"
+            :target="group.id + '_competence_' + competence.info.id"
+            triggers="hover"
+          >
+            <div v-html="competence.info.description"></div>
+          </b-popover>
+        </b-nav-item>
+      </b-nav>
+      <hr v-if="competenceSelected && competenceSelected !== -1" />
+      <b-nav v-if="competenceSelected && competenceSelected !== -1" pills class="mt-1">
+        <!-- Alle Testfamilien der gewählten Kompetenz  -->
+        <b-nav-item
+          v-for="family in usedFamilies"
+          :id="group.id + '_family_' + family.info.id"
+          :key="family.info.id"
+          :active="family.info.id == familySelected"
+          @click=";(family.used = true), setSelectedFamily(family.info.id)"
+        >
+          <span :class="family.used ? 'font-weight-bold' : 'text-muted'">{{
+            family.info.name
+          }}</span>
+          <b-popover
+            v-if="!family.used && family.info.description != undefined"
+            :target="group.id + '_family_' + family.info.id"
+            triggers="hover"
+          >
+            <div v-html="family.info.description"></div>
+          </b-popover>
+        </b-nav-item>
+      </b-nav>
+      <hr v-if="familySelected && familySelected !== -1" />
+      <b-nav v-if="familySelected && familySelected !== -1" pills class="mt-1">
+        <!-- Alle Niveaustufen der gewählten Testfamilie -->
+        <b-nav-item
+          v-for="test in usedTests"
+          :id="group.id + '_test_' + test.info.id"
+          :key="test.info.id"
+          :active="test.info.id == test_selected"
+          @click="
+            test.used
+              ? test.versions.length == 1
+                ? loadAssessment(test.info.id, false)
+                : (test_selected = test.info.id)
+              : createAssessment(test, false)
+          "
+        >
+          <span :class="test.used ? 'font-weight-bold' : 'text-muted'">{{ test.info.level }}</span>
+          <b-popover
+            v-if="!test.used && test.info.description.short != undefined"
+            :target="group.id + '_test_' + test.info.id"
+            triggers="hover"
+          >
+            <div v-html="test.info.description.short"></div>
+          </b-popover>
+        </b-nav-item>
+      </b-nav>
+      <hr v-if="versions.length > 1" />
+      <b-nav v-if="versions.length > 1" pills class="mt-1">
+        <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
+        <b-nav-item
+          v-for="version in usedVersions"
+          :id="group.id + '_version_' + version.info.id"
+          :key="version.info.id"
+          :active="version.info.id == version_selected"
+          @click="
+            version.used ? loadAssessment(version.info.id, true) : createAssessment(version, true)
+          "
+        >
+          <span :class="version.used ? 'font-weight-bold' : 'text-muted'">{{
+            version.info.label
+          }}</span>
+          <b-popover
+            v-if="!version.used && version.info.description.short != undefined"
+            :target="group.id + '_version_' + version.info.id"
+            triggers="hover"
+          >
+            <div v-html="version.info.description.short"></div>
+          </b-popover>
+        </b-nav-item>
+      </b-nav>
     </b-card>
     <b-row>
       <b-col>
@@ -225,7 +215,7 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.competence
             : 0,
-        family_selected:
+        familySelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.family
             : 0,
@@ -256,7 +246,7 @@
         let res = []
         for (let i = 0; i < this.groupInfo?.tests.length; ++i) {
           if (
-            this.groupInfo?.tests[i].info.test_family_id == this.family_selected &&
+            this.groupInfo?.tests[i].info.test_family_id == this.familySelected &&
             this.groupInfo?.tests[i].info.label === 'Aktuell'
           ) {
             let versions = []
@@ -264,7 +254,7 @@
             for (let j = 0; j < this.groupInfo?.tests.length; ++j) {
               if (
                 this.groupInfo?.tests[i].info.level == this.groupInfo?.tests[j].info.level &&
-                this.groupInfo?.tests[j].info.test_family_id == this.family_selected
+                this.groupInfo?.tests[j].info.test_family_id == this.familySelected
               ) {
                 versions.push(this.groupInfo?.tests[j])
                 if (this.groupInfo?.tests[j].used) {
@@ -290,7 +280,7 @@
         for (let i = 0; i < this.groupInfo?.tests.length; ++i) {
           if (
             this.groupInfo?.tests[i].info.level === level &&
-            this.groupInfo?.tests[i].info.test_family_id == this.family_selected
+            this.groupInfo?.tests[i].info.test_family_id == this.familySelected
           ) {
             res.push(this.groupInfo?.tests[i])
           }
@@ -333,7 +323,7 @@
           method: 'post',
           url: `/groups/${this.group.id}/assessments/`,
         }).then(() => {
-          this.use_test(test.info.id)
+          this.propagateUsedTest(test.info.id)
           this.loadAssessment(test.info.id, isVersion)
         })
       },
@@ -362,30 +352,30 @@
       },
 
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
-      select_area(area) {
+      setSelectedArea(area) {
         this.areaSelected = area
         this.competenceSelected = -1
-        this.family_selected = -1
+        this.familySelected = -1
         this.test_selected = -1
         this.version_selected = -1
         this.results = null
       },
       //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
-      select_competence(competence) {
+      setSelectedCompetence(competence) {
         this.competenceSelected = competence
-        this.family_selected = -1
+        this.familySelected = -1
         this.test_selected = -1
         this.version_selected = -1
         this.results = null
       },
       //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
-      select_family(family) {
-        this.family_selected = family
+      setSelectedFamily(family) {
+        this.familySelected = family
         this.test_selected = -1
         this.version_selected = -1
         this.results = null
       },
-      use_test(testId) {
+      propagateUsedTest(testId) {
         this.$emit('test-used', testId, this.index)
       },
       removeEntry(index) {
@@ -394,3 +384,14 @@
     },
   }
 </script>
+<style>
+  .card-body.card-body {
+    padding: 1rem 0;
+  }
+  .card-body ul {
+    padding: 0 1.25rem;
+  }
+  .card-body hr {
+    margin: 0.5rem 0;
+  }
+</style>
