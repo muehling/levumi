@@ -71,6 +71,10 @@ class Result < ApplicationRecord
 
   #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_support_items
-    report.nil? || report['negative'].nil? ? [] : report['negative']
+    if report.nil? || report['negative'].nil?
+      []
+    else
+      report['negative'].kind_of?(Array) ? report['negative'] : [report['negative']]
+    end
   end
 end
