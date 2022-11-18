@@ -49,11 +49,10 @@ class Material < ApplicationRecord
       MaterialSupport.create(material_id: self.id, test_id: test.id) unless test.nil?
     end
     items.each do |i|
-      MaterialSupport.create(
-        material_id: self.id,
-        test_id: Test.find_by_shorthand(i['test']).id,
-        items: i['items']
-      )
+      test = Test.find_by_shorthand(i['test'])
+      unless test.nil?
+        MaterialSupport.create(material_id: self.id, test_id: test.id, items: i['items'])
+      end
     end
   end
 
