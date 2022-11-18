@@ -12,7 +12,9 @@
     </template>
     <div class="d-block text-center mb-4">
       {{ message }}
-      <b-form-input v-model="inputValue" :placeholder="placeHolder" :type="type"></b-form-input>
+      <b-form @submit="_confirm">
+        <b-form-input v-model="inputValue" :placeholder="placeHolder" :type="type"></b-form-input>
+      </b-form>
     </div>
     <div class="d-flex justify-content-end">
       <b-button :variant="okIntent" class="m-1" @click="_confirm">{{ okText }}</b-button>
@@ -59,7 +61,10 @@
         this.title = ''
         this.resolvePromise(false)
       },
-      _confirm() {
+      _confirm(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        console.log('arghg', this.inputValue)
         this.$refs.genericInputDialog.hide()
         this.message = ''
         this.title = ''
