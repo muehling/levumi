@@ -15,6 +15,8 @@ import MaterialsApp from '../vue/materials/materials-app.vue'
 import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
 
+import VueQRCodeComponent from 'qrcode.vue'
+
 import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
 
 import router from '../vue/routes/frontend-routes'
@@ -22,7 +24,6 @@ import router from '../vue/routes/frontend-routes'
 import '../styles/application.scss'
 
 window.bootstrap = bootstrap
-
 const element = document.getElementById('levumi')
 
 const init = async () => {
@@ -30,6 +31,7 @@ const init = async () => {
   const data = JSON.parse(element.getAttribute('data')) || {}
 
   Vue.use(BootstrapVue)
+  Vue.component('QrCode', VueQRCodeComponent)
 
   Vue.mixin({
     data: function () {
