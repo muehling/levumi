@@ -97,6 +97,9 @@
             </div>
           </li>
         </ul>
+        <b-alert v-if="!!systemMessage" class="ml-auto mb-0" show variant="danger">
+          {{ systemMessage }}
+        </b-alert>
 
         <ul class="navbar-nav ml-auto">
           <li v-if="masquerade" class="nav-item">
@@ -220,6 +223,9 @@
     },
 
     computed: {
+      systemMessage() {
+        return this.$root.mode === 'staging' ? 'TEST-SYSTEM' : ''
+      },
       login() {
         return this.globalStore.login
       },

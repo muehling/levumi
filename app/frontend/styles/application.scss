@@ -201,7 +201,13 @@
 .btn-outline-success.disabled,
 .btn-outline-danger:disabled,
 .btn-outline-danger.disabled {
-  background-color: $white !important;
+  background-color: transparent !important;
+}
+.btn-outline-primary.disabled:hover,
+.btn-outline-secondary.disabled:hover,
+.btn-outline-success.disabled:hover,
+.btn-outline-danger.disabled:hover {
+  background-color: transparent !important;
 }
 
 /* Sonderfälle */

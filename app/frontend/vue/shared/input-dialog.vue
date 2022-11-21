@@ -64,7 +64,6 @@
       _confirm(e) {
         e.preventDefault()
         e.stopPropagation()
-        console.log('arghg', this.inputValue)
         this.$refs.genericInputDialog.hide()
         this.message = ''
         this.title = ''
