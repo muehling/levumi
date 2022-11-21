@@ -190,6 +190,7 @@
 .btn-outline-success:not(:disabled):not(.disabled).active {
   background-color: $success-color !important;
   border-color: $success-color !important;
+  color: $white !important;
 }
 
 .btn-outline-primary:disabled,

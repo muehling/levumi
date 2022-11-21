@@ -16,7 +16,7 @@
       >
         <b-card
           class="w-100 m-2 shadow"
-          body-class="test-card-body"
+          body-class="test-card-body px-3"
           :title="test.test_info.family"
           :sub-title="test.test_info.level"
         >
