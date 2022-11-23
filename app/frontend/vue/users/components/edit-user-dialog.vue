@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="edit-user-dialog" ref="editUserDialog" hide-footer>
+    <b-modal id="edit-user-dialog" ref="editDialog" hide-footer>
       <template #modal-title> Benutzerdaten ändern </template>
       <user-form
         :is-new="isNew"
@@ -42,7 +42,7 @@
     },
     methods: {
       open(data = {}) {
-        this.$refs.editUserDialog.show()
+        this.$refs.editDialog.show()
         this.user = data.user
         this.isNew = data.isNew || false
       },
