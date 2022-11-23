@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div classname="group-view">
     <div v-if="!!group.id" class="mb-2 mt-2">
       <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm"
         ><i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
@@ -385,13 +385,13 @@
   }
 </script>
 <style>
-  .card-body.card-body {
+  .group-view .card-body.card-body {
     padding: 1rem 0;
   }
-  .card-body ul {
+  .group-view .card-body ul {
     padding: 0 1.25rem;
   }
-  .card-body hr {
+  .group-view .card-body hr {
     margin: 0.5rem 0;
   }
 </style>

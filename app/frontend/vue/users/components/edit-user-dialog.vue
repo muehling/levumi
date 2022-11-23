@@ -59,7 +59,7 @@
         this._close()
       },
       _close() {
-        this.$refs.editUserDialog.hide()
+        this.$refs.editDialog.hide()
         this.user = {}
       },
     },
