@@ -65,7 +65,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html do
         @no_script = true
-        render :frontend, layout: 'minimal'
+        render :frontend, layout: 'test_select'
       end
     end
   end
@@ -79,7 +79,7 @@ class ApplicationController < ActionController::Base
         format.html do
           @student = s
           @no_script = true
-          render :frontend, layout: 'minimal'
+          render :frontend, layout: 'test_select'
         end
         format.json do
           render json: { tests: s.get_assessments, student: { id: s.id, login: s.login } }

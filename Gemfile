@@ -41,7 +41,7 @@ group :development do
   gem 'capistrano-bundler', '~> 1.5'
 end
 
-group :production do
+group :production, :staging do
   gem 'mysql2'
 end
 
