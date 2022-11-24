@@ -3,7 +3,7 @@
     <b-tabs pills card>
       <b-tab :active="deep_link" class="m-3">
         <div slot="title">
-          Messungen
+          Messungen ({{ test.shorthand }})
           <span v-if="!is_active" class="badge badge-danger"><i class="fas fa-pause"></i></span>
           <span v-if="is_active" class="badge badge-success"><i class="fas fa-play"></i></span>
         </div>
@@ -85,6 +85,7 @@
                   v-if="!excludeList.includes(student.id)"
                   :key="student.id"
                   :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
+                  :disabled="!is_active"
                   type="submit"
                 >
                   {{ student.name }}<br />{{ student.login }}
@@ -345,7 +346,7 @@
         //AJAX-Request senden
 
         const res = await ajax(
-          apiRoutes.assessments.includeStudents(this.group.id, this.test.id, studentId)
+          apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId)
         )
         if (res.status === 200) {
           this.excludeList = this.excludeList.filter(item => item !== studentId)
