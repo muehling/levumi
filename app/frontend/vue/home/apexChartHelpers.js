@@ -25,7 +25,7 @@ export const apexChartOptions = weeks => ({
     },
     xaxis: {
       tooltip: { enabled: false },
-      type: 'categories',
+      type: 'category',
       categories: weeks,
       tickPlacement: 'between',
     },
