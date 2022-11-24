@@ -20,6 +20,7 @@ const routes = [
   { path: '/nutzerverwaltung', component: UsersApp }, // Benutzerverwaltung
   { path: '/materialverwaltung', component: MaterialsAdmin }, // Benutzerverwaltung
   { path: '/statistiken', component: StatisticsApp }, // Statistiken
+  { path: '/groups/:groupId/assessments/:assessmentId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /start if the data can be kept
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })
