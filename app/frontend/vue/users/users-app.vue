@@ -11,6 +11,7 @@
       </template>
     </b-tabs>
     <users-mail-dialog ref="usersMailDialog" />
+    <edit-user-dialog ref="editUserDialog" />
   </b-container>
 </template>
 
@@ -20,9 +21,10 @@
   import { useGlobalStore } from '../../store/store'
   import UsersList from './components/users-list.vue'
   import UsersMailDialog from './components/users-mail-dialog.vue'
+  import EditUserDialog from './components/edit-user-dialog.vue'
   export default {
     name: 'UsersApp',
-    components: { UsersList, UsersMailDialog },
+    components: { UsersList, UsersMailDialog, EditUserDialog },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
