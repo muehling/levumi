@@ -65,8 +65,11 @@ class UsersController < ApplicationController
           .where(account_type: 2)
           .each { |u| UserMailer.with(user: u, body: params['text']).notify.deliver_later }
       end
-      head :ok
     end
+    if params.has_key?('support')
+      UserMailer.with(user: @user, body: params['text']).support.deliver_later
+    end
+    head :ok
   end
 
   #GET /users

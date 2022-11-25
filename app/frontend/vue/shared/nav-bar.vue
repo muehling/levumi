@@ -107,6 +107,38 @@
               >Sitzung als {{ login?.email }} beenden</a
             >
           </li>
+          <li v-if="false" class="nav-item dropdown">
+            <a
+              id="navbarSupport"
+              class="nav-link dropdown-toggle"
+              href="#"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Support
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarSupport">
+              <b-form class="m-2" @submit="onSendSupportMail">
+                <p>Sie haben eine Frage oder möchten uns etwas mitteilen?</p>
+                <b-form-group label-for="contact-message">
+                  <b-form-textarea
+                    id="contact-message"
+                    v-model="contactMessage"
+                    placeholder="Bitte geben Sie Ihre Nachricht ein."
+                    rows="3"
+                    max-rows="6"
+                    required
+                  >
+                  </b-form-textarea>
+                  <b-button class="mt-4 mx-auto" type="submit" variant="outline-success"
+                    ><span>Absenden</span></b-button
+                  >
+                </b-form-group>
+              </b-form>
+            </div>
+          </li>
           <li v-if="!isRegularUser" class="nav-item dropdown">
             <a
               id="navbarSystem"
@@ -119,7 +151,7 @@
             >
               System
             </a>
-            <div class="dropdown-menu dropdown-menu" aria-labelledby="navbarSystem">
+            <div class="dropdown-menu" aria-labelledby="navbarSystem">
               <router-link to="/statistiken" class="dropdown-item">Statistik</router-link>
               <router-link to="/nutzerverwaltung" class="dropdown-item">
                 Benutzerverwaltung
@@ -221,7 +253,11 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-
+    data() {
+      return {
+        contactMessage: '',
+      }
+    },
     computed: {
       systemMessage() {
         return this.$root.mode === 'staging' ? 'TEST-SYSTEM' : ''
@@ -253,6 +289,18 @@
         if (res.status === 200) {
           this.globalStore.fetch()
           router.push('/nutzerverwaltung')
+        }
+      },
+      async onSendSupportMail(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        const data = {
+          support: true,
+          text: this.contactMessage,
+        }
+        const res = await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
+        if (res.status === 200) {
+          //console.log('yay, sent')
         }
       },
     },

@@ -10,4 +10,10 @@ class UserMailer < ApplicationMailer
     @body = params[:body]
     mail(to: @user.email, subject: 'Neuigkeiten von Levumi')
   end
+
+  def support
+    @user = params[:user]
+    @body = params[:body]
+    mail(to: 'jbe@informatik.uni-kiel.de', from: @user.email, subject: 'Supportanfrage von Levumi')
+  end
 end
