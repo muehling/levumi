@@ -107,7 +107,7 @@
               >Sitzung als {{ login?.email }} beenden</a
             >
           </li>
-          <li v-if="false" class="nav-item dropdown">
+          <li class="nav-item dropdown">
             <a
               id="navbarSupport"
               class="nav-link dropdown-toggle"
@@ -119,7 +119,7 @@
             >
               Support
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarSupport">
+            <div class="dropdown-menu shadow" style="width: 20em" aria-labelledby="navbarSupport">
               <b-form class="m-2" @submit="onSendSupportMail">
                 <p>Sie haben eine Frage oder möchten uns etwas mitteilen?</p>
                 <b-form-group label-for="contact-message">
@@ -152,8 +152,14 @@
               System
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarSystem">
-              <router-link to="/statistiken" class="dropdown-item">Statistik</router-link>
-              <router-link to="/nutzerverwaltung" class="dropdown-item">
+              <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item"
+                >Statistik</router-link
+              >
+              <router-link
+                v-if="checkCapability('user')"
+                to="/nutzerverwaltung"
+                class="dropdown-item"
+              >
                 Benutzerverwaltung
               </router-link>
               <router-link
@@ -300,7 +306,11 @@
         }
         const res = await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
         if (res.status === 200) {
-          //console.log('yay, sent')
+          this.globalStore.setGenericMessage({
+            title: 'Email gesendet',
+            message:
+              'Vielen Dank für Ihre Anfrage. Wir werden uns sobald wie möglich bei Ihnen melden.',
+          })
         }
       },
     },
