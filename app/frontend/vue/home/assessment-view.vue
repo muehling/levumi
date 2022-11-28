@@ -161,18 +161,25 @@
                     <th v-if="!readOnly">Aktionen</th>
                   </thead>
                   <tbody>
-                    <tr v-for="(result, resultIndex) in groupedResults[date]" :key="result.id">
+                    <tr
+                      v-for="(result, resultIndex) in groupedResults[date]"
+                      :key="`${result.id}/${resultIndex}`"
+                    >
                       <td>{{ print_date(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
-                        <span v-for="(item, n) in result.data.report.positive" :key="item">{{
-                          (n > 0 ? ', ' : '') + getItemName(item, test.items[item])
-                        }}</span>
+                        <span
+                          v-for="(item, n) in result.data.report.positive"
+                          :key="item + '/' + n"
+                          >{{ (n > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}</span
+                        >
                       </td>
                       <td>
-                        <span v-for="(item, m) in result.data.report.negative" :key="item">{{
-                          (m > 0 ? ', ' : '') + getItemName(item, test.items[item])
-                        }}</span>
+                        <span
+                          v-for="(item, m) in result.data.report.negative"
+                          :key="item + '/' + n"
+                          >{{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}</span
+                        >
                       </td>
                       <td>
                         <i
