@@ -6,6 +6,7 @@
     :no-close-on-esc="disableClose"
     :hide-header-close="disableClose"
     hide-footer
+    @shown="$refs.inputField.focus()"
   >
     <template #modal-title>
       {{ title }}
@@ -13,7 +14,12 @@
     <div class="d-block text-center mb-4">
       {{ message }}
       <b-form @submit="_confirm">
-        <b-form-input v-model="inputValue" :placeholder="placeHolder" :type="type"></b-form-input>
+        <b-form-input
+          ref="inputField"
+          v-model="inputValue"
+          :placeholder="placeHolder"
+          :type="type"
+        ></b-form-input>
       </b-form>
     </div>
     <div class="d-flex justify-content-end">
@@ -35,7 +41,7 @@
       rejectPromise: undefined,
       inputValue: '',
       placeHolder: '',
-      type: '',
+      type: 'text',
       disableClose: false,
     }),
 

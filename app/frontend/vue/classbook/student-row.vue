@@ -339,7 +339,6 @@
         if (!this.student.login) {
           return
         }
-        console.log('wtf', this.student.login, this.student.name)
         const qrCode = new QRCodeStyling({
           width: 400,
           height: 400,

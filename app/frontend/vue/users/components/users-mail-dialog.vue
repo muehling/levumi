@@ -61,7 +61,7 @@
 
         const res = await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
         if (res.status === 200) {
-          //console.log('yay, sent')
+          //TODO display message?
         }
       },
     },
