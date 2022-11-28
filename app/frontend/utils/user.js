@@ -1,4 +1,4 @@
-export const isAdmin = capabilities => !capabilities.includes('admin')
+export const isAdmin = capabilities => capabilities.includes('admin') || capabilities === 'admin'
 
 export const isRegularUser = capabilities => !capabilities
 

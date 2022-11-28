@@ -121,14 +121,14 @@
           :title="'QRCode für ' + student.name"
           scrollable
           hide-footer
-          lazy
+          static
         >
           <p>
             Code: {{ student.login }} <br />
             QR-Code:
           </p>
           <div class="text-center">
-            <qr-code :value="student.login" :size="400" />
+            <div :id="`qr-${student.id}`"></div>
           </div>
         </b-modal>
         <b-modal
@@ -235,6 +235,7 @@
   import { ajax } from '../../utils/ajax'
   import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import QRCodeStyling from 'qr-code-styling'
 
   export default {
     name: 'StudentRow',
@@ -330,7 +331,33 @@
         { text: 'Migrationshintergrund', value: 'Migrationshintergrund' },
       ]
     },
+    mounted() {
+      this.generateQRCode()
+    },
     methods: {
+      generateQRCode() {
+        if (!this.student.login) {
+          return
+        }
+        console.log('wtf', this.student.login, this.student.name)
+        const qrCode = new QRCodeStyling({
+          width: 400,
+          height: 400,
+          type: 'canvas',
+          data: this.student.login,
+          image: 'favicon.ico',
+          dotsOptions: {
+            color: '#000000',
+          },
+
+          imageOptions: {
+            margin: 20,
+            imageSize: 0.4,
+          },
+        })
+        const el = document.getElementById('qr-' + this.student.id)
+        qrCode.append(el)
+      },
       async requestDelete() {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Schüler löschen',
