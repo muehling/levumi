@@ -41,8 +41,8 @@ export const useGlobalStore = defineStore('global', {
       this.genericMessage = { title: '', message: '' }
     },
 
-    async fetch() {
-      this.isLoading = true
+    async fetch(showLoader = false) {
+      this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
       const coreData = await res.json()
 

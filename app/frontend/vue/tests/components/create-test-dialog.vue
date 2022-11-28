@@ -2,7 +2,12 @@
   <div>
     <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
       <div v-if="isLoading" class="card card-body align-items-center">
-        <b-spinner></b-spinner>Hochladen...
+        <div v-if="isLoading" class="spinner">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+        Hochladen...
       </div>
       <div v-else class="card card-body">
         <b-form-file

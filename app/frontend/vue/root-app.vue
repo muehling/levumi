@@ -64,7 +64,7 @@
     async created() {
       const path = window.location.pathname
       if (path !== '/testen' && path !== '/testen_login') {
-        await this.globalStore.fetch()
+        await this.globalStore.fetch(true)
         // Check if login information is present. This may get lost in restored browser sessions,
         // or when a link is opened in a new tab. In this case, we need to log in again
         const login = sessionStorage.getItem('login')

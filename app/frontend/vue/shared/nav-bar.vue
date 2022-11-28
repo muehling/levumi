@@ -293,7 +293,7 @@
       async endMasquerade() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'GET' })
         if (res.status === 200) {
-          this.globalStore.fetch()
+          this.globalStore.fetch(true)
           router.push('/nutzerverwaltung')
         }
       },

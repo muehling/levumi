@@ -97,7 +97,7 @@
         const res = await ajax({ url: apiRoutes.home.finishIntro, method: 'PATCH', data })
         // refetch global data, so the root app will know about the finished registration
         if (res.status === 200) {
-          await this.globalStore.fetch()
+          await this.globalStore.fetch(true)
           sessionStorage.setItem('login', this.password)
         }
       },

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <b-table class="text-small" small striped hover :fields="fields" :items="tests">
+    <div v-if="isLoading" class="spinner">
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
+    <b-table v-else class="text-small" small striped hover :fields="fields" :items="tests">
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
@@ -94,6 +99,7 @@
 
     methods: {
       async refetch() {
+        this.isLoading = true
         const res = await ajax({ url: apiRoutes.tests.index })
         if (res.status === 200) {
           const data = await res.json()
@@ -102,6 +108,7 @@
             _rowVariant: (this.showExport ? !t.has_results : t.archive) ? 'outline-secondary' : '',
           }))
         }
+        this.isLoading = false
       },
       showTestDetails(id) {
         this.$refs.detailsDialog.open({ test: this.tests.find(t => t.id === id) })
