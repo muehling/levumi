@@ -95,7 +95,8 @@
             <br />
             <div>
               <b-button
-                :class="'btn btn-sm mt-3' + (is_active ? 'btn-danger' : 'btn_success')"
+                class="btn btn-sm"
+                :variant="is_active ? ' btn-danger' : ' btn-success'"
                 @click="toggleAssessment()"
               >
                 <i :class="is_active ? 'fas fa-pause' : 'fas fa-play'"></i>
