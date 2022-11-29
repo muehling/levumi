@@ -455,7 +455,6 @@
         const results = this.results.filter(result => result.student_id === studentId)
         const view = this.configuration.views[this.view_selected]
         return this.weeks.map(week => {
-          //let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
           const currentResult = results.find(r => r?.test_week === week)
 
           let yVal
@@ -494,84 +493,11 @@
 
         let res
 
-        //x-Achsen Beschriftung mit Testwochen
-        /*   if (view.options.chart.type !== 'line') {
-              for (let i = 0; i < opt.xaxis.categories.length; ++i) {
-                opt.xaxis.categories[i] = this.printDate(opt.xaxis.categories[i])
-              }
-            }*/
-        //Ergebnisse aufbereiten
-        /*  let res = []
-            //Ein "leeres" Objekt für alle Datenserien anlegen
-            if (this.studentSelected == -1) {
-              for (let s = 0; s < this.students.length; ++s) {
-                if (this.has_results(this.students[s])) {
-                  res.push({
-                    name: this.getStudentName(this.students[s].id),
-                    data: [],
-                  })
-                }
-              }
-            } else {
-              if (view.series == undefined) {
-                res.push({
-                  name: this.getStudentName(this.studentSelected),
-                  data: [],
-                })
-              } else {
-                for (let s = 0; s < view.series.length; ++s) {
-                  res.push({
-                    name: view.series[s],
-                    data: [],
-                  })
-                }
-              }
-            }
-
-            //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-            if (view.options.chart.type === 'bar') {
-              for (let r = 0; r < res.length; ++r) {
-                res[r].data = JSON.parse(JSON.stringify(this.weeks))
-                res[r].data.fill(null)
-              }
-            }
-
-        let maxY = view.options.yaxis ? (view.options.yaxis.max ? view.options.yaxis.max : 0) : 0 //Für Platzierung der Kommentare
-*/
-        //Leere Objekte füllen
-        //for (let i = 0; i < this.results.length; ++i) {
-        if (this.studentSelected == -1 /*|| view.series == undefined*/) {
+        if (this.studentSelected == -1) {
           res = this.studentsWithResults.map(student => {
             return { name: student.name, data: this.createSeries(student.id) }
           })
-
-          /*let student = this.getStudentName(this.results[i].student_id)
-                let yVal = this.results[i].views[view.key].toFixed(2) //Macht das Runden hier immer Sinn?
-                if (yVal > maxY) {
-                  maxY = yVal
-                }
-
-                for (let r = 0; r < res.length; ++r) {
-                  if (res[r].name == student) {
-                    //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                    if (view.options.chart.type === 'bar') {
-                      res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
-                    } else {
-                      res[r].data[this.weeks.indexOf(this.results[i].test_week)] = {
-                        x: this.printDate(this.results[i].test_week),
-
-                        y: yVal,
-                      }
-                    }
-                    break
-                  }
-                }*/
         } else {
-          //if (this.results[i].student_id == this.studentSelected) {
-          //for (let r = 0; r < view.series.length; ++r) {
-          //  if (!(view.series_keys[r] in this.results[i].views[view.key])) {
-          //    continue
-          //  }
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
             res = [{ name: student.name, data: this.createSeries(student.id) }]
@@ -580,24 +506,7 @@
               return { name: series_key, data: this.createSeries(student.id, series_key) }
             })
           }
-          /*  let yVal = this.results[i].views[view.key][view.series_keys[r]].toFixed(2) //Macht das Runden hier immer Sinn?
-                  if (yVal > maxY) {
-                    maxY = yVal
-                  }
-                  if (this.results[i].views[view.key][view.series_keys[r]] != undefined) {
-                    if (view.options.chart.type === 'bar') {
-                      //Unterscheidung zw. Bar & Line Graphen wegen Bug in Apexcharts
-                      res[r].data[this.weeks.indexOf(this.results[i].test_week)] = yVal
-                    } else {
-                      res[r].data.push({
-                        x: this.weeks.indexOf(this.results[i].test_week),
-                        y: yVal,
-                      })
-                    }
-                  }*/
-          // }
         }
-        //}
 
         //Kommentare einfügen
         opt['annotations'] = {
