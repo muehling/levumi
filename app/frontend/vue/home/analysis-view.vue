@@ -8,7 +8,10 @@
           variant="outline-primary"
           :pressed="studentSelected === -1"
           :disabled="!has_group_views"
-          @click="updateView(-1)"
+          @click="
+            view_selected = 0
+            updateView(-1)
+          "
           >Ganze Klasse</b-button
         >
         <b-dropdown
