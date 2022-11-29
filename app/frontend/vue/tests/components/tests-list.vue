@@ -5,7 +5,15 @@
       <div class="bounce2"></div>
       <div class="bounce3"></div>
     </div>
-    <b-table v-else class="text-small" small striped hover :fields="fields" :items="tests">
+    <b-table
+      v-else
+      class="tests-list text-small"
+      small
+      striped
+      hover
+      :fields="fields"
+      :items="tests"
+    >
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
@@ -143,10 +151,10 @@
 </script>
 
 <style>
-  .table-outline-secondary {
+  .tests-list .table-outline-secondary {
     color: grey;
   }
-  td:last-child {
+  .tests-list td:last-child {
     white-space: nowrap;
   }
 </style>
