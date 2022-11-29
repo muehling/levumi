@@ -6,7 +6,7 @@
         <b-col md="12">
           <div v-if="single">
             <!-- nur eine Gruppe darstellen -->
-            <group-view :groups="groups" :single="true"></group-view>
+            <group-view :groups="groups" :group="groups[1]" :single="true"></group-view>
           </div>
 
           <div v-else>
@@ -149,6 +149,8 @@
         return this.globalStore.login.account_type === 2
       },
       groups() {
+        console.log('miau', this.globalStore.groups)
+
         if (isEmpty(this.globalStore.groups)) {
           return []
         }
