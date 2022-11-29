@@ -25,7 +25,7 @@ export default {
   },
   tests: {
     index: '/tests',
-    info: 'tests/info',
+    info: '/tests/info',
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
   },
@@ -47,5 +47,6 @@ export default {
       method: 'PUT',
       data,
     }),
+    info: groupId => ({ url: `/groups/${groupId}/assessments` }),
   },
 }

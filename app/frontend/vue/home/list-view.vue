@@ -1,5 +1,5 @@
 <template>
-  <div v-if="list.length == 0">
+  <div v-if="sortedlist.length == 0">
     <p class="m-5 text-center text-muted">
       Keine aktiven Tests mit Messungen vorhanden! <br />
       Legen Sie zunächst über die Auswahl unten einen Test für diese Klasse an.
@@ -14,7 +14,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sorted_list" :key="test.id">
+        <tr v-for="test in sortedlist" :key="test.id">
           <td>{{ test.name }}</td>
           <td>
             <b-btn
@@ -35,21 +35,21 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'ListView',
     props: {
-      group: Object
+      group: Object,
     },
-    data() {
-      return {
-        list: []
-      }
+    setup() {
+      const assessmentsStore = useAssessmentsStore()
+      return { assessmentsStore }
     },
     computed: {
-      sorted_list() {
-        return [...this.list].sort((a, b) => a.name.localeCompare(b.name))
-      }
+      sortedlist() {
+        return [...this.assessmentsStore.assessments].sort((a, b) => a.name.localeCompare(b.name))
+      },
     },
     mounted() {
       this.updateList()
@@ -59,24 +59,15 @@
         const res = await ajax({
           url: `/groups/${this.group.id}/assessments/${test.test}`,
           method: 'put',
-          data: { assessment: { active: test.active ? 0 : 1 } }
+          data: { assessment: { active: test.active ? 0 : 1 } },
         })
         if (res.status === 200) {
           this.updateList()
         }
       },
       async updateList() {
-        this.isLoading = true //Spinner anzeigen
-
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments` })
-        if (res.status === 200) {
-          const text = await res.text()
-          this.list = JSON.parse(text)
-          this.isLoading = false //Spinner verstecken
-        } else {
-          this.globalStore.setErrorMessage('Assessments konnten nicht geladen werden!')
-        }
-      }
-    }
+        this.assessmentsStore.fetch(this.group.id)
+      },
+    },
   }
 </script>

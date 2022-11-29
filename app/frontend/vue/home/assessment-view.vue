@@ -4,8 +4,8 @@
       <b-tab :active="deep_link" class="m-3">
         <div slot="title">
           Messungen ({{ test.shorthand }})
-          <span v-if="!is_active" class="badge badge-danger"><i class="fas fa-pause"></i></span>
-          <span v-if="is_active" class="badge badge-success"><i class="fas fa-play"></i></span>
+          <span v-if="!isactive" class="badge badge-danger"><i class="fas fa-pause"></i></span>
+          <span v-if="isactive" class="badge badge-success"><i class="fas fa-play"></i></span>
         </div>
         <!-- Neue Messungen -->
         <div class="alert alert-secondary">
@@ -85,7 +85,7 @@
                   v-if="!excludeList.includes(student.id)"
                   :key="student.id"
                   :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!is_active"
+                  :disabled="!isactive"
                   type="submit"
                 >
                   {{ student.name }}<br />{{ student.login }}
@@ -96,12 +96,12 @@
             <div>
               <b-button
                 class="btn btn-sm"
-                :variant="is_active ? ' btn-danger' : ' btn-success'"
+                :variant="isactive ? ' btn-danger' : ' btn-success'"
                 @click="toggleAssessment()"
               >
-                <i :class="is_active ? 'fas fa-pause' : 'fas fa-play'"></i>
+                <i :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
                 {{
-                  is_active ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
+                  isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
                 }}
               </b-button>
 
@@ -260,6 +260,8 @@
   import apiRoutes from '../routes/api-routes'
   import format from 'date-fns/format'
 
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
+
   export default {
     name: 'AssessmentView',
     components: { AnalysisView, SupportView, ConfirmDialog },
@@ -285,11 +287,11 @@
     },
     setup() {
       const globalStore = useGlobalStore()
-      return { globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { globalStore, assessmentsStore }
     },
     data: function () {
       return {
-        is_active: this.active, //Als Datum, damit es geändert werden kann
         excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
       }
@@ -314,8 +316,11 @@
       excludedStudents() {
         return this.students.filter(student => this.excludeList.includes(student.id))
       },
-      weeks: function () {
+      weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
+      },
+      isactive() {
+        return this.assessmentsStore.assessments.find(a => a.test === this.test.id)?.active
       },
     },
     methods: {
@@ -405,11 +410,11 @@
       async toggleAssessment() {
         const res = await ajax(
           apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
-            assessment: { active: this.is_active ? 0 : 1 },
+            assessment: { active: this.isactive ? 0 : 1 },
           })
         )
         if (res.status === 200) {
-          this.is_active = !this.is_active
+          this.assessmentsStore.fetch(this.group.id)
         }
       },
       getItemName(item, fallback) {
