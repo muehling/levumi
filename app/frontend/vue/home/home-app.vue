@@ -69,9 +69,9 @@
     },
     computed: {
       ownActiveGroups() {
-        return this.globalStore.groups.filter(
-          (group, index) => index > 0 && group.owner && !group.archive
-        )
+        return this.globalStore.groups
+          .filter((group, index) => index > 0 && group.owner && !group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       groups() {
         return this.globalStore.groups.filter(group => group.id)

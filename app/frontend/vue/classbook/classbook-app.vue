@@ -161,13 +161,19 @@
       },
 
       ownActiveGroups() {
-        return this.groups.filter((group, index) => index > 0 && group.owner && !group.archive)
+        return this.groups
+          .filter((group, index) => index > 0 && group.owner && !group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       sharedGroups() {
-        return this.groups.filter((group, index) => index > 0 && !group.owner)
+        return this.groups
+          .filter((group, index) => index > 0 && !group.owner)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
-        return this.groups.filter((group, index) => index > 0 && group.archive)
+        return this.groups
+          .filter((group, index) => index > 0 && group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
 
       firstOwnIndex: function () {
