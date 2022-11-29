@@ -26,7 +26,7 @@
               <group-view
                 :group="group"
                 :index="index"
-                :group-info="groupInfo[index]"
+                :group-info="groupInfo.find(gi => gi.group_id === group.id)"
                 @test-used="markTestAsUsed"
               />
             </b-tab>

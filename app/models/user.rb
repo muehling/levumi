@@ -88,6 +88,7 @@ class User < ApplicationRecord
 
         result += [
           {
+            group_id: group.id,
             areas:
               (
                 used_areas.map { |a| { info: a, used: true } } +
