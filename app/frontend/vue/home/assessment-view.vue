@@ -78,7 +78,7 @@
                 method="post"
                 class="mr-1 mb-3"
                 target="_blank"
-                :action="'testen_login?login=' + student.login"
+                :action="'/testen_login?login=' + student.login"
               >
                 <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
                 <b-button
@@ -177,7 +177,7 @@
                       <td>
                         <span
                           v-for="(item, m) in result.data.report.negative"
-                          :key="item + '/' + n"
+                          :key="item + '/' + m"
                           >{{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}</span
                         >
                       </td>

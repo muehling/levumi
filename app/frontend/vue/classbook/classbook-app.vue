@@ -149,8 +149,6 @@
         return this.globalStore.login.account_type === 2
       },
       groups() {
-        console.log('miau', this.globalStore.groups)
-
         if (isEmpty(this.globalStore.groups)) {
           return []
         }
