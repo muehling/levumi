@@ -1,6 +1,6 @@
 class AssessmentsController < ApplicationController
   before_action :set_group
-  before_action :set_assessment, only: %i[show update]
+  before_action :set_assessment, only: %i[show update destroy]
 
   #GET /groups/:group_id/assessments/:id
   def show #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
@@ -38,6 +38,16 @@ class AssessmentsController < ApplicationController
     end
   end
 
+  #DEL /groups/:group_id/assessments/:id
+  def destroy
+    return :not_acceptable if @assessment.results.exists?
+    if @assessment.destroy
+      head :ok
+    else
+      head :not_found
+    end
+  end
+
   #GET /groups/:group_id/assessments
   def index
     data =
@@ -49,7 +59,9 @@ class AssessmentsController < ApplicationController
             active: a.active,
             test: a.test.id,
             name: a.test.full_name,
-            student_test: a.test.student_test
+            student_test: a.test.student_test,
+            result_count: a.results.length,
+            last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : ''
           }
         end
     render json: data

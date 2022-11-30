@@ -10,35 +10,63 @@
       <thead>
         <tr>
           <th>Test</th>
+          <th>Anzahl Testungen</th>
+          <th>Letzter Test am</th>
           <th>Wöchentliche Testung</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="test in sortedlist" :key="test.id">
           <td>{{ test.name }}</td>
+          <td>{{ test.result_count }}</td>
+          <td>{{ test.last_test }}</td>
           <td>
             <b-btn
               v-if="test.student_test"
               class="btn-sm"
-              :variant="test.active ? 'danger' : 'success'"
+              :variant="test.active ? 'outline-danger' : 'outline-success'"
               @click="toggleAssessment(test)"
             >
               <i :class="`fas fa-${test.active ? 'pause' : 'play'}`"></i>
-              {{ test.active ? 'Pausieren!' : 'Aktivieren!' }}
+              {{ test.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
+          </td>
+          <td>
+            <b-btn
+              :id="`delete-button-${test.test}`"
+              class="btn-sm"
+              :variant="test.result_count ? 'outline-secondary' : 'outline-danger'"
+              @click="deleteAssessment(test)"
+              ><i class="fas fa-trash"></i
+            ></b-btn>
+            <b-popover
+              v-if="!!test.result_count"
+              :target="`delete-button-${test.test}`"
+              triggers="hover"
+            >
+              <p>
+                Testungen mit Messungen können nicht gelöscht werden. Bitte löschen Sie zunächst die
+                Messungen.
+              </p>
+            </b-popover>
           </td>
         </tr>
       </tbody>
     </table>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 
 <script>
   import { ajax } from '../../utils/ajax'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import apiRoutes from '../routes/api-routes'
 
   export default {
     name: 'ListView',
+    components: { ConfirmDialog },
     props: {
       group: Object,
     },
@@ -63,6 +91,24 @@
         })
         if (res.status === 200) {
           this.updateList()
+        }
+      },
+      async deleteAssessment(test) {
+        if (test.result_count) {
+          return
+        }
+        const ok = await this.$refs.confirmDialog.open({
+          title: 'Testung löschen',
+          message: 'Möchten Sie diesen Test von der Klasse entfernen?',
+          okText: 'Testung löschen',
+          okIntent: 'outline-danger',
+        })
+
+        if (ok) {
+          const res = await ajax(apiRoutes.assessments.delete(this.group.id, test.test))
+          if (res.status === 200) {
+            this.updateList()
+          }
         }
       },
       async updateList() {

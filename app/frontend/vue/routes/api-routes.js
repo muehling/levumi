@@ -48,5 +48,9 @@ export default {
       data,
     }),
     info: groupId => ({ url: `/groups/${groupId}/assessments` }),
+    delete: (groupId, assessmentId) => ({
+      url: `/groups/${groupId}/assessments/${assessmentId}`,
+      method: 'DELETE',
+    }),
   },
 }
