@@ -6,7 +6,6 @@ import * as bootstrap from 'bootstrap'
 
 import BootstrapVue from 'bootstrap-vue'
 import Vue from 'vue'
-import VueQRCodeComponent from 'qrcode.vue'
 
 import FrontendApp from '../vue/testing/frontend-app.vue'
 
@@ -20,7 +19,6 @@ const init = async () => {
   // TODO remove once all data is fetched from API
   const data = JSON.parse(element.getAttribute('data')) || {}
 
-  Vue.component('QrCode', VueQRCodeComponent)
   Vue.use(BootstrapVue)
 
   Vue.mixin({

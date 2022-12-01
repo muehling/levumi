@@ -23,7 +23,6 @@
     "popper.js": "^1.15.0",
     "qr-code-styling": "^1.6.0-rc.1",
     "qr-scanner": "^1.2.0",
-    "qrcode.vue": "1.7",
     "sjcl": "^1.0.8",
     "vue": "^2.6.10",
     "vue-router": "3",

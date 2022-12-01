@@ -38,20 +38,12 @@
         ></student-row>
       </tbody>
     </table>
-    <b-button @click="exportQrCodes"><i class="fas fa-print"></i> QR-Code PDF</b-button>
-    <!-- Bereich der später ins PDF kommt -->
-    <div v-for="student in students" :key="student.id" style="display: none">
-      <qr-code :id="'qr_code_' + student.id" :value="student.login" />
-      <br />
-      <hr />
-    </div>
   </div>
 </template>
 
 <script>
   import { decryptStudentName } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
-  import jsPDF from 'jspdf'
   import StudentRow from './student-row.vue'
 
   export default {
@@ -94,7 +86,7 @@
         this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },
       exportQrCodes() {
-        const pdf = new jsPDF()
+        /*   const pdf = new jsPDF()
         let height = 10
         for (let i = 0; i < this.students.length; i++) {
           const qrElement = this.jQuery('#qr_code_' + this.students[i].id + ' canvas')[0]
@@ -111,7 +103,7 @@
             }
           }
         }
-        pdf.save('qr_codes.pdf')
+        pdf.save('qr_codes.pdf')*/
       },
     },
   }
