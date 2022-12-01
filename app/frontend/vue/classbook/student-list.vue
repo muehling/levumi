@@ -18,7 +18,7 @@
           v-for="(student, index) in students"
           :key="student.id"
           :student="{ ...student }"
-          :group="group"
+          :group-id="groupId"
           :index="index"
           :empty="false"
           :read-only="readOnly"
@@ -30,7 +30,7 @@
           v-if="!readOnly"
           :key="0"
           :student="{ name: '', login: '', tags: [] }"
-          :group="group"
+          :group-id="groupId"
           :index="-1"
           :empty="true"
           :open="students.length === 0"
@@ -58,7 +58,7 @@
     name: 'StudentList',
     components: { StudentRow },
     props: {
-      group: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
+      groupId: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
       readOnly: Boolean,
     },
     setup() {
@@ -67,14 +67,18 @@
     },
     data() {
       return {
-        students: [...this.globalStore.studentsInGroups[this.group]] || [],
+        students: [...this.globalStore.studentsInGroups[this.groupId]] || [],
       }
     },
     methods: {
       update(val) {
         //Student einfügen, updaten oder löschen und View aktualisieren
         if (val.object !== null) {
-          val.object.name = decryptStudentName(val.object.name, 'Kind_' + val.object.id, this.group) //Namen für weitere Verwendung entschlüsseln
+          val.object.name = decryptStudentName(
+            val.object.name,
+            'Kind_' + val.object.id,
+            this.groupId
+          ) //Namen für weitere Verwendung entschlüsseln
           if (val.index > -1) {
             // update
             this.$set(this.students, val.index, val.object)
@@ -87,7 +91,7 @@
           this.students.splice(val.index, 1)
         }
 
-        this.globalStore.setStudentsInGroup({ groupId: this.group, students: this.students })
+        this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },
       exportQrCodes() {
         const pdf = new jsPDF()

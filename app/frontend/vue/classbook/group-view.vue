@@ -13,7 +13,8 @@
       <!-- Info/Form für Klassen teilen -->
       <share-form v-if="group.id" :group="group" @update:groups="updateGroup($event)"> </share-form>
     </div>
-    <student-list v-if="group.key != null" :group="group.id" :read-only="read_only"> </student-list>
+    <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only">
+    </student-list>
   </div>
 
   <!-- Darstellung für archivierte Klasse -->

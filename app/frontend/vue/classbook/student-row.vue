@@ -242,7 +242,7 @@
     components: { ConfirmDialog },
     props: {
       empty: Boolean,
-      group: Number,
+      groupId: Number,
       index: Number,
       open: Boolean,
       readOnly: Boolean,
@@ -396,8 +396,10 @@
 
       collectData() {
         //Daten aus den Inputs codieren für AJAX Request
-        const encodedName = encodeURIComponent(encryptWithMasterKeyAndGroup(this.name, this.group)) //Namen vor dem Senden verschlüsseln
-        let res = `group=${this.group}&student[name]=${encodedName}`
+        const encodedName = encodeURIComponent(
+          encryptWithMasterKeyAndGroup(this.name, this.groupId)
+        ) //Namen vor dem Senden verschlüsseln
+        let res = `group=${this.groupId}&student[name]=${encodedName}`
 
         //Restliche Attribute anfügen, falls vorhanden
         if (this.gender != null) {
