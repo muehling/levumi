@@ -6,6 +6,7 @@
     </p>
   </div>
   <div v-else>
+    <loading-dots :is-loading="isLoadingList"></loading-dots>
     <table class="table table-sm table-striped table-responsive-md text-small">
       <thead>
         <tr>
@@ -20,7 +21,7 @@
         <tr v-for="test in sortedlist" :key="test.id">
           <td>{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
-          <td>{{ test.last_test }}</td>
+          <td>{{ formatLastDate(test.last_test) }}</td>
           <td>
             <b-btn
               v-if="test.student_test"
@@ -31,6 +32,7 @@
               <i :class="`fas fa-${test.active ? 'pause' : 'play'}`"></i>
               {{ test.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
+            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled>(Nutzer-Test)</b-btn>
           </td>
           <td>
             <b-btn
@@ -61,12 +63,14 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
   import apiRoutes from '../routes/api-routes'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import LoadingDots from '../shared/loading-dots.vue'
+  import { format } from 'date-fns'
 
   export default {
     name: 'ListView',
-    components: { ConfirmDialog },
+    components: { ConfirmDialog, LoadingDots },
     props: {
       group: Object,
     },
@@ -78,11 +82,17 @@
       sortedlist() {
         return [...this.assessmentsStore.assessments].sort((a, b) => a.name.localeCompare(b.name))
       },
+      isLoadingList() {
+        return this.assessmentsStore.isLoading
+      },
     },
     mounted() {
       this.updateList()
     },
     methods: {
+      formatLastDate(date) {
+        return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
+      },
       async toggleAssessment(test) {
         const res = await ajax({
           url: `/groups/${this.group.id}/assessments/${test.test}`,

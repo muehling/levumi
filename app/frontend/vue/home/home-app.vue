@@ -15,6 +15,7 @@
               v-for="(group, index) in ownActiveGroups"
               :key="group.id"
               :active="$root.pre_select && $root.pre_select.group == group.id"
+              @click="getTestsForGroup(group.id)"
             >
               <!-- Beispielklasse kursiv darstellen -->
               <template slot="title">
@@ -59,13 +60,15 @@
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'HomeApp',
     components: { GroupView, IntroPopover },
     setup() {
       const globalStore = useGlobalStore()
-      return { globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { globalStore, assessmentsStore }
     },
     computed: {
       ownActiveGroups() {
@@ -111,6 +114,9 @@
         //FIXME entirely too sideeffecty
         const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
         test.used = true
+      },
+      getTestsForGroup(groupId) {
+        this.assessmentsStore.fetch(groupId)
       },
     },
   }
