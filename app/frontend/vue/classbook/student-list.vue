@@ -85,26 +85,6 @@
 
         this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },
-      exportQrCodes() {
-        /*   const pdf = new jsPDF()
-        let height = 10
-        for (let i = 0; i < this.students.length; i++) {
-          const qrElement = this.jQuery('#qr_code_' + this.students[i].id + ' canvas')[0]
-          if (qrElement) {
-            const base64Image = qrElement.toDataURL('image/jpeg', 1)
-            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.text('Name: ' + this.students[i].name, 60, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 60, height + 30)
-            pdf.line(0, height + 43, 210, height + 45)
-            height = height + 46
-            if (height >= 250) {
-              height = 10
-              pdf.addPage()
-            }
-          }
-        }
-        pdf.save('qr_codes.pdf')*/
-      },
     },
   }
 </script>

@@ -215,12 +215,23 @@
         </table>
       </div>
     </b-row>
+    <b-row :hidden="selectedViewType !== 'graph'">
+      <b-table-lite
+        id="simple-table"
+        class="mt-4 text-small"
+        small
+        striped
+        hover
+        :items="simpleTableData"
+      ></b-table-lite>
+    </b-row>
   </div>
 </template>
 
 <script>
-  import deepmerge from 'deepmerge'
   import ApexCharts from 'apexcharts'
+  import autoTable from 'jspdf-autotable'
+  import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
   import {
     apexChartOptions,
@@ -249,6 +260,7 @@
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
         view_selected: 0,
+        simpleTableData: undefined,
       }
     },
     computed: {
@@ -261,6 +273,9 @@
       },
       columns() {
         return this.configuration.views[this.view_selected].columns || []
+      },
+      selectedViewType() {
+        return this.configuration.views[this.view_selected].type
       },
       graph_visible() {
         return (
@@ -400,57 +415,40 @@
         }
         return true
       },
-      export_graph() {
-        this.apexchart.dataURI().then(uri => {
-          let pdf = new jsPDF({ orientation: 'landscape' })
-          pdf.text(this.test.full_name, 10, 10)
-          if (this.studentSelected == -1) {
-            pdf.text('Ganze Klasse - ' + this.configuration.views[this.view_selected].label, 10, 20)
-            pdf.addImage(
-              uri['imgURI'],
-              'PNG',
-              10,
-              40,
-              pdf.internal.pageSize.getWidth() - 15,
-              pdf.internal.pageSize.getHeight() - 120
-            )
-            pdf.save(
-              this.group.label +
-                '_' +
-                this.test.shorthand +
-                this.test.level +
-                '_' +
-                'Klassenansicht' +
-                '.pdf'
-            )
-          } else {
-            pdf.text(
-              this.getStudentById(this.studentSelected).name +
-                ' - ' +
-                this.configuration.views[this.view_selected].label,
-              10,
-              20
-            )
-            pdf.addImage(
-              uri['imgURI'],
-              'PNG',
-              10,
-              40,
-              pdf.internal.pageSize.getWidth() - 15,
-              pdf.internal.pageSize.getHeight() - 120
-            )
-            pdf.save(
-              this.group.label +
-                '_' +
-                this.test.shorthand +
-                this.test.level +
-                '_' +
-                'Kindansicht' +
-                '.pdf'
-            )
-          }
-        })
+
+      async createPdf(title, filename) {
+        const pdf = new jsPDF({ orientation: 'landscape' })
+        pdf.text(this.test.full_name, 10, 10)
+        pdf.text(title, 10, 20)
+        const uri = await this.apexchart.dataURI()
+        pdf.addImage(
+          uri['imgURI'],
+          'PNG',
+          10,
+          40,
+          pdf.internal.pageSize.getWidth() - 15,
+          pdf.internal.pageSize.getHeight() - 120
+        )
+        pdf.addPage()
+        autoTable(pdf, { html: '#simple-table' })
+
+        pdf.save(filename + '.pdf')
       },
+
+      async export_graph() {
+        let title
+        let filename
+        let view = this.configuration.views[this.view_selected]
+        if (this.studentSelected == -1) {
+          title = `Ganze Klasse - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
+        } else {
+          title = `${this.getStudentById(this.studentSelected).name} - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
+        }
+        await this.createPdf(title, filename)
+      },
+
       createSeries(studentId, seriesKey) {
         const results = this.results.filter(result => result.student_id === studentId)
         const view = this.configuration.views[this.view_selected]
@@ -491,22 +489,34 @@
           }
         }
 
-        let res
+        let graphData
 
+        // create graph data
         if (this.studentSelected == -1) {
-          res = this.studentsWithResults.map(student => {
+          graphData = this.studentsWithResults.map(student => {
             return { name: student.name, data: this.createSeries(student.id) }
           })
         } else {
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
-            res = [{ name: student.name, data: this.createSeries(student.id) }]
+            graphData = [{ name: student.name, data: this.createSeries(student.id) }]
           } else {
-            res = view.series_keys.map(series_key => {
+            graphData = view.series_keys.map(series_key => {
               return { name: series_key, data: this.createSeries(student.id, series_key) }
             })
           }
         }
+
+        this.simpleTableData = graphData.map(lineData => {
+          const data = lineData.data.reduce((acc, d) => {
+            acc[d.x] = d.y || '-'
+            return acc
+          }, {})
+          return {
+            name: lineData.name,
+            ...data,
+          }
+        })
 
         //Kommentare einfügen
         opt['annotations'] = {
@@ -542,7 +552,7 @@
         }
 
         opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
-        const options = { ...opt, series: res }
+        const options = { ...opt, series: graphData }
 
         this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
         this.apexchart.render()
