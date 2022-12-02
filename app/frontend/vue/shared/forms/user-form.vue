@@ -214,9 +214,9 @@
         }
 
         if (res.status === 200) {
-          sessionStorage.setItem('login', this.password)
           this.$emit('submitSuccessful')
           if (newKeys) {
+            sessionStorage.setItem('login', this.password)
             this.globalStore.setShareKeys(newKeys)
           }
         } else {
