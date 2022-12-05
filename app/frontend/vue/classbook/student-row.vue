@@ -344,7 +344,7 @@
           height: 400,
           type: 'canvas',
           data: this.student.login,
-          image: 'favicon.ico',
+          image: '/images/shared/Levumi-normal_small.png',
           dotsOptions: {
             color: '#000000',
           },
