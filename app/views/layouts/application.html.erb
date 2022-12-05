@@ -8,6 +8,7 @@
     <%= vite_javascript_tag 'application' %>
     <%= vite_stylesheet_tag 'application' %>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <%= yield :head if content_for? :head %>
     <%= vite_client_tag %>
