@@ -7,13 +7,13 @@
   background-size: cover;
   padding: 0.5em;
   &.grownups-img {
-    background-image: url('/assets/erwachsene.jpg');
+    background-image: url('/images/erwachsene.jpg');
   }
   &.alphabet-img {
-    background-image: url('/assets/alphabet.jpg');
+    background-image: url('/images/alphabet.jpg');
   }
   &.children-img {
-    background-image: url('/assets/kinder.jpg');
+    background-image: url('/images/kinder.jpg');
   }
   @media (min-width: 576px) {
     min-height: 667px;
