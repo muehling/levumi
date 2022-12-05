@@ -3,6 +3,7 @@
 // which is needed by bootstrap.
 import './add_jquery'
 import * as bootstrap from 'bootstrap'
+import * as sjcl from 'sjcl'
 
 import BootstrapVue from 'bootstrap-vue'
 import Vue from 'vue'
@@ -22,6 +23,10 @@ import router from '../vue/routes/frontend-routes'
 import '../styles/application.scss'
 
 window.bootstrap = bootstrap
+
+// TODO only needed for recover.html.erb
+window.sjcl = sjcl
+
 const element = document.getElementById('levumi')
 
 const init = async () => {

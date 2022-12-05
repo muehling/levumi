@@ -72,7 +72,7 @@ class Material < ApplicationRecord
         material.destroy unless (material.nil? || !replace)
         material = Material.create(val.slice('name', 'description'))
         zip
-          .glob("files/#{val['path']}/*")
+          .glob("#{val['path']}/*")
           .each do |f|
             material.files.attach(
               io: StringIO.new(f.get_input_stream.read),

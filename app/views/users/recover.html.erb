@@ -6,7 +6,7 @@
       Passwort zurücksetzen
     </div>
     <div class='card card-body ml-5 mr-5'>
-      <form id="password-reset" onsubmit='sessionStorage["answer"] = $("#security").val();' >
+      <form id="password-reset">
         <div class='form-group'>
           <input type='email' name='email' class='form-control' id='email' placeholder='E-Mail Adresse'>
         </div>
@@ -46,13 +46,13 @@ const submit = async e => {
     try {
       pw = sjcl.decrypt($('#security').val(), data.user.security_digest)
     } catch (e) {
-      // TODO output error message?
-    }
+      // error message is displayed in the else case below
+  }
   if (pw) {
     $('#res').html(
-        "<button class='btn btn-primary' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>Überprüfung erfolgreich! Passwort anzeigen</button><div class='collapse alert alert-success mt-3' id='collapse'></div>"
+        "<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>Überprüfung erfolgreich<br>Hier klicken, um das Passwort anzeigen:</button><div class='collapse alert alert-success mt-3' id='collapse'></div>"
       )
-      $('#collapse').html(pw)
+      $('#collapse').html('<a href="/">' + pw + '</>')
     } else {
       $('#res').html(
         "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"

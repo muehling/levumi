@@ -163,7 +163,7 @@
           this.password !== this.passwordConfirm ||
           this.securityAnswer === ''
 
-        return hasPasswordRelatedChange ? isPasswordInvalid && isIncomplete : isIncomplete
+        return hasPasswordRelatedChange ? isPasswordInvalid || isIncomplete : isIncomplete
       },
     },
 
@@ -199,13 +199,7 @@
             data.keys = JSON.stringify(newKeys)
             data.user.password = this.password
             data.user.password_confirmation = this.passwordConfirm
-            data.user.security_digest = encryptWithKey(this.securityAnswer, this.password)
-          } else if (this.password === '' && this.securityAnswer !== '') {
-            // only security question
-            data.user.security_digest = encryptWithKey(
-              sessionStorage.getItem('login'),
-              this.securityAnswer
-            )
+            data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
           }
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),

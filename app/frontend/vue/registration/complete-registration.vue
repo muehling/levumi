@@ -11,7 +11,7 @@
               @change-security-answer="a => (securityAnswer = a)"
             />
           </b-card>
-          <b-card title="Helfen Sie uns bei der Forschung" class="mt-4">
+          <b-card v-if="accountType !== 2" title="Helfen Sie uns bei der Forschung" class="mt-4">
             <extra-data-form
               :account-type="accountType"
               @change-institution="inst => (institution = inst)"
