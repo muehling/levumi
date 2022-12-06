@@ -86,7 +86,7 @@
     </td>
 
     <td>
-      <span v-if="!readOnly && !empty && !editMode">
+      <span :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
         <b-button-toolbar>
           <b-button-group>
             <b-btn
@@ -190,7 +190,7 @@
           </b-btn>
         </b-modal>
       </span>
-      <span v-else-if="!readOnly && editMode">
+      <span :class="!readOnly && editMode ? '' : 'd-none'">
         <b-button-toolbar class="flex-nowrap">
           <b-button-group>
             <b-button
@@ -205,13 +205,13 @@
             </b-button>
           </b-button-group>
           <b-button-group>
-            <b-link
-              class="btn btn-sm btn-outline-secondary mr-2"
-              href="#"
+            <b-btn
+              class="btn btn-sm mr-1"
+              variant="outline-secondary"
               title="Abbrechen"
               @click="editMode = false"
               ><i class="fas fa-times"></i
-            ></b-link>
+            ></b-btn>
           </b-button-group>
           <b-button-group>
             <b-btn
