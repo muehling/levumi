@@ -43,10 +43,10 @@
     window.lastResult = lastResult
 
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @student.get_setting(:font_family) %>'
+    const font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
     window.font_family = font_family
 
-    const font_size = <%= @student.get_setting(:font_size) %>
+    const font_size = <%= @student.get_setting("font_size") %>
     window.font_size = font_size
 
     //Funktionen für Testumgebung bereitstellen
