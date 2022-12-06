@@ -13,7 +13,7 @@
         :options="availableFilters"
       ></b-form-checkbox-group>
     </b-form-group>
-    <table class="table table-sm table-striped table-responsive-md text-small">
+    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
           <th>Test</th>
@@ -204,6 +204,5 @@
 <style>
   .assessment-list .assessment-line:hover {
     cursor: pointer;
-    font-weight: bold;
   }
 </style>
