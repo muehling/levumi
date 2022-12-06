@@ -17,6 +17,11 @@ json.tests @data.map do |a|
         json.time_limit t.description['time_limit']
         json.usage t.description['usage']
         json.description t.description['full']
+        json.info_attachments t.info_files.map do |f|
+          json.filepath rails_blob_path(f)
+          json.content_type f.content_type
+          json.filename f.filename
+        end
       end
     end
   end

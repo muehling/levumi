@@ -12,6 +12,7 @@ class Test < ApplicationRecord
   has_many_attached :media_files
   has_many_attached :script_files
   has_many_attached :style_files
+  has_many_attached :info_files
 
   #Entspricht dem Testnamen
   validates_presence_of :level
@@ -155,6 +156,16 @@ class Test < ApplicationRecord
           .glob('media/*')
           .each do |f|
             test.media_files.attach(
+              io: StringIO.new(f.get_input_stream.read),
+              filename: f.name.split('/').last
+            )
+          end
+
+        test.info_files.purge if old_test == test
+        zip
+          .glob('info/*')
+          .each do |f|
+            test.info_files.attach(
               io: StringIO.new(f.get_input_stream.read),
               filename: f.name.split('/').last
             )

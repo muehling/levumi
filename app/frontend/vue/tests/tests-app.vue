@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container fluid class="tests-app">
     <div v-if="isLoading">
       <div class="spinner">
         <div class="bounce1"></div>
@@ -13,7 +13,7 @@
           <b-tabs pills>
             <!--% Area.order(:name).all.each do |a| %-->
             <!-- Oberste Ebene Lernbereiche -->
-            <b-tab v-for="area in tData" :key="area.id">
+            <b-tab v-for="area in testData" :key="area.id">
               <template slot="title">
                 {{ area.name }}
               </template>
@@ -63,62 +63,72 @@
                             <!-- Testinfo rendern -->
                             <div id="info_<%= t.id %>">
                               <div id="info_<%= t.id %>_inner">
-                                <b-row>
-                                  <b-col cols="10">
-                                    <table
-                                      class="table table-sm table-striped table-borderless text-small mt-1"
-                                    >
-                                      <tr>
-                                        <td>Anzahl an Items</td>
-                                        <td>{{ test.items_count }}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Durchführung</td>
-                                        <td>
-                                          <span>{{
-                                            test.is_student_test
-                                              ? 'Selbstständig durch die Schüler:innen'
-                                              : 'Durch die Lehrkraft'
-                                          }}</span>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Zeitbeschränkung</td>
-                                        <td>{{ test.time_limit }}</td>
-                                      </tr>
-                                      <tr>
-                                        <td>Durchführung</td>
-                                        <td>
-                                          <p>{{ test.usage }}</p>
-                                        </td>
-                                      </tr>
-                                      <tr>
-                                        <td>Items</td>
-                                        <td>
-                                          <p>
-                                            <span v-for="(item, key, i) in test.items" :key="key"
-                                              >{{
-                                                `${item}${
-                                                  i < parseInt(test.items_count, 10) ? ', ' : ''
-                                                }`
-                                              }}
-                                            </span>
-                                          </p>
-                                        </td>
-                                      </tr>
-                                    </table>
-                                  </b-col>
-                                  <b-col cols="2"> </b-col>
-                                </b-row>
-                                <b-row>
-                                  <b-col cols="12">
-                                    <p class="text-light bg-secondary">&nbsp;Beschreibung</p>
-                                    <div
-                                      class="full-description text-small"
-                                      v-html="test.description"
-                                    ></div>
-                                  </b-col>
-                                </b-row>
+                                <div class="container-fluid">
+                                  <table
+                                    class="table table-sm table-striped table-borderless text-small mt-1"
+                                  >
+                                    <tr>
+                                      <td>Anzahl an Items</td>
+                                      <td>{{ test.items_count }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <span>{{
+                                          test.is_student_test
+                                            ? 'Selbstständig durch die Schüler:innen'
+                                            : 'Durch die Lehrkraft'
+                                        }}</span>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Zeitbeschränkung</td>
+                                      <td>{{ test.time_limit }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <p>{{ test.usage }}</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Items</td>
+                                      <td>
+                                        <p>
+                                          <span v-for="(item, key, i) in test.items" :key="key"
+                                            >{{
+                                              `${item}${
+                                                i < parseInt(test.items_count, 10) ? ', ' : ''
+                                              }`
+                                            }}
+                                          </span>
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </div>
+
+                                <div v-if="test.description" class="container-fluid mb-4">
+                                  <p class="text-light bg-secondary pl-4">Beschreibung</p>
+                                  <div
+                                    class="full-description text-small"
+                                    v-html="test.description"
+                                  ></div>
+                                </div>
+                                <div v-if="hasAttachments(test)" class="container-fluid">
+                                  <p class="text-light bg-secondary pl-4">Anhänge</p>
+                                  <img
+                                    v-for="attachment in getAttachedImages(test)"
+                                    :key="attachment.filename"
+                                    class="attached-image"
+                                    :src="attachment.filepath"
+                                  />
+                                </div>
+                                <ul>
+                                  <li v-for="file in getAttachedOther(test)" :key="file.filename">
+                                    <a :href="file.filepath" target="_blank">{{ file.filename }}</a>
+                                  </li>
+                                </ul>
                               </div>
                             </div>
                           </b-tab>
@@ -145,7 +155,7 @@
       return { testsStore }
     },
     computed: {
-      tData() {
+      testData() {
         return this.testsStore.tests
       },
       isLoading() {
@@ -155,5 +165,26 @@
     async created() {
       await this.testsStore.fetch()
     },
+    methods: {
+      getAttachedImages(test) {
+        return test.info_attachments.filter(attachment =>
+          attachment.content_type.startsWith('image')
+        )
+      },
+      getAttachedOther(test) {
+        return test.info_attachments.filter(
+          attachment => !attachment.content_type.startsWith('image')
+        )
+      },
+      hasAttachments(test) {
+        return test.info_attachments.length
+      },
+    },
   }
 </script>
+
+<style>
+  .tests-app .attached-image {
+    max-width: 100%;
+  }
+</style>
