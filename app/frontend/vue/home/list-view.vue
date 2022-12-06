@@ -5,7 +5,7 @@
       Legen Sie zunächst über die Auswahl unten einen Test für diese Klasse an.
     </p>
   </div>
-  <div v-else>
+  <div v-else class="assessment-list">
     <loading-dots :is-loading="isLoadingList"></loading-dots>
     <b-form-group>
       <b-form-checkbox-group
@@ -24,8 +24,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sortedlist" :key="test.test + '/' + test.name">
-          <td>{{ test.name }}</td>
+        <tr v-for="test in sortedlist" :key="test.test + '/' + test.name" class="assessment-line">
+          <td @click="setPreselect(test)">{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
           <td>{{ formatLastDate(test.last_test) }}</td>
           <td>
@@ -154,6 +154,15 @@
       this.updateList()
     },
     methods: {
+      setPreselect(test) {
+        this.$emit('set-preselect', {
+          group: this.group.id,
+          area: test.area_id,
+          competence: test.competence_id,
+          family: test.test_family_id,
+          test: test.test_id,
+        })
+      },
       formatLastDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
       },
@@ -191,3 +200,10 @@
     },
   }
 </script>
+
+<style>
+  .assessment-list .assessment-line:hover {
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>

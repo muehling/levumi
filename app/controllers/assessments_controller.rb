@@ -57,11 +57,15 @@ class AssessmentsController < ApplicationController
         .map do |a|
           {
             active: a.active,
-            test: a.test.id,
+            test: a.test.id, # TODO replace usage with test_id (see below)
             name: a.test.full_name,
             student_test: a.test.student_test,
             result_count: a.results.length,
-            last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : ''
+            last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
+            test_id: a.test.id,
+            test_family_id: a.test.test_family.id,
+            competence_id: a.test.test_family.competence.id,
+            area_id: a.test.test_family.competence.area.id
           }
         end
     render json: data

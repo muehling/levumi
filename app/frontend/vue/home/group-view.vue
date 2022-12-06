@@ -5,10 +5,9 @@
         ><i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
-        <!-- Spinner für die AJAX-Requests zum Laden der Liste -->
-
         <!-- Listenansicht für alle Tests -->
-        <list-view :group="group" :read_only="group.read_only"> </list-view>
+        <list-view :group="group" :read_only="group.read_only" @set-preselect="setPreselect">
+        </list-view>
       </b-collapse>
     </div>
     <b-card bg-variant="light" class="mt-3">
@@ -125,7 +124,7 @@
         </b-nav-item>
       </b-nav>
     </b-card>
-    <b-row>
+    <b-row id="assessment-jump">
       <b-col>
         <div v-if="!isLoadingUpdate && !results">
           <p class="m-5 text-center text-muted">
@@ -315,6 +314,17 @@
     },
 
     methods: {
+      setPreselect(data) {
+        this.areaSelected = data.area
+        this.competenceSelected = data.competence
+        this.familySelected = data.family
+        this.test_selected = data.test
+        this.loadAssessment(data.test, false)
+        this.jQuery('html, body').animate(
+          { scrollTop: this.jQuery('#assessment-jump').offset().top },
+          'slow'
+        )
+      },
       //Neues Assessment anlegen und, bei Erfolg, laden.
       createAssessment(test, isVersion) {
         ajax({

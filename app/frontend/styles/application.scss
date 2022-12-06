@@ -287,3 +287,8 @@ textarea:focus {
 .modal-backdrop {
   opacity: 0.5;
 }
+
+.custom-control-input:checked ~ .custom-control-label::before {
+  border-color: $primary-color;
+  background-color: $primary-color;
+}
