@@ -1,5 +1,5 @@
 <template>
-  <div v-if="sortedlist.length == 0">
+  <div v-if="assessmentsStore.assessments.length == 0">
     <p class="m-5 text-center text-muted">
       Keine aktiven Tests mit Messungen vorhanden! <br />
       Legen Sie zunächst über die Auswahl unten einen Test für diese Klasse an.
@@ -7,6 +7,12 @@
   </div>
   <div v-else>
     <loading-dots :is-loading="isLoadingList"></loading-dots>
+    <b-form-group>
+      <b-form-checkbox-group
+        v-model="selectedFilters"
+        :options="availableFilters"
+      ></b-form-checkbox-group>
+    </b-form-group>
     <table class="table table-sm table-striped table-responsive-md text-small">
       <thead>
         <tr>
@@ -18,7 +24,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sortedlist" :key="test.id">
+        <tr v-for="test in sortedlist" :key="test.test + '/' + test.name">
           <td>{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
           <td>{{ formatLastDate(test.last_test) }}</td>
@@ -67,6 +73,16 @@
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import LoadingDots from '../shared/loading-dots.vue'
   import { format } from 'date-fns'
+  import intersection from 'lodash/intersection'
+
+  const Filter = {
+    WithResults: 1,
+    WithoutResults: 2,
+    StudentTests: 3,
+    UserTests: 4,
+    ActiveTests: 5,
+    InactiveTests: 6,
+  }
 
   export default {
     name: 'ListView',
@@ -78,9 +94,57 @@
       const assessmentsStore = useAssessmentsStore()
       return { assessmentsStore }
     },
+    data() {
+      return {
+        selectedFilters: [Filter.WithResults, Filter.StudentTests, Filter.ActiveTests],
+        availableFilters: [
+          { text: 'Mit Messungen', value: Filter.WithResults },
+          { text: 'Ohne Messungen', value: Filter.WithoutResults },
+          { text: 'Schüler-Tests', value: Filter.StudentTests },
+          { text: 'Nutzer-Tests', value: Filter.UserTests },
+          { text: 'Aktiv', value: Filter.ActiveTests },
+          { text: 'Inaktiv', value: Filter.InactiveTests },
+        ],
+      }
+    },
     computed: {
       sortedlist() {
-        return [...this.assessmentsStore.assessments].sort((a, b) => a.name.localeCompare(b.name))
+        const byResult = []
+        const byType = []
+        const byStatus = []
+
+        if (this.selectedFilters.includes(Filter.WithResults)) {
+          byResult.push(
+            ...this.assessmentsStore.assessments.filter(assessment => assessment.result_count > 0)
+          )
+        }
+        if (this.selectedFilters.includes(Filter.WithoutResults)) {
+          byResult.push(
+            ...this.assessmentsStore.assessments.filter(assessment => assessment.result_count === 0)
+          )
+        }
+        if (this.selectedFilters.includes(Filter.StudentTests)) {
+          byType.push(
+            ...this.assessmentsStore.assessments.filter(assessment => assessment.student_test)
+          )
+        }
+        if (this.selectedFilters.includes(Filter.UserTests)) {
+          byType.push(
+            ...this.assessmentsStore.assessments.filter(assessment => !assessment.student_test)
+          )
+        }
+        if (this.selectedFilters.includes(Filter.ActiveTests)) {
+          byStatus.push(
+            ...this.assessmentsStore.assessments.filter(assessment => assessment.active)
+          )
+        }
+        if (this.selectedFilters.includes(Filter.InactiveTests)) {
+          byStatus.push(
+            ...this.assessmentsStore.assessments.filter(assessment => !assessment.active)
+          )
+        }
+        const intersected = intersection(byResult, byType, byStatus)
+        return intersected.length ? intersected.sort((a, b) => a.name.localeCompare(b.name)) : []
       },
       isLoadingList() {
         return this.assessmentsStore.isLoading
