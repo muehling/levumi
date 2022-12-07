@@ -27,8 +27,6 @@ WORKDIR /usr/src/app
 COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
 COPY package.json yarn.lock /app/
-COPY localhost.key .
-COPY localhost.crt .
 
 RUN gem update --system && gem install bundler && bundle install
 RUN yarn
