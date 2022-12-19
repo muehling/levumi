@@ -45,7 +45,7 @@
                 v-for="student in students"
                 :key="student.id"
                 :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                :disabled="get_result(student.id) > 0"
+                :disabled="get_result(student.id) > 0 || isMasqueradedUser"
                 :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
                 :href="
                   '/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name
@@ -85,7 +85,7 @@
                   v-if="!excludeList.includes(student.id)"
                   :key="student.id"
                   :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!isactive"
+                  :disabled="!isactive || isMasqueradedUser"
                   type="submit"
                 >
                   {{ student.name }}<br />{{ student.login }}
@@ -97,6 +97,7 @@
               <b-button
                 class="btn btn-sm"
                 :variant="isactive ? ' btn-danger' : ' btn-success'"
+                :disabled="isMasqueradedUser"
                 @click="toggleAssessment()"
               >
                 <i :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
@@ -250,6 +251,7 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { getStudent } from '../../utils/helpers'
+  import { isAdmin } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
   import AnalysisView from './analysis-view.vue'
   import compact from 'lodash/compact'
@@ -321,6 +323,9 @@
       },
       isactive() {
         return this.assessmentsStore.assessments.find(a => a.test === this.test.id)?.active
+      },
+      isMasqueradedUser() {
+        return this.globalStore.masquerade || isAdmin(this.globalStore.login.capabilities)
       },
     },
     methods: {
