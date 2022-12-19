@@ -237,4 +237,7 @@
     flex-direction: column;
     justify-content: space-between;
   }
+  .test-card > .card {
+    hyphens: auto;
+  }
 </style>
