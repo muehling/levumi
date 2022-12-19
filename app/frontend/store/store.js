@@ -40,6 +40,9 @@ export const useGlobalStore = defineStore('global', {
     resetGenericMessage() {
       this.genericMessage = { title: '', message: '' }
     },
+    setLogin(data) {
+      this.login = data
+    },
 
     async fetch(showLoader = false) {
       this.isLoading = showLoader

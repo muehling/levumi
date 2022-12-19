@@ -237,7 +237,7 @@
         </ul>
       </div>
     </nav>
-    <edit-user-dialog ref="editUserDialog" />
+    <edit-user-dialog ref="editUserDialog" @refetch="updateUser" />
   </div>
 </template>
 <script>
@@ -283,6 +283,10 @@
     },
 
     methods: {
+      async updateUser(res) {
+        const data = await res.json()
+        this.globalStore.setLogin({ ...this.globalStore.login, ...data })
+      },
       checkCapability(capability) {
         return hasCapability(capability, this.globalStore.login.capabilities)
       },

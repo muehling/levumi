@@ -46,8 +46,8 @@
         this.user = data.user
         this.isNew = data.isNew || false
       },
-      handleSuccess() {
-        this.$emit('refetch')
+      handleSuccess(res) {
+        this.$emit('refetch', res)
         this.$refs.infoDialog.open({
           message: 'Ihre Daten wurden erfolgreich geändert!',
           title: 'Speichern erfolgreich',

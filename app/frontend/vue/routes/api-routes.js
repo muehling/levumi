@@ -3,6 +3,7 @@ export default {
     finishIntro: '/willkommen?classbook=true',
   },
   users: {
+    show: id => ({ url: `/users/${id}` }),
     update: id => ({ url: `/users/${id}`, method: 'PATCH' }),
     create: { url: '/users', method: 'POST' },
     usersMail: id => ({ url: `/users/${id}/mail`, method: 'PUT' }),

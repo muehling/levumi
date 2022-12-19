@@ -39,7 +39,7 @@ class UsersController < ApplicationController
             end
           end
         end
-        head :ok
+        render json: @user # return user to update view
       else
         @users = User.all #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
         head :ok
