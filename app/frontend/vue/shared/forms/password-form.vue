@@ -2,7 +2,8 @@
   <div>
     <b-form-group label="Passwort">
       <b-form-input
-        v-model="password"
+        v-model="passwordInput"
+        autocomplete="new-password"
         type="password"
         :class="hasPasswordErrors && 'is-invalid'"
         :state="isPasswordValid"
@@ -16,6 +17,7 @@
     <b-form-group>
       <b-form-input
         v-model="passwordConfirm"
+        autocomplete="new-password"
         type="password"
         :class="hasPasswordErrors && 'is-invalid'"
         :state="isPasswordValid"
@@ -39,7 +41,7 @@
       <b-form-invalid-feedback :state="!hasSecurityQuestionErrors && !isSecurityHintVisible">
         Bitte geben Sie die Antwort bei einer Passwortänderung erneut ein!
       </b-form-invalid-feedback>
-      <b-form-valid-feedback :state="!hasSecurityQuestionErrors && password === ''">
+      <b-form-valid-feedback :state="!hasSecurityQuestionErrors && passwordInput === ''">
         <small id="securityHelp" class="form-text text-muted">
           Wenn Sie Ihr Passwort vergessen, können Sie es mit Hilfe der Antwort auf die
           Sicherheitsfrage wiederherstellen. Ihre Antwort wird nicht gespeichert, daher muss sie bei
@@ -58,7 +60,7 @@
     },
     data() {
       return {
-        password: '',
+        passwordInput: '',
         passwordConfirm: '',
         securityAnswer: '',
       }
@@ -69,15 +71,15 @@
       },
       isPasswordValid() {
         // returns null instead of boolean because this is expected for the bootstrap validation
-        return this.password !== '' || this.passwordConfirm !== ''
-          ? this.password === this.passwordConfirm
+        return this.passwordInput !== '' || this.passwordConfirm !== ''
+          ? this.passwordInput === this.passwordConfirm
           : null
       },
       hasSecurityQuestionErrors() {
         return Object.keys(this.errors).find(e => e === 'security_digest')
       },
       isSecurityHintVisible() {
-        return this.password !== '' && this.securityAnswer === ''
+        return this.passwordInput !== '' && this.securityAnswer === ''
       },
     },
   }
