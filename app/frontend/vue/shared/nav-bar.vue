@@ -107,7 +107,7 @@
               >Sitzung als {{ login?.email }} beenden</a
             >
           </li>
-          <li class="nav-item dropdown">
+          <li v-if="!masquerade" class="nav-item dropdown">
             <a
               id="navbarSupport"
               class="nav-link dropdown-toggle"
@@ -181,7 +181,7 @@
               </router-link>
             </div>
           </li>
-          <li id="intro6" class="nav-item dropdown">
+          <li v-if="!masquerade" id="intro6" class="nav-item dropdown">
             <a
               id="navbarMyData"
               class="nav-link dropdown-toggle"
@@ -200,7 +200,7 @@
               </b-link>
             </div>
           </li>
-          <li class="nav-item dropdown">
+          <li v-if="!masquerade" class="nav-item dropdown">
             <a
               id="navbarLegal"
               class="nav-link dropdown-toggle"
@@ -226,7 +226,7 @@
               >
             </div>
           </li>
-          <li class="nav-item">
+          <li v-if="!masquerade" class="nav-item">
             <form action="/logout" method="post">
               <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
               <button type="submit" class="nav-link border-0 bg-transparent" href="/logout">
