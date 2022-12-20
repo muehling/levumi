@@ -67,7 +67,10 @@ class UsersController < ApplicationController
       end
     end
     if params.has_key?('support')
-      UserMailer.with(user: @user, body: params['text']).support.deliver_later
+      UserMailer
+        .with(user: @user, body: params['text'], subject: params['subject'])
+        .support
+        .deliver_later
     end
     head :ok
   end

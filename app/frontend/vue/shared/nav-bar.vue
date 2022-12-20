@@ -119,24 +119,12 @@
             >
               Support
             </a>
-            <div class="dropdown-menu shadow" style="width: 20em" aria-labelledby="navbarSupport">
-              <b-form class="m-2" @submit="onSendSupportMail">
-                <p>Sie haben eine Frage oder möchten uns etwas mitteilen?</p>
-                <b-form-group label-for="contact-message">
-                  <b-form-textarea
-                    id="contact-message"
-                    v-model="contactMessage"
-                    placeholder="Bitte geben Sie Ihre Nachricht ein."
-                    rows="3"
-                    max-rows="6"
-                    required
-                  >
-                  </b-form-textarea>
-                  <b-button class="mt-4 mx-auto" type="submit" variant="outline-success"
-                    ><span>Absenden</span></b-button
-                  >
-                </b-form-group>
-              </b-form>
+            <div
+              class="dropdown-menu shadow p-2"
+              style="width: 20em"
+              aria-labelledby="navbarSupport"
+            >
+              <contact-form />
             </div>
           </li>
           <li v-if="!isRegularUser" class="nav-item dropdown">
@@ -250,24 +238,22 @@
   import { RouterLink } from 'vue-router'
   import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
+  import ContactForm from './forms/contact-form.vue'
   import EditUserDialog from '../users/components/edit-user-dialog.vue'
   import router from '../routes/frontend-routes'
 
   export default {
     name: 'NavBar',
     components: {
-      RouterLink,
+      ContactForm,
       EditUserDialog,
+      RouterLink,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    data() {
-      return {
-        contactMessage: '',
-      }
-    },
+
     computed: {
       systemMessage() {
         return this.$root.mode === 'staging' ? 'TEST-SYSTEM' : ''
@@ -306,22 +292,6 @@
         if (res.status === 200) {
           this.globalStore.fetch(true)
           router.push('/nutzerverwaltung')
-        }
-      },
-      async onSendSupportMail(e) {
-        e.preventDefault()
-        e.stopPropagation()
-        const data = {
-          support: true,
-          text: this.contactMessage,
-        }
-        const res = await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
-        if (res.status === 200) {
-          this.globalStore.setGenericMessage({
-            title: 'Email gesendet',
-            message:
-              'Vielen Dank für Ihre Anfrage. Wir werden uns sobald wie möglich bei Ihnen melden.',
-          })
         }
       },
     },
