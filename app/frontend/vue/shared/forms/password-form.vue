@@ -29,7 +29,7 @@
       </div>
     </b-form-group>
     <b-form-group>
-      <label>In welcher Stadt wurden Sie geboren?</label>
+      <label>Sicherheitsfrage: In welcher Stadt wurden Sie geboren?</label>
       <b-form-input
         id=">security"
         v-model="securityAnswer"
