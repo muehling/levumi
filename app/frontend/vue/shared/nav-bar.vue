@@ -195,7 +195,11 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarMyData">
               <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
-              <b-link :href="`/users/${login.id}.text`" class="dropdown-item">
+              <b-link
+                :href="`/users/${login.id}.text`"
+                class="dropdown-item"
+                :disabled="!hasTestedStudents"
+              >
                 Testungen exportieren
               </b-link>
             </div>
@@ -274,8 +278,11 @@
       masquerade() {
         return this.globalStore.masquerade
       },
-      hasNewShares: function () {
+      hasNewShares() {
         return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+      },
+      hasTestedStudents() {
+        return this.globalStore.login.has_tested_students
       },
       isRegularUser() {
         return isRegularUser(this.login.capabilities)

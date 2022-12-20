@@ -153,13 +153,24 @@ class User < ApplicationRecord
     return intro_state > 2
   end
 
+  def has_tested_students
+    groups =
+      Group
+        .where(id: GroupShare.where(user_id: self.id).select('group_id'))
+        .where.not(demo: true)
+        .pluck(:id) #Keine Beispielklassen exportieren
+    students = Student.where(group_id: groups).pluck(:id)
+    return(
+      Result.where("test_date > '2019-09-09'").where(student_id: students).size > 0 ? true : false
+    )
+  end
+
   #Alle Testungen eines Users als Zip-Archiv, eine Datei pro verwendetem Test
   def as_zip
     groups =
       Group
         .where(id: GroupShare.where(user_id: self.id).select('group_id'))
         .where.not(demo: true)
-        .select('id')
         .pluck(:id) #Keine Beispielklassen exportieren
     students = Student.where(group_id: groups).select('id').pluck(:id)
     tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
