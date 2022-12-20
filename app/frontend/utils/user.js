@@ -1,7 +1,10 @@
 import isArray from 'lodash/isArray'
 
-export const isAdmin = capabilities =>
-  isArray(capabilities) ? capabilities => capabilities.includes('admin') : capabilities === 'admin'
+export const isAdmin = capabilities => {
+  return isArray(capabilities)
+    ? capabilities => capabilities.includes('admin')
+    : capabilities === 'admin'
+}
 
 export const isRegularUser = capabilities => !capabilities
 

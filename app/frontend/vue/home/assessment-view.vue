@@ -325,7 +325,7 @@
         return this.assessmentsStore.assessments.find(a => a.test === this.test.id)?.active
       },
       isMasqueradedUser() {
-        return this.globalStore.masquerade || isAdmin(this.globalStore.login.capabilities)
+        return this.globalStore.masquerade || !isAdmin(this.globalStore.login.capabilities)
       },
     },
     methods: {

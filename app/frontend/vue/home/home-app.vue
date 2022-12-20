@@ -20,6 +20,18 @@
               <!-- Beispielklasse kursiv darstellen -->
               <template slot="title">
                 <i v-if="group.demo">{{ group.label }}</i>
+                <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
+                  {{ group.label }}
+                  <span class="small"> &nbsp;<i class="fas fa-share-nodes"></i> </span>
+                  <b-tooltip
+                    :target="`tooltip-target-${index}`"
+                    triggers="hover"
+                    offset="20"
+                    variant="secondary"
+                  >
+                    Geteilt von {{ group.belongs_to }}
+                  </b-tooltip>
+                </span>
                 <span v-else>{{ group.label }}</span>
               </template>
 
@@ -73,7 +85,7 @@
     computed: {
       ownActiveGroups() {
         return this.globalStore.groups
-          .filter((group, index) => index > 0 && group.owner && !group.archive)
+          .filter((group, index) => index > 0 && !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       groups() {
