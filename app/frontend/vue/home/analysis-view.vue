@@ -457,9 +457,9 @@
 
           let yVal
           if (seriesKey) {
-            yVal = currentResult?.views[view.key][seriesKey].toFixed(2) || null
+            yVal = currentResult?.views[view.key][seriesKey]?.toFixed(2) || null
           } else {
-            yVal = currentResult?.views[view.key].toFixed(2) || null
+            yVal = currentResult?.views[view.key]?.toFixed(2) || null
           }
           return {
             x: this.printDate(week),
