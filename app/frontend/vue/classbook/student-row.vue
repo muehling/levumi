@@ -43,14 +43,22 @@
 
     <td>
       <div v-if="editMode">
-        <b-form-select v-model="month" size="sm">
+        <b-form-select v-model="month" size="sm" @change="changeMonth">
           <option v-for="(m, i) in months" :key="`${m}/$${i}`" :value="i">
             {{ m }}
           </option>
         </b-form-select>
-        <b-form-select v-model="year" size="sm">
-          <option v-for="y in years()" :key="y" :value="y">{{ y }}</option>
+        <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
+          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
         </b-form-select>
+        <b-btn
+          v-if="!empty"
+          class="btn btn-block btn-sm mt-2"
+          variant="outline-danger"
+          @click="clearDateInputs"
+        >
+          Datum löschen
+        </b-btn>
       </div>
       <div v-else>
         <span v-if="student.birthmonth != undefined">{{ months[month] }} {{ year }}</span>
@@ -254,14 +262,6 @@
         loading: false,
         name: this.student.name,
         results: undefined,
-        years: function () {
-          let years = []
-          let cur = new Date().getFullYear()
-          for (let i = cur - 3; i > cur - 30; --i) {
-            years.push(i)
-          }
-          return years
-        },
 
         //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
         fontFamily:
@@ -284,6 +284,12 @@
             ? new Date(this.student.birthmonth).getFullYear()
             : null,
       }
+    },
+    computed: {
+      years() {
+        const today = new Date().getFullYear() - 3
+        return Array.from({ length: 30 }, (_, k) => today - k)
+      },
     },
     beforeCreate() {
       // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
@@ -335,6 +341,20 @@
       this.generateQRCode()
     },
     methods: {
+      changeMonth() {
+        if (this.year === null) {
+          this.year = this.years[0]
+        }
+      },
+      changeYear() {
+        if (this.month === null) {
+          this.month = 0
+        }
+      },
+      clearDateInputs() {
+        this.month = null
+        this.year = null
+      },
       generateQRCode() {
         if (!this.student.login) {
           return
