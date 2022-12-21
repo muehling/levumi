@@ -69,6 +69,7 @@
           default:
             this.globalStore.setErrorMessage('Ein unbekannter Fehler ist aufgetreten!')
         }
+        this.file = undefined
         this._close()
       },
     },
