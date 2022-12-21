@@ -7,7 +7,9 @@
       {{ message }}
     </div>
     <div class="d-flex justify-content-end">
-      <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
+      <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close"
+        >Schließen</b-button
+      >
       <b-button :variant="okIntent" class="m-1" @click="_confirm">{{ okText }}</b-button>
     </div>
   </b-modal>
@@ -22,6 +24,7 @@
       title: '',
       okText: '',
       okIntent: '',
+      hideCancelButton: false,
       resolvePromise: undefined,
       rejectPromise: undefined,
     }),
@@ -33,6 +36,7 @@
         this.title = data.title || ''
         this.okText = data.okText
         this.okIntent = data.okIntent || 'outline-danger'
+        this.hideCancelButton = data.hideCancelButton || false
         return new Promise((resolve, reject) => {
           this.resolvePromise = resolve
           this.rejectPromise = reject
@@ -41,15 +45,20 @@
 
       _close() {
         this.$refs.genericConfirmDialog.hide()
-        this.message = ''
-        this.title = ''
         this.resolvePromise(false)
+        this._reset()
       },
       _confirm() {
         this.$refs.genericConfirmDialog.hide()
+        this.resolvePromise(true)
+        this._reset()
+      },
+      _reset() {
         this.message = ''
         this.title = ''
-        this.resolvePromise(true)
+        this.okText = ''
+        this.okIntent = ''
+        this.hideCancelButton = false
       },
     },
   }

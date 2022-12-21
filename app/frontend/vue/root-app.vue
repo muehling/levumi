@@ -11,6 +11,7 @@
     <error-dialog />
     <input-dialog ref="inputDialog" />
     <generic-message />
+    <confirm-dialog ref="confirmDialog" />
   </div>
   <div v-else>
     <accept-terms v-if="!areTermsAccepted" />
@@ -18,26 +19,29 @@
   </div>
 </template>
 <script>
+  import { ajax } from '../utils/ajax'
   import { RouterView } from 'vue-router'
   import { useGlobalStore } from '../store/store'
   import AcceptTerms from './registration/accept-terms.vue'
-  import NavBar from './shared/nav-bar.vue'
+  import apiRoutes from './routes/api-routes'
   import CompleteRegistration from './registration/complete-registration.vue'
   import ErrorDialog from './shared/error-dialog.vue'
   import GenericMessage from './shared/generic-message.vue'
   import InputDialog from './shared/input-dialog.vue'
-  import { ajax } from '../utils/ajax'
-  import apiRoutes from './routes/api-routes'
+  import NavBar from './shared/nav-bar.vue'
+  import ConfirmDialog from './shared/confirm-dialog.vue'
+
   export default {
     name: 'RootApp',
     components: {
-      NavBar,
-      RouterView,
       AcceptTerms,
       CompleteRegistration,
+      ConfirmDialog,
       ErrorDialog,
       GenericMessage,
       InputDialog,
+      NavBar,
+      RouterView,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -69,7 +73,22 @@
         // or when a link is opened in a new tab. In this case, we need to log in again
         const login = sessionStorage.getItem('login')
         if (!login) {
-          this.sendLogin('')
+          if (!this.globalStore.masquerade) {
+            this.sendLogin('')
+          } else {
+            // if a masqueraded session was active, tell the user and terminate the session.
+            await this.$refs.confirmDialog.open({
+              title: 'Sitzung beendet',
+              message: 'Ihre letzte Sitzung als maskierter Nutzer wurde unerwartet beendet.',
+              okText: 'Ok',
+              hideCancelButton: true,
+            })
+
+            await ajax({ url: apiRoutes.users.logout, method: 'GET' })
+
+            // page reload is necessary to flush the store and force the user the re-enter his password
+            window.location.reload()
+          }
         }
       }
     },
