@@ -52,7 +52,7 @@
           <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
         </b-form-select>
         <b-btn
-          v-if="!empty"
+          v-if="month && year"
           class="btn btn-block btn-sm mt-2"
           variant="outline-danger"
           @click="clearDateInputs"
