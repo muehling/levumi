@@ -1,12 +1,11 @@
 <template>
-  <div v-if="assessmentsStore.assessments.length == 0">
+  <div v-if="assessmentsStore.assessments[group.id]?.length == 0">
     <p class="m-5 text-center text-muted">
       Keine aktiven Tests mit Messungen vorhanden! <br />
       Legen Sie zunächst über die Auswahl unten einen Test für diese Klasse an.
     </p>
   </div>
   <div v-else class="assessment-list">
-    <loading-dots :is-loading="isLoadingList"></loading-dots>
     <b-form-group>
       <b-form-checkbox-group
         v-model="selectedFilters"
@@ -71,7 +70,6 @@
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import LoadingDots from '../shared/loading-dots.vue'
   import { format } from 'date-fns'
   import intersection from 'lodash/intersection'
 
@@ -86,7 +84,7 @@
 
   export default {
     name: 'ListView',
-    components: { ConfirmDialog, LoadingDots },
+    components: { ConfirmDialog },
     props: {
       group: Object,
     },
@@ -96,16 +94,20 @@
     },
     data() {
       return {
-        selectedFilters: [Filter.WithResults, Filter.StudentTests, Filter.ActiveTests],
+        selectedFilters: [
+          Filter.WithResults,
+          Filter.StudentTests,
+          Filter.UserTests,
+          Filter.ActiveTests,
+        ],
         availableFilters: [
           { text: 'Mit Messungen', value: Filter.WithResults },
           { text: 'Ohne Messungen', value: Filter.WithoutResults },
           { text: 'Schüler-Tests', value: Filter.StudentTests },
-          { text: 'Nutzer-Tests', value: Filter.UserTests },
+          { text: 'Lehrkräfte-Tests', value: Filter.UserTests },
           { text: 'Aktiv', value: Filter.ActiveTests },
           { text: 'Inaktiv', value: Filter.InactiveTests },
         ],
-        forceUpdate: 0, // this needed to update the sortedList prop after the assessmentsStore is updated
       }
     },
     computed: {
@@ -114,7 +116,7 @@
         const byType = []
         const byStatus = []
         const assessments = this.assessmentsStore.getAssessments(this.group.id)
-        this.forceUpdate // just mentioning is is sufficient o_O
+
         if (this.selectedFilters.includes(Filter.WithResults)) {
           byResult.push(...assessments.filter(assessment => assessment.result_count > 0))
         }
@@ -136,9 +138,6 @@
         const intersected = intersection(byResult, byType, byStatus)
 
         return intersected.length ? intersected.sort((a, b) => a.name.localeCompare(b.name)) : []
-      },
-      isLoadingList() {
-        return this.assessmentsStore.isLoading
       },
     },
     async created() {
@@ -187,7 +186,6 @@
       },
       async updateList() {
         await this.assessmentsStore.fetch(this.group.id)
-        this.forceUpdate++
       },
     },
   }

@@ -124,7 +124,7 @@
         </b-nav-item>
       </b-nav>
     </b-card>
-    <b-row id="assessment-jump">
+    <b-row :id="'assessment-jump' + group.id">
       <b-col>
         <div v-if="!isLoadingUpdate && !results">
           <p class="m-5 text-center text-muted">
@@ -321,7 +321,7 @@
         this.test_selected = data.test
         this.loadAssessment(data.test, false)
         this.jQuery('html, body').animate(
-          { scrollTop: this.jQuery('#assessment-jump').offset().top },
+          { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
         )
       },

@@ -322,7 +322,7 @@
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
       isactive() {
-        return this.assessmentsStore.assessments[this.group.id].find(a => a.test === this.test.id)
+        return this.assessmentsStore.assessments[this.group.id]?.find(a => a.test === this.test.id)
           ?.active
       },
       isMasqueradedUser() {
