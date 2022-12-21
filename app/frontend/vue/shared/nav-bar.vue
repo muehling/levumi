@@ -127,7 +127,7 @@
               <contact-form />
             </div>
           </li>
-          <li v-if="!isRegularUser" class="nav-item dropdown">
+          <li v-if="!isRegularUser && !masquerade" class="nav-item dropdown">
             <a
               id="navbarSystem"
               class="nav-link dropdown-toggle"
