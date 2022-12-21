@@ -1,8 +1,8 @@
 <template>
   <div classname="group-view">
     <div v-if="!!group.id" class="mb-2 mt-2">
-      <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm"
-        ><i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
+      <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
+        <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
         <!-- Listenansicht für alle Tests -->
@@ -238,7 +238,7 @@
     computed: {
       empty: function () {
         //Ist überhaupt ein Assessment vorhanden?
-        return this.groupInfo.areas.reduce((acc, area) => acc || area.used, false)
+        return this.groupInfo?.areas.reduce((acc, area) => acc || area.used, false)
       },
       //Alle zur aktuellen Familie passenden Tests, jeweils nur die aktuelle Version
       tests: function () {

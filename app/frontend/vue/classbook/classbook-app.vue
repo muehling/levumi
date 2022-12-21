@@ -75,7 +75,7 @@
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
-                        <span v-if="group.key == null" class="badge badge-info">Neu!</span>
+                        <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
                       </template>
                       <group-view :groups="groups" :group="group"></group-view>
                     </b-tab>

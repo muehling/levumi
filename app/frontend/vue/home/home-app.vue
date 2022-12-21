@@ -36,7 +36,17 @@
               </template>
 
               <!-- Zweite Ebene - gewählte Klasse -->
+              <div v-if="!group.key">
+                <b-card bg-variant="light" class="col-lg-8 col-xl-6 mt-3">
+                  <p>
+                    Sie müssen zuerst den Sicherheitscode zur Freischaltung der geteilten Klasse im
+                    Klassenbuch eingeben. Den Sicherheitscode erhalten Sie bzw. können Sie bei der
+                    Person erfragen, die die Klasse mit Ihnen geteilt hat.
+                  </p>
+                </b-card>
+              </div>
               <group-view
+                v-else
                 :group="group"
                 :index="index"
                 :group-info="groupInfo.find(gi => gi.group_id === group.id)"
@@ -128,7 +138,10 @@
         test.used = true
       },
       getTestsForGroup(groupId) {
-        this.assessmentsStore.fetch(groupId)
+        const group = this.globalStore.groups.find(group => group.id === groupId)
+        if (group.key) {
+          this.assessmentsStore.fetch(groupId)
+        }
       },
     },
   }

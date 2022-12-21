@@ -105,6 +105,7 @@
           { text: 'Aktiv', value: Filter.ActiveTests },
           { text: 'Inaktiv', value: Filter.InactiveTests },
         ],
+        forceUpdate: 0, // this needed to update the sortedList prop after the assessmentsStore is updated
       }
     },
     computed: {
@@ -112,46 +113,36 @@
         const byResult = []
         const byType = []
         const byStatus = []
-
+        const assessments = this.assessmentsStore.getAssessments(this.group.id)
+        this.forceUpdate // just mentioning is is sufficient o_O
         if (this.selectedFilters.includes(Filter.WithResults)) {
-          byResult.push(
-            ...this.assessmentsStore.assessments.filter(assessment => assessment.result_count > 0)
-          )
+          byResult.push(...assessments.filter(assessment => assessment.result_count > 0))
         }
         if (this.selectedFilters.includes(Filter.WithoutResults)) {
-          byResult.push(
-            ...this.assessmentsStore.assessments.filter(assessment => assessment.result_count === 0)
-          )
+          byResult.push(...assessments.filter(assessment => assessment.result_count === 0))
         }
         if (this.selectedFilters.includes(Filter.StudentTests)) {
-          byType.push(
-            ...this.assessmentsStore.assessments.filter(assessment => assessment.student_test)
-          )
+          byType.push(...assessments.filter(assessment => assessment.student_test))
         }
         if (this.selectedFilters.includes(Filter.UserTests)) {
-          byType.push(
-            ...this.assessmentsStore.assessments.filter(assessment => !assessment.student_test)
-          )
+          byType.push(...assessments.filter(assessment => !assessment.student_test))
         }
         if (this.selectedFilters.includes(Filter.ActiveTests)) {
-          byStatus.push(
-            ...this.assessmentsStore.assessments.filter(assessment => assessment.active)
-          )
+          byStatus.push(...assessments.filter(assessment => assessment.active))
         }
         if (this.selectedFilters.includes(Filter.InactiveTests)) {
-          byStatus.push(
-            ...this.assessmentsStore.assessments.filter(assessment => !assessment.active)
-          )
+          byStatus.push(...assessments.filter(assessment => !assessment.active))
         }
         const intersected = intersection(byResult, byType, byStatus)
+
         return intersected.length ? intersected.sort((a, b) => a.name.localeCompare(b.name)) : []
       },
       isLoadingList() {
         return this.assessmentsStore.isLoading
       },
     },
-    mounted() {
-      this.updateList()
+    async created() {
+      await this.updateList()
     },
     methods: {
       setPreselect(test) {
@@ -195,7 +186,8 @@
         }
       },
       async updateList() {
-        this.assessmentsStore.fetch(this.group.id)
+        await this.assessmentsStore.fetch(this.group.id)
+        this.forceUpdate++
       },
     },
   }
