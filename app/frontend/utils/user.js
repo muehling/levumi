@@ -14,3 +14,5 @@ export const hasCapability = (capability, capabilities) =>
     : capabilities === 'admin'
 
 export const isRegistered = user => user.intro_state > 2
+
+export const isMasquerading = user => user.is_masquerading

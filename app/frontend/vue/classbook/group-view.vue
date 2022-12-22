@@ -11,7 +11,8 @@
     </div>
     <div v-if="!single" class="mb-2">
       <!-- Info/Form für Klassen teilen -->
-      <share-form v-if="group.id" :group="group" @update:groups="updateGroup($event)"> </share-form>
+      <share-form v-if="displayShareForm" :group="group" @update:groups="updateGroup($event)">
+      </share-form>
     </div>
     <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only">
     </student-list>
@@ -41,6 +42,7 @@
   import GroupForm from './group-form.vue'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
+  import { isMasquerading } from '../../utils/user'
 
   export default {
     name: 'GroupView',
@@ -67,6 +69,9 @@
       read_only: function () {
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
         return this.group.read_only || this.globalStore.masquerade
+      },
+      displayShareForm() {
+        return !isMasquerading(this.globalStore.login) && this.group.id
       },
     },
     methods: {

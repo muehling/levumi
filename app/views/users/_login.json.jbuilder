@@ -19,4 +19,5 @@ json.login do
     :updated_at
   )
   json.has_tested_students @login.has_tested_students
+  json.is_masquerading session[:masquerading]
 end

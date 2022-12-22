@@ -354,8 +354,8 @@
     mounted() {
       this.studentSelected = this.has_group_views
         ? -1
-        : this.studentsWithResults[this.studentsWithResults.length - 1].id
-        ? this.studentsWithResults[0].id
+        : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
+        ? this.studentsWithResults[0]?.id || -1
         : -1
       this.updateView(this.studentSelected)
     },
@@ -501,8 +501,8 @@
           if (!view.series_keys) {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
           } else {
-            graphData = view.series_keys.map(series_key => {
-              return { name: series_key, data: this.createSeries(student.id, series_key) }
+            graphData = view.series_keys.map((series_key, index) => {
+              return { name: view.series[index], data: this.createSeries(student.id, series_key) }
             })
           }
         }

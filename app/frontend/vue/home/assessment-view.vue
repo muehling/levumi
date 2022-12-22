@@ -45,7 +45,7 @@
                 v-for="student in students"
                 :key="student.id"
                 :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                :disabled="get_result(student.id) > 0 || isMasqueradedUser"
+                :disabled="get_result(student.id) > 0 || !isAllowed"
                 :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
                 :href="
                   '/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name
@@ -85,7 +85,7 @@
                   v-if="!excludeList.includes(student.id)"
                   :key="student.id"
                   :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!isactive || isMasqueradedUser"
+                  :disabled="!isactive || !isAllowed"
                   type="submit"
                 >
                   {{ student.name }}<br />{{ student.login }}
@@ -97,7 +97,7 @@
               <b-button
                 class="btn btn-sm"
                 :variant="isactive ? ' btn-danger' : ' btn-success'"
-                :disabled="isMasqueradedUser"
+                :disabled="!isAllowed"
                 @click="toggleAssessment()"
               >
                 <i :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
@@ -322,11 +322,18 @@
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
       isactive() {
-        return this.assessmentsStore.assessments[this.group.id]?.find(a => a.test === this.test.id)
-          ?.active
+        const assessments = this.assessmentsStore.assessments[this.group.id]
+        return assessments?.find(a => a.test === this.test.id)?.active
       },
-      isMasqueradedUser() {
-        return this.globalStore.masquerade || !isAdmin(this.globalStore.login.capabilities)
+      isAllowed() {
+        //TODO when masquerading, the check for isAdmin will probably mostly fail, because login.capabilities are not
+        //TODO the ones of the masquerading user, but the one's being masqueraded as
+
+        return (
+          this.globalStore.login.is_masquerading === null ||
+          (!!this.globalStore.login.is_masquerading && !this.group.read_only) ||
+          isAdmin(this.globalStore.login.capabilities)
+        )
       },
     },
     methods: {
