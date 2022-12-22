@@ -132,7 +132,6 @@
   } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import apiRoutes from '../routes/api-routes'
 
   export default {
     name: 'ShareForm',
@@ -222,6 +221,7 @@
             groupId: result.id,
             students: decryptedGroup,
           })
+          this.globalStore.fetch()
         }
       },
       submitNewShare(e) {

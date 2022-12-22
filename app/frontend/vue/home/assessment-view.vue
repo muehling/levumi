@@ -4,11 +4,21 @@
       <b-tab :active="deep_link" class="m-3">
         <div slot="title">
           Messungen ({{ test.shorthand }})
-          <span v-if="!isactive" class="badge badge-danger"><i class="fas fa-pause"></i></span>
-          <span v-if="isactive" class="badge badge-success"><i class="fas fa-play"></i></span>
+          <span v-if="!isactive && test.student_test" class="badge badge-danger"
+            ><i class="fas fa-pause"></i
+          ></span>
+          <span v-if="isactive && test.student_test" class="badge badge-success"
+            ><i class="fas fa-play"></i
+          ></span>
         </div>
         <!-- Neue Messungen -->
         <div class="alert alert-secondary">
+          <div v-if="!test.student_test">
+            <p class="text-small">
+              Dieser Test ist für die Durchführung durch Lehrkräfte gedacht und kann daher nicht
+              aktiviert oder pausiert werden.
+            </p>
+          </div>
           <div v-if="readOnly">
             <p>
               Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen
