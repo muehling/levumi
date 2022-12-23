@@ -33,5 +33,7 @@ module Levumi2
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.session_store :cookie_store, key: '_levumi2.1_session'
   end
 end
