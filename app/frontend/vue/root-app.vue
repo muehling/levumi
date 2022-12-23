@@ -9,7 +9,12 @@
     <nav-bar />
     <router-view />
     <error-dialog />
-    <input-dialog ref="inputDialog" />
+    <input-dialog ref="renewLoginDialog">
+      <div slot="extraContent" class="d-flex justify-content-between mb-4">
+        <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
+        <b-btn variant="outline-secondary" @click="logout">Logout</b-btn>
+      </div>
+    </input-dialog>
     <generic-message />
     <confirm-dialog ref="confirmDialog" />
   </div>
@@ -25,11 +30,12 @@
   import AcceptTerms from './registration/accept-terms.vue'
   import apiRoutes from './routes/api-routes'
   import CompleteRegistration from './registration/complete-registration.vue'
+  import ConfirmDialog from './shared/confirm-dialog.vue'
   import ErrorDialog from './shared/error-dialog.vue'
   import GenericMessage from './shared/generic-message.vue'
   import InputDialog from './shared/input-dialog.vue'
   import NavBar from './shared/nav-bar.vue'
-  import ConfirmDialog from './shared/confirm-dialog.vue'
+  import router from './routes/frontend-routes'
 
   export default {
     name: 'RootApp',
@@ -77,6 +83,7 @@
             this.sendLogin('')
           } else {
             // if a masqueraded session was active, tell the user and terminate the session.
+            // TBD really tell the user?
             await this.$refs.confirmDialog.open({
               title: 'Sitzung beendet',
               message: 'Ihre letzte Sitzung als maskierter Nutzer wurde unerwartet beendet.',
@@ -93,8 +100,13 @@
       }
     },
     methods: {
+      async logout() {
+        await ajax({ url: apiRoutes.users.logout, method: 'POST' })
+        router.push('/')
+        window.location.reload()
+      },
       async sendLogin(text) {
-        const pw = await this.$refs.inputDialog.open({
+        const pw = await this.$refs.renewLoginDialog.open({
           message: `${text}Bitten geben Sie Ihr Passwort erneut ein, um fortzufahren:`,
           okText: 'Ok',
           placeHolder: 'Passwort',

@@ -11,8 +11,8 @@
     <template #modal-title>
       {{ title }}
     </template>
-    <div class="d-block text-center mb-4">
-      {{ message }}
+    <div class="d-block mb-4">
+      <p>{{ message }}</p>
       <b-form @submit="_confirm">
         <b-form-input
           ref="inputField"
@@ -22,6 +22,7 @@
         ></b-form-input>
       </b-form>
     </div>
+    <slot name="extraContent"></slot>
     <div class="d-flex justify-content-end">
       <b-button :variant="okIntent" class="m-1" @click="_confirm">{{ okText }}</b-button>
     </div>
