@@ -12,20 +12,18 @@ default: &default
 development:
   <<: *default
   host: db
-  adapter: postgresql
-  database: levumi2_dev
-  pool: 50
-  username: postgres
-  password: postgres
-
-production:
-  <<: *default
   adapter: mysql2
   encoding: utf8
-  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
-  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
-  username: <%= ENV['DB_USER'] || 'root' %>
-  password: <%= ENV['DB_PASSWORD'] || '' %>
+  database: levumi2_dev
+
+#production:
+#  <<: *default
+#  adapter: mysql2
+#  encoding: utf8
+#  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
+#  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
+#  username: <%= ENV['DB_USER'] || 'root' %>
+#  password: <%= ENV['DB_PASSWORD'] || '' %>
 
 staging:
   <<: *default
