@@ -16,10 +16,10 @@ development:
   encoding: utf8
   database: levumi2_dev
 
-#production:
-#  <<: *default
-#  adapter: mysql2
-#  encoding: utf8
+production:
+  <<: *default
+  adapter: mysql2
+  encoding: utf8
 #  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
 #  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
 #  username: <%= ENV['DB_USER'] || 'root' %>
