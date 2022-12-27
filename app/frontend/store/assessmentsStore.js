@@ -1,8 +1,7 @@
-import Vue from 'vue'
 import { ajax } from '../utils/ajax'
-import apiRoutes from '../vue/routes/api-routes'
-
 import { defineStore } from 'pinia'
+import apiRoutes from '../vue/routes/api-routes'
+import Vue from 'vue'
 
 export const useAssessmentsStore = defineStore('assessments', {
   state: () => ({
@@ -19,9 +18,13 @@ export const useAssessmentsStore = defineStore('assessments', {
     async fetch(groupId) {
       this.isLoading = true
       const res = await ajax(apiRoutes.assessments.info(groupId))
-      const data = await res.json()
 
-      this.setAssessments(groupId, data)
+      if (res.status === 200) {
+        const data = await res.json()
+        this.setAssessments(groupId, data)
+      } else {
+        this.setAssessments(groupId, [])
+      }
       this.isLoading = false
     },
   },

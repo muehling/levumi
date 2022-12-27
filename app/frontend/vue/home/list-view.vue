@@ -67,11 +67,12 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { format } from 'date-fns'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import { format } from 'date-fns'
   import intersection from 'lodash/intersection'
+  import isEmpty from 'lodash/isEmpty'
 
   const Filter = {
     WithResults: 1,
@@ -116,6 +117,11 @@
         const byType = []
         const byStatus = []
         const assessments = this.assessmentsStore.getAssessments(this.group.id)
+
+        // not accepted shared groups will return
+        if (isEmpty(assessments)) {
+          return []
+        }
 
         if (this.selectedFilters.includes(Filter.WithResults)) {
           byResult.push(...assessments.filter(assessment => assessment.result_count > 0))
