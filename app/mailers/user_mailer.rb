@@ -14,11 +14,13 @@ class UserMailer < ApplicationMailer
   def support
     @user = params[:user]
     @body = params[:body]
+    subject =
+      if params[:subject].nil?
+        'Nachricht vom Levumi-Kontaktformular'
+      else
+        'Nachricht von Levumi - ' + params[:subject]
+      end
 
-    mail(
-      to: 'jbe@informatik.uni-kiel.de',
-      from: @user.email,
-      subject: 'Nachricht von Levumi - ' + params[:subject]
-    )
+    mail(to: 'jbe@informatik.uni-kiel.de', from: @user.email, subject: subject)
   end
 end
