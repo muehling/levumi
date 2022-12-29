@@ -26,7 +26,7 @@
         <tr v-for="test in sortedlist" :key="test.test + '/' + test.name" class="assessment-line">
           <td @click="setPreselect(test)">{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
-          <td>{{ formatLastDate(test.last_test) }}</td>
+          <!--<td>{{ formatLastDate(test.last_test) }}</td>-->
           <td>
             <b-btn
               v-if="test.student_test"

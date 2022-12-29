@@ -61,7 +61,8 @@ class AssessmentsController < ApplicationController
             name: a.test.full_name,
             student_test: a.test.student_test,
             result_count: a.results.length,
-            last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
+            #FIXME the production data crashed this with 'Mysql2::Error: Out of sort memory, consider increasing server sort buffer size '
+            #last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
             test_id: a.test.id,
             test_family_id: a.test.test_family.id,
             competence_id: a.test.test_family.competence.id,
