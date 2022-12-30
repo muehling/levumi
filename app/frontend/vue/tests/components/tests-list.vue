@@ -14,6 +14,12 @@
       :fields="fields"
       :items="tests"
     >
+      <template #cell(updated_at)="data">
+        <span>{{ formatDate(data.item.updated_at) }}</span>
+      </template>
+      <template #cell(student_test)="data">
+        <div class="text-center">{{ data.item.student_test ? 'x' : '-' }}</div>
+      </template>
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
@@ -66,6 +72,7 @@
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import EditTestDialog from './edit-test-dialog.vue'
   import TestDetailsDialog from './test-details-dialog.vue'
+  import format from 'date-fns/format'
 
   export default {
     name: 'TestsList',
@@ -84,6 +91,7 @@
     computed: {
       fields() {
         return [
+          { key: 'student_test', label: 'Schülertest' },
           { key: 'id', label: 'ID' },
           { key: 'shorthand', label: 'Kurzbezeichnung' },
           { key: 'area', label: 'Bereich' },
@@ -92,6 +100,7 @@
           { key: 'level', label: 'Niveaustufe' },
           !this.showExport && { key: 'version', label: 'Version' },
           !this.showExport && { key: 'archive', label: 'Archiv' },
+          { key: 'updated_at', label: 'Letzes Update' },
           { key: 'actions', label: 'Aktionen' },
         ]
       },
@@ -106,13 +115,19 @@
     },
 
     methods: {
+      formatDate(date) {
+        return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
+      },
       async refetch() {
         this.isLoading = true
-        const res = await ajax({ url: apiRoutes.tests.index })
+        const res = await ajax({
+          url: `${apiRoutes.tests.index}${this.showExport ? '?show_export=true' : ''}`,
+        })
         if (res.status === 200) {
           const data = await res.json()
-          this.tests = data.tests.map(t => ({
+          this.tests = data.tests.map((t, i) => ({
             ...t,
+            index: i + 1,
             _rowVariant: (this.showExport ? !t.has_results : t.archive) ? 'outline-secondary' : '',
           }))
         }

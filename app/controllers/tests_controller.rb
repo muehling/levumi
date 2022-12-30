@@ -4,15 +4,21 @@ class TestsController < ApplicationController
 
   #GET /tests
   def index
-    if params[:admin] && @login.has_capability?('test')
-      render 'index_admin'
+    #TODO check where which params are used.
+    if params[:show_export] && @login.has_capability?('export')
+      render 'index'
     else
-      if params[:export] && @login.has_capability?('export')
-        render 'index_export'
-      else
-        render 'index'
-      end
+      render 'list'
     end
+    #if params[:admin] && @login.has_capability?('test')
+    #  render 'index_admin'
+    #else
+    #  if params[:export] && @login.has_capability?('export')
+    #    render 'index_export'
+    #  else
+    #    render 'index'
+    #  end
+    #end
   end
 
   #GET /tests/:id/edit
