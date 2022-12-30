@@ -21,6 +21,10 @@ class UserMailer < ApplicationMailer
         'Nachricht von Levumi - ' + params[:subject]
       end
 
-    mail(to: 'jbe@informatik.uni-kiel.de', from: @user.email, subject: subject)
+    mail(
+      bcc: %w[jbe@informatik.uni-kiel.de beckmann@leibniz-ipn.de],
+      from: @user.email,
+      subject: subject
+    )
   end
 end
