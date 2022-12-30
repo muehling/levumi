@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div v-if="!data.users"><b-spinner label="Lade Daten..."></b-spinner></div>
+    <loading-dots
+      v-if="!data.users"
+      :is-loading="!data.users"
+      message="Daten werden vorbereitet. Dies kann einen Moment dauern."
+    />
     <div v-if="data.users" class="container-fluid mt-3">
       <h4>Nutzer gesamt</h4>
       <table class="table table-hover table-sm text-small">
@@ -65,7 +69,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="test in data.tests" :key="test.label">
+          <tr v-for="(test, index) in data.tests" :key="`${test.label}/${index}`">
             <td>{{ test.label }}</td>
             <td>{{ test.count }}</td>
             <td>{{ test.groups }}</td>
@@ -81,8 +85,10 @@
   import { ajax } from '../../utils/ajax'
   import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
+  import LoadingDots from '../shared/loading-dots.vue'
   export default {
     name: 'StatisticsApp',
+    components: { LoadingDots },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -90,7 +96,7 @@
     data() {
       return {
         data: { user: { state: {} } },
-        states: this.globalStore.staticData.states
+        states: this.globalStore.staticData.states,
       }
     },
     computed: {
@@ -105,12 +111,12 @@
           return [
             state.label,
             this.data.users.state[state.id][0],
-            this.data.users.state[state.id][1]
+            this.data.users.state[state.id][1],
           ]
           //return [state.label, ...this.data.users.state[state.id]]
         })
         return c
-      }
+      },
     },
     mounted() {
       this.fetch()
@@ -120,7 +126,7 @@
         const res = await ajax({ url: apiRoutes.users.statistics })
         const data = await res.json()
         this.data = data
-      }
-    }
+      },
+    },
   }
 </script>
