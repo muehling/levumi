@@ -77,6 +77,7 @@ Im Hauptverzeichnis der Zip-Datei müssen sich zwei Dateien befinden:
 Darüberhinaus dürfen drei Unterverzeichnisse existieren. Alle dort existierenden Dateien werden bei der Testdurchführung zur Verfügung gestellt.
 
     *media - Hier sollen alle Arten von Mediendateien gespeichert werden (Bilder, Audio, Video)
+    *info - Alle Dateien, die hier enthalten sind, werden in der DB abgelegt, und in der Testübersicht beim zugehörigen Test angezeigt. Bilder werden direkt abgebildet, alle anderen Datein werden als Download-Link dargestellt.
     *scripts - Hier sollen ggf. notwendige Javascript-Dateien gespeichert werden.
     *styles - Hier können eigene CSS-Dateien abgelegt werden.
 
