@@ -29,7 +29,7 @@
                         ></i>
                       </template>
                       <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
-                      <group-form :group="groups[0]" @update:groups="createGroup"> </group-form>
+                      <group-form :group="groups[0]"> </group-form>
                     </b-tab>
                     <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                     <b-tab
@@ -233,13 +233,6 @@
       }
     },
     methods: {
-      createGroup(val) {
-        this.globalStore.groups.splice(1, 0, val.object)
-        //Globale Daten aktualisieren
-        this.globalStore.shareKeys[val.object.id] = val.object.key
-        this.globalStore.studentsInGroups[val.object.id] = []
-      },
-
       updateGroups(newGroups) {
         this.globalStore.setGroups(newGroups)
       },
