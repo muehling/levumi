@@ -1,0 +1,20 @@
+share_1:
+  owner: true
+  user_id: 1
+  group_id: 1
+  read_only: false
+  key: 'tbd'
+
+share_2:
+  owner: false
+  user_id: 1
+  group_id: 2
+  read_only: false
+  key: 'tbd'
+
+share_3:
+  owner: true
+  user_id: 2
+  group_id: 2
+  read_only: false
+  key: 'tbd'

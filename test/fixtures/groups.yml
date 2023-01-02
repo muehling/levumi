@@ -1,4 +1,11 @@
-valid:
+group1:
+  id: 1
   label: 'Klasse 1'
+  demo: false
+  archive: false
+
+group2:
+  id: 2
+  label: 'Klasse 2'
   demo: false
   archive: false
