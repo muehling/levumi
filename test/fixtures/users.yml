@@ -1,0 +1,12 @@
+valid:
+  email: 'test@example.com'
+  password_digest: 'tbd'
+  security_digest: 'tbd'
+  capabilities: 'admin'
+  last_login: DateTime.now
+  account_type: 1
+  state: 1
+  institution: 'Uni'
+  town: 'Town'
+  tc_accepted: DateTime.now
+  intro_state: 5

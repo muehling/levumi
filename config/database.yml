@@ -9,12 +9,23 @@ default: &default
   pool: 5
   timeout: 5000
 
+test:
+  <<: *default
+  host: db
+  adapter: postgresql
+  encoding: utf8
+  database: levumi2_test
+  username: postgres
+  password: postgres
+
 development:
   <<: *default
   host: db
-  adapter: mysql2
+  adapter: postgresql
   encoding: utf8
   database: levumi2_dev
+  username: postgres
+  password: postgres
 
 production:
   <<: *default
