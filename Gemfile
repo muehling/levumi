@@ -33,15 +33,10 @@ group :development, :test do
   gem "pg", "~> 1.3"
 end
 
-group :development do
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
-  gem 'capistrano', '~> 3.17.0', require: false
-  gem 'capistrano-rails', '~> 1.3', require: false
-  gem 'capistrano-bundler', '~> 1.5'
-end
 
 group :production, :staging do
   gem 'mysql2'
 end
 
+
+gem "minitest-rails", "~> 7.0"
