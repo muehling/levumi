@@ -12,25 +12,11 @@ admin_user:
   tc_accepted: DateTime.now
   intro_state: 5
 
-user_user:
+other_user:
   id: 2
   email: 'user@example.com'
   password_digest: 'tbd'
-  security_digest: 'tbd'
-  capabilities: ''
-  last_login: DateTime.now
-  account_type: 1
-  state: 1
-  institution: 'Uni'
-  town: 'Town'
-  tc_accepted: DateTime.now
-  intro_state: 5
-
-other_user:
-  id: 3
-  email: 'other@example.com'
-  password_digest: 'tbd'
-  security_digest: 'tbd'
+  security_digest: ''
   capabilities: ''
   last_login: DateTime.now
   account_type: 1

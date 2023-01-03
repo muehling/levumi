@@ -9,3 +9,9 @@ group_2:
   label: 'Klasse 2'
   demo: false
   archive: false
+
+group_3:
+  id: 3
+  label: 'Klasse 3'
+  demo: false
+  archive: false
