@@ -1,17 +1,20 @@
 class ResultsController < ApplicationController
   before_action :set_student
 
-  before_action :check_login, only: [:create, :new]
-  skip_before_action :set_login, only: [:create, :new]
+  before_action :check_login, only: %i[create new]
+  skip_before_action :set_login, only: %i[create new]
 
   #GET /students/:student_id/results/new
   def new
-    if params.has_key?(:test_id)           #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
+    if params.has_key?(:test_id)
+      #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
       @test = Test.find(params[:test_id])
       unless @test.nil?
-        @assessment = Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first       #Assessment aus student_id und test_id bestimmen
-        @last_result = @student.results.where(assessment_id: @assessment).order(:test_week).last   #Letztes Ergebnis aus der Datenbank
-        if @test.student_test         #Reicht das immer aus?
+        @assessment =
+          Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first #Assessment aus student_id und test_id bestimmen
+        @last_result = @student.results.where(assessment_id: @assessment).order(:test_week).last #Letztes Ergebnis aus der Datenbank
+        if @test.student_test
+          #Reicht das immer aus?
           @redirect = '/testen'
         else
           if params.has_key? :student
@@ -66,15 +69,15 @@ class ResultsController < ApplicationController
     #Fall 1: User Login
     if session.has_key?(:user)
       #Entweder die eigene Klasse, oder eine geteilte Klasse mit entsprechender Berechtigung
-      if @student.group.owner.id == session[:user] || GroupShare.exists?(user: session[:user], group: @student.group, read_only: false)
+      if @student.group.owner.id == session[:user] ||
+           GroupShare.exists?(user: session[:user], group: @student.group, read_only: false)
         return true
       end
     end
+
     #Fall 2: Schüler Login
     if session.has_key?(:student)
-      if session[:student] == @student.id
-        return true
-      end
+      return true if session[:student] == @student.id
     end
     head 403
   end

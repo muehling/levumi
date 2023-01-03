@@ -1,5 +1,5 @@
 # config valid for current version and patch releases of Capistrano
-lock '~> 3.11.0'
+lock '~> 3.17.0'
 
 set :application, 'levumi2'
 set :repo_url,  'levumi@levumi.informatik.uni-kiel.de:/var/git/levumi2.git'

@@ -1,9 +1,5 @@
 <%
-  data = {
-      #Wird von mehreren Actions aufgerufen, deswegen hier anstelle von Doppelung
-      groups: @login.groups.where(archive: false).order(id: :desc).map {|g| g.as_hash(@login)},
-      group_info: @login.get_home_info
-  }
+  data = {mode: Rails.env}
   if @assessment
     data[:pre_select] = {
         group: @assessment.group_id,
@@ -15,17 +11,6 @@
     }
   end
 %>
-
-<script>
-    //Eintrag in der Navleiste markieren
-    highlightNavItem('navbarHome');
-</script>
-
-<!-- TODO: Wieder entfernen -->
-<div class="alert alert-primary" role="alert">
-  <strong>Liebe Lehrkräfte</strong> helfen Sie uns mit einer kurzen anonymen Umfrage an der Uni Leipzig Levumi zu verbessern!
-  <a href="https://umfrage.uni-leipzig.de/index.php/199149?lang=de" target="_blank">Jetzt mitmachen</a>
-</div>
 
 <div id='levumi' data="<%= data.to_json%>">
 
@@ -39,7 +24,23 @@
       </div>
     </b-row>
   </div>
+  <div id='tc' class='modal fade' tabindex='-1'>
+  <div class='modal-dialog modal-dialog-scrollable modal-lg'>
+    <div class='modal-content'>
+      <div class='modal-header'>
+        <h5 class='modal-title'>Nutzungsbedingungen</h5>
+        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='modal-body'>
+        <%= render 'application/terms_and_conditions' %>
+        <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Vue-component -->
-  <home-app></home-app>
+  <root-app></root-app>
 </div>

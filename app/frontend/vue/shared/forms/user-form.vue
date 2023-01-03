@@ -1,0 +1,223 @@
+<template>
+  <b-container>
+    <b-form @submit="_handleSubmit">
+      <b-form-group label-cols="4" label="E-Mail-Adresse*">
+        <b-form-input
+          v-model="email"
+          :class="hasEmailErrors && 'is-invalid'"
+          :readonly="!canEditUser"
+        />
+        <div v-if="hasEmailErrors" class="invalid-feedback">{{ errors['email'].join('\n') }}</div>
+      </b-form-group>
+      <b-form-group v-if="canEditUser" label-cols="4" label="Typ" class="mt-3">
+        <b-form-radio
+          v-for="at in accountTypes"
+          :key="at.id"
+          v-model="accountType"
+          :value="at.id"
+          >{{ at.label }}</b-form-radio
+        >
+        <div v-if="hasAccountTypeErrors" class="invalid-feedback">
+          Bitte wählen Sie einen Account-Typen aus!
+        </div>
+      </b-form-group>
+      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ">
+        <b-form-input :value="accountTypeText" :readonly="true" />
+      </b-form-group>
+      <div v-if="!canEditUser" class="form-group row">
+        <div class="col-sm-12">
+          <small class="form-text text-muted"
+            >Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich bitte
+            an uns.</small
+          >
+        </div>
+      </div>
+
+      <b-form-group v-if="isOwnProfile">
+        <b-button v-b-toggle.password-section variant="outline-secondary">Passwort ändern</b-button>
+        <b-collapse id="password-section" class="mt-2">
+          <password-form
+            :errors="errors"
+            @change-password="pw => (password = pw)"
+            @change-password-confirm="pw => (passwordConfirm = pw)"
+            @change-security-answer="a => (securityAnswer = a)"
+        /></b-collapse>
+      </b-form-group>
+      <b-form-group label-cols="4" label="Bundesland*">
+        <b-form-select
+          id="state-input"
+          v-model="state"
+          :class="hasStateErrors && 'is-invalid'"
+          :options="stateOptions"
+        />
+      </b-form-group>
+      <extra-data-form
+        :account-type="accountType"
+        :town="town"
+        :school-type="schoolType"
+        :focus-type="focusType"
+        :institution="institution"
+        @change-institution="inst => (institution = inst)"
+        @change-town="t => (town = t)"
+        @change-school-type="st => (schoolType = st)"
+        @change-focus-type="ft => (focusType = ft)"
+      ></extra-data-form>
+    </b-form>
+    <div class="d-flex justify-content-end">
+      <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
+      <b-button
+        variant="outline-success"
+        class="m-1"
+        :disabled="isSubmitDisabled"
+        @click="_handleSubmit"
+        >{{ buttonText }}</b-button
+      >
+    </div>
+  </b-container>
+</template>
+
+<script>
+  import { ajax } from '../../../utils/ajax'
+  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
+  import { hasCapability } from '../../../utils/user'
+  import { useGlobalStore } from '../../../store/store'
+  import apiRoutes from '../../routes/api-routes'
+  import PasswordForm from './password-form.vue'
+  import ExtraDataForm from './extra-data-form.vue'
+
+  export default {
+    name: 'UserForm',
+    components: { PasswordForm, ExtraDataForm },
+    props: {
+      isNew: Boolean,
+      user: Object,
+    },
+
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
+    data() {
+      return {
+        // local state
+        email: this.user.email,
+        accountType: this.user.account_type,
+        state: this.user.state,
+        institution: this.user.institution,
+        errors: [],
+        password: '',
+        passwordConfirm: '',
+        securityAnswer: '',
+        town: this.user.town,
+        schoolType: this.user.school_type,
+        focusType: this.user.focus,
+      }
+    },
+    computed: {
+      states() {
+        return this.globalStore.staticData.states
+      },
+      accountTypes() {
+        return this.globalStore.staticData.accountTypes
+      },
+      stateOptions() {
+        return this.globalStore.staticData.states?.map(s => ({ value: s.id, text: s.label }))
+      },
+      login() {
+        return this.globalStore.login
+      },
+      isOwnProfile() {
+        return this.globalStore.login.id === this.user.id
+      },
+      canEditUser() {
+        return hasCapability('user', this.globalStore.login?.capabilities)
+      },
+      accountTypeText() {
+        return this.accountTypes?.find(at => at.id === this.accountType)?.label
+      },
+      buttonText() {
+        return this.isNew ? 'Anlegen' : 'Aktualisieren'
+      },
+      // error states come from the backend, e. g. when changing the email to an already existing one
+      hasEmailErrors() {
+        return Object.keys(this.errors).find(e => e === 'email')
+      },
+      hasAccountTypeErrors() {
+        return Object.keys(this.errors).find(e => e === 'account_type')
+      },
+      hasStateErrors() {
+        return Object.keys(this.errors).find(e => e === 'state')
+      },
+
+      /********************************
+       * checks whether the submit button needs to be disabled
+       ********************************/
+      isSubmitDisabled() {
+        const hasPasswordRelatedChange =
+          this.password !== '' || this.passwordConfirm !== '' || this.securityAnswer !== ''
+
+        const isIncomplete = this.email === '' || !this.state || this.accountType === undefined
+
+        const isPasswordInvalid =
+          this.password === '' ||
+          this.password !== this.passwordConfirm ||
+          this.securityAnswer === ''
+
+        return hasPasswordRelatedChange ? isPasswordInvalid || isIncomplete : isIncomplete
+      },
+    },
+
+    methods: {
+      _close() {
+        this.$emit('cancelEdit')
+      },
+      async _handleSubmit() {
+        const data = {
+          user: {
+            email: this.email,
+            account_type: this.accountType,
+            state: this.state,
+          },
+        }
+
+        if (this.accountType === 1) {
+          data.user.institution = this.institution
+        } else if (this.accountType === 0) {
+          data.user.town = this.town
+          data.user.school_type = this.schoolType
+          data.user.focus = this.focusType
+        }
+
+        let res
+        let newKeys
+        if (this.isNew) {
+          res = await ajax({ ...apiRoutes.users.create, data })
+        } else {
+          if (this.password !== '' && this.securityAnswer !== '') {
+            // Password and security question
+            newKeys = recodeKeys(this.password)
+            data.keys = JSON.stringify(newKeys)
+            data.user.password = this.password
+            data.user.password_confirmation = this.passwordConfirm
+            data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
+          }
+          res = await ajax({
+            ...apiRoutes.users.update(this.user.id),
+            data: data,
+          })
+        }
+
+        if (res.status === 200) {
+          this.$emit('submitSuccessful', res)
+          if (newKeys) {
+            sessionStorage.setItem('login', this.password)
+            this.globalStore.setShareKeys(newKeys)
+          }
+        } else {
+          const data = await res.json()
+          this.errors = data.errors
+        }
+      },
+    },
+  }
+</script>

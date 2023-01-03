@@ -1,10 +1,5 @@
-<script>
-  //Eintrag in der Navleiste markieren
-    highlightNavItem('navbarKlassenbuch')
-    showIntro = false  //Wird in ClassBookApp verwendet
-</script>
 
-<div id='levumi' data="<%= @data.to_json%>">
+<div id='levumi'>
 
   <!-- Spinner -->
   <div v-if='!$data'>
@@ -17,50 +12,3 @@
 
   <class-book-app></class-book-app>
 </div>
-
-<% if @login.intro_state < 5 %>
-  <script>
-      showIntro = true
-      <%
-     texts =  [
-     'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',
-     'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
-     'Wenn Sie mit Klassen nicht mehr länger aktiv arbeiten, können Sie sie in ihr Archiv verschieben. Die Klasse wird nicht mehr unter Diagnostik angezeigt. Sie können Klassen auch wieder aus dem Archiv zurückholen. Probieren Sie das gerne mit Ihrer Beispielklasse aus!',
-     'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
-     'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
-     'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
-     'Hier können Sie die Schüler:in speichern.'
-    ]
-     %>
-
-    let ids = ['#intro_cb_1', '#intro_cb_2', '#intro_cb_3', '#intro_cb_4', '#intro_cb_5', '#intro_cb_6', '#intro_cb_7']
-    let texts = [
-        <% texts.each_with_index do |t, i| %>
-        "<%= escape_javascript render 'shared/popover', text: t, last: i == texts.size-1, remote: true, link: '/willkommen?classbook=true' %>",
-        <% end %>
-    ]
-
-    function next() {
-        if (intro_count > 0)
-            $(ids[intro_count-1]).popover('hide')
-        if (intro_count < ids.length) {
-            $(ids[intro_count]).data('toggle', 'popover')
-            $(ids[intro_count]).data('content', texts[intro_count])
-            $(ids[intro_count]).popover({
-                html: true,
-                sanitizeFn: function(content) {return content}
-            })
-            $(ids[intro_count]).popover('show')
-        }
-        else {
-            for (let i = 0; i < ids.length; ++i)
-                $(ids[i]).popover('disable')
-        }
-        ++intro_count
-    }
-
-    let intro_count = 0
-    $(window).on( "load", function() {next()})
-
-  </script>
-<% end %>

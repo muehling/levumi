@@ -31,8 +31,14 @@ yarn-debug.log*
 /public/assets
 .byebug_history
 
+/public/vite-dev
+
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
 #Rubymine
 /.idea/*
+
+/config/credentials/production.key
+
+/config/credentials/development.key

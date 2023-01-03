@@ -1,13 +1,80 @@
 <!-- Form für Selbstregistrierung auf Hauptseite -->
 
-<%= form_for user, remote: true, authenticity_token: true do |f| %>
+<%= form_for user, authenticity_token: true do |f| %>
 
   <%= render 'users/form/email', f: f, user: user, readOnly: false %>
 
   <%= render 'users/form/type', f: f,  user: user, readOnly: false, label: 'Ich bin...' %>
 
   <%= render 'users/form/state', f: f, user: user, label: 'Aus...' %>
-
-  <%= f.submit 'Registrieren', class: 'btn btn-outline-success'%>
-  <button class='btn btn-outline-secondary' onclick="$('#modal').modal('hide');return false;">Abbrechen</button>
+  <input
+    type="checkbox"
+    id="acceptTerms"
+    name="acceptTerms"
+  />
+  <label for="acceptTerms">Ich bin mit den <a href='#' onclick="$('#t_and_c').modal('show')">Nutzungsbedingungen</a> einverstanden.</label>
+  <button class='btn btn-outline-success' disabled id="main-register">Registrieren</button>
+  <button class='btn btn-outline-secondary' id="main-cancel">Abbrechen</button>
 <% end %>
+<script type="module">
+
+  $('#acceptTerms').on("click", function(e){
+    if ($('#acceptTerms').is(':checked')){
+      $('#main-register').prop('disabled', false)
+    } else {
+      $('#main-register').prop('disabled', true)
+    }
+  })
+
+  $('#user-messages').toast({animation: true, autohide: false})
+
+  $("#main-register").on("click", (e)=>{
+    e.preventDefault()
+    e.stopPropagation()
+
+    const raw = $('form.new_user')
+    .serializeArray()
+    .reduce((acc, entry) => {
+      return {[entry.name]: entry.value, ...acc}
+    }, {})
+    const data = {user:{
+      "email": raw['user[email]'],
+      "state": raw['user[state]'],
+      "account_type": raw['user[account_type]']
+    }}
+
+    fetch('/users', {
+        method: 'POST',
+        headers: {
+          'Accept': 'text/html',
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest',
+          'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+        },
+        credentials: 'include',
+        body: JSON.stringify(data)
+      }).then(async res=>{
+        switch(res.status) {
+          case 200:
+            $('#modal').modal('hide')
+            $('#user-messages-body').html("<p>Vielen Dank für Ihre Registrierung!<br/>Ihre Zugangsdaten wurden Ihnen per E-Mail geschickt.</p>")
+            $('#user-messages').toast('show')
+            document.getElementById("new_user").reset();
+            break
+          default:
+            const data = await res.json()
+            //TODO less than optimal - needs to be replaced with proper messages
+            const errors = data.errors.join ("; ")
+            $('#user-messages-body').html("<p>Etwas ist schiefgegangen!<br/>Bitte überprüfen Sie Ihre Eingaben und versuchen es erneut.</p>" + errors)
+            $('#user-messages').toast('show')
+        }
+      })
+  })
+
+  $("#main-cancel").on("click", (e)=>{
+    e.preventDefault()
+    e.stopPropagation()
+    $('#modal').modal('hide')
+  })
+
+</script>

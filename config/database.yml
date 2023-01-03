@@ -6,18 +6,32 @@
 #
 default: &default
   adapter: sqlite3
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: 5
   timeout: 5000
 
 development:
   <<: *default
-  database: db/development.sqlite3
+  host: db
+  adapter: postgresql
+  encoding: utf8
+  database: levumi2_dev
+  username: postgres
+  password: postgres
 
 production:
   <<: *default
   adapter: mysql2
-  host: localhost
-  database: levumi2
   encoding: utf8
-  username: levumi2
-  password: <%= Rails.application.credentials.dig(:database, :production, :password) %>
+#  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
+#  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
+#  username: <%= ENV['DB_USER'] || 'root' %>
+#  password: <%= ENV['DB_PASSWORD'] || '' %>
+
+staging:
+  <<: *default
+  adapter: mysql2
+  encoding: utf8
+  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
+  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
+  username: <%= ENV['DB_USER'] || 'root' %>
+  password: <%= ENV['DB_PASSWORD'] || '' %>

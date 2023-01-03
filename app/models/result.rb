@@ -5,7 +5,8 @@ class Result < ApplicationRecord
   #Wochennummer-Format des Testungsdatum zur Zusammenfassung von Ergebnissen einer Woche generieren und speichern
   before_save do |result|
     unless result.test_date.nil?
-      result.test_week = Date.commercial(result.test_date.to_date.year, result.test_date.to_date.cweek)
+      result.test_week =
+        Date.commercial(result.test_date.to_date.year, result.test_date.to_date.cweek)
     else
       result.test_week = nil
     end
@@ -16,13 +17,22 @@ class Result < ApplicationRecord
     if (!result.test_date.nil? && result.test_date < Date.today && !result.assessment.group.demo)
       student = ShadowStudent.find_by_original_id(result.student_id)
       student = result.student.create_shadow if student.nil?
-      student.shadow_results.create(shorthand: result.assessment.test.shorthand, version: result.assessment.test.version, group: result.assessment.group.id, test_date: result.test_date, test_week: result.test_week, views: result.views, report: result.report, data: result.data)
+      student.shadow_results.create(
+        shorthand: result.assessment.test.shorthand,
+        version: result.assessment.test.version,
+        group: result.assessment.group.id,
+        test_date: result.test_date,
+        test_week: result.test_week,
+        views: result.views,
+        report: result.report,
+        data: result.data
+      )
     end
   end
 
   #JSON Export, nur relevante Attribute übernehmen.
   def as_json(options = {})
-    json = super(except: [:created_at, :updated_at])
+    json = super(except: %i[created_at updated_at])
   end
 
   #Textdarstellung für CSV Export
@@ -33,14 +43,13 @@ class Result < ApplicationRecord
       types = User.find(ids).pluck(:account_type)
       start += "\"#{ids.join(',')}\",\"#{types.join(',')}\","
     end
-    start += "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA':student.gender}\",\"#{student.birthmonth.nil? ? 'NA':student.birthmonth}\",\"#{student.sen.nil? ? 'NA':student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
+    start +=
+      "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA' : student.gender}\",\"#{student.birthmonth.nil? ? 'NA' : student.birthmonth}\",\"#{student.sen.nil? ? 'NA' : student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
     res = ''
     self.data.each do |d|
       res = res + start
-      d.each do |k, v|
-        res = res + '"' + v.to_s + '",'
-      end
-      res = res.slice(0, res.length-1) + "\n" #Letztes Komma entfernen und newline anhängen
+      d.each { |k, v| res = res + '"' + v.to_s + '",' }
+      res = res.slice(0, res.length - 1) + "\n" #Letztes Komma entfernen und newline anhängen
     end
     return res
   end
@@ -49,30 +58,23 @@ class Result < ApplicationRecord
   def csv_header(for_user)
     res = '"Ergebnis_ID",'
     res += '"User_ID","User_Typ",' unless for_user
-    res +='"Kind_ID","Kind_Login","Klassen_ID","Geschlecht","Geburtsdatum","SPF","Tags","Test_ID","Testdatum","Testwoche"'
-    if self.data.size > 0
-      self.data[0].each do |k,v|
-        res = res + ',"' + k + '"'
-      end
-    end
+    res +=
+      '"Kind_ID","Kind_Login","Klassen_ID","Geschlecht","Geburtsdatum","SPF","Tags","Test_ID","Testdatum","Testwoche"'
+    self.data[0].each { |k, v| res = res + ',"' + k + '"' } if self.data.size > 0
     return res
   end
 
   #Eintrag 'trend' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_trend
-    unless report.nil? || report['trend'].nil?
-      report['trend']
-    else
-      0
-    end
+    report.nil? || report['trend'].nil? ? 0 : report['trend']
   end
 
   #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_support_items
-    unless report.nil? || report['negative'].nil?
-      report['negative']
-    else
+    if report.nil? || report['negative'].nil?
       []
+    else
+      report['negative'].kind_of?(Array) ? report['negative'] : [report['negative']]
     end
   end
 end

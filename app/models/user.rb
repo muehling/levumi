@@ -1,15 +1,19 @@
 class User < ApplicationRecord
   has_many :group_shares
-  has_many :groups, -> { where.not(group_shares: {key: nil}) }, through: :group_shares
+  has_many :groups, -> { where.not(group_shares: { key: nil }) }, through: :group_shares
 
   has_secure_password
+
   #TODO: Ggf. Kommentar entfernen und Fehler-Validierung in _password anpassen, falls gewünscht.
   #validates :password, length: { minimum: 5 }
 
   validates_presence_of :email, message: 'E-Mail darf nicht leer sein!'
-  validates_uniqueness_of :email, case_sensitive: false,  message: 'E-Mail Adresse ist bereits registriert!'
+  validates_uniqueness_of :email,
+                          case_sensitive: false,
+                          message: 'E-Mail Adresse ist bereits registriert!'
+
   #validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, message: 'Bitte eine gültige E-Mail Adresse eingeben'
-  
+
   validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
   validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
 
@@ -32,7 +36,7 @@ class User < ApplicationRecord
   #admin -> darf/sieht alles
   #test -> darf Tests verwalten
   def has_capability?(cap)
-    return !is_regular_user? && (capabilities.include?(cap) || capabilities.include?("admin"))
+    return !is_regular_user? && (capabilities.include?(cap) || capabilities.include?('admin'))
   end
 
   #Keine speziellen Capabilities als shortcut
@@ -61,45 +65,65 @@ class User < ApplicationRecord
     all_areas = Area.all.pluck(:id)
 
     result = []
-    groups.where(archive: false).order(id: :desc).each do |group|
-      used = group.assessments.map{|a| a.test_id}
+    groups
+      .where(archive: false)
+      .order(id: :desc)
+      .each do |group|
+        used = group.assessments.map { |a| a.test_id }
 
-      used_tests = Test.where(id: used)
-      unused_tests = Test.where(id: all_tests - used, archive: false)
+        used_tests = Test.where(id: used)
+        unused_tests = Test.where(id: all_tests - used, archive: false)
 
-      used = used_tests.map{|a| a.test_family_id}
-      used_families = TestFamily.where(id: used)
-      unused_families = TestFamily.where(id: all_families - used)
+        used = used_tests.map { |a| a.test_family_id }
+        used_families = TestFamily.where(id: used)
+        unused_families = TestFamily.where(id: all_families - used)
 
-      used = used_families.map{|f| f.competence_id}
-      used_competences = Competence.where(id: used)
-      unused_competences = Competence.where(id: all_competences - used)
+        used = used_families.map { |f| f.competence_id }
+        used_competences = Competence.where(id: used)
+        unused_competences = Competence.where(id: all_competences - used)
 
-      used = used_competences.map{|c| c.area_id}
-      used_areas = Area.where(id: used)
-      unused_areas = Area.where(id: all_areas - used)
+        used = used_competences.map { |c| c.area_id }
+        used_areas = Area.where(id: used)
+        unused_areas = Area.where(id: all_areas - used)
 
-      result += [{
-          areas: (used_areas.map{|a| {info: a, used: true}} + unused_areas.map{|a| {info: a, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
-          competences: (used_competences.map{|c| {info: c, used: true}} + unused_competences.map{|c| {info: c, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
-          families: (used_families.map{|f| {info: f, used: true}} + unused_families.map{|f| {info: f, used: false}}).sort!{|a,b| a[:info].name <=> b[:info].name},
-          tests: (used_tests.map{|t| {info: t, used: true}} + unused_tests.map{|t| {info: t, used: false}}).sort!{|a,b| a[:info].level <=> b[:info].level},
-                 }]
-
-    end
+        result += [
+          {
+            group_id: group.id,
+            areas:
+              (
+                used_areas.map { |a| { info: a, used: true } } +
+                  unused_areas.map { |a| { info: a, used: false } }
+              ).sort! { |a, b| a[:info].name <=> b[:info].name },
+            competences:
+              (
+                used_competences.map { |c| { info: c, used: true } } +
+                  unused_competences.map { |c| { info: c, used: false } }
+              ).sort! { |a, b| a[:info].name <=> b[:info].name },
+            families:
+              (
+                used_families.map { |f| { info: f, used: true } } +
+                  unused_families.map { |f| { info: f, used: false } }
+              ).sort! { |a, b| a[:info].name <=> b[:info].name },
+            tests:
+              (
+                used_tests.map { |t| { info: t, used: true } } +
+                  unused_tests.map { |t| { info: t, used: false } }
+              ).sort! { |a, b| a[:info].level <=> b[:info].level }
+          }
+        ]
+      end
     return result
   end
 
   #Informationen für die Klassenbuchansicht sammeln.
   def get_classbook_info
     result = []
-    groups.each do |g|
-      result += [g.as_hash(self)]
-    end
+    groups.each { |g| result += [g.as_hash(self)] }
+
     #Gruppen dazunehmen für die ein Share-Angebot vorliegt, das aber noch nicht angenommen wurde. Diese fehlen in groups.
-    Group.find(GroupShare.where(user_id: self.id, key: nil).pluck(:group_id)).each do |g|
-      result += [g.as_hash(self)]
-    end
+    Group
+      .find(GroupShare.where(user_id: self.id, key: nil).pluck(:group_id))
+      .each { |g| result += [g.as_hash(self)] }
     return result
   end
 
@@ -110,7 +134,6 @@ class User < ApplicationRecord
   #Zufälliges Passwort erzeugen
   def generate_password
     pw = Digest::SHA1.hexdigest(rand(36**8).to_s(36))[1..6]
-    self.update_attributes({password: pw, password_confirmation: pw})
     return pw
   end
 
@@ -130,22 +153,50 @@ class User < ApplicationRecord
     return intro_state > 2
   end
 
+  def has_tested_students
+    groups =
+      Group
+        .where(id: GroupShare.where(user_id: self.id).select('group_id'))
+        .where.not(demo: true)
+        .pluck(:id) #Keine Beispielklassen exportieren
+    students = Student.where(group_id: groups).pluck(:id)
+    return(
+      Result.where("test_date > '2019-09-09'").where(student_id: students).size > 0 ? true : false
+    )
+  end
+
   #Alle Testungen eines Users als Zip-Archiv, eine Datei pro verwendetem Test
   def as_zip
-    groups = Group.where(id: GroupShare.where(user_id: self.id).select('group_id')).where.not(demo: true).select('id').pluck(:id) #Keine Beispielklassen exportieren
+    groups =
+      Group
+        .where(id: GroupShare.where(user_id: self.id).select('group_id'))
+        .where.not(demo: true)
+        .pluck(:id) #Keine Beispielklassen exportieren
     students = Student.where(group_id: groups).select('id').pluck(:id)
     tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
-    temp = Tempfile.new("Levumi")
+    temp = Tempfile.new('Levumi')
     Zip::OutputStream.open(temp.path) do |zip|
       tests.each do |t|
         #Keine alten Messungen exportieren
-        res = Result.where("test_date > '2019-09-09'").where(student_id: students, assessment_id: Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).select('id')).all
+        res =
+          Result
+            .where("test_date > '2019-09-09'")
+            .where(
+              student_id: students,
+              assessment_id:
+                Assessment.where(group_id: self.groups.pluck(:id), test_id: t.id).select('id')
+            )
+            .all
         if (res.size > 0)
-          zip.put_next_entry((t.shorthand + '_' + DateTime.now.strftime("%Y_%m_%d") + '.csv').encode!('CP437', undefined: :replace, replace: '_'))
+          zip.put_next_entry(
+            (t.shorthand + '_' + DateTime.now.strftime('%Y_%m_%d') + '.csv').encode!(
+              'CP437',
+              undefined: :replace,
+              replace: '_'
+            )
+          )
           csv = res[0].csv_header(true) + "\n"
-          res.each do |r|
-            csv = csv + r.as_csv(true)
-          end
+          res.each { |r| csv = csv + r.as_csv(true) }
           zip.print csv
         end
       end
@@ -163,22 +214,19 @@ class User < ApplicationRecord
     state = {}
     users.each do |u|
       count[u.account_type] += 1
-      if !u.last_login.nil? && u.last_login > (DateTime.now - 30)
-        active[u.account_type] += 1
-      end
-      groups = Group.where(id: GroupShare.where(user_id: u.id).select('group_id')).where.not(demo: true).select('id').pluck(:id)
-      students = Student.where(group_id: groups).select('id').pluck(:id)
+      active[u.account_type] += 1 if !u.last_login.nil? && u.last_login > (DateTime.now - 30)
+      groups =
+        Group
+          .where(id: GroupShare.where(user_id: u.id).select('group_id'))
+          .where.not(demo: true)
+          .pluck(:id)
+      students = Student.where(group_id: groups).pluck(:id)
       if Result.where(student_id: students).exists?
         productive[u.account_type] += 1
         state[u.state] = [0, 0, 0] if state[u.state].nil?
         state[u.state][u.account_type] += 1
       end
     end
-    return {
-      count: count,
-      active: active,
-      productive: productive,
-      state: state
-    }
+    return { count: count, active: active, productive: productive, state: state }
   end
 end

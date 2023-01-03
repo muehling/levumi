@@ -1,0 +1,79 @@
+{
+  "area": "Beispieltests",
+  "competence": "Tiere erkennen",
+  "family": "Katzen und Vögel II",
+  "level": "Schüler:innen",
+  "shorthand": "Ex_S_2",
+  "version": 2,
+  "description": {
+    "full": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
+    "time_limit": "Keine",
+    "usage": "Die Schüler:innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Zu jedem Bild gibt es vier Antwortoptionen, die Schüler:innen wählen selbstständig eine aus und klicken auf weiter, bis alle Bilder bearbeitet wurden."
+  },
+  "time_limit": "Keine",
+  "student_test": true,
+  "configuration": {
+    "views": [
+      {
+        "key": "V1",
+        "label": "Übersicht",
+        "student": true,
+        "group": false,
+        "type": "graph",
+        "options": {
+          "chart": {
+            "type": "line"
+          }
+        }
+      },
+      {
+        "key": "V2",
+        "label": "Detailauswertung",
+        "student": true,
+        "group": false,
+        "type": "table",
+        "columns": ["Katzen", "Vögel"],
+        "column_keys": ["K", "V"]
+      }
+    ]
+  },
+  "items": [
+    {
+      "id": "I1",
+      "path": "vogel1.jpg",
+      "group": 0,
+      "label": "Vogel 1"
+    },
+    {
+      "id": "I2",
+      "path": "vogel2.jpg",
+      "group": 0,
+      "label": "Vogel 2"
+    },
+    {
+      "id": "I3",
+      "path": "vogel3.jpg",
+      "group": 0,
+      "label": "Vogel 3"
+    },
+    {
+      "id": "I4",
+      "path": "katze1.jpg",
+      "group": 1,
+      "label": "Katze 1"
+    },
+    {
+      "id": "I5",
+      "path": "katze2.jpg",
+      "group": 1,
+      "label": "Katze 2"
+    },
+    {
+      "id": "I6",
+      "path": "katze3.png",
+      "group": 1,
+      "label": "Katze 3"
+    }
+  ]
+}
