@@ -34,7 +34,7 @@
 
 
 <% if @user.intro_state == 2 %>
-    <script>
+    <script type="module">
       //Zufallsstring für Key und Auth_Token der Beispielklasse generieren
       let key = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6);
       $('#key').val(encrypt_key(key));

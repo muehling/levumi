@@ -5,22 +5,19 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= javascript_pack_tag 'application' %>
-    <%= stylesheet_pack_tag 'application' %>
+    <%= vite_javascript_tag 'application' %>
+    <%= vite_stylesheet_tag 'application' %>
 
-    <!-- sonstige Libaries -->
-    <%= javascript_include_tag 'sjcl.js' unless @no_script %>
-    <%= render 'layouts/scripts' unless @no_script%>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <%= yield :head if content_for? :head %>
+    <%= vite_client_tag %>
   </head>
 
   <body>
   <!-- Platz für Navbar -->
   <% if content_for? :navbar %>
     <%= yield :navbar %>
-  <% else %>
-    <%= render 'layouts/navbar' %>
   <% end %>
 
   <!-- Hauptinhalt der Seite -->
@@ -37,6 +34,17 @@
           </div>
         <% end %>
       </div>
+    </div>
+  </div>
+  <div id='toast-wrapper'>
+    <div id='user-messages' role='alert' class='toast mt-4'>
+      <div class='toast-header d-flex justify-content-between align-items-center'>
+        <h5 class=''>Registrierung</h5>
+        <button type='button' class='close' data-dismiss='toast' aria-label='Close'>
+          <span aria-hidden='true'>&times;</span>
+        </button>
+      </div>
+      <div class='toast-body' id='user-messages-body'></div>
     </div>
   </div>
 
@@ -59,7 +67,10 @@
       </div>
     </div>
   </div>
-
-
   </body>
+  <script>
+    if (window.location.search === '?logout=true'){
+      sessionStorage.removeItem('login')
+    }
+  </script>
 </html>

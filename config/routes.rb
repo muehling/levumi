@@ -18,15 +18,30 @@ Rails.application.routes.draw do
   get '/login', to: 'application#start_masquerade'
   get '/logout', to: 'application#end_masquerade'
 
-  #Einfache URLs für Haupt-SPAs
-  get '/klassenbuch', to: 'groups#index'
-  get '/start', to: 'users#show'
-
   #Einfache URLs für andere Seiten/Funktionen
   get '/willkommen', to: 'users#register'
   patch '/willkommen', to: 'users#register'
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
+
+  # Vue Router routes TBD
+  get '/testverwaltung', to: 'users#show'
+  get '/testuebersicht', to: 'users#show'
+  get '/testexport', to: 'users#show'
+  get '/klassenbuch', to: 'users#show'
+  get '/start', to: 'users#show'
+  get '/materialverwaltung', to: 'users#show'
+  get '/materialien', to: 'users#show'
+  get '/statistiken', to: 'users#show'
+  get '/nutzerverwaltung', to: 'users#show'
+
+  # API endpoints
+  put '/users/:id/mail', to: 'users#user_mail'
+  get '/users/core_data', to: 'users#get_core_data'
+  get '/materials/info', to: 'materials#get_material_data'
+  get '/tests/info', to: 'tests#get_tests_data'
+  get '/users/statistics', to: 'users#statistics'
+  post 'renew_login', to: 'application#renew_login'
 
   #Reguläres REST-Routing
   resources :users
@@ -44,5 +59,4 @@ Rails.application.routes.draw do
 
   resources :tests
   resources :materials
-
 end

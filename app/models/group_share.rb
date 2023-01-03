@@ -4,6 +4,6 @@ class GroupShare < ApplicationRecord
 
   #Hash Repräsentation für Frontend / Classbook
   def as_hash
-    {id: id, user: user.email, read_only: read_only, accepted: !key.nil?}
+    { id: id, user: user.email, read_only: read_only, accepted: !key.nil? }
   end
 end

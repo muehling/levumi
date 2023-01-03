@@ -34,5 +34,4 @@ class Assessment < ApplicationRecord
     res['annotations'] = self.annotations.order(end: :desc)
     res
   end
-
 end

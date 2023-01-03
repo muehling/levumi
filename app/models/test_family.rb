@@ -4,6 +4,6 @@ class TestFamily < ApplicationRecord
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
-    super(except: [:created_at, :updated_at])
+    super(except: %i[created_at updated_at])
   end
 end
