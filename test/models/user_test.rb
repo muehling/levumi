@@ -93,11 +93,12 @@ class UserTest < ActionDispatch::IntegrationTest
   end
 
   test 'User.has_tested_students with no tested students' do
-    user = users(:admin_user)
+    user = users(:other_user)
     assert_equal(user.has_tested_students, false)
   end
 
   test 'User.has_tested_students with tested students' do
-    #TODO add
+    user = users(:admin_user)
+    assert_equal(user.has_tested_students, true)
   end
 end

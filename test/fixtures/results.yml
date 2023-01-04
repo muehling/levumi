@@ -3,24 +3,24 @@ r1:
   assessment_id: 1
   test_date: '2022-11-16'
   test_week: '2022-11-14'
-  views: ''
-  report: ''
-  data: ''
+  views: '{}'
+  report: '{}'
+  data: '{}'
 
 r2:
   student_id: 2
   assessment_id: 1
   test_date: '2022-11-16'
   test_week: '2022-11-14'
-  views: ''
-  report: ''
-  data: ''
+  views: '{}'
+  report: '{}'
+  data: '{}'
 
 r3:
   student_id: 3
   assessment_id: 1
   test_date: '2022-11-16'
   test_week: '2022-11-14'
-  views: ''
-  report: ''
-  data: ''
+  views: '{}'
+  report: '{}'
+  data: '{}'
