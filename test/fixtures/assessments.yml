@@ -1,0 +1,11 @@
+a1:
+  group_id: 1
+  test_id: 1
+  active: true
+  excludes: []
+
+a2:
+  group_id: 1
+  test_id: 2
+  active: false
+  excludes: []

@@ -1,0 +1,11 @@
+writing_n1:
+  id: 1
+  level: 'N1'
+  shorthand: 'writing N1'
+  test_family_id: 2
+
+writing_n2:
+  id: 2
+  level: 'N2'
+  shorthand: 'writing N2'
+  test_family_id: 2

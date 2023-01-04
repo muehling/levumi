@@ -1,0 +1,14 @@
+reading_number:
+  id: 1
+  name: 'Zahlen lesen'
+  competence_id: 1
+
+writing_words:
+  id: 2
+  name: 'Wörter schreiben'
+  competence_id: 3
+
+final_sounds:
+  id: 3
+  name: 'Auslaute'
+  competence_id: 3
