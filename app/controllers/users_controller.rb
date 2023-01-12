@@ -95,10 +95,16 @@ class UsersController < ApplicationController
 
   #DEL /users/:id
   def destroy
+    if !@login.has_capability?('admin')
+      head :forbidden
+      return
+    end
+
     if @user.id != @login.id
       #Nicht seinen eigenen Account löschen...
       @user.destroy
     end
+
     @users = User.all #Tabelle in der Benutzerverwaltung wird neu gerendert
     head :ok
   end
