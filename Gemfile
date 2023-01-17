@@ -23,8 +23,6 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'rubyzip', '~> 2.3.0'
 
 # enable database views
-gem 'scenic'
-gem 'scenic-mysql_adapter'
 
 #TEMPCODE (vielleicht trotzdem nützlich wegen Blog?)
 gem 'rack-cors', require: 'rack/cors'
@@ -35,4 +33,3 @@ group :development, :test do
 end
 
 gem 'mysql2'
-
