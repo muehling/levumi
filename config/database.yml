@@ -17,22 +17,15 @@ development:
   encoding: utf8
   database: levumi2_dev
   username: 'root'
-  password: 'postgres'
+  password: 'password'
 
 production:
   <<: *default
   adapter: mysql2
   encoding: utf8
-#  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
-#  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
-#  username: <%= ENV['DB_USER'] || 'root' %>
-#  password: <%= ENV['DB_PASSWORD'] || '' %>
 
 staging:
   <<: *default
   adapter: mysql2
   encoding: utf8
-  host: <%= ENV['DB_HOST'] || 'dbserver'   %>
-  database: <%= ENV['DB_NAME'] || 'rails_devise' %>
-  username: <%= ENV['DB_USER'] || 'root' %>
-  password: <%= ENV['DB_PASSWORD'] || '' %>
+ 
