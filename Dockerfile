@@ -11,7 +11,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   gnupg2 \
   git \
   yarn \
-  libmariadb-dev \
+  default-libmysqlclient-dev \
   sqlite3 \
   libsqlite3-dev \
   libpq-dev \

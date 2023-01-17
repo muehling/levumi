@@ -5,9 +5,19 @@ class TestsController < ApplicationController
   #GET /tests
   def index
     #TODO check where which params are used.
+    @all_tests =
+      Test.all.sort_by do |t|
+        [
+          t.test_family.competence.area.id,
+          t.test_family.competence.id,
+          t.test_family.id,
+          t.shorthand,
+          t.version
+        ]
+      end
     if params[:show_export] && @login.has_capability?('export')
       render 'index'
-    else
+    elsif @login.has_capability?('test')
       render 'list'
     end
     #if params[:admin] && @login.has_capability?('test')

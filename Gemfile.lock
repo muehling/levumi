@@ -217,7 +217,6 @@ DEPENDENCIES
   rails (~> 7.0.3, >= 7.0.3.1)
   rubyzip (~> 2.3.0)
   sprockets-rails
-  sqlite3 (~> 1.4)
   tzinfo-data
   vite_rails
 
