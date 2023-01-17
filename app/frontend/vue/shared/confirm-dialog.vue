@@ -26,7 +26,6 @@
       okIntent: '',
       hideCancelButton: false,
       resolvePromise: undefined,
-      rejectPromise: undefined,
     }),
 
     methods: {
@@ -37,9 +36,8 @@
         this.okText = data.okText
         this.okIntent = data.okIntent || 'outline-danger'
         this.hideCancelButton = data.hideCancelButton || false
-        return new Promise((resolve, reject) => {
+        return new Promise(resolve => {
           this.resolvePromise = resolve
-          this.rejectPromise = reject
         })
       },
 
