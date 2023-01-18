@@ -201,21 +201,33 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
-    student_id = Student.where(group_id: Group.where.not(demo: true)).pluck(:id) #Keine Demoklassen exportieren
-    assessment_id = Assessment.where(test_id: self.id).pluck('id')
-    Result.where(student_id: student_id, assessment_id: assessment_id, test_date: '2019-09-09'..)
+    student_ids = Rails.cache.fetch("all_not_demo_students", expires_in: 24.hours) do
+      Student.where(group_id: Group.where.not(demo: true)).pluck(:id) 
+    end   
+  
+    assessment_ids = Assessment.where(test_id: self.id).pluck('id')
+    
+
+    Rails.cache.fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do
+      Result.where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
       .exists?
+    end 
+
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
-    s = Student.where(group_id: Group.where.not(demo: true)).pluck(:id) #Keine Demoklassen exportieren
-
+    student_ids = Rails.cache.fetch("all_not_demo_students", expires_in: 24.hours) do
+      Student.where(group_id: Group.where.not(demo: true)).pluck(:id)       
+    end  
+    assessment_ids = Rails.cache.fetch("assessments_for_test_#{cache_key_with_version}", expires_in: 24.hours) do 
+      Assessment.where(test_id: self.id).pluck('id')
+    end
     #Keine alten Messungen exportieren
     res =
       Result
-        .where("test_date > '2019-09-09'")
-        .where(student_id: s, assessment_id: Assessment.where(test_id: self.id).pluck('id'))
+        #.where("test_date > '2019-09-09'")
+        .where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
         .all
     csv = ''
     csv = res[0].csv_header(false) + "\n" if res.size > 0
@@ -228,7 +240,7 @@ class Test < ApplicationRecord
     users = User.where(account_type: 0).pluck(:id)
     groups =
       Group
-        .where(id: GroupShare.where(user_id: users, owner: true).select('group_id'))
+        .where(id: GroupShare.where(user_id: users, owner: true).pluck('group_id'))
         .where.not(demo: true)
         .pluck(:id)
     students = Student.where(group_id: groups).pluck(:id)
@@ -240,12 +252,13 @@ class Test < ApplicationRecord
         .all
     res = []
     tests.each do |t|
+      assessment_ids = Assessment.where(group_id: groups, test_id: t.id).pluck('id')
       results =
         Result
-          .where("test_date > '2019-09-09'")
           .where(
             student_id: students,
-            assessment_id: Assessment.where(group_id: groups, test_id: t.id).pluck('id')
+            assessment_id: assessment_ids
+            test_date: '2019-09-09'..
           )
       res << {
         label: t.full_name,

@@ -20,15 +20,6 @@ class TestsController < ApplicationController
     elsif @login.has_capability?('test')
       render 'list'
     end
-    #if params[:admin] && @login.has_capability?('test')
-    #  render 'index_admin'
-    #else
-    #  if params[:export] && @login.has_capability?('export')
-    #    render 'index_export'
-    #  else
-    #    render 'index'
-    #  end
-    #end
   end
 
   #GET /tests/:id/edit
