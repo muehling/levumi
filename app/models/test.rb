@@ -257,7 +257,7 @@ class Test < ApplicationRecord
         Result
           .where(
             student_id: students,
-            assessment_id: assessment_ids
+            assessment_id: assessment_ids,
             test_date: '2019-09-09'..
           )
       res << {
