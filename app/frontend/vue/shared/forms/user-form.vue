@@ -225,8 +225,6 @@
         }
       },
       async deleteSelf() {
-        console.log('bla', this.globalStore.login)
-
         const answer = await this.$refs.confirmDeleteDialog.open({
           title: 'Profil löschen',
           message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht. 
@@ -238,11 +236,15 @@
         if (answer) {
           const res = await ajax({ ...apiRoutes.users.delete() })
           if (res.status === 200) {
-            this.globalStore.setGenericMessage({
-              title: 'Löschung erfolgreich',
-              message: 'Ihre Daten wurden vollständig gelöscht.',
+            await this.$refs.confirmDeleteDialog.open({
+              title: 'Profil erfolgreich gelöscht',
+              message:
+                'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
+              hideCancelButton: true,
+              okText: 'Ok',
+              okIntent: 'outline-success',
             })
-            this.$router.push('/')
+            location.replace('/')
           }
         }
       },

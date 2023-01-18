@@ -108,7 +108,8 @@ class UsersController < ApplicationController
     #TODO check if shadow stuff is created
 
     @login.destroy
-    redirect_to '/'
+    reset_session
+    head :ok
   end
 
   def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login in der Session.
