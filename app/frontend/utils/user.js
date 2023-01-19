@@ -7,9 +7,10 @@ export const isAdmin = capabilities => {
 export const isRegularUser = capabilities => !capabilities
 
 export const hasCapability = (capability, capabilities) => {
-  let capabilitiesArray = capabilities
+  let capabilitiesArray = capabilities || ''
+
   if (!isArray(capabilitiesArray)) {
-    capabilitiesArray = capabilities.split(',')
+    capabilitiesArray = capabilitiesArray.split(',')
   }
 
   return capabilitiesArray?.includes(capability) || capabilitiesArray?.includes('admin')

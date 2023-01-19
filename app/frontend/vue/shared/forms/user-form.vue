@@ -245,6 +245,7 @@
               okIntent: 'outline-success',
             })
             location.replace('/')
+            sessionStorage.clear('login')
           }
         }
       },
