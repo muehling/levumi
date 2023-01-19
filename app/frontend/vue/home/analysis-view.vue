@@ -55,8 +55,10 @@
         <div class="ml-2">
           <b-button
             id="comment_btn"
-            v-b-toggle="'annotation_collapse'"
-            hidden="true"
+            :class="annotation_visible ? null : 'collapsed'"
+            :aria-expanded="annotation_visible ? 'true' : 'false'"
+            aria-controls="annotation_collapse"
+            @click="toggleActiveCollapse('annotation_collapse')"
             size="sm"
             variant="outline-secondary"
           >
@@ -64,7 +66,90 @@
             <i class="when-closed fas fa-caret-down"></i>
             <i class="when-opened fas fa-caret-up"></i>
           </b-button>
-          <b-collapse id="annotation_collapse" @shown="autoScroll('#annotation_collapse')">
+          <b-button
+              class="ml-2"
+              id="target_btn"
+              :class="target_control_visible ? null : 'collapsed'"
+              :aria-expanded="target_control_visible ? 'true' : 'false'"
+              aria-controls="target_collapse"
+              @click="toggleActiveCollapse('target_collapse')"
+              size="sm"
+              variant="outline-secondary"
+          >
+            Zielwert
+            <i class="when-closed fas fa-caret-down"></i>
+            <i class="when-opened fas fa-caret-up"></i>
+          </b-button>
+          <b-collapse id="target_collapse" v-model="target_control_visible" @shown="autoScroll('#target_collapse')">
+            <b-form
+              v-if="!readOnly"
+              class="mt-2"
+              :action="'/groups/' + group.id + '/assessments/' + test.id + '/target'"
+              accept-charset="UTF-8"
+              method="post"
+              data-remote="true"
+              @ajax:success="success"
+            >
+              <b-form-row class="text-small">
+                <b-col class="d-flex">
+                  <label class="mr-3">Zielwert:</label>
+                  <b-form-input
+                    id="target_input"
+                    v-model="target_val"
+                    placeholder="Hier Zielwert eingeben"
+                    trim
+                    type="number"
+                    inputmode="decimal"
+                    min="0"
+                    step="0.01"
+                    lang="de"
+                    name="target[value]"
+                    size="sm"
+                    @update="updateTarget"
+                  ></b-form-input>
+                </b-col>
+              </b-form-row>
+              <b-form-row class="mt-1">
+                <b-col>
+                  <!-- Hidden Field mit user bzw group id -->
+                  <input
+                    v-if="studentSelected == -1"
+                    type="hidden"
+                    :value="group.id"
+                    name="target[group_id]"
+                  />
+                  <input
+                    v-else
+                    type="hidden"
+                    :value="students[studentSelected]?.id"
+                    name="target[student_id]"
+                  />
+                  <!-- Hidden Field mit view -->
+                  <input type="hidden" :value="view_selected" name="target[view]" />
+                </b-col>
+              </b-form-row>
+              <b-form-row class="mt-1">
+                <b-col>
+                  <b-button
+                    type="submit"
+                    variant="outline-success"
+                    size="sm"
+                    :disabled="!target_valid"
+                  >
+                    <i class="fas fa-check"></i> Zielwert speichern
+                  </b-button>
+                  <b-button
+                    class="ml-2"
+                    variant="outline-danger"
+                    size="sm"
+                  >
+                    <i class="fas fa-check"></i> TODO: Zielwert löschen
+                  </b-button>
+                </b-col>
+              </b-form-row>
+            </b-form>
+          </b-collapse>
+          <b-collapse id="annotation_collapse" v-model="annotation_visible" @shown="autoScroll('#annotation_collapse')">
             <b-form
               v-if="!readOnly"
               class="mt-2"
@@ -237,6 +322,7 @@
     apexChartOptions,
     annotationsLineOptions,
     annotationsPointOptions,
+    annotationsTargetOptions,
   } from './apexChartHelpers'
   import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
 
@@ -253,9 +339,13 @@
     },
     data: function () {
       return {
+        annotation_visible: false,
         annotation_end: null,
         annotation_start: null,
         annotation_text: '',
+        target_control_visible: false,
+        target_val: null,
+        target_added: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
@@ -349,6 +439,12 @@
       },
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
+      },
+      target_valid() {
+        return this.target_val != null &&
+            this.target_val.trim().length !== 0 &&
+            !Number.isNaN(this.target_val) &&
+            Number(this.target_val) >= 0
       },
     },
     mounted() {
@@ -555,7 +651,23 @@
         const options = { ...opt, series: graphData }
 
         this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
+        this.updateTarget()
+
         this.apexchart.render()
+      },
+      // show or remove the horizontal target line on the chart
+      updateTarget() {
+        if (this.apexchart == null) { return }  // without an active chart there's nothing to update
+        // TODO: get this target value from the db (class wide value)
+        //       if studentSelected != -1 we show this target, else the student target (if there is one, if not default to class target)
+        if (this.target_added) {  // first, if there already is a target line remove it
+          this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
+          this.target_added = false
+        }
+        if (this.target_valid) {
+          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.target_val))
+          this.target_added = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
+        }
       },
       success(event) {
         //Attributwerte aus AJAX Antwort übernehmen und View updaten
@@ -583,6 +695,20 @@
         }
         return false
       },
+
+      toggleActiveCollapse(collapse_id) {
+        // TODO: this is a bit clunky; could probably be solved more elegantly
+        switch (collapse_id) {
+          case 'annotation_collapse':
+            this.target_control_visible = false
+            this.annotation_visible = !this.annotation_visible
+            break
+          case 'target_collapse':
+            this.annotation_visible = false
+            this.target_control_visible = !this.target_control_visible
+            break
+        }
+      }
     },
   }
 </script>

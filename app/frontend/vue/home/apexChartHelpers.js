@@ -164,3 +164,28 @@ export const annotationsPointOptions = (view, annotation, maxY) => ({
     },
   },
 })
+
+export const annotationsTargetOptions = (targetY) => ({
+  id: 'target-annotation',
+  y: targetY,
+  y2: null, // TODO: add lower y2 value to show a "target area",
+  strokeDashArray: 8,
+  borderColor: '#424242',
+  fillColor: '#424242',
+  opacity: 0.3,
+  label: {
+    borderColor: '#424242',
+    borderWidth: 1,
+    text: 'Zielwert: '+targetY,
+    textAnchor: 'end',
+    position: 'right',
+    offsetY: 0,
+    offsetX: 0,
+    style: {
+      background: '#fff',
+      color: '#777',
+      fontSize: '12px',
+      cssClass: 'apexcharts-yaxis-annotation-label',
+    },
+  },
+})
