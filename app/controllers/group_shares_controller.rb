@@ -34,12 +34,13 @@ class GroupSharesController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    @share.destroy
     if (@group.owner == @login)
       #Share wurde vom Besitzer beendet => Klasse rendern
+      @share.destroy
       render json: @group.as_hash(@login)
     else
       #Share wurde vom Benutzer beendet => Nur OK senden für View
+      @share.destroy
       head :ok
     end
   end

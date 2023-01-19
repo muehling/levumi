@@ -20,8 +20,15 @@ class User < ApplicationRecord
   # Eigene Gruppen und Shares löschen
   before_destroy do |user|
     shares = GroupShare.where(user_id: user.id).all
-    shares.each do |s|
-      s.group.destroy if s.owner
+    shares.each do |share|
+      if share.owner
+        share.group.students.each do |student|
+          student.results.each do |result|
+            result.destroy
+          end
+        end
+        share.group.destroy if s.owner
+      end
       s.destroy
     end
   end
