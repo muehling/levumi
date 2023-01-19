@@ -59,7 +59,7 @@
         }
         let body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
         fetch(url, {
-            method: 'post',
+            method: 'POST',
             headers: header,
             credentials: 'include',
             body: body
@@ -72,7 +72,7 @@
             .catch(error => {
                 //Bei Fehler versuche die Daten nochmal abzuspeichern
                 fetch(url, {
-                    method: 'put',
+                    method: 'PUT',
                     headers: header,
                     credentials: 'include',
                     body: body
