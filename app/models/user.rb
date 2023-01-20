@@ -22,14 +22,12 @@ class User < ApplicationRecord
     shares = GroupShare.where(user_id: user.id).all
     shares.each do |share|
       if share.owner
-        share.group.students.each do |student|
-          student.results.each do |result|
-            result.destroy
-          end
-        end
-        share.group.destroy if s.owner
+        # delete students before the group is deleted, as the shadow data needs information from the group
+        # which can't be accessed if the deletion is cascaded from the group to the students
+        share.group.students.each { |student| student.destroy }
+        share.group.destroy
       end
-      s.destroy
+      share.destroy
     end
   end
 

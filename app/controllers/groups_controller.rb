@@ -40,8 +40,16 @@ class GroupsController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    @group.destroy unless @group.demo
-    head :ok #200 als Rückmeldung an Vue-Component
+    if !@group.demo
+      # delete students and groupshares here, as the shadow data needs info from the group and groupshare
+      # which can't be accessed if the deletion is cascaded
+      Student.where(group: @group.id).map { |student| student.create_shadow }
+      GroupShare.where(group: @group.id).destroy_all
+      @group.destroy
+      head :ok #200 als Rückmeldung an Vue-Component
+    else
+      head :not_acceptable
+    end
   end
 
   private
