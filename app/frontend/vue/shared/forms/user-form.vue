@@ -227,8 +227,8 @@
       async deleteSelf() {
         const answer = await this.$refs.confirmDeleteDialog.open({
           title: 'Profil löschen',
-          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht. 
-            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler, 
+          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht.
+            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
             Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
           okText: 'Ja, löschen',
         })
@@ -236,7 +236,12 @@
         if (answer) {
           const res = await ajax({ ...apiRoutes.users.delete() })
           if (res.status === 200) {
-            await this.$refs.confirmDeleteDialog.open({
+            this.$root.$on('bv::modal::hide', () => {
+              location.replace('/')
+              sessionStorage.clear('login')
+            })
+
+            this.$refs.confirmDeleteDialog.open({
               title: 'Profil erfolgreich gelöscht',
               message:
                 'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
@@ -244,8 +249,6 @@
               okText: 'Ok',
               okIntent: 'outline-success',
             })
-            location.replace('/')
-            sessionStorage.clear('login')
           }
         }
       },
