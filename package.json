@@ -1,5 +1,5 @@
 {
-  "name": "Levumi2",
+  "name": "levumi2",
   "version": "2.1.0",
   "private": true,
   "scripts": {
@@ -49,6 +49,8 @@
     "concat-stream": "^1.5.2",
     "glob-parent": "^5.1.2",
     "yargs-parser": "^5.0.1",
-    "braces": "^2.3.1"
+    "braces": "^2.3.1",
+    "json5": "^2.2.2",
+    "decode-uri-component": "^0.2.1"
   }
 }

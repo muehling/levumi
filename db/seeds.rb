@@ -18,7 +18,9 @@ if Rails.env.development?
       password_confirmation: '123',
       capabilities: '',
       account_type: 0,
-      state: 1
+      tc_accepted: DateTime.now,
+      state: 1,
+      intro_state: 1
     }
   ]
 

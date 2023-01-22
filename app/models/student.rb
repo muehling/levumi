@@ -17,6 +17,10 @@ class Student < ApplicationRecord
 
   #Schattenkopie anlegen, wird im Zuge des Löschen von Results aufgerufen.
   def create_shadow
+    if ShadowStudent.find_by_original_id(self.id)
+      return
+    end
+
     ShadowStudent.create(
       original_id: self.id,
       account_type: self.group.owner.account_type,
