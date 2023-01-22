@@ -58,7 +58,7 @@
             :class="annotation_visible ? null : 'collapsed'"
             :aria-expanded="annotation_visible ? 'true' : 'false'"
             aria-controls="annotation_collapse"
-            @click="toggleActiveCollapse('annotation_collapse')"
+            @click="toggle_active_collapse('annotation_collapse')"
             size="sm"
             variant="outline-secondary"
           >
@@ -72,7 +72,7 @@
               :class="target_control_visible ? null : 'collapsed'"
               :aria-expanded="target_control_visible ? 'true' : 'false'"
               aria-controls="target_collapse"
-              @click="toggleActiveCollapse('target_collapse')"
+              @click="toggle_active_collapse('target_collapse')"
               size="sm"
               variant="outline-secondary"
           >
@@ -84,11 +84,6 @@
             <b-form
               v-if="!readOnly"
               class="mt-2"
-              :action="'/groups/' + group.id + '/assessments/' + test.id + '/target'"
-              accept-charset="UTF-8"
-              method="post"
-              data-remote="true"
-              @ajax:success="success"
             >
               <b-form-row class="text-small">
                 <b-col class="d-flex">
@@ -103,7 +98,6 @@
                     min="0"
                     step="0.01"
                     lang="de"
-                    name="target[value]"
                     size="sm"
                     @update="updateTarget"
                   ></b-form-input>
@@ -111,39 +105,32 @@
               </b-form-row>
               <b-form-row class="mt-1">
                 <b-col>
-                  <!-- Hidden Field mit user bzw group id -->
-                  <input
-                    v-if="studentSelected == -1"
-                    type="hidden"
-                    :value="group.id"
-                    name="target[group_id]"
-                  />
-                  <input
-                    v-else
-                    type="hidden"
-                    :value="students[studentSelected]?.id"
-                    name="target[student_id]"
-                  />
-                  <!-- Hidden Field mit view -->
-                  <input type="hidden" :value="view_selected" name="target[view]" />
-                </b-col>
-              </b-form-row>
-              <b-form-row class="mt-1">
-                <b-col>
                   <b-button
-                    type="submit"
                     variant="outline-success"
                     size="sm"
                     :disabled="!target_valid"
+                    @click="save_target(false)"
                   >
                     <i class="fas fa-check"></i> Zielwert speichern
                   </b-button>
+                  <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
+                    :hidden="!target_valid && targetStored == null"
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
+                    @click="targetStored == null ? target_val = null : save_target(true)"
                   >
-                    <i class="fas fa-check"></i> TODO: Zielwert löschen
+                    <i class="fas fa-check"></i> Zielwert löschen
+                  </b-button>
+                  <b-button
+                      :hidden="target_val === targetStored || targetStored == null"
+                      class="ml-2"
+                      variant="outline-warning"
+                      size="sm"
+                      @click="restore_target"
+                  >
+                    <i class="fas fa-check"></i> Zielwert zurücksetzen
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -325,10 +312,12 @@
     annotationsTargetOptions,
   } from './apexChartHelpers'
   import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
+  import {ajax} from "@/utils/ajax";
+  import apiRoutes from "@/vue/routes/api-routes";
 
   export default {
     name: 'AnalysisView',
-    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
+  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'targetStored', 'fetchAssessments'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -344,7 +333,7 @@
         annotation_start: null,
         annotation_text: '',
         target_control_visible: false,
-        target_val: null,
+        target_val: this.targetStored,
         target_added: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
@@ -651,15 +640,13 @@
         const options = { ...opt, series: graphData }
 
         this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
-        this.updateTarget()
-
         this.apexchart.render()
+
+        this.updateTarget() // should only be called after the chart has been rendered
       },
       // show or remove the horizontal target line on the chart
       updateTarget() {
         if (this.apexchart == null) { return }  // without an active chart there's nothing to update
-        // TODO: get this target value from the db (class wide value)
-        //       if studentSelected != -1 we show this target, else the student target (if there is one, if not default to class target)
         if (this.target_added) {  // first, if there already is a target line remove it
           this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
           this.target_added = false
@@ -695,8 +682,25 @@
         }
         return false
       },
-
-      toggleActiveCollapse(collapse_id) {
+      restore_target() {
+        this.target_val = this.targetStored
+        this.updateTarget()
+      },
+      async save_target(reset) {
+        const res = await ajax(
+          apiRoutes.assessments.saveTarget(this.group.id, this.test.id, {
+            assessment: { target: reset ? null : this.target_val },
+          })
+        )
+        if (res.status === 200) {
+          this.fetchAssessments()
+          if (reset) {
+            this.target_val = null
+            this.updateTarget()
+          }
+        }
+      },
+      toggle_active_collapse(collapse_id) {
         // TODO: this is a bit clunky; could probably be solved more elegantly
         switch (collapse_id) {
           case 'annotation_collapse':

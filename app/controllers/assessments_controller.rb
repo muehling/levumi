@@ -31,6 +31,9 @@ class AssessmentsController < ApplicationController
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
       head 200
+    elsif params.require(:assessment).has_key?(:target) &&
+          @assessment.update(params.require(:assessment).permit(:target))
+      head 200
     elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200
     else
@@ -66,7 +69,8 @@ class AssessmentsController < ApplicationController
             test_id: a.test.id,
             test_family_id: a.test.test_family.id,
             competence_id: a.test.test_family.competence.id,
-            area_id: a.test.test_family.competence.area.id
+            area_id: a.test.test_family.competence.area.id,
+            target: a.target,
           }
         end
     render json: data

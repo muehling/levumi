@@ -46,12 +46,17 @@ export default {
     toggleAssessment: (groupId, testId, data) => ({
       url: `/groups/${groupId}/assessments/${testId}`,
       method: 'PUT',
-      data,
+      data,   // TODO: Frage: ist diese Methode vorzuziehen oder der ausgeschriebene Pfad wie in `includeStudent`?
     }),
     info: groupId => ({ url: `/groups/${groupId}/assessments` }),
     delete: (groupId, assessmentId) => ({
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
+    }),
+    saveTarget: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}`,
+      method: 'PUT',
+      data,   // TODO: Frage: dieser Pfad ist identisch zu toggleAssessment; zusammenlegen?
     }),
   },
 }

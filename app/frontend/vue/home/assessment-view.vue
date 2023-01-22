@@ -273,6 +273,7 @@
   import format from 'date-fns/format'
 
   import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import {computed} from "vue";
 
   export default {
     name: 'AssessmentView',
@@ -284,6 +285,8 @@
         readOnly: this.readOnly,
         studentName: this.studentName,
         weeks: this.weeks,
+        targetStored: computed(() => this.targetStored),  // computed necessary for reactivity
+        fetchAssessments: this.fetchAssessments,
       }
     },
     props: {
@@ -334,6 +337,10 @@
       isactive() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
         return assessments?.find(a => a.test === this.test.id)?.active
+      },
+      targetStored() {
+        const assessments = this.assessmentsStore.assessments[this.group.id]
+        return assessments?.find(a => a.test === this.test.id)?.target
       },
       isAllowed() {
         //TODO when masquerading, the check for isAdmin will probably mostly fail, because login.capabilities are not
@@ -437,7 +444,7 @@
           })
         )
         if (res.status === 200) {
-          this.assessmentsStore.fetch(this.group.id)
+          this.fetchAssessments()
         }
       },
       getItemName(item, fallback) {
@@ -447,6 +454,9 @@
           return fallback
         }
       },
+      fetchAssessments() {
+        this.assessmentsStore.fetch(this.group.id)
+      }
     },
   }
 </script>
