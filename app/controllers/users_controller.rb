@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
-  before_action :set_user, except: %i[index show create register recover get_core_data statistics]
+  before_action :set_user,
+                except: %i[index show create register recover get_core_data statistics destroy_self]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -106,6 +107,12 @@ class UsersController < ApplicationController
     end
 
     @users = User.all #Tabelle in der Benutzerverwaltung wird neu gerendert
+    head :ok
+  end
+
+  def destroy_self
+    @login.destroy
+    reset_session
     head :ok
   end
 

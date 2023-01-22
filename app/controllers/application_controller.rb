@@ -133,7 +133,12 @@ class ApplicationController < ActionController::Base
     else
       if session.has_key?('user')
         #Session existiert
-        @login = User.find(session[:user])
+        user = User.find_by_id(session[:user])
+        if !user
+          reset_session
+          redirect_to '/'
+        end
+        @login = user
       else
         #TODO might be necessary to return an error here for api calls
         # only redirect to frontpage if not already there to avoid endless cycle
