@@ -10,7 +10,7 @@
           :disabled="!has_group_views"
           @click="
             view_selected = 0
-            updateView(-1)
+            set_student(-1)
           "
           >Ganze Klasse</b-button
         >
@@ -25,7 +25,7 @@
             v-for="s in studentsWithResults"
             :key="s.id"
             class="text-small"
-            @click="updateView(s.id)"
+            @click="set_student(s.id)"
           >
             {{ s.name }}
           </b-dropdown-item>
@@ -115,16 +115,16 @@
                   </b-button>
                   <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
-                    :hidden="!target_valid && targetStored == null"
+                    :hidden="!target_valid && target_stored == null"
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
-                    @click="targetStored == null ? target_val = null : save_target(true)"
+                    @click="target_stored == null ? restore_target() : save_target(true)"
                   >
                     <i class="fas fa-check"></i> Zielwert löschen
                   </b-button>
                   <b-button
-                      :hidden="target_val === targetStored || targetStored == null"
+                      :hidden="target_val === target_stored || target_stored == null"
                       class="ml-2"
                       variant="outline-warning"
                       size="sm"
@@ -317,7 +317,7 @@
 
   export default {
     name: 'AnalysisView',
-  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'targetStored', 'fetchAssessments'],
+  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetStored', 'fetchAssessments'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -333,11 +333,12 @@
         annotation_start: null,
         annotation_text: '',
         target_control_visible: false,
-        target_val: this.targetStored,
+        target_val: this.groupTargetStored, // starts out as group target since no student is selected at start
         target_added: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
+        student_targets: [],
         view_selected: 0,
         simpleTableData: undefined,
       }
@@ -435,19 +436,39 @@
             !Number.isNaN(this.target_val) &&
             Number(this.target_val) >= 0
       },
+      target_id() {
+        return this.target_stored_raw?.id
+      },
+      target_stored() {
+        // when target_stored_raw is undefined and a student is selected then this means that the stored target is defined as null (nothing stored)
+        // this convention allows other actors that expect target_stored to be a number or null to work properly in both the group case and the individual student case
+        let res
+        if (this.studentSelected === -1) { res = this.groupTargetStored }
+        else {
+          const raw = this.target_stored_raw
+          res = raw === undefined ? null : raw.value
+        }
+        return res
+      },
+      target_stored_raw() {
+        return this.studentSelected === -1 ?
+            undefined :
+            this.student_targets.find(target => target.student_id === this.studentSelected)
+      },
     },
     mounted() {
-      this.studentSelected = this.has_group_views
+      this.load_student_targets()
+      this.set_student(this.has_group_views
         ? -1
         : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
         ? this.studentsWithResults[0]?.id || -1
         : -1
-      this.updateView(this.studentSelected)
+      )
     },
     methods: {
       setSelectedView(index) {
         this.view_selected = index
-        this.updateView(this.studentSelected)
+        this.updateView()
       },
       getStudentName(id) {
         return this.students.find(student => student.id === id)?.name
@@ -552,8 +573,17 @@
           }
         })
       },
-      updateView(studentId) {
-        this.studentSelected = studentId
+      set_student(student_id) {
+        const oldValue = this.studentSelected
+        this.studentSelected = student_id
+        if (student_id !== oldValue) {
+          // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
+          this.restore_target()
+        }
+
+        this.updateView()
+      },
+      updateView() {
         if (this.configuration.views[this.view_selected].type === 'table') {
           return
         }
@@ -644,7 +674,8 @@
 
         this.updateTarget() // should only be called after the chart has been rendered
       },
-      // show or remove the horizontal target line on the chart
+      // show or remove the horizontal target line on the chart;
+      // should only be called after the chart has been rendered or before the chart has been created
       updateTarget() {
         if (this.apexchart == null) { return }  // without an active chart there's nothing to update
         if (this.target_added) {  // first, if there already is a target line remove it
@@ -662,7 +693,7 @@
         this.annotation_start = null
         this.annotation_end = null
         this.annotation_text = ''
-        this.updateView(-1)
+        this.set_student(-1)  // TODO: warum wird hier eigentlich auf die Klassenansicht navigiert?
       },
       week_labels(start) {
         let res = [{ value: null, text: start ? 'Von...' : 'Bis...' }]
@@ -683,22 +714,50 @@
         return false
       },
       restore_target() {
-        this.target_val = this.targetStored
+        this.target_val = this.target_stored
         this.updateTarget()
       },
       async save_target(reset) {
+        // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
         const res = await ajax(
-          apiRoutes.assessments.saveTarget(this.group.id, this.test.id, {
-            assessment: { target: reset ? null : this.target_val },
-          })
+          this.studentSelected === -1 ?
+            apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
+              assessment: { target: reset ? null : this.target_val },
+            })
+            :
+              this.target_stored !== null ?
+                reset ?
+                apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.target_id)
+                :
+                apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.target_id, {
+                  target: { value: this.target_val, student_id: this.studentSelected },
+                })
+              :
+              apiRoutes.targets.createStudent(this.group.id, this.test.id, {
+                target: { value: this.target_val, student_id: this.studentSelected },
+              })
         )
         if (res.status === 200) {
-          this.fetchAssessments()
-          if (reset) {
-            this.target_val = null
-            this.updateTarget()
+          if (this.studentSelected === -1) {
+            this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
+          } else {
+            this.load_student_targets()   // this function instead only loads the detail information for the current assessment
           }
         }
+      },
+      async load_student_targets() {
+        const res = await ajax(
+          apiRoutes.targets.getStudents(this.group.id, this.test.id)
+        )
+        if (res.status === 200) {
+          const text = await res.text()
+          const result = JSON.parse(text)
+          this.student_targets = result.targets
+        } else {
+          this.student_targets = []
+        }
+        // lastly set the displayed value to the just loaded one
+        this.restore_target()
       },
       toggle_active_collapse(collapse_id) {
         // TODO: this is a bit clunky; could probably be solved more elegantly
@@ -712,7 +771,7 @@
             this.target_control_visible = !this.target_control_visible
             break
         }
-      }
+      },
     },
   }
 </script>

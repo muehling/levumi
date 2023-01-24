@@ -285,7 +285,7 @@
         readOnly: this.readOnly,
         studentName: this.studentName,
         weeks: this.weeks,
-        targetStored: computed(() => this.targetStored),  // computed necessary for reactivity
+        groupTargetStored: computed(() => this.groupTargetStored),  // computed necessary for reactivity
         fetchAssessments: this.fetchAssessments,
       }
     },
@@ -335,10 +335,16 @@
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
       isactive() {
+        // TODO: Kann hier nicht einfach das property this.active verwendet werden? Es scheint als ob es mal hierfür vorgesehen war, denn es wird aktuell tatsächlich gar nicht verwendet.
+        // TODO: Wird es nicht genutzt, da der assessmentsStore eh gebraucht wird um nach toggleAssessment den neuen Zustand zu fetchen?
+        // TODO: Aber der fragliche active Wert wird ja auch in group-view in loadAssessment nachgeladen... ist der fetch nicht also unnötig?
+        //
+        // TODO: Nach etwas herumprobieren schätze ich, dass der bestehende Weg dem props weiterreichen wohl vorzuziehen ist, da props-Änderungen zu kompletten re-renders führen, was hier wohl nicht gewünscht wäre.
+        // TODO: In dem Fall sollte aber das ungenutzte prop "active" entfernt werden.
         const assessments = this.assessmentsStore.assessments[this.group.id]
         return assessments?.find(a => a.test === this.test.id)?.active
       },
-      targetStored() {
+      groupTargetStored() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
         return assessments?.find(a => a.test === this.test.id)?.target
       },

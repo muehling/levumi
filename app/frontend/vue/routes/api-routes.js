@@ -53,10 +53,30 @@ export default {
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
     }),
-    saveTarget: (groupId, testId, data) => ({
+  },
+  targets: {
+    saveGroup: (groupId, testId, data) => ({
       url: `/groups/${groupId}/assessments/${testId}`,
       method: 'PUT',
       data,   // TODO: Frage: dieser Pfad ist identisch zu toggleAssessment; zusammenlegen?
     }),
-  },
+    createStudent: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'POST',
+      data,
+    }),
+    getStudents: (groupId, testId) => ({    // gets all student targets for an assessment instead of just one to minimize request count
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'GET',
+    }),
+    updateStudent: (groupId, testId, targetId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'PUT',
+      data,
+    }),
+    deleteStudent: (groupId, testId, targetId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'DELETE',
+    }),
+  }
 }

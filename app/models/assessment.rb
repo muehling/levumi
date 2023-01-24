@@ -3,6 +3,7 @@ class Assessment < ApplicationRecord
   belongs_to :group
   has_many :results, dependent: :destroy
   has_many :annotations, dependent: :destroy
+  has_many :targets, dependent: :destroy
 
   #Startwert für Student-Test setzen - standardmäßig inaktiv
   after_create do |assessment|
@@ -32,7 +33,13 @@ class Assessment < ApplicationRecord
     res['configuration'] = self.test.configuration
     res['series'] = self.results.where.not(test_date: nil).order(:test_date)
     res['annotations'] = self.annotations.order(end: :desc)
-    res['target'] = self.target
+    res
+  end
+
+  #Eigene Funktion, da Schülerziele einzeln geladen können werden sollten, wenn sie dynamisch geändert werden, bzw. überhaupt erst abgefragt werden.
+  def get_targets
+    res = {}
+    res['targets'] = self.targets
     res
   end
 end

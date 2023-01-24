@@ -346,7 +346,7 @@
         }
 
         this.isLoadingUpdate = true //Spinner anzeigen
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test}` })
+        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test}` })   // TODO: durch api-routes Aufruf ersetzen
         if (res.status === 200) {
           const text = await res.text()
           this.results = JSON.parse(text)
