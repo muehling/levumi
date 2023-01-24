@@ -717,16 +717,16 @@
         this.target_val = this.target_stored
         this.updateTarget()
       },
-      async save_target(reset) {
+      async save_target(delete_target) {
         // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
         const res = await ajax(
           this.studentSelected === -1 ?
             apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
-              assessment: { target: reset ? null : this.target_val },
+              assessment: { target: delete_target ? null : this.target_val },
             })
             :
               this.target_stored !== null ?
-                reset ?
+                delete_target ?
                 apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.target_id)
                 :
                 apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.target_id, {
@@ -740,6 +740,10 @@
         if (res.status === 200) {
           if (this.studentSelected === -1) {
             this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
+            if (delete_target) {
+              this.target_val = null
+              this.updateTarget()
+            }
           } else {
             this.load_student_targets()   // this function instead only loads the detail information for the current assessment
           }
