@@ -37,6 +37,7 @@
               ><i class="fas fa-edit"></i> Bearbeiten</b-btn
             >
             <b-btn
+              v-if="canDeleteUser"
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="requestDeleteUser(user.id)"
@@ -60,10 +61,11 @@
 
 <script>
   import { ajax } from '../../../utils/ajax'
+  import { isAdmin } from '../../../utils/user'
   import { isRegistered } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
-  import differenceInDays from 'date-fns/differenceInDays'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import differenceInDays from 'date-fns/differenceInDays'
   import EditUserDialog from './edit-user-dialog.vue'
 
   export default {
@@ -88,6 +90,9 @@
       },
       accountTypes() {
         return this.globalStore.staticData.accountTypes
+      },
+      canDeleteUser() {
+        return isAdmin(this.globalStore.login.capabilities)
       },
     },
 

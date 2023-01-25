@@ -57,11 +57,13 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    data() {
-      return {
-        students: [...this.globalStore.studentsInGroups[this.groupId]] || [],
-      }
+    computed: {
+      students() {
+        const allStudents = this.globalStore.studentsInGroups
+        return allStudents[this.groupId] || []
+      },
     },
+
     methods: {
       update(val) {
         //Student einfügen, updaten oder löschen und View aktualisieren

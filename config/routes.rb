@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   get '/tests/info', to: 'tests#get_tests_data'
   get '/users/statistics', to: 'users#statistics'
   post 'renew_login', to: 'application#renew_login'
+  delete '/delete_self', to: 'users#destroy_self'
 
   #Reguläres REST-Routing
   resources :users
