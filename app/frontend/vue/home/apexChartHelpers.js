@@ -169,7 +169,7 @@ export const annotationsTargetOptions = (targetY) => ({
   id: 'target-annotation',
   y: targetY,
   y2: null, // TODO: add lower y2 value to show a "target area",
-  strokeDashArray: 8,
+  strokeDashArray: 20,
   borderColor: '#424242',
   fillColor: '#424242',
   opacity: 0.3,
