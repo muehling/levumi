@@ -179,7 +179,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Meine Daten ({{ login?.email }})
+              Meine Daten ({{ $root.mode === 'production' ? '' : login?.email }})
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarMyData">
               <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>

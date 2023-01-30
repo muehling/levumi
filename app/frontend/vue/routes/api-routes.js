@@ -15,6 +15,7 @@ export default {
       data: { email, password },
     }),
     statistics: '/users/statistics',
+    delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
   },
   home: {
     finishIntro: '/willkommen',

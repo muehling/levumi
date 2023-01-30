@@ -1,15 +1,4 @@
-json.tests Test
-             .all
-             .sort_by { |t|
-               [
-                 t.test_family.competence.area.id,
-                 t.test_family.competence.id,
-                 t.test_family.id,
-                 t.shorthand,
-                 t.version
-               ]
-             }
-             .map do |test|
+json.tests @all_tests.map do |test|
   json.id test.id
   json.shorthand test.shorthand
   json.area test.test_family.competence.area.name
