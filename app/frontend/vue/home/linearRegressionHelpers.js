@@ -7,24 +7,34 @@ function xDateToInt(xVal) {
     return xVal ? Date.parse(xVal) / 1000 : null;   // divide by 1000 to turn to seconds (to somewhat avoid very large numbers)
 }
 
-function xDatesToInts(series) {
+function convertXDatesToInts(series) {
+    let converted = []
     for (let i = 0; i < series.length; i++) {
-        series[i].x = xDateToInt(series[i].x)
+        const item = series[i]
+        converted.push({x: xDateToInt(item.x), y: item.y})
     }
+    return converted
 }
 
 // to make sure y is a number
-function yAsInts(series) {
+function convertYValuesToInteger(series) {
+    let converted = []
     for (let i = 0; i < series.length; i++) {
-        series[i].y = Number(series[i].y)
+        const item = series[i]
+        if (item.y !== null) {
+            converted.push({x: item.x, y: Number(item.y)})
+        }
     }
+    return converted
 }
 
-function xIntsToDates(series) {
+function convertXIntsToDates(series) {
+    let converted = []
     for (let i = 0; i < series.length; i++) {
-        // TODO: Code mostly copy-pasted from assessment-view.vue; Maybe refactor to a common helper function;
-        series[i].x = series[i].x ? format(new Date(series[i].x * 1000), 'dd.MM.yyyy') : null;  // multiply by 1000 to get milliseconds
+        const item = series[i]
+        converted.push({x: item.x ? new Date(item.x * 1000) : null, y: item.y})   // multiply by 1000 to get milliseconds
     }
+    return converted
 }
 
 const defaultRegression = () => {
@@ -48,7 +58,7 @@ const defaultRegression = () => {
  * @param data An Array of { x: String | Number , y: String | Number }, where x should be a date string or a number
  * @param xEnd The endpoint up to which the generated linear regression should go. Can be a date string or number. Defaults to the last x value in data (no matter whether there is a y value there).
  * @param handleDates If true (default) x values are handles as date strings
- * @returns {[{x: String | Number, y: String}]}
+ * @returns {[{x: any | Number, y: String}]}
  */
 export function createTrendline(data, xEnd = null, handleDates = true) {
     let processed = [],
@@ -59,29 +69,31 @@ export function createTrendline(data, xEnd = null, handleDates = true) {
     // set the regression values to default
     let regression = defaultRegression();
     // convert dates to seconds since epoch if necessary
+    let modelData = data
     if (handleDates) {
-        xDatesToInts(data)
+        modelData = convertXDatesToInts(modelData)
         if (xEnd) { xEnd = xDateToInt(xEnd) }
     }
-    yAsInts(data)
+    // turn y values that might still be strings at this point to numbers
+    modelData = convertYValuesToInteger(modelData)
     // filter out invalid data points
-    const modelData = data.filter(function (el) {
-        return Boolean(el.x) && Boolean(el.y)
+    const cleanedModelData = modelData.filter(function (el) {
+        return (el.x !== undefined || null) && (el.y !== undefined || null)
     });
     // calculate the regression new sums
-    for (i = 0; i < modelData.length; i++) {
-        addToRegressionSums(regression, modelData[i]);
+    for (i = 0; i < cleanedModelData.length; i++) {
+        addToRegressionSums(regression, cleanedModelData[i]);
     }
     // calculate "a" and "b" values for the regression equation.
     regression.a = calculateAValue(regression);
     regression.b = calculateBValue(regression);
     // get "y" values for the trend line.
-    for (i = 0; i < data.length; i++) {
-        const xVal = data[i].x
+    for (i = 0; i < modelData.length; i++) {
+        const xVal = modelData[i].x
         if (xVal) { // y values can only be calculated for non-null x-values
             processed.push({
                 x: xVal,
-                y: calculateYValue(regression, xVal).toFixed(2),
+                y: calculateYValue(regression, xVal).toFixed(2),    // output as a string
             })
         }
     }
@@ -93,7 +105,7 @@ export function createTrendline(data, xEnd = null, handleDates = true) {
         })
     }
     // convert seconds back to dates if necessary
-    if (handleDates) { xIntsToDates(processed) }
+    if (handleDates) { processed = convertXIntsToDates(processed) }
     return processed;
 }
 

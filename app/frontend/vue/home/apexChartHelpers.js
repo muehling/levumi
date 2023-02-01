@@ -91,13 +91,14 @@ export const apexChartOptions = weeks => ({
     },
     xaxis: {
       tooltip: { enabled: false },
-      type: 'category',
+      type: 'datetime',
       title: {
         text: 'Testwoche',
         offsetY: 90,
       },
       labels: {
         minHeight: 20,
+        format: 'dd.MM.yyyy',
       },
     },
     yaxis: {

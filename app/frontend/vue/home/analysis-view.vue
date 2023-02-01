@@ -556,7 +556,7 @@
         await this.createPdf(title, filename)
       },
 
-      createSeries(studentId, seriesKey, isDatePrinted = true) {
+      createSeries(studentId, seriesKey) {
         const results = this.results.filter(result => result.student_id === studentId)
         const view = this.configuration.views[this.view_selected]
         return this.weeks.map(week => {
@@ -569,7 +569,7 @@
             yVal = currentResult?.views[view.key]?.toFixed(2) || null
           }
           return {
-            x: isDatePrinted ? this.printDate(week): week,
+            x: week,
             y: yVal,
           }
         })
@@ -615,26 +615,20 @@
           })
         } else {
           const student = this.students.find(s => s.id === this.studentSelected)
-          // TODO: The way rawGraphData is calculated here could be improved.
-          // TODO: Instead of calling createSeries to times we could alter it to just also return a "raw" series, i.e. one with non-custom-formatted dates
-          let rawGraphData // the same as graphData, but with non-custom-formatted dates as x-values, so that it can be used in createTrendline
           if (!view.series_keys) {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
-            rawGraphData = [{ name: 'TrendRoh', data: this.createSeries(student.id, undefined,false) }]
           } else {
             graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
             })
-            rawGraphData = view.series_keys.map((series_key, _index) => {
-              return { name: 'TrendRoh', data: this.createSeries(student.id, series_key, false) }
-            })
           }
-          trendlineData = createTrendline(rawGraphData[0]?.data)
+          trendlineData = createTrendline(graphData[0]?.data)
         }
 
         this.simpleTableData = graphData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
-            acc[d.x] = d.y || '-'
+            // createSeries contains raw dates, so we need to format them here
+            acc[this.printDate(d.x)] = d.y || '-'
             return acc
           }, {})
           return {
@@ -644,6 +638,7 @@
         })
 
         //Kommentare einfügen
+        /* DISABLED FOR NOW AS IT LEADS TO AN ERROR AND IS UNUSED ANYWAY
         opt['annotations'] = {
           position: 'front',
           xaxis: [],
@@ -671,12 +666,13 @@
             }
           }
         }
+        */
 
         // for views only showing one student also create a trendline over the values
         if (trendlineData?.length > 0) {  // as long as there is more than one data point
           graphData.push({ name: 'Trendlinie', data: trendlineData }) // add the trendline as an additional series
           // next change display options for this appended series
-          opt.colors = [opt.colors[0], '#545454']
+          opt.colors[1] = '#545454'
           opt.stroke.width = [opt.stroke.width, 2]
           opt.stroke.dashArray = [0, 4]
           opt.markers.size = [opt.markers.size, 0]
