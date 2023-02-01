@@ -493,9 +493,14 @@
 
         // create graph data
         if (this.studentSelected == -1) {
-          graphData = this.studentsWithResults.map(student => {
-            return { name: student.name, data: this.createSeries(student.id) }
-          })
+          if (!view.series_keys) {
+            graphData = this.studentsWithResults.map(student => {
+              return {name: student.name, data: this.createSeries(student.id)}
+            })
+          } else {
+            // for group overviews broken down by series key create series showing the average of the group per week and key
+            graphData = this.createAveragePerSeriesKey(view)
+          }
         } else {
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
@@ -582,6 +587,30 @@
           }
         }
         return false
+      },
+      /** Calculates the average per series key for each week and creates a series out of it.
+       *  The average for a week is based upon the number of results that were collected this week for the given key.
+       */
+      createAveragePerSeriesKey(view) {
+        return view.series_keys.map((seriesKey, index) => {
+          const averagedData = this.weeks.reduce(
+              (acc, week) => {
+                // collect all results belonging to this week
+                const resultsOfWeek = this.results.filter(res => res?.test_week === week)
+                // collect all y values belonging to the seriesKey in question this week
+                const yValuesOfWeekAndKey = resultsOfWeek.map(res => res.views[view.key][seriesKey])
+                    .filter(yVal => yVal !== null || undefined)
+                // calculate the average by dividing the sum through the number of results for this key this week
+                acc.push({
+                  x: this.printDate(week),
+                  y: (yValuesOfWeekAndKey.reduce((yAcc, yVal) => yAcc + yVal, 0.0) / yValuesOfWeekAndKey.length).toFixed(2)
+                })
+                return acc
+              },
+              [],
+          )
+          return { name: view.series[index], data: averagedData }
+        })
       },
     },
   }
