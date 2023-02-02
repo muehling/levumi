@@ -617,12 +617,13 @@
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
+            // only create trend line data when a single series is shown
+            trendlineData = createTrendline(graphData[0]?.data)
           } else {
             graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
             })
           }
-          trendlineData = createTrendline(graphData[0]?.data)
         }
 
         this.simpleTableData = graphData.map(lineData => {
