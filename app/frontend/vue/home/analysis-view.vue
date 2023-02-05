@@ -58,7 +58,7 @@
             :class="annotation_visible ? null : 'collapsed'"
             :aria-expanded="annotation_visible ? 'true' : 'false'"
             aria-controls="annotation_collapse"
-            @click="toggle_active_collapse('annotation_collapse')"
+            @click="toggleActiveCollapse('annotation_collapse')"
             size="sm"
             variant="outline-secondary"
           >
@@ -72,7 +72,7 @@
               :class="target_control_visible ? null : 'collapsed'"
               :aria-expanded="target_control_visible ? 'true' : 'false'"
               aria-controls="target_collapse"
-              @click="toggle_active_collapse('target_collapse')"
+              @click="toggleActiveCollapse('target_collapse')"
               size="sm"
               variant="outline-secondary"
           >
@@ -114,6 +114,7 @@
                       type="date"
                       lang="de"
                       size="sm"
+                      @update="updateTarget"
                   ></b-form-input>
                 </b-col>
               </b-form-row>
@@ -123,7 +124,7 @@
                     variant="outline-success"
                     size="sm"
                     :disabled="!targetOrTimeValid"
-                    @click="save_target(false)"
+                    @click="saveTarget(false)"
                   >
                     <i class="fas fa-check"></i> Werte speichern
                   </b-button>
@@ -133,7 +134,7 @@
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
-                    @click="targetStored == null ? restoreTarget() : save_target(true)"
+                    @click="targetStored == null ? restoreTarget() : saveTarget(true)"
                   >
                     <i class="fas fa-check"></i> Werte löschen
                   </b-button>
@@ -345,20 +346,13 @@ export default {
         dateUntilVal: null,
         target_control_visible: false,
         targetVal: this.groupTargetStored ? this.groupTargetStored.value : null, // starts out as group target since no student is selected at start
-        target_added: false,
+        targetAdded: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
         student_targets: [],
         view_selected: 0,
         simpleTableData: undefined,
-      }
-    },
-    watch: {
-      dateUntilVal(oldVal, newVal) {
-        // when the selected date until which to show the x-axis has changed update the chart
-        if (oldVal !== newVal)
-          this.updateView()
       }
     },
     computed: {
@@ -448,6 +442,10 @@ export default {
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
       },
+      targetIsSlopeVariant() {
+        // TODO: change to this.configuration.views[this.view_selected].targetOptions.type === 'slope'
+        return true
+      },
       dateUntilStored() {
         const stored = this.targetStored?.date_until
         return stored ? stored : null
@@ -486,7 +484,7 @@ export default {
       },
     },
     mounted() {
-      this.load_student_targets()
+      this.loadStudentTargets()
       this.set_student(this.has_group_views
         ? -1
         : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
@@ -583,33 +581,35 @@ export default {
         }
         await this.createPdf(title, filename)
       },
-
       createSeries(studentId, seriesKey) {
         const results = this.results.filter(result => result.student_id === studentId)
-        const view = this.configuration.views[this.view_selected]
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
-
-          let yVal
-          if (seriesKey) {
-            yVal = currentResult?.views[view.key][seriesKey]?.toFixed(2) || null
-          } else {
-            yVal = currentResult?.views[view.key]?.toFixed(2) || null
-          }
-          return {
-            x: week,
-            y: yVal,
-          }
+          let point = this.XYFromResult(currentResult, seriesKey)
+          point.y = point.y?.toFixed(2) || null
+          return point
         })
+      },
+      XYFromResult(result, seriesKey) {
+        let yVal
+        const view = this.configuration.views[this.view_selected]
+        if (seriesKey) {
+          yVal = result?.views[view.key][seriesKey] || null
+        } else {
+          yVal = result?.views[view.key] || null
+        }
+        return {
+          x: result?.test_week || null,
+          y: yVal,
+        }
       },
       set_student(student_id) {
         const oldValue = this.studentSelected
         this.studentSelected = student_id
         if (student_id !== oldValue) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
-          this.restoreTarget()
+          this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
         }
-
         this.updateView()
       },
       updateView() {
@@ -715,29 +715,88 @@ export default {
         // (can also be something else like trend bars, depending on the chart type)
         this.prepareChartDataForTrendline(graphData, opt, trendlineData)
 
-        if (this.apexchart != null) {
-          this.apexchart.destroy()
-        }
+        this.appendSlopeTarget(graphData, opt)
 
         opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
         const options = { ...opt, series: graphData }
 
-        this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
-        this.apexchart.render()
-
-        this.updateTarget() // should only be called after the chart has been rendered
-      },
-      // show or remove the horizontal target line on the chart;
-      // should only be called after the chart has been rendered or before the chart has been created
-      updateTarget() {
-        if (this.apexchart == null) { return }  // without an active chart there's nothing to update
-        if (this.target_added) {  // first, if there already is a target line remove it
-          this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
-          this.target_added = false
+        if (this.apexchart == null) {
+          this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
+          this.apexchart.render()
+        } else {
+          this.apexchart.updateOptions(options)
         }
-        if (this.targetValid) {
+
+        this.updateAnnotationTarget() // should only be called after the chart has been rendered
+      },
+      // append the slope target line on the chart if the slope variant is chosen by the current view
+      appendSlopeTarget(graphData, opt) {
+        if (!this.targetIsSlopeVariant) { return }
+        // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
+        // first calculate the start point
+        const startWeek = this.weeks.reduce((acc, w) => w < acc ? w : acc)
+        const startWeekResults = this.results.filter((res) => res.test_week === startWeek)
+        let startY
+        if (this.studentSelected === -1) {
+          // if no student is selected then calculate the average over the results of the first week
+          startY = startWeekResults.reduce((acc, res) => {
+            return acc + this.XYFromResult(res, null)?.y || 0
+          }, 0) / startWeekResults.length
+        } else {
+          // if a student IS selected take his result as the starting point
+          startY = this.XYFromResult(startWeekResults.find((res) => res.student_id === this.studentSelected), null)?.y
+        }
+        const startPoint = { x: startWeek, y: startY }
+        // the end point is then created by combining the date until which the target is to be reached with the chosen target value
+        const endPoint = { x: this.dateUntilVal, y: this.targetVal }
+        console.log("sX: "+startPoint.x+", sY: "+startPoint.y+", ex: "+endPoint.x+", eY: "+endPoint.y)
+        if (startPoint.x && startPoint.y && endPoint.x && endPoint.y) {
+          // if both start and end are well-defined add their line as a series
+          const seriesIndex = graphData.length
+          graphData.push({ name: 'Ziel', data: [startPoint, endPoint] })
+          // modify the options at the given index to set custom values for this series
+          // TODO: I'm not really convinced yet that this is robust or elegant enough
+          const color = '#000000'
+          if (opt.colors.length === undefined) {
+            opt.colors = Array(seriesIndex).fill(opt.colors)
+            opt.colors.push(color)
+          }
+          else { opt.colors[seriesIndex] = color }
+
+          const strokeWidth = 2;
+          if (opt.stroke.width.length === undefined) {
+            opt.stroke.width = Array(seriesIndex).fill(opt.stroke.width)
+            opt.stroke.width.push(strokeWidth)
+          }
+          else { opt.stroke.width[seriesIndex] = strokeWidth }
+
+          const dashArray = 12
+          if (opt.stroke.dashArray?.length === undefined) {
+            opt.stroke.dashArray = Array(seriesIndex).fill(opt.stroke.dashArray ? opt.stroke.dashArray : 0)
+            opt.stroke.dashArray.push(dashArray)
+          }
+          else { opt.stroke.dashArray[seriesIndex] = dashArray }
+
+          const markerSize = 1
+          if (opt.markers.size.length === undefined) {
+            opt.markers.size = Array(seriesIndex).fill(opt.markers.size)
+            opt.markers.size.push(markerSize)
+          }
+          else { opt.markers.size[seriesIndex] = markerSize }
+          opt.tooltip.enabledOnSeries = [...Array(seriesIndex).keys()] // tooltip only on the actual data series, not on target line
+        }
+      },
+      // updates only the horizontal target lines as this is implemented through dynamic annotations
+      // should only be called after the chart has been rendered or before the chart has been created
+      updateAnnotationTarget() {
+        if (this.apexchart == null) { return }  // without an active chart there's nothing to update
+        if (this.targetAdded) {  // first, if there already is a target line remove it
+          this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
+          this.targetAdded = false
+        }
+        if (this.targetValid && !this.targetIsSlopeVariant) {
           this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.targetVal))
-          this.target_added = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
+          this.targetAdded = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
       success(event) {
@@ -766,12 +825,20 @@ export default {
         }
         return false
       },
-      restoreTarget() {
-        this.targetVal = this.targetValStored
-        this.dateUntilVal = this.dateUntilStored
-        this.updateTarget()
+      updateTarget() {
+        // for now update the whole view
+        // TODO: optimize to only recreate the parts belonging to the target instead of all graphData
+        this.updateView()
       },
-      async save_target(delete_target) {
+      setTarget(targetVal, dateUntilVal, redraw) {
+        this.targetVal = targetVal
+        this.dateUntilVal = dateUntilVal
+        if (redraw) { this.updateTarget() }
+      },
+      restoreTarget(redraw = true) {
+        this.setTarget(this.targetValStored, this.dateUntilStored, redraw)
+      },
+      async saveTarget(delete_target) {
         // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
         const res = await ajax(
           this.studentSelected === -1 ?
@@ -797,16 +864,14 @@ export default {
           if (this.studentSelected === -1) {
             this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
             if (delete_target) {
-              this.targetVal = null
-              this.dateUntilVal = null
-              this.updateTarget()
+              this.setTarget(null, null, true)
             }
           } else {
-            this.load_student_targets()   // this function instead only loads the detail information for the current assessment
+            this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
           }
         }
       },
-      async load_student_targets() {
+      async loadStudentTargets() {
         const res = await ajax(
           apiRoutes.targets.getStudents(this.group.id, this.test.id)
         )
@@ -820,7 +885,7 @@ export default {
         // lastly set the displayed value to the just loaded one
         this.restoreTarget()
       },
-      toggle_active_collapse(collapse_id) {
+      toggleActiveCollapse(collapse_id) {
         // TODO: this is a bit clunky; could probably be solved more elegantly
         switch (collapse_id) {
           case 'annotation_collapse':
