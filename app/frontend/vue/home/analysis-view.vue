@@ -90,7 +90,7 @@
                   <label class="mr-3">Zielwert:</label>
                   <b-form-input
                     id="target_input"
-                    v-model="target_val"
+                    v-model="targetVal"
                     placeholder="Hier Zielwert eingeben"
                     trim
                     type="number"
@@ -108,13 +108,12 @@
                   <label class="mr-3">Verfügbarer Zeitraum:</label>
                   <b-form-input
                       id="available_target_input"
-                      v-model="availableTimeVal"
+                      v-model="dateUntilVal"
                       placeholder="Bis wann soll das Ziel erreicht worden sein?"
                       trim
                       type="date"
                       lang="de"
                       size="sm"
-                      @change="updateView"
                   ></b-form-input>
                 </b-col>
               </b-form-row>
@@ -123,29 +122,29 @@
                   <b-button
                     variant="outline-success"
                     size="sm"
-                    :disabled="!target_valid"
+                    :disabled="!targetOrTimeValid"
                     @click="save_target(false)"
                   >
-                    <i class="fas fa-check"></i> Zielwert speichern
+                    <i class="fas fa-check"></i> Werte speichern
                   </b-button>
                   <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
-                    :hidden="!target_valid && target_stored == null"
+                    :hidden="!targetOrTimeValid && targetStored == null"
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
-                    @click="target_stored == null ? restore_target() : save_target(true)"
+                    @click="targetStored == null ? restoreTarget() : save_target(true)"
                   >
-                    <i class="fas fa-check"></i> Zielwert löschen
+                    <i class="fas fa-check"></i> Werte löschen
                   </b-button>
                   <b-button
-                      :hidden="target_val === target_stored || target_stored == null"
+                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored) || targetStored == null"
                       class="ml-2"
                       variant="outline-warning"
                       size="sm"
-                      @click="restore_target"
+                      @click="restoreTarget"
                   >
-                    <i class="fas fa-check"></i> Zielwert zurücksetzen
+                    <i class="fas fa-check"></i> Werte zurücksetzen
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -343,9 +342,9 @@ export default {
         annotation_end: null,
         annotation_start: null,
         annotation_text: '',
-        availableTimeVal: null,
+        dateUntilVal: null,
         target_control_visible: false,
-        target_val: this.groupTargetStored, // starts out as group target since no student is selected at start
+        targetVal: this.groupTargetStored ? this.groupTargetStored.value : null, // starts out as group target since no student is selected at start
         target_added: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
@@ -353,6 +352,13 @@ export default {
         student_targets: [],
         view_selected: 0,
         simpleTableData: undefined,
+      }
+    },
+    watch: {
+      dateUntilVal(oldVal, newVal) {
+        // when the selected date until which to show the x-axis has changed update the chart
+        if (oldVal !== newVal)
+          this.updateView()
       }
     },
     computed: {
@@ -442,27 +448,38 @@ export default {
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
       },
-      target_valid() {
-        return this.target_val != null &&
-            this.target_val.trim().length !== 0 &&
-            !Number.isNaN(this.target_val) &&
-            Number(this.target_val) >= 0
+      dateUntilStored() {
+        const stored = this.targetStored?.date_until
+        return stored ? stored : null
       },
-      target_id() {
-        return this.target_stored_raw?.id
+      targetOrTimeValid() {
+        return this.targetValid || this.dateUntilVal
       },
-      target_stored() {
-        // when target_stored_raw is undefined and a student is selected then this means that the stored target is defined as null (nothing stored)
-        // this convention allows other actors that expect target_stored to be a number or null to work properly in both the group case and the individual student case
+      targetValid() {
+        return this.targetVal != null &&
+            this.targetVal.trim().length !== 0 &&
+            !Number.isNaN(this.targetVal) &&
+            Number(this.targetVal) >= 0
+      },
+      targetId() {
+        return this.targetStoredRaw?.id
+      },
+      targetValStored() {
+        const stored = this.targetStored?.value
+        return stored ? stored : null
+      },
+      targetStored() {
+        // when targetStoredRaw is undefined and a student is selected then this means that the stored target is defined as null (nothing stored)
+        // this convention allows other actors that expect targetStored to be a number or null to work properly in both the group case and the individual student case
         let res
         if (this.studentSelected === -1) { res = this.groupTargetStored }
         else {
-          const raw = this.target_stored_raw
-          res = raw === undefined ? null : raw.value
+          const raw = this.targetStoredRaw
+          res = raw === undefined ? null : raw
         }
         return res
       },
-      target_stored_raw() {
+      targetStoredRaw() {
         return this.studentSelected === -1 ?
             undefined :
             this.student_targets.find(target => target.student_id === this.studentSelected)
@@ -590,7 +607,7 @@ export default {
         this.studentSelected = student_id
         if (student_id !== oldValue) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
-          this.restore_target()
+          this.restoreTarget()
         }
 
         this.updateView()
@@ -630,7 +647,7 @@ export default {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
             // hand over available time to make sure the line reaches up to this date
-            trendlineData = createTrendline(graphData[0]?.data, this.availableTimeVal)
+            trendlineData = createTrendline(graphData[0]?.data, this.dateUntilVal)
           } else {
             graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
@@ -651,15 +668,15 @@ export default {
         })
 
         // if an end date has been chosen make sure the x-axis reaches/includes this date
-        if (this.availableTimeVal) {
+        if (this.dateUntilVal) {
           // only use the date if it lies after the last test result
           const maxDate = graphData[0]?.data.reduce((acc, d) => {
             return d.x > acc ? d.x : acc
-          }, this.availableTimeVal)
+          }, this.dateUntilVal)
           // to trick ApexCharts into drawing until there add an empty data point to the first series
           // TODO: it would be nice if this could be achieved without polluting the data
-          if (maxDate === this.availableTimeVal) {
-            graphData[0]?.data.push({x: this.availableTimeVal, y: null})
+          if (maxDate === this.dateUntilVal) {
+            graphData[0]?.data.push({x: this.dateUntilVal, y: null})
           }
         }
 
@@ -718,8 +735,8 @@ export default {
           this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
           this.target_added = false
         }
-        if (this.target_valid) {
-          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.target_val))
+        if (this.targetValid) {
+          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.targetVal))
           this.target_added = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
@@ -749,8 +766,9 @@ export default {
         }
         return false
       },
-      restore_target() {
-        this.target_val = this.target_stored
+      restoreTarget() {
+        this.targetVal = this.targetValStored
+        this.dateUntilVal = this.dateUntilStored
         this.updateTarget()
       },
       async save_target(delete_target) {
@@ -758,26 +776,29 @@ export default {
         const res = await ajax(
           this.studentSelected === -1 ?
             apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
-              assessment: { target: delete_target ? null : this.target_val },
+              assessment: {
+                target: delete_target ? null : { value: this.targetVal, date_until: this.dateUntilVal }
+              },
             })
             :
-              this.target_stored !== null ?
+              this.targetStored !== null ?
                 delete_target ?
-                apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.target_id)
+                apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.targetId)
                 :
-                apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.target_id, {
-                  target: { value: this.target_val, student_id: this.studentSelected },
+                apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.targetId, {
+                  target: { value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
                 })
               :
               apiRoutes.targets.createStudent(this.group.id, this.test.id, {
-                target: { value: this.target_val, student_id: this.studentSelected },
+                target: { value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
               })
         )
         if (res.status === 200) {
           if (this.studentSelected === -1) {
             this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
             if (delete_target) {
-              this.target_val = null
+              this.targetVal = null
+              this.dateUntilVal = null
               this.updateTarget()
             }
           } else {
@@ -797,7 +818,7 @@ export default {
           this.student_targets = []
         }
         // lastly set the displayed value to the just loaded one
-        this.restore_target()
+        this.restoreTarget()
       },
       toggle_active_collapse(collapse_id) {
         // TODO: this is a bit clunky; could probably be solved more elegantly

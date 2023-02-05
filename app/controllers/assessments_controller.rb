@@ -32,7 +32,8 @@ class AssessmentsController < ApplicationController
           @assessment.include(params.require(:assessment)[:include])
       head 200
     elsif params.require(:assessment).has_key?(:target) &&
-          @assessment.update(params.require(:assessment).permit(:target))
+      # allow empty target for deletion and target as a nested structure for saving data
+          @assessment.update(params.require(:assessment).permit(:target, :target => [:value, :date_until]))
       head 200
     elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200

@@ -346,7 +346,8 @@
       },
       groupTargetStored() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
-        return assessments?.find(a => a.test === this.test.id)?.target
+        const currentTarget = assessments?.find(a => a.test === this.test.id)?.target
+        return currentTarget ? { value: currentTarget.value, date_until: currentTarget.date_until } : null
       },
       isAllowed() {
         //TODO when masquerading, the check for isAdmin will probably mostly fail, because login.capabilities are not
