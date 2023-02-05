@@ -103,6 +103,21 @@
                   ></b-form-input>
                 </b-col>
               </b-form-row>
+              <b-form-row class="text-small mt-1">
+                <b-col class="d-flex">
+                  <label class="mr-3">Verfügbarer Zeitraum:</label>
+                  <b-form-input
+                      id="available_target_input"
+                      v-model="availableTimeVal"
+                      placeholder="Bis wann soll das Ziel erreicht worden sein?"
+                      trim
+                      type="date"
+                      lang="de"
+                      size="sm"
+                      @change="updateView"
+                  ></b-form-input>
+                </b-col>
+              </b-form-row>
               <b-form-row class="mt-1">
                 <b-col>
                   <b-button
@@ -301,22 +316,17 @@
 </template>
 
 <script>
-  import ApexCharts from 'apexcharts'
-  import autoTable from 'jspdf-autotable'
-  import deepmerge from 'deepmerge'
-  import jsPDF from 'jspdf'
-  import {
-    apexChartOptions,
-    annotationsLineOptions,
-    annotationsPointOptions,
-    annotationsTargetOptions,
-  } from './apexChartHelpers'
-  import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
-  import {ajax} from "@/utils/ajax";
-  import apiRoutes from "@/vue/routes/api-routes";
-  import {createTrendline} from "@/vue/home/linearRegressionHelpers";
+import ApexCharts from 'apexcharts'
+import autoTable from 'jspdf-autotable'
+import deepmerge from 'deepmerge'
+import jsPDF from 'jspdf'
+import {annotationsTargetOptions, apexChartOptions,} from './apexChartHelpers'
+import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../utils/encryption'
+import {ajax} from "@/utils/ajax";
+import apiRoutes from "@/vue/routes/api-routes";
+import {createTrendline} from "@/vue/home/linearRegressionHelpers";
 
-  export default {
+export default {
     name: 'AnalysisView',
   inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetStored', 'fetchAssessments'],
     props: {
@@ -333,6 +343,7 @@
         annotation_end: null,
         annotation_start: null,
         annotation_text: '',
+        availableTimeVal: null,
         target_control_visible: false,
         target_val: this.groupTargetStored, // starts out as group target since no student is selected at start
         target_added: false,
@@ -618,7 +629,8 @@
           if (!view.series_keys) {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
-            trendlineData = createTrendline(graphData[0]?.data)
+            // hand over available time to make sure the line reaches up to this date
+            trendlineData = createTrendline(graphData[0]?.data, this.availableTimeVal)
           } else {
             graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
@@ -637,6 +649,19 @@
             ...data,
           }
         })
+
+        // if an end date has been chosen make sure the x-axis reaches/includes this date
+        if (this.availableTimeVal) {
+          // only use the date if it lies after the last test result
+          const maxDate = graphData[0]?.data.reduce((acc, d) => {
+            return d.x > acc ? d.x : acc
+          }, this.availableTimeVal)
+          // to trick ApexCharts into drawing until there add an empty data point to the first series
+          // TODO: it would be nice if this could be achieved without polluting the data
+          if (maxDate === this.availableTimeVal) {
+            graphData[0]?.data.push({x: this.availableTimeVal, y: null})
+          }
+        }
 
         //Kommentare einfügen
         /* DISABLED FOR NOW AS IT LEADS TO AN ERROR AND IS UNUSED ANYWAY
@@ -669,16 +694,9 @@
         }
         */
 
-        // for views only showing one student also create a trendline over the values
-        if (trendlineData?.length > 0) {  // as long as there is more than one data point
-          graphData.push({ name: 'Trendlinie', data: trendlineData }) // add the trendline as an additional series
-          // next change display options for this appended series
-          opt.colors[1] = '#545454'
-          opt.stroke.width = [opt.stroke.width, 2]
-          opt.stroke.dashArray = [0, 4]
-          opt.markers.size = [opt.markers.size, 0]
-          opt.tooltip.enabledOnSeries = [0] // tooltip only on the actual data series, not on trendline
-        }
+        // for views only showing one student also create a trend line over the values
+        // (can also be something else like trend bars, depending on the chart type)
+        this.prepareChartDataForTrendline(graphData, opt, trendlineData)
 
         if (this.apexchart != null) {
           this.apexchart.destroy()
@@ -794,6 +812,17 @@
             break
         }
       },
+      prepareChartDataForTrendline(graphData, opt, trendlineData) {
+        if (trendlineData?.length > 0) {  // as long as there is more than one data point
+          graphData.push({ name: 'Trend', data: trendlineData }) // add the trendline as an additional series
+          // next change display options for this appended series
+          opt.colors[1] = '#545454'
+          opt.stroke.width = [opt.stroke.width, 2]
+          opt.stroke.dashArray = [0, 4]
+          opt.markers.size = [opt.markers.size, 0]
+          opt.tooltip.enabledOnSeries = [0] // tooltip only on the actual data series, not on trendline
+        }
+      }
     },
   }
 </script>
