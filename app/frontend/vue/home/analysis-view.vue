@@ -590,7 +590,7 @@ export default {
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
         } else {
-          title = `${this.getStudentById(this.studentSelected).name} - ${view.label}`
+          title = `${this.getStudentName(this.studentSelected)} - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
         }
         await this.createPdf(title, filename)
