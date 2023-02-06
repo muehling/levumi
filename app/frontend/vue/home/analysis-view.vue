@@ -68,9 +68,10 @@
           </b-button>
           <b-button
               class="ml-2"
+              v-if="targetIsEnabled"
               id="target_btn"
-              :class="target_control_visible ? null : 'collapsed'"
-              :aria-expanded="target_control_visible ? 'true' : 'false'"
+              :class="targetControlVisible ? null : 'collapsed'"
+              :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
               @click="toggleActiveCollapse('target_collapse')"
               size="sm"
@@ -80,7 +81,7 @@
             <i class="when-closed fas fa-caret-down"></i>
             <i class="when-opened fas fa-caret-up"></i>
           </b-button>
-          <b-collapse id="target_collapse" v-model="target_control_visible" @shown="autoScroll('#target_collapse')">
+          <b-collapse id="target_collapse" v-if="targetIsEnabled" v-model="targetControlVisible" @shown="autoScroll('#target_collapse')">
             <b-form
               v-if="!readOnly"
               class="mt-2"
@@ -130,16 +131,16 @@
                   </b-button>
                   <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
-                    :hidden="!targetOrTimeValid && targetStored == null"
+                    :hidden="!(targetVal || dateUntilVal) && targetValStored == null && dateUntilStored == null"
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
-                    @click="targetStored == null ? restoreTarget() : saveTarget(true)"
+                    @click="targetValStored == null && dateUntilStored == null ? restoreTarget() : saveTarget(true)"
                   >
                     <i class="fas fa-check"></i> Werte löschen
                   </b-button>
                   <b-button
-                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored) || targetStored == null"
+                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored) || (targetValStored == null && dateUntilStored == null)"
                       class="ml-2"
                       variant="outline-warning"
                       size="sm"
@@ -328,7 +329,7 @@ import {createTrendline} from "@/vue/home/linearRegressionHelpers";
 
 export default {
     name: 'AnalysisView',
-  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetStored', 'fetchAssessments'],
+  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetsStored', 'fetchAssessments'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -344,8 +345,8 @@ export default {
         annotation_start: null,
         annotation_text: '',
         dateUntilVal: null,
-        target_control_visible: false,
-        targetVal: this.groupTargetStored ? this.groupTargetStored.value : null, // starts out as group target since no student is selected at start
+        targetControlVisible: false,
+        targetVal: null,
         targetAdded: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
@@ -454,8 +455,7 @@ export default {
         return !this.currentView.series_keys
       },
       dateUntilStored() {
-        const stored = this.targetStored?.date_until
-        return stored ? stored : null
+        return this.targetStored?.date_until || null
       },
       targetOrTimeValid() {
         return this.targetValid || this.dateUntilVal
@@ -470,27 +470,30 @@ export default {
         return this.targetStoredRaw?.id
       },
       targetValStored() {
-        const stored = this.targetStored?.value
-        return stored ? stored : null
+        return this.targetStored?.value || null
       },
       targetStored() {
         // when targetStoredRaw is undefined and a student is selected then this means that the stored target is defined as null (nothing stored)
         // this convention allows other actors that expect targetStored to be a number or null to work properly in both the group case and the individual student case
         let res
-        if (this.studentSelected === -1) { res = this.groupTargetStored }
-        else {
-          const raw = this.targetStoredRaw
-          res = raw === undefined ? null : raw
+        if (this.studentSelected === -1) {
+          const results = this.groupTargetsStored  // results on all views
+          res = results?.find((r) => r.view === this.currentView?.key) // find the one belonging to the current view
         }
-        return res
+        else {
+          res = this.targetStoredRaw
+        }
+        return res === undefined ? null : res
       },
       targetStoredRaw() {
         return this.studentSelected === -1 ?
             undefined :
-            this.student_targets.find(target => target.student_id === this.studentSelected)
+            this.student_targets  // find the target belonging to this student in the current view
+                .find(target => target.student_id === this.studentSelected && target.view === this.currentView?.key)
       },
     },
     mounted() {
+      // also sets the initial values for dateUntil and targetVal when in group view, due to call to restoreTarget
       this.loadStudentTargets()
       this.set_student(this.has_group_views
         ? -1
@@ -502,7 +505,11 @@ export default {
     methods: {
       setSelectedView(index) {
         this.view_selected = index
-        this.updateView()
+        // restore the target to the stored state of the new view, as each view has its own target data
+        // don't redraw as we're calling updateView next
+        this.restoreTarget(false)
+        // destroy the chart to reset the options
+        this.updateView(true)
       },
       getStudentName(id) {
         return this.students.find(student => student.id === id)?.name
@@ -619,7 +626,7 @@ export default {
         }
         this.updateView()
       },
-      updateView() {
+      updateView(destroyOld = false) {
         const view = this.currentView
         if (view.type === 'table') {
           return
@@ -733,13 +740,23 @@ export default {
         const options = { ...opt, series: graphData }
 
         // only create the chart once and from then on update it dynamically
+        // except when we need to destroy (i.e. on view change, see below)
+        if (destroyOld && this.apexchart != null) {
+          this.apexchart.destroy()
+          this.apexchart = null
+        }
         if (this.apexchart == null) {
           this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
           this.apexchart.render()
         } else {
-          // FIXME: for some reason old option fields are remembered by apexCharts, indicating that it merges the updated options in somehow
-          // FIXME: this is annoying but could be worked around; finding the reason and fixing it would be better of course
-          this.apexchart.updateOptions(options, true)
+          // An annoying thing is that updateOptions only _merges in_ changes instead of writing everything new
+          // This means that we need to force apexcharts to undefine all fields that may have been defined (so... all)
+          // For this we could call updateOptions with options designed to set all possible fields, referring to the
+          // documentation, back to undefined before merging our real changes over that. BUT THAT WOULD BE INSANE.
+          // So instead we just destroy the chart on view change and recreate it... and apply special care to
+          // set back / undefine all option fields that we actually know we might be touching ourselves whilst staying in one view
+          // TODO: There has to be a better way for this.
+          this.apexchart.updateOptions(options)
         }
 
         if (this.targetIsEnabled) {
@@ -766,7 +783,6 @@ export default {
         const startPoint = { x: startWeek, y: startY }
         // the end point is then created by combining the date until which the target is to be reached with the chosen target value
         const endPoint = { x: this.dateUntilVal, y: this.targetVal }
-        console.log("sX: "+startPoint.x+", sY: "+startPoint.y+", ex: "+endPoint.x+", eY: "+endPoint.y)
         if (startPoint.x && startPoint.y && endPoint.x && endPoint.y) {
           // if both start and end are well-defined add their line as a series
           const seriesIndex = graphData.length
@@ -838,20 +854,26 @@ export default {
           this.studentSelected === -1 ?
             apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
               assessment: {
-                target: delete_target ? null : { value: this.targetVal, date_until: this.dateUntilVal }
+                // we need to pass all unchanged targets (filter) plus the changed one (after ,)
+                target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
+                   delete_target ?
+                    { view: this.currentView.key, value: null, date_until: null }
+                    :
+                    { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal }
+                  ]
               },
             })
             :
-              this.targetStored !== null ?
-                delete_target ?
+            this.targetStored !== null ?
+              delete_target ?
                 apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.targetId)
                 :
                 apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.targetId, {
-                  target: { value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
+                  target: { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
                 })
               :
               apiRoutes.targets.createStudent(this.group.id, this.test.id, {
-                target: { value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
+                target: { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
               })
         )
         if (res.status === 200) {
@@ -883,12 +905,12 @@ export default {
         // TODO: this is a bit clunky; could probably be solved more elegantly
         switch (collapse_id) {
           case 'annotation_collapse':
-            this.target_control_visible = false
+            this.targetControlVisible = false
             this.annotation_visible = !this.annotation_visible
             break
           case 'target_collapse':
             this.annotation_visible = false
-            this.target_control_visible = !this.target_control_visible
+            this.targetControlVisible = !this.targetControlVisible
             break
         }
       },

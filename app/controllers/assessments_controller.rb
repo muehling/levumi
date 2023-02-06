@@ -32,8 +32,8 @@ class AssessmentsController < ApplicationController
           @assessment.include(params.require(:assessment)[:include])
       head 200
     elsif params.require(:assessment).has_key?(:target) &&
-      # allow empty target for deletion and target as a nested structure for saving data
-          @assessment.update(params.require(:assessment).permit(:target, :target => [:value, :date_until]))
+      # target should be the latest array of targets for all views
+          @assessment.update(params.require(:assessment).permit(:target => [[:view, :value, :date_until]]))
       head 200
     elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200

@@ -285,7 +285,7 @@
         readOnly: this.readOnly,
         studentName: this.studentName,
         weeks: this.weeks,
-        groupTargetStored: computed(() => this.groupTargetStored),  // computed necessary for reactivity
+        groupTargetsStored: computed(() => this.groupTargetsStored),  // computed necessary for reactivity
         fetchAssessments: this.fetchAssessments,
       }
     },
@@ -344,10 +344,10 @@
         const assessments = this.assessmentsStore.assessments[this.group.id]
         return assessments?.find(a => a.test === this.test.id)?.active
       },
-      groupTargetStored() {
+      groupTargetsStored() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
-        const currentTarget = assessments?.find(a => a.test === this.test.id)?.target
-        return currentTarget ? { value: currentTarget.value, date_until: currentTarget.date_until } : null
+        const currentTargets = assessments?.find(a => a.test === this.test.id)?.target
+        return currentTargets ? currentTargets : []
       },
       isAllowed() {
         //TODO when masquerading, the check for isAdmin will probably mostly fail, because login.capabilities are not

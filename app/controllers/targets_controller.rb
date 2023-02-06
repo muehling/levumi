@@ -3,8 +3,8 @@ class TargetsController < ApplicationController
   def create
     a = Assessment.where(group_id: params[:group_id], test_id: params[:assessment_id]).first #Assessment wird durch Test identifiziert (vgl. AssessmentsController)
     # hier wird auch überprüft, ob ein entsprechendes Ziel bereits einmal angelegt wurde, um Dopplungen zu vermeiden
-    unless a.nil? || !@login.groups.find(a.group.id) || Target.where(assessment_id: a.id, student_id: params.require(:target)[:student_id]).present?
-      target = a.targets.create(params.require(:target).permit(:value, :date_until, :student_id))
+    unless a.nil? || !@login.groups.find(a.group.id) || Target.where(assessment_id: a.id, student_id: params.require(:target)[:student_id], view: params.require(:target)[:view]).present?
+      target = a.targets.create(params.require(:target).permit(:view, :value, :date_until, :student_id))
       #user_id und group_id werden nicht auf "Stimmigkeit" geprüft, ist aber wg. Bindung an Assessment unkritisch. Target wird ggf. nur nicht angezeigt werden.
       render json: target
     else
@@ -28,7 +28,7 @@ class TargetsController < ApplicationController
     t = Target.find(params[:id])
     #Sicherheitschecks - ggf. auslagern?
     unless t.nil? || !@login.groups.find(t.assessment.group.id)
-      t.update(params.require(:target).permit(:value, :date_until))
+      t.update(params.require(:target).permit(:view, :value, :date_until))
       head :ok
     else
       head 403
