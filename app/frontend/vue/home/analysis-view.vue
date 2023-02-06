@@ -100,7 +100,7 @@
                     step="0.01"
                     lang="de"
                     size="sm"
-                    @update="updateTarget"
+                    @update="redrawTarget"
                   ></b-form-input>
                 </b-col>
               </b-form-row>
@@ -115,7 +115,7 @@
                       type="date"
                       lang="de"
                       size="sm"
-                      @update="updateTarget"
+                      @update="redrawTarget"
                   ></b-form-input>
                 </b-col>
               </b-form-row>
@@ -354,6 +354,8 @@ export default {
         student_targets: [],
         view_selected: 0,
         simpleTableData: undefined,
+        graphDataCache: null,
+        optCache: null,
       }
     },
     computed: {
@@ -459,6 +461,9 @@ export default {
       },
       targetOrTimeValid() {
         return this.targetValid || this.dateUntilVal
+      },
+      targetAndTimeValid() {
+        return this.targetValid && this.dateUntilVal
       },
       targetValid() {
         return this.targetVal != null &&
@@ -726,17 +731,22 @@ export default {
         }
         */
 
+        opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
+
         // for views without series keys we might draw a trend line and a target depending on the view config
         if (!view.series_keys) {
           // for views only showing one student also create a trend line over the values
           // (can also be something else like trend bars, depending on the chart type)
           this.addTrend(graphData, opt, trendlineData)
-          if (this.targetIsEnabled) {
+          // at this point cache the graphData and options so that targets can be re-added more easily later
+          // in case they change dynamically
+          this.graphDataCache = structuredClone(graphData)
+          this.optCache = structuredClone(opt)
+          if (this.targetIsEnabled && this.targetAndTimeValid) {
             this.appendSlopeTarget(graphData, opt)
           }
         }
 
-        opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
         const options = { ...opt, series: graphData }
 
         // only create the chart once and from then on update it dynamically
@@ -809,6 +819,20 @@ export default {
           this.targetAdded = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
+      /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
+      redrawTarget() {
+        if (!this.targetIsEnabled) { return }
+        if (this.targetIsSlopeVariant && this.targetAndTimeValid) {
+          let graphData = structuredClone(this.graphDataCache)
+          let opt = structuredClone(this.optCache)
+          this.appendSlopeTarget(graphData, opt)
+
+          const options = { ...opt, series: graphData }
+          this.apexchart.updateOptions(options)
+        } else {
+          this.updateAnnotationTarget()
+        }
+      },
       success(event) {
         //Attributwerte aus AJAX Antwort übernehmen und View updaten
         this.annotations.splice(0, 0, event.detail[0])
@@ -835,15 +859,10 @@ export default {
         }
         return false
       },
-      updateTarget() {
-        // for now update the whole view
-        // TODO: optimize to only recreate the parts belonging to the target instead of all graphData
-        this.updateView()
-      },
       setTarget(targetVal, dateUntilVal, redraw) {
         this.targetVal = targetVal
         this.dateUntilVal = dateUntilVal
-        if (redraw) { this.updateTarget() }
+        if (redraw) { this.redrawTarget() }
       },
       restoreTarget(redraw = true) {
         this.setTarget(this.targetValStored, this.dateUntilStored, redraw)
