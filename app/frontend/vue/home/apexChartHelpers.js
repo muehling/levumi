@@ -13,9 +13,15 @@ export const apexChartOptions = weeks => ({
       toolbar: { show: false },
       zoom: { enabled: false },
     },
+    colors: apexColors,
     legend: {
       position: 'top',
       offsetY: 5,
+    },
+    stroke: {
+      curve: 'straight',
+      width: 0,
+      dashArray: 0
     },
     grid: {
       padding: {
@@ -49,23 +55,7 @@ export const apexChartOptions = weeks => ({
       toolbar: { show: false },
       zoom: { enabled: false },
     },
-    colors: [
-      '#449DD1',
-      '#F86624',
-      '#EA3546',
-      '#662E9B',
-      '#C5D86D',
-      '#4ECDC4',
-      '#C7F464',
-      '#81D4FA',
-      '#546E7A',
-      '#FD6A6A',
-      '#5C4742',
-      '#A5978B',
-      '#8D5B4C',
-      '#5A2A27',
-      '#C4BBAF',
-    ],
+    colors: apexColors,
     legend: {
       position: 'top',
       offsetY: 5,
@@ -73,6 +63,7 @@ export const apexChartOptions = weeks => ({
     stroke: {
       curve: 'straight',
       width: 1,
+      dashArray: 0
     },
     grid: {
       padding: {
@@ -107,6 +98,24 @@ export const apexChartOptions = weeks => ({
     },
   },
 })
+
+export const apexColors = [
+  '#449DD1',
+  '#F86624',
+  '#EA3546',
+  '#662E9B',
+  '#C5D86D',
+  '#4ECDC4',
+  '#C7F464',
+  '#81D4FA',
+  '#546E7A',
+  '#FD6A6A',
+  '#5C4742',
+  '#A5978B',
+  '#8D5B4C',
+  '#5A2A27',
+  '#C4BBAF',
+]
 
 export const annotationsLineOptions = annotation => ({
   x: this.weeks.indexOf(annotation.start),

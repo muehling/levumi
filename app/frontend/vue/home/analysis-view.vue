@@ -320,7 +320,7 @@ import ApexCharts from 'apexcharts'
 import autoTable from 'jspdf-autotable'
 import deepmerge from 'deepmerge'
 import jsPDF from 'jspdf'
-import {annotationsTargetOptions, apexChartOptions,} from './apexChartHelpers'
+import {annotationsTargetOptions, apexChartOptions, apexColors} from './apexChartHelpers'
 import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../utils/encryption'
 import {ajax} from "@/utils/ajax";
 import apiRoutes from "@/vue/routes/api-routes";
@@ -363,16 +363,19 @@ export default {
             (this.studentSelected !== -1 && view.student)
         )
       },
+      currentView() {
+        return this.configuration.views[this.view_selected]
+      },
       columns() {
-        return this.configuration.views[this.view_selected].columns || []
+        return this.currentView.columns || []
       },
       selectedViewType() {
-        return this.configuration.views[this.view_selected].type
+        return this.currentView.type
       },
       graph_visible() {
         return (
-          this.configuration.views[this.view_selected].type === 'graph' ||
-          this.configuration.views[this.view_selected].type === 'graph_table'
+          this.currentView.type === 'graph' ||
+          this.currentView.type === 'graph_table'
         )
       },
       has_group_views() {
@@ -393,12 +396,12 @@ export default {
       },
       table_visible() {
         return (
-          this.configuration.views[this.view_selected].type === 'table' ||
-          this.configuration.views[this.view_selected].type === 'graph_table'
+          this.currentView.type === 'table' ||
+          this.currentView.type === 'graph_table'
         )
       },
       table_data() {
-        if (this.configuration.views[this.view_selected].type === 'graph') {
+        if (this.currentView.type === 'graph') {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -413,13 +416,13 @@ export default {
               let temp = {}
               for (
                 let i = 0;
-                i < this.configuration.views[this.view_selected].column_keys.length;
+                i < this.currentView.column_keys.length;
                 ++i
               ) {
-                let key = this.configuration.views[this.view_selected].column_keys[i]
-                let name = this.configuration.views[this.view_selected].columns[i]
+                let key = this.currentView.column_keys[i]
+                let name = this.currentView.columns[i]
                 temp[name] =
-                  this.results[r].views[this.configuration.views[this.view_selected].key][key]
+                  this.results[r].views[this.currentView.key][key]
                 if (temp[name] === undefined) {
                   temp[name] = '-'
                 }
@@ -443,8 +446,12 @@ export default {
         return this.students.filter(student => this.has_results(student))
       },
       targetIsSlopeVariant() {
-        // TODO: change to this.configuration.views[this.view_selected].targetOptions.type === 'slope'
+        // TODO: change to:  this.currentView.targetOptions.type === 'slope'
         return true
+      },
+      targetIsEnabled() {
+        // TODO: change to:  !view.series_keys && this.currentView.targetConfig
+        return !this.currentView.series_keys
       },
       dateUntilStored() {
         const stored = this.targetStored?.date_until
@@ -613,10 +620,10 @@ export default {
         this.updateView()
       },
       updateView() {
-        if (this.configuration.views[this.view_selected].type === 'table') {
+        const view = this.currentView
+        if (view.type === 'table') {
           return
         }
-        const view = this.configuration.views[this.view_selected]
 
         let opt =
           view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
@@ -647,6 +654,7 @@ export default {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
             // hand over available time to make sure the line reaches up to this date
+            // TODO: only create trend line data when the view is configured to show such
             trendlineData = createTrendline(graphData[0]?.data, this.dateUntilVal)
           } else {
             graphData = view.series_keys.map((series_key, index) => {
@@ -711,23 +719,32 @@ export default {
         }
         */
 
-        // for views only showing one student also create a trend line over the values
-        // (can also be something else like trend bars, depending on the chart type)
-        this.prepareChartDataForTrendline(graphData, opt, trendlineData)
-
-        this.appendSlopeTarget(graphData, opt)
+        // for views without series keys we might draw a trend line and a target depending on the view config
+        if (!view.series_keys) {
+          // for views only showing one student also create a trend line over the values
+          // (can also be something else like trend bars, depending on the chart type)
+          this.addTrend(graphData, opt, trendlineData)
+          if (this.targetIsEnabled) {
+            this.appendSlopeTarget(graphData, opt)
+          }
+        }
 
         opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
         const options = { ...opt, series: graphData }
 
+        // only create the chart once and from then on update it dynamically
         if (this.apexchart == null) {
           this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
           this.apexchart.render()
         } else {
-          this.apexchart.updateOptions(options)
+          // FIXME: for some reason old option fields are remembered by apexCharts, indicating that it merges the updated options in somehow
+          // FIXME: this is annoying but could be worked around; finding the reason and fixing it would be better of course
+          this.apexchart.updateOptions(options, true)
         }
 
-        this.updateAnnotationTarget() // should only be called after the chart has been rendered
+        if (this.targetIsEnabled) {
+          this.updateAnnotationTarget() // should only be called after the chart has been rendered
+        }
       },
       // append the slope target line on the chart if the slope variant is chosen by the current view
       appendSlopeTarget(graphData, opt) {
@@ -754,36 +771,13 @@ export default {
           // if both start and end are well-defined add their line as a series
           const seriesIndex = graphData.length
           graphData.push({ name: 'Ziel', data: [startPoint, endPoint] })
+          // enableTooltip could have already been created by the trend line, but if there's none create it now
+          opt = this.prepareOptionsAsArrays(opt, seriesIndex, true)
           // modify the options at the given index to set custom values for this series
-          // TODO: I'm not really convinced yet that this is robust or elegant enough
-          const color = '#000000'
-          if (opt.colors.length === undefined) {
-            opt.colors = Array(seriesIndex).fill(opt.colors)
-            opt.colors.push(color)
-          }
-          else { opt.colors[seriesIndex] = color }
-
-          const strokeWidth = 2;
-          if (opt.stroke.width.length === undefined) {
-            opt.stroke.width = Array(seriesIndex).fill(opt.stroke.width)
-            opt.stroke.width.push(strokeWidth)
-          }
-          else { opt.stroke.width[seriesIndex] = strokeWidth }
-
-          const dashArray = 12
-          if (opt.stroke.dashArray?.length === undefined) {
-            opt.stroke.dashArray = Array(seriesIndex).fill(opt.stroke.dashArray ? opt.stroke.dashArray : 0)
-            opt.stroke.dashArray.push(dashArray)
-          }
-          else { opt.stroke.dashArray[seriesIndex] = dashArray }
-
-          const markerSize = 1
-          if (opt.markers.size.length === undefined) {
-            opt.markers.size = Array(seriesIndex).fill(opt.markers.size)
-            opt.markers.size.push(markerSize)
-          }
-          else { opt.markers.size[seriesIndex] = markerSize }
-          opt.tooltip.enabledOnSeries = [...Array(seriesIndex).keys()] // tooltip only on the actual data series, not on target line
+          opt.colors[seriesIndex] = '#000000'
+          opt.stroke.width[seriesIndex] = 2
+          opt.stroke.dashArray[seriesIndex] = 12
+          opt.markers.size[seriesIndex] = 1
         }
       },
       // updates only the horizontal target lines as this is implemented through dynamic annotations
@@ -898,17 +892,68 @@ export default {
             break
         }
       },
-      prepareChartDataForTrendline(graphData, opt, trendlineData) {
+      addTrend(graphData, opt, trendlineData) {
         if (trendlineData?.length > 0) {  // as long as there is more than one data point
+          opt = this.prepareOptionsAsArrays(opt, graphData.length, true)
+          const i = graphData.length
           graphData.push({ name: 'Trend', data: trendlineData }) // add the trendline as an additional series
           // next change display options for this appended series
-          opt.colors[1] = '#545454'
-          opt.stroke.width = [opt.stroke.width, 2]
-          opt.stroke.dashArray = [0, 4]
-          opt.markers.size = [opt.markers.size, 0]
-          opt.tooltip.enabledOnSeries = [0] // tooltip only on the actual data series, not on trendline
+          opt.colors[i] = '#545454'
+          opt.stroke.width[i] = 2
+          opt.stroke.dashArray[i] = 4
+          opt.markers.size[i] = 0
         }
-      }
+      },
+      prepareOptionsAsArrays(opt, size, createEnableTooltip) {
+        const defaultLineOptions = apexChartOptions(null).line
+
+        if (!opt.colors) { opt.colors = [] }
+        // fill up the colors by continuing them based on apexColors, cycling just like ApexCharts would do if there were no more colors
+        for (let i = opt.colors.length; opt.colors.length < size; ++i) {
+          opt.colors.push(apexColors[i % apexColors.length])
+        }
+
+        if (!opt.stroke) { opt.stroke = defaultLineOptions.stroke } // check that opt.stroke exists
+        if (opt.stroke.width === null || undefined) { opt.stroke.width = [defaultLineOptions.stroke.width] } // check that opt.stroke.width exists
+        if (opt.stroke.width.length === undefined) { opt.stroke.width = [opt.stroke.width] } // if it is no array yet make it one
+        // fill up by continuing based on what is already there
+        {
+          let w = opt.stroke.width
+          for (let i = 0; w.length < size; ++i) {
+            w.push(w[i])
+          }
+        }
+
+        if (opt.stroke.dashArray === null || undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
+        if (opt.stroke.dashArray.length === undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
+        // fill up by continuing based on what is already there
+        {
+          let d = opt.stroke.dashArray
+          for (let i = 0; d.length < size; ++i) {
+            d.push(d[i])
+          }
+        }
+
+        if (!opt.markers) { opt.markers = defaultLineOptions.markers }  // check that opt.markers exists
+        if (opt.markers.size === null || undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
+        if (opt.markers.size.length === undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
+        // fill up by continuing based on what is already there
+        {
+          let m = opt.markers.size
+          for (let i = 0; m.length < size; ++i) {
+            m.push(m[i])
+          }
+        }
+
+        if (createEnableTooltip) {
+          if (!opt.tooltip) { opt.tooltip = defaultLineOptions.tooltip }
+          if (!opt.tooltip.enabledOnSeries) {
+            opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
+          }
+        }
+
+        return opt
+      },
     },
   }
 </script>
