@@ -33,7 +33,7 @@ class AssessmentsController < ApplicationController
       head 200
     elsif params.require(:assessment).has_key?(:target) &&
       # target should be the latest array of targets for all views
-          @assessment.update(params.require(:assessment).permit(:target => [[:view, :value, :date_until]]))
+          @assessment.update(params.require(:assessment).permit(:target => [[:view, :value, :date_until, :deviation]]))
       head 200
     elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200

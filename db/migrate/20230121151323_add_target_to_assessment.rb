@@ -10,6 +10,7 @@ class AddTargetToAssessment < ActiveRecord::Migration[7.0]
       t.json :view
       t.json :value
       t.date :date_until
+      t.integer :deviation
       t.timestamps
     end
   end

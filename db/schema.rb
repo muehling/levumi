@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_21_151323) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -68,6 +68,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.json "excludes"
+    t.json "target"
     t.index ["group_id"], name: "index_assessments_on_group_id"
     t.index ["test_id"], name: "index_assessments_on_test_id"
   end
@@ -180,6 +181,19 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.index ["group_id"], name: "index_students_on_group_id"
+  end
+
+  create_table "targets", charset: "utf8mb3", force: :cascade do |t|
+    t.bigint "assessment_id"
+    t.bigint "student_id"
+    t.json "view"
+    t.json "value"
+    t.date "date_until"
+    t.integer "deviation"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["assessment_id"], name: "index_targets_on_assessment_id"
+    t.index ["student_id"], name: "index_targets_on_student_id"
   end
 
   create_table "test_families", charset: "utf8mb3", force: :cascade do |t|

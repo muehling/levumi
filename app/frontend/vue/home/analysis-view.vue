@@ -120,6 +120,29 @@
                   ></b-form-input>
                 </b-col>
               </b-form-row>
+              <b-form-row v-if="deviationIsEnabled" class="text-small mt-1 mb-2">
+                <b-col class="d-flex">
+                  <label class="mr-3">Erlaubte Abweichung:</label>
+                  <div class="d-inline">
+                    <b-input-group size="sm" append="%">
+                      <b-form-input
+                          id="deviation_target_input"
+                          v-model="deviationVal"
+                          placeholder="Angabe in Prozent"
+                          trim
+                          type="number"
+                          inputmode="numeric"
+                          min="0"
+                          max="100"
+                          step="1"
+                          lang="de"
+                          size="sm"
+                          @update="redrawTarget"
+                      ></b-form-input>
+                    </b-input-group>
+                  </div>
+                </b-col>
+              </b-form-row>
               <b-form-row class="mt-1">
                 <b-col>
                   <b-button
@@ -132,16 +155,16 @@
                   </b-button>
                   <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
-                    :hidden="!(targetVal || dateUntilVal) && targetValStored == null && dateUntilStored == null"
+                    :hidden="!(targetVal || dateUntilVal || deviationVal) && storedIsNull"
                     class="ml-2"
                     variant="outline-danger"
                     size="sm"
-                    @click="targetValStored == null && dateUntilStored == null ? restoreTarget() : saveTarget(true)"
+                    @click="storedIsNull ? restoreTarget() : saveTarget(true)"
                   >
                     <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} löschen
                   </b-button>
                   <b-button
-                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored) || (targetValStored == null && dateUntilStored == null)"
+                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored && deviationVal === deviationStored) || storedIsNull"
                       class="ml-2"
                       variant="outline-warning"
                       size="sm"
@@ -346,6 +369,7 @@ export default {
         annotation_start: null,
         annotation_text: '',
         dateUntilVal: null,
+        deviationVal: 0,
         targetControlVisible: false,
         targetVal: null,
         targetAdded: false,
@@ -450,20 +474,29 @@ export default {
         return this.students.filter(student => this.has_results(student))
       },
       targetIsSlopeVariant() {
-        return this.currentView.targetOptions?.type === 'slope'
+        return Boolean(this.currentView.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
         return !this.currentView.series_keys && Boolean(this.currentView.targetOptions?.enabled)
       },
       dateUntilIsEnabled() {
         // if a slope target is to be shown then we need dateUntil anyway
-        return this.currentView.targetOptions?.selectEndDate || (this.targetIsEnabled && this.targetIsSlopeVariant)
+        return Boolean(this.currentView.targetOptions?.selectEndDate) || (this.targetIsEnabled && this.targetIsSlopeVariant)
+      },
+      deviationIsEnabled() {
+        return Boolean(this.currentView.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
         return Boolean(this.currentView.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
         return Boolean(this.currentView.trendOptions?.extrapolate)
+      },
+      deviationStored() {
+        return this.targetStored?.deviation || null
+      },
+      storedIsNull() {
+        return this.dateUntilStored == null && this.targetValStored == null && this.dateUntilStored == null
       },
       dateUntilStored() {
         return this.targetStored?.date_until || null
@@ -642,14 +675,36 @@ export default {
       },
       updateView(destroyOld = false) {
         const view = this.currentView
-        if (view.type === 'table') {
-          return
+        if (view.type === 'table') { return }
+
+        // if any series wants to be of type rangeArea then the whole chart needs to be
+        // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
+        let trueChartType = view.options.chart.type
+        if (trueChartType !== 'bar' || 'line' || 'rangeArea') {
+          trueChartType = 'line'
+        }
+        let opt
+        // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
+        const needRangeAreaChart = this.targetIsSlopeVariant && this.targetIsEnabled && (trueChartType === 'line' || 'rangeArea')
+        if (needRangeAreaChart) {
+          opt = this.default_options.rangeArea
+        } else {
+          // we allow only bar and rangeArea as custom chart types, all others default to line
+          switch (trueChartType) {
+            case 'bar':
+              opt = this.default_options.bar
+              break
+            case 'rangeArea':
+              opt = this.default_options.rangeArea
+              break
+            default:
+              opt = this.default_options.line
+          }
         }
 
-        let opt =
-          view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
-
         opt = deepmerge(opt, view.options)
+        // when a slope target is desired we need to change the type to rangeArea
+        if (needRangeAreaChart) { opt.chart.type = 'rangeArea' }
 
         //Default für y-Achse: 10% Luft nach oben
         if (opt.yaxis === undefined) {
@@ -661,18 +716,18 @@ export default {
           }
         }
 
-        let graphData
+        let graphData = []
         let trendlineData = undefined
 
         // create graph data
         if (this.studentSelected == -1) {
           graphData = this.studentsWithResults.map(student => {
-            return { name: student.name, data: this.createSeries(student.id) }
+            return { name: student.name, type: trueChartType, data: this.createSeries(student.id) }
           })
         } else {
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
-            graphData = [{ name: student.name, data: this.createSeries(student.id) }]
+            graphData = [{ name: student.name, type: trueChartType, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
             if (this.trendIsEnabled) {  // only create trend line data when the view is configured to show such
               // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
@@ -683,7 +738,7 @@ export default {
             }
           } else {
             graphData = view.series_keys.map((series_key, index) => {
-              return { name: view.series[index], data: this.createSeries(student.id, series_key) }
+              return { name: view.series[index], type: trueChartType, data: this.createSeries(student.id, series_key) }
             })
           }
         }
@@ -699,19 +754,6 @@ export default {
             ...data,
           }
         })
-
-        // if an end date has been chosen make sure the x-axis reaches/includes this date
-        if (this.dateUntilIsEnabled && this.dateUntilVal) {
-          // only use the date if it lies after the last test result
-          const maxDate = graphData[0]?.data.reduce((acc, d) => {
-            return d.x > acc ? d.x : acc
-          }, this.dateUntilVal)
-          // to trick ApexCharts into drawing until there add an empty data point to the first series
-          // TODO: it would be nice if this could be achieved without polluting the data
-          if (maxDate === this.dateUntilVal) {
-            graphData[0]?.data.push({x: this.dateUntilVal, y: null})
-          }
-        }
 
         //Kommentare einfügen
         /* DISABLED FOR NOW AS IT LEADS TO AN ERROR AND IS UNUSED ANYWAY
@@ -749,8 +791,8 @@ export default {
         // for views without series keys we might draw a trend line and a target depending on the view config
         if (!view.series_keys) {
           // for views only showing one student also create a trend line over the values
-          // (can also be something else like trend bars, depending on the chart type)
-          this.addTrend(graphData, opt, trendlineData)
+          // (can also be something else like trend bars, depending on the true chart type)
+          this.addTrend(graphData, opt, trendlineData, trueChartType)
           if (this.targetIsEnabled) {
             // at this point cache the graphData and options so that targets can be re-added more easily later
             // in case they change dynamically
@@ -759,6 +801,7 @@ export default {
             this.appendSlopeTarget(graphData, opt)
           }
         }
+        this.expandXAxis(graphData)
 
         const options = { ...opt, series: graphData }
 
@@ -800,22 +843,27 @@ export default {
             return acc + this.XYFromResult(res, null)?.y || 0
           }, 0) / startWeekResults.length
         } else {
-          // if a student IS selected take his result as the starting point
+          // if a student IS selected take their result as the starting point
           startY = this.XYFromResult(startWeekResults.find((res) => res.student_id === this.studentSelected), null)?.y
         }
-        const startPoint = { x: startWeek, y: startY }
+        const deviate = this.deviationVal > 0
+        const startPoint = { x: startWeek, y: deviate ? [startY, startY] : startY }
         // the end point is then created by combining the date until which the target is to be reached with the chosen target value
-        const endPoint = { x: this.dateUntilVal, y: this.targetVal }
+        // when a deviation is desired also create a y value lowered by the accepted deviation
+        const endPoint = {
+          x: this.dateUntilVal,
+          y: deviate ? [this.targetVal * (1 - this.deviationVal / 100) , this.targetVal] : this.targetVal
+        }
         if (startPoint.x && startPoint.y && endPoint.x && endPoint.y) {
           // if both start and end are well-defined add their line as a series
           const seriesIndex = graphData.length
-          graphData.push({ name: 'Ziel', data: [startPoint, endPoint] })
+          graphData.push({ name: 'Ziel', type: deviate ? 'rangeArea' : 'line' , data: [startPoint, endPoint] })
           // enableTooltip could have already been created by the trend line, but if there's none create it now
           opt = this.prepareOptionsAsArrays(opt, seriesIndex, true)
           // modify the options at the given index to set custom values for this series
-          opt.colors[seriesIndex] = '#000000'
+          opt.colors[seriesIndex] = '#666666'
           opt.stroke.width[seriesIndex] = 2
-          opt.stroke.dashArray[seriesIndex] = 12
+          opt.stroke.dashArray[seriesIndex] = 16
           opt.markers.size[seriesIndex] = 1
         }
       },
@@ -828,21 +876,22 @@ export default {
           this.targetAdded = false
         }
         if (this.targetValid && !this.targetIsSlopeVariant) {
-          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.targetVal))
+          const y2 = (this.deviationIsEnabled && this.deviationVal > 0) ? this.targetVal - this.targetVal * (this.deviationVal / 100) : null
+          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.targetVal, y2))
           this.targetAdded = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
       redrawTarget() {
         if (!this.targetIsEnabled) { return }
-        if (this.targetIsSlopeVariant && this.targetAndTimeValid) {
-          let graphData = structuredClone(this.graphDataCache)
-          let opt = structuredClone(this.optCache)
-          this.appendSlopeTarget(graphData, opt)
+        let graphData = structuredClone(this.graphDataCache)
+        let opt = structuredClone(this.optCache)
+        this.appendSlopeTarget(graphData, opt)
+        this.expandXAxis(graphData)
 
-          const options = { ...opt, series: graphData }
-          this.apexchart.updateOptions(options)
-        } else {
+        const options = { ...opt, series: graphData }
+        this.apexchart.updateOptions(options, false, false, false)
+        if (!this.targetIsSlopeVariant) {
           this.updateAnnotationTarget()
         }
       },
@@ -872,85 +921,35 @@ export default {
         }
         return false
       },
-      setTarget(targetVal, dateUntilVal, redraw) {
+      setTarget(targetVal, dateUntilVal, deviationVal, redraw) {
         this.targetVal = targetVal
         this.dateUntilVal = dateUntilVal
+        this.deviationVal = deviationVal
         if (redraw) { this.redrawTarget() }
       },
       restoreTarget(redraw = true) {
-        this.setTarget(this.targetValStored, this.dateUntilStored, redraw)
+        this.setTarget(this.targetValStored, this.dateUntilStored, this.deviationStored, redraw)
       },
-      async saveTarget(delete_target) {
-        // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
-        const res = await ajax(
-          this.studentSelected === -1 ?
-            apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
-              assessment: {
-                // we need to pass all unchanged targets (filter) plus the changed one (after ,)
-                target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
-                   delete_target ?
-                    { view: this.currentView.key, value: null, date_until: null }
-                    :
-                    { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal }
-                  ]
-              },
-            })
-            :
-            this.targetStored !== null ?
-              delete_target ?
-                apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.targetId)
-                :
-                apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.targetId, {
-                  target: { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
-                })
-              :
-              apiRoutes.targets.createStudent(this.group.id, this.test.id, {
-                target: { view: this.currentView.key, value: this.targetVal, date_until: this.dateUntilVal, student_id: this.studentSelected },
-              })
-        )
-        if (res.status === 200) {
-          if (this.studentSelected === -1) {
-            this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
-            if (delete_target) {
-              this.setTarget(null, null, true)
-            }
-          } else {
-            this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
-          }
+      expandXAxis(graphData) {
+        // if an end date has been chosen make sure the x-axis reaches/includes this date
+        // SIDE-FACT: technically expanding the x-axis isn't necessary when there's a slope target or an extrapolated trend
+        // SIDE-FACT: as these automatically lead to this effect themselves, but I don't think we should check for that here
+        if (!this.dateUntilIsEnabled || !this.dateUntilVal) { return }
+        // only use the date if it lies after the last test result
+        const maxDate = graphData[0]?.data.reduce((acc, d) => {
+          return d.x > acc ? d.x : acc
+        }, this.dateUntilVal)
+        // to trick ApexCharts into drawing until there add an empty data point to the first series
+        // TODO: it would be nice if this could be achieved without polluting the data
+        if (maxDate === this.dateUntilVal) {
+          graphData[0]?.data.push({x: this.dateUntilVal, y: null})
         }
       },
-      async loadStudentTargets() {
-        const res = await ajax(
-          apiRoutes.targets.getStudents(this.group.id, this.test.id)
-        )
-        if (res.status === 200) {
-          const text = await res.text()
-          const result = JSON.parse(text)
-          this.student_targets = result.targets
-        } else {
-          this.student_targets = []
-        }
-        // lastly set the displayed value to the just loaded one
-        this.restoreTarget()
-      },
-      toggleActiveCollapse(collapse_id) {
-        // TODO: this is a bit clunky; could probably be solved more elegantly
-        switch (collapse_id) {
-          case 'annotation_collapse':
-            this.targetControlVisible = false
-            this.annotation_visible = !this.annotation_visible
-            break
-          case 'target_collapse':
-            this.annotation_visible = false
-            this.targetControlVisible = !this.targetControlVisible
-            break
-        }
-      },
-      addTrend(graphData, opt, trendlineData) {
+      addTrend(graphData, opt, trendlineData, seriesType) {
         if (trendlineData?.length > 1) {  // as long as there is more than one data point
           opt = this.prepareOptionsAsArrays(opt, graphData.length, true)
           const i = graphData.length
-          graphData.push({ name: 'Trend', data: trendlineData }) // add the trendline as an additional series
+          graphData.push({ name: 'Trend', type: seriesType, data: trendlineData }) // add the trend line as an additional series
           // next change display options for this appended series
           opt.colors[i] = '#545454'
           opt.stroke.width[i] = 2
@@ -1008,6 +1007,89 @@ export default {
 
         return opt
       },
+      async saveTarget(delete_target) {
+        // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
+        const res = await ajax(
+            this.studentSelected === -1 ?
+                apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
+                  assessment: {
+                    // we need to pass all unchanged targets (filter) plus the changed one (after ,)
+                    target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
+                      delete_target ?
+                          { view: this.currentView.key,
+                            value: null, date_until: null,
+                            deviation: null }
+                          :
+                          { view: this.currentView.key,
+                            value: this.targetVal,
+                            date_until: this.dateUntilVal,
+                            deviation: this.deviationVal }
+                    ]
+                  },
+                })
+                :
+                this.targetStored !== null ?
+                    delete_target ?
+                        apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.targetId)
+                        :
+                        apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.targetId, {
+                          target: {
+                            view: this.currentView.key,
+                            value: this.targetVal,
+                            date_until: this.dateUntilVal,
+                            deviation: this.deviationVal,
+                            student_id: this.studentSelected
+                          },
+                        })
+                    :
+                    apiRoutes.targets.createStudent(this.group.id, this.test.id, {
+                      target: {
+                        view: this.currentView.key,
+                        value: this.targetVal,
+                        date_until: this.dateUntilVal,
+                        deviation: this.deviationVal,
+                        student_id: this.studentSelected
+                      },
+                    })
+        )
+        if (res.status === 200) {
+          if (this.studentSelected === -1) {
+            this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
+            if (delete_target) {
+              this.setTarget(null, null, null, true)
+            }
+          } else {
+            this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
+          }
+        }
+      },
+      async loadStudentTargets() {
+        const res = await ajax(
+            apiRoutes.targets.getStudents(this.group.id, this.test.id)
+        )
+        if (res.status === 200) {
+          const text = await res.text()
+          const result = JSON.parse(text)
+          this.student_targets = result.targets
+        } else {
+          this.student_targets = []
+        }
+        // lastly set the displayed value to the just loaded one
+        this.restoreTarget()
+      },
+      toggleActiveCollapse(collapse_id) {
+        // TODO: this is a bit clunky; could probably be solved more elegantly
+        switch (collapse_id) {
+          case 'annotation_collapse':
+            this.targetControlVisible = false
+            this.annotation_visible = !this.annotation_visible
+            break
+          case 'target_collapse':
+            this.annotation_visible = false
+            this.targetControlVisible = !this.targetControlVisible
+            break
+        }
+      }
     },
   }
 </script>

@@ -97,6 +97,65 @@ export const apexChartOptions = weeks => ({
       forceNiceScale: true,
     },
   },
+  rangeArea: {
+    chart: {
+      animations: {
+        animateGradually: {
+          enabled: false,
+        },
+      },
+      id: 'chart',
+      height: '500px',
+      width: '100%',
+      type: 'rangeArea',
+      toolbar: { show: false },
+      zoom: { enabled: false },
+    },
+    colors: apexColors,
+    legend: {
+      position: 'top',
+      offsetY: 5,
+    },
+    stroke: {
+      curve: 'straight',
+      width: 1,
+      dashArray: 0
+    },
+    grid: {
+      padding: {
+        right: 35,
+        left: 35,
+      },
+    },
+    tooltip: {
+      enabled: true,
+      intersect: false,
+      x: { show: false },
+    },
+    markers: {
+      size: 4,
+      hover: { sizeOffset: 2 },
+    },
+    dataLabels: {
+      enabled: false
+    },
+    xaxis: {
+      tooltip: { enabled: false },
+      type: 'datetime',
+      title: {
+        text: 'Testwoche',
+        offsetY: 90,
+      },
+      labels: {
+        minHeight: 20,
+        format: 'dd.MM.yyyy',
+      },
+    },
+    yaxis: {
+      min: 0,
+      forceNiceScale: true,
+    },
+  },
 })
 
 export const apexColors = [
@@ -175,14 +234,14 @@ export const annotationsPointOptions = (view, annotation, maxY) => ({
   },
 })
 
-export const annotationsTargetOptions = (targetY) => ({
+export const annotationsTargetOptions = (targetY, y2 = null) => ({
   id: 'target-annotation',
   y: targetY,
-  y2: null, // TODO: add lower y2 value to show a "target area",
-  strokeDashArray: 20,
-  borderColor: '#424242',
-  fillColor: '#424242',
-  opacity: 0.3,
+  y2: y2,
+  strokeDashArray: 16,
+  borderColor: y2 == null ? '#888888' : '#000000',
+  fillColor: '#10b600',
+  opacity: 0.25,
   label: {
     borderColor: '#424242',
     borderWidth: 1,
