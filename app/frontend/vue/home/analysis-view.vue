@@ -9,7 +9,7 @@
           :pressed="studentSelected === -1"
           :disabled="!has_group_views"
           @click="
-            view_selected = 0
+            setSelectedView(0)
             set_student(-1)
           "
           >Ganze Klasse</b-button
