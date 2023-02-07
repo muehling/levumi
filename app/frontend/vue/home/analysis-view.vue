@@ -680,7 +680,7 @@ export default {
         // if any series wants to be of type rangeArea then the whole chart needs to be
         // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
         let trueChartType = view.options.chart.type
-        if (trueChartType !== 'bar' || 'line' || 'rangeArea') {
+        if (trueChartType !== 'bar' && 'line' && 'rangeArea') {
           trueChartType = 'line'
         }
         let opt
