@@ -77,7 +77,7 @@
               size="sm"
               variant="outline-secondary"
           >
-            Zielwert
+            Ziel
             <i class="when-closed fas fa-caret-down"></i>
             <i class="when-opened fas fa-caret-up"></i>
           </b-button>
@@ -85,6 +85,7 @@
             <b-form
               v-if="!readOnly"
               class="mt-2"
+              onsubmit="return false"
             >
               <b-form-row class="text-small">
                 <b-col class="d-flex">
@@ -104,7 +105,7 @@
                   ></b-form-input>
                 </b-col>
               </b-form-row>
-              <b-form-row class="text-small mt-1">
+              <b-form-row v-if="dateUntilIsEnabled" class="text-small mt-1">
                 <b-col class="d-flex">
                   <label class="mr-3">Verfügbarer Zeitraum:</label>
                   <b-form-input
@@ -127,7 +128,7 @@
                     :disabled="!targetOrTimeValid"
                     @click="saveTarget(false)"
                   >
-                    <i class="fas fa-check"></i> Werte speichern
+                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} speichern
                   </b-button>
                   <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
                   <b-button
@@ -137,7 +138,7 @@
                     size="sm"
                     @click="targetValStored == null && dateUntilStored == null ? restoreTarget() : saveTarget(true)"
                   >
-                    <i class="fas fa-check"></i> Werte löschen
+                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} löschen
                   </b-button>
                   <b-button
                       :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored) || (targetValStored == null && dateUntilStored == null)"
@@ -146,7 +147,7 @@
                       size="sm"
                       @click="restoreTarget"
                   >
-                    <i class="fas fa-check"></i> Werte zurücksetzen
+                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} zurücksetzen
                   </b-button>
                 </b-col>
               </b-form-row>
@@ -449,12 +450,20 @@ export default {
         return this.students.filter(student => this.has_results(student))
       },
       targetIsSlopeVariant() {
-        // TODO: change to:  this.currentView.targetOptions.type === 'slope'
-        return true
+        return this.currentView.targetOptions?.type === 'slope'
       },
       targetIsEnabled() {
-        // TODO: change to:  !view.series_keys && this.currentView.targetConfig
-        return !this.currentView.series_keys
+        return !this.currentView.series_keys && Boolean(this.currentView.targetOptions?.enabled)
+      },
+      dateUntilIsEnabled() {
+        // if a slope target is to be shown then we need dateUntil anyway
+        return this.currentView.targetOptions?.selectEndDate || (this.targetIsEnabled && this.targetIsSlopeVariant)
+      },
+      trendIsEnabled() {
+        return Boolean(this.currentView.trendOptions?.enabled)
+      },
+      extrapolationIsEnabled() {
+        return Boolean(this.currentView.trendOptions?.extrapolate)
       },
       dateUntilStored() {
         return this.targetStored?.date_until || null
@@ -665,9 +674,13 @@ export default {
           if (!view.series_keys) {
             graphData = [{ name: student.name, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
-            // hand over available time to make sure the line reaches up to this date
-            // TODO: only create trend line data when the view is configured to show such
-            trendlineData = createTrendline(graphData[0]?.data, this.dateUntilVal)
+            if (this.trendIsEnabled) {  // only create trend line data when the view is configured to show such
+              // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
+              trendlineData = createTrendline(
+                  graphData[0]?.data,
+                  this.extrapolationIsEnabled ? this.dateUntilVal : null
+              )
+            }
           } else {
             graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
@@ -688,7 +701,7 @@ export default {
         })
 
         // if an end date has been chosen make sure the x-axis reaches/includes this date
-        if (this.dateUntilVal) {
+        if (this.dateUntilIsEnabled && this.dateUntilVal) {
           // only use the date if it lies after the last test result
           const maxDate = graphData[0]?.data.reduce((acc, d) => {
             return d.x > acc ? d.x : acc
@@ -738,11 +751,11 @@ export default {
           // for views only showing one student also create a trend line over the values
           // (can also be something else like trend bars, depending on the chart type)
           this.addTrend(graphData, opt, trendlineData)
-          // at this point cache the graphData and options so that targets can be re-added more easily later
-          // in case they change dynamically
-          this.graphDataCache = structuredClone(graphData)
-          this.optCache = structuredClone(opt)
-          if (this.targetIsEnabled && this.targetAndTimeValid) {
+          if (this.targetIsEnabled) {
+            // at this point cache the graphData and options so that targets can be re-added more easily later
+            // in case they change dynamically
+            this.graphDataCache = structuredClone(graphData)
+            this.optCache = structuredClone(opt)
             this.appendSlopeTarget(graphData, opt)
           }
         }
@@ -761,7 +774,7 @@ export default {
         } else {
           // An annoying thing is that updateOptions only _merges in_ changes instead of writing everything new
           // This means that we need to force apexcharts to undefine all fields that may have been defined (so... all)
-          // For this we could call updateOptions with options designed to set all possible fields, referring to the
+          // For this we could call updateOptions with options designed to set all possible fields, in accordance with the
           // documentation, back to undefined before merging our real changes over that. BUT THAT WOULD BE INSANE.
           // So instead we just destroy the chart on view change and recreate it... and apply special care to
           // set back / undefine all option fields that we actually know we might be touching ourselves whilst staying in one view
@@ -775,7 +788,7 @@ export default {
       },
       // append the slope target line on the chart if the slope variant is chosen by the current view
       appendSlopeTarget(graphData, opt) {
-        if (!this.targetIsSlopeVariant) { return }
+        if (!this.targetIsSlopeVariant || !this.targetAndTimeValid) { return }
         // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
         // first calculate the start point
         const startWeek = this.weeks.reduce((acc, w) => w < acc ? w : acc)
@@ -934,7 +947,7 @@ export default {
         }
       },
       addTrend(graphData, opt, trendlineData) {
-        if (trendlineData?.length > 0) {  // as long as there is more than one data point
+        if (trendlineData?.length > 1) {  // as long as there is more than one data point
           opt = this.prepareOptionsAsArrays(opt, graphData.length, true)
           const i = graphData.length
           graphData.push({ name: 'Trend', data: trendlineData }) // add the trendline as an additional series
