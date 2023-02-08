@@ -1039,7 +1039,7 @@ export default {
         // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
         const res = await ajax(
             this.studentSelected === -1 ?
-                apiRoutes.targets.saveGroup(this.group.id, this.test.id, {
+                apiRoutes.targets.saveGroupTarget(this.group.id, this.test.id, {
                   assessment: {
                     // we need to pass all unchanged targets (filter) plus the changed one (after ,)
                     target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
@@ -1058,9 +1058,9 @@ export default {
                 :
                 this.targetStored !== null ?
                     delete_target ?
-                        apiRoutes.targets.deleteStudent(this.group.id, this.test.id, this.targetId)
+                        apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId)
                         :
-                        apiRoutes.targets.updateStudent(this.group.id, this.test.id, this.targetId, {
+                        apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
                           target: {
                             view: this.currentView.key,
                             value: this.targetVal,
@@ -1070,7 +1070,7 @@ export default {
                           },
                         })
                     :
-                    apiRoutes.targets.createStudent(this.group.id, this.test.id, {
+                    apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
                       target: {
                         view: this.currentView.key,
                         value: this.targetVal,
@@ -1093,7 +1093,7 @@ export default {
       },
       async loadStudentTargets() {
         const res = await ajax(
-            apiRoutes.targets.getStudents(this.group.id, this.test.id)
+            apiRoutes.targets.getStudentTargets(this.group.id, this.test.id)
         )
         if (res.status === 200) {
           const text = await res.text()
