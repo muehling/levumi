@@ -1,22 +1,9 @@
 export const apexChartOptions = weeks => ({
   bar: {
+    ...commonOptions(),
     chart: {
-      animations: {
-        animateGradually: {
-          enabled: false,
-        },
-      },
-      id: 'chart',
-      height: '500px',
-      width: '100%',
+      ...commonChart(),
       type: 'bar',
-      toolbar: { show: false },
-      zoom: { enabled: false },
-    },
-    colors: apexColors,
-    legend: {
-      position: 'top',
-      offsetY: 5,
     },
     stroke: {
       curve: 'straight',
@@ -24,6 +11,7 @@ export const apexChartOptions = weeks => ({
       dashArray: 0
     },
     grid: {
+      ...commonGrid(),
       padding: {
         right: 15,
         left: 15,
@@ -35,37 +23,26 @@ export const apexChartOptions = weeks => ({
       categories: weeks,
       tickPlacement: 'between',
     },
-    yaxis: {
-      min: 0,
-      forceNiceScale: true,
-    },
     tooltip: { shared: true, intersect: false },
   },
   line: {
+    ...commonOptions(),
     chart: {
-      animations: {
-        animateGradually: {
-          enabled: false,
-        },
-      },
-      id: 'chart',
-      height: '500px',
-      width: '100%',
+      ...commonChart(),
       type: 'line',
-      toolbar: { show: false },
-      zoom: { enabled: false },
     },
-    colors: apexColors,
-    legend: {
-      position: 'top',
-      offsetY: 5,
-    },
+    colors: apexColors(),
     stroke: {
       curve: 'straight',
       width: 1,
       dashArray: 0
     },
+    fill: {
+      opacity: 0.9,
+      type: 'solid',
+    },
     grid: {
+      ...commonGrid(),
       padding: {
         right: 35,
         left: 35,
@@ -92,29 +69,18 @@ export const apexChartOptions = weeks => ({
         format: 'dd.MM.yyyy',
       },
     },
-    yaxis: {
-      min: 0,
-      forceNiceScale: true,
-    },
   },
   rangeArea: {
+    ...commonOptions(),
     chart: {
-      animations: {
-        animateGradually: {
-          enabled: false,
-        },
-      },
-      id: 'chart',
-      height: '500px',
-      width: '100%',
+      ...commonChart(),
       type: 'rangeArea',
-      toolbar: { show: false },
-      zoom: { enabled: false },
     },
-    colors: apexColors,
-    legend: {
-      position: 'top',
-      offsetY: 5,
+    colors: apexColors(),
+    fill: {
+      colors: ['#10b600'], // intended to fill the target range, i.e. the allowed deviation area
+      opacity: [0.9],
+      type: 'solid',
     },
     stroke: {
       curve: 'straight',
@@ -122,6 +88,7 @@ export const apexChartOptions = weeks => ({
       dashArray: 0
     },
     grid: {
+      ...commonGrid(),
       padding: {
         right: 35,
         left: 35,
@@ -151,14 +118,38 @@ export const apexChartOptions = weeks => ({
         format: 'dd.MM.yyyy',
       },
     },
-    yaxis: {
-      min: 0,
-      forceNiceScale: true,
-    },
   },
 })
 
-export const apexColors = [
+const commonOptions = () => ({
+  legend: {
+    position: 'top',
+    offsetY: 5,
+  },
+  yaxis: {
+    min: 0,
+    forceNiceScale: true,
+  },
+})
+
+const commonChart = () => ({
+  animations: {
+    animateGradually: {
+      enabled: false,
+    },
+  },
+  id: 'chart',
+  height: '500px',
+  width: '100%',
+  toolbar: { show: false },
+  zoom: { enabled: false },
+})
+
+const commonGrid = () => ({
+  borderColor: '#90A4AE22',
+})
+
+export const apexColors = () => [
   '#449DD1',
   '#F86624',
   '#EA3546',
@@ -241,7 +232,7 @@ export const annotationsTargetOptions = (targetY, y2 = null) => ({
   strokeDashArray: 16,
   borderColor: y2 == null ? '#888888' : '#000000',
   fillColor: '#10b600',
-  opacity: 0.25,
+  opacity: 0.15,
   label: {
     borderColor: '#424242',
     borderWidth: 1,

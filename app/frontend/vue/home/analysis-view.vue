@@ -646,14 +646,19 @@ export default {
         const results = this.results.filter(result => result.student_id === studentId)
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
+          // if a week has no results add a point with an empty y value for this week
+          if (!currentResult) {
+            return { x: week, y: null }
+          }
           let point = this.XYFromResult(currentResult, seriesKey)
           point.y = point.y?.toFixed(2) || null
           return point
         })
       },
       XYFromResult(result, seriesKey) {
+        if (!result) return undefined
         let yVal
-        const view = this.configuration.views[this.view_selected]
+        const view = this.currentView
         if (seriesKey) {
           yVal = result?.views[view.key][seriesKey] || null
         } else {
@@ -716,7 +721,7 @@ export default {
           }
         }
 
-        let graphData = []
+        let graphData
         let trendlineData = undefined
 
         // create graph data
@@ -796,8 +801,10 @@ export default {
           if (this.targetIsEnabled) {
             // at this point cache the graphData and options so that targets can be re-added more easily later
             // in case they change dynamically
+            // NOTE: for graphData structuredClone is OK, as long as there won't be functions in the data, which would be weird
             this.graphDataCache = structuredClone(graphData)
-            this.optCache = structuredClone(opt)
+            // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
+            this.optCache = deepmerge({}, opt)
             this.appendSlopeTarget(graphData, opt)
           }
         }
@@ -834,7 +841,7 @@ export default {
         if (!this.targetIsSlopeVariant || !this.targetAndTimeValid) { return }
         // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
         // first calculate the start point
-        const startWeek = this.weeks.reduce((acc, w) => w < acc ? w : acc)
+        let startWeek = this.weeks.reduce((acc, w) => w < acc ? w : acc)
         const startWeekResults = this.results.filter((res) => res.test_week === startWeek)
         let startY
         if (this.studentSelected === -1) {
@@ -843,8 +850,16 @@ export default {
             return acc + this.XYFromResult(res, null)?.y || 0
           }, 0) / startWeekResults.length
         } else {
-          // if a student IS selected take their result as the starting point
-          startY = this.XYFromResult(startWeekResults.find((res) => res.student_id === this.studentSelected), null)?.y
+          // if a student IS selected take their first result as the starting point
+          const firstResult = this.results.reduce((acc, res) => {
+              return res.student_id === this.studentSelected && Date.parse(res.test_week) < Date.parse(acc.test_week) ? res : acc
+            },
+            // if people still use this Levumi code in the year 90000 this will of course break
+            // but then again, this means they wouldn't have looked at it for 88000 years... (specified max date is somewhere around 270000)
+            { test_week: new Date(Date.UTC(90000,12,24)) }
+          )
+          startWeek = firstResult.test_week
+          startY = this.XYFromResult(firstResult, null)?.y
         }
         const deviate = this.deviationVal > 0
         const startPoint = { x: startWeek, y: deviate ? [startY, startY] : startY }
@@ -854,15 +869,16 @@ export default {
           x: this.dateUntilVal,
           y: deviate ? [this.targetVal * (1 - this.deviationVal / 100) , this.targetVal] : this.targetVal
         }
-        if (startPoint.x && startPoint.y && endPoint.x && endPoint.y) {
+        if (startPoint.x && startY && endPoint.x && (deviate ? undefined !== endPoint.y[0] && endPoint.y[1] : endPoint.y)) {
           // if both start and end are well-defined add their line as a series
           const seriesIndex = graphData.length
           graphData.push({ name: 'Ziel', type: deviate ? 'rangeArea' : 'line' , data: [startPoint, endPoint] })
           // enableTooltip could have already been created by the trend line, but if there's none create it now
-          opt = this.prepareOptionsAsArrays(opt, seriesIndex, true)
+          opt = this.prepareOptionsAsArrays(opt, seriesIndex, true, true)
           // modify the options at the given index to set custom values for this series
-          opt.colors[seriesIndex] = '#666666'
-          opt.stroke.width[seriesIndex] = 2
+          opt.colors[seriesIndex] = deviate ? '#88888888' : '#66666688'
+          opt.fill.opacity[seriesIndex] = deviate ? 0.15 : 0.9
+          opt.stroke.width[seriesIndex] = deviate ? 1 : 2
           opt.stroke.dashArray[seriesIndex] = 16
           opt.markers.size[seriesIndex] = 1
         }
@@ -883,9 +899,10 @@ export default {
       },
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
       redrawTarget() {
-        if (!this.targetIsEnabled) { return }
+        if (!this.targetIsEnabled || this.apexchart == null) { return }
         let graphData = structuredClone(this.graphDataCache)
-        let opt = structuredClone(this.optCache)
+        // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
+        let opt = deepmerge({}, this.optCache)
         this.appendSlopeTarget(graphData, opt)
         this.expandXAxis(graphData)
 
@@ -957,13 +974,14 @@ export default {
           opt.markers.size[i] = 0
         }
       },
-      prepareOptionsAsArrays(opt, size, createEnableTooltip) {
+      prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
         const defaultLineOptions = apexChartOptions(null).line
 
         if (!opt.colors) { opt.colors = [] }
         // fill up the colors by continuing them based on apexColors, cycling just like ApexCharts would do if there were no more colors
+        const aColors = apexColors()
         for (let i = opt.colors.length; opt.colors.length < size; ++i) {
-          opt.colors.push(apexColors[i % apexColors.length])
+          opt.colors.push(aColors[i % aColors.length])
         }
 
         if (!opt.stroke) { opt.stroke = defaultLineOptions.stroke } // check that opt.stroke exists
@@ -979,7 +997,6 @@ export default {
 
         if (opt.stroke.dashArray === null || undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
         if (opt.stroke.dashArray.length === undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
-        // fill up by continuing based on what is already there
         {
           let d = opt.stroke.dashArray
           for (let i = 0; d.length < size; ++i) {
@@ -990,11 +1007,22 @@ export default {
         if (!opt.markers) { opt.markers = defaultLineOptions.markers }  // check that opt.markers exists
         if (opt.markers.size === null || undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
         if (opt.markers.size.length === undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
-        // fill up by continuing based on what is already there
         {
           let m = opt.markers.size
           for (let i = 0; m.length < size; ++i) {
             m.push(m[i])
+          }
+        }
+
+        if (prepareFills) {
+          if (!opt.fill) { opt.fill = defaultLineOptions.fill }  // check that opt.fill exists
+          if (opt.fill.opacity === null || undefined) { opt.fill.opacity = [defaultLineOptions.fill.opacity] } // check that opt.fill.opacity exists
+          if (opt.fill.opacity.length === undefined) { opt.fill.opacity = [opt.fill.opacity] } // if it is no array yet make it one
+          {
+            let o = opt.fill.opacity
+            for (let i = 0; o.length < size; ++i) {
+              o.push(o[i])
+            }
           }
         }
 
