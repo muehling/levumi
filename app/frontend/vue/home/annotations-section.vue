@@ -66,15 +66,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr
-            v-for="(a, i) in currentAnnotations"
-            v-if="
-              a.view == selectedView &&
-              ((selectedStudent && selectedStudent?.id == a.student_id) ||
-                (!selectedStudent && a.group_id != null))
-            "
-            :key="a.id"
-          >
+          <tr v-for="a in currentAnnotations" :key="a.id">
             <td>{{ printDate(a.start) }}</td>
             <td>{{ printDate(a.end) }}</td>
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
@@ -117,8 +109,19 @@
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: null,
-        currentAnnotations: this.annotations,
+        // currentAnnotations: this.annotations,
       }
+    },
+    computed: {
+      currentAnnotations: function () {
+        return this.annotations.filter(annotation => {
+          return (
+            annotation.view === this.selectedView &&
+            ((this.selectedStudent && this.selectedStudent?.id == annotation.student_id) ||
+              (!this.selectedStudent && annotation.group_id != null))
+          )
+        })
+      },
     },
 
     methods: {

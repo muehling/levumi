@@ -370,47 +370,26 @@
           points: [],
         }
 
-        const test = this.annotations.filter(
+        const applicableAnnotations = this.annotations.filter(
           annotation =>
             annotation.view === this.selectedView &&
-            (annotation.student_id === this.selectedStudent?.id ||
-              (this.selectedStudent?.id === -1 && annotation.group_id !== null))
+            (annotation.student_id === this.studentSelected ||
+              (this.studentSelected === -1 && annotation.group_id !== null))
         )
 
-        for (let i = 0; i < this.annotations.length; ++i) {
-          if (
-            this.annotations[i].view == this.selectedView &&
-            ((this.studentSelected != -1 &&
-              this.studentSelected == this.annotations[i].student_id) ||
-              (this.studentSelected == -1 && this.annotations[i].group_id != null))
-          ) {
-            if (
-              this.annotations[i].start !== this.annotations[i].end &&
-              view.options.chart.type === 'line'
-            ) {
-              //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
-
-              opt['annotations']['xaxis'].push(
-                annotationsLineOptions(this.annotations[i], this.weeks)
-              )
-            }
-            //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
-            else {
-              const dataForAnnotation = graphData[0].data.find(
-                d => d.x === printDate(this.annotations[i].start)
-              )
-
-              opt['annotations']['points'].push(
-                annotationsPointOptions(
-                  view,
-                  this.annotations[i],
-                  dataForAnnotation.y,
-                  this.annotations[i].start
-                )
-              )
-            }
+        opt.annotations.points = applicableAnnotations.map(annotation => {
+          if (annotation.start !== annotation.end && view.options.chart.type === 'line') {
+            //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
+            return annotationsLineOptions(annotation, this.weeks)
           }
-        }
+          //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
+          else {
+            const dataForAnnotation = graphData[0].data.find(
+              d => d.x === printDate(annotation.start)
+            )
+            return annotationsPointOptions(view, annotation, dataForAnnotation.y, annotation.start)
+          }
+        })
 
         if (this.apexchart != null) {
           this.apexchart.destroy()
