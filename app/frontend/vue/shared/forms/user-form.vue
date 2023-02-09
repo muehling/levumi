@@ -64,6 +64,9 @@
       ></extra-data-form>
     </b-form>
     <div class="d-flex justify-content-end">
+      <b-button v-if="showDeleteButton" variant="danger" class="m-1" @click="deleteSelf"
+        >Profil löschen</b-button
+      >
       <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
       <b-button
         variant="outline-success"
@@ -73,6 +76,7 @@
         >{{ buttonText }}</b-button
       >
     </div>
+    <confirm-dialog ref="confirmDeleteDialog" />
   </b-container>
 </template>
 
@@ -82,15 +86,17 @@
   import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
-  import PasswordForm from './password-form.vue'
+  import ConfirmDialog from '../confirm-dialog.vue'
   import ExtraDataForm from './extra-data-form.vue'
+  import PasswordForm from './password-form.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog },
     props: {
       isNew: Boolean,
       user: Object,
+      showDeleteButton: Boolean,
     },
 
     setup() {
@@ -216,6 +222,34 @@
         } else {
           const data = await res.json()
           this.errors = data.errors
+        }
+      },
+      async deleteSelf() {
+        const answer = await this.$refs.confirmDeleteDialog.open({
+          title: 'Profil löschen',
+          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht.
+            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
+            Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
+          okText: 'Ja, löschen',
+        })
+
+        if (answer) {
+          const res = await ajax({ ...apiRoutes.users.delete() })
+          if (res.status === 200) {
+            this.$root.$on('bv::modal::hide', () => {
+              location.replace('/')
+              sessionStorage.clear('login')
+            })
+
+            this.$refs.confirmDeleteDialog.open({
+              title: 'Profil erfolgreich gelöscht',
+              message:
+                'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
+              hideCancelButton: true,
+              okText: 'Ok',
+              okIntent: 'outline-success',
+            })
+          }
         }
       },
     },

@@ -1,3 +1,6 @@
+import { printDate } from '../../utils/date'
+import { getAnnotationLabel } from '../../utils/helpers'
+
 export const apexChartOptions = weeks => ({
   bar: {
     chart: {
@@ -107,9 +110,9 @@ export const apexChartOptions = weeks => ({
   },
 })
 
-export const annotationsLineOptions = annotation => ({
-  x: this.weeks.indexOf(annotation.start),
-  x2: this.weeks.indexOf(annotation.end),
+export const annotationsLineOptions = (annotation, weeks) => ({
+  x: printDate(annotation.start),
+  x2: printDate(annotation.end),
   strokeDashArray: 1,
   borderColor: '#c2c2c2',
   fillColor: '#c2c2c2',
@@ -117,16 +120,16 @@ export const annotationsLineOptions = annotation => ({
   label: {
     borderColor: '#c2c2c2',
     borderWidth: 1,
-    text: this.decode_text(annotation.content),
+    text: getAnnotationLabel(annotation.annotation_category_id),
     textAnchor:
-      this.weeks.indexOf(annotation.start) < 2
+      weeks.indexOf(printDate(annotation.start)) < 2
         ? 'right'
-        : this.weeks.indexOf(annotation.start) > this.weeks.length - 2
+        : weeks.indexOf(printDate(annotation.start)) > weeks.length - 2
         ? 'left'
         : 'middle',
     position: 'top',
-    offsetY: 100,
-    offsetX: 10,
+    offsetY: 0,
+    offsetX: 0,
     orientation: 'horizontal',
     style: {
       background: '#fff',
@@ -137,12 +140,9 @@ export const annotationsLineOptions = annotation => ({
   },
 })
 
-export const annotationsPointOptions = (view, annotation, maxY) => ({
-  x:
-    view.options.chart.type === 'line'
-      ? this.weeks.indexOf(annotation.start)
-      : this.printDate(annotation.start),
-  y: 1.025 * maxY,
+export const annotationsPointOptions = (view, annotation, y, testWeek) => ({
+  x: printDate(testWeek),
+  y: y,
   strokeDashArray: 1,
   borderColor: '#c2c2c2',
   fillColor: '#c2c2c2',
@@ -150,12 +150,12 @@ export const annotationsPointOptions = (view, annotation, maxY) => ({
   label: {
     borderColor: '#c2c2c2',
     borderWidth: 1,
-    text: this.decode_text(annotation.content),
+    text: getAnnotationLabel(annotation.annotation_category_id),
     textAnchor: 'middle',
     position: 'top',
     orientation: 'horizontal',
-    offsetY: 15,
-    offsetX: 10,
+    offsetY: 0,
+    offsetX: 0,
     style: {
       background: '#fff',
       color: '#777',

@@ -9,7 +9,7 @@
           :pressed="studentSelected === -1"
           :disabled="!has_group_views"
           @click="
-            view_selected = 0
+            selectedView = 0
             updateView(-1)
           "
           >Ganze Klasse</b-button
@@ -40,7 +40,7 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="view_selected === index"
+          :pressed="selectedView === index"
           @click="setSelectedView(index)"
         >
           {{ view.label }}
@@ -53,136 +53,13 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <div class="ml-2">
-          <b-button
-            id="comment_btn"
-            v-b-toggle="'annotation_collapse'"
-            hidden="true"
-            size="sm"
-            variant="outline-secondary"
-          >
-            Anmerkungen
-            <i class="when-closed fas fa-caret-down"></i>
-            <i class="when-opened fas fa-caret-up"></i>
-          </b-button>
-          <b-collapse id="annotation_collapse" @shown="autoScroll('#annotation_collapse')">
-            <b-form
-              v-if="!readOnly"
-              class="mt-2"
-              :action="'/groups/' + group.id + '/assessments/' + test.id + '/annotations'"
-              accept-charset="UTF-8"
-              method="post"
-              data-remote="true"
-              @submit="encode_text()"
-              @ajax:success="success"
-            >
-              <b-form-row class="text-small">
-                <b-col>
-                  <label>Datumsbereich</label>
-                </b-col>
-                <b-col>
-                  <b-form-select
-                    v-model="annotation_start"
-                    name="annotation[start]"
-                    :options="week_labels(true)"
-                    size="sm"
-                  ></b-form-select>
-                </b-col>
-                <b-col>
-                  <b-form-select
-                    v-model="annotation_end"
-                    name="annotation[end]"
-                    :options="week_labels(false)"
-                    size="sm"
-                  ></b-form-select>
-                </b-col>
-              </b-form-row>
-              <b-form-row class="mt-1">
-                <b-col>
-                  <!-- Hidden Field mit user bzw group id -->
-                  <input
-                    v-if="studentSelected == -1"
-                    type="hidden"
-                    :value="group.id"
-                    name="annotation[group_id]"
-                  />
-                  <input
-                    v-else
-                    type="hidden"
-                    :value="students[studentSelected]?.id"
-                    name="annotation[student_id]"
-                  />
-                  <!-- Hidden Field mit view -->
-                  <input type="hidden" :value="view_selected" name="annotation[view]" />
-                  <b-form-textarea
-                    v-model="annotation_text"
-                    class="text-small"
-                    name="annotation[content]"
-                    placeholder="Hier die Anmerkung eingeben..."
-                    rows="2"
-                    max-rows="3"
-                  >
-                  </b-form-textarea>
-                </b-col>
-              </b-form-row>
-              <b-form-row class="mt-1">
-                <b-col>
-                  <b-button
-                    type="submit"
-                    variant="outline-success"
-                    size="sm"
-                    :disabled="
-                      annotation_text.trim().length === 0 ||
-                      annotation_end == null ||
-                      annotation_start == null
-                    "
-                  >
-                    <i class="fas fa-check"></i> Anmerkung speichern
-                  </b-button>
-                </b-col>
-              </b-form-row>
-            </b-form>
-            <table class="table table-sm table-striped table-borderless mt-1 text-small">
-              <thead>
-                <tr>
-                  <th>Von</th>
-                  <th>Bis</th>
-                  <th>Anmerkung</th>
-                  <th v-if="!readOnly">Aktionen</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(a, i) in annotations"
-                  v-if="
-                    a.view == view_selected &&
-                    ((studentSelected != -1 &&
-                      students.find(s => s.id === studentSelected)?.id == a.student_id) ||
-                      (studentSelected == -1 && a.group_id != null))
-                  "
-                  :key="a.id"
-                >
-                  <td>{{ printDate(a.start) }}</td>
-                  <td>{{ printDate(a.end) }}</td>
-                  <td>{{ decode_text(a.content) }}</td>
-                  <td v-if="!readOnly">
-                    <!-- rails-ujs Link -->
-                    <a
-                      class="btn btn-block btn-sm btn-outline-danger"
-                      :href="
-                        '/groups/' + group.id + '/assessments/' + test.id + '/annotations/' + a.id
-                      "
-                      data-method="delete"
-                      data-remote="true"
-                      data-confirm="Anmerkung löschen! Sind Sie sicher?"
-                      @ajax:success="annotations.splice(i, 1)"
-                    >
-                      <i class="fas fa-trash"></i> Löschen
-                    </a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </b-collapse>
+          <annotations-section
+            :annotations="annotations"
+            :group="group"
+            :test="test"
+            :selected-student="selectedStudent"
+            :selected-view="selectedView"
+          />
         </div>
       </b-col>
       <b-col>
@@ -229,6 +106,7 @@
 </template>
 
 <script>
+  import AnnotationsSection from './annotations-section.vue'
   import ApexCharts from 'apexcharts'
   import autoTable from 'jspdf-autotable'
   import deepmerge from 'deepmerge'
@@ -238,11 +116,13 @@
     annotationsLineOptions,
     annotationsPointOptions,
   } from './apexChartHelpers'
-  import { encryptWithMasterKeyAndGroup, decryptStudentName } from '../../utils/encryption'
+  import { decryptStudentName } from '../../utils/encryption'
+  import { printDate } from '../../utils/date'
 
   export default {
     name: 'AnalysisView',
-    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
+    components: { AnnotationsSection },
+    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -253,13 +133,10 @@
     },
     data: function () {
       return {
-        annotation_end: null,
-        annotation_start: null,
-        annotation_text: '',
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
-        view_selected: 0,
+        selectedView: 0,
         simpleTableData: undefined,
       }
     },
@@ -272,15 +149,15 @@
         )
       },
       columns() {
-        return this.configuration.views[this.view_selected].columns || []
+        return this.configuration.views[this.selectedView].columns || []
       },
       selectedViewType() {
-        return this.configuration.views[this.view_selected].type
+        return this.configuration.views[this.selectedView].type
       },
       graph_visible() {
         return (
-          this.configuration.views[this.view_selected].type === 'graph' ||
-          this.configuration.views[this.view_selected].type === 'graph_table'
+          this.configuration.views[this.selectedView].type === 'graph' ||
+          this.configuration.views[this.selectedView].type === 'graph_table'
         )
       },
       has_group_views() {
@@ -301,12 +178,12 @@
       },
       table_visible() {
         return (
-          this.configuration.views[this.view_selected].type === 'table' ||
-          this.configuration.views[this.view_selected].type === 'graph_table'
+          this.configuration.views[this.selectedView].type === 'table' ||
+          this.configuration.views[this.selectedView].type === 'graph_table'
         )
       },
       table_data() {
-        if (this.configuration.views[this.view_selected].type === 'graph') {
+        if (this.configuration.views[this.selectedView].type === 'graph') {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -321,13 +198,13 @@
               let temp = {}
               for (
                 let i = 0;
-                i < this.configuration.views[this.view_selected].column_keys.length;
+                i < this.configuration.views[this.selectedView].column_keys.length;
                 ++i
               ) {
-                let key = this.configuration.views[this.view_selected].column_keys[i]
-                let name = this.configuration.views[this.view_selected].columns[i]
+                let key = this.configuration.views[this.selectedView].column_keys[i]
+                let name = this.configuration.views[this.selectedView].columns[i]
                 temp[name] =
-                  this.results[r].views[this.configuration.views[this.view_selected].key][key]
+                  this.results[r].views[this.configuration.views[this.selectedView].key][key]
                 if (temp[name] === undefined) {
                   temp[name] = '-'
                 }
@@ -349,6 +226,16 @@
       },
       studentsWithResults() {
         return this.students.filter(student => this.has_results(student))
+      },
+      selectedStudent() {
+        return this.studentSelected !== -1
+          ? this.students.find(student => student.id === this.studentSelected)
+          : null
+      },
+    },
+    watch: {
+      annotations() {
+        this.updateView(this.studentSelected)
       },
     },
     mounted() {
@@ -373,48 +260,6 @@
           return decryptStudentName(match, '{Name}', id)
         })
       },
-      encode_text() {
-        const id = this.group.id
-        for (let i = 0; i < this.student_name_parts.length; ++i) {
-          const re = new RegExp(
-            '[^a-zaöüß_](' +
-              this.student_name_parts[i] +
-              ')[^a-zaöüß_]|' +
-              '^(' +
-              this.student_name_parts[i] +
-              ')[^a-zaöüß_]|' +
-              '[^a-zaöüß_](' +
-              this.student_name_parts[i] +
-              ')$|' +
-              '^(' +
-              this.student_name_parts[i] +
-              ')$',
-            'gi'
-          )
-          const match = re.exec(this.annotation_text)
-          if (match != null) {
-            for (let m = 0; m < match.length; ++m) {
-              this.annotation_text = this.annotation_text.replace(
-                re,
-                function (match, p1, p2, p3, p4) {
-                  if (p1 != undefined) {
-                    return match.replace(p1, encryptWithMasterKeyAndGroup(p1, id))
-                  }
-                  if (p2 != undefined) {
-                    return match.replace(p2, encryptWithMasterKeyAndGroup(p2, id))
-                  }
-                  if (p3 != undefined) {
-                    return match.replace(p3, encryptWithMasterKeyAndGroup(p3, id))
-                  } else {
-                    return match.replace(p4, encryptWithMasterKeyAndGroup(p4, id))
-                  }
-                }
-              )
-            }
-          }
-        }
-        return true
-      },
 
       async createPdf(title, filename) {
         const pdf = new jsPDF({ orientation: 'landscape' })
@@ -438,7 +283,7 @@
       async export_graph() {
         let title
         let filename
-        let view = this.configuration.views[this.view_selected]
+        let view = this.configuration.views[this.selectedView]
         if (this.studentSelected == -1) {
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
@@ -451,7 +296,7 @@
 
       createSeries(studentId, seriesKey) {
         const results = this.results.filter(result => result.student_id === studentId)
-        const view = this.configuration.views[this.view_selected]
+        const view = this.configuration.views[this.selectedView]
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
 
@@ -462,17 +307,17 @@
             yVal = currentResult?.views[view.key]?.toFixed(2) || null
           }
           return {
-            x: this.printDate(week),
+            x: printDate(week),
             y: yVal,
           }
         })
       },
       updateView(studentId) {
         this.studentSelected = studentId
-        if (this.configuration.views[this.view_selected].type === 'table') {
+        if (this.configuration.views[this.selectedView].type === 'table') {
           return
         }
-        const view = this.configuration.views[this.view_selected]
+        const view = this.configuration.views[this.selectedView]
 
         let opt =
           view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
@@ -524,25 +369,45 @@
           xaxis: [],
           points: [],
         }
+
+        const test = this.annotations.filter(
+          annotation =>
+            annotation.view === this.selectedView &&
+            (annotation.student_id === this.selectedStudent?.id ||
+              (this.selectedStudent?.id === -1 && annotation.group_id !== null))
+        )
+
         for (let i = 0; i < this.annotations.length; ++i) {
           if (
-            this.annotations[i].view == this.view_selected &&
+            this.annotations[i].view == this.selectedView &&
             ((this.studentSelected != -1 &&
               this.studentSelected == this.annotations[i].student_id) ||
               (this.studentSelected == -1 && this.annotations[i].group_id != null))
           ) {
             if (
-              this.annotations[i].start != this.annotations[i].end &&
+              this.annotations[i].start !== this.annotations[i].end &&
               view.options.chart.type === 'line'
             ) {
               //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
-              opt['annotations']['xaxis'].push(annotationsLineOptions(this.annotations[i]))
+
+              opt['annotations']['xaxis'].push(
+                annotationsLineOptions(this.annotations[i], this.weeks)
+              )
             }
             //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
             else {
+              const dataForAnnotation = graphData[0].data.find(
+                d => d.x === printDate(this.annotations[i].start)
+              )
+
               opt['annotations']['points'].push(
-                annotationsPointOptions(view, this.annotations[i], 1)
-              ) //FIXME hardcoded parameter 1 is certainly not correct
+                annotationsPointOptions(
+                  view,
+                  this.annotations[i],
+                  dataForAnnotation.y,
+                  this.annotations[i].start
+                )
+              )
             }
           }
         }
@@ -557,24 +422,7 @@
         this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
         this.apexchart.render()
       },
-      success(event) {
-        //Attributwerte aus AJAX Antwort übernehmen und View updaten
-        this.annotations.splice(0, 0, event.detail[0])
-        this.annotation_start = null
-        this.annotation_end = null
-        this.annotation_text = ''
-        this.updateView(-1)
-      },
-      week_labels(start) {
-        let res = [{ value: null, text: start ? 'Von...' : 'Bis...' }]
-        for (let i = this.weeks.length - 1; i >= 0; --i) {
-          res.push({
-            value: this.weeks[i],
-            text: this.printDate(this.weeks[i]),
-          })
-        }
-        return res
-      },
+
       has_results(student) {
         for (let i = 0; i < this.results.length; ++i) {
           if (this.results[i].student_id == student.id) {

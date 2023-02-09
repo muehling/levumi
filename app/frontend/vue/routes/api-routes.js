@@ -15,6 +15,7 @@ export default {
       data: { email, password },
     }),
     statistics: '/users/statistics',
+    delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
   },
   home: {
     finishIntro: '/willkommen',
@@ -52,6 +53,12 @@ export default {
     delete: (groupId, assessmentId) => ({
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
+    }),
+  },
+  annotations: {
+    create: (groupId, testId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/annotations`,
+      method: 'POST',
     }),
   },
 }

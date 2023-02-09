@@ -5,6 +5,7 @@
       <user-form
         :is-new="isNew"
         :user="user"
+        :show-delete-button="true"
         @submitSuccessful="handleSuccess"
         @cancelEdit="cancelEdit"
       />

@@ -7,3 +7,4 @@ json.states states_to_array
 json.schoolTypes schooltypes_to_array
 json.focusTypes focustypes_to_array
 json.accountTypes accounttypes_to_array
+json.annotationCategories annotation_categories
