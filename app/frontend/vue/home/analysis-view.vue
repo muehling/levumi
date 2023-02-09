@@ -685,12 +685,12 @@ export default {
         // if any series wants to be of type rangeArea then the whole chart needs to be
         // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
         let trueChartType = view.options.chart.type
-        if (trueChartType !== 'bar' && 'line' && 'rangeArea') {
+        if (trueChartType !== 'line' && trueChartType !== 'bar' && trueChartType !== 'rangeArea') {
           trueChartType = 'line'
         }
         let opt
         // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
-        const needRangeAreaChart = this.targetIsSlopeVariant && this.targetIsEnabled && (trueChartType === 'line' || 'rangeArea')
+        const needRangeAreaChart = this.targetIsSlopeVariant && this.targetIsEnabled && (trueChartType === 'line' || trueChartType === 'rangeArea')
         if (needRangeAreaChart) {
           opt = this.default_options.rangeArea
         } else {
@@ -869,7 +869,8 @@ export default {
           x: this.dateUntilVal,
           y: deviate ? [this.targetVal * (1 - this.deviationVal / 100) , this.targetVal] : this.targetVal
         }
-        if (startPoint.x && startY && endPoint.x && (deviate ? undefined !== endPoint.y[0] && endPoint.y[1] : endPoint.y)) {
+        if (startPoint.x && endPoint.x && startY != undefined
+            && (deviate ? undefined != endPoint.y[0] && undefined != endPoint.y[1] : undefined != endPoint.y)) {
           // if both start and end are well-defined add their line as a series
           const seriesIndex = graphData.length
           graphData.push({ name: 'Ziel', type: deviate ? 'rangeArea' : 'line' , data: [startPoint, endPoint] })
@@ -985,8 +986,8 @@ export default {
         }
 
         if (!opt.stroke) { opt.stroke = defaultLineOptions.stroke } // check that opt.stroke exists
-        if (opt.stroke.width === null || undefined) { opt.stroke.width = [defaultLineOptions.stroke.width] } // check that opt.stroke.width exists
-        if (opt.stroke.width.length === undefined) { opt.stroke.width = [opt.stroke.width] } // if it is no array yet make it one
+        if (opt.stroke.width == undefined) { opt.stroke.width = [defaultLineOptions.stroke.width] } // check that opt.stroke.width exists
+        if (opt.stroke.width.length == undefined) { opt.stroke.width = [opt.stroke.width] } // if it is no array yet make it one
         // fill up by continuing based on what is already there
         {
           let w = opt.stroke.width
@@ -995,8 +996,8 @@ export default {
           }
         }
 
-        if (opt.stroke.dashArray === null || undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
-        if (opt.stroke.dashArray.length === undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
+        if (opt.stroke.dashArray == undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
+        if (opt.stroke.dashArray.length == undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
         {
           let d = opt.stroke.dashArray
           for (let i = 0; d.length < size; ++i) {
@@ -1005,8 +1006,8 @@ export default {
         }
 
         if (!opt.markers) { opt.markers = defaultLineOptions.markers }  // check that opt.markers exists
-        if (opt.markers.size === null || undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
-        if (opt.markers.size.length === undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
+        if (opt.markers.size == undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
+        if (opt.markers.size.length == undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
         {
           let m = opt.markers.size
           for (let i = 0; m.length < size; ++i) {
@@ -1016,8 +1017,8 @@ export default {
 
         if (prepareFills) {
           if (!opt.fill) { opt.fill = defaultLineOptions.fill }  // check that opt.fill exists
-          if (opt.fill.opacity === null || undefined) { opt.fill.opacity = [defaultLineOptions.fill.opacity] } // check that opt.fill.opacity exists
-          if (opt.fill.opacity.length === undefined) { opt.fill.opacity = [opt.fill.opacity] } // if it is no array yet make it one
+          if (opt.fill.opacity == undefined) { opt.fill.opacity = [defaultLineOptions.fill.opacity] } // check that opt.fill.opacity exists
+          if (opt.fill.opacity.length == undefined) { opt.fill.opacity = [opt.fill.opacity] } // if it is no array yet make it one
           {
             let o = opt.fill.opacity
             for (let i = 0; o.length < size; ++i) {

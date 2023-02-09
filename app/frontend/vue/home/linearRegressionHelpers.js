@@ -78,7 +78,7 @@ export function createTrendline(data, xEnd = null, handleDates = true) {
     modelData = convertYValuesToInteger(modelData)
     // filter out invalid data points
     const cleanedModelData = modelData.filter(function (el) {
-        return (el.x !== undefined || null) && (el.y !== undefined || null)
+        return (el.x != undefined) && (el.y != undefined)
     });
     // calculate the regression new sums
     for (i = 0; i < cleanedModelData.length; i++) {
