@@ -72,13 +72,7 @@
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
             <td v-if="!readOnly">
               <!-- rails-ujs Link -->
-              <a
-                class="btn btn-block btn-sm btn-outline-danger"
-                :href="'/groups/' + group.id + '/assessments/' + test.id + '/annotations/' + a.id"
-                data-method="delete"
-                data-remote="true"
-                data-confirm="Anmerkung löschen! Sind Sie sicher?"
-              >
+              <a class="btn btn-block btn-sm btn-outline-danger" @click="deleteAnnotation(a.id)">
                 <i class="fas fa-trash"></i> Löschen
               </a>
             </td>
@@ -86,6 +80,7 @@
         </tbody>
       </table>
     </b-collapse>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 
@@ -93,9 +88,13 @@
   import { ajax } from '../../utils/ajax'
   import { getAnnotationLabel, getAnnotationOptions } from '../../utils/helpers'
   import apiRoutes from '../routes/api-routes'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
 
   export default {
     name: 'AnnotationsSection',
+    components: {
+      ConfirmDialog,
+    },
     inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks'],
     props: {
       annotations: Array,
@@ -125,6 +124,20 @@
     },
 
     methods: {
+      async deleteAnnotation(id) {
+        const ok = await this.$refs.confirmDialog.open({
+          title: 'Anmerkung löschen',
+          message: `Die Anmerkung wird gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
+          okText: 'Anmerkung löschen',
+        })
+        if (ok) {
+          const res = await ajax(apiRoutes.annotations.delete(id))
+
+          if (res.status === 200) {
+            //TODO emit something to update the annotations
+          }
+        }
+      },
       getAnnotationLabel(id) {
         return getAnnotationLabel(id)
       },

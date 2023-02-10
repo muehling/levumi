@@ -60,5 +60,9 @@ export default {
       url: `/groups/${groupId}/assessments/${testId}/annotations`,
       method: 'POST',
     }),
+    delete: annotationId => ({
+      url: `/groups/1/assessments/1/annotations/${annotationId}`, // hardcoded 1 for group and assessment id are ok, as they are ignored in the controller anyway
+      method: 'DELETE',
+    }),
   },
 }

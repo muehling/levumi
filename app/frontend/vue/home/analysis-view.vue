@@ -138,6 +138,8 @@
         studentSelected: -1,
         selectedView: 0,
         simpleTableData: undefined,
+        chartOptions: {},
+        graphData: {},
       }
     },
     computed: {
@@ -150,6 +152,9 @@
       },
       columns() {
         return this.configuration.views[this.selectedView].columns || []
+      },
+      currentView() {
+        return this.configuration.views[this.selectedView]
       },
       selectedViewType() {
         return this.configuration.views[this.selectedView].type
@@ -319,40 +324,40 @@
         }
         const view = this.configuration.views[this.selectedView]
 
-        let opt =
+        //  view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
+        const defaultOptions =
           view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
 
-        opt = deepmerge(opt, view.options)
+        this.chartOptions = deepmerge(defaultOptions, view.options)
+        //opt = deepmerge(opt, view.options)
 
         //Default für y-Achse: 10% Luft nach oben
-        if (opt.yaxis === undefined) {
-          opt.yaxis = {}
+        if (this.chartOptions.yaxis === undefined) {
+          this.chartOptions.yaxis = {}
         }
-        if (opt.yaxis.max === undefined) {
-          opt.yaxis.max = function (max) {
+        if (this.chartOptions.yaxis.max === undefined) {
+          this.chartOptions.yaxis.max = function (max) {
             return 1.1 * max
           }
         }
 
-        let graphData
-
         // create graph data
         if (this.studentSelected == -1) {
-          graphData = this.studentsWithResults.map(student => {
+          this.graphData = this.studentsWithResults.map(student => {
             return { name: student.name, data: this.createSeries(student.id) }
           })
         } else {
           const student = this.students.find(s => s.id === this.studentSelected)
           if (!view.series_keys) {
-            graphData = [{ name: student.name, data: this.createSeries(student.id) }]
+            this.graphData = [{ name: student.name, data: this.createSeries(student.id) }]
           } else {
-            graphData = view.series_keys.map((series_key, index) => {
+            this.graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
             })
           }
         }
 
-        this.simpleTableData = graphData.map(lineData => {
+        this.simpleTableData = this.graphData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             acc[d.x] = d.y || '-'
             return acc
@@ -363,8 +368,22 @@
           }
         })
 
+        this.updateAnnotations({ rerender: false })
+
+        if (this.apexchart != null) {
+          this.apexchart.destroy()
+        }
+
+        this.chartOptions.chart.id = '#chart_' + this.group.id + '_' + this.test.id
+        const options = { ...this.chartOptions, series: this.graphData }
+
+        this.apexchart = new ApexCharts(document.querySelector(this.chartOptions.chart.id), options)
+        this.apexchart.render()
+      },
+
+      updateAnnotations({ rerender }) {
         //Kommentare einfügen
-        opt['annotations'] = {
+        this.chartOptions.annotations = {
           position: 'front',
           xaxis: [],
           points: [],
@@ -377,29 +396,33 @@
               (this.studentSelected === -1 && annotation.group_id !== null))
         )
 
-        opt.annotations.points = applicableAnnotations.map(annotation => {
-          if (annotation.start !== annotation.end && view.options.chart.type === 'line') {
-            //Fall 1: Bereichsanmerkung (nur für Liniengraphen)
-            return annotationsLineOptions(annotation, this.weeks)
-          }
-          //Fall 2: Wochenanmerkungen, umgesetzt als Punktanmerkung
-          else {
-            const dataForAnnotation = graphData[0].data.find(
-              d => d.x === printDate(annotation.start)
-            )
-            return annotationsPointOptions(view, annotation, dataForAnnotation.y, annotation.start)
-          }
+        const lineAnnotations = applicableAnnotations.filter(
+          annotation =>
+            annotation.start !== annotation.end && this.currentView.options.chart.type === 'line'
+        )
+        this.chartOptions.annotations.xaxis = lineAnnotations.map(annotation => {
+          return annotationsLineOptions(annotation, this.weeks)
         })
 
-        if (this.apexchart != null) {
-          this.apexchart.destroy()
+        const pointAnnotations = applicableAnnotations.filter(
+          annotation =>
+            !(annotation.start !== annotation.end && this.currentView.options.chart.type === 'line')
+        )
+        this.chartOptions.annotations.points = pointAnnotations.map(annotation => {
+          const dataForAnnotation = this.graphData[0].data.find(
+            d => d.x === printDate(annotation.start)
+          )
+          return annotationsPointOptions(
+            this.currentView,
+            annotation,
+            dataForAnnotation.y,
+            annotation.start
+          )
+        })
+
+        if (rerender) {
+          //todo update
         }
-
-        opt.chart.id = '#chart_' + this.group.id + '_' + this.test.id
-        const options = { ...opt, series: graphData }
-
-        this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
-        this.apexchart.render()
       },
 
       has_results(student) {
