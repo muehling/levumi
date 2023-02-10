@@ -599,7 +599,7 @@
                 const resultsOfWeek = this.results.filter(res => res?.test_week === week)
                 // collect all y values belonging to the seriesKey in question this week
                 const yValuesOfWeekAndKey = resultsOfWeek.map(res => res.views[view.key][seriesKey])
-                    .filter(yVal => yVal !== null || undefined)
+                    .filter(yVal => yVal != null)
                 // calculate the average by dividing the sum through the number of results for this key this week
                 acc.push({
                   x: this.printDate(week),
