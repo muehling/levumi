@@ -350,6 +350,7 @@ import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../utils/encr
 import {ajax} from "@/utils/ajax";
 import apiRoutes from "@/vue/routes/api-routes";
 import {createTrendline} from "@/vue/home/linearRegressionHelpers";
+import {cloneDeep} from "lodash";
 
 export default {
     name: 'AnalysisView',
@@ -804,7 +805,7 @@ export default {
             // NOTE: for graphData structuredClone is OK, as long as there won't be functions in the data, which would be weird
             this.graphDataCache = structuredClone(graphData)
             // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
-            this.optCache = deepmerge({}, opt)
+            this.optCache = cloneDeep(opt)
             this.appendSlopeTarget(graphData, opt)
           }
         }
@@ -903,7 +904,7 @@ export default {
         if (!this.targetIsEnabled || this.apexchart == null) { return }
         let graphData = structuredClone(this.graphDataCache)
         // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
-        let opt = deepmerge({}, this.optCache)
+        let opt = cloneDeep(this.optCache)
         this.appendSlopeTarget(graphData, opt)
         this.expandXAxis(graphData)
 
