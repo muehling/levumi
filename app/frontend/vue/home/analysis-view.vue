@@ -1037,61 +1037,84 @@ export default {
 
         return opt
       },
-      async saveTarget(delete_target) {
-        // TODO: this cascade of conditions is slightly ugly, but I've not yet decided on the best way to solve it instead
-        const res = await ajax(
-            this.studentSelected === -1 ?
-                apiRoutes.targets.saveGroupTarget(this.group.id, this.test.id, {
-                  assessment: {
-                    // we need to pass all unchanged targets (filter) plus the changed one (after ,)
-                    target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
-                      delete_target ?
-                          { view: this.currentView.key,
-                            value: null, date_until: null,
-                            deviation: null }
-                          :
-                          { view: this.currentView.key,
-                            value: this.targetVal,
-                            date_until: this.dateUntilVal,
-                            deviation: this.deviationVal }
-                    ]
-                  },
-                })
-                :
-                this.targetStored !== null ?
-                    delete_target ?
-                        apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId)
-                        :
-                        apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
-                          target: {
-                            view: this.currentView.key,
-                            value: this.targetVal,
-                            date_until: this.dateUntilVal,
-                            deviation: this.deviationVal,
-                            student_id: this.studentSelected
-                          },
-                        })
-                    :
-                    apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
-                      target: {
-                        view: this.currentView.key,
-                        value: this.targetVal,
-                        date_until: this.dateUntilVal,
-                        deviation: this.deviationVal,
-                        student_id: this.studentSelected
-                      },
-                    })
-        )
+      async saveTarget(deleteTarget) {
+        let res
+        if (this.studentSelected === -1) {
+          // group targets are saved in the assessment table which we don't delete rows from
+          // therefore only update/overwrite the value even when deleting
+          res = await this.saveGroupTarget(deleteTarget)
+        }
+        else {
+          if (deleteTarget) {
+            res = await this.deleteStudentTarget()
+          } else {
+            res = await this.saveStudentTarget()
+          }
+        }
         if (res.status === 200) {
           if (this.studentSelected === -1) {
             this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
-            if (delete_target) {
+            if (deleteTarget) {
               this.setTarget(null, null, null, true)
             }
           } else {
             this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
           }
         }
+      },
+      async saveGroupTarget(deleteTarget) {
+        return ajax(
+            apiRoutes.targets.saveGroupTarget(this.group.id, this.test.id, {
+              assessment: {
+                // we need to pass all unchanged targets (filter) plus the changed one (after ,)
+                target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
+                  deleteTarget ?
+                    {
+                      view: this.currentView.key,
+                      value: null, date_until: null,
+                      deviation: null
+                    }
+                    :
+                    {
+                      view: this.currentView.key,
+                      value: this.targetVal,
+                      date_until: this.dateUntilVal,
+                      deviation: this.deviationVal
+                    }
+                ]
+              }
+            })
+        )
+      },
+      async saveStudentTarget() {
+        if (this.targetStored === null) {
+          return ajax (
+              apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
+                target: {
+                  view: this.currentView.key,
+                  value: this.targetVal,
+                  date_until: this.dateUntilVal,
+                  deviation: this.deviationVal,
+                  student_id: this.studentSelected
+                },
+              })
+          )
+        } else {
+          return ajax(
+              apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
+                target: {
+                  view: this.currentView.key,
+                  value: this.targetVal,
+                  date_until: this.dateUntilVal,
+                  deviation: this.deviationVal,
+                  student_id: this.studentSelected
+                },
+              })
+          )
+        }
+      },
+      async deleteStudentTarget() {
+        return ajax(apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId))
       },
       async loadStudentTargets() {
         const res = await ajax(
