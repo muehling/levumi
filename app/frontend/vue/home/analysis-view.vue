@@ -345,7 +345,12 @@ import ApexCharts from 'apexcharts'
 import autoTable from 'jspdf-autotable'
 import deepmerge from 'deepmerge'
 import jsPDF from 'jspdf'
-import {annotationsTargetOptions, apexChartOptions, apexColors} from './apexChartHelpers'
+import {
+  addTargetToChartData,
+  addTrendToChartData,
+  annotationsTargetOptions,
+  apexChartOptions,
+} from './apexChartHelpers'
 import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../utils/encryption'
 import {ajax} from "@/utils/ajax";
 import apiRoutes from "@/vue/routes/api-routes";
@@ -798,7 +803,7 @@ export default {
         if (!view.series_keys) {
           // for views only showing one student also create a trend line over the values
           // (can also be something else like trend bars, depending on the true chart type)
-          this.addTrend(graphData, opt, trendlineData, trueChartType)
+          addTrendToChartData(graphData, opt, trendlineData, trueChartType)
           if (this.targetIsEnabled) {
             // at this point cache the graphData and options so that targets can be re-added more easily later
             // in case they change dynamically
@@ -873,16 +878,7 @@ export default {
         if (startPoint.x && endPoint.x && startY != undefined
             && (deviate ? undefined != endPoint.y[0] && undefined != endPoint.y[1] : undefined != endPoint.y)) {
           // if both start and end are well-defined add their line as a series
-          const seriesIndex = graphData.length
-          graphData.push({ name: 'Ziel', type: deviate ? 'rangeArea' : 'line' , data: [startPoint, endPoint] })
-          // enableTooltip could have already been created by the trend line, but if there's none create it now
-          opt = this.prepareOptionsAsArrays(opt, seriesIndex, true, true)
-          // modify the options at the given index to set custom values for this series
-          opt.colors[seriesIndex] = deviate ? '#88888888' : '#66666688'
-          opt.fill.opacity[seriesIndex] = deviate ? 0.15 : 0.9
-          opt.stroke.width[seriesIndex] = deviate ? 1 : 2
-          opt.stroke.dashArray[seriesIndex] = 16
-          opt.markers.size[seriesIndex] = 1
+          addTargetToChartData(graphData, opt, deviate, startPoint, endPoint)
         }
       },
       // updates only the horizontal target lines as this is implemented through dynamic annotations
@@ -963,79 +959,6 @@ export default {
         if (maxDate === this.dateUntilVal) {
           graphData[0]?.data.push({x: this.dateUntilVal, y: null})
         }
-      },
-      addTrend(graphData, opt, trendlineData, seriesType) {
-        if (trendlineData?.length > 1) {  // as long as there is more than one data point
-          opt = this.prepareOptionsAsArrays(opt, graphData.length, true)
-          const i = graphData.length
-          graphData.push({ name: 'Trend', type: seriesType, data: trendlineData }) // add the trend line as an additional series
-          // next change display options for this appended series
-          opt.colors[i] = '#545454'
-          opt.stroke.width[i] = 2
-          opt.stroke.dashArray[i] = 4
-          opt.markers.size[i] = 0
-        }
-      },
-      prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
-        const defaultLineOptions = apexChartOptions(null).line
-
-        if (!opt.colors) { opt.colors = [] }
-        // fill up the colors by continuing them based on apexColors, cycling just like ApexCharts would do if there were no more colors
-        const aColors = apexColors()
-        for (let i = opt.colors.length; opt.colors.length < size; ++i) {
-          opt.colors.push(aColors[i % aColors.length])
-        }
-
-        if (!opt.stroke) { opt.stroke = defaultLineOptions.stroke } // check that opt.stroke exists
-        if (opt.stroke.width == undefined) { opt.stroke.width = [defaultLineOptions.stroke.width] } // check that opt.stroke.width exists
-        if (opt.stroke.width.length == undefined) { opt.stroke.width = [opt.stroke.width] } // if it is no array yet make it one
-        // fill up by continuing based on what is already there
-        {
-          let w = opt.stroke.width
-          for (let i = 0; w.length < size; ++i) {
-            w.push(w[i])
-          }
-        }
-
-        if (opt.stroke.dashArray == undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
-        if (opt.stroke.dashArray.length == undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
-        {
-          let d = opt.stroke.dashArray
-          for (let i = 0; d.length < size; ++i) {
-            d.push(d[i])
-          }
-        }
-
-        if (!opt.markers) { opt.markers = defaultLineOptions.markers }  // check that opt.markers exists
-        if (opt.markers.size == undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
-        if (opt.markers.size.length == undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
-        {
-          let m = opt.markers.size
-          for (let i = 0; m.length < size; ++i) {
-            m.push(m[i])
-          }
-        }
-
-        if (prepareFills) {
-          if (!opt.fill) { opt.fill = defaultLineOptions.fill }  // check that opt.fill exists
-          if (opt.fill.opacity == undefined) { opt.fill.opacity = [defaultLineOptions.fill.opacity] } // check that opt.fill.opacity exists
-          if (opt.fill.opacity.length == undefined) { opt.fill.opacity = [opt.fill.opacity] } // if it is no array yet make it one
-          {
-            let o = opt.fill.opacity
-            for (let i = 0; o.length < size; ++i) {
-              o.push(o[i])
-            }
-          }
-        }
-
-        if (createEnableTooltip) {
-          if (!opt.tooltip) { opt.tooltip = defaultLineOptions.tooltip }
-          if (!opt.tooltip.enabledOnSeries) {
-            opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
-          }
-        }
-
-        return opt
       },
       async saveTarget(deleteTarget) {
         let res
