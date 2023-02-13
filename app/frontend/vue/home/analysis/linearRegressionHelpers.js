@@ -1,7 +1,6 @@
 /**
  Credit goes to https://github.com/JarrydLisher. repo-link: https://github.com/JarrydLisher/vue-apxcharts-trendline/blob/master/src/VueApexchartsTrendline.vue
  */
-import format from "date-fns/format";
 
 function xDateToInt(xVal) {
     return xVal ? Date.parse(xVal) / 1000 : null;   // divide by 1000 to turn to seconds (to somewhat avoid very large numbers)

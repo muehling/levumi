@@ -187,9 +187,9 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_21_151323) do
     t.bigint "assessment_id"
     t.bigint "student_id"
     t.json "view"
-    t.json "value"
+    t.string "value"
     t.date "date_until"
-    t.integer "deviation"
+    t.string "deviation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["assessment_id"], name: "index_targets_on_assessment_id"

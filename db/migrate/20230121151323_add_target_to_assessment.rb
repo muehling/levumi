@@ -8,9 +8,9 @@ class AddTargetToAssessment < ActiveRecord::Migration[7.0]
       t.belongs_to :assessment, index: true
       t.belongs_to :student, index: true
       t.json :view
-      t.json :value
+      t.string :value
       t.date :date_until
-      t.integer :deviation
+      t.string :deviation
       t.timestamps
     end
   end

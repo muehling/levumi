@@ -58,7 +58,7 @@
             :class="annotation_visible ? null : 'collapsed'"
             :aria-expanded="annotation_visible ? 'true' : 'false'"
             aria-controls="annotation_collapse"
-            @click="toggleActiveCollapse('annotation_collapse')"
+            @click="toggleCollapse('annotation_collapse')"
             size="sm"
             variant="outline-secondary"
           >
@@ -73,7 +73,7 @@
               :class="targetControlVisible ? null : 'collapsed'"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
-              @click="toggleActiveCollapse('target_collapse')"
+              @click="toggleCollapse('target_collapse')"
               size="sm"
               variant="outline-secondary"
           >
@@ -81,101 +81,6 @@
             <i class="when-closed fas fa-caret-down"></i>
             <i class="when-opened fas fa-caret-up"></i>
           </b-button>
-          <b-collapse id="target_collapse" v-if="targetIsEnabled" v-model="targetControlVisible" @shown="autoScroll('#target_collapse')">
-            <b-form
-              v-if="!readOnly"
-              class="mt-2"
-              onsubmit="return false"
-            >
-              <b-form-row class="text-small">
-                <b-col class="d-flex">
-                  <label class="mr-3">Zielwert:</label>
-                  <b-form-input
-                    id="target_input"
-                    v-model="targetVal"
-                    placeholder="Hier Zielwert eingeben"
-                    trim
-                    type="number"
-                    inputmode="decimal"
-                    min="0"
-                    step="0.01"
-                    lang="de"
-                    size="sm"
-                    @update="redrawTarget"
-                  ></b-form-input>
-                </b-col>
-              </b-form-row>
-              <b-form-row v-if="dateUntilIsEnabled" class="text-small mt-1">
-                <b-col class="d-flex">
-                  <label class="mr-3">Verfügbarer Zeitraum:</label>
-                  <b-form-input
-                      id="available_target_input"
-                      v-model="dateUntilVal"
-                      placeholder="Bis wann soll das Ziel erreicht worden sein?"
-                      trim
-                      type="date"
-                      lang="de"
-                      size="sm"
-                      @update="redrawTarget"
-                  ></b-form-input>
-                </b-col>
-              </b-form-row>
-              <b-form-row v-if="deviationIsEnabled" class="text-small mt-1 mb-2">
-                <b-col class="d-flex">
-                  <label class="mr-3">Erlaubte Abweichung:</label>
-                  <div class="d-inline">
-                    <b-input-group size="sm" append="%">
-                      <b-form-input
-                          id="deviation_target_input"
-                          v-model="deviationVal"
-                          placeholder="Angabe in Prozent"
-                          trim
-                          type="number"
-                          inputmode="numeric"
-                          min="0"
-                          max="100"
-                          step="1"
-                          lang="de"
-                          size="sm"
-                          @update="redrawTarget"
-                      ></b-form-input>
-                    </b-input-group>
-                  </div>
-                </b-col>
-              </b-form-row>
-              <b-form-row class="mt-1">
-                <b-col>
-                  <b-button
-                    variant="outline-success"
-                    size="sm"
-                    :disabled="!targetOrTimeValid"
-                    @click="saveTarget(false)"
-                  >
-                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} speichern
-                  </b-button>
-                  <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
-                  <b-button
-                    :hidden="!(targetVal || dateUntilVal || deviationVal) && storedIsNull"
-                    class="ml-2"
-                    variant="outline-danger"
-                    size="sm"
-                    @click="storedIsNull ? restoreTarget() : saveTarget(true)"
-                  >
-                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} löschen
-                  </b-button>
-                  <b-button
-                      :hidden="(targetVal === targetValStored && dateUntilVal === dateUntilStored && deviationVal === deviationStored) || storedIsNull"
-                      class="ml-2"
-                      variant="outline-warning"
-                      size="sm"
-                      @click="restoreTarget"
-                  >
-                    <i class="fas fa-check"></i> Wert{{dateUntilIsEnabled ? 'e' : ''}} zurücksetzen
-                  </b-button>
-                </b-col>
-              </b-form-row>
-            </b-form>
-          </b-collapse>
           <b-collapse id="annotation_collapse" v-model="annotation_visible" @shown="autoScroll('#annotation_collapse')">
             <b-form
               v-if="!readOnly"
@@ -295,6 +200,22 @@
               </tbody>
             </table>
           </b-collapse>
+          <TargetControls
+              :target-val="targetVal"
+              :deviation-val="deviationVal"
+              :date-until-val="dateUntilVal"
+              :date-until-is-enabled="dateUntilIsEnabled"
+              :target-is-enabled="targetIsEnabled"
+              :deviation-is-enabled="deviationIsEnabled"
+              :target-val-stored="targetValStored"
+              :date-until-stored="dateUntilStored"
+              :deviation-stored="deviationStored"
+              :student-targets="studentTargets"
+              :student-selected="studentSelected"
+              :target-control-visible="targetControlVisible"
+              :test="test"
+              :group="group"
+          ></TargetControls>
         </div>
       </b-col>
       <b-col>
@@ -351,14 +272,17 @@ import {
   annotationsTargetOptions,
   apexChartOptions,
 } from './apexChartHelpers'
-import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../utils/encryption'
+import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../../utils/encryption'
 import {ajax} from "@/utils/ajax";
 import apiRoutes from "@/vue/routes/api-routes";
-import {createTrendline} from "@/vue/home/linearRegressionHelpers";
+import {createTrendline} from "./linearRegressionHelpers";
 import {cloneDeep} from "lodash";
+import {computed} from "vue";
+import TargetControls from "./target-controls.vue";
 
 export default {
     name: 'AnalysisView',
+  components: {TargetControls},
   inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetsStored', 'fetchAssessments'],
     props: {
       annotations: Array,
@@ -368,6 +292,15 @@ export default {
       students: Array,
       test: Object,
     },
+    provide: function () {
+      return {
+        restoreTarget: this.restoreTarget,  // allowing the target controls to restore and set the target themselves
+        setTarget: this.setTarget,
+        loadStudentTargets: this.loadStudentTargets,
+        targetStoredRaw: computed(() => this.targetStoredRaw),  // computed necessary for reactivity
+        currentView: computed(() => this.currentView),
+      }
+    },
     data: function () {
       return {
         annotation_visible: false,
@@ -375,14 +308,14 @@ export default {
         annotation_start: null,
         annotation_text: '',
         dateUntilVal: null,
-        deviationVal: 0,
+        deviationVal: null,
         targetControlVisible: false,
         targetVal: null,
         targetAdded: false,
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
         studentSelected: -1,
-        student_targets: [],
+        studentTargets: [],
         view_selected: 0,
         simpleTableData: undefined,
         graphDataCache: null,
@@ -501,14 +434,8 @@ export default {
       deviationStored() {
         return this.targetStored?.deviation || null
       },
-      storedIsNull() {
-        return this.dateUntilStored == null && this.targetValStored == null && this.dateUntilStored == null
-      },
       dateUntilStored() {
         return this.targetStored?.date_until || null
-      },
-      targetOrTimeValid() {
-        return this.targetValid || this.dateUntilVal
       },
       targetAndTimeValid() {
         return this.targetValid && this.dateUntilVal
@@ -518,9 +445,6 @@ export default {
             this.targetVal.trim().length !== 0 &&
             !Number.isNaN(this.targetVal) &&
             Number(this.targetVal) >= 0
-      },
-      targetId() {
-        return this.targetStoredRaw?.id
       },
       targetValStored() {
         return this.targetStored?.value || null
@@ -541,7 +465,7 @@ export default {
       targetStoredRaw() {
         return this.studentSelected === -1 ?
             undefined :
-            this.student_targets  // find the target belonging to this student in the current view
+            this.studentTargets  // find the target belonging to this student in the current view
                 .find(target => target.student_id === this.studentSelected && target.view === this.currentView?.key)
       },
     },
@@ -960,85 +884,6 @@ export default {
           graphData[0]?.data.push({x: this.dateUntilVal, y: null})
         }
       },
-      async saveTarget(deleteTarget) {
-        let res
-        if (this.studentSelected === -1) {
-          // group targets are saved in the assessment table which we don't delete rows from
-          // therefore only update/overwrite the value even when deleting
-          res = await this.saveGroupTarget(deleteTarget)
-        }
-        else {
-          if (deleteTarget) {
-            res = await this.deleteStudentTarget()
-          } else {
-            res = await this.saveStudentTarget()
-          }
-        }
-        if (res.status === 200) {
-          if (this.studentSelected === -1) {
-            this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
-            if (deleteTarget) {
-              this.setTarget(null, null, null, true)
-            }
-          } else {
-            this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
-          }
-        }
-      },
-      async saveGroupTarget(deleteTarget) {
-        return ajax(
-            apiRoutes.targets.saveGroupTarget(this.group.id, this.test.id, {
-              assessment: {
-                // we need to pass all unchanged targets (filter) plus the changed one (after ,)
-                target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
-                  deleteTarget ?
-                    {
-                      view: this.currentView.key,
-                      value: null, date_until: null,
-                      deviation: null
-                    }
-                    :
-                    {
-                      view: this.currentView.key,
-                      value: this.targetVal,
-                      date_until: this.dateUntilVal,
-                      deviation: this.deviationVal
-                    }
-                ]
-              }
-            })
-        )
-      },
-      async saveStudentTarget() {
-        if (this.targetStored === null) {
-          return ajax (
-              apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
-                target: {
-                  view: this.currentView.key,
-                  value: this.targetVal,
-                  date_until: this.dateUntilVal,
-                  deviation: this.deviationVal,
-                  student_id: this.studentSelected
-                },
-              })
-          )
-        } else {
-          return ajax(
-              apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
-                target: {
-                  view: this.currentView.key,
-                  value: this.targetVal,
-                  date_until: this.dateUntilVal,
-                  deviation: this.deviationVal,
-                  student_id: this.studentSelected
-                },
-              })
-          )
-        }
-      },
-      async deleteStudentTarget() {
-        return ajax(apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId))
-      },
       async loadStudentTargets() {
         const res = await ajax(
             apiRoutes.targets.getStudentTargets(this.group.id, this.test.id)
@@ -1046,15 +891,14 @@ export default {
         if (res.status === 200) {
           const text = await res.text()
           const result = JSON.parse(text)
-          this.student_targets = result.targets
+          this.studentTargets = result.targets
         } else {
-          this.student_targets = []
+          this.studentTargets = []
         }
         // lastly set the displayed value to the just loaded one
         this.restoreTarget()
       },
-      toggleActiveCollapse(collapse_id) {
-        // TODO: this is a bit clunky; could probably be solved more elegantly
+      toggleCollapse(collapse_id) {
         switch (collapse_id) {
           case 'annotation_collapse':
             this.targetControlVisible = false
@@ -1065,7 +909,7 @@ export default {
             this.targetControlVisible = !this.targetControlVisible
             break
         }
-      }
+      },
     },
   }
 </script>

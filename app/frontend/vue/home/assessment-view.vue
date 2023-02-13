@@ -263,7 +263,7 @@
   import { getStudent } from '../../utils/helpers'
   import { isAdmin } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
-  import AnalysisView from './analysis-view.vue'
+  import AnalysisView from './analysis/analysis-view.vue'
   import compact from 'lodash/compact'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import isObject from 'lodash/isObject'
