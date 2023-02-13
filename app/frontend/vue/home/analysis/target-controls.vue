@@ -13,6 +13,7 @@
               placeholder="Hier Zielwert eingeben"
               :value="targetVal"
               trim
+              :formatter="targetFormatter"
               type="number"
               inputmode="decimal"
               min="0"
@@ -48,6 +49,7 @@
                   :value="deviationVal"
                   placeholder="Angabe in Prozent"
                   trim
+                  :formatter="deviationFormatter"
                   type="number"
                   inputmode="numeric"
                   min="0"
@@ -143,6 +145,33 @@ export default {
     },
   },
   methods: {
+    /**
+     * Returns a string of a number rounded to two digits, if a number can be constructed from the input.
+     * If not, it returns an empty string.
+     * @param value
+     * @returns {string}
+     */
+    targetFormatter(value) {
+      if (value === '')
+        return ''
+      const num = Number(value)
+      if (!Number.isFinite(num))
+        return ''
+      const twoDigitString = num.toFixed(2)
+      return twoDigitString === '' ? '' : Number(twoDigitString).toString()
+    },
+    /**
+     * Returns a string of an integer created by rounding a number constructed from the input.
+     * This rounded number is clamped to the range [0,100].
+     * If the input is empty it returns this empty input instead.
+     * @param value
+     * @returns {string}
+     */
+    deviationFormatter(value) {
+      if (value === '')
+        return ''
+      return Math.max(Math.min(Math.round(value), 100), 0).toString()
+    },
     async saveTarget(deleteTarget) {
       let res
       if (this.studentSelected === -1) {
