@@ -10,7 +10,7 @@
           :disabled="!has_group_views"
           @click="
             setSelectedView(0)
-            set_student(-1)
+            setStudentAndUpdate(-1)
           "
           >Ganze Klasse</b-button
         >
@@ -25,7 +25,7 @@
             v-for="s in studentsWithResults"
             :key="s.id"
             class="text-small"
-            @click="set_student(s.id)"
+            @click="setStudentAndUpdate(s.id)"
           >
             {{ s.name }}
           </b-dropdown-item>
@@ -472,7 +472,7 @@ export default {
     mounted() {
       // also sets the initial values for dateUntil and targetVal when in group view, due to call to restoreTarget
       this.loadStudentTargets()
-      this.set_student(this.has_group_views
+      this.setStudentAndUpdate(this.has_group_views
         ? -1
         : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
         ? this.studentsWithResults[0]?.id || -1
@@ -599,7 +599,7 @@ export default {
           y: yVal,
         }
       },
-      set_student(student_id) {
+      setStudentAndUpdate(student_id) {
         const oldValue = this.studentSelected
         this.studentSelected = student_id
         if (student_id !== oldValue) {
@@ -840,7 +840,7 @@ export default {
         this.annotation_start = null
         this.annotation_end = null
         this.annotation_text = ''
-        this.set_student(-1)  // TODO: warum wird hier eigentlich auf die Klassenansicht navigiert?
+        this.setStudentAndUpdate(-1)  // TODO: warum wird hier eigentlich auf die Klassenansicht navigiert?
       },
       week_labels(start) {
         let res = [{ value: null, text: start ? 'Von...' : 'Bis...' }]
