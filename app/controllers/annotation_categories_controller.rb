@@ -13,11 +13,19 @@ class AnnotationCategoriesController < ApplicationController
     end
   end
 
-  def destroy; end
+  def destroy
+    annotations = Annotation.where(annotation_category_id: params[:id])
+    if annotations.empty?
+      AnnotationCategory.destroy(params[:id])
+      head :ok
+    else
+      head :unprocessable_entity
+    end
+  end
 
   private
 
   def annotation_categories_attributes
-    params.permit(:name)
+    params.permit(:name, :id)
   end
 end

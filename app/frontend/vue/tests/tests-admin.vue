@@ -6,7 +6,7 @@
       <template #tabs-end>
         <b-nav-item role="presentation" @click="createTest"> Neuer Test </b-nav-item>
         <b-nav-item role="presentation" @click="createAnnotationCategory">
-          Neuer Anmerkungstyp
+          Anmerkungstypen
         </b-nav-item>
       </template>
     </b-tabs>

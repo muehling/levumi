@@ -7,10 +7,9 @@
       variant="outline-secondary"
     >
       Anmerkungen
-      <i class="when-closed fas fa-caret-down"></i>
-      <i class="when-opened fas fa-caret-up"></i>
+      <i :class="`when-closed fas ${visible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
     </b-button>
-    <b-collapse id="annotation_collapse" @shown="autoScroll('#annotation_collapse')">
+    <b-collapse id="annotation_collapse" v-model="visible">
       <b-form v-if="!readOnly" class="mt-2" accept-charset="UTF-8" @submit="submitAnnotation()">
         <b-form-row class="text-small">
           <b-col>
@@ -108,7 +107,7 @@
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: null,
-        // currentAnnotations: this.annotations,
+        visible: false,
       }
     },
     computed: {

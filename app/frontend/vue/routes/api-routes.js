@@ -68,5 +68,6 @@ export default {
   annotationCategories: {
     index: '/annotation_categories',
     create: { url: '/annotation_categories', method: 'POST' },
+    delete: id => ({ url: `/annotation_categories/${id}`, method: 'DELETE' }),
   },
 }
