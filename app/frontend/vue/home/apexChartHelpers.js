@@ -112,7 +112,7 @@ export const apexChartOptions = weeks => ({
 
 export const annotationsLineOptions = (annotation, weeks) => ({
   x: printDate(annotation.start),
-  x2: printDate(annotation.end),
+  ...(annotation.end !== annotation.start && { x2: printDate(annotation.end) }),
   strokeDashArray: 1,
   borderColor: '#c2c2c2',
   fillColor: '#c2c2c2',

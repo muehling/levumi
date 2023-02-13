@@ -240,7 +240,7 @@
     },
     watch: {
       annotations() {
-        this.updateView(this.studentSelected)
+        this.updateView(this.studentSelected, true)
       },
     },
     mounted() {
@@ -317,7 +317,7 @@
           }
         })
       },
-      updateView(studentId) {
+      updateView(studentId, onlyUpdate) {
         this.studentSelected = studentId
         if (this.configuration.views[this.selectedView].type === 'table') {
           return
@@ -370,15 +370,30 @@
 
         this.updateAnnotations({ rerender: false })
 
-        if (this.apexchart != null) {
+        if (this.apexchart != null && !onlyUpdate) {
           this.apexchart.destroy()
         }
 
         this.chartOptions.chart.id = '#chart_' + this.group.id + '_' + this.test.id
         const options = { ...this.chartOptions, series: this.graphData }
 
-        this.apexchart = new ApexCharts(document.querySelector(this.chartOptions.chart.id), options)
-        this.apexchart.render()
+        if (onlyUpdate) {
+          this.apexchart.update(options)
+          this.apexchart.addXaxisAnnotation({
+            //TODO use add/remove annotation methods from lib
+            id: 'unique-id',
+            x: '25.01.2023',
+            label: {
+              text: 'Y-axis Annotation',
+            },
+          })
+        } else {
+          this.apexchart = new ApexCharts(
+            document.querySelector(this.chartOptions.chart.id),
+            options
+          )
+          this.apexchart.render()
+        }
       },
 
       updateAnnotations({ rerender }) {
@@ -396,18 +411,20 @@
               (this.studentSelected === -1 && annotation.group_id !== null))
         )
 
-        const lineAnnotations = applicableAnnotations.filter(
+        const areaAnnotations = applicableAnnotations.filter(
           annotation =>
-            annotation.start !== annotation.end && this.currentView.options.chart.type === 'line'
+            (annotation.start !== annotation.end &&
+              this.currentView.options.chart.type === 'line') ||
+            this.studentSelected === -1
         )
-        this.chartOptions.annotations.xaxis = lineAnnotations.map(annotation => {
+        this.chartOptions.annotations.xaxis = areaAnnotations.map(annotation => {
           return annotationsLineOptions(annotation, this.weeks)
         })
 
         const pointAnnotations = applicableAnnotations.filter(
-          annotation =>
-            !(annotation.start !== annotation.end && this.currentView.options.chart.type === 'line')
+          annotation => annotation.start === annotation.end && this.studentSelected !== -1
         )
+
         this.chartOptions.annotations.points = pointAnnotations.map(annotation => {
           const dataForAnnotation = this.graphData[0].data.find(
             d => d.x === printDate(annotation.start)

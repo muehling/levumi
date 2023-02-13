@@ -70,7 +70,6 @@
             <td>{{ printDate(a.end) }}</td>
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
             <td v-if="!readOnly">
-              <!-- rails-ujs Link -->
               <a class="btn btn-block btn-sm btn-outline-danger" @click="deleteAnnotation(a.id)">
                 <i class="fas fa-trash"></i> Löschen
               </a>
@@ -94,7 +93,7 @@
     components: {
       ConfirmDialog,
     },
-    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks'],
+    inject: ['printDate', 'readOnly', 'studentName', 'weeks'],
     props: {
       annotations: Array,
       group: Object,
@@ -131,9 +130,8 @@
         })
         if (ok) {
           const res = await ajax(apiRoutes.annotations.delete(id))
-
           if (res.status === 200) {
-            //TODO emit something to update the annotations
+            this.$root.$emit(`annotation-removed-${this.group.id}`, id)
           }
         }
       },
