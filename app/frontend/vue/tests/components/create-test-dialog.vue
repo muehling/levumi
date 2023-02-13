@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
+    <b-modal id="create-test-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
       <div v-if="isLoading" class="card card-body align-items-center">
         <div v-if="isLoading" class="spinner">
           <div class="bounce1"></div>

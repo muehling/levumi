@@ -65,4 +65,8 @@ export default {
       method: 'DELETE',
     }),
   },
+  annotationCategories: {
+    index: '/annotation_categories',
+    create: { url: '/annotation_categories', method: 'POST' },
+  },
 }

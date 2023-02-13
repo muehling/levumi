@@ -60,4 +60,5 @@ Rails.application.routes.draw do
 
   resources :tests
   resources :materials
+  resources :annotation_categories
 end
