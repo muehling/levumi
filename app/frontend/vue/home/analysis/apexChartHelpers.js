@@ -225,14 +225,14 @@ export const annotationsPointOptions = (view, annotation, maxY) => ({
   },
 })
 
-export const annotationsTargetOptions = (targetY, y2 = null) => ({
+export const targetAnnotationOptions = (targetY) => ({
   id: 'target-annotation',
   y: targetY,
-  y2: y2,
   strokeDashArray: 16,
-  borderColor: y2 == null ? '#888888' : '#000000',
+  borderColor: '#66666688',
+  borderWidth: 2,
   fillColor: '#10b600',
-  opacity: 0.15,
+  opacity: 0.9,
   label: {
     borderColor: '#424242',
     borderWidth: 1,
@@ -250,17 +250,48 @@ export const annotationsTargetOptions = (targetY, y2 = null) => ({
   },
 })
 
-export function addTargetToChartData(graphData, opt, deviate, startPoint, endPoint) {
+export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
+  id: 'target-range-annotation',
+  y: targetY,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: '#10b600',
+  opacity: 0.125,
+  label: {
+    borderColor: '#00000000',
+    borderWidth: 0,
+    text: undefined,
+    style: {
+      background: '#00000000',
+      color: '#00000000',
+    },
+  },
+})
+
+export function addTargetToChartData(graphData, opt, deviate, startPoint, endPoint, startPointRange, endPointRange) {
   const seriesIndex = graphData.length
-  graphData.push({ name: 'Ziel', type: deviate ? 'rangeArea' : 'line' , data: [startPoint, endPoint] })
+  graphData.push({ name: 'Ziel', type: 'line' , data: [startPoint, endPoint] })
+  if (deviate) {
+    graphData.push({ name: 'Erlaubte Abweichung', type: 'rangeArea', data: [startPointRange, endPointRange] })
+  }
   // enableTooltip could have already been created by the trend line, but if there's none create it now
-  opt = prepareOptionsAsArrays(opt, seriesIndex, true, true)
+  opt = prepareOptionsAsArrays(opt, seriesIndex, true, deviate)
   // modify the options at the given index to set custom values for this series
-  opt.colors[seriesIndex] = deviate ? '#88888888' : '#66666688'
-  opt.fill.opacity[seriesIndex] = deviate ? 0.15 : 0.9
-  opt.stroke.width[seriesIndex] = deviate ? 1 : 2
+  opt.colors[seriesIndex] = '#66666688'
+  opt.fill.opacity[seriesIndex] = 0.9
+  opt.stroke.width[seriesIndex] = 2
   opt.stroke.dashArray[seriesIndex] = 16
   opt.markers.size[seriesIndex] = 1
+  // for the rangeArea
+  if (deviate) {
+    const rangeIndex = seriesIndex + 1
+    opt.colors[rangeIndex] = '#10b600'
+    opt.fill.opacity[rangeIndex] = 0.125
+    opt.stroke.width[rangeIndex] = 0
+    opt.stroke.dashArray[rangeIndex] = 0
+    opt.markers.size[rangeIndex] = 0
+  }
 }
 
 export function addTrendToChartData(graphData, opt, trendlineData, seriesType) {

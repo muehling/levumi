@@ -269,8 +269,7 @@ import jsPDF from 'jspdf'
 import {
   addTargetToChartData,
   addTrendToChartData,
-  annotationsTargetOptions,
-  apexChartOptions,
+  apexChartOptions, targetAnnotationOptions, targetRangeAnnotationOptions,
 } from './apexChartHelpers'
 import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../../utils/encryption'
 import {ajax} from "@/utils/ajax";
@@ -655,7 +654,7 @@ export default {
         let trendlineData = undefined
 
         // create graph data
-        if (this.studentSelected == -1) {
+        if (this.studentSelected === -1) {
           graphData = this.studentsWithResults.map(student => {
             return { name: student.name, type: trueChartType, data: this.createSeries(student.id) }
           })
@@ -747,6 +746,7 @@ export default {
         if (destroyOld && this.apexchart != null) {
           this.apexchart.destroy()
           this.apexchart = null
+          this.targetAdded = false  // reset to false as the chart is now destroyed
         }
         if (this.apexchart == null) {
           this.apexchart = new ApexCharts(document.querySelector(opt.chart.id), options)
@@ -763,7 +763,7 @@ export default {
         }
 
         if (this.targetIsEnabled) {
-          this.updateAnnotationTarget() // should only be called after the chart has been rendered
+          this.updateNonSlopeTarget() // should only be called after the chart has been rendered
         }
       },
       // append the slope target line on the chart if the slope variant is chosen by the current view
@@ -792,30 +792,42 @@ export default {
           startY = this.XYFromResult(firstResult, null)?.y
         }
         const deviate = this.deviationVal > 0
-        const startPoint = { x: startWeek, y: deviate ? [startY, startY] : startY }
+
+        const startPoint = { x: startWeek, y: startY }
+        const startPointRange = deviate ? {
+          x: startWeek,
+          y: [startY, startY]
+        } : null
         // the end point is then created by combining the date until which the target is to be reached with the chosen target value
         // when a deviation is desired also create a y value lowered by the accepted deviation
-        const endPoint = {
+        const endPoint = { x: this.dateUntilVal, y: this.targetVal }
+        const endPointRange = deviate ? {
           x: this.dateUntilVal,
-          y: deviate ? [this.targetVal * (1 - this.deviationVal / 100) , this.targetVal] : this.targetVal
-        }
-        if (startPoint.x && endPoint.x && startY != undefined
-            && (deviate ? undefined != endPoint.y[0] && undefined != endPoint.y[1] : undefined != endPoint.y)) {
+          y: [this.targetVal * (1 - this.deviationVal / 100) , this.targetVal]
+        } : null
+
+        let endConditionY
+        if (deviate) { endConditionY = undefined != endPointRange.y[0] && undefined != endPointRange.y[1] }
+        else { endConditionY = undefined != endPoint.y }
+
+        if (startPoint.x && endPoint.x && startY != undefined && endConditionY) {
           // if both start and end are well-defined add their line as a series
-          addTargetToChartData(graphData, opt, deviate, startPoint, endPoint)
+          addTargetToChartData(graphData, opt, deviate, startPoint, endPoint, startPointRange, endPointRange)
         }
       },
       // updates only the horizontal target lines as this is implemented through dynamic annotations
       // should only be called after the chart has been rendered or before the chart has been created
-      updateAnnotationTarget() {
+      updateNonSlopeTarget() {
         if (this.apexchart == null) { return }  // without an active chart there's nothing to update
         if (this.targetAdded) {  // first, if there already is a target line remove it
-          this.apexchart.removeAnnotation(annotationsTargetOptions(0).id) // targetY doesn't matter here
+          this.apexchart.removeAnnotation('target-annotation') // line for target itself
+          this.apexchart.removeAnnotation('target-range-annotation') // range for allowed deviation
           this.targetAdded = false
         }
         if (this.targetValid && !this.targetIsSlopeVariant) {
           const y2 = (this.deviationIsEnabled && this.deviationVal > 0) ? this.targetVal - this.targetVal * (this.deviationVal / 100) : null
-          this.apexchart.addYaxisAnnotation(annotationsTargetOptions(this.targetVal, y2))
+          this.apexchart.addYaxisAnnotation(targetRangeAnnotationOptions(this.targetVal, y2))
+          this.apexchart.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
           this.targetAdded = true  // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
@@ -831,7 +843,7 @@ export default {
         const options = { ...opt, series: graphData }
         this.apexchart.updateOptions(options, false, false, false)
         if (!this.targetIsSlopeVariant) {
-          this.updateAnnotationTarget()
+          this.updateNonSlopeTarget()
         }
       },
       success(event) {
