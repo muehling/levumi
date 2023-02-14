@@ -50,7 +50,9 @@
       </b-button-group>
     </b-row>
     <b-row :hidden="!graph_visible">
-      <div :id="'chart_' + group.id + '_' + test.id" style="min-width: 100%"></div>
+      <b-col>
+        <apexchart ref="levumiChart" type="bar" :options="chartOptions" :series="chartSeries" />
+      </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
       <b-col>
@@ -102,7 +104,6 @@
 
 <script>
   import AnnotationsSection from './annotations-section.vue'
-  import ApexCharts from 'apexcharts'
   import autoTable from 'jspdf-autotable'
   import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
@@ -110,6 +111,7 @@
     apexChartOptions,
     annotationsLineOptions,
     annotationsPointOptions,
+    prepareOptions,
   } from './apexChartHelpers'
   import { decryptStudentName } from '../../utils/encryption'
   import { printDate } from '../../utils/date'
@@ -117,7 +119,7 @@
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection },
-    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
+    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -134,7 +136,7 @@
         selectedView: 0,
         simpleTableData: undefined,
         chartOptions: {},
-        graphData: {},
+        graphData: [],
         isChartInitialized: false,
       }
     },
@@ -233,10 +235,13 @@
           ? this.students.find(student => student.id === this.selectedStudentId)
           : null
       },
+      chartSeries() {
+        return [...this.graphData]
+      },
     },
     watch: {
       annotations() {
-        this.updateAnnotations({ rerender: true })
+        this.updateAnnotations()
       },
     },
     mounted() {
@@ -249,7 +254,7 @@
     },
     methods: {
       setSelectedView(index) {
-        this.view_selected = index
+        this.selectedView = index
         this.updateView(this.selectedStudentId)
       },
       getStudentName(id) {
@@ -320,22 +325,8 @@
         }
         const view = this.configuration.views[this.selectedView]
 
-        const defaultOptions =
-          view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
+        this.chartOptions = prepareOptions(view.options.chart.type, view.options, this.weeks)
 
-        this.chartOptions = deepmerge(defaultOptions, view.options)
-
-        //Default für y-Achse: 10% Luft nach oben
-        if (this.chartOptions.yaxis === undefined) {
-          this.chartOptions.yaxis = {}
-        }
-        if (this.chartOptions.yaxis.max === undefined) {
-          this.chartOptions.yaxis.max = function (max) {
-            return 1.1 * max
-          }
-        }
-
-        // create graph data
         // group data
         if (this.selectedStudentId == -1) {
           this.graphData = this.studentsWithResults.map(student => {
@@ -354,6 +345,7 @@
           }
         }
 
+        // this is the input for <b-table-lite> component, which is shown below the graph
         this.simpleTableData = this.graphData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             acc[d.x] = d.y || '-'
@@ -364,31 +356,11 @@
             ...data,
           }
         })
-
-        this.chartOptions.chart.id = '#chart_' + this.group.id + '_' + this.test.id
-        const options = { ...this.chartOptions, series: this.graphData }
-
-        if (this.isChartInitialized) {
-          this.apexchart.update(options)
-        } else {
-          this.apexchart = new ApexCharts(
-            document.querySelector(this.chartOptions.chart.id),
-            options
-          )
-          this.apexchart.render()
-          this.isChartInitialized = true
-        }
-
-        this.updateAnnotations({ rerender: true })
+        this.updateAnnotations()
       },
 
-      updateAnnotations({ rerender }) {
+      updateAnnotations() {
         //Kommentare einfügen
-        this.chartOptions.annotations = {
-          position: 'front',
-          xaxis: [],
-          points: [],
-        }
 
         const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
 
@@ -397,41 +369,34 @@
           annotation => annotation.view === this.selectedView && annotation.student_id === studentId
         )
 
-        // get area annotations or point annotations for the class (these don't need to be pinned to a single data point)
-        const areaAnnotations = applicableAnnotations.filter(
-          annotation =>
-            annotation.start !== annotation.end && this.currentView.options.chart.type === 'line'
+        const xaxis = applicableAnnotations
+          .filter(
+            annotation =>
+              annotation.start !== annotation.end ||
+              (studentId === null && annotation.start === annotation.end)
+          )
+          .map(annotation => annotationsLineOptions(annotation, this.weeks))
+
+        const points = applicableAnnotations
+          .filter(annotation => annotation.start === annotation.end && studentId !== null)
+          .map(annotation => {
+            const dataForAnnotation = this.graphData[0].data.find(
+              d => d.x === printDate(annotation.start)
+            )
+            return annotationsPointOptions(
+              this.currentView,
+              annotation,
+              dataForAnnotation.y,
+              annotation.start
+            )
+          })
+
+        // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
+        this.annotations.forEach(annotation =>
+          this.$refs.levumiChart.removeAnnotation('a' + annotation.id)
         )
-        this.chartOptions.annotations.xaxis = areaAnnotations.map(annotation => {
-          return annotationsLineOptions(annotation, this.weeks)
-        })
-
-        // get point annotations for individual students
-        const pointAnnotations = applicableAnnotations.filter(
-          annotation => annotation.start === annotation.end && this.selectedStudentId !== -1
-        )
-
-        this.chartOptions.annotations.points = pointAnnotations.map(annotation => {
-          const dataForAnnotation = this.graphData[0].data.find(
-            d => d.x === printDate(annotation.start)
-          )
-          return annotationsPointOptions(
-            this.currentView,
-            annotation,
-            dataForAnnotation.y,
-            annotation.start
-          )
-        })
-
-        // draw annotations into the chart
-        if (rerender) {
-          this.chartOptions.annotations.xaxis.forEach(annotation =>
-            this.apexchart.addXaxisAnnotation(annotation)
-          )
-          this.chartOptions.annotations.points.forEach(annotation =>
-            this.apexchart.addPointAnnotation(annotation)
-          )
-        }
+        xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
+        points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
       },
 
       has_results(student) {

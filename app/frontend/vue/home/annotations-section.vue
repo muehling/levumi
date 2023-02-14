@@ -53,6 +53,7 @@
                 v-b-popover.hover="
                   'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
                 "
+                style="font-size: 1rem"
                 class="ml-2 mt-1"
                 ><i class="fas fa-circle-question"></i
               ></span>
@@ -182,7 +183,7 @@
         if (res.status === 200) {
           const parsedResult = await res.json()
           this.$root.$emit(`annotation-added-${this.group.id}`, parsedResult)
-          this.annotationCategoryId = null
+          this.annotationCategoryId = 1
           this.annotationEnd = null
           this.annotationStart = null
         }

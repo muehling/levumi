@@ -1,5 +1,21 @@
 import { printDate } from '../../utils/date'
 import { getAnnotationLabel } from '../../utils/helpers'
+import deepmerge from 'deepmerge'
+
+export const prepareOptions = (chartType, customOptions, weeks) => {
+  const options = deepmerge(apexChartOptions(weeks)[chartType], customOptions)
+
+  if (options.yaxis === undefined) {
+    options.yaxis = {}
+  }
+  if (options.yaxis.max === undefined) {
+    options.yaxis.max = function (max) {
+      return 1.1 * max
+    }
+  }
+
+  return options
+}
 
 export const apexChartOptions = weeks => ({
   bar: {
@@ -16,6 +32,7 @@ export const apexChartOptions = weeks => ({
       toolbar: { show: false },
       zoom: { enabled: false },
     },
+    dataLabels: { enabled: false },
     legend: {
       position: 'top',
       offsetY: 5,
@@ -52,6 +69,7 @@ export const apexChartOptions = weeks => ({
       toolbar: { show: false },
       zoom: { enabled: false },
     },
+    dataLabels: { enabled: false },
     colors: [
       '#449DD1',
       '#F86624',
@@ -86,6 +104,7 @@ export const apexChartOptions = weeks => ({
     tooltip: {
       enabled: true,
       intersect: false,
+      shared: true,
       x: { show: false },
     },
     markers: {
@@ -111,6 +130,7 @@ export const apexChartOptions = weeks => ({
 })
 
 export const annotationsLineOptions = (annotation, weeks) => ({
+  id: 'a' + annotation.id,
   x: printDate(annotation.start),
   ...(annotation.end !== annotation.start && { x2: printDate(annotation.end) }),
   strokeDashArray: 1,
@@ -141,6 +161,7 @@ export const annotationsLineOptions = (annotation, weeks) => ({
 })
 
 export const annotationsPointOptions = (view, annotation, y, testWeek) => ({
+  id: 'a' + annotation.id,
   x: printDate(testWeek),
   y: y,
   strokeDashArray: 1,

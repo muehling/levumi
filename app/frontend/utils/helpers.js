@@ -18,10 +18,8 @@ export const getAnnotationLabel = id => {
 
 export const getAnnotationOptions = () => {
   const store = useGlobalStore()
-  const options = store.staticData.annotationCategories.map(category => ({
+  return store.staticData.annotationCategories.map(category => ({
     value: category.id,
     text: category.name,
   }))
-  options.unshift({ value: null, text: 'Kategorie auswählen' })
-  return options
 }
