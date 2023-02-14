@@ -6,7 +6,7 @@
           class="mr-2"
           size="sm"
           variant="outline-primary"
-          :pressed="studentSelected === -1"
+          :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
           @click="
             selectedView = 0
@@ -16,8 +16,10 @@
         >
         <b-dropdown
           right
-          :text="studentsWithResults.find(s => s.id === studentSelected)?.name || 'Individualgraph'"
-          :variant="studentSelected !== -1 ? 'primary' : 'outline-primary'"
+          :text="
+            studentsWithResults.find(s => s.id === selectedStudentId)?.name || 'Individualgraph'
+          "
+          :variant="selectedStudentId !== -1 ? 'primary' : 'outline-primary'"
           :disabled="!has_student_views"
           size="sm"
         >
@@ -53,6 +55,10 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <div class="ml-2">
+          <b-button class="mr-4 mb-3" size="sm" variant="outline-primary" @click="export_graph">
+            <i class="fas fa-file-pdf"></i>
+            PDF erzeugen
+          </b-button>
           <annotations-section
             :annotations="annotations"
             :group="group"
@@ -61,17 +67,6 @@
             :selected-view="selectedView"
           />
         </div>
-      </b-col>
-      <b-col>
-        <b-button
-          class="float-right mr-4"
-          size="sm"
-          variant="outline-primary"
-          @click="export_graph"
-        >
-          <i class="fas fa-file-pdf"></i>
-          PDF erzeugen
-        </b-button>
       </b-col>
     </b-row>
     <b-row :hidden="!table_visible">
@@ -135,19 +130,20 @@
       return {
         apexchart: null,
         default_options: apexChartOptions(this.weeks),
-        studentSelected: -1,
+        selectedStudentId: -1,
         selectedView: 0,
         simpleTableData: undefined,
         chartOptions: {},
         graphData: {},
+        isChartInitialized: false,
       }
     },
     computed: {
       viewsWithGroupAndStudent() {
         return this.configuration.views.filter(
           view =>
-            (this.studentSelected === -1 && view.group) ||
-            (this.studentSelected !== -1 && view.student)
+            (this.selectedStudentId === -1 && view.group) ||
+            (this.selectedStudentId !== -1 && view.student)
         )
       },
       columns() {
@@ -197,7 +193,7 @@
           let found = false
           for (let r = 0; r < this.results.length; ++r) {
             if (
-              this.results[r].student_id === this.studentSelected &&
+              this.results[r].student_id === this.selectedStudentId &&
               this.results[r].test_week === weeks[w]
             ) {
               let temp = {}
@@ -233,28 +229,28 @@
         return this.students.filter(student => this.has_results(student))
       },
       selectedStudent() {
-        return this.studentSelected !== -1
-          ? this.students.find(student => student.id === this.studentSelected)
+        return this.selectedStudentId !== -1
+          ? this.students.find(student => student.id === this.selectedStudentId)
           : null
       },
     },
     watch: {
       annotations() {
-        this.updateView(this.studentSelected, true)
+        this.updateAnnotations({ rerender: true })
       },
     },
     mounted() {
-      this.studentSelected = this.has_group_views
+      this.selectedStudentId = this.has_group_views
         ? -1
         : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
         ? this.studentsWithResults[0]?.id || -1
         : -1
-      this.updateView(this.studentSelected)
+      this.updateView(this.selectedStudentId)
     },
     methods: {
       setSelectedView(index) {
         this.view_selected = index
-        this.updateView(this.studentSelected)
+        this.updateView(this.selectedStudentId)
       },
       getStudentName(id) {
         return this.students.find(student => student.id === id)?.name
@@ -289,11 +285,11 @@
         let title
         let filename
         let view = this.configuration.views[this.selectedView]
-        if (this.studentSelected == -1) {
+        if (this.selectedStudentId == -1) {
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
         } else {
-          title = `${this.getStudentById(this.studentSelected).name} - ${view.label}`
+          title = `${this.getStudentById(this.selectedStudentId).name} - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
         }
         await this.createPdf(title, filename)
@@ -317,19 +313,17 @@
           }
         })
       },
-      updateView(studentId, onlyUpdate) {
-        this.studentSelected = studentId
+      updateView(studentId) {
+        this.selectedStudentId = studentId
         if (this.configuration.views[this.selectedView].type === 'table') {
           return
         }
         const view = this.configuration.views[this.selectedView]
 
-        //  view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
         const defaultOptions =
           view.options.chart.type === 'bar' ? this.default_options.bar : this.default_options.line
 
         this.chartOptions = deepmerge(defaultOptions, view.options)
-        //opt = deepmerge(opt, view.options)
 
         //Default für y-Achse: 10% Luft nach oben
         if (this.chartOptions.yaxis === undefined) {
@@ -342,15 +336,18 @@
         }
 
         // create graph data
-        if (this.studentSelected == -1) {
+        // group data
+        if (this.selectedStudentId == -1) {
           this.graphData = this.studentsWithResults.map(student => {
             return { name: student.name, data: this.createSeries(student.id) }
           })
         } else {
-          const student = this.students.find(s => s.id === this.studentSelected)
+          const student = this.students.find(s => s.id === this.selectedStudentId)
+          // individual student data with single series
           if (!view.series_keys) {
             this.graphData = [{ name: student.name, data: this.createSeries(student.id) }]
           } else {
+            // individual student data with multiple series
             this.graphData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], data: this.createSeries(student.id, series_key) }
             })
@@ -368,32 +365,21 @@
           }
         })
 
-        this.updateAnnotations({ rerender: false })
-
-        if (this.apexchart != null && !onlyUpdate) {
-          this.apexchart.destroy()
-        }
-
         this.chartOptions.chart.id = '#chart_' + this.group.id + '_' + this.test.id
         const options = { ...this.chartOptions, series: this.graphData }
 
-        if (onlyUpdate) {
+        if (this.isChartInitialized) {
           this.apexchart.update(options)
-          this.apexchart.addXaxisAnnotation({
-            //TODO use add/remove annotation methods from lib
-            id: 'unique-id',
-            x: '25.01.2023',
-            label: {
-              text: 'Y-axis Annotation',
-            },
-          })
         } else {
           this.apexchart = new ApexCharts(
             document.querySelector(this.chartOptions.chart.id),
             options
           )
           this.apexchart.render()
+          this.isChartInitialized = true
         }
+
+        this.updateAnnotations({ rerender: true })
       },
 
       updateAnnotations({ rerender }) {
@@ -404,25 +390,25 @@
           points: [],
         }
 
+        const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
+
+        // get annotations that need to be drawn in the current chart
         const applicableAnnotations = this.annotations.filter(
-          annotation =>
-            annotation.view === this.selectedView &&
-            (annotation.student_id === this.studentSelected ||
-              (this.studentSelected === -1 && annotation.group_id !== null))
+          annotation => annotation.view === this.selectedView && annotation.student_id === studentId
         )
 
+        // get area annotations or point annotations for the class (these don't need to be pinned to a single data point)
         const areaAnnotations = applicableAnnotations.filter(
           annotation =>
-            (annotation.start !== annotation.end &&
-              this.currentView.options.chart.type === 'line') ||
-            this.studentSelected === -1
+            annotation.start !== annotation.end && this.currentView.options.chart.type === 'line'
         )
         this.chartOptions.annotations.xaxis = areaAnnotations.map(annotation => {
           return annotationsLineOptions(annotation, this.weeks)
         })
 
+        // get point annotations for individual students
         const pointAnnotations = applicableAnnotations.filter(
-          annotation => annotation.start === annotation.end && this.studentSelected !== -1
+          annotation => annotation.start === annotation.end && this.selectedStudentId !== -1
         )
 
         this.chartOptions.annotations.points = pointAnnotations.map(annotation => {
@@ -437,8 +423,14 @@
           )
         })
 
+        // draw annotations into the chart
         if (rerender) {
-          //todo update
+          this.chartOptions.annotations.xaxis.forEach(annotation =>
+            this.apexchart.addXaxisAnnotation(annotation)
+          )
+          this.chartOptions.annotations.points.forEach(annotation =>
+            this.apexchart.addPointAnnotation(annotation)
+          )
         }
       },
 

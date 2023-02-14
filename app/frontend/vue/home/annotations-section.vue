@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="annotations-section">
     <b-button
       id="comment_btn"
       v-b-toggle="'annotation_collapse'"
@@ -10,50 +10,65 @@
       <i :class="`when-closed fas ${visible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
     </b-button>
     <b-collapse id="annotation_collapse" v-model="visible">
-      <b-form v-if="!readOnly" class="mt-2" accept-charset="UTF-8" @submit="submitAnnotation()">
-        <b-form-row class="text-small">
-          <b-col>
-            <label>Datumsbereich</label>
-          </b-col>
-          <b-col>
+      <b-form
+        v-if="!readOnly"
+        class="mt-1 border p-3"
+        accept-charset="UTF-8"
+        @submit="submitAnnotation()"
+      >
+        <div class="text-small row">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label class="mt-1">Datumsbereich</label>
+          </div>
+          <div class="col-6 col-md-2">
             <b-form-select
               v-model="annotationStart"
               name="annotation[start]"
               :options="weekLabels(true)"
               size="sm"
             ></b-form-select>
-          </b-col>
-          <b-col>
+          </div>
+          <div class="col-6 col-md-2">
             <b-form-select
               v-model="annotationEnd"
               name="annotation[end]"
               :options="weekLabels(false)"
               size="sm"
             ></b-form-select>
-          </b-col>
-        </b-form-row>
-        <b-form-row class="mt-1">
-          <b-col>
-            <b-form-select
-              v-model="annotationCategoryId"
-              name="annotation[end]"
-              :options="getAnnotationOptions()"
-              size="sm"
-            ></b-form-select>
-          </b-col>
-        </b-form-row>
-        <b-form-row class="mt-1">
-          <b-col>
-            <b-button
-              variant="outline-success"
-              size="sm"
-              :disabled="annotationEnd == null || annotationStart == null"
-              @click="submitAnnotation"
-            >
-              <i class="fas fa-check"></i> Anmerkung speichern
-            </b-button>
-          </b-col>
-        </b-form-row>
+          </div>
+        </div>
+        <div class="mt-3 text-small row">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label class="mt-1">Anmerkungstyp</label>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-row">
+              <b-form-select
+                v-model="annotationCategoryId"
+                name="annotation[end]"
+                :options="getAnnotationOptions()"
+                size="sm"
+              ></b-form-select>
+              <span
+                v-b-popover.hover="
+                  'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
+                "
+                class="ml-2 mt-1"
+                ><i class="fas fa-circle-question"></i
+              ></span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3">
+          <b-button
+            variant="outline-success"
+            size="sm"
+            :disabled="annotationEnd == null || annotationStart == null"
+            @click="submitAnnotation"
+          >
+            <i class="fas fa-check"></i> Anmerkung speichern
+          </b-button>
+        </div>
       </b-form>
       <table class="table table-sm table-striped table-borderless mt-1 text-small">
         <thead>
@@ -69,10 +84,10 @@
             <td>{{ printDate(a.start) }}</td>
             <td>{{ printDate(a.end) }}</td>
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
-            <td v-if="!readOnly">
-              <a class="btn btn-block btn-sm btn-outline-danger" @click="deleteAnnotation(a.id)">
+            <td v-if="!readOnly" class="annotation-action-button">
+              <b-button variant="outline-danger" class="btn-sm" @click="deleteAnnotation(a.id)">
                 <i class="fas fa-trash"></i> Löschen
-              </a>
+              </b-button>
             </td>
           </tr>
         </tbody>
@@ -105,7 +120,7 @@
       return {
         annotationEnd: null,
         annotationStart: null,
-        annotationCategoryId: null,
+        annotationCategoryId: 1,
         visible: false,
       }
     },
@@ -180,3 +195,10 @@
     },
   }
 </script>
+
+<style>
+  #annotations-section .annotation-action-button {
+    width: 1%;
+    white-space: nowrap;
+  }
+</style>
