@@ -17,7 +17,6 @@
         <tr>
           <th>Test</th>
           <th>Anzahl Testungen</th>
-          <th>Letzter Test am</th>
           <th>Wöchentliche Testung</th>
           <th></th>
         </tr>
