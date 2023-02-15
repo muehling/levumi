@@ -136,12 +136,12 @@
           okText: 'Ok',
           title: 'Neuigkeiten',
         })
-        const maxIntroState = updates.reduce((acc, update) =>
-          Math.max((acc, update.intro_state), 0)
-        )
+        const maxIntroState = updates.reduce((acc, update) => Math.max(acc, update.intro_state), 0)
+
+        const data = { user: { intro_state: maxIntroState } }
         await ajax({
           ...apiRoutes.users.update(this.globalStore.login.id),
-          data: { intro_state: maxIntroState },
+          data,
         })
       },
       async logout() {
