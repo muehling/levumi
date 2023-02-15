@@ -67,6 +67,7 @@
             :test="test"
             :selected-student="selectedStudent"
             :selected-view="selectedView"
+            @annotation-removed="removeAnnotation"
           />
         </div>
       </b-col>
@@ -397,6 +398,9 @@
         )
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
         points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
+      },
+      removeAnnotation(id) {
+        this.$refs.levumiChart.removeAnnotation('a' + id)
       },
 
       has_results(student) {

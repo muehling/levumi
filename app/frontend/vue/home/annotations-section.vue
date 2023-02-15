@@ -147,7 +147,9 @@
         if (ok) {
           const res = await ajax(apiRoutes.annotations.delete(id))
           if (res.status === 200) {
+            // two emits are necessary: the first to update the global annotations in group-view, the second to update the chart
             this.$root.$emit(`annotation-removed-${this.group.id}`, id)
+            this.$emit('annotation-removed', id)
           }
         }
       },
