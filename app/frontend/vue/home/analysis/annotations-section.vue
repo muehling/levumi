@@ -99,10 +99,10 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { getAnnotationLabel, getAnnotationOptions } from '../../utils/helpers'
-  import apiRoutes from '../routes/api-routes'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { ajax } from '../../../utils/ajax'
+  import { getAnnotationLabel, getAnnotationOptions } from '../../../utils/helpers'
+  import apiRoutes from '../../routes/api-routes'
+  import ConfirmDialog from '../../shared/confirm-dialog.vue'
 
   export default {
     name: 'AnnotationsSection',

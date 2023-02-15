@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   resources :groups do
     resources :assessments do
       resources :annotations
+      resources :targets
     end
     resources :group_shares
   end

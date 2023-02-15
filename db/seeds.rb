@@ -298,7 +298,6 @@ if Rails.env.development?
   Annotation.create(
     assessment_id: a1.id,
     group_id: 1,
-    content: 'Anmerkung für die ganze Gruppe',
     view: 0,
     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
     end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).last.test_week
@@ -306,7 +305,6 @@ if Rails.env.development?
   Annotation.create(
     assessment_id: a1.id,
     student_id: 1,
-    content: 'Anmerkung für Adam',
     view: 1,
     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
     end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week

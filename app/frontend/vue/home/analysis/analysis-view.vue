@@ -113,8 +113,8 @@
     annotationsPointOptions,
     prepareOptions,
   } from './apexChartHelpers'
-  import { decryptStudentName } from '../../utils/encryption'
-  import { printDate } from '../../utils/date'
+  import { decryptStudentName } from '../../../utils/encryption'
+  import { printDate } from '../../../utils/date'
 
   export default {
     name: 'AnalysisView',
