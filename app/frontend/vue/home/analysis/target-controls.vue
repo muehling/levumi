@@ -69,7 +69,7 @@
               variant="outline-success"
               size="sm"
               :disabled="!targetOrTimeValid"
-              @click="saveTarget(false)"
+              @click="changeStoredTarget(false)"
           >
             <i class="fas fa-check"></i> Wert{{multipleValues ? 'e' : ''}} speichern
           </b-button>
@@ -79,7 +79,7 @@
               class="ml-2"
               variant="outline-danger"
               size="sm"
-              @click="storedIsNull ? restoreTarget() : saveTarget(true)"
+              @click="storedIsNull ? restoreTarget() : changeStoredTarget(true)"
           >
             <i class="fas fa-check"></i> Wert{{multipleValues ? 'e' : ''}} löschen
           </b-button>
@@ -105,7 +105,7 @@ import {ajax} from "@/utils/ajax";
 
 export default {
   name: "TargetControls",
-  inject: ['autoScroll', 'readOnly', 'restoreTarget', 'currentView', 'setTarget', 'targetStoredRaw', 'groupTargetsStored', 'loadStudentTargets', 'fetchAssessments'],
+  inject: ['autoScroll', 'readOnly', 'restoreTarget', 'currentView', 'setTarget', 'targetStored', 'loadStudentTargets'],
   props: {
     targetIsEnabled: Boolean,
     dateUntilIsEnabled: Boolean,
@@ -140,8 +140,7 @@ export default {
       return this.targetValid || this.dateUntilVal
     },
     targetId() {
-      console.log(this.targetStoredRaw)
-      return this.targetStoredRaw?.id
+      return this.targetStored?.id
     },
   },
   methods: {
@@ -172,57 +171,20 @@ export default {
         return ''
       return Math.max(Math.min(Math.round(value), 100), 0).toString()
     },
-    async saveTarget(deleteTarget) {
+    async changeStoredTarget(deleteTarget) {
       let res
-      if (this.studentSelected === -1) {
-        // group targets are saved in the assessment table which we don't delete rows from
-        // therefore only update/overwrite the value even when deleting
-        res = await this.saveGroupTarget(deleteTarget)
-      }
-      else {
-        if (deleteTarget) {
-          res = await this.deleteStudentTarget()
-        } else {
-          res = await this.saveStudentTarget()
-        }
+      if (deleteTarget) {
+        res = await this.deleteStudentTarget()
+      } else {
+        res = await this.saveStudentTarget()
       }
       if (res.status === 200) {
-        if (this.studentSelected === -1) {
-          this.fetchAssessments()   // only has to be fetched when class targets are changed, as only they are included in the assessmentsStore
-          if (deleteTarget) {
-            this.setTarget(null, null, null, true)
-          }
-        } else {
-          await this.loadStudentTargets()   // this function instead only loads the detail information for the current assessment
-        }
+          await this.loadStudentTargets()   // this function only loads the detail information for the current assessment
       }
     },
-    async saveGroupTarget(deleteTarget) {
-      return ajax(
-          apiRoutes.targets.saveGroupTarget(this.group.id, this.test.id, {
-            assessment: {
-              // we need to pass all unchanged targets (filter) plus the changed one (after ,)
-              target: [...this.groupTargetsStored.filter((t) => t.view !== this.currentView.key),
-                deleteTarget ?
-                    {
-                      view: this.currentView.key,
-                      value: null, date_until: null,
-                      deviation: null
-                    }
-                    :
-                    {
-                      view: this.currentView.key,
-                      value: this.targetVal,
-                      date_until: this.dateUntilVal,
-                      deviation: this.deviationVal
-                    }
-              ]
-            }
-          })
-      )
-    },
     async saveStudentTarget() {
-      if (this.targetStoredRaw === undefined) {
+      const sId = this.studentSelected === -1 ? null : this.studentSelected
+      if (this.targetStored === null) {
         return ajax (
             apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
               target: {
@@ -230,11 +192,11 @@ export default {
                 value: this.targetVal,
                 date_until: this.dateUntilVal,
                 deviation: this.deviationVal,
-                student_id: this.studentSelected
+                student_id: sId
               },
             })
         )
-      } else {
+      } else if (this.targetStored) {
         return ajax(
             apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
               target: {
@@ -242,7 +204,7 @@ export default {
                 value: this.targetVal,
                 date_until: this.dateUntilVal,
                 deviation: this.deviationVal,
-                student_id: this.studentSelected
+                student_id: sId
               },
             })
         )

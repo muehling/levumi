@@ -282,7 +282,7 @@ import TargetControls from "./target-controls.vue";
 export default {
     name: 'AnalysisView',
   components: {TargetControls},
-  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'groupTargetsStored', 'fetchAssessments'],
+  inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
     props: {
       annotations: Array,
       configuration: Object,
@@ -296,7 +296,7 @@ export default {
         restoreTarget: this.restoreTarget,  // allowing the target controls to restore and set the target themselves
         setTarget: this.setTarget,
         loadStudentTargets: this.loadStudentTargets,
-        targetStoredRaw: computed(() => this.targetStoredRaw),  // computed necessary for reactivity
+        targetStored: computed(() => this.targetStored),  // computed necessary for reactivity
         currentView: computed(() => this.currentView),
       }
     },
@@ -449,23 +449,11 @@ export default {
         return this.targetStored?.value || null
       },
       targetStored() {
-        // when targetStoredRaw is undefined and a student is selected then this means that the stored target is defined as null (nothing stored)
-        // this convention allows other actors that expect targetStored to be a number or null to work properly in both the group case and the individual student case
-        let res
-        if (this.studentSelected === -1) {
-          const results = this.groupTargetsStored  // results on all views
-          res = results?.find((r) => r.view === this.currentView?.key) // find the one belonging to the current view
-        }
-        else {
-          res = this.targetStoredRaw
-        }
+        // when no target is defined return null (nothing stored)
+        const sId = this.studentSelected === -1 ? null : this.studentSelected // group targets are stored under a null student
+        const res = this.studentTargets  // find the target belonging to this student in the current view
+            .find(target => target.student_id === sId && target.view === this.currentView?.key)
         return res === undefined ? null : res
-      },
-      targetStoredRaw() {
-        return this.studentSelected === -1 ?
-            undefined :
-            this.studentTargets  // find the target belonging to this student in the current view
-                .find(target => target.student_id === this.studentSelected && target.view === this.currentView?.key)
       },
     },
     mounted() {

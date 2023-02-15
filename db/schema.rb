@@ -68,7 +68,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_21_151323) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.json "excludes"
-    t.json "target"
     t.index ["group_id"], name: "index_assessments_on_group_id"
     t.index ["test_id"], name: "index_assessments_on_test_id"
   end

@@ -31,10 +31,6 @@ class AssessmentsController < ApplicationController
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
       head 200
-    elsif params.require(:assessment).has_key?(:target) &&
-      # target should be the latest array of targets for all views
-          @assessment.update(params.require(:assessment).permit(:target => [[:view, :value, :date_until, :deviation]]))
-      head 200
     elsif @assessment.update(params.require(:assessment).permit(:active))
       head 200
     else
@@ -71,7 +67,6 @@ class AssessmentsController < ApplicationController
             test_family_id: a.test.test_family.id,
             competence_id: a.test.test_family.competence.id,
             area_id: a.test.test_family.competence.area.id,
-            target: a.target,
           }
         end
     render json: data
