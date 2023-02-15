@@ -273,7 +273,7 @@ import {
 } from './apexChartHelpers'
 import {decryptStudentName, encryptWithMasterKeyAndGroup} from '../../../utils/encryption'
 import {ajax} from "@/utils/ajax";
-import apiRoutes from "@/vue/routes/api-routes";
+import apiRoutes from "../../routes/api-routes";
 import {createTrendline} from "./linearRegressionHelpers";
 import {cloneDeep} from "lodash";
 import {computed} from "vue";

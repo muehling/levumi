@@ -56,11 +56,6 @@ export default {
     }),
   },
   targets: {
-    saveGroupTarget: (groupId, testId, data) => ({
-      url: `/groups/${groupId}/assessments/${testId}`,
-      method: 'PUT',
-      data,
-    }),
     createStudentTarget: (groupId, testId, data) => ({
       url: `/groups/${groupId}/assessments/${testId}/targets`,
       method: 'POST',
