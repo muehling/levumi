@@ -2,9 +2,33 @@ import { printDate } from '../../../utils/date'
 import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
 
-export const prepareOptions = (chartType, customOptions, weeks) => {
-  const options = deepmerge(apexChartOptions(weeks)[chartType], customOptions)
+export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled) => {
+  // if any series wants to be of type rangeArea then the whole chart needs to be
+  // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
+  if (chartType !== 'line' && chartType !== 'bar' && chartType !== 'rangeArea') {
+    chartType = 'line'
+  }
+  let opt
+  // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
+  const needRangeAreaChart = isSlope && targetIsEnabled && (chartType === 'line' || chartType === 'rangeArea')
+  if (needRangeAreaChart) {
+    opt = apexChartOptions(weeks).rangeArea
+  } else {
+    // we allow only bar and rangeArea as custom chart types, all others default to line
+    switch (chartType) {
+      case 'bar':
+        opt = apexChartOptions(weeks).bar
+        break
+      case 'rangeArea':
+        opt = apexChartOptions(weeks).rangeArea
+        break
+      default:
+        opt = apexChartOptions(weeks).line
+    }
+  }
+  const options = deepmerge(opt, customOptions)
 
+  //Default für y-Achse: 10% Luft nach oben
   if (options.yaxis === undefined) {
     options.yaxis = {}
   }

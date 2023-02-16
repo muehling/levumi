@@ -116,18 +116,12 @@ export default {
     targetValStored: String,
     dateUntilStored: String,
     deviationStored: String,
-    studentSelected: Number,
+    selectedStudentId: Number,
     targetControlVisible: Boolean,
     studentTargets: Array,
+    targetValid: Boolean,
     test: Object,
     group: Object,
-  },
-  data: function() {
-    return {
-      targetValLocal: this.deviationVal,
-      dateUntilValLocal: this.dateUntilVal,
-      deviationValLocal: this.deviationVal,
-    }
   },
   computed: {
     multipleValues() {
@@ -183,7 +177,7 @@ export default {
       }
     },
     async saveStudentTarget() {
-      const sId = this.studentSelected === -1 ? null : this.studentSelected
+      const sId = this.selectedStudentId === -1 ? null : this.selectedStudentId
       if (this.targetStored === null) {
         return ajax (
             apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
