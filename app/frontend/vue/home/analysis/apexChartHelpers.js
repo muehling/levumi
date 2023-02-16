@@ -1,7 +1,6 @@
-import { printDate } from '../../../utils/date'
 import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
-
+// TODO: LABEL CONTROL Y ACHSE, b-view Tabs Komponente, LINTS respektieren
 export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled) => {
   // if any series wants to be of type rangeArea then the whole chart needs to be
   // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
@@ -27,6 +26,9 @@ export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetI
     }
   }
   const options = deepmerge(opt, customOptions)
+  if (needRangeAreaChart) {
+    options.chart.type = 'rangeArea'
+  }
 
   //Default für y-Achse: 10% Luft nach oben
   if (options.yaxis === undefined) {
@@ -217,8 +219,8 @@ export const apexColors = () => [
 
 export const annotationsLineOptions = (annotation, weeks) => ({
   id: 'a' + annotation.id,
-  x: printDate(annotation.start),
-  ...(annotation.end !== annotation.start && { x2: printDate(annotation.end) }),
+  x: new Date(annotation.start).getTime(),
+  ...(annotation.end !== annotation.start && { x2: new Date(annotation.end).getTime() }),
   strokeDashArray: 1,
   borderColor: '#c2c2c2',
   fillColor: '#c2c2c2',
@@ -228,9 +230,9 @@ export const annotationsLineOptions = (annotation, weeks) => ({
     borderWidth: 1,
     text: getAnnotationLabel(annotation.annotation_category_id),
     textAnchor:
-      weeks.indexOf(printDate(annotation.start)) < 2
+      weeks.indexOf(annotation.start) < 2
         ? 'right'
-        : weeks.indexOf(printDate(annotation.start)) > weeks.length - 2
+        : weeks.indexOf(annotation.start) > weeks.length - 2
         ? 'left'
         : 'middle',
     position: 'top',
@@ -248,7 +250,7 @@ export const annotationsLineOptions = (annotation, weeks) => ({
 
 export const annotationsPointOptions = (view, annotation, y, testWeek) => ({
   id: 'a' + annotation.id,
-  x: printDate(testWeek),
+  x: new Date(testWeek).getTime(),
   y: y,
   strokeDashArray: 1,
   borderColor: '#c2c2c2',

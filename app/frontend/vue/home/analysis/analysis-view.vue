@@ -341,8 +341,8 @@
       },
     },
     watch: {
-      annotations() {
-        this.updateAnnotations()
+      annotations(_newAnnotations, oldAnnotations) {
+        this.updateAnnotations(oldAnnotations)
       },
     },
     mounted() {
@@ -485,7 +485,6 @@
             ...data,
           }
         })
-        this.updateAnnotations()
 
         // for views without series keys we might draw a trend line and a target depending on the view config
         if (!view.series_keys) {
@@ -506,11 +505,12 @@
         if (this.targetIsEnabled) {
           this.updateNonSlopeTarget() // should only be called after the chart has been rendered
         }
+        // call this after caching as we'll call this again on redraws too, to avoid potential problems due to cloning
+        this.updateAnnotations(this.annotations)
       },
 
-      updateAnnotations() {
+      updateAnnotations(annotationsToRemove) {
         //Kommentare einfügen
-
         const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
 
         // get annotations that need to be drawn in the current chart
@@ -530,7 +530,7 @@
           .filter(annotation => annotation.start === annotation.end && studentId !== null)
           .map(annotation => {
             const dataForAnnotation = this.graphData[0].data.find(
-              d => d.x === printDate(annotation.start)
+              d => d.x === annotation.start
             )
             return annotationsPointOptions(
               this.currentView,
@@ -541,7 +541,7 @@
           })
 
         // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
-        this.annotations.forEach(annotation =>
+        annotationsToRemove.forEach(annotation =>
           this.$refs.levumiChart.removeAnnotation('a' + annotation.id)
         )
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
@@ -620,6 +620,8 @@
         let graphData = structuredClone(this.graphDataCache)
         // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
         let opt = cloneDeep(this.optCache)
+        // disable animations as we want the change to be drawn directly
+        opt.chart.animations.enabled = false
         this.appendSlopeTarget(graphData, opt)
         this.expandXAxis(graphData)
 
@@ -629,6 +631,8 @@
         if (!this.targetIsSlopeVariant) {
           this.updateNonSlopeTarget()
         }
+        // this might be unnecessary, but in case apexcharts might screw up this re-adds all annotations
+        this.updateAnnotations(this.annotations)
       },
 
       has_results(student) {
