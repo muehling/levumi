@@ -145,7 +145,7 @@
     annotationsLineOptions,
     annotationsPointOptions,
     targetAnnotationOptions, targetRangeAnnotationOptions,
-    prepareOptions,
+    prepareOptions, apexChartOptions,
   } from './apexChartHelpers'
   import { printDate } from '../../../utils/date'
   import {ajax} from "@/utils/ajax";
@@ -193,7 +193,7 @@
         simpleTableData: undefined,
         graphDataCache: null,
         optCache: null,
-        chartOptions: {},
+        chartOptions: apexChartOptions([]).line, // just so that apexcharts is happy being initialized correctly
         graphData: [],
       }
     },
