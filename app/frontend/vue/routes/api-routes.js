@@ -54,6 +54,7 @@ export default {
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
     }),
+    updateAll: groupId => ({ url: `/groups/${groupId}/assessments`, method: 'PUT' }),
   },
   annotations: {
     create: (groupId, testId) => ({

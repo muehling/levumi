@@ -44,6 +44,7 @@ Rails.application.routes.draw do
   get '/users/statistics', to: 'users#statistics'
   post 'renew_login', to: 'application#renew_login'
   delete '/delete_self', to: 'users#destroy_self'
+  put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
 
   #Reguläres REST-Routing
   resources :users

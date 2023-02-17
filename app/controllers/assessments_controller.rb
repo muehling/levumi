@@ -72,6 +72,14 @@ class AssessmentsController < ApplicationController
     render json: data
   end
 
+  def toggle_all_active
+    @group
+      .assessments
+      .select { |a| !a.test.archive }
+      .map { |assessment| assessment.update(active: params[:active]) }
+    head :ok
+  end
+
   private
 
   #Gruppenummer aus Parametern holen und Gruppe laden

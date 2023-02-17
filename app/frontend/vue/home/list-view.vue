@@ -11,6 +11,10 @@
         v-model="selectedFilters"
         :options="availableFilters"
       ></b-form-checkbox-group>
+      <b-btn size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
+        <i :class="`fas fa-${!allTestsActive ? 'pause' : 'play'}`"></i>
+        {{ toggleButtonText }}</b-btn
+      >
     </b-form-group>
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
@@ -42,20 +46,10 @@
             <b-btn
               :id="`delete-button-${test.test}`"
               class="btn-sm"
-              :variant="test.result_count ? 'outline-secondary' : 'outline-danger'"
+              :variant="test.result_count ? 'outline-danger' : 'outline-secondary'"
               @click="deleteAssessment(test)"
               ><i class="fas fa-trash"></i
             ></b-btn>
-            <b-popover
-              v-if="!!test.result_count"
-              :target="`delete-button-${test.test}`"
-              triggers="hover"
-            >
-              <p>
-                Testungen mit Messungen können nicht gelöscht werden. Bitte löschen Sie zunächst die
-                Messungen.
-              </p>
-            </b-popover>
           </td>
         </tr>
       </tbody>
@@ -103,14 +97,25 @@
         availableFilters: [
           { text: 'Mit Messungen', value: Filter.WithResults },
           { text: 'Ohne Messungen', value: Filter.WithoutResults },
-          { text: 'Schüler-Tests', value: Filter.StudentTests },
-          { text: 'Lehrkräfte-Tests', value: Filter.UserTests },
-          { text: 'Aktiv', value: Filter.ActiveTests },
-          { text: 'Inaktiv', value: Filter.InactiveTests },
+          { text: 'Schüler:innen-Tests', value: Filter.StudentTests },
+          { text: 'Lehrkräfte-Übungen', value: Filter.UserTests },
+          { text: 'Aktivierte Testungen', value: Filter.ActiveTests },
+          { text: 'Pausierte Testungen', value: Filter.InactiveTests },
         ],
       }
     },
     computed: {
+      toggleButtonVariant() {
+        return this.allTestsActive ? 'outline-success' : 'outline-danger'
+      },
+      toggleButtonText() {
+        return this.allTestsActive ? 'Alle Tests aktivieren' : 'Alle Tests pausieren'
+      },
+      allTestsActive() {
+        return this.assessmentsStore
+          .getAssessments(this.group.id)
+          .reduce((acc, assessment) => acc && assessment.active, true)
+      },
       sortedlist() {
         const byResult = []
         const byType = []
@@ -149,6 +154,15 @@
       await this.updateList()
     },
     methods: {
+      async handleToggleActive() {
+        const res = await ajax({
+          ...apiRoutes.assessments.updateAll(this.group.id),
+          data: { active: !this.allTestsActive },
+        })
+        if (res.status === 200) {
+          this.assessmentsStore.fetch(this.group.id)
+        }
+      },
       setPreselect(test) {
         this.$emit('set-preselect', {
           group: this.group.id,
@@ -172,9 +186,6 @@
         }
       },
       async deleteAssessment(test) {
-        if (test.result_count) {
-          return
-        }
         const ok = await this.$refs.confirmDialog.open({
           title: 'Testung löschen',
           message: 'Möchten Sie diesen Test von der Klasse entfernen?',
@@ -199,5 +210,10 @@
 <style>
   .assessment-list .assessment-line:hover {
     cursor: pointer;
+  }
+
+  .assessment-list fieldset.form-group > div {
+    display: flex;
+    align-items: center;
   }
 </style>
