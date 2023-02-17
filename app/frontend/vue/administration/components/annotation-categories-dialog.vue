@@ -17,7 +17,16 @@
         </b-btn>
       </div>
       <div class="mt-4 flex-row d-flex">
-        <b-form-input v-model="newCategory" placeholder="Neuen Typ eingeben"></b-form-input>
+        <label class="pt-2 mr-4" for="category">Typ: </label
+        ><b-form-input
+          id="category"
+          v-model="category"
+          placeholder="Neuen Typ eingeben"
+        ></b-form-input>
+        <label class="pt-2 ml-4 mr-2" for="group">Gruppe: </label
+        ><b-form-input id="group" v-model="group" placeholder="Gruppe"></b-form-input>
+        <label class="pt-2 ml-4 mr-2" for="index">Index: </label
+        ><b-form-input id="index" v-model="index" placeholder="Index"></b-form-input>
         <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
       </div>
     </div>
@@ -43,7 +52,9 @@
     },
     data() {
       return {
-        newCategory: '',
+        category: '',
+        group: 1,
+        index: 1,
         annotationCategories: this.globalStore.staticData.annotationCategories,
       }
     },
@@ -52,7 +63,7 @@
         this.isLoading = true
 
         const res = await ajax({
-          data: { name: this.newCategory },
+          data: { name: `${this.category}#${this.group}#${this.index}` },
           ...apiRoutes.annotationCategories.create,
         })
 
