@@ -1,48 +1,55 @@
 <template>
-  <b-collapse id="target_collapse" v-if="targetIsEnabled" v-model="targetControlVisible" @shown="autoScroll('#target_collapse')">
-    <b-form
-        v-if="!readOnly"
-        class="mt-2"
-        onsubmit="return false"
-    >
-      <b-form-row class="text-small">
-        <b-col class="d-flex">
-          <label class="mr-3">Zielwert:</label>
-          <b-form-input
-              id="target_input"
-              placeholder="Hier Zielwert eingeben"
-              :value="targetVal"
-              trim
-              :formatter="targetFormatter"
-              type="number"
-              inputmode="decimal"
-              min="0"
-              step="0.01"
-              lang="de"
-              size="sm"
-              @update="setTarget($event, dateUntilVal, deviationVal, true)"
-          ></b-form-input>
-        </b-col>
-      </b-form-row>
-      <b-form-row v-if="dateUntilIsEnabled" class="text-small mt-1">
-        <b-col class="d-flex">
-          <label class="mr-3">Verfügbarer Zeitraum:</label>
-          <b-form-input
-              id="available_target_input"
-              :value="dateUntilVal"
-              placeholder="Bis wann soll das Ziel erreicht worden sein?"
-              trim
-              type="date"
-              lang="de"
-              size="sm"
-              @update="setTarget(targetVal, $event, deviationVal, true)"
-          ></b-form-input>
-        </b-col>
-      </b-form-row>
-      <b-form-row v-if="deviationIsEnabled" class="text-small mt-1 mb-2">
-        <b-col class="d-flex">
-          <label class="mr-3">Erlaubte Abweichung:</label>
-          <div class="d-inline">
+  <div id="target-controls">
+    <b-collapse id="target_collapse" v-if="targetIsEnabled" v-model="targetControlVisible">
+      <b-form
+          v-if="!readOnly"
+          class="border p-3"
+          accept-charset="UTF-8"
+          onsubmit="return false"
+      >
+        <div class="text-small row">
+          <div class="col-12 col-md-3 col-xl-2">
+            <label>Zielwert:</label>
+          </div>
+          <div class="col-12 col-md-4 col-xl-3">
+            <b-form-input
+                id="target_input"
+                placeholder="Hier Zielwert eingeben"
+                :value="targetVal"
+                trim
+                :formatter="targetFormatter"
+                type="number"
+                inputmode="decimal"
+                min="0"
+                step="0.01"
+                lang="de"
+                size="sm"
+                @update="setTarget($event, dateUntilVal, deviationVal, true)"
+            ></b-form-input>
+          </div>
+        </div>
+        <div v-if="dateUntilIsEnabled" class="text-small row mt-2">
+          <div class="col-12 col-md-3 col-xl-2">
+            <label>Verfügbarer Zeitraum:</label>
+          </div>
+          <div class="col-12 col-md-4 col-xl-3">
+            <b-form-input
+                id="available_target_input"
+                :value="dateUntilVal"
+                placeholder="Bis wann soll das Ziel erreicht worden sein?"
+                trim
+                type="date"
+                lang="de"
+                size="sm"
+                @update="setTarget(targetVal, $event, deviationVal, true)"
+            ></b-form-input>
+          </div>
+        </div>
+        <div v-if="deviationIsEnabled" class="text-small row mt-2 mb-2">
+          <div class="col-12 col-md-3 col-xl-2">
+            <label>Erlaubte Abweichung:</label>
+          </div>
+          <div class="d-inline col-12 col-md-4 col-xl-3">
             <b-input-group size="sm" append="%">
               <b-form-input
                   id="deviation_target_input"
@@ -61,10 +68,8 @@
               ></b-form-input>
             </b-input-group>
           </div>
-        </b-col>
-      </b-form-row>
-      <b-form-row class="mt-1">
-        <b-col>
+        </div>
+        <div class="mt-3">
           <b-button
               variant="outline-success"
               size="sm"
@@ -92,20 +97,23 @@
           >
             <i class="fas fa-check"></i> Wert{{multipleValues ? 'e' : ''}} zurücksetzen
           </b-button>
-        </b-col>
-      </b-form-row>
-    </b-form>
-  </b-collapse>
+        </div>
+      </b-form>
+    </b-collapse>
+    <confirm-dialog ref="confirmDialog"/>
+  </div>
 </template>
 
 <script>
 
 import apiRoutes from "../../routes/api-routes";
 import {ajax} from "@/utils/ajax";
+import ConfirmDialog from "../../shared/confirm-dialog.vue";
 
 export default {
   name: "TargetControls",
-  inject: ['autoScroll', 'readOnly', 'restoreTarget', 'currentView', 'setTarget', 'targetStored', 'loadStudentTargets'],
+  components: {ConfirmDialog},
+  inject: ['readOnly', 'restoreTarget', 'currentView', 'setTarget', 'targetStored', 'loadStudentTargets'],
   props: {
     targetIsEnabled: Boolean,
     dateUntilIsEnabled: Boolean,
@@ -172,7 +180,7 @@ export default {
       } else {
         res = await this.saveStudentTarget()
       }
-      if (res.status === 200) {
+      if (res?.status === 200) {
           await this.loadStudentTargets()   // this function only loads the detail information for the current assessment
       }
     },
@@ -205,7 +213,16 @@ export default {
       }
     },
     async deleteStudentTarget() {
-      return ajax(apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId))
+      const ok = await this.$refs.confirmDialog.open({
+        title: 'Ziel löschen',
+        message: `Die Zielwerte werden gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
+        okText: 'Ziel löschen',
+      })
+      if (ok) {
+        return ajax(apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId))
+      } else {
+        return null
+      }
     },
   },
 }

@@ -56,51 +56,67 @@
     </b-row>
     <b-row :hidden="!graph_visible">
       <b-col>
-        <div class="ml-2">
-          <b-button class="mr-4 mb-3" size="sm" variant="outline-primary" @click="export_graph">
-            <i class="fas fa-file-pdf"></i>
-            PDF erzeugen
-          </b-button>
-          <!-- TODO: harmonize the two collapses -->
-          <annotations-section
-            :annotations="annotations"
-            :group="group"
-            :test="test"
-            :selected-student="selectedStudent"
-            :selected-view="selectedView"
-          />
-          <b-button
-              class="ml-2"
-              v-if="targetIsEnabled"
-              id="target_btn"
-              :class="targetControlVisible ? null : 'collapsed'"
-              :aria-expanded="targetControlVisible ? 'true' : 'false'"
-              aria-controls="target_collapse"
-              @click="toggleCollapse('target_collapse')"
-              size="sm"
-              variant="outline-secondary"
-          >
-            Ziel
-            <i :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
-          </b-button>
-          <TargetControls
-              :target-val="targetVal"
-              :deviation-val="deviationVal"
-              :date-until-val="dateUntilVal"
-              :date-until-is-enabled="dateUntilIsEnabled"
-              :target-is-enabled="targetIsEnabled"
-              :deviation-is-enabled="deviationIsEnabled"
-              :target-val-stored="targetValStored"
-              :date-until-stored="dateUntilStored"
-              :deviation-stored="deviationStored"
-              :student-targets="studentTargets"
-              :selected-student-id="selectedStudentId"
-              :target-control-visible="targetControlVisible"
-              :target-valid="targetValid"
-              :test="test"
-              :group="group"
-          ></TargetControls>
-        </div>
+        <b-row class="ml-1">
+          <b-col>
+            <b-button class="mr-4 mb-2" size="sm" variant="outline-primary" @click="export_graph" style="float: right">
+              <i class="fas fa-file-pdf"></i>
+              PDF erzeugen
+            </b-button>
+            <b-button
+                id="annotation_btn"
+                :aria-expanded="annotationControlVisible ? 'true' : 'false'"
+                aria-controls="annotation_collapse"
+                @click="toggleCollapse('annotation_collapse')"
+                size="sm"
+                variant="outline-secondary"
+            >
+              Anmerkungen
+              <i :class="`when-closed fas ${annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
+            </b-button>
+            <b-button
+                class="ml-2"
+                v-if="targetIsEnabled"
+                id="target_btn"
+                :aria-expanded="targetControlVisible ? 'true' : 'false'"
+                aria-controls="target_collapse"
+                @click="toggleCollapse('target_collapse')"
+                size="sm"
+                variant="outline-secondary"
+            >
+              Ziel
+              <i :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
+            </b-button>
+          </b-col>
+        </b-row>
+        <b-row class="ml-1">
+          <b-col class="mr-4">
+            <annotations-section
+                :annotations="annotations"
+                :group="group"
+                :test="test"
+                :selected-student="selectedStudent"
+                :selected-view="selectedView"
+                :visible="annotationControlVisible"
+            />
+            <TargetControls
+                :target-val="targetVal"
+                :deviation-val="deviationVal"
+                :date-until-val="dateUntilVal"
+                :date-until-is-enabled="dateUntilIsEnabled"
+                :target-is-enabled="targetIsEnabled"
+                :deviation-is-enabled="deviationIsEnabled"
+                :target-val-stored="targetValStored"
+                :date-until-stored="dateUntilStored"
+                :deviation-stored="deviationStored"
+                :student-targets="studentTargets"
+                :selected-student-id="selectedStudentId"
+                :target-control-visible="targetControlVisible"
+                :target-valid="targetValid"
+                :test="test"
+                :group="group"
+            ></TargetControls>
+          </b-col>
+        </b-row>
       </b-col>
     </b-row>
     <b-row :hidden="!table_visible">
@@ -178,10 +194,7 @@
     },
     data: function () {
       return {
-        annotation_visible: false,
-        annotation_end: null,
-        annotation_start: null,
-        annotation_text: '',
+        annotationControlVisible: false,
         dateUntilVal: null,
         deviationVal: null,
         targetControlVisible: false,
@@ -690,10 +703,10 @@
         switch (collapseId) {
           case 'annotation_collapse':
             this.targetControlVisible = false
-            this.annotation_visible = !this.annotation_visible
+            this.annotationControlVisible = !this.annotationControlVisible
             break
           case 'target_collapse':
-            this.annotation_visible = false
+            this.annotationControlVisible = false
             this.targetControlVisible = !this.targetControlVisible
             break
         }

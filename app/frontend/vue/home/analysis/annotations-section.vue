@@ -1,18 +1,9 @@
 <template>
   <div id="annotations-section">
-    <b-button
-      id="comment_btn"
-      v-b-toggle="'annotation_collapse'"
-      size="sm"
-      variant="outline-secondary"
-    >
-      Anmerkungen
-      <i :class="`when-closed fas ${visible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
-    </b-button>
     <b-collapse id="annotation_collapse" v-model="visible">
       <b-form
         v-if="!readOnly"
-        class="mt-1 border p-3"
+        class="border p-3"
         accept-charset="UTF-8"
         @submit="submitAnnotation()"
       >
@@ -94,7 +85,7 @@
         </tbody>
       </table>
     </b-collapse>
-    <confirm-dialog ref="confirmDialog" />
+    <confirm-dialog ref="confirmDialog"/>
   </div>
 </template>
 
@@ -116,13 +107,13 @@
       selectedStudent: Object,
       selectedView: Number,
       test: Object,
+      visible: Boolean,
     },
     data: function () {
       return {
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: 1,
-        visible: false,
       }
     },
     computed: {
