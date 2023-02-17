@@ -114,6 +114,7 @@
       allTestsActive() {
         return this.assessmentsStore
           .getAssessments(this.group.id)
+          .filter(assessment => assessment.student_test)
           .reduce((acc, assessment) => acc && assessment.active, true)
       },
       sortedlist() {

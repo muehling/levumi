@@ -75,7 +75,7 @@ class AssessmentsController < ApplicationController
   def toggle_all_active
     @group
       .assessments
-      .select { |a| !a.test.archive }
+      .select { |a| !a.test.archive && a.test.student_test }
       .map { |assessment| assessment.update(active: params[:active]) }
     head :ok
   end
