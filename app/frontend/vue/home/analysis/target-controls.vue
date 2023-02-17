@@ -1,6 +1,6 @@
 <template>
   <div id="target-controls">
-    <b-collapse id="target_collapse" v-if="targetIsEnabled" v-model="targetControlVisible">
+    <b-collapse v-if="targetIsEnabled" id="target_collapse" v-model="visible">
       <b-form
           v-if="!readOnly"
           class="border p-3"
@@ -144,6 +144,10 @@ export default {
     targetId() {
       return this.targetStored?.id
     },
+    visible: {
+      get() { return this.targetControlVisible },
+      set(value) { this.$emit('update:targetControlVisible', value) },
+    }
   },
   methods: {
     /**
@@ -153,11 +157,13 @@ export default {
      * @returns {string}
      */
     targetFormatter(value) {
-      if (value === '')
+      if (value === '') {
         return ''
+      }
       const num = Number(value)
-      if (!Number.isFinite(num))
+      if (!Number.isFinite(num)) {
         return ''
+      }
       const twoDigitString = num.toFixed(2)
       return twoDigitString === '' ? '' : Number(twoDigitString).toString()
     },
@@ -169,8 +175,9 @@ export default {
      * @returns {string}
      */
     deviationFormatter(value) {
-      if (value === '')
+      if (value === '') {
         return ''
+      }
       return Math.max(Math.min(Math.round(value), 100), 0).toString()
     },
     async changeStoredTarget(deleteTarget) {

@@ -107,7 +107,7 @@
       selectedStudent: Object,
       selectedView: Number,
       test: Object,
-      visible: Boolean,
+      annotationControlVisible: Boolean,
     },
     data: function () {
       return {
@@ -117,6 +117,10 @@
       }
     },
     computed: {
+      visible: {
+        get() { return this.annotationControlVisible },
+        set(value) { this.$emit('update:annotationControlVisible', value) },
+      },
       currentAnnotations: function () {
         return this.annotations.filter(annotation => {
           return (

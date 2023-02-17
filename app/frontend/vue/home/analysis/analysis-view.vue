@@ -58,7 +58,7 @@
       <b-col>
         <b-row class="ml-1">
           <b-col>
-            <b-button class="mr-4 mb-2" size="sm" variant="outline-primary" @click="export_graph" style="float: right">
+            <b-button class="mr-4 mb-2" size="sm" variant="outline-primary" style="float: right" @click="export_graph">
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
@@ -66,22 +66,22 @@
                 id="annotation_btn"
                 :aria-expanded="annotationControlVisible ? 'true' : 'false'"
                 aria-controls="annotation_collapse"
-                @click="toggleCollapse('annotation_collapse')"
                 size="sm"
                 variant="outline-secondary"
+                @click="toggleCollapse('annotation_collapse')"
             >
               Anmerkungen
               <i :class="`when-closed fas ${annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
             </b-button>
             <b-button
-                class="ml-2"
                 v-if="targetIsEnabled"
                 id="target_btn"
+                class="ml-2"
                 :aria-expanded="targetControlVisible ? 'true' : 'false'"
                 aria-controls="target_collapse"
-                @click="toggleCollapse('target_collapse')"
                 size="sm"
                 variant="outline-secondary"
+                @click="toggleCollapse('target_collapse')"
             >
               Ziel
               <i :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
@@ -96,7 +96,7 @@
                 :test="test"
                 :selected-student="selectedStudent"
                 :selected-view="selectedView"
-                :visible="annotationControlVisible"
+                :annotation-control-visible.sync="annotationControlVisible"
             />
             <TargetControls
                 :target-val="targetVal"
@@ -110,7 +110,7 @@
                 :deviation-stored="deviationStored"
                 :student-targets="studentTargets"
                 :selected-student-id="selectedStudentId"
-                :target-control-visible="targetControlVisible"
+                :target-control-visible.sync="targetControlVisible"
                 :target-valid="targetValid"
                 :test="test"
                 :group="group"
@@ -174,15 +174,7 @@
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
-    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
-    props: {
-      annotations: Array,
-      configuration: Object,
-      group: Object,
-      results: Array,
-      students: Array,
-      test: Object,
-    },
+    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
     provide: function () {
       return {
         restoreTarget: this.restoreTarget,  // allowing the target controls to restore and set the target themselves
@@ -192,12 +184,20 @@
         currentView: computed(() => this.currentView),
       }
     },
+    props: {
+      annotations: Array,
+      configuration: Object,
+      group: Object,
+      results: Array,
+      students: Array,
+      test: Object,
+    },
     data: function () {
       return {
         annotationControlVisible: false,
+        targetControlVisible: false,
         dateUntilVal: null,
         deviationVal: null,
-        targetControlVisible: false,
         targetVal: null,
         targetAdded: false,
         selectedStudentId: -1,
@@ -429,7 +429,7 @@
         })
       },
       XYFromResult(result, seriesKey) {
-        if (!result) return undefined
+        if (!result) {return undefined}
         let yVal
         const view = this.currentView
         if (seriesKey) {
@@ -490,7 +490,7 @@
         this.simpleTableData = this.graphData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             // createSeries contains raw dates, so we need to format them here
-            acc[this.printDate(d.x)] = d.y || '-'
+            acc[printDate(d.x)] = d.y || '-'
             return acc
           }, {})
           return {
