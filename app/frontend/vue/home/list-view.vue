@@ -40,7 +40,9 @@
               <i :class="`fas fa-${test.active ? 'pause' : 'play'}`"></i>
               {{ test.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
-            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled>(Nutzer-Test)</b-btn>
+            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
+              >(Lehrkräfte-Übung)</b-btn
+            >
           </td>
           <td>
             <b-btn
