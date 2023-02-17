@@ -1,33 +1,27 @@
 <template>
-  <div>
-    <b-modal
-      id="annotation-categories-dialog"
-      ref="annotationCategoriesDialog"
-      title="Anmerkungstypen definieren"
-      hide-footer
-    >
-      <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
-      <div>
-        <div
-          v-for="annotationCategory in annotationCategories"
-          :key="annotationCategory.id"
-          class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
+  <div id="annotation-categories">
+    <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
+    <div>
+      <div
+        v-for="annotationCategory in annotationCategories"
+        :key="annotationCategory.id"
+        class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
+      >
+        <span>{{ annotationCategory.name }}</span>
+        <b-btn
+          class="btn btn-sm"
+          variant="outline-danger"
+          @click="deleteCategory(annotationCategory.id)"
         >
-          <span>{{ annotationCategory.name }}</span>
-          <b-btn
-            class="btn btn-sm"
-            variant="outline-danger"
-            @click="deleteCategory(annotationCategory.id)"
-          >
-            <i class="fas fa-trash"></i>
-          </b-btn>
-        </div>
-        <div class="mt-4 flex-row d-flex">
-          <b-form-input v-model="newCategory" placeholder="Neuen Typ eingeben"></b-form-input>
-          <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
-        </div>
+          <i class="fas fa-trash"></i>
+        </b-btn>
       </div>
-    </b-modal>
+      <div class="mt-4 flex-row d-flex">
+        <b-form-input v-model="newCategory" placeholder="Neuen Typ eingeben"></b-form-input>
+        <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
+      </div>
+    </div>
+
     <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
@@ -54,12 +48,6 @@
       }
     },
     methods: {
-      async open() {
-        this.$refs.annotationCategoriesDialog.show()
-      },
-      _close() {
-        this.$refs.annotationCategoriesDialog.hide()
-      },
       async createAnnotationCategory() {
         this.isLoading = true
 
@@ -109,7 +97,7 @@
   }
 </script>
 <style>
-  #annotation-categories-dialog .category-line:nth-child(odd) {
+  #annotation-categories .category-line:nth-child(odd) {
     background-color: rgba(0, 0, 0, 0.05);
   }
 </style>

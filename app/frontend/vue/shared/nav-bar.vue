@@ -167,6 +167,13 @@
               <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
                 Export
               </router-link>
+              <router-link
+                v-if="checkCapability('test')"
+                to="/administration"
+                class="dropdown-item"
+              >
+                Allgemeine Einstellungen
+              </router-link>
             </div>
           </li>
           <li v-if="!masquerade" id="intro6" class="nav-item dropdown">
