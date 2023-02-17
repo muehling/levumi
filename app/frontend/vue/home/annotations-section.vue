@@ -43,12 +43,26 @@
           </div>
           <div class="col-12 col-md-4">
             <div class="d-flex flex-row">
-              <b-form-select
-                v-model="annotationCategoryId"
-                name="annotation[end]"
-                :options="getAnnotationOptions()"
-                size="sm"
-              ></b-form-select>
+              <b-dropdown v-model="annotationCategoryId" variant="outline-secondary">
+                <template #button-content>
+                  <span class="text-small">{{ getAnnotationLabel(annotationCategoryId) }}</span>
+                </template>
+                <b-dropdown-group
+                  v-for="(categoryGroup, index) in groupedAnnotationOptions"
+                  :key="index"
+                >
+                  <b-dropdown-item
+                    v-for="option in categoryGroup"
+                    :key="option.name"
+                    class="text-small"
+                    @click="annotationCategoryId = option.id"
+                  >
+                    {{ option.name }}
+                  </b-dropdown-item>
+                  <b-dropdown-divider />
+                </b-dropdown-group>
+              </b-dropdown>
+
               <span
                 v-b-popover.hover="
                   'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
@@ -135,6 +149,23 @@
           )
         })
       },
+      minCategoryId: function () {
+        return getAnnotationOptions().reduce((acc, option) => Math.min(acc, option.id), Infinity)
+      },
+
+      groupedAnnotationOptions: function () {
+        const allOptions = getAnnotationOptions()
+        const maxGroupValue = allOptions.reduce((acc, option) => Math.max((acc, option.group)), 0)
+        const groups = []
+        for (let i = 1; i <= maxGroupValue; i++) {
+          groups[i - 1] = allOptions.filter(option => option.group === i)
+        }
+
+        return groups
+      },
+    },
+    mounted: function () {
+      this.annotationCategoryId = this.minCategoryId
     },
 
     methods: {
@@ -185,7 +216,7 @@
         if (res.status === 200) {
           const parsedResult = await res.json()
           this.$root.$emit(`annotation-added-${this.group.id}`, parsedResult)
-          this.annotationCategoryId = 1
+          this.annotationCategoryId = this.minCategoryId
           this.annotationEnd = null
           this.annotationStart = null
         }
