@@ -2,21 +2,21 @@
   <b-container v-cloak fluid>
     <b-row class="mt-3"> </b-row>
     <b-tabs card pills>
-      <b-tab title="Testübersicht">
-        <p>hallo welt</p>
+      <b-tab v-if="false" title="Test-Metadaten">
+        <p>todo</p>
       </b-tab>
       <b-tab title="Anmerkungstypen">
-        <annotation-categories-dialog ref="annotationCategoriesDialog" />
+        <annotation-categories ref="annotationCategoriesDialog" />
       </b-tab>
     </b-tabs>
   </b-container>
 </template>
 <script>
   import { useGlobalStore } from '../../store/store'
-  import AnnotationCategoriesDialog from './components/annotation-categories-dialog.vue'
+  import AnnotationCategories from './components/annotation-categories.vue'
   export default {
     name: 'AdministrationApp',
-    components: { AnnotationCategoriesDialog },
+    components: { AnnotationCategories },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
