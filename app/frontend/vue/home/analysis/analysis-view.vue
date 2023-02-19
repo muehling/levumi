@@ -104,6 +104,7 @@
                 :selected-student="selectedStudent"
                 :selected-view="selectedView"
                 :annotation-control-visible.sync="annotationControlVisible"
+                @annotation-removed="removeAnnotation"
             />
             <TargetControls
                 :target-val="targetVal"
@@ -647,6 +648,10 @@
           }
         }
         return false
+      },
+
+      removeAnnotation(id) {
+        this.$refs.levumiChart.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {
