@@ -1,6 +1,7 @@
 import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
 import isArray from "lodash/isArray";
+import {printDate} from "@/utils/date";
 
 export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled, animate) => {
   // if any series wants to be of type rangeArea then the whole chart needs to be
@@ -11,19 +12,20 @@ export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetI
   let opt
   // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
   const needRangeAreaChart = isSlope && targetIsEnabled && (chartType === 'line' || chartType === 'rangeArea')
+  const weekLabels = weeks.map(w => printDate(w))
   if (needRangeAreaChart) {
-    opt = apexChartOptions(weeks).rangeArea
+    opt = apexChartOptions(weekLabels).rangeArea
   } else {
     // we allow only bar and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
-        opt = apexChartOptions(weeks).bar
+        opt = apexChartOptions(weekLabels).bar
         break
       case 'rangeArea':
-        opt = apexChartOptions(weeks).rangeArea
+        opt = apexChartOptions(weekLabels).rangeArea
         break
       default:
-        opt = apexChartOptions(weeks).line
+        opt = apexChartOptions(weekLabels).line
     }
   }
   const options = deepmerge(opt, customOptions)
@@ -46,7 +48,7 @@ export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetI
   return options
 }
 
-export const apexChartOptions = weeks => ({
+export const apexChartOptions = weekLabels => ({
   bar: {
     chart: {
       ...commonChart(),
@@ -72,7 +74,7 @@ export const apexChartOptions = weeks => ({
     xaxis: {  // TODO: Optionen hier vielleicht an andere Diagramme anpassen (datetime statt categories)
       tooltip: { enabled: false },
       type: 'category',
-      categories: weeks,
+      categories: weekLabels,
       tickPlacement: 'between',
     },
     tooltip: { ...commonTooltip() },

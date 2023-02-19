@@ -423,20 +423,20 @@
         await this.createPdf(title, filename)
       },
 
-      createSeries(studentId, seriesKey) {
+      createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result.student_id === studentId)
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
           // if a week has no results add a point with an empty y value for this week
           if (!currentResult) {
-            return { x: week, y: null }
+            return { x: formatDate ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey)
+          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
           point.y = point.y?.toFixed(2) || null
           return point
         })
       },
-      XYFromResult(result, seriesKey) {
+      XYFromResult(result, seriesKey, formatDate) {
         if (!result) {return undefined}
         let yVal
         const view = this.currentView
@@ -446,7 +446,7 @@
           yVal = result?.views[view.key] || null
         }
         return {
-          x: result?.test_week || null,
+          x: formatDate? printDate(result.test_week) : result.test_week || null,
           y: yVal,
         }
       },
@@ -466,23 +466,25 @@
         if (view.type === 'table') { return }
 
         const trueChartType = view.options.chart.type
-        let preparedOptions = prepareOptions(trueChartType, view.options, this.weeks,
+        const preparedOptions = prepareOptions(trueChartType, view.options, this.weeks,
             this.targetIsSlopeVariant, this.targetIsEnabled, animate)
 
+        const formatDate = trueChartType === 'bar'
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
           gData = this.studentsWithResults.map(student => {
-            return { name: student.name, type: trueChartType, data: this.createSeries(student.id) }
+            return { name: student.name, type: trueChartType, data: this.createSeries(student.id, undefined, formatDate) }
           })
         } else {
           const student = this.students.find(s => s.id === this.selectedStudentId)
           // individual student data with single series
           if (!view.series_keys) {
-            gData = [{ name: student.name, type: trueChartType, data: this.createSeries(student.id) }]
+            gData = [{ name: student.name, type: trueChartType, data: this.createSeries(student.id, undefined, formatDate) }]
             // only create trend line data when a single series is shown
-            if (this.trendIsEnabled) {  // only create trend line data when the view is configured to show such
+            if (this.trendIsEnabled && trueChartType !== 'bar') {  // only create trend line data when the view is configured to show such
+              // 'bar' charts do not support trends right now, as they are based on categories
               // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
               trendlineData = createTrendline(
                   gData[0]?.data,
@@ -492,7 +494,7 @@
           } else {
             // individual student data with multiple series
             gData = view.series_keys.map((series_key, index) => {
-              return { name: view.series[index], type: trueChartType, data: this.createSeries(student.id, series_key) }
+              return { name: view.series[index], type: trueChartType, data: this.createSeries(student.id, series_key, formatDate) }
             })
           }
         }
@@ -501,7 +503,7 @@
         this.simpleTableData = gData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             // createSeries contains raw dates, so we need to format them here
-            acc[printDate(d.x)] = d.y || '-'
+            acc[formatDate ? d.x : printDate(d.x)] = d.y || '-'
             return acc
           }, {})
           return {
@@ -510,16 +512,19 @@
           }
         })
 
-        // for views without series keys we might draw a trend line and a target depending on the view config
-        if (!view.series_keys) {
-          // for views only showing one student also create a trend line over the values
-          // (can also be something else like trend bars, depending on the true chart type)
-          addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
-          if (this.targetIsEnabled) {
-            this.appendSlopeTarget(gData, preparedOptions)
+        // 'bar' charts are not supported right now, as they are based on categories instead of datetime
+        if (trueChartType !== 'bar') {
+          // for views without series keys we might draw a trend line and a target depending on the view config
+          if (!view.series_keys) {
+            // for views only showing one student also create a trend line over the values
+            // (can also be something else like trend bars, depending on the true chart type)
+            addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
+            if (this.targetIsEnabled) {
+              this.appendSlopeTarget(gData, preparedOptions)
+            }
           }
+          this.expandXAxis(gData)
         }
-        this.expandXAxis(gData)
         if (this.targetIsEnabled) {
           this.updateNonSlopeTarget() // should only be called after the chart has been rendered
         }
