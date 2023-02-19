@@ -391,11 +391,7 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
   }
 
   if(!isArray(opt.markers.size)) {
-    console.log("YAR: "+opt.markers.size)
     opt.markers.size = new Array(size).fill(opt.markers.size)
-    console.log("size: "+size)
-    console.log("markers.size.length: "+opt.markers.size.length)
-    opt.markers.size.forEach(a => console.log("a: "+a))
   } else {
     const len = opt.markers.size.length
     const last = opt.markers.size[len - 1]
@@ -403,21 +399,14 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
     opt.markers.size.fill(last, len)
   }
 
-  console.log("prep: "+prepareFills)
   if (prepareFills) {
     if (!isArray(opt.fill.opacity)) {
-      console.log("no and: "+opt.fill.opacity)
       opt.fill.opacity = new Array(size).fill(opt.fill.opacity)
-      console.log("opt.file.opacity: "+opt.fill.opacity)
-      console.log("now after: "+opt.fill.opacity.length)
     } else {
       const len = opt.fill.opacity.length
       const last = opt.fill.opacity[len - 1]
-      console.log("yes and: "+len)
       opt.fill.opacity.length = size
       opt.fill.opacity.fill(last, len)
-      console.log("opt.file.opacity: "+opt.fill.opacity)
-      console.log("now after: "+opt.fill.opacity.length)
     }
   }
 
