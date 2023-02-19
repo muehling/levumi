@@ -51,7 +51,14 @@
     </b-row>
     <b-row :hidden="!graph_visible">
       <b-col>
-        <apexchart ref="levumiChart" :options="chartOptions" :series="chartSeries" />
+        <apexchart
+          ref="levumiChart"
+          :type="currentChartType"
+          height="500px"
+          width="100%"
+          :options="chartOptions"
+          :series="chartSeries"
+        />
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
@@ -167,14 +174,13 @@
   import {ajax} from "@/utils/ajax";
   import apiRoutes from "../../routes/api-routes";
   import {createTrendline} from "./linearRegressionHelpers";
-  import {cloneDeep} from "lodash";
   import {computed} from "vue";
   import TargetControls from "./target-controls.vue";
 
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
-    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
+    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'printDate'],
     provide: function () {
       return {
         restoreTarget: this.restoreTarget,  // allowing the target controls to restore and set the target themselves
@@ -204,8 +210,6 @@
         studentTargets: [],
         selectedView: 0,
         simpleTableData: undefined,
-        graphDataCache: null,
-        optCache: null,
         chartOptions: apexChartOptions([]).line, // just so that apexcharts is happy being initialized correctly
         graphData: [],
       }
@@ -217,6 +221,9 @@
             (this.selectedStudentId === -1 && view.group) ||
             (this.selectedStudentId !== -1 && view.student)
         )
+      },
+      currentChartType() {
+        return this.chartOptions.chart.type || 'line'
       },
       currentView() {
         return this.configuration.views[this.selectedView]
@@ -367,7 +374,7 @@
         ? this.studentsWithResults[0]?.id || -1
         : -1
       )
-      this.updateView()
+      this.updateView(true)
     },
     methods: {
       setSelectedView(index) {
@@ -376,7 +383,7 @@
         // don't redraw as we're calling updateView next
         this.restoreTarget(false)
         // destroy the chart to reset the options
-        this.updateView()
+        this.updateView(true)
       },
       getStudentName(id) {
         return this.students.find(student => student.id === id)?.name
@@ -445,49 +452,52 @@
       setStudentAndUpdate(studentId) {
         const oldValue = this.selectedStudentId
         this.selectedStudentId = studentId
+        let animateChange = false
         if (studentId !== oldValue) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
+          animateChange = true
         }
-        this.updateView()
+        this.updateView(animateChange)
       },
-      updateView() {
+      updateView(animate) {
         const view = this.currentView
         if (view.type === 'table') { return }
 
         const trueChartType = view.options.chart.type
-        this.chartOptions = prepareOptions(view.options.chart.type, view.options, this.weeks,
-            this.targetIsSlopeVariant, this.targetIsEnabled)
+        let preparedOptions = prepareOptions(trueChartType, view.options, this.weeks,
+            this.targetIsSlopeVariant, this.targetIsEnabled, animate)
 
         let trendlineData = undefined
+        let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          this.graphData = this.studentsWithResults.map(student => {
+          gData = this.studentsWithResults.map(student => {
             return { name: student.name, type: trueChartType, data: this.createSeries(student.id) }
           })
         } else {
           const student = this.students.find(s => s.id === this.selectedStudentId)
           // individual student data with single series
           if (!view.series_keys) {
-            this.graphData = [{ name: student.name, type: trueChartType, data: this.createSeries(student.id) }]
+            gData = [{ name: student.name, type: trueChartType, data: this.createSeries(student.id) }]
             // only create trend line data when a single series is shown
             if (this.trendIsEnabled) {  // only create trend line data when the view is configured to show such
               // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
               trendlineData = createTrendline(
-                  this.graphData[0]?.data,
+                  gData[0]?.data,
                   this.extrapolationIsEnabled ? this.dateUntilVal : null
               )
             }
           } else {
             // individual student data with multiple series
-            this.graphData = view.series_keys.map((series_key, index) => {
+            gData = view.series_keys.map((series_key, index) => {
               return { name: view.series[index], type: trueChartType, data: this.createSeries(student.id, series_key) }
             })
           }
         }
 
         // this is the input for <b-table-lite> component, which is shown below the graph
-        this.simpleTableData = this.graphData.map(lineData => {
+        this.simpleTableData = gData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             // createSeries contains raw dates, so we need to format them here
             acc[printDate(d.x)] = d.y || '-'
@@ -503,21 +513,19 @@
         if (!view.series_keys) {
           // for views only showing one student also create a trend line over the values
           // (can also be something else like trend bars, depending on the true chart type)
-          addTrendToChartData(this.graphData, this.chartOptions, trendlineData, trueChartType)
+          addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
           if (this.targetIsEnabled) {
-            // at this point cache the graphData and options so that targets can be re-added more easily later
-            // in case they change dynamically
-            // NOTE: for graphData structuredClone is OK, as long as there won't be functions in the data, which would be weird
-            this.graphDataCache = structuredClone(this.graphData)
-            // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
-            this.optCache = cloneDeep(this.chartOptions)
-            this.appendSlopeTarget(this.graphData, this.chartOptions)
+            this.appendSlopeTarget(gData, preparedOptions)
           }
         }
-        this.expandXAxis(this.graphData)
+        this.expandXAxis(gData)
         if (this.targetIsEnabled) {
           this.updateNonSlopeTarget() // should only be called after the chart has been rendered
         }
+        // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
+        this.chartOptions = preparedOptions
+        this.graphData = gData
+
         // call this after caching as we'll call this again on redraws too, to avoid potential problems due to cloning
         this.updateAnnotations(this.annotations)
       },
@@ -629,23 +637,7 @@
 
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
       redrawTarget() {
-        if (!this.targetIsEnabled) { return }
-        let graphData = structuredClone(this.graphDataCache)
-        // workaround for cloning options as structuredClone is not able to clone functions (such as the y.max we set)
-        let opt = cloneDeep(this.optCache)
-        // disable animations as we want the change to be drawn directly
-        opt.chart.animations.enabled = false
-        this.appendSlopeTarget(graphData, opt)
-        this.expandXAxis(graphData)
-
-        this.chartOptions = opt
-        this.graphData = graphData
-
-        if (!this.targetIsSlopeVariant) {
-          this.updateNonSlopeTarget()
-        }
-        // this might be unnecessary, but in case apexcharts might screw up this re-adds all annotations
-        this.updateAnnotations(this.annotations)
+        if (this.targetIsEnabled) { this.updateView(false) }
       },
 
       has_results(student) {
@@ -671,7 +663,7 @@
       expandXAxis(graphData) {
         // if an end date has been chosen make sure the x-axis reaches/includes this date
         // SIDE-FACT: technically expanding the x-axis isn't necessary when there's a slope target or an extrapolated trend
-        // SIDE-FACT: as these automatically lead to this effect themselves, but I don't think we should check for that here
+        //            as these automatically lead to this effect themselves, but I don't think we should check for that here
         if (!this.dateUntilIsEnabled || !this.dateUntilVal) { return }
         // only use the date if it lies after the last test result
         const maxDate = graphData[0]?.data.reduce((acc, d) => {

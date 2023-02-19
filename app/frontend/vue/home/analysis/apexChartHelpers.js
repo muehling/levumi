@@ -2,7 +2,7 @@ import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
 import isArray from "lodash/isArray";
 
-export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled) => {
+export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled, animate) => {
   // if any series wants to be of type rangeArea then the whole chart needs to be
   // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
   if (chartType !== 'line' && chartType !== 'bar' && chartType !== 'rangeArea') {
@@ -30,6 +30,8 @@ export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetI
   if (needRangeAreaChart) {
     options.chart.type = 'rangeArea'
   }
+  // for updates on a chart animations may be inadequate
+  options.chart.animations.enabled = animate
 
   //Default für y-Achse: 10% Luft nach oben
   if (options.yaxis === undefined) {
@@ -198,7 +200,7 @@ const commonTooltip = () => ({
   intersect: false
 })
 
-export const apexColors = () => [
+const apexColors = () => [
   '#449DD1',
   '#F86624',
   '#EA3546',
