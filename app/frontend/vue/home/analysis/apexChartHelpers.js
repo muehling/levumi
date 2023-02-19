@@ -1,6 +1,7 @@
 import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
-// TODO: LABEL CONTROL Y ACHSE, b-view Tabs Komponente, LINTS respektieren
+import isArray from "lodash/isArray";
+
 export const prepareOptions = (chartType, customOptions, weeks, isSlope, targetIsEnabled) => {
   // if any series wants to be of type rangeArea then the whole chart needs to be
   // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
@@ -49,10 +50,15 @@ export const apexChartOptions = weeks => ({
       ...commonChart(),
       type: 'bar',
     },
+    ...commonOptions(),
     stroke: {
       curve: 'straight',
-      width: 0,
-      dashArray: 0
+      width: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0 // must be kept in, as prepareOptionsAsArrays depends upon its existence
+    },
+    fill: {
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      type: 'solid',
     },
     grid: {
       ...commonGrid(),
@@ -78,11 +84,11 @@ export const apexChartOptions = weeks => ({
     colors: apexColors(),
     stroke: {
       curve: 'straight',
-      width: 1,
-      dashArray: 0
+      width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0 // must be kept in, as prepareOptionsAsArrays depends upon its existence
     },
     fill: {
-      opacity: 0.9,
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
       type: 'solid',
     },
     grid: {
@@ -96,10 +102,6 @@ export const apexChartOptions = weeks => ({
       ...commonTooltip(),
       enabled: true,
       x: { show: false },
-    },
-    markers: {
-      size: 4,
-      hover: { sizeOffset: 2 },
     },
     xaxis: {
       tooltip: { enabled: false },
@@ -122,14 +124,14 @@ export const apexChartOptions = weeks => ({
     },
     colors: apexColors(),
     fill: {
-      colors: ['#10b600'], // intended to fill the target range, i.e. the allowed deviation area
-      opacity: [0.9],
+      colors: ['#10b600'], // intended to fill the target range, i.e. the allowed deviation area (HAS TO BE ARRAY, see docs of apexcharts)
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
       type: 'solid',
     },
     stroke: {
       curve: 'straight',
-      width: 1,
-      dashArray: 0
+      width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0 // must be kept in, as prepareOptionsAsArrays depends upon its existence
     },
     grid: {
       ...commonGrid(),
@@ -142,13 +144,6 @@ export const apexChartOptions = weeks => ({
       ...commonTooltip(),
       enabled: true,
       x: {show: false},
-    },
-    markers: {
-      size: 4,
-      hover: { sizeOffset: 2 },
-    },
-    dataLabels: {
-      enabled: false
     },
     xaxis: {
       tooltip: { enabled: false },
@@ -170,6 +165,10 @@ const commonOptions = () => ({
   legend: {
     position: 'top',
     offsetY: 5,
+  },
+  markers: {
+    size: 4,  // must be kept in, as prepareOptionsAsArrays depends upon its existence
+    hover: { sizeOffset: 2 },
   },
   yaxis: {
     min: 0,
@@ -325,40 +324,46 @@ export function addTargetToChartData(graphData, opt, deviate, startPoint, endPoi
     graphData.push({ name: 'Erlaubte Abweichung', type: 'rangeArea', data: [startPointRange, endPointRange] })
   }
   // enableTooltip could have already been created by the trend line, but if there's none create it now
-  opt = prepareOptionsAsArrays(opt, seriesIndex, true, deviate)
+  prepareOptionsAsArrays(opt, seriesIndex, true, deviate)
   // modify the options at the given index to set custom values for this series
-  opt.colors[seriesIndex] = '#66666688'
-  opt.fill.opacity[seriesIndex] = 0.9
-  opt.stroke.width[seriesIndex] = 2
-  opt.stroke.dashArray[seriesIndex] = 16
-  opt.markers.size[seriesIndex] = 1
+  setTargetOptions(opt, seriesIndex, deviate)
+}
+
+function setTargetOptions(options, seriesIndex, deviate) {
+  options.colors[seriesIndex] = '#66666688'
+  options.stroke.width[seriesIndex] = 2
+  options.stroke.dashArray[seriesIndex] = 16
+  options.markers.size[seriesIndex] = 1
   // for the rangeArea
   if (deviate) {
     const rangeIndex = seriesIndex + 1
-    opt.colors[rangeIndex] = '#10b600'
-    opt.fill.opacity[rangeIndex] = 0.125
-    opt.stroke.width[rangeIndex] = 0
-    opt.stroke.dashArray[rangeIndex] = 0
-    opt.markers.size[rangeIndex] = 0
+    options.colors[rangeIndex] = '#10b600'
+    options.fill.opacity[seriesIndex] = 0.9 // give the line a fill value too just so that it's defined
+    options.fill.opacity[rangeIndex] = 0.125
+    options.stroke.width[rangeIndex] = 0
+    options.stroke.dashArray[rangeIndex] = 0
+    options.markers.size[rangeIndex] = 0
   }
 }
 
 export function addTrendToChartData(graphData, opt, trendlineData, seriesType) {
   if (trendlineData?.length > 1) {  // as long as there is more than one data point
-    opt = prepareOptionsAsArrays(opt, graphData.length, true, false)
+    prepareOptionsAsArrays(opt, graphData.length, true, false)
     const i = graphData.length
     graphData.push({ name: 'Trend', type: seriesType, data: trendlineData }) // add the trend line as an additional series
     // next change display options for this appended series
-    opt.colors[i] = '#545454'
-    opt.stroke.width[i] = 2
-    opt.stroke.dashArray[i] = 4
-    opt.markers.size[i] = 0
+    setTrendOptions(opt, i)
   }
 }
 
-function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
-  const defaultLineOptions = apexChartOptions(null).line
+function setTrendOptions(opt, i) {
+  opt.colors[i] = '#545454'
+  opt.stroke.width[i] = 2
+  opt.stroke.dashArray[i] = 4
+  opt.markers.size[i] = 0
+}
 
+function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
   if (!opt.colors) { opt.colors = [] }
   // fill up the colors by continuing them based on apexColors, cycling just like ApexCharts would do if there were no more colors
   const aColors = apexColors()
@@ -366,53 +371,57 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
     opt.colors.push(aColors[i % aColors.length])
   }
 
-  if (!opt.stroke) { opt.stroke = defaultLineOptions.stroke } // check that opt.stroke exists
-  if (opt.stroke.width == undefined) { opt.stroke.width = [defaultLineOptions.stroke.width] } // check that opt.stroke.width exists
-  if (opt.stroke.width.length == undefined) { opt.stroke.width = [opt.stroke.width] } // if it is no array yet make it one
-  // fill up by continuing based on what is already there
-  {
-    let w = opt.stroke.width
-    for (let i = 0; w.length < size; ++i) {
-      w.push(w[i])
-    }
+  // turn all relevant option fields into arrays as long as they aren't arrays yet
+  // when they are we assume that no damage is done by extending the array with copies of the last value
+  if (!isArray(opt.stroke.width)) {
+    opt.stroke.width = new Array(size).fill(opt.stroke.width)
+  } else {
+    const len = opt.stroke.width.length
+    const last = opt.stroke.width[len - 1]
+    opt.stroke.width.length = size
+    opt.stroke.width.fill(last, len)
+  }
+  if (!isArray(opt.stroke.dashArray)) {
+    opt.stroke.dashArray = new Array(size).fill(opt.stroke.dashArray)
+  } else {
+    const len = opt.stroke.dashArray.length
+    const last = opt.stroke.dashArray[len - 1]
+    opt.stroke.dashArray.length = size
+    opt.stroke.dashArray.fill(last, len)
   }
 
-  if (opt.stroke.dashArray == undefined) { opt.stroke.dashArray = [defaultLineOptions.stroke.dashArray] } // check that opt.stroke.width exists
-  if (opt.stroke.dashArray.length == undefined) { opt.stroke.dashArray = [opt.stroke.dashArray] } // if it is no array yet make it one
-  {
-    let d = opt.stroke.dashArray
-    for (let i = 0; d.length < size; ++i) {
-      d.push(d[i])
-    }
+  if(!isArray(opt.markers.size)) {
+    console.log("YAR: "+opt.markers.size)
+    opt.markers.size = new Array(size).fill(opt.markers.size)
+    console.log("size: "+size)
+    console.log("markers.size.length: "+opt.markers.size.length)
+    opt.markers.size.forEach(a => console.log("a: "+a))
+  } else {
+    const len = opt.markers.size.length
+    const last = opt.markers.size[len - 1]
+    opt.markers.size.length = size
+    opt.markers.size.fill(last, len)
   }
 
-  if (!opt.markers) { opt.markers = defaultLineOptions.markers }  // check that opt.markers exists
-  if (opt.markers.size == undefined) { opt.markers.size = [defaultLineOptions.markers.size] } // check that opt.markers.size exists
-  if (opt.markers.size.length == undefined) { opt.markers.size = [opt.markers.size] } // if it is no array yet make it one
-  {
-    let m = opt.markers.size
-    for (let i = 0; m.length < size; ++i) {
-      m.push(m[i])
-    }
-  }
-
+  console.log("prep: "+prepareFills)
   if (prepareFills) {
-    if (!opt.fill) { opt.fill = defaultLineOptions.fill }  // check that opt.fill exists
-    if (opt.fill.opacity == undefined) { opt.fill.opacity = [defaultLineOptions.fill.opacity] } // check that opt.fill.opacity exists
-    if (opt.fill.opacity.length == undefined) { opt.fill.opacity = [opt.fill.opacity] } // if it is no array yet make it one
-    {
-      let o = opt.fill.opacity
-      for (let i = 0; o.length < size; ++i) {
-        o.push(o[i])
-      }
+    if (!isArray(opt.fill.opacity)) {
+      console.log("no and: "+opt.fill.opacity)
+      opt.fill.opacity = new Array(size).fill(opt.fill.opacity)
+      console.log("opt.file.opacity: "+opt.fill.opacity)
+      console.log("now after: "+opt.fill.opacity.length)
+    } else {
+      const len = opt.fill.opacity.length
+      const last = opt.fill.opacity[len - 1]
+      console.log("yes and: "+len)
+      opt.fill.opacity.length = size
+      opt.fill.opacity.fill(last, len)
+      console.log("opt.file.opacity: "+opt.fill.opacity)
+      console.log("now after: "+opt.fill.opacity.length)
     }
   }
 
-  if (createEnableTooltip) {
-    if (!opt.tooltip) { opt.tooltip = defaultLineOptions.tooltip }
-    if (!opt.tooltip.enabledOnSeries) {
-      opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
-    }
+  if (createEnableTooltip && !isArray(opt.tooltip.enabledOnSeries)) {
+    opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
   }
-  return opt
 }
