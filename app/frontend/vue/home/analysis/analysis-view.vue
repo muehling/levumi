@@ -529,8 +529,8 @@
           this.updateNonSlopeTarget() // should only be called after the chart has been rendered
         }
         // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
-        this.chartOptions = preparedOptions
         this.graphData = gData
+        this.chartOptions = preparedOptions
 
         // call this after caching as we'll call this again on redraws too, to avoid potential problems due to cloning
         this.updateAnnotations(this.annotations)
