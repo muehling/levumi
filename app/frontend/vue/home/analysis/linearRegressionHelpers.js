@@ -7,31 +7,31 @@ function xDateToInt(xVal) {
 }
 
 function convertXDatesToInts(series) {
-    let converted = []
+    let converted = Array(series.length)
     for (let i = 0; i < series.length; i++) {
         const item = series[i]
-        converted.push({x: xDateToInt(item.x), y: item.y})
+        converted[i] = ({x: xDateToInt(item.x), y: item.y})
     }
     return converted
 }
 
 // to make sure y is a number
 function convertYValuesToInteger(series) {
-    let converted = []
+    let converted = Array(series.length)
     for (let i = 0; i < series.length; i++) {
         const item = series[i]
         if (item.y !== null) {
-            converted.push({x: item.x, y: Number(item.y)})
+            converted[i] = ({x: item.x, y: Number(item.y)})
         }
     }
     return converted
 }
 
 function convertXIntsToDates(series) {
-    let converted = []
+    let converted = Array(series.length)
     for (let i = 0; i < series.length; i++) {
         const item = series[i]
-        converted.push({x: item.x ? new Date(item.x * 1000) : null, y: item.y})   // multiply by 1000 to get milliseconds
+        converted[i] = ({x: item.x ? new Date(item.x * 1000) : null, y: item.y})   // multiply by 1000 to get milliseconds
     }
     return converted
 }
@@ -56,17 +56,15 @@ const defaultRegression = () => {
  * the first x value in data up to xEnd x-wise.
  * @param data An Array of { x: String | Number , y: String | Number }, where x should be a date string or a number
  * @param xEnd The endpoint up to which the generated linear regression should go. Can be a date string or number. Defaults to the last x value in data (no matter whether there is a y value there).
+ * @param annotations annotations (for the current student and view) that may act as thresholds for trends
  * @param handleDates If true (default) x values are handles as date strings
  * @returns {[{x: any | Number, y: String}]}
  */
-export function createTrendline(data, xEnd = null, handleDates = true) {
-    let processed = [],
-        i;
+export function createTrendline(data, xEnd = null, annotations = [], handleDates = true) {
+    let processed = []
     if (data.length <= 1) {
-        return processed;
+        return processed
     }
-    // set the regression values to default
-    let regression = defaultRegression();
     // convert dates to seconds since epoch if necessary
     let modelData = data
     if (handleDates) {
@@ -79,23 +77,45 @@ export function createTrendline(data, xEnd = null, handleDates = true) {
     const cleanedModelData = modelData.filter(function (el) {
         return (el.x != undefined) && (el.y != undefined)
     });
-    // calculate the regression new sums
-    for (i = 0; i < cleanedModelData.length; i++) {
-        addToRegressionSums(regression, cleanedModelData[i]);
+    // get all thresholds so that we know how many regressions we need
+    let thresholds = annotations.filter(a => a.trend_threshold).map(a => a.start)
+    if (handleDates) {
+        thresholds = thresholds.map(t => xDateToInt(t)).filter(t => t !== null)
     }
-    // calculate "a" and "b" values for the regression equation.
-    regression.a = calculateAValue(regression);
-    regression.b = calculateBValue(regression);
-    // get "y" values for the trend line.
-    for (i = 0; i < modelData.length; i++) {
-        const xVal = modelData[i].x
-        if (xVal) { // y values can only be calculated for non-null x-values
-            processed.push({
-                x: xVal,
-                y: calculateYValue(regression, xVal).toFixed(2),    // output as a string
+    thresholds = thresholds.sort()
+
+    let intervalStart = -Infinity
+    let intervalEnd = thresholds.length > 0 ? thresholds[0] : Infinity
+    let regression
+    for (let r = 0; r < thresholds.length + 1; ++r) {
+        // set the regression values to default
+        regression = defaultRegression()
+        // get the points that lie within the current x-axis interval
+        const intervalData = cleanedModelData.filter(point => (intervalStart <= point.x && point.x <= intervalEnd))
+        // skip this interval if it contains less than two data points
+        if (intervalData.length >= 2) {
+            // calculate the regression new sums
+            intervalData.forEach(point => addToRegressionSums(regression, point))
+            // calculate "a" and "b" values for the regression equation.
+            regression.a = calculateAValue(regression)
+            regression.b = calculateBValue(regression)
+
+            // get "y" values for the trend line for all x values in the current interval
+            modelData.forEach(point => {
+                const xVal = point.x
+                if (xVal && intervalStart <= xVal && xVal <= intervalEnd) { // y values can only be calculated for non-null x-values
+                    processed.push({
+                        x: xVal,
+                        y: calculateYValue(regression, xVal).toFixed(2),    // output as a string
+                    })
+                }
             })
         }
+        // prepare for the next regression by looking at the next threshold
+        intervalStart = intervalEnd
+        intervalEnd = thresholds[r+1] || Infinity
     }
+
     // add whatever point would be at x = xEnd, if xEnd is given and greater than the currently last x value
     if (xEnd && xEnd > processed[processed.length - 1].x) {
         processed.push({
@@ -105,7 +125,7 @@ export function createTrendline(data, xEnd = null, handleDates = true) {
     }
     // convert seconds back to dates if necessary
     if (handleDates) { processed = convertXIntsToDates(processed) }
-    return processed;
+    return processed
 }
 
 function addToRegressionSums(regression, item) {

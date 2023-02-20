@@ -36,7 +36,6 @@
             <div class="d-flex flex-row">
               <b-form-select
                 v-model="annotationCategoryId"
-                name="annotation[end]"
                 :options="getAnnotationOptions()"
                 size="sm"
               ></b-form-select>
@@ -47,6 +46,29 @@
                 style="font-size: 1rem"
                 class="ml-2 mt-1"
                 ><i class="fas fa-circle-question"></i
+              ></span>
+            </div>
+          </div>
+        </div>
+        <div v-if="trendIsEnabled" class="mt-3 text-small row">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label class="mt-1">Start neuer Trendlinie</label>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-row">
+              <b-form-checkbox
+                  v-model="annotationIsTrendThreshold"
+                  :disabled="annotationStart !== annotationEnd"
+                  size="sm"
+              ></b-form-checkbox>
+              <span
+                  v-b-popover.hover="
+                  'Umfasst eine Anmerkung nur ein einziges Datum, so können Trends für die Bereiche ' +
+                   'vor und nach der Anmerkung erstellt werden.'
+                "
+                  style="font-size: 1rem"
+                  class="ml-2 mt-1"
+              ><i class="fas fa-circle-question"></i
               ></span>
             </div>
           </div>
@@ -68,6 +90,7 @@
             <th>Von</th>
             <th>Bis</th>
             <th>Anmerkung</th>
+            <th v-if="trendIsEnabled">Trend-Bruchstelle</th>
             <th v-if="!readOnly">Aktionen</th>
           </tr>
         </thead>
@@ -76,6 +99,7 @@
             <td>{{ printDate(a.start) }}</td>
             <td>{{ printDate(a.end) }}</td>
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
+            <td v-if="trendIsEnabled"><i :class="a.trend_threshold ? 'fas fa-check' : 'fas fa-xmark'"></i></td>
             <td v-if="!readOnly" class="annotation-action-button">
               <b-button variant="outline-danger" class="btn-sm" @click="deleteAnnotation(a.id)">
                 <i class="fas fa-trash"></i> Löschen
@@ -108,12 +132,14 @@
       selectedView: Number,
       test: Object,
       annotationControlVisible: Boolean,
+      trendIsEnabled: Boolean,
     },
     data: function () {
       return {
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: 1,
+        annotationIsTrendThreshold: false,
       }
     },
     computed: {
@@ -162,6 +188,7 @@
             start: this.annotationStart,
             end: this.annotationEnd,
             annotation_category_id: this.annotationCategoryId,
+            trend_threshold: this.annotationIsTrendThreshold,
             view: this.selectedView,
           },
         }
@@ -180,6 +207,7 @@
         if (res.status === 200) {
           const parsedResult = await res.json()
           this.$root.$emit(`annotation-added-${this.group.id}`, parsedResult)
+          this.annotationIsTrendThreshold = false
           this.annotationCategoryId = 1
           this.annotationEnd = null
           this.annotationStart = null

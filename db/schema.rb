@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_02_09_070918) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_20_125527) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -55,6 +55,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_02_09_070918) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "annotation_category_id"
+    t.boolean "trend_threshold"
     t.index ["annotation_category_id"], name: "index_annotations_on_annotation_category_id"
     t.index ["assessment_id"], name: "index_annotations_on_assessment_id"
     t.index ["group_id"], name: "index_annotations_on_group_id"

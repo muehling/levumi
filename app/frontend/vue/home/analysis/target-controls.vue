@@ -113,7 +113,7 @@ import ConfirmDialog from "../../shared/confirm-dialog.vue";
 export default {
   name: "TargetControls",
   components: {ConfirmDialog},
-  inject: ['readOnly', 'restoreTarget', 'currentView', 'setTarget', 'targetStored', 'loadStudentTargets'],
+  inject: ['readOnly', 'restoreTarget', 'viewConfig', 'setTarget', 'targetStored', 'loadStudentTargets'],
   props: {
     targetIsEnabled: Boolean,
     dateUntilIsEnabled: Boolean,
@@ -197,7 +197,7 @@ export default {
         return ajax (
             apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
               target: {
-                view: this.currentView.key,
+                view: this.viewConfig.key,
                 value: this.targetVal,
                 date_until: this.dateUntilVal,
                 deviation: this.deviationVal,
@@ -209,7 +209,7 @@ export default {
         return ajax(
             apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
               target: {
-                view: this.currentView.key,
+                view: this.viewConfig.key,
                 value: this.targetVal,
                 date_until: this.dateUntilVal,
                 deviation: this.deviationVal,

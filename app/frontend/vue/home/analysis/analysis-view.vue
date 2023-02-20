@@ -104,6 +104,7 @@
                 :selected-student="selectedStudent"
                 :selected-view="selectedView"
                 :annotation-control-visible.sync="annotationControlVisible"
+                :trend-is-enabled="trendIsEnabled"
                 @annotation-removed="removeAnnotation"
             />
             <TargetControls
@@ -188,7 +189,7 @@
         setTarget: this.setTarget,
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored),  // computed necessary for reactivity
-        currentView: computed(() => this.currentView),
+        viewConfig: computed(() => this.viewConfig),
       }
     },
     props: {
@@ -226,19 +227,19 @@
       currentChartType() {
         return this.chartOptions.chart.type || 'line'
       },
-      currentView() {
+      viewConfig() {
         return this.configuration.views[this.selectedView]
       },
       columns() {
-        return this.currentView.columns || []
+        return this.viewConfig.columns || []
       },
       selectedViewType() {
-        return this.currentView.type
+        return this.viewConfig.type
       },
       graph_visible() {
         return (
-          this.currentView.type === 'graph' ||
-          this.currentView.type === 'graph_table'
+          this.viewConfig.type === 'graph' ||
+          this.viewConfig.type === 'graph_table'
         )
       },
       has_group_views() {
@@ -259,12 +260,12 @@
       },
       table_visible() {
         return (
-          this.currentView.type === 'table' ||
-          this.currentView.type === 'graph_table'
+          this.viewConfig.type === 'table' ||
+          this.viewConfig.type === 'graph_table'
         )
       },
       table_data() {
-        if (this.currentView.type === 'graph') {
+        if (this.viewConfig.type === 'graph') {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -279,13 +280,13 @@
               let temp = {}
               for (
                 let i = 0;
-                i < this.currentView.column_keys.length;
+                i < this.viewConfig.column_keys.length;
                 ++i
               ) {
-                let key = this.currentView.column_keys[i]
-                let name = this.currentView.columns[i]
+                let key = this.viewConfig.column_keys[i]
+                let name = this.viewConfig.columns[i]
                 temp[name] =
-                  this.results[r].views[this.currentView.key][key]
+                  this.results[r].views[this.viewConfig.key][key]
                 if (temp[name] === undefined) {
                   temp[name] = '-'
                 }
@@ -317,23 +318,23 @@
         return [...this.graphData]
       },
       targetIsSlopeVariant() {
-        return Boolean(this.currentView.targetOptions?.type === 'slope')
+        return Boolean(this.viewConfig.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
-        return !this.currentView.series_keys && Boolean(this.currentView.targetOptions?.enabled)
+        return !this.viewConfig.series_keys && Boolean(this.viewConfig.targetOptions?.enabled)
       },
       dateUntilIsEnabled() {
         // if a slope target is to be shown then we need dateUntil anyway
-        return Boolean(this.currentView.targetOptions?.selectEndDate) || (this.targetIsEnabled && this.targetIsSlopeVariant)
+        return Boolean(this.viewConfig.targetOptions?.selectEndDate) || (this.targetIsEnabled && this.targetIsSlopeVariant)
       },
       deviationIsEnabled() {
-        return Boolean(this.currentView.targetOptions?.selectDeviation)
+        return Boolean(this.viewConfig.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
-        return Boolean(this.currentView.trendOptions?.enabled)
+        return Boolean(this.viewConfig.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
-        return Boolean(this.currentView.trendOptions?.extrapolate)
+        return Boolean(this.viewConfig.trendOptions?.extrapolate)
       },
       deviationStored() {
         return this.targetStored?.deviation || null
@@ -357,13 +358,16 @@
         // when no target is defined return null (nothing stored)
         const sId = this.selectedStudentId === -1 ? null : this.selectedStudentId // group targets are stored under a null student
         const res = this.studentTargets  // find the target belonging to this student in the current view
-            .find(target => target.student_id === sId && target.view === this.currentView?.key)
+            .find(target => target.student_id === sId && target.view === this.viewConfig?.key)
         return res === undefined ? null : res
       },
     },
     watch: {
       annotations() {
         this.updateAnnotations()
+        if (this.trendIsEnabled) { // if trends are enabled we may need to let trend lines adapt to thresholds in annotations
+          this.updateView(true)
+        }
       },
     },
     mounted() {
@@ -412,7 +416,7 @@
       async export_graph() {
         let title
         let filename
-        let view = this.currentView
+        let view = this.viewConfig
         if (this.selectedStudentId === -1) {
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
@@ -439,7 +443,7 @@
       XYFromResult(result, seriesKey, formatDate) {
         if (!result) {return undefined}
         let yVal
-        const view = this.currentView
+        const view = this.viewConfig
         if (seriesKey) {
           yVal = result?.views[view.key][seriesKey] || null
         } else {
@@ -462,7 +466,7 @@
         this.updateView(animateChange)
       },
       updateView(animate) {
-        const view = this.currentView
+        const view = this.viewConfig
         if (view.type === 'table') { return }
 
         const trueChartType = view.options.chart.type
@@ -488,7 +492,8 @@
               // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
               trendlineData = createTrendline(
                   gData[0]?.data,
-                  this.extrapolationIsEnabled ? this.dateUntilVal : null
+                  this.extrapolationIsEnabled ? this.dateUntilVal : null,
+                  this.annotations.filter(a => (a.trend_threshold && a.student_id === student.id && a.view === this.selectedView))
               )
             }
           } else {
@@ -531,9 +536,9 @@
         // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
         this.graphData = gData
         this.chartOptions = preparedOptions
-
-        // call this after caching as we'll call this again on redraws too, to avoid potential problems due to cloning
-        this.updateAnnotations(this.annotations)
+        // FIXME: using setTimeout here is a workaround:
+        // if called immediately the added annotations won't be rendered for some reason when coming from a view of type 'bar' (or possibly also other types)
+        setTimeout(this.updateAnnotations, 1)
       },
 
       updateAnnotations() {
@@ -548,19 +553,22 @@
         const xaxis = applicableAnnotations
           .filter(
             annotation =>
-              annotation.start !== annotation.end ||
-              (studentId === null && annotation.start === annotation.end)
+              annotation.view === this.selectedView &&
+              (annotation.start !== annotation.end ||
+              (studentId === null && annotation.start === annotation.end))
           )
           .map(annotation => annotationsLineOptions(annotation, this.weeks))
 
         const points = applicableAnnotations
-          .filter(annotation => annotation.start === annotation.end && studentId !== null)
+          .filter(annotation =>
+              annotation.view === this.selectedView &&
+              annotation.start === annotation.end && studentId !== null)
           .map(annotation => {
             const dataForAnnotation = this.graphData[0].data.find(
               d => d.x === annotation.start
             )
             return annotationsPointOptions(
-              this.currentView,
+              this.viewConfig,
               annotation,
               dataForAnnotation.y,
               annotation.start
