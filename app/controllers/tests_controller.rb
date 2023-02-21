@@ -101,7 +101,12 @@ class TestsController < ApplicationController
         }
       end
 
-    render json: { areas: all_areas, test_families: all_families, competences: all_competences }
+    render json: {
+             areas: all_areas,
+             test_families: all_families,
+             competences: all_competences,
+             tests: Test.all
+           }
   end
 
   private

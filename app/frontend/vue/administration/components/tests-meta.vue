@@ -15,8 +15,17 @@
       </div>
     </b-card>
     <b-card v-if="competenceId" :title="`Testfamilien für '${selectedCompetence?.name}'`">
-      <div v-for="testFamily in testFamilies" :key="testFamily.id">
+      <div
+        v-for="testFamily in testFamilies"
+        :key="testFamily.id"
+        @click="selectTestFamily(testFamily.id)"
+      >
         {{ `${testFamily.name} (${testFamily.test_count})` }}
+      </div>
+    </b-card>
+    <b-card v-if="testFamilyId" :title="`Tests für '${selectedTestFamily?.name}'`">
+      <div v-for="test in tests" :key="test.id">
+        {{ `${test.shorthand} / ${test.level} / ${test.label}` }}
       </div>
     </b-card>
   </div>
@@ -30,7 +39,6 @@
         data: {},
         areaId: undefined,
         competenceId: undefined,
-
         testFamilyId: undefined,
       }
     },
@@ -41,6 +49,9 @@
       selectedCompetence() {
         return this.data.competences.find(competence => competence.id === this.competenceId)
       },
+      selectedTestFamily() {
+        return this.data.test_families.find(testFamily => testFamily.id === this.testFamilyId)
+      },
       competences() {
         return this.data.competences.filter(
           competence => competence.area_id === this.selectedArea.id
@@ -50,6 +61,9 @@
         return this.data.test_families.filter(
           testFamily => testFamily.competence_id === this.selectedCompetence.id
         )
+      },
+      tests() {
+        return this.data.tests.filter(test => test.test_family_id === this.testFamilyId)
       },
     },
     async mounted() {
