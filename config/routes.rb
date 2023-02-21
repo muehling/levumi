@@ -45,6 +45,7 @@ Rails.application.routes.draw do
   post 'renew_login', to: 'application#renew_login'
   delete '/delete_self', to: 'users#destroy_self'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
+  get '/tests_meta', to: 'tests#get_tests_meta'
 
   #Reguläres REST-Routing
   resources :users
@@ -60,7 +61,8 @@ Rails.application.routes.draw do
     resources :group_shares
   end
 
-  resources :tests
+  resources :tests do
+  end
   resources :materials
   resources :annotation_categories
 end
