@@ -1,39 +1,63 @@
 <template>
-  <div>
+  <div class="col-md-8 col-xl-6">
     <b-card title="Lernbereiche">
-      <div v-for="area in data.areas" :key="area.id" @click="selectArea(area.id)">
-        {{ `${area.name} (${area.test_count})` }}
-      </div>
+      <b-table small striped hover :items="areas" :fields="fields" @row-clicked="selectArea">
+        <template #cell(actions)="d"
+          ><tests-meta-actions
+            :data="d"
+            :delete-item="deleteItem"
+            type="area"
+            :rename-item="renameItem"
+        /></template>
+      </b-table>
     </b-card>
     <b-card v-if="areaId" :title="`Kompetenzbereiche für '${selectedArea?.name}'`">
-      <div
-        v-for="competence in competences"
-        :key="competence.id"
-        @click="selectCompetence(competence.id)"
+      <b-table
+        small
+        striped
+        hover
+        :items="competences"
+        :fields="fields"
+        @row-clicked="selectCompetence"
       >
-        {{ `${competence.name} (${competence.test_count})` }}
-      </div>
+        <template #cell(actions)="d"
+          ><tests-meta-actions
+            :data="d"
+            :delete-item="deleteItem"
+            type="competence"
+            :rename-item="renameItem"
+        /></template>
+      </b-table>
     </b-card>
     <b-card v-if="competenceId" :title="`Testfamilien für '${selectedCompetence?.name}'`">
-      <div
-        v-for="testFamily in testFamilies"
-        :key="testFamily.id"
-        @click="selectTestFamily(testFamily.id)"
+      <b-table
+        small
+        striped
+        hover
+        :items="testFamilies"
+        :fields="fields"
+        @row-clicked="selectTestFamily"
       >
-        {{ `${testFamily.name} (${testFamily.test_count})` }}
-      </div>
+        <template #cell(actions)="d"
+          ><tests-meta-actions
+            :data="d"
+            :delete-item="deleteItem"
+            type="testFamily"
+            :rename-item="renameItem"
+        /></template>
+      </b-table>
     </b-card>
     <b-card v-if="testFamilyId" :title="`Tests für '${selectedTestFamily?.name}'`">
-      <div v-for="test in tests" :key="test.id">
-        {{ `${test.shorthand} / ${test.level} / ${test.label}` }}
-      </div>
+      <b-table small striped hover :items="tests" :fields="fields"> </b-table>
     </b-card>
   </div>
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
+  import TestsMetaActions from './tests-meta-actions.vue'
   export default {
     name: 'TestsMeta',
+    components: { TestsMetaActions },
     data() {
       return {
         data: {},
@@ -43,6 +67,14 @@
       }
     },
     computed: {
+      fields() {
+        return [
+          { key: 'id', label: 'ID' },
+          { key: 'name', label: 'Name' },
+          { key: 'actions', label: '' },
+        ]
+      },
+
       selectedArea() {
         return this.data.areas.find(area => area.id === this.areaId)
       },
@@ -52,18 +84,35 @@
       selectedTestFamily() {
         return this.data.test_families.find(testFamily => testFamily.id === this.testFamilyId)
       },
+      areas() {
+        return this.data.areas?.map(area => ({
+          id: area.id,
+          name: `${area.name} (${area.test_count})`,
+        }))
+      },
       competences() {
-        return this.data.competences.filter(
-          competence => competence.area_id === this.selectedArea.id
-        )
+        return this.data.competences
+          .filter(competence => competence.area_id === this.selectedArea.id)
+          .map(competence => ({
+            id: competence.id,
+            name: `${competence.name} (${competence.test_count})`,
+          }))
       },
       testFamilies() {
-        return this.data.test_families.filter(
-          testFamily => testFamily.competence_id === this.selectedCompetence.id
-        )
+        return this.data.test_families
+          .filter(testFamily => testFamily.competence_id === this.selectedCompetence.id)
+          .map(testFamily => ({
+            id: testFamily.id,
+            name: `${testFamily.name} (${testFamily.test_count})`,
+          }))
       },
       tests() {
-        return this.data.tests.filter(test => test.test_family_id === this.testFamilyId)
+        return this.data.tests
+          .filter(test => test.test_family_id === this.testFamilyId)
+          .map(test => ({
+            id: test.id,
+            name: test.shorthand + ' / ' + test.level + ' / ' + test.label,
+          }))
       },
     },
     async mounted() {
@@ -72,17 +121,23 @@
       this.data = data
     },
     methods: {
-      selectArea(areaId) {
-        this.areaId = areaId
+      deleteItem(type, id) {
+        console.log('delete', type, id)
+      },
+      renameItem(type, id) {
+        console.log('rename', type, id)
+      },
+      selectArea(area) {
+        this.areaId = area.id
         this.competenceId = undefined
         this.testFamilyId = undefined
       },
-      selectCompetence(competenceId) {
-        this.competenceId = competenceId
+      selectCompetence(competence) {
+        this.competenceId = competence.id
         this.testFamilyId = undefined
       },
-      selectTestFamily(testFamilyId) {
-        this.testFamilyId = testFamilyId
+      selectTestFamily(testFamily) {
+        this.testFamilyId = testFamily.id
       },
     },
   }
