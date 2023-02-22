@@ -263,7 +263,14 @@
 
     computed: {
       systemMessage() {
-        return this.$root.mode === 'staging' ? 'TEST-SYSTEM' : ''
+        switch (this.$root.mode) {
+          case 'staging':
+            return 'TEST-SYSTEM'
+          case 'development':
+            return 'DEV'
+          default:
+            return ''
+        }
       },
       login() {
         return this.globalStore.login

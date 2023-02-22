@@ -30,6 +30,8 @@ export default {
     info: '/tests/info',
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
+    testMetaData: { url: '/test_meta', method: 'POST', contentType: 'omit' },
+    checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
   },
   assessments: {
     excludeStudent: (groupId, testId, studentId) => ({

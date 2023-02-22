@@ -45,7 +45,8 @@ Rails.application.routes.draw do
   post 'renew_login', to: 'application#renew_login'
   delete '/delete_self', to: 'users#destroy_self'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
-  get '/tests_meta', to: 'tests#get_tests_meta'
+  get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
+  post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
 
   #Reguläres REST-Routing
   resources :users

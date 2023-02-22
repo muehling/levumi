@@ -1,5 +1,6 @@
 class TestsController < ApplicationController
-  before_action :set_test, except: %i[index create get_tests_data get_tests_meta]
+  before_action :set_test,
+                except: %i[index create get_tests_data get_tests_meta check_upload_version]
   before_action :is_allowed, only: %i[create edit update destroy]
 
   #GET /tests
@@ -65,6 +66,17 @@ class TestsController < ApplicationController
 
   def get_tests_data
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+  end
+
+  def check_upload_version
+    old_test = Test.where(shorthand: params[:shorthand]).where.not(archive: true).first
+    if old_test.nil?
+      is_new_version = false
+    else
+      is_new_version = old_test.version < params[:version]
+    end
+
+    render json: { is_new_version: is_new_version, is_new_test: old_test.nil? }
   end
 
   def get_tests_meta
