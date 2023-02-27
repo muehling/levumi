@@ -13,6 +13,8 @@ import VueRouter from 'vue-router'
 
 const routes = [
   { path: '/start', component: HomeApp }, // Diagnostik
+  { path: '/uebungen', component: HomeApp, props: { isExcercise: true } }, // Diagnostik
+
   { path: '/klassenbuch', component: ClassBookApp }, // Klassenbuch
   { path: '/materialien', component: MaterialsApp }, // Fördermaterialien
   { path: '/testuebersicht', component: TestsApp }, // Tests

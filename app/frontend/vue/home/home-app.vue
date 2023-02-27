@@ -87,6 +87,7 @@
   export default {
     name: 'HomeApp',
     components: { GroupView, IntroPopover },
+    props: { isExcercise: Boolean },
     setup() {
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
@@ -109,6 +110,8 @@
       },
     },
     mounted() {
+      console.log(this.isExcercise)
+
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [

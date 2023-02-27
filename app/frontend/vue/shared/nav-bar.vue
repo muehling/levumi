@@ -23,6 +23,9 @@
           <li id="intro1" class="nav-item active">
             <router-link class="nav-link" to="/start">Diagnostik</router-link>
           </li>
+          <li id="intro1" class="nav-item active">
+            <router-link class="nav-link" to="/uebungen">Übungen</router-link>
+          </li>
           <li id="intro2" class="nav-item">
             <router-link class="nav-link" to="/klassenbuch"
               >Klassenbuch

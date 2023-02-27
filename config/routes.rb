@@ -35,6 +35,7 @@ Rails.application.routes.draw do
   get '/statistiken', to: 'users#show'
   get '/nutzerverwaltung', to: 'users#show'
   get '/administration', to: 'users#show'
+  get '/uebungen', to: 'users#show'
 
   # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'
