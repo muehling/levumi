@@ -47,6 +47,7 @@ Rails.application.routes.draw do
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
+  delete 'delete_area/:id', to: 'areas#destroy_safe'
 
   #Reguläres REST-Routing
   resources :users
@@ -66,4 +67,7 @@ Rails.application.routes.draw do
   end
   resources :materials
   resources :annotation_categories
+  resources :areas
+  resources :competences
+  resources :test_families
 end
