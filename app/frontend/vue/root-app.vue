@@ -74,7 +74,9 @@
     },
     async created() {
       await this.checkLogin()
-      this.displayNews()
+      if (this.globalStore.login.intro_state >= 5) {
+        this.displayNews()
+      }
     },
     methods: {
       async checkLogin() {
@@ -106,9 +108,13 @@
         }
       },
       async displayNews() {
-        const messagesToBeDisplayed = updates.filter(
-          update => update.intro_state > this.globalStore.login.intro_state
-        )
+        const messagesToBeDisplayed = updates.filter((update, index) => {
+          if (this.globalStore.login.intro_state === 5) {
+            return index === updates.length - 1 // for newly registered users, arbitrarily display the last news item.
+          } else {
+            return update.intro_state > this.globalStore.login.intro_state
+          }
+        })
 
         if (!messagesToBeDisplayed.length) {
           return
