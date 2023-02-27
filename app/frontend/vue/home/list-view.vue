@@ -26,7 +26,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sortedlist" :key="test.test + '/' + test.name" class="assessment-line">
+        <tr v-for="test in sortedList" :key="test.test + '/' + test.name" class="assessment-line">
           <td @click="setPreselect(test)">{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
           <!--<td>{{ formatLastDate(test.last_test) }}</td>-->
@@ -108,10 +108,10 @@
     },
     computed: {
       toggleButtonVariant() {
-        return this.allTestsActive ? 'outline-success' : 'outline-danger'
+        return !this.allTestsActive ? 'outline-success' : 'outline-danger'
       },
       toggleButtonText() {
-        return this.allTestsActive ? 'Alle Tests aktivieren' : 'Alle Tests pausieren'
+        return !this.allTestsActive ? 'Alle Tests aktivieren' : 'Alle Tests pausieren'
       },
       allTestsActive() {
         return this.assessmentsStore
@@ -119,7 +119,7 @@
           .filter(assessment => assessment.student_test)
           .reduce((acc, assessment) => acc && assessment.active, true)
       },
-      sortedlist() {
+      sortedList() {
         const byResult = []
         const byType = []
         const byStatus = []
@@ -158,6 +158,19 @@
     },
     methods: {
       async handleToggleActive() {
+        let ok = true
+        if (this.assessmentsStore.getAssessments(this.group.id).length !== this.sortedList.length) {
+          ok = await this.$refs.confirmDialog.open({
+            title: `Alle Tests ${this.allTestsActive ? 'pausieren' : 'aktivieren'}`,
+            message:
+              'Diese Aktion wechselt den Status all Ihrer Test, auch der derzeit durch die Filterung nicht sichtbaren. Möchten Sie fortfahren?',
+            okText: 'Ja, fortfahren',
+            okIntent: 'outline-success',
+          })
+        }
+        if (!ok) {
+          return
+        }
         const res = await ajax({
           ...apiRoutes.assessments.updateAll(this.group.id),
           data: { active: !this.allTestsActive },
