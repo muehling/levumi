@@ -25,19 +25,36 @@
       </div>
       <div v-else-if="uploadStep === 2" class="card card-body">
         <p><strong>Folgende Informationen wurden in der hochgeladenen Datei gefunden:</strong></p>
-        <p>
-          <span><strong>Kurzbezeichnung:</strong> {{ testInfo.shorthand }}</span>
-          <br />
-          <span><strong>Lernbereich:</strong> {{ testInfo.area }}</span>
-          <br />
-          <span><strong>Kompetenz:</strong> {{ testInfo.competence }}</span>
-          <br />
-          <span><strong>Testfamilie:</strong> {{ testInfo.testFamily }}</span>
-          <br />
-          <span><strong>Level:</strong> {{ testInfo.level }}</span>
-          <br />
-          <span><strong>Version:</strong> {{ testInfo.version }}{{ versionHint }}</span>
-        </p>
+
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Kurzbezeichnung:</strong></div>
+          <div class="col-8">{{ testInfo.shorthand }}</div>
+        </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Lernbereich:</strong></div>
+          <div class="col-8">{{ testInfo.area }}</div>
+        </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Kompetenz:</strong></div>
+          <div class="col-8">{{ testInfo.competence }}</div>
+        </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Testfamilie:</strong></div>
+          <div class="col-8">{{ testInfo.testFamily }}</div>
+        </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Level:</strong></div>
+          <div class="col-8">{{ testInfo.level }}</div>
+        </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Version:</strong></div>
+          <div class="col-8">{{ testInfo.version }}</div>
+        </div>
+        <div class="row pl-3 pt-2">
+          <div class="col p-0">
+            <i>{{ versionHint }}</i>
+          </div>
+        </div>
 
         <b-form-checkbox v-if="testInfo.isNewVersion" v-model="keepMaterials">
           Existierendes Fördermaterial beibehalten</b-form-checkbox
@@ -82,11 +99,11 @@
     computed: {
       versionHint() {
         if (this.testInfo.isNewTest) {
-          return ' (neuer Test)'
+          return 'Neuer Test'
         } else if (this.testInfo.isNewVersion) {
-          return ' (neue Version, bestehender Test wird archiviert)'
+          return 'Neue Version, bestehender Test wird archiviert'
         } else {
-          return ' (Version vorhanden, bestehender Test wird aktualisiert)'
+          return 'Version vorhanden, bestehender Test wird aktualisiert'
         }
       },
     },
