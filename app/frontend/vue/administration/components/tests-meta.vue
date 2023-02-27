@@ -1,17 +1,24 @@
 <template>
   <div class="col-md-8 col-xl-6">
-    <b-card title="Lernbereiche">
+    <b-card title="Lernbereiche" class="mt-3">
       <b-table small striped hover :items="areas" :fields="fields" @row-clicked="selectArea">
         <template #cell(actions)="d"
           ><tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
-            type="area"
+            type="areas"
             :rename-item="renameItem"
         /></template>
+        <template #cell(name)="d">
+          <span>{{ d.item.name }}</span>
+        </template>
       </b-table>
     </b-card>
-    <b-card v-if="areaId" :title="`Kompetenzbereiche für '${selectedArea?.name}'`">
+    <b-card
+      v-if="areaId && competences.length"
+      :title="`Kompetenzbereiche für '${selectedArea?.name}'`"
+      class="mt-3"
+    >
       <b-table
         small
         striped
@@ -24,12 +31,16 @@
           ><tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
-            type="competence"
+            type="competences"
             :rename-item="renameItem"
         /></template>
       </b-table>
     </b-card>
-    <b-card v-if="competenceId" :title="`Testfamilien für '${selectedCompetence?.name}'`">
+    <b-card
+      v-if="competenceId && testFamilies.length"
+      :title="`Testfamilien für '${selectedCompetence?.name}'`"
+      class="mt-3"
+    >
       <b-table
         small
         striped
@@ -42,22 +53,34 @@
           ><tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
-            type="testFamily"
+            type="testFamilies"
             :rename-item="renameItem"
         /></template>
       </b-table>
     </b-card>
-    <b-card v-if="testFamilyId" :title="`Tests für '${selectedTestFamily?.name}'`">
+    <b-card
+      v-if="testFamilyId && tests.length"
+      :title="`Tests für '${selectedTestFamily?.name}'`"
+      class="mt-3"
+    >
       <b-table small striped hover :items="tests" :fields="fields"> </b-table>
     </b-card>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
+  import { useGlobalStore } from '../../../store/store'
+  import apiRoutes from '../../routes/api-routes'
+  import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import TestsMetaActions from './tests-meta-actions.vue'
   export default {
     name: 'TestsMeta',
-    components: { TestsMetaActions },
+    components: { TestsMetaActions, ConfirmDialog },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
       return {
         data: {},
@@ -71,6 +94,7 @@
         return [
           { key: 'id', label: 'ID' },
           { key: 'name', label: 'Name' },
+          { key: 'testCount', label: 'Anzahl Tests' },
           { key: 'actions', label: '' },
         ]
       },
@@ -87,7 +111,8 @@
       areas() {
         return this.data.areas?.map(area => ({
           id: area.id,
-          name: `${area.name} (${area.test_count})`,
+          name: area.name,
+          testCount: area.test_count,
         }))
       },
       competences() {
@@ -95,7 +120,8 @@
           .filter(competence => competence.area_id === this.selectedArea.id)
           .map(competence => ({
             id: competence.id,
-            name: `${competence.name} (${competence.test_count})`,
+            name: competence.name,
+            testCount: competence.test_count,
           }))
       },
       testFamilies() {
@@ -103,7 +129,8 @@
           .filter(testFamily => testFamily.competence_id === this.selectedCompetence.id)
           .map(testFamily => ({
             id: testFamily.id,
-            name: `${testFamily.name} (${testFamily.test_count})`,
+            name: testFamily.name,
+            testCount: testFamily.test_count,
           }))
       },
       tests() {
@@ -116,16 +143,36 @@
       },
     },
     async mounted() {
-      const res = await ajax({ url: '/tests_meta' })
-      const data = await res.json()
-      this.data = data
+      await this.refetch()
     },
     methods: {
-      deleteItem(type, id) {
-        console.log('delete', type, id)
+      async refetch() {
+        const res = await ajax({ url: '/tests_meta' })
+        const data = await res.json()
+        this.data = data
       },
-      renameItem(type, id) {
-        console.log('rename', type, id)
+      async deleteItem(type, id) {
+        const answer = await this.$refs.confirmDialog.open({
+          cancelText: 'Abbrechen',
+          disableCloseOnBackdrop: true,
+          message: 'Eintrag wirklich löschen? Dieser Vorgang kann nicht rückgängig gemacht werden!',
+          okIntent: 'outline-danger',
+          okText: 'Ok',
+          title: 'Eintrag löschen',
+        })
+
+        if (answer) {
+          await ajax(apiRoutes.administration[type].delete(id))
+          await this.refetch()
+        }
+      },
+      async renameItem(type, id, newName) {
+        console.log('rename', type, id, newName)
+        const res = await ajax({
+          ...apiRoutes.administration[type].update(id),
+          data: { name: newName },
+        })
+        await this.refetch()
       },
       selectArea(area) {
         this.areaId = area.id

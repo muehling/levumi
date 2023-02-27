@@ -168,7 +168,7 @@
                 Export
               </router-link>
               <router-link
-                v-if="checkCapability('test')"
+                v-if="checkCapability('admin')"
                 to="/administration"
                 class="dropdown-item"
               >

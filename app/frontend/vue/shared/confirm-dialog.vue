@@ -15,9 +15,9 @@
     <div v-else v-html="message"></div>
 
     <div class="d-flex justify-content-end">
-      <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close"
-        >Schließen</b-button
-      >
+      <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close">
+        {{ cancelText }}
+      </b-button>
       <b-button :variant="okIntent" class="m-1" @click="_confirm">{{ okText }}</b-button>
     </div>
   </b-modal>
@@ -27,16 +27,19 @@
   export default {
     name: 'ConfirmDialog',
 
-    data: () => ({
-      containsHtml: false,
-      disableCloseOnBackdrop: false,
-      hideCancelButton: false,
-      message: '',
-      okIntent: '',
-      okText: '',
-      resolvePromise: undefined,
-      title: '',
-    }),
+    data() {
+      return {
+        cancelText: 'Schließen',
+        containsHtml: false,
+        disableCloseOnBackdrop: false,
+        hideCancelButton: false,
+        message: '',
+        okIntent: '',
+        okText: '',
+        resolvePromise: undefined,
+        title: '',
+      }
+    },
     mounted() {
       this.$on('hidden', (bvEvent, modalId) => {
         console.log('Modal is about to be shown', bvEvent, modalId)
@@ -45,6 +48,7 @@
     methods: {
       open(data = {}) {
         this.$refs.genericConfirmDialog.show()
+        this.cancelText = data.cancelText || 'Schließen'
         this.containsHtml = data.containsHtml || false
         this.disableCloseOnBackdrop = data.disableCloseOnBackdrop || false
         this.hideCancelButton = data.hideCancelButton || false

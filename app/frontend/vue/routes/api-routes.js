@@ -73,4 +73,18 @@ export default {
     create: { url: '/annotation_categories', method: 'POST' },
     delete: id => ({ url: `/annotation_categories/${id}`, method: 'DELETE' }),
   },
+  administration: {
+    areas: {
+      update: id => ({ url: `/areas/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/delete_area/${id}`, method: 'DELETE' }),
+    },
+    competences: {
+      update: id => ({ url: `/competences/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/competences/${id}`, method: 'DELETE' }),
+    },
+    testFamilies: {
+      update: id => ({ url: `/test_families/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/test_families/${id}`, method: 'DELETE' }),
+    },
+  },
 }
