@@ -79,7 +79,7 @@ class Test < ApplicationRecord
       #Automatische Archivierung
       old_test = Test.where(shorthand: vals['shorthand']).where.not(archive: true).first
       unless old_test.nil?
-        if old_test.version < vals['version'] || archive
+        if old_test.version < vals['version']
           #Falls kleiner Version, automatisch archivert.
           old_test.archive = true
           old_test.save
@@ -143,15 +143,22 @@ class Test < ApplicationRecord
         end
 
         #Dateien aus ZIP lesen und zu Test dazufügen bzw. updaten
+
+        if old_test == test
+          test.entry_point.purge
+          test.media_files.purge
+          test.info_files.purge
+          test.script_files.purge
+          test.style_files.purge
+        end
+
         f = zip.glob('test.html').first
-        test.entry_point.purge if old_test == test
         test.entry_point.attach(
           io: StringIO.new(f.get_input_stream.read),
           filename: 'test.html',
           content_type: 'text/html'
         )
 
-        test.media_files.purge if old_test == test
         zip
           .glob('media/*')
           .each do |f|
@@ -161,7 +168,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.info_files.purge if old_test == test
         zip
           .glob('info/*')
           .each do |f|
@@ -171,7 +177,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.script_files.purge if old_test == test
         zip
           .glob('scripts/*')
           .each do |f|
@@ -182,7 +187,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.style_files.purge if old_test == test
         zip
           .glob('styles/*')
           .each do |f|
@@ -201,28 +205,39 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
-    student_ids = Rails.cache.fetch("all_not_demo_students", expires_in: 24.hours) do
-      Student.where(group_id: Group.where.not(demo: true)).pluck(:id) 
-    end   
-  
+    student_ids =
+      Rails
+        .cache
+        .fetch('all_not_demo_students', expires_in: 24.hours) do
+          Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
+        end
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
-    
-
-    Rails.cache.fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do
-      Result.where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
-      .exists?
-    end 
-
+    Rails
+      .cache
+      .fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do
+        Result.where(
+          student_id: student_ids,
+          assessment_id: assessment_ids,
+          test_date: '2019-09-09'..
+        ).exists?
+      end
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
-    student_ids = Rails.cache.fetch("all_not_demo_students", expires_in: 24.hours) do
-      Student.where(group_id: Group.where.not(demo: true)).pluck(:id)       
-    end  
-    assessment_ids = Rails.cache.fetch("assessments_for_test_#{cache_key_with_version}", expires_in: 24.hours) do 
-      Assessment.where(test_id: self.id).pluck('id')
-    end
+    student_ids =
+      Rails
+        .cache
+        .fetch('all_not_demo_students', expires_in: 24.hours) do
+          Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
+        end
+    assessment_ids =
+      Rails
+        .cache
+        .fetch("assessments_for_test_#{cache_key_with_version}", expires_in: 24.hours) do
+          Assessment.where(test_id: self.id).pluck('id')
+        end
+
     #Keine alten Messungen exportieren
     res =
       Result
@@ -254,12 +269,7 @@ class Test < ApplicationRecord
     tests.each do |t|
       assessment_ids = Assessment.where(group_id: groups, test_id: t.id).pluck('id')
       results =
-        Result
-          .where(
-            student_id: students,
-            assessment_id: assessment_ids,
-            test_date: '2019-09-09'..
-          )
+        Result.where(student_id: students, assessment_id: assessment_ids, test_date: '2019-09-09'..)
       res << {
         label: t.full_name,
         count: results.count,

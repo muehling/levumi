@@ -15,6 +15,7 @@ import HomeApp from '../vue/home/home-app.vue'
 import MaterialsApp from '../vue/materials/materials-app.vue'
 import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
+import VueApexCharts from 'vue-apexcharts'
 
 import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
 
@@ -34,6 +35,9 @@ const init = async () => {
   const data = JSON.parse(element.getAttribute('data')) || {}
 
   Vue.use(BootstrapVue)
+
+  Vue.use(VueApexCharts)
+  Vue.component('apexchart', VueApexCharts)
 
   Vue.mixin({
     data: function () {

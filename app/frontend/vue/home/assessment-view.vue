@@ -151,7 +151,7 @@
           <!-- Nach Wochen gruppierte Einträge -->
           <div v-for="(date, index) in weeks.slice().reverse()" :key="index" class="mt-2">
             <b-row>
-              <b-col>{{ print_date(date) }}</b-col>
+              <b-col>{{ formatDate(date) }}</b-col>
               <b-col>{{ groupedResults[date].length }}</b-col>
               <b-col>
                 <b-btn v-b-toggle="'collapse_' + index" size="sm" variant="outline-secondary">
@@ -177,7 +177,7 @@
                       v-for="(result, resultIndex) in groupedResults[date]"
                       :key="`${result.id}/${resultIndex}`"
                     >
-                      <td>{{ print_date(result.data.test_date) }}</td>
+                      <td>{{ formatDate(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
                         <span
@@ -270,7 +270,7 @@
   import SupportView from './support-view.vue'
   import uniq from 'lodash/uniq'
   import apiRoutes from '../routes/api-routes'
-  import format from 'date-fns/format'
+  import { printDate } from '../../utils/date'
 
   import { useAssessmentsStore } from '../../store/assessmentsStore'
 
@@ -280,7 +280,7 @@
     provide: function () {
       return {
         autoScroll: this.auto_scroll,
-        printDate: this.print_date,
+        printDate: printDate,
         readOnly: this.readOnly,
         studentName: this.studentName,
         weeks: this.weeks,
@@ -361,6 +361,9 @@
           this.excludeList.push(studentId)
         }
       },
+      formatDate(date) {
+        return printDate(date)
+      },
       get_result(student) {
         //Prüft ob es für "heute" schon ein Ergebnis gibt.
         let d = new Date()
@@ -388,14 +391,7 @@
           this.excludeList = this.excludeList.filter(item => item !== studentId)
         }
       },
-      print_date(date) {
-        //Datumsanzeige formatieren
-        if (date) {
-          return format(new Date(date), 'dd.MM.yyyy')
-        } else {
-          return ''
-        }
-      },
+
       async deleteResult(result, index) {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Messung löschen',

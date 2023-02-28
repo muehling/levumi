@@ -44,6 +44,13 @@ export const useGlobalStore = defineStore('global', {
       this.login = data
     },
 
+    async fetchAnnotationCategories() {
+      const res = await ajax({ url: apiRoutes.annotationCategories.index })
+      const data = await res.json()
+
+      this.staticData.annotationCategories = data
+    },
+
     async fetch(showLoader = false) {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
@@ -59,6 +66,7 @@ export const useGlobalStore = defineStore('global', {
         schoolTypes: coreData.schoolTypes,
         focusTypes: coreData.focusTypes,
         accountTypes: coreData.accountTypes,
+        annotationCategories: coreData.annotationCategories,
       }
 
       // decrypt student names

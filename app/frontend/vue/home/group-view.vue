@@ -154,7 +154,7 @@
         <assessment-view
           v-else-if="results"
           :active="results.active"
-          :annotations="results.annotations"
+          :annotations="annotations"
           :configuration="results.configuration"
           :excludes="results.excludes"
           :group="group"
@@ -236,6 +236,9 @@
       }
     },
     computed: {
+      annotations: function () {
+        return this.results.annotations
+      },
       empty: function () {
         //Ist überhaupt ein Assessment vorhanden?
         return this.groupInfo?.areas.reduce((acc, area) => acc || area.used, false)
@@ -312,8 +315,21 @@
         )
       },
     },
+    mounted() {
+      this.$root.$on(`annotation-added-${this.group.id}`, this.addAnnotation)
+      this.$root.$on(`annotation-removed-${this.group.id}`, this.removeAnnotation)
+    },
 
     methods: {
+      addAnnotation(annotation) {
+        const annotations = this.results.annotations
+        annotations.splice(0, 0, annotation)
+        this.$set(this.results, 'annotations', annotations)
+      },
+      removeAnnotation(annotationId) {
+        const annotations = this.results.annotations.filter(a => annotationId !== a.id)
+        this.$set(this.results, 'annotations', annotations)
+      },
       setPreselect(data) {
         this.areaSelected = data.area
         this.competenceSelected = data.competence
