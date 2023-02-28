@@ -7,7 +7,7 @@
         :key="annotationCategory.id"
         class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
       >
-        <span>{{ annotationCategory.name }}</span>
+        <span>{{ parseDisplayName(annotationCategory.name) }}</span>
         <b-btn
           class="btn btn-sm"
           variant="outline-danger"
@@ -58,7 +58,12 @@
         annotationCategories: this.globalStore.staticData.annotationCategories,
       }
     },
+
     methods: {
+      parseDisplayName(completeName) {
+        const [name, group, index] = completeName.split('#')
+        return `${name}${group ? ', Gruppe' + group : ''}${index ? ', Index: ' + index : ''}`
+      },
       async createAnnotationCategory() {
         this.isLoading = true
 
