@@ -167,6 +167,13 @@
               <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
                 Export
               </router-link>
+              <router-link
+                v-if="checkCapability('admin')"
+                to="/administration"
+                class="dropdown-item"
+              >
+                Allgemeine Einstellungen
+              </router-link>
             </div>
           </li>
           <li v-if="!masquerade" id="intro6" class="nav-item dropdown">
@@ -179,7 +186,7 @@
               aria-haspopup="true"
               aria-expanded="false"
             >
-              Meine Daten ({{ $root.mode === 'production' ? '' : login?.email }})
+              Meine Daten {{ $root.mode === 'production' ? '' : '(' + login?.email + ')' }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarMyData">
               <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
@@ -256,7 +263,14 @@
 
     computed: {
       systemMessage() {
-        return this.$root.mode === 'staging' ? 'TEST-SYSTEM' : ''
+        switch (this.$root.mode) {
+          case 'staging':
+            return 'TEST-SYSTEM'
+          case 'development':
+            return 'DEV'
+          default:
+            return ''
+        }
       },
       login() {
         return this.globalStore.login

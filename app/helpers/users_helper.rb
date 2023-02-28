@@ -72,4 +72,10 @@ module UsersHelper
   def focustypes_to_array
     focus_types.map { |s| { label: s[0], id: s[1] } }
   end
+
+  def annotation_categories
+    AnnotationCategory.all.map do |annotation_category|
+      { name: annotation_category.name, id: annotation_category.id }
+    end
+  end
 end

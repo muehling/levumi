@@ -1,8 +1,6 @@
 <template>
-  <div v-if="isLoading" class="spinner">
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
+  <div v-if="isLoading">
+    <loading-dots :is-loading="true" />
   </div>
 
   <div v-else-if="isRegistrationComplete">
@@ -34,8 +32,10 @@
   import ErrorDialog from './shared/error-dialog.vue'
   import GenericMessage from './shared/generic-message.vue'
   import InputDialog from './shared/input-dialog.vue'
+  import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
   import router from './routes/frontend-routes'
+  import { updates } from '../utils/updates'
 
   export default {
     name: 'RootApp',
@@ -46,6 +46,7 @@
       ErrorDialog,
       GenericMessage,
       InputDialog,
+      LoadingDots,
       NavBar,
       RouterView,
     },
@@ -72,34 +73,83 @@
       },
     },
     async created() {
-      const path = window.location.pathname
-      if (path !== '/testen' && path !== '/testen_login') {
-        await this.globalStore.fetch(true)
-        // Check if login information is present. This may get lost in restored browser sessions,
-        // or when a link is opened in a new tab. In this case, we need to log in again
-        const login = sessionStorage.getItem('login')
-        if (!login) {
-          if (!this.globalStore.masquerade) {
-            this.sendLogin('')
-          } else {
-            // if a masqueraded session was active, tell the user and terminate the session.
-            // TBD really tell the user?
-            await this.$refs.confirmDialog.open({
-              title: 'Sitzung beendet',
-              message: 'Ihre letzte Sitzung als maskierter Nutzer wurde unerwartet beendet.',
-              okText: 'Ok',
-              hideCancelButton: true,
-            })
-
-            await ajax({ url: apiRoutes.users.logout, method: 'GET' })
-
-            // page reload is necessary to flush the store and force the user the re-enter his password
-            window.location.reload()
-          }
-        }
+      await this.checkLogin()
+      if (this.globalStore.login.intro_state >= 5) {
+        this.displayNews()
       }
     },
     methods: {
+      async checkLogin() {
+        const path = window.location.pathname
+        if (path !== '/testen' && path !== '/testen_login') {
+          await this.globalStore.fetch(true)
+          // Check if login information is present. This may get lost in restored browser sessions,
+          // or when a link is opened in a new tab. In this case, we need to log in again
+          const login = sessionStorage.getItem('login')
+          if (!login) {
+            if (!this.globalStore.masquerade) {
+              this.sendLogin('')
+            } else {
+              // if a masqueraded session was active, tell the user and terminate the session.
+              // TBD really tell the user?
+              await this.$refs.confirmDialog.open({
+                hideCancelButton: true,
+                message: 'Ihre letzte Sitzung als maskierter Nutzer wurde unerwartet beendet.',
+                okText: 'Ok',
+                title: 'Sitzung beendet',
+              })
+
+              await ajax({ url: apiRoutes.users.logout, method: 'GET' })
+
+              // page reload is necessary to flush the store and force the user the re-enter his password
+              window.location.reload()
+            }
+          }
+        }
+      },
+      async displayNews() {
+        const messagesToBeDisplayed = updates.filter((update, index) => {
+          if (this.globalStore.login.intro_state === 5) {
+            return index === updates.length - 1 // for newly registered users, arbitrarily display the last news item.
+          } else {
+            return update.intro_state > this.globalStore.login.intro_state
+          }
+        })
+
+        if (!messagesToBeDisplayed.length) {
+          return
+        }
+
+        const newsHtml = messagesToBeDisplayed.reduce((acc, messageObj) => {
+          return (
+            acc +
+            `<div>
+              <p class="mb-1">
+                <b>${messageObj.date}${messageObj.title ? ` - ${messageObj.title}` : ''}</b>
+              </p>
+              ${messageObj.message}
+            </div>
+            <hr/>`
+          )
+        }, '')
+
+        await this.$refs.confirmDialog.open({
+          containsHtml: true,
+          disableCloseOnBackdrop: true,
+          hideCancelButton: true,
+          message: newsHtml,
+          okIntent: 'outline-success',
+          okText: 'Ok',
+          title: 'Neuigkeiten',
+        })
+        const maxIntroState = updates.reduce((acc, update) => Math.max(acc, update.intro_state), 0)
+
+        const data = { user: { intro_state: maxIntroState } }
+        await ajax({
+          ...apiRoutes.users.update(this.globalStore.login.id),
+          data,
+        })
+      },
       async logout() {
         await ajax({ url: apiRoutes.users.logout, method: 'POST' })
         router.push('/')
@@ -107,12 +157,12 @@
       },
       async sendLogin(text) {
         const pw = await this.$refs.renewLoginDialog.open({
+          disableClose: true,
           message: `${text}Bitten geben Sie Ihr Passwort erneut ein, um fortzufahren:`,
           okText: 'Ok',
           placeHolder: 'Passwort',
           title: 'Passwort erneut eingeben',
           type: 'password',
-          disableClose: true,
         })
         const res = await ajax(
           apiRoutes.users.renewLogin({ email: this.globalStore.login.email, password: pw })
