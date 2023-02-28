@@ -6,7 +6,6 @@ services:
       context: .
       dockerfile: Dockerfile
     command: bash -c "rm -f tmp/pids/server.pid; rails s -b '0.0.0.0' -p 3000"
-    #command: bash -c "rm -f tmp/pids/server.pid && rails s -b 'ssl://0.0.0.0:3000?key=localhost.key&cert=localhost.crt'"
     depends_on:
       - vite
     volumes:
@@ -36,13 +35,17 @@ services:
       - ./:/usr/src/app
       - ./node_modules:/app/node_modules
   db:
-    image: postgres:13
-    ports:
-      - '5432:5432'
+    image: mysql:8.0
+    restart: always
     environment:
-      - POSTGRES_PASSWORD=postgres
+      - MYSQL_DATABASE=levumi2_dev
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=password
+    ports:
+      - '3307:3306'
     volumes:
-      - pg_data:/var/lib/postgresql/data
+      - db:/var/lib/mysql
   redis:
     image: redis
     volumes:
@@ -58,3 +61,5 @@ volumes:
   bundle:
   pg_data:
   redis_data:
+  db:
+#    driver: local

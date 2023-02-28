@@ -50,7 +50,6 @@ const init = async () => {
   Vue.use(VueRouter)
   Vue.use(PiniaVuePlugin)
 
-  // TODO this is instantiated on every navigation event. Probably better use a single Vue app and Vue router instead.
   new Vue({
     router,
     pinia,

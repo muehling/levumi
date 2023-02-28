@@ -364,14 +364,8 @@
           height: 400,
           type: 'canvas',
           data: this.student.login,
-          image: '/images/shared/Levumi-normal_small.png',
           dotsOptions: {
             color: '#000000',
-          },
-
-          imageOptions: {
-            margin: 20,
-            imageSize: 0.4,
           },
         })
         const el = document.getElementById('qr-' + this.student.id)
