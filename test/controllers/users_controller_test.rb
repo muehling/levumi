@@ -100,5 +100,10 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'UsersController::register -> get' do
+    user = users :other_user
+    user.update(intro_state: 0)
+    login_as user
+    get willkommen_url
+    assert_response :success
   end
 end
