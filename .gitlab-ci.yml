@@ -1,0 +1,16 @@
+stages:
+  - deploy
+
+variables:
+  APP_NAME: levumi2
+
+deploy_staging:
+  image: ilyasemenov/gitlab-ci-git-push
+  stage: deploy
+  environment:
+    name: staging
+    url: https://staging.levumi.de/
+  only:
+    - staging
+  script:
+    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME
