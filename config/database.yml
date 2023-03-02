@@ -7,7 +7,7 @@ default: &default
 test:
   <<: *default
   host: db
-  database: levumi2_dev
+  database: levumi2_test
   username: 'root'
   password: 'password'
 
