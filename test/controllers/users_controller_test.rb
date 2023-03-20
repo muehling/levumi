@@ -54,6 +54,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'UsersController::create -> correct request' do
+    user = users :admin_user
+    login_as user
+
     post users_url,
          headers: {
            'Accept': 'application/json'
@@ -66,7 +69,11 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
            }
          }
     assert_response :success
+
+    parsed = fetch_users
+    assert_equal parsed['users'].length, 3
   end
+
   test 'UsersController::create -> incomplete parameters' do
     post users_url,
          headers: {
@@ -100,5 +107,12 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'UsersController::register -> get' do
+    user = users :other_user
+    user.update!(intro_state: 1, tc_accepted: nil)
+    login_as user
+
+    get willkommen_path
+    assert_response :success
+    assert_select '#complete-registration h4', 'Passwort festlegen'
   end
 end
