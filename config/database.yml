@@ -7,14 +7,14 @@ default: &default
 test:
   <<: *default
   host: db
-  database: levumi2_dev
+  database: levumi2_test
   username: 'root'
   password: 'password'
 
 development:
   <<: *default
   host: db
-  database: levumi2_dev
+  database: levumi2_dev_small
   username: 'root'
   password: 'password'
 

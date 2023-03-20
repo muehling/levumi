@@ -1,7 +1,6 @@
 ENV['RAILS_ENV'] ||= 'test'
 require_relative '../config/environment'
 require 'rails/test_help'
-require 'minitest/rails'
 
 # Consider setting MT_NO_EXPECTATIONS to not add expectations to Object.
 # ENV["MT_NO_EXPECTATIONS"] = true
@@ -16,6 +15,11 @@ end
 module FetchHelpers
   def fetch_users
     get users_url, headers: { 'Accept': 'application/json' }
+    JSON.parse(@response.body)
+  end
+
+  def fetch_tests
+    get tests_url, headers: { 'Accept': 'application/json' }
     JSON.parse(@response.body)
   end
 end

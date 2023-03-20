@@ -27,4 +27,6 @@ class TestTest < ActionDispatch::IntegrationTest
     t = tests(:writing_n2)
     assert_equal t.has_results, false
   end
+
+  # Test.import is tested in controller test
 end

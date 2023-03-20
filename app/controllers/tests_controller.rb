@@ -59,7 +59,7 @@ class TestsController < ApplicationController
     id = @test.test_family.id
     @test.destroy
     family = TestFamily.find(id)
-    family.destroy if family.tests.empty?
+    family.destroy if family.tests.empty? # TBD: seems a bit dangerous, as there might still be materials belonging to this family
     head :ok
   end
 
