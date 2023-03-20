@@ -79,7 +79,7 @@ class Test < ApplicationRecord
       #Automatische Archivierung
       old_test = Test.where(shorthand: vals['shorthand']).where.not(archive: true).first
       unless old_test.nil?
-        if old_test.version < vals['version'] || archive
+        if old_test.version < vals['version']
           #Falls kleiner Version, automatisch archivert.
           old_test.archive = true
           old_test.save
@@ -143,15 +143,22 @@ class Test < ApplicationRecord
         end
 
         #Dateien aus ZIP lesen und zu Test dazufügen bzw. updaten
+
+        if old_test == test
+          test.entry_point.purge
+          test.media_files.purge
+          test.info_files.purge
+          test.script_files.purge
+          test.style_files.purge
+        end
+
         f = zip.glob('test.html').first
-        test.entry_point.purge if old_test == test
         test.entry_point.attach(
           io: StringIO.new(f.get_input_stream.read),
           filename: 'test.html',
           content_type: 'text/html'
         )
 
-        test.media_files.purge if old_test == test
         zip
           .glob('media/*')
           .each do |f|
@@ -161,7 +168,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.info_files.purge if old_test == test
         zip
           .glob('info/*')
           .each do |f|
@@ -171,7 +177,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.script_files.purge if old_test == test
         zip
           .glob('scripts/*')
           .each do |f|
@@ -181,7 +186,6 @@ class Test < ApplicationRecord
             )
           end
 
-        test.style_files.purge if old_test == test
         zip
           .glob('styles/*')
           .each do |f|
@@ -206,9 +210,7 @@ class Test < ApplicationRecord
         .fetch('all_not_demo_students', expires_in: 24.hours) do
           Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
         end
-
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
-
     Rails
       .cache
       .fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do

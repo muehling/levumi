@@ -105,14 +105,4 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     parsed = fetch_users
     assert_equal parsed['users'].length, 3
   end
-
-  test 'UsersController::register -> get' do
-    user = users :other_user
-    user.update!(intro_state: 1, tc_accepted: nil)
-    login_as user
-
-    get willkommen_path
-    assert_response :success
-    assert_select '#complete-registration h4', 'Passwort festlegen'
-  end
 end

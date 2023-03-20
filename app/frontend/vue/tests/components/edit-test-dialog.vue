@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="users-mail-dialog" ref="testImportDialog" title="Test bearbeiten" hide-footer>
+  <b-modal id="test-edit-dialog" ref="testEditDialog" title="Test bearbeiten" hide-footer>
     <div>
       <b-form>
         <b-form-group label="Beschreibung">
@@ -51,12 +51,12 @@
         this.description = description
         this.shortDescription = shortDescription
         this.testId = id
-        this.$refs.testImportDialog.show()
+        this.$refs.testEditDialog.show()
       },
       _close() {
         this.description = ''
         this.shortDescription = ''
-        this.$refs.testImportDialog.hide()
+        this.$refs.testEditDialog.hide()
       },
       cancel() {
         this._close()

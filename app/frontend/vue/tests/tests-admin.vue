@@ -14,6 +14,7 @@
 
 <script>
   import CreateTestDialog from './components/create-test-dialog.vue'
+
   import TestsList from './components/tests-list.vue'
   export default {
     name: 'TestsAdmin',
@@ -24,6 +25,9 @@
     methods: {
       createTest() {
         this.$refs.createTestDialog.open()
+      },
+      createAnnotationCategory() {
+        this.$refs.annotationCategoriesDialog.open()
       },
       propagateFetch() {
         this.fetchTrigger = Symbol()

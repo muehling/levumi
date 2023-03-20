@@ -1,5 +1,6 @@
 class TestsController < ApplicationController
-  before_action :set_test, except: %i[index create get_tests_data]
+  before_action :set_test,
+                except: %i[index create get_tests_data get_tests_meta check_upload_version]
   before_action :is_allowed, only: %i[create edit update destroy]
 
   #GET /tests
@@ -65,6 +66,59 @@ class TestsController < ApplicationController
 
   def get_tests_data
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+  end
+
+  def check_upload_version
+    old_test = Test.where(shorthand: params[:shorthand]).where.not(archive: true).first
+    if old_test.nil?
+      is_new_version = false
+    else
+      is_new_version = old_test.version < params[:version]
+    end
+
+    render json: { is_new_version: is_new_version, is_new_test: old_test.nil? }
+  end
+
+  def get_tests_meta
+    all_families =
+      TestFamily.all.map do |family|
+        {
+          test_count: Test.where(test_family_id: family.id).count,
+          id: family.id,
+          name: family.name,
+          competence_id: family.competence_id
+        }
+      end
+    all_competences =
+      Competence.all.map do |competence|
+        {
+          test_count:
+            all_families
+              .select { |family| family[:competence_id] == competence.id }
+              .reduce(0) { |sum, family| sum + family[:test_count] },
+          name: competence.name,
+          id: competence.id,
+          area_id: competence.area_id
+        }
+      end
+    all_areas =
+      Area.all.map do |area|
+        {
+          test_count:
+            all_competences
+              .select { |competence| competence[:area_id] == area.id }
+              .reduce(0) { |sum, competence| sum + competence[:test_count] },
+          name: area.name,
+          id: area.id
+        }
+      end
+
+    render json: {
+             areas: all_areas,
+             test_families: all_families,
+             competences: all_competences,
+             tests: Test.all
+           }
   end
 
   private

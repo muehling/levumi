@@ -250,16 +250,17 @@ class UsersController < ApplicationController
       params
         .require(:user)
         .permit(
-          :email,
-          :password,
-          :password_confirmation,
-          :security_digest,
           :account_type,
-          :state,
+          :email,
+          :focus,
           :institution,
-          :town,
+          :intro_state,
+          :password_confirmation,
+          :password,
           :school_type,
-          :focus
+          :security_digest,
+          :state,
+          :town
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)
