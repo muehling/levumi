@@ -92,9 +92,11 @@
       return {
         selectedFilters: [
           Filter.WithResults,
+          Filter.WithoutResults,
           Filter.StudentTests,
           Filter.UserTests,
           Filter.ActiveTests,
+          Filter.InactiveTests,
         ],
         availableFilters: [
           { text: 'Mit Messungen', value: Filter.WithResults },
