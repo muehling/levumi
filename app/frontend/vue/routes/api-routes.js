@@ -30,6 +30,8 @@ export default {
     info: '/tests/info',
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
+    testMetaData: { url: '/test_meta', method: 'POST', contentType: 'omit' },
+    checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
   },
   assessments: {
     excludeStudent: (groupId, testId, studentId) => ({
@@ -54,6 +56,7 @@ export default {
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
     }),
+    updateAll: groupId => ({ url: `/groups/${groupId}/assessments`, method: 'PUT' }),
   },
   annotations: {
     create: (groupId, testId) => ({
@@ -76,7 +79,8 @@ export default {
       method: 'POST',
       data,
     }),
-    getStudentTargets: (groupId, testId) => ({    // gets all student targets for an assessment instead of just one to minimize request count
+    getStudentTargets: (groupId, testId) => ({
+      // gets all student targets for an assessment instead of just one to minimize request count
       url: `/groups/${groupId}/assessments/${testId}/targets`,
       method: 'GET',
     }),
@@ -89,5 +93,19 @@ export default {
       url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
       method: 'DELETE',
     }),
-  }
+  },
+  administration: {
+    areas: {
+      update: id => ({ url: `/areas/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/delete_area/${id}`, method: 'DELETE' }),
+    },
+    competences: {
+      update: id => ({ url: `/competences/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/competences/${id}`, method: 'DELETE' }),
+    },
+    testFamilies: {
+      update: id => ({ url: `/test_families/${id}`, method: 'PUT' }),
+      delete: id => ({ url: `/test_families/${id}`, method: 'DELETE' }),
+    },
+  },
 }

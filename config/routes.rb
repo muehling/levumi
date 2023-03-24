@@ -34,6 +34,7 @@ Rails.application.routes.draw do
   get '/materialien', to: 'users#show'
   get '/statistiken', to: 'users#show'
   get '/nutzerverwaltung', to: 'users#show'
+  get '/administration', to: 'users#show'
 
   # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'
@@ -43,6 +44,10 @@ Rails.application.routes.draw do
   get '/users/statistics', to: 'users#statistics'
   post 'renew_login', to: 'application#renew_login'
   delete '/delete_self', to: 'users#destroy_self'
+  put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
+  get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
+  post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
+  delete 'delete_area/:id', to: 'areas#destroy_safe'
 
   #Reguläres REST-Routing
   resources :users
@@ -59,7 +64,11 @@ Rails.application.routes.draw do
     resources :group_shares
   end
 
-  resources :tests
+  resources :tests do
+  end
   resources :materials
   resources :annotation_categories
+  resources :areas
+  resources :competences
+  resources :test_families
 end

@@ -1,33 +1,36 @@
 <template>
-  <div>
-    <b-modal
-      id="annotation-categories-dialog"
-      ref="annotationCategoriesDialog"
-      title="Anmerkungstypen definieren"
-      hide-footer
-    >
-      <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
-      <div>
-        <div
-          v-for="annotationCategory in annotationCategories"
-          :key="annotationCategory.id"
-          class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
+  <div id="annotation-categories">
+    <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
+    <div>
+      <div
+        v-for="annotationCategory in annotationCategories"
+        :key="annotationCategory.id"
+        class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
+      >
+        <span>{{ parseDisplayName(annotationCategory.name) }}</span>
+        <b-btn
+          class="btn btn-sm"
+          variant="outline-danger"
+          @click="deleteCategory(annotationCategory.id)"
         >
-          <span>{{ annotationCategory.name }}</span>
-          <b-btn
-            class="btn btn-sm"
-            variant="outline-danger"
-            @click="deleteCategory(annotationCategory.id)"
-          >
-            <i class="fas fa-trash"></i>
-          </b-btn>
-        </div>
-        <div class="mt-4 flex-row d-flex">
-          <b-form-input v-model="newCategory" placeholder="Neuen Typ eingeben"></b-form-input>
-          <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
-        </div>
+          <i class="fas fa-trash"></i>
+        </b-btn>
       </div>
-    </b-modal>
+      <div class="mt-4 flex-row d-flex">
+        <label class="pt-2 mr-4" for="category">Typ: </label
+        ><b-form-input
+          id="category"
+          v-model="category"
+          placeholder="Neuen Typ eingeben"
+        ></b-form-input>
+        <label class="pt-2 ml-4 mr-2" for="group">Gruppe: </label
+        ><b-form-input id="group" v-model="group" placeholder="Gruppe"></b-form-input>
+        <label class="pt-2 ml-4 mr-2" for="index">Index: </label
+        ><b-form-input id="index" v-model="index" placeholder="Index"></b-form-input>
+        <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
+      </div>
+    </div>
+
     <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
@@ -49,22 +52,23 @@
     },
     data() {
       return {
-        newCategory: '',
+        category: '',
+        group: 1,
+        index: 1,
         annotationCategories: this.globalStore.staticData.annotationCategories,
       }
     },
+
     methods: {
-      async open() {
-        this.$refs.annotationCategoriesDialog.show()
-      },
-      _close() {
-        this.$refs.annotationCategoriesDialog.hide()
+      parseDisplayName(completeName) {
+        const [name, group, index] = completeName.split('#')
+        return `${name}${group ? ', Gruppe' + group : ''}${index ? ', Index: ' + index : ''}`
       },
       async createAnnotationCategory() {
         this.isLoading = true
 
         const res = await ajax({
-          data: { name: this.newCategory },
+          data: { name: `${this.category}#${this.group}#${this.index}` },
           ...apiRoutes.annotationCategories.create,
         })
 
@@ -109,7 +113,7 @@
   }
 </script>
 <style>
-  #annotation-categories-dialog .category-line:nth-child(odd) {
+  #annotation-categories .category-line:nth-child(odd) {
     background-color: rgba(0, 0, 0, 0.05);
   }
 </style>

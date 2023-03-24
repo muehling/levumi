@@ -1,4 +1,3 @@
-
 default: &default
   adapter: mysql2
   encoding: utf8
@@ -8,13 +7,12 @@ default: &default
 development:
   <<: *default
   host: db
-  database: levumi2_dev
+  database: levumi2_dev_small
   username: 'root'
   password: 'password'
 
 production:
-  <<: *default 
+  <<: *default
 
 staging:
   <<: *default
-  

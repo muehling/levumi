@@ -295,19 +295,23 @@ if Rails.env.development?
     i = i + 1
   end
 
+  AnnotationCategory.create(name: 'Test')
+
   Annotation.create(
+    annotation_category_id: 1,
     assessment_id: a1.id,
+    end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).last.test_week,
     group_id: 1,
-    view: 0,
     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
-    end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).last.test_week
+    view: 0
   )
   Annotation.create(
+    annotation_category_id: 1,
     assessment_id: a1.id,
-    student_id: 1,
-    view: 1,
+    end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
     start: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week,
-    end: Student.find(1).results.where(assessment_id: a1.id).order(:test_week).first.test_week
+    student_id: 1,
+    view: 1
   )
 
   #Fördermaterial anlegen

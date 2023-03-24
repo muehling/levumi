@@ -13,13 +13,20 @@ export const getAnnotationLabel = id => {
   const store = useGlobalStore()
   const category = store.staticData.annotationCategories.find(category => category.id === id)
 
-  return category?.name || ''
+  return category?.name.split('#')[0] || ''
 }
 
 export const getAnnotationOptions = () => {
   const store = useGlobalStore()
-  return store.staticData.annotationCategories.map(category => ({
-    value: category.id,
-    text: category.name,
-  }))
+  const categories = store.staticData.annotationCategories.map(category => {
+    const [name, group, index] = category.name.split('#')
+    return {
+      id: category.id,
+      name: name,
+      group: parseInt(group, 10) || 1,
+      index: parseInt(index, 10) || 1,
+    }
+  })
+
+  return categories.sort((a, b) => a.group - b.group || a.index - b.index)
 }

@@ -164,9 +164,13 @@
           const qrElement = this.jQuery('#qr-' + this.students[i].id + ' canvas')[0]
           if (qrElement) {
             const base64Image = qrElement.toDataURL('image/jpeg', 1)
+            const levumiImg = new Image()
+            levumiImg.src = '/images/shared/Levumi-normal.jpg'
+
             pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.text('Name: ' + this.students[i].name, 60, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 60, height + 30)
+            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
+            pdf.text('Name: ' + this.students[i].name, 110, height + 10)
+            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
             pdf.line(0, height + 43, 210, height + 45)
             height = height + 46
             if (height >= 250) {
@@ -175,7 +179,7 @@
             }
           }
         }
-        pdf.save('qr_codes.pdf')
+        pdf.save(`QR-Codes ${this.group.label}.pdf`)
       },
     },
   }
