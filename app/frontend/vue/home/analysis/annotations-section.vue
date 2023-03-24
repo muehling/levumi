@@ -34,11 +34,25 @@
           </div>
           <div class="col-12 col-md-4">
             <div class="d-flex flex-row">
-              <b-form-select
-                v-model="annotationCategoryId"
-                :options="getAnnotationOptions()"
-                size="sm"
-              ></b-form-select>
+              <b-dropdown v-model="annotationCategoryId" variant="outline-secondary">
+                <template #button-content>
+                  <span class="text-small">{{ getAnnotationLabel(annotationCategoryId) }}</span>
+                </template>
+                <b-dropdown-group
+                  v-for="(categoryGroup, index) in groupedAnnotationOptions"
+                  :key="index"
+                >
+                  <b-dropdown-item
+                    v-for="option in categoryGroup"
+                    :key="option.name"
+                    class="text-small"
+                    @click="annotationCategoryId = option.id"
+                  >
+                    {{ option.name }}
+                  </b-dropdown-item>
+                  <b-dropdown-divider />
+                </b-dropdown-group>
+              </b-dropdown>
               <span
                 v-b-popover.hover="
                   'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
