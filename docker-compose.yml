@@ -38,9 +38,9 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      - MYSQL_DATABASE=levumi2_dev
+      - MYSQL_DATABASE=levumi2_dev_small
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_USER=user
+      - MYSQL_USER=root
       - MYSQL_PASSWORD=password
     ports:
       - '3307:3306'
