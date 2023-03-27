@@ -232,7 +232,7 @@
         :active="!deep_link"
         class="m-3"
         :disabled="weeks.length == 0 || configuration.views.length == 0"
-        @click="auto_scroll('#comment_btn')"
+        @click="auto_scroll('#annotations-section')"
       >
         <analysis-view
           :key="test.id"

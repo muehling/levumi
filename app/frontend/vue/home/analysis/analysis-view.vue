@@ -58,6 +58,7 @@
           width="100%"
           :options="chartOptions"
           :series="chartSeries"
+          @updated="addTaskLevelListeners"
         />
       </b-col>
     </b-row>
@@ -81,7 +82,7 @@
               ></i>
             </b-button>
             <b-button
-              v-if="targetIsEnabled"
+              v-if="targetIsEnabled || dateUntilIsEnabled"
               id="target_btn"
               class="ml-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
@@ -129,6 +130,7 @@
               :target-valid="targetValid"
               :test="test"
               :group="group"
+              :readonly-suppressed="isReadOnlySuppressed"
             ></TargetControls>
           </b-col>
         </b-row>
@@ -162,6 +164,7 @@
         :items="simpleTableData"
       ></b-table-lite>
     </b-row>
+    <div id="task_level_tooltip"></div>
   </div>
 </template>
 
@@ -186,11 +189,12 @@
   import { createTrendline } from './linearRegressionHelpers'
   import { computed } from 'vue'
   import TargetControls from './target-controls.vue'
+  import { useTestsStore } from '@/store/testsStore'
 
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
-    inject: ['autoScroll', 'readOnly', 'studentName', 'weeks', 'student_name_parts', 'printDate'],
+    inject: ['studentName', 'weeks', 'student_name_parts', 'printDate'],
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
@@ -207,6 +211,10 @@
       results: Array,
       students: Array,
       test: Object,
+    },
+    setup() {
+      const testsStore = useTestsStore()
+      return { testsStore }
     },
     data: function () {
       return {
@@ -315,13 +323,19 @@
       chartSeries() {
         return [...this.graphData]
       },
+      isTaskLevelChart() {
+        return Boolean(this.viewConfig.isTaskLevelChart)
+      },
+      isReadOnlySuppressed() {
+        return Boolean(this.viewConfig.readOnlySuppressed)
+      },
       targetIsSlopeVariant() {
-        //return Boolean(this.viewConfig.targetOptions?.type === 'slope')
         return true
+        //return Boolean(this.viewConfig.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
-        //return !this.viewConfig.series_keys && Boolean(this.viewConfig.targetOptions?.enabled)
         return true
+        //return !this.viewConfig.series_keys && Boolean(this.viewConfig.targetOptions?.enabled)
       },
       dateUntilIsEnabled() {
         // if a slope target is to be shown then we need dateUntil anyway
@@ -331,22 +345,24 @@
         )
       },
       deviationIsEnabled() {
-        //return Boolean(this.viewConfig.targetOptions?.selectDeviation)
         return true
+        //return Boolean(this.viewConfig.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
-        //return Boolean(this.viewConfig.trendOptions?.enabled)
         return true
+        //return Boolean(this.viewConfig.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
-        //return Boolean(this.viewConfig.trendOptions?.extrapolate)
         return true
+        //return Boolean(this.viewConfig.trendOptions?.extrapolate)
       },
       deviationStored() {
-        return this.targetStored?.deviation || null
+        const dev = this.targetStored?.deviation
+        return dev === undefined ? null : dev
       },
       dateUntilStored() {
-        return this.targetStored?.date_until || null
+        const date = this.targetStored?.date_until
+        return date === undefined ? null : date
       },
       targetAndTimeValid() {
         return this.targetValid && this.dateUntilVal
@@ -360,7 +376,8 @@
         )
       },
       targetValStored() {
-        return this.targetStored?.value || null
+        const val = this.targetStored?.value
+        return val === undefined ? null : val
       },
       targetStored() {
         // when no target is defined return null (nothing stored)
@@ -368,6 +385,48 @@
         const res = this.studentTargets // find the target belonging to this student in the current view
           .find(target => target.student_id === sId && target.view === this.viewConfig?.key)
         return res === undefined ? null : res
+      },
+      /** Returns the stored target INCLUDING THE GROUP TARGET.
+       * So when there's no individual target, but a group target, the latter is returned, else 'null' */
+      targetStoredInclGroup() {
+        if (this.targetStored !== null) {
+          return this.targetStored
+        }
+        const groupTarget = this.studentTargets.find(
+          target => target.student_id === null && target.view === this.viewConfig?.key
+        )
+        return groupTarget === undefined ? null : groupTarget
+      },
+      /** Returns the deviation value of stored target INCLUDING THE GROUP TARGET.
+       * So when there's no individual target, but a group target, the latter is returned, else 'null' */
+      deviationStoredInclGroup() {
+        const dev = this.targetStoredInclGroup?.deviation
+        return dev === undefined ? null : dev
+      },
+      /** Returns the date value of the stored target INCLUDING THE GROUP TARGET.
+       * So when there's no individual target, but a group target, the latter is returned, else 'null' */
+      dateUntilStoredInclGroup() {
+        const date = this.targetStoredInclGroup?.date_until
+        return date === undefined ? null : date
+      },
+      /** Returns the numerical value of stored target INCLUDING THE GROUP TARGET.
+       * So when there's no individual target, but a group target, the latter is returned, else 'null' */
+      targetValStoredInclGroup() {
+        const val = this.targetStoredInclGroup?.value
+        return val === undefined ? null : val
+      },
+      testData() {
+        return this.testsStore.tests
+          .find(area => area.id === this.test.area_id)
+          .competences?.find(competence => competence.id === this.test.competence_id)
+          .test_families?.find(family => family.id === this.test.test_family_id)
+          .tests?.find(test => test.id === this.test.id)
+      },
+      attachedLevelImages() {
+        return this.testData?.info_attachments.filter(
+          attachment =>
+            attachment.content_type.startsWith('image') && attachment.filename.startsWith('Niveau')
+        )
       },
     },
     watch: {
@@ -382,6 +441,9 @@
           this.updateView(true)
         }
       },
+    },
+    async created() {
+      await this.testsStore.fetch()
     },
     mounted() {
       // also sets the initial values for dateUntil and targetVal when in group view, due to call to restoreTarget
@@ -449,7 +511,10 @@
             return { x: formatDate ? printDate(week) : week, y: null }
           }
           let point = this.XYFromResult(currentResult, seriesKey, formatDate)
-          point.y = point.y?.toFixed(2) || null
+          point.y = point.y?.toFixed(2)
+          if (point.y === undefined) {
+            point.y = null
+          }
           return point
         })
       },
@@ -460,9 +525,12 @@
         let yVal
         const view = this.viewConfig
         if (seriesKey) {
-          yVal = result?.views[view.key][seriesKey] || null
+          yVal = result?.views[view.key][seriesKey]
         } else {
-          yVal = result?.views[view.key] || null
+          yVal = result?.views[view.key]
+        }
+        if (yVal === undefined) {
+          yVal = null
         }
         return {
           x: formatDate ? printDate(result.test_week) : result.test_week || null,
@@ -493,7 +561,8 @@
           this.weeks,
           this.targetIsSlopeVariant,
           this.targetIsEnabled,
-          animate
+          animate,
+          this.isTaskLevelChart
         )
 
         const formatDate = trueChartType === 'bar'
@@ -529,7 +598,9 @@
                 this.extrapolationIsEnabled ? this.dateUntilVal : null,
                 this.annotations.filter(
                   a =>
-                    a.trend_threshold && a.student_id === student.id && a.view === this.selectedView
+                    a.trend_threshold &&
+                    (a.student_id === student.id || a.student_id === null) &&
+                    a.view === this.selectedView
                 )
               )
             }
@@ -576,13 +647,14 @@
         }
         // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
         this.graphData = gData
+        console.log('miau', gData)
+
         this.chartOptions = preparedOptions
 
         // FIXME: using setTimeout here is a workaround:
         // if called immediately the added annotations won't be rendered for some reason when coming from a view of type 'bar' (or possibly also other types)
         setTimeout(this.updateAnnotations)
         this.isInitialized = true
-        //this.updateAnnotations()
       },
 
       updateAnnotations() {
@@ -591,7 +663,9 @@
 
         // get annotations that need to be drawn in the current chart
         const applicableAnnotations = this.annotations.filter(
-          annotation => annotation.view === this.selectedView && annotation.student_id === studentId
+          annotation =>
+            annotation.view === this.selectedView &&
+            (annotation.student_id === studentId || annotation.student_id === null)
         )
 
         const xaxis = applicableAnnotations
@@ -599,7 +673,7 @@
             annotation =>
               annotation.view === this.selectedView &&
               (annotation.start !== annotation.end ||
-                (studentId === null && annotation.start === annotation.end))
+                (annotation.student_id === null && annotation.start === annotation.end))
           )
           .map(annotation => annotationsLineOptions(annotation, this.weeks))
 
@@ -608,7 +682,7 @@
             annotation =>
               annotation.view === this.selectedView &&
               annotation.start === annotation.end &&
-              studentId !== null
+              annotation.student_id !== null
           )
           .map(annotation => {
             const dataForAnnotation = this.graphData[0].data.find(d => d.x === annotation.start)
@@ -752,8 +826,17 @@
         }
       },
 
+      /** Restores the target values to the latest state known to the database.
+       * For individuals who have no own targets set yet the values of the group target are used here instead.
+       * The assumption behind this is that when teachers haven't set a different target for an individual
+       * they'd prefer to see the group target being applied instead of seeing no target at all. */
       restoreTarget(redraw = true) {
-        this.setTarget(this.targetValStored, this.dateUntilStored, this.deviationStored, redraw)
+        this.setTarget(
+          this.targetValStoredInclGroup,
+          this.dateUntilStoredInclGroup,
+          this.deviationStoredInclGroup,
+          redraw
+        )
       },
 
       expandXAxis(graphData) {
@@ -799,6 +882,59 @@
             break
         }
       },
+
+      showTaskExample(evt) {
+        const tooltip = document.getElementById('task_level_tooltip')
+        // find the corresponding example image for the level
+        const exampleImgs = this.attachedLevelImages.filter(a =>
+          a.filename.startsWith('Niveau_' + Math.round(evt.target.innerHTML))
+        )
+        if (exampleImgs.length > 0) {
+          const exampleImg = exampleImgs[Math.floor(Math.random() * exampleImgs.length)]
+          tooltip.innerHTML =
+            '<p>Beispielaufgabe Niveau ' +
+            Math.round(evt.target.innerHTML) +
+            ':</p><img src=' +
+            exampleImg.filepath +
+            " style='max-width: 500px; max-height: 450px'>"
+          tooltip.style.display = 'block'
+          tooltip.style.left = evt.x + 20 + 'px'
+          tooltip.style.top = evt.y + 'px'
+        }
+      },
+
+      hideTaskExample() {
+        var tooltip = document.getElementById('task_level_tooltip')
+        tooltip.style.display = 'none'
+      },
+
+      /***
+       * Adds event listeners to the y-axis labels to show examples of tasks at levels corresponding to the label.
+       * These examples are shown as images when users hover over a label.
+       */
+      addTaskLevelListeners() {
+        if (this.isTaskLevelChart) {
+          document.querySelectorAll('.apexcharts-yaxis-label').forEach(item => {
+            item.addEventListener('mouseover', this.showTaskExample)
+            item.addEventListener('mouseleave', this.hideTaskExample)
+          })
+        }
+      },
     },
   }
 </script>
+
+<style>
+  #task_level_tooltip {
+    background-color: white;
+    border: 2px solid #5a598c;
+    border-radius: 4px;
+    padding: 5px;
+    position: fixed;
+    transform: translate(0%, -50%);
+    font-size: 1rem;
+    display: none;
+    z-index: 999;
+    text-align: center;
+  }
+</style>
