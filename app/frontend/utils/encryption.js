@@ -11,9 +11,6 @@ export const decryptStudentName = (text, alt, group) => {
     let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
     res = sjcl.decrypt(tempkey, text)
   } catch (e) {
-    //TBD no logs, because in case of masqueraded usage, the console will be cluttered with errors
-    //console.error(e.toString())
-    //console.log('Entschlüsselung fehlgeschlagen') //Log-Output (evtl. nicht in Production?)
     res = alt
   }
   return res
@@ -46,7 +43,6 @@ export const decryptWithKey = (text, key) => {
   try {
     return sjcl.decrypt(key, text)
   } catch (e) {
-    console.error('decryptWithKey::', e)
     return ''
   }
 }
@@ -60,8 +56,6 @@ export const decryptKey = text => {
   try {
     res = sjcl.decrypt(sessionStorage.getItem('login'), text)
   } catch (e) {
-    console.error(e.toString())
-    console.log('Entschlüsselung fehlgeschlagen') //Log-Output (evtl. nicht in Production?)
     res = ''
   }
   return res
