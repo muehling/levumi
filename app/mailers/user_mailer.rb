@@ -2,13 +2,13 @@ class UserMailer < ApplicationMailer
   def welcome
     @user = params[:user]
     @password = params[:password]
-    mail(to: @user.email, subject: 'Herzlich Willkommen bei Levumi!')
+    mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:WELCOME])
   end
 
   def notify
     @user = params[:user]
     @body = params[:body]
-    mail(to: @user.email, subject: 'Neuigkeiten von Levumi')
+    mail(to: @user.email, subject: MailSubjects::LOGGABLE[:NEWS])
   end
 
   def support
@@ -16,9 +16,9 @@ class UserMailer < ApplicationMailer
     @body = params[:body]
     subject =
       if params[:subject].nil?
-        'Nachricht vom Levumi-Kontaktformular'
+        MailSubjects::LOGGABLE[:UNSPECIFIC_SUPPORT]
       else
-        'Nachricht von Levumi - ' + params[:subject]
+        MailSubjects::LOGGABLE[:SPECIFIC_SUPPORT] + params[:subject]
       end
 
     mail(

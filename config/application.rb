@@ -13,6 +13,8 @@ require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
 #require "rails/test_unit/railtie"
+require_relative './initializers/custom_action_mailer_logger'
+require_relative './initializers/custom_log_formatter'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -35,5 +37,7 @@ module Levumi2
     config.generators.system_tests = nil
 
     config.session_store :cookie_store, key: '_levumi2.1_session'
+    config.action_mailer.logger = CustomActionMailerLogger.new(STDOUT)
+    config.log_formatter = CustomLogFormatter.new
   end
 end
