@@ -233,6 +233,7 @@
         const data = {
           email: this.email,
           group_share: { read_only: this.rightsSelected },
+          share_key: this.shareKey,
         }
         const result = this.submitData({
           url: `/groups/${this.group.id}/group_shares/`,

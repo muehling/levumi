@@ -7,11 +7,19 @@
 ###################################
 class CustomLogFormatter < ActiveSupport::Logger::SimpleFormatter
   def call(severity, timestamp, progname, msg)
-    if msg.include?('password')
-      input = "[#{timestamp.strftime('%Y-%m-%d %H:%M:%S')}] #{severity} #{progname} #{msg}\n"
-      input.gsub(/(\:password=>.*")/, ':password=>[CUSTOM FILTERED]')
-    else
-      super
+    msg = filter_parameters(msg)
+    super
+  end
+
+  private
+
+  def filter_parameters(message)
+    filter_parameters = Rails.application.config.filter_parameters
+    return message unless filter_parameters.present?
+
+    filter_parameters.each do |param|
+      message.gsub(/#{param}=>"[^"]*"/, "#{param} => [custom filtered]")
     end
+    return message
   end
 end

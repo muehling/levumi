@@ -14,4 +14,7 @@ Rails.application.config.filter_parameters += %i[
   certificate
   otp
   ssn
+  share_key
+  security_digest
+  password_digest
 ]

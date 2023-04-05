@@ -1,9 +1,7 @@
 ###################################
 ## This logger prevents logging mail bodies which contain secrets.
-## Currently, this concerns only the welcome email (which contains the initial password),
-## and the mail sent when groups are shared (which contains the share key).
 ##
-## These mails are determined by their subjects.
+##
 ##
 ## The logger is applied in config/application.rb
 ###################################
@@ -12,10 +10,12 @@ class CustomActionMailerLogger < ActiveSupport::Logger
     super
     self.formatter =
       proc do |severity, timestamp, progname, message|
-        if message.include? MailSubjects::NON_LOGGABLE[:WELCOME]
-          "[#{timestamp.strftime('%Y-%m-%d %H:%M:%S')}] #{severity} #{progname} Welcome mail: mail body filtered!\n"
-        else
-          "[#{timestamp.strftime('%Y-%m-%d %H:%M:%S')}] #{severity} #{message}\n"
+        MailSubjects::NON_LOGGABLE.reduce(message) do |acc, value|
+          if message.present? && (message.include? value[1])
+            "[#{timestamp.strftime('%Y-%m-%d %H:%M:%S')}] #{severity} #{progname} Sent mail with subject NON_LOGGABLE::#{value[0]}: Mail body filtered!\n"
+          else
+            acc
+          end
         end
       end
   end

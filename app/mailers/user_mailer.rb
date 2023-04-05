@@ -21,10 +21,25 @@ class UserMailer < ApplicationMailer
         MailSubjects::LOGGABLE[:SPECIFIC_SUPPORT] + params[:subject]
       end
 
-    mail(
-      bcc: %w[jana.jungjohann@ur.de beckmann@leibniz-ipn.de],
-      from: @user.email,
-      subject: subject
-    )
+    subject_prefix = Rails.env.staging? ? 'STAGING ' : ''
+
+    recipients =
+      if Rails.env.development? || Rails.env.staging?
+        'beckmann@leibniz-ipn.de'
+      else
+        %w[jana.jungjohann@ur.de beckmann@leibniz-ipn.de]
+      end
+
+    complete_subject = "#{subject_prefix.to_s}#{subject}"
+
+    mail(bcc: recipients, from: @user.email, subject: complete_subject)
+  end
+
+  def new_share
+    @recipient = params[:recipient]
+    @sharer = params[:sharer]
+    @share_key = params[:share_key]
+    @password = params[:password]
+    mail(to: @recipient.email, subject: MailSubjects::NON_LOGGABLE[:NEW_SHARE])
   end
 end

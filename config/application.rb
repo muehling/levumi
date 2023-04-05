@@ -12,7 +12,6 @@ require 'action_mailbox/engine'
 require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
-#require "rails/test_unit/railtie"
 require_relative './initializers/custom_action_mailer_logger'
 require_relative './initializers/custom_log_formatter'
 
@@ -37,7 +36,9 @@ module Levumi2
     config.generators.system_tests = nil
 
     config.session_store :cookie_store, key: '_levumi2.1_session'
-    config.action_mailer.logger = CustomActionMailerLogger.new(STDOUT)
+
+    config.action_mailer.logger =
+      CustomActionMailerLogger.new(Rails.root.join("log/#{Rails.env}.log"))
     config.log_formatter = CustomLogFormatter.new
   end
 end
