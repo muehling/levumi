@@ -1,9 +1,7 @@
 ###################################
 ## This logger prevents logging mail bodies which contain secrets.
 ##
-##
-##
-## The logger is applied in config/application.rb
+## The logger is applied in config/application.rb to affect all environments.
 ###################################
 class CustomActionMailerLogger < ActiveSupport::Logger
   def initialize(logdev, shift_age = 0, shift_size = 1_048_576)
