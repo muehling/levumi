@@ -19,7 +19,7 @@ class GroupSharesController < ApplicationController
              read_only: params.require(:group_share)[:read_only].to_i
            )
           UserMailer
-            .with(recipient: @recipient, sharer: @login, share_key: params[:share_key])
+            .with(recipient: @recipient, share_key: params[:share_key])
             .new_share
             .deliver_later
         end

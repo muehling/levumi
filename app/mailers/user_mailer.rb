@@ -37,9 +37,7 @@ class UserMailer < ApplicationMailer
 
   def new_share
     @recipient = params[:recipient]
-    @sharer = params[:sharer]
     @share_key = params[:share_key]
-    @password = params[:password]
     mail(to: @recipient.email, subject: MailSubjects::NON_LOGGABLE[:NEW_SHARE])
   end
 end
