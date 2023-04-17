@@ -46,7 +46,7 @@
           <b-card
             class="mt-5"
             style="font-size: 1.2em"
-            header="Gleich geht es los! Gebe in das Feld deinen eigenen Zugangscode ein."
+            header="Gleich geht es los! Gib in das Feld deinen eigenen Zugangscode ein."
           >
             <b-form id="form" action="/testen_login" method="post" accept-charset="UTF-8">
               <b-form-group>
