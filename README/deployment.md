@@ -14,7 +14,7 @@ Levumi is configured to deploy to both servers using Gitlab pipelines and Dokku.
 
 ### Database connections
 
-The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container:
+The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container (`sudo` privileges are required):
 
 ```
 dokku enter levumi2
