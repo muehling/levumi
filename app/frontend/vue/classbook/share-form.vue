@@ -81,9 +81,7 @@
             <i class="fas fa-check"></i> Teilen
           </b-button>
           <b-button
-            v-b-popover.hover="
-              'Um die Klasse mit einer anderen Lehrkraft zu teilen, benötigen Sie die E-Mail Adresse, mit der diese Person bei Levumi registriert ist. <br/> Geben Sie die Adresse ein und wählen Sie, ob die Person mit der Klasse selbst Testungen durchführen und Sie verändern darf, oder lediglich die existierenden Messungen ansehen kann. Sie müssen der Person selbstständig den Klassenschlüssel mitteilen, der Ihnen nach dem Teilen angezeigt wird. Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet.'
-            "
+            v-b-popover.hover="shareGroupHelp"
             class="ml-3"
             size="sm"
             variant="info"
@@ -130,6 +128,7 @@
   } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { userHelp } from '../../utils/userHelp'
 
   export default {
     name: 'ShareForm',
@@ -156,6 +155,9 @@
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
           : null
+      },
+      shareGroupHelp() {
+        return userHelp.shareGroup
       },
     },
     beforeCreate() {
