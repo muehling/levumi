@@ -81,9 +81,7 @@ class ApplicationController < ActionController::Base
           @no_script = true
           render :frontend, layout: 'test_select'
         end
-        format.json do
-          render json: { tests: s.get_assessments, student: { id: s.id, login: s.login } }
-        end
+        format.json { head :ok }
       end
     else
       head 403

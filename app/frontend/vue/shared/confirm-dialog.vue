@@ -40,11 +40,6 @@
         title: '',
       }
     },
-    mounted() {
-      this.$on('hidden', (bvEvent, modalId) => {
-        console.log('Modal is about to be shown', bvEvent, modalId)
-      })
-    },
     methods: {
       open(data = {}) {
         this.$refs.genericConfirmDialog.show()
