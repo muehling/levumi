@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   #Login für SuS
   get '/testen', to: 'application#frontend'
   post '/testen_login', to: 'application#login_frontend'
+  get '/testen_login', to: 'application#login_frontend'
   post '/testen_logout', to: 'application#logout_frontend'
 
   #Masquerading Login durch Admin

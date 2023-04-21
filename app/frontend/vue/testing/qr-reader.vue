@@ -94,11 +94,11 @@
       getUrlParameterValue(testString) {
         try {
           const url = new URL(testString)
-          if (!url.search.startsWith('?code=')) {
+          if (!url.search.startsWith('?login=')) {
             return ''
           }
 
-          const codeOnly = url.search.replace('?code=', '')
+          const codeOnly = url.search.replace('?login=', '')
           if (codeOnly.length !== 6) {
             return ''
           }
