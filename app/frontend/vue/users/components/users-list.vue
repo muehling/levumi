@@ -98,8 +98,15 @@
 
     methods: {
       async requestDeleteUser(id) {
+        const user = this.users.find(user => user.id === id)
+        if (!user) {
+          this.globalStore.setErrorMessage(`Es konnte kein Benutzer zur ID ${id} gefunden werden.`)
+          return
+        }
         const ok = await this.$refs.confirmDialog.open({
-          message: `Der Benutzer wird mit allen Daten gelöscht. Sind Sie sicher?`,
+          message: `Der Benutzer <strong>${user.email}</strong> wird mit allen Daten gelöscht. Sind Sie sicher?`,
+          cancelText: 'Nein, abbrechen',
+          containsHtml: true,
           okText: 'Ja, Benutzer löschen',
           title: 'Benutzer löschen',
         })
