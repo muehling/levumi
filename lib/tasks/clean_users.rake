@@ -1,9 +1,7 @@
-desc "Remove users that registered but never became active in the platform."
+desc 'Remove users that registered but never became active in the platform.'
 task 'clean_users' => :environment do
-  todo = User.where(tc_accepted: nil).where("created_at < ?", 3.weeks.ago).all
-  todo.each do |t|
-    puts t.email
-    t.destroy
-  end
-  puts "Removed #{todo.size} users"
+  puts "Current number of users: #{User.all.count}"
+  todo = User.where(intro_state: 1).where('created_at < ?', 3.weeks.ago).all
+  todo.destroy_all
+  puts "Removed #{todo.size} users, #{User.all.count} left"
 end

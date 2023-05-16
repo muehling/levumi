@@ -77,6 +77,7 @@
       >
     </div>
     <confirm-dialog ref="confirmDeleteDialog" />
+    <confirm-dialog ref="doneConfirmation" />
   </b-container>
 </template>
 
@@ -231,6 +232,7 @@
             Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
             Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
           okText: 'Ja, löschen',
+          cancelText: 'Nein, abbrechen',
         })
 
         if (answer) {
@@ -241,7 +243,7 @@
               sessionStorage.clear('login')
             })
 
-            this.$refs.confirmDeleteDialog.open({
+            this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',
               message:
                 'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
