@@ -48,7 +48,9 @@ class Result < ApplicationRecord
     res = ''
     self.data.each do |d|
       res = res + start
-      d.each { |k, v| res = res + '"' + v.to_s + '",' }
+
+      # temporary fix - substitute all `\"` with `'`, lest the exported csv is broken
+      d.each { |k, v| res = res + '"' + v.to_s.tr('\\"', "'") + '",' }
       res = res.slice(0, res.length - 1) + "\n" #Letztes Komma entfernen und newline anhängen
     end
     return res
