@@ -1,18 +1,9 @@
 <template>
   <div id="annotations-section">
-    <b-button
-      id="comment_btn"
-      v-b-toggle="'annotation_collapse'"
-      size="sm"
-      variant="outline-secondary"
-    >
-      Anmerkungen
-      <i :class="`when-closed fas ${visible ? 'fa-caret-down' : 'fa-caret-up'}`"></i>
-    </b-button>
     <b-collapse id="annotation_collapse" v-model="visible">
       <b-form
         v-if="!readOnly"
-        class="mt-1 border p-3"
+        class="border p-3"
         accept-charset="UTF-8"
         @submit="submitAnnotation()"
       >
@@ -62,10 +53,32 @@
                   <b-dropdown-divider />
                 </b-dropdown-group>
               </b-dropdown>
-
               <span
                 v-b-popover.hover="
                   'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
+                "
+                style="font-size: 1rem"
+                class="ml-2 mt-1"
+                ><i class="fas fa-circle-question"></i
+              ></span>
+            </div>
+          </div>
+        </div>
+        <div v-if="trendIsEnabled" class="mt-3 text-small row">
+          <div class="col-12 col-md-3 col-lg-2">
+            <label class="mt-1">Start neuer Trendlinie</label>
+          </div>
+          <div class="col-12 col-md-4">
+            <div class="d-flex flex-row">
+              <b-form-checkbox
+                v-model="annotationIsTrendThreshold"
+                :disabled="annotationStart !== annotationEnd"
+                size="sm"
+              ></b-form-checkbox>
+              <span
+                v-b-popover.hover="
+                  'Umfasst eine Anmerkung nur ein einziges Datum, so können Trends für die Bereiche ' +
+                  'vor und nach der Anmerkung erstellt werden.'
                 "
                 style="font-size: 1rem"
                 class="ml-2 mt-1"
@@ -91,6 +104,7 @@
             <th>Von</th>
             <th>Bis</th>
             <th>Anmerkung</th>
+            <th v-if="trendIsEnabled">Trend-Bruchstelle</th>
             <th v-if="!readOnly">Aktionen</th>
           </tr>
         </thead>
@@ -99,6 +113,9 @@
             <td>{{ printDate(a.start) }}</td>
             <td>{{ printDate(a.end) }}</td>
             <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
+            <td v-if="trendIsEnabled">
+              <i :class="a.trend_threshold ? 'fas fa-check' : 'fas fa-xmark'"></i>
+            </td>
             <td v-if="!readOnly" class="annotation-action-button">
               <b-button variant="outline-danger" class="btn-sm" @click="deleteAnnotation(a.id)">
                 <i class="fas fa-trash"></i> Löschen
@@ -113,10 +130,10 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { getAnnotationLabel, getAnnotationOptions } from '../../utils/helpers'
-  import apiRoutes from '../routes/api-routes'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { ajax } from '../../../utils/ajax'
+  import { getAnnotationLabel, getAnnotationOptions } from '../../../utils/helpers'
+  import apiRoutes from '../../routes/api-routes'
+  import ConfirmDialog from '../../shared/confirm-dialog.vue'
 
   export default {
     name: 'AnnotationsSection',
@@ -130,16 +147,26 @@
       selectedStudent: Object,
       selectedView: Number,
       test: Object,
+      annotationControlVisible: Boolean,
+      trendIsEnabled: Boolean,
     },
     data: function () {
       return {
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: 1,
-        visible: false,
+        annotationIsTrendThreshold: false,
       }
     },
     computed: {
+      visible: {
+        get() {
+          return this.annotationControlVisible
+        },
+        set(value) {
+          this.$emit('update:annotationControlVisible', value)
+        },
+      },
       currentAnnotations: function () {
         return this.annotations.filter(annotation => {
           return (
@@ -198,6 +225,7 @@
             start: this.annotationStart,
             end: this.annotationEnd,
             annotation_category_id: this.annotationCategoryId,
+            trend_threshold: this.annotationIsTrendThreshold,
             view: this.selectedView,
           },
         }
@@ -216,6 +244,7 @@
         if (res.status === 200) {
           const parsedResult = await res.json()
           this.$root.$emit(`annotation-added-${this.group.id}`, parsedResult)
+          this.annotationIsTrendThreshold = false
           this.annotationCategoryId = this.minCategoryId
           this.annotationEnd = null
           this.annotationStart = null
