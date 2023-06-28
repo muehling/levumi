@@ -122,7 +122,11 @@
     <ul class="list-inline text-center">
       <li class="list-inline-item"><a href='#imprint' data-toggle='modal' data-target='#imprint'>Impressum</a></li>
       <li class="list-inline-item"><a href='#privacy' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
+      <li class="list-inline-item"><a class="link-primary dsgvo-hint" tabindex='0' data-trigger="focus" data-toggle="popover" data-placement="top" data-content="Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt.">Cookie-Hinweis</a></li>
       <li class="list-inline-item"><a href='#projects' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
     </ul>
   </footer>
+  <script type="module">
+    $('[data-toggle="popover"]').popover()
+  </script>
 <% end %>
