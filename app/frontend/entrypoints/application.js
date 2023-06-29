@@ -73,3 +73,5 @@ const init = async () => {
 if (element) {
   init()
 }
+
+$('[data-toggle="popover"]').popover()
