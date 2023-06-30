@@ -647,7 +647,6 @@
         }
         // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
         this.graphData = gData
-        console.log('miau', gData)
 
         this.chartOptions = preparedOptions
 

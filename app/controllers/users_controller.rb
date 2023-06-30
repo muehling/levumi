@@ -259,6 +259,7 @@ class UsersController < ApplicationController
           :password,
           :school_type,
           :security_digest,
+          :settings,
           :state,
           :town
         )
