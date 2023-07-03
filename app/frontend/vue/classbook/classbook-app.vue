@@ -12,7 +12,7 @@
           <div v-else>
             <!-- reguläre Darstellung mit Klassenliste -->
             <b-tabs pills>
-              <b-tab active>
+              <b-tab active lazy>
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
@@ -37,6 +37,7 @@
                       :key="`${group.id}/${group.label}`"
                       :active="index === firstOwnIndex"
                       class="m-3"
+                      lazy
                     >
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
@@ -56,7 +57,7 @@
               </b-tab>
 
               <!-- Geteilte Klassen -->
-              <b-tab :disabled="sharedGroups.length === 0">
+              <b-tab :disabled="sharedGroups.length === 0" lazy>
                 <template slot="title">
                   Mit mir geteilte Klassen
                   <span v-if="new_shares" class="badge badge-info">Neu!</span
@@ -70,6 +71,7 @@
                       :key="group.id"
                       :active="index === firstSharedIndex"
                       class="m-3"
+                      lazy
                     >
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
@@ -84,7 +86,7 @@
               </b-tab>
 
               <!-- Klassenarchiv -->
-              <b-tab :disabled="archivedGroups.length === 0">
+              <b-tab :disabled="archivedGroups.length === 0" lazy>
                 <template slot="title">
                   Archivierte Klassen ({{ archivedGroups.length }})
                 </template>
@@ -97,7 +99,7 @@
                         Keine Klassen im Archiv vorhanden.
                       </div>
                     </div>
-                    <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3">
+                    <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3" lazy>
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
