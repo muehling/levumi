@@ -29,6 +29,7 @@
                     triggers="hover"
                     offset="20"
                     variant="secondary"
+                    delay="300"
                   >
                     Geteilt von {{ group.belongs_to }}
                   </b-tooltip>

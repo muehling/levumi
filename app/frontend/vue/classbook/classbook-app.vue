@@ -213,7 +213,7 @@
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
-            'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',
+            'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können. Diese Beispielklasse dient dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen. Daher werden keine Daten gespeichert. Für Testungen von realen Schüler*innen legen Sie bitte eine neue Klasse an. ',
             'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
             'Wenn Sie mit Klassen nicht mehr länger aktiv arbeiten, können Sie sie in ihr Archiv verschieben. Die Klasse wird nicht mehr unter Diagnostik angezeigt. Sie können Klassen auch wieder aus dem Archiv zurückholen. Probieren Sie das gerne mit Ihrer Beispielklasse aus!',
             'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
