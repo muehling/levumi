@@ -2,13 +2,18 @@
   <div id="target-controls">
     <b-collapse v-if="targetIsEnabled || dateUntilIsEnabled" id="target_collapse" v-model="visible">
       <b-form
-          v-if="!readOnly || readonlySuppressed"
-          class="border p-3"
-          accept-charset="UTF-8"
-          onsubmit="return false"
+        v-if="!readOnly || readonlySuppressed"
+        class="border p-3"
+        accept-charset="UTF-8"
+        onsubmit="return false"
       >
-        <b-alert :show="selectedStudentId !== -1 && storedIsNull" variant="info" class="d-inline-block">
-          Hinweis: Die gezeigten Werte wurden aus der Klassenansicht übernommen. Wenn Sie hier andere Werte eintragen und speichern, so gelten sie ausschließlich für diese Schüler*in.
+        <b-alert
+          :show="selectedStudentId !== -1 && storedIsNull"
+          variant="info"
+          class="d-inline-block"
+        >
+          Hinweis: Die gezeigten Werte wurden aus der Klassenansicht übernommen. Wenn Sie hier
+          andere Werte eintragen und speichern, so gelten sie ausschließlich für diese Schüler*in.
         </b-alert>
         <div v-if="targetIsEnabled" class="text-small row">
           <div class="col-12 col-md-3 col-xl-2">
@@ -30,6 +35,14 @@
               @update="setTarget($event, dateUntilVal, deviationVal, true)"
             ></b-form-input>
           </div>
+          <span
+            v-b-popover.hover="
+              `Der Zielwert wird wahlweise als horizontale oder an-/absteigende Gerade dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. `
+            "
+            style="font-size: 1rem"
+            class="mt-1"
+            ><i class="fas fa-circle-question"></i
+          ></span>
         </div>
         <div v-if="dateUntilIsEnabled" class="text-small row mt-2">
           <div class="col-12 col-md-3 col-xl-2">
@@ -48,6 +61,15 @@
               @update="setTarget(targetVal, $event, deviationVal, true)"
             ></b-form-input>
           </div>
+          <span
+            v-b-popover.hover="
+              `Mit dieser Option wird die Zeitachse des Diagramms auf das eingestellte Datum erweitert. An-/absteigende Zielwerte gelten für dieses Datum;
+               Trendlinien können bis zu diesem Datum extrapoliert werden.`
+            "
+            style="font-size: 1rem"
+            class="mt-1"
+            ><i class="fas fa-circle-question"></i
+          ></span>
         </div>
         <div v-if="deviationIsEnabled && targetIsEnabled" class="text-small row mt-2 mb-2">
           <div class="col-12 col-md-3 col-xl-2">
@@ -72,6 +94,14 @@
               ></b-form-input>
             </b-input-group>
           </div>
+          <span
+            v-b-popover.hover="
+              `Dieser Wert bestimmt, wie weit die Ergebnisse vom vorgegebenen Zielwert abweichen dürfen.`
+            "
+            style="font-size: 1rem"
+            class="mt-1"
+            ><i class="fas fa-circle-question"></i
+          ></span>
         </div>
         <div class="mt-3">
           <b-button
@@ -241,7 +271,7 @@
                 value: this.targetVal,
                 date_until: this.dateUntilVal,
                 deviation: this.deviationVal,
-                student_id: sId,
+                //student_id: sId,
               },
             })
           )

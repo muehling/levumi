@@ -53,12 +53,12 @@
       <b-col>
         <apexchart
           ref="levumiChart"
+          :key="forceUpdate"
           :type="currentChartType"
           height="500px"
           width="100%"
           :options="chartOptions"
           :series="chartSeries"
-          @updated="addTaskLevelListeners"
         />
       </b-col>
     </b-row>
@@ -67,6 +67,7 @@
         <b-row class="ml-1">
           <b-col>
             <b-button
+              v-if="!readOnly"
               id="annotation_btn"
               :aria-expanded="annotationControlVisible ? 'true' : 'false'"
               aria-controls="annotation_collapse"
@@ -82,7 +83,7 @@
               ></i>
             </b-button>
             <b-button
-              v-if="targetIsEnabled || dateUntilIsEnabled"
+              v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
               id="target_btn"
               class="ml-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
@@ -91,7 +92,7 @@
               :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
               @click="toggleCollapse('target_collapse')"
             >
-              Ziel
+              Ziele und Trends
               <i
                 :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
               ></i>
@@ -164,7 +165,6 @@
         :items="simpleTableData"
       ></b-table-lite>
     </b-row>
-    <div id="task_level_tooltip"></div>
   </div>
 </template>
 
@@ -190,11 +190,12 @@
   import { computed } from 'vue'
   import TargetControls from './target-controls.vue'
   import { useTestsStore } from '@/store/testsStore'
-
+  import { useGlobalStore } from '@/store/store'
+  import cloneDeep from 'lodash/cloneDeep'
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
-    inject: ['studentName', 'weeks', 'student_name_parts', 'printDate'],
+    inject: ['studentName', 'weeks', 'student_name_parts', 'printDate', 'readOnly'],
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
@@ -214,7 +215,8 @@
     },
     setup() {
       const testsStore = useTestsStore()
-      return { testsStore }
+      const globalStore = useGlobalStore()
+      return { testsStore, globalStore }
     },
     data: function () {
       return {
@@ -231,9 +233,14 @@
         targetAdded: false,
         targetControlVisible: false,
         targetVal: null,
+        maxY: 0,
+        forceUpdate: undefined,
       }
     },
     computed: {
+      settings() {
+        return cloneDeep(this.globalStore.login.settings)
+      },
       viewsWithGroupAndStudent() {
         return this.configuration.views.filter(
           view =>
@@ -323,37 +330,36 @@
       chartSeries() {
         return [...this.graphData]
       },
-      isTaskLevelChart() {
-        return Boolean(this.viewConfig.isTaskLevelChart)
-      },
       isReadOnlySuppressed() {
+        //TODO might not be needed
         return Boolean(this.viewConfig.readOnlySuppressed)
       },
       targetIsSlopeVariant() {
-        return true
+        return this.settings.targets?.slope
         //return Boolean(this.viewConfig.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
-        return true
-        //return !this.viewConfig.series_keys && Boolean(this.viewConfig.targetOptions?.enabled)
+        return this.settings.targets?.enabled
       },
       dateUntilIsEnabled() {
+        return this.settings.targets?.enabled || this.settings.trends?.enabled
+        //return this.settings.useEndDate || (this.targetIsEnabled && this.targetIsSlopeVariant)
         // if a slope target is to be shown then we need dateUntil anyway
-        return (
-          Boolean(this.viewConfig.targetOptions?.selectEndDate) ||
-          (this.targetIsEnabled && this.targetIsSlopeVariant)
-        )
+        //return (
+        //  Boolean(this.viewConfig.targetOptions?.selectEndDate) ||
+        //  (this.targetIsEnabled && this.targetIsSlopeVariant)
+        //)
       },
       deviationIsEnabled() {
-        return true
+        return this.targetIsEnabled && this.settings.targets?.deviation
         //return Boolean(this.viewConfig.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
-        return true
+        return this.settings.trends?.enabled
         //return Boolean(this.viewConfig.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
-        return true
+        return this.settings.trends.extrapolate
         //return Boolean(this.viewConfig.trendOptions?.extrapolate)
       },
       deviationStored() {
@@ -428,6 +434,9 @@
             attachment.content_type.startsWith('image') && attachment.filename.startsWith('Niveau')
         )
       },
+      maxYValue() {
+        return Math.max(this.maxY, this.targetVal)
+      },
     },
     watch: {
       annotations() {
@@ -437,16 +446,19 @@
           this.updateAnnotations()
         }
         if (this.trendIsEnabled) {
-          // if trends are enabled we may need to let trend lines adapt to thresholds in annotations
           this.updateView(true)
         }
+      },
+      settings() {
+        this.forceUpdate = Symbol()
+        this.isInitialized = false
+        this.updateView(false)
       },
     },
     async created() {
       await this.testsStore.fetch()
     },
     mounted() {
-      // also sets the initial values for dateUntil and targetVal when in group view, due to call to restoreTarget
       this.loadStudentTargets()
       this.setStudentAndUpdate(
         this.has_group_views
@@ -459,10 +471,7 @@
     methods: {
       setSelectedView(index) {
         this.selectedView = index
-        // restore the target to the stored state of the new view, as each view has its own target data
-        // don't redraw as we're calling updateView next
         this.restoreTarget(false)
-        // destroy the chart to reset the options
         this.updateView(true)
       },
       getStudentName(id) {
@@ -503,9 +512,11 @@
       },
 
       createSeries(studentId, seriesKey, formatDate) {
-        const results = this.results.filter(result => result.student_id === studentId)
+        const results = this.results.filter(result => result?.student_id === studentId)
+
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
+
           // if a week has no results add a point with an empty y value for this week
           if (!currentResult) {
             return { x: formatDate ? printDate(week) : week, y: null }
@@ -515,6 +526,8 @@
           if (point.y === undefined) {
             point.y = null
           }
+
+          this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
       },
@@ -538,17 +551,18 @@
         }
       },
       setStudentAndUpdate(studentId) {
-        const oldValue = this.selectedStudentId
+        const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
-        if (studentId !== oldValue) {
+        if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
           animateChange = true
         }
         this.updateView(animateChange)
       },
-      updateView(animate) {
+
+      async updateView(animate) {
         const view = this.viewConfig
         if (view.type === 'table') {
           return
@@ -562,7 +576,7 @@
           this.targetIsSlopeVariant,
           this.targetIsEnabled,
           animate,
-          this.isTaskLevelChart
+          this.maxYValue
         )
 
         const formatDate = trueChartType === 'bar'
@@ -588,7 +602,6 @@
                 data: this.createSeries(student.id, undefined, formatDate),
               },
             ]
-            // only create trend line data when a single series is shown
             if (this.trendIsEnabled && trueChartType !== 'bar') {
               // only create trend line data when the view is configured to show such
               // 'bar' charts do not support trends right now, as they are based on categories
@@ -616,6 +629,33 @@
           }
         }
 
+        // trends and targets are displayed only for non-bar charts and views with a single series
+        if (trueChartType !== 'bar') {
+          if (!view.series_keys) {
+            if (trendlineData) {
+              addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
+            }
+            if (this.targetIsEnabled) {
+              this.appendSlopeTarget(gData, preparedOptions)
+            }
+            if (
+              (trendlineData && this.extrapolationIsEnabled) ||
+              (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
+            ) {
+              this.expandXAxis(gData)
+            }
+          }
+        }
+
+        this.chartOptions = { ...this.chartOptions, ...preparedOptions }
+        this.graphData = gData
+
+        await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors
+        if (this.targetIsEnabled) {
+          this.updateNonSlopeTarget()
+        }
+        this.updateAnnotations()
+
         // this is the input for <b-table-lite> component, which is shown below the graph
         this.simpleTableData = gData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
@@ -629,35 +669,12 @@
           }
         })
 
-        // 'bar' charts are not supported right now, as they are based on categories instead of datetime
-        if (trueChartType !== 'bar') {
-          // for views without series keys we might draw a trend line and a target depending on the view config
-          if (!view.series_keys) {
-            // for views only showing one student also create a trend line over the values
-            // (can also be something else like trend bars, depending on the true chart type)
-            addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
-            if (this.targetIsEnabled) {
-              this.appendSlopeTarget(gData, preparedOptions)
-            }
-          }
-          this.expandXAxis(gData)
-        }
-        if (this.targetIsEnabled) {
-          this.updateNonSlopeTarget() // should only be called after the chart has been rendered
-        }
-        // Options have to be set once at the point where they've been prepared to completion, see: https://github.com/apexcharts/vue-apexcharts#how-do-i-update-the-chart
-        this.graphData = gData
-
-        this.chartOptions = preparedOptions
-
-        // FIXME: using setTimeout here is a workaround:
-        // if called immediately the added annotations won't be rendered for some reason when coming from a view of type 'bar' (or possibly also other types)
-        setTimeout(this.updateAnnotations)
         this.isInitialized = true
       },
 
       updateAnnotations() {
         //Kommentare einfügen
+
         const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
 
         // get annotations that need to be drawn in the current chart
@@ -684,7 +701,7 @@
               annotation.student_id !== null
           )
           .map(annotation => {
-            const dataForAnnotation = this.graphData[0].data.find(d => d.x === annotation.start)
+            const dataForAnnotation = this.graphData[0]?.data.find(d => d.x === annotation.start)
             return annotationsPointOptions(
               this.viewConfig,
               annotation,
@@ -692,11 +709,10 @@
               annotation.start
             )
           })
-
         // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
-        this.annotations.forEach(annotation =>
+        this.annotations.forEach(annotation => {
           this.$refs.levumiChart.removeAnnotation('a' + annotation.id)
-        )
+        })
 
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
         points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
@@ -734,7 +750,7 @@
           startWeek = firstResult.test_week
           startY = this.XYFromResult(firstResult, null)?.y
         }
-        const deviate = this.deviationVal > 0
+        const deviate = this.deviationIsEnabled
 
         const startPoint = { x: startWeek, y: startY }
         const startPointRange = deviate
@@ -749,11 +765,12 @@
         const endPointRange = deviate
           ? {
               x: this.dateUntilVal,
-              y: [this.targetVal * (1 - this.deviationVal / 100), this.targetVal],
+              y: [this.targetVal * (1 - this.deviationVal / 100) + '', this.targetVal],
             }
           : null
 
         let endConditionY
+
         if (deviate) {
           endConditionY = undefined != endPointRange.y[0] && undefined != endPointRange.y[1]
         } else {
@@ -783,14 +800,18 @@
           this.$refs.levumiChart.removeAnnotation('target-range-annotation') // range for allowed deviation
           this.targetAdded = false
         }
+
         if (this.targetValid && !this.targetIsSlopeVariant) {
           const y2 =
             this.deviationIsEnabled && this.deviationVal > 0
               ? this.targetVal - this.targetVal * (this.deviationVal / 100)
               : null
-          this.$refs.levumiChart.addYaxisAnnotation(
-            targetRangeAnnotationOptions(this.targetVal, y2)
-          )
+          if (y2) {
+            this.$refs.levumiChart.addYaxisAnnotation(
+              targetRangeAnnotationOptions(this.targetVal, y2)
+            )
+          }
+
           this.$refs.levumiChart.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
           this.targetAdded = true // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
@@ -881,59 +902,6 @@
             break
         }
       },
-
-      showTaskExample(evt) {
-        const tooltip = document.getElementById('task_level_tooltip')
-        // find the corresponding example image for the level
-        const exampleImgs = this.attachedLevelImages.filter(a =>
-          a.filename.startsWith('Niveau_' + Math.round(evt.target.innerHTML))
-        )
-        if (exampleImgs.length > 0) {
-          const exampleImg = exampleImgs[Math.floor(Math.random() * exampleImgs.length)]
-          tooltip.innerHTML =
-            '<p>Beispielaufgabe Niveau ' +
-            Math.round(evt.target.innerHTML) +
-            ':</p><img src=' +
-            exampleImg.filepath +
-            " style='max-width: 500px; max-height: 450px'>"
-          tooltip.style.display = 'block'
-          tooltip.style.left = evt.x + 20 + 'px'
-          tooltip.style.top = evt.y + 'px'
-        }
-      },
-
-      hideTaskExample() {
-        var tooltip = document.getElementById('task_level_tooltip')
-        tooltip.style.display = 'none'
-      },
-
-      /***
-       * Adds event listeners to the y-axis labels to show examples of tasks at levels corresponding to the label.
-       * These examples are shown as images when users hover over a label.
-       */
-      addTaskLevelListeners() {
-        if (this.isTaskLevelChart) {
-          document.querySelectorAll('.apexcharts-yaxis-label').forEach(item => {
-            item.addEventListener('mouseover', this.showTaskExample)
-            item.addEventListener('mouseleave', this.hideTaskExample)
-          })
-        }
-      },
     },
   }
 </script>
-
-<style>
-  #task_level_tooltip {
-    background-color: white;
-    border: 2px solid #5a598c;
-    border-radius: 4px;
-    padding: 5px;
-    position: fixed;
-    transform: translate(0%, -50%);
-    font-size: 1rem;
-    display: none;
-    z-index: 999;
-    text-align: center;
-  }
-</style>

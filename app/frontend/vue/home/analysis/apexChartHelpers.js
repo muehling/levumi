@@ -2,6 +2,7 @@ import { getAnnotationLabel } from '../../../utils/helpers'
 import deepmerge from 'deepmerge'
 import isArray from 'lodash/isArray'
 import { printDate } from '@/utils/date'
+import cloneDeep from 'lodash/cloneDeep'
 
 export const prepareOptions = (
   chartType,
@@ -10,7 +11,7 @@ export const prepareOptions = (
   isSlope,
   targetIsEnabled,
   animate,
-  isTaskLevelChart
+  yMax
 ) => {
   // if any series wants to be of type rangeArea then the whole chart needs to be
   // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
@@ -34,30 +35,29 @@ export const prepareOptions = (
         opt = apexChartOptions(weekLabels).rangeArea
         break
       case 'line':
-        if (isTaskLevelChart) {
-          opt = apexChartOptions(weekLabels).taskLevelLine
-        } else {
-          opt = apexChartOptions(weekLabels).line
-        }
+        opt = apexChartOptions(weekLabels).rangeArea
         break
       default:
-        opt = apexChartOptions(weekLabels).line
+        opt = apexChartOptions(weekLabels).rangeArea
     }
   }
-  const options = deepmerge(opt, customOptions)
+  const options = deepmerge(cloneDeep(opt), customOptions)
   if (needRangeAreaChart) {
     options.chart.type = 'rangeArea'
   }
   // for updates on a chart animations may be inadequate
   options.chart.animations.enabled = animate
 
-  //Default für y-Achse: 10% Luft nach oben
   if (options.yaxis === undefined) {
     options.yaxis = {}
   }
-  if (options.yaxis.max === undefined) {
+
+  // check the y axis needs to be adjusted to display a trend or target
+  if (yMax) {
+    options.yaxis.max = yMax
+  } else {
     options.yaxis.max = function (max) {
-      return 1.1 * max
+      return max * 1.1
     }
   }
 
@@ -88,29 +88,28 @@ export const apexChartOptions = weekLabels => ({
       },
     },
     xaxis: {
-      // TODO: Optionen hier vielleicht an andere Diagramme anpassen (datetime statt categories)
       tooltip: { enabled: false },
       type: 'category',
       categories: weekLabels,
-      tickPlacement: 'between',
+      tickPlacement: 'on',
     },
     tooltip: { ...commonTooltip() },
   },
   line: {
+    ...commonOptions(),
     chart: {
       ...commonChart(),
       type: 'line',
     },
-    ...commonOptions(),
     colors: apexColors(),
+    fill: {
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      type: 'solid',
+    },
     stroke: {
       curve: 'straight',
       width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
       dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
-    },
-    fill: {
-      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
-      type: 'solid',
     },
     grid: {
       ...commonGrid(),
@@ -181,67 +180,6 @@ export const apexChartOptions = weekLabels => ({
       },
     },
   },
-  taskLevelLine: {
-    chart: {
-      ...commonChart(),
-      type: 'line',
-    },
-    ...commonTaskLevelOptions(),
-  },
-})
-
-/** the idea behind this was that there might be wright-maps based on scatter plots
- * that would be utilizing this too */
-const commonTaskLevelOptions = () => ({
-  ...commonOptions(),
-  colors: apexColors(),
-  stroke: {
-    curve: 'straight',
-    width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
-    dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
-  },
-  fill: {
-    opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
-    type: 'solid',
-  },
-  grid: {
-    ...commonGrid(),
-    padding: {
-      right: 35,
-      left: 35,
-    },
-  },
-  tooltip: {
-    ...commonTooltip(),
-    enabled: true,
-    x: { show: false },
-  },
-  xaxis: {
-    tooltip: { enabled: false },
-    type: 'datetime',
-    title: {
-      text: 'Testwoche',
-      offsetY: 90,
-    },
-    labels: {
-      minHeight: 20,
-      formatter: function (value) {
-        return printDate(value) //opts.dateFormatter(new Date(timestamp)).format('dd MMM')
-      },
-    },
-  },
-  yaxis: {
-    min: 0,
-    forceNiceScale: true,
-    labels: {
-      style: {
-        colors: ['#5a598c'],
-        fontSize: '20px',
-        fontWeight: 'bold',
-      },
-      formatter: val => (val === null ? 'null' : Number(val).toFixed(0)), // levels are always natural numbers
-    },
-  },
 })
 
 const commonOptions = () => ({
@@ -258,7 +196,7 @@ const commonOptions = () => ({
     min: 0,
     forceNiceScale: true,
     labels: {
-      formatter: val => (val === null ? 'null' : Number(val).toFixed(2)), // to avoid ticks with more than 10 decimal places that sometimes come up else
+      formatter: val => val?.toFixed(2),
     },
   },
 })
@@ -292,7 +230,6 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   const hoverIndexes = w.globals.seriesX.map(seriesX => {
     return seriesX.findIndex(xData => xData === hoverXaxis)
   })
-  //console.log('ogottogott', hoverIndexes, hoverXaxis)
 
   let hoverList = ''
   hoverIndexes.forEach((hoverIndex, seriesEachIndex) => {
