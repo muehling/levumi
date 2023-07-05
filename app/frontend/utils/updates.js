@@ -15,4 +15,23 @@ export const updates = [
     Test zu gelangen.</p>
     `,
   },
+  {
+    intro_state: 7,
+    date: '18.05.2023',
+    title: '',
+    message: `<b>Überarbeitung des QR-Codes</b><p class="mt-1">Neu erzeugte QR-Codes können sowohl mit dem Levumi-Scanner
+    als auch einem beliebigen anderen QR-Code-Leser gescannt werden und leiten dann auf die Test-Seite weiter. Bereits
+    ausgedruckte QR-Codes können weiterhin nur mit dem Levumi-Scanner verarbeitet werden.
+    `,
+  },
+  {
+    intro_state: 8,
+    date: '05.07.2023',
+    title: 'Ziele und Trendlinien',
+    message: `Das Auswertungsdiagramm wurde um die Möglichkeit erweitert, Trendlinien und Zielwerte darzustellen. 
+    Diese müssen in den (ebenfalls neu hinzugekommenen) "Benutzereinstellungen" unter "Meine Daten" aktiviert werden und
+    stehen dann für alle Klassen zur Verfügung. Neben den Einstellungsmöglichkeiten finden sich jeweils kleine Icons mit einer
+    Kontexthilfe.
+    `,
+  },
 ]
