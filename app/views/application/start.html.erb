@@ -117,12 +117,8 @@
     </div>
   </div>
 
-
-  <footer class='mt-2'>
-    <ul class="list-inline text-center">
-      <li class="list-inline-item"><a href='#imprint' data-toggle='modal' data-target='#imprint'>Impressum</a></li>
-      <li class="list-inline-item"><a href='#privacy' onclick="$('#privacy').modal('show')">Datenschutzerklärung</a></li>
-      <li class="list-inline-item"><a href='#projects' onclick="$('#projects').modal('show')">Über das Projekt</a></li>
-    </ul>
-  </footer>
+  <%= render 'application/imprint' %>
+  <%= render 'application/privacy' %>
+  <%= render 'application/about' %>
+  <%= render 'application/footer', show_about: true %>
 <% end %>
