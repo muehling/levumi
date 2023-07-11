@@ -223,6 +223,14 @@
               <a class="dropdown-item" href="#" onclick="$('#tc').modal('show')"
                 >Nutzungsbedingungen</a
               >
+              <a
+                v-b-popover.hover.left="
+                  'Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt.'
+                "
+                class="dropdown-item"
+                href="#"
+                >Cookie-Hinweis</a
+              >
             </div>
           </li>
           <li v-if="!masquerade" class="nav-item">
