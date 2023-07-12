@@ -14,6 +14,8 @@
           <b-card v-if="accountType !== 2" title="Helfen Sie uns bei der Forschung" class="mt-4">
             <extra-data-form
               :account-type="accountType"
+              :focus-type="focusType || undefined"
+              :school-type="schoolType || undefined"
               @change-institution="inst => (institution = inst)"
               @change-town="t => (town = t)"
               @change-school-type="st => (schoolType = st)"

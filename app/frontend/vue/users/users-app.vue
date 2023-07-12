@@ -12,6 +12,7 @@
       </template>
     </b-tabs>
     <users-mail-dialog ref="usersMailDialog" />
+    <edit-user-dialog ref="editUserDialog" @refetch="refetch" />
   </b-container>
 </template>
 
@@ -20,11 +21,12 @@
   import { hasCapability } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
   import UsersList from './components/users-list.vue'
+  import EditUserDialog from './components/edit-user-dialog.vue'
   import UsersMailDialog from './components/users-mail-dialog.vue'
   import LoadingDots from '../shared/loading-dots.vue'
   export default {
     name: 'UsersApp',
-    components: { UsersList, UsersMailDialog, LoadingDots },
+    components: { UsersList, UsersMailDialog, LoadingDots, EditUserDialog },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -68,7 +70,7 @@
         this.$refs.editUserDialog.open({ user: {}, isNew: true })
       },
       openMailDialog() {
-        this.$refs.usersMailDialog.open()
+        this.$refs.usersMailDialog.open({ isNew: true })
       },
     },
   }

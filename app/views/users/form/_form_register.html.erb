@@ -38,7 +38,7 @@
       return {[entry.name]: entry.value, ...acc}
     }, {})
     const data = {user:{
-      "email": raw['user[email]'],
+      "email": raw['user[email]'].trim(),
       "state": raw['user[state]'],
       "account_type": raw['user[account_type]']
     }}

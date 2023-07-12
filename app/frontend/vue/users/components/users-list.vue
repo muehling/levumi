@@ -37,14 +37,14 @@
               ><i class="fas fa-edit"></i> Bearbeiten</b-btn
             >
             <b-btn
-              v-if="canDeleteUser"
+              v-if="canDeleteUser(user)"
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="requestDeleteUser(user.id)"
               ><i class="fas fa-trash"></i> Löschen</b-btn
             >
             <b-btn
-              v-if="globalStore.login.id !== user.id && user.tc_accepted && checkRegistration(user)"
+              v-if="isLoginAsAllowed(user)"
               variant="outline-secondary"
               class="delete-user btn btn-sm mr-1"
               @click="loginAs(user.id)"
@@ -61,7 +61,7 @@
 
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { isAdmin } from '../../../utils/user'
+  import { hasCapability, isAdmin } from '../../../utils/user'
   import { isRegistered } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
@@ -91,15 +91,19 @@
       accountTypes() {
         return this.globalStore.staticData.accountTypes
       },
-      canDeleteUser() {
-        return isAdmin(this.globalStore.login.capabilities)
-      },
     },
 
     methods: {
       async requestDeleteUser(id) {
+        const user = this.users.find(user => user.id === id)
+        if (!user) {
+          this.globalStore.setErrorMessage(`Es konnte kein Benutzer zur ID ${id} gefunden werden.`)
+          return
+        }
         const ok = await this.$refs.confirmDialog.open({
-          message: `Der Benutzer wird mit allen Daten gelöscht. Sind Sie sicher?`,
+          message: `Der Benutzer <strong>${user.email}</strong> wird mit allen Daten gelöscht. Sind Sie sicher?`,
+          cancelText: 'Nein, abbrechen',
+          containsHtml: true,
           okText: 'Ja, Benutzer löschen',
           title: 'Benutzer löschen',
         })
@@ -131,6 +135,19 @@
           return 'table-warning'
         }
         return ''
+      },
+      isLoginAsAllowed(user) {
+        return (
+          this.globalStore.login.id !== user.id &&
+          user.tc_accepted &&
+          isRegistered(user) &&
+          !isAdmin(user.capabilities)
+        )
+      },
+      canDeleteUser(user) {
+        return (
+          hasCapability('user', this.globalStore.login.capabilities) && !isAdmin(user.capabilities)
+        )
       },
     },
   }

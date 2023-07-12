@@ -5,7 +5,7 @@
       <user-form
         :is-new="isNew"
         :user="user"
-        :show-delete-button="true"
+        :show-delete-button="!isNew"
         @submitSuccessful="handleSuccess"
         @cancelEdit="cancelEdit"
       />
@@ -15,17 +15,13 @@
 </template>
 
 <script>
-  import { useGlobalStore } from '../../../store/store'
   import UserForm from '../../shared/forms/user-form.vue'
   import InfoDialog from '../../shared/info-dialog.vue'
 
   export default {
     name: 'EditUserDialog',
     components: { UserForm, InfoDialog },
-    setup() {
-      const globalStore = useGlobalStore()
-      return { globalStore }
-    },
+
     data() {
       return {
         // local state
@@ -50,7 +46,9 @@
       handleSuccess(res) {
         this.$emit('refetch', res)
         this.$refs.infoDialog.open({
-          message: 'Ihre Daten wurden erfolgreich geändert!',
+          message: !this.isNew
+            ? 'Ihre Daten wurden erfolgreich geändert!'
+            : 'Account wurde erfolgreich angelegt!',
           title: 'Speichern erfolgreich',
           okText: 'Schließen',
         })

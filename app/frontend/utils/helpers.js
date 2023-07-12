@@ -23,9 +23,10 @@ export const getAnnotationOptions = () => {
     return {
       id: category.id,
       name: name,
-      group: parseInt(group, 10),
-      index: parseInt(index, 10),
+      group: parseInt(group, 10) || 1,
+      index: parseInt(index, 10) || 1,
     }
   })
+
   return categories.sort((a, b) => a.group - b.group || a.index - b.index)
 }

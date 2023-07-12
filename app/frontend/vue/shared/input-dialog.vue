@@ -14,12 +14,19 @@
     <div class="d-block mb-4">
       <p>{{ message }}</p>
       <b-form @submit="_confirm">
-        <b-form-input
-          ref="inputField"
-          v-model="inputValue"
-          :placeholder="placeHolder"
-          :type="type"
-        ></b-form-input>
+        <div class="row">
+          <div :class="type === 'password' ? 'col-11' : 'col-12'">
+            <b-form-input
+              ref="inputField"
+              v-model="inputValue"
+              :placeholder="placeHolder"
+              :type="inputType"
+            />
+          </div>
+          <div v-if="type === 'password'" class="col-1 pl-0 mt-2">
+            <i :class="passwordIcon" @click="showPassword = !showPassword"></i>
+          </div>
+        </div>
       </b-form>
     </div>
     <slot name="extraContent"></slot>
@@ -44,7 +51,25 @@
       placeHolder: '',
       type: 'text',
       disableClose: false,
+      showPassword: false,
     }),
+    computed: {
+      inputType() {
+        switch (this.type) {
+          case 'password':
+            if (this.showPassword) {
+              return 'text'
+            } else {
+              return 'password'
+            }
+          default:
+            return this.type
+        }
+      },
+      passwordIcon() {
+        return this.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'
+      },
+    },
 
     methods: {
       open(data = {}) {

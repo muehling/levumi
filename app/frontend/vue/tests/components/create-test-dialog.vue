@@ -137,7 +137,7 @@
         try {
           contentObj = JSON.parse(content)
         } catch (e) {
-          this.globalStore.setErrorMessage('test.json konnte nicht gelesen werden!')
+          this.globalStore.setErrorMessage('test.json ist fehlerhaft: ' + e)
           return
         }
 

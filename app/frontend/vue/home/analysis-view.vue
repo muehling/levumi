@@ -131,7 +131,6 @@
     },
     data: function () {
       return {
-        apexchart: null,
         default_options: apexChartOptions(this.weeks),
         selectedStudentId: -1,
         selectedView: 0,
@@ -272,7 +271,7 @@
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
         pdf.text(title, 10, 20)
-        const uri = await this.apexchart.dataURI()
+        const uri = await this.$refs.levumiChart.dataURI()
         pdf.addImage(
           uri['imgURI'],
           'PNG',
@@ -295,7 +294,7 @@
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
         } else {
-          title = `${this.getStudentById(this.selectedStudentId).name} - ${view.label}`
+          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
         }
         await this.createPdf(title, filename)
