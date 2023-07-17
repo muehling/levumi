@@ -5,6 +5,7 @@ class Test < ApplicationRecord
   before_destroy :cleanup
 
   has_many :assessments, dependent: :destroy
+  has_one :type
   belongs_to :test_family
 
   #Zu einem Test gehörende Dateien => Active_Storage
