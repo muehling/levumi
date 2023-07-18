@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_27_153014) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -55,7 +55,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "annotation_category_id"
-    t.boolean "trend_threshold"
     t.index ["annotation_category_id"], name: "index_annotations_on_annotation_category_id"
     t.index ["assessment_id"], name: "index_annotations_on_assessment_id"
     t.index ["group_id"], name: "index_annotations_on_group_id"
@@ -190,19 +189,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 
-  create_table "targets", charset: "utf8mb3", force: :cascade do |t|
-    t.bigint "assessment_id"
-    t.bigint "student_id"
-    t.json "view"
-    t.string "value"
-    t.date "date_until"
-    t.string "deviation"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["assessment_id"], name: "index_targets_on_assessment_id"
-    t.index ["student_id"], name: "index_targets_on_student_id"
-  end
-
   create_table "test_families", charset: "utf8mb3", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -230,9 +216,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
   end
 
   create_table "types", charset: "utf8mb3", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.text "description"
-    t.boolean "is_default"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -253,7 +238,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.integer "intro_state", default: 0
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
-    t.json "settings"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

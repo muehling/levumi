@@ -67,6 +67,7 @@ export const useGlobalStore = defineStore('global', {
         focusTypes: coreData.focusTypes,
         accountTypes: coreData.accountTypes,
         annotationCategories: coreData.annotationCategories,
+        testTypes: coreData.testTypes,
       }
 
       // decrypt student names

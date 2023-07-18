@@ -17,31 +17,37 @@
           v-for="area in usedAreas"
           :key="area.info.id"
           :active="area.info.id == areaSelected"
-          @click="
-            area.used = true
-            setSelectedArea(area.info.id)
-          "
+          @click="setSelectedArea(area.info.id)"
         >
-          <span :class="area.used ? 'font-weight-bold' : 'text-muted'">{{ area.info.name }}</span>
+          <span :class="area.used ? 'font-weight-bold' : ''">{{ area.info.name }}</span>
         </b-nav-item>
       </b-nav>
+
       <hr v-if="areaSelected && areaSelected !== -1" />
       <b-nav v-if="areaSelected && areaSelected !== -1" pills class="mt-1">
+        <!-- Alle Typen -->
+        <b-nav-item
+          v-for="testType in usedTypes"
+          :id="testType.id"
+          :key="testType.id"
+          :active="testType.id == typeSelected"
+          @click="setSelectedType(testType.id)"
+        >
+          <span :class="testType.used ? 'font-weight-bold' : ''">{{ testType.name }}</span>
+        </b-nav-item>
+      </b-nav>
+
+      <hr v-if="typeSelected && typeSelected !== -1" />
+      <b-nav v-if="typeSelected && typeSelected !== -1" pills class="mt-1">
         <!-- Alle Kompetenzen des gewählten Lernbereichs -->
         <b-nav-item
           v-for="competence in usedCompetences"
           :id="group.id + '_competence_' + competence.info.id"
           :key="competence.info.id"
           :active="competence.info.id == competenceSelected"
-          @click="
-            if ((competence.used = true)) {
-              setSelectedCompetence(competence.info.id)
-            }
-          "
+          @click="setSelectedCompetence(competence.info.id)"
         >
-          <span :class="competence.used ? 'font-weight-bold' : 'text-muted'">{{
-            competence.info.name
-          }}</span>
+          <span :class="competence.used ? 'font-weight-bold' : ''">{{ competence.info.name }}</span>
           <b-popover
             v-if="!competence.used && competence.info.description != undefined"
             :target="group.id + '_competence_' + competence.info.id"
@@ -59,11 +65,9 @@
           :id="group.id + '_family_' + family.info.id"
           :key="family.info.id"
           :active="family.info.id == familySelected"
-          @click=";(family.used = true), setSelectedFamily(family.info.id)"
+          @click="setSelectedFamily(family.info.id)"
         >
-          <span :class="family.used ? 'font-weight-bold' : 'text-muted'">{{
-            family.info.name
-          }}</span>
+          <span :class="family.used ? 'font-weight-bold' : ''">{{ family.info.name }}</span>
           <b-popover
             v-if="!family.used && family.info.description != undefined"
             :target="group.id + '_family_' + family.info.id"
@@ -176,6 +180,7 @@
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'GroupView',
@@ -218,6 +223,10 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.family
             : 0,
+        typeSelected:
+          this.$root.pre_select && this.$root.pre_select.group === this.group.id
+            ? this.$root.pre_select.type
+            : undefined,
         results:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.assessment
@@ -270,6 +279,9 @@
 
         return res
       },
+      hasAreaScreeningTests() {
+        return true
+      },
       //Alle Versionen des gewählten Tests
       versions() {
         let level = ''
@@ -307,7 +319,30 @@
         )
       },
       usedTests() {
-        return this.tests.filter(test => test.used || !this.group.read_only)
+        return this.tests.filter(
+          test =>
+            (test.used || !this.group.read_only) &&
+            (test.info.type_id === this.typeSelected ||
+              (test.info.type_id === null && this.typeSelected === 1))
+        )
+      },
+      usedTypes() {
+        const t = this.groupInfo?.tests.reduce((acc, test) => {
+          const testMeta = this.getTestMetadata(test)
+          if (testMeta.areaId === this.areaSelected) {
+            acc[test.info.type_id || '1'] = true // will add tests without a type_id with default 1
+          }
+          return acc
+        }, {})
+
+        const typeLabels = this.globalStore.staticData.testTypes.filter(testType => {
+          return Object.keys(t).find(testTypeId => testTypeId === testType.id + '')
+        })
+        if (isEmpty(typeLabels)) {
+          typeLabels.unshift(this.globalStore.staticData.testTypes[0])
+        }
+
+        return typeLabels
       },
       usedVersions() {
         return this.versions.filter(
@@ -340,6 +375,21 @@
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
         )
+      },
+
+      getTestMetadata(test) {
+        const testFamily = this.groupInfo.families.find(
+          family => family.info.id === test.info.test_family_id
+        )
+        const competence = this.groupInfo.competences.find(
+          competence => competence.info.id === testFamily.info.competence_id
+        )
+        const area = this.groupInfo.areas.find(area => area.info.id === competence.info.area_id)
+        return {
+          areaId: area.info.id,
+          competenceId: competence.info.id,
+          testFamilyId: testFamily.info.id,
+        }
       },
       //Neues Assessment anlegen und, bei Erfolg, laden.
       createAssessment(test, isVersion) {
@@ -380,6 +430,15 @@
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedArea(area) {
         this.areaSelected = area
+        this.typeSelected = -1
+        this.competenceSelected = -1
+        this.familySelected = -1
+        this.test_selected = -1
+        this.version_selected = -1
+        this.results = null
+      },
+      setSelectedType(testType) {
+        this.typeSelected = testType
         this.competenceSelected = -1
         this.familySelected = -1
         this.test_selected = -1
@@ -401,6 +460,7 @@
         this.version_selected = -1
         this.results = null
       },
+
       propagateUsedTest(testId) {
         this.$emit('test-used', testId, this.index)
       },
