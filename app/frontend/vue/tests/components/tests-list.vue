@@ -141,6 +141,7 @@
         this.$refs.editTestDialog.open({
           description: t.description.full,
           shortDescription: t.description.short,
+          testTypeId: t.test_type_id,
           id,
         })
       },
