@@ -120,7 +120,7 @@
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection },
-    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks', 'student_name_parts'],
+    inject: ['autoScroll', 'printDate', 'readOnly', 'studentName', 'weeks'],
     props: {
       annotations: Array,
       configuration: Object,

@@ -1,5 +1,5 @@
 <template>
-  <div id="annotation-categories" class="container">
+  <div id="annotation-categories" class="col-10 col-xl-6 card p-4">
     <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
     <div>
       <div
@@ -59,7 +59,7 @@
     methods: {
       parseDisplayName(completeName) {
         const [name, group, index] = completeName.split('#')
-        return `${name}${group ? ', Gruppe' + group : ''}${index ? ', Index: ' + index : ''}`
+        return `${name}${group ? ', Gruppe: ' + group : ''}${index ? ', Index: ' + index : ''}`
       },
       async createAnnotationCategory() {
         this.isLoading = true

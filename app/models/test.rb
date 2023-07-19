@@ -41,6 +41,65 @@ class Test < ApplicationRecord
     }
   end
 
+  def self.tests_meta
+    all_families =
+      TestFamily.all.map do |family|
+        {
+          test_count: Test.where(test_family_id: family.id).count,
+          used_test_types:
+            Test
+              .where(test_family_id: family.id)
+              .map { |test| test.test_type_id ? test.test_type_id : 1 }
+              .uniq,
+          id: family.id,
+          name: family.name,
+          competence_id: family.competence_id
+        }
+      end
+    all_competences =
+      Competence.all.map do |competence|
+        {
+          test_count:
+            all_families
+              .select { |family| family[:competence_id] == competence.id }
+              .reduce(0) { |sum, family| sum + family[:test_count] },
+          name: competence.name,
+          used_test_types:
+            all_families
+              .select { |family| family[:competence_id] == competence.id }
+              .reduce([]) { |acc, family| acc + family[:used_test_types] }
+              .uniq,
+          id: competence.id,
+          area_id: competence.area_id
+        }
+      end
+    all_areas =
+      Area.all.map do |area|
+        {
+          test_count:
+            all_competences
+              .select { |competence| competence[:area_id] == area.id }
+              .reduce(0) { |sum, competence| sum + competence[:test_count] },
+          used_test_types:
+            all_competences
+              .select { |competence| competence[:area_id] == area.id }
+              .reduce([]) { |acc, family| acc + family[:used_test_types] }
+              .uniq,
+          name: area.name,
+          id: area.id
+        }
+      end
+
+    return(
+      {
+        areas: all_areas,
+        test_families: all_families,
+        competences: all_competences,
+        tests: Test.all
+      }
+    )
+  end
+
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
     json = super(except: %i[created_at updated_at])

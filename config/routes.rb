@@ -69,6 +69,7 @@ Rails.application.routes.draw do
   end
   resources :materials
   resources :annotation_categories
+  resources :test_types
   resources :areas
   resources :competences
   resources :test_families

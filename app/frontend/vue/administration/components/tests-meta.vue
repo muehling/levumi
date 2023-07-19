@@ -63,9 +63,11 @@
       :title="`Tests für '${selectedTestFamily?.name}'`"
       class="mt-3"
     >
-      <b-table small striped hover :items="tests" :fields="fields"> </b-table>
+      <b-table small striped hover :items="tests" :fields="testFields" @row-clicked="editTestMeta">
+      </b-table>
     </b-card>
     <confirm-dialog ref="confirmDialog" />
+    <tests-meta-edit ref="testsMetaEdit" />
   </div>
 </template>
 <script>
@@ -74,9 +76,10 @@
   import apiRoutes from '../../routes/api-routes'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import TestsMetaActions from './tests-meta-actions.vue'
+  import TestsMetaEdit from './tests-meta-edit.vue'
   export default {
     name: 'TestsMeta',
-    components: { TestsMetaActions, ConfirmDialog },
+    components: { TestsMetaActions, ConfirmDialog, TestsMetaEdit },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -98,15 +101,23 @@
           { key: 'actions', label: '' },
         ]
       },
+      testFields() {
+        return [
+          { key: 'id', label: 'ID' },
+          { key: 'name', label: 'Name' },
+          { key: 'testTypeId', label: 'Test-Typ' },
+          { key: 'actions', label: '' },
+        ]
+      },
 
       selectedArea() {
-        return this.data.areas.find(area => area.id === this.areaId)
+        return this.data.areas?.find(area => area.id === this.areaId)
       },
       selectedCompetence() {
-        return this.data.competences.find(competence => competence.id === this.competenceId)
+        return this.data.competences?.find(competence => competence.id === this.competenceId)
       },
       selectedTestFamily() {
-        return this.data.test_families.find(testFamily => testFamily.id === this.testFamilyId)
+        return this.data.test_families?.find(testFamily => testFamily.id === this.testFamilyId)
       },
       areas() {
         return this.data.areas?.map(area => ({
@@ -117,7 +128,7 @@
       },
       competences() {
         return this.data.competences
-          .filter(competence => competence.area_id === this.selectedArea.id)
+          ?.filter(competence => competence.area_id === this.selectedArea.id)
           .map(competence => ({
             id: competence.id,
             name: competence.name,
@@ -126,7 +137,7 @@
       },
       testFamilies() {
         return this.data.test_families
-          .filter(testFamily => testFamily.competence_id === this.selectedCompetence.id)
+          ?.filter(testFamily => testFamily.competence_id === this.selectedCompetence.id)
           .map(testFamily => ({
             id: testFamily.id,
             name: testFamily.name,
@@ -135,10 +146,11 @@
       },
       tests() {
         return this.data.tests
-          .filter(test => test.test_family_id === this.testFamilyId)
+          ?.filter(test => test.test_family_id === this.testFamilyId)
           .map(test => ({
             id: test.id,
             name: test.shorthand + ' / ' + test.level + ' / ' + test.label,
+            testTypeId: test.test_type_id,
           }))
       },
     },
@@ -147,9 +159,8 @@
     },
     methods: {
       async refetch() {
-        const res = await ajax({ url: '/tests_meta' })
-        const data = await res.json()
-        this.data = data
+        await this.globalStore.fetchTestMetaData()
+        this.data = this.globalStore.staticData.testMetaData
       },
       async deleteItem(type, id) {
         const answer = await this.$refs.confirmDialog.open({
@@ -166,8 +177,19 @@
           await this.refetch()
         }
       },
+      async editTestMeta(testRow) {
+        const test = this.data.tests.find(test => test.id === testRow.id)
+
+        const dialogInput = await this.$refs.testsMetaEdit.open(test)
+        if (dialogInput) {
+          await ajax({
+            ...apiRoutes.tests.update(testRow.id),
+            data: { test_type_id: dialogInput.id },
+          })
+        }
+      },
       async renameItem(type, id, newName) {
-        const res = await ajax({
+        await ajax({
           ...apiRoutes.administration[type].update(id),
           data: { name: newName },
         })
