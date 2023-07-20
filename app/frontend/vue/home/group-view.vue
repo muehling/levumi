@@ -407,7 +407,11 @@
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedArea(area) {
         this.areaSelected = area
-        this.testTypeSelected = -1
+        if (this.usedTestTypes.length === 1) {
+          this.testTypeSelected = 1
+        } else {
+          this.testTypeSelected = -1
+        }
         this.competenceSelected = -1
         this.familySelected = -1
         this.test_selected = -1
