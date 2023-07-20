@@ -20,6 +20,9 @@
       <template #cell(student_test)="data">
         <div class="text-center">{{ data.item.student_test ? 'x' : '-' }}</div>
       </template>
+      <template #cell(test_type_id)="data">
+        <div class="">{{ getTestTypeLabel(data.item.test_type_id) }}</div>
+      </template>
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
@@ -73,6 +76,7 @@
   import EditTestDialog from './edit-test-dialog.vue'
   import TestDetailsDialog from './test-details-dialog.vue'
   import format from 'date-fns/format'
+  import { useGlobalStore } from '../../../store/store'
 
   export default {
     name: 'TestsList',
@@ -82,6 +86,10 @@
       TestDetailsDialog,
     },
     props: { fetchTrigger: Symbol, showExport: Boolean },
+    setup() {
+      const store = useGlobalStore()
+      return { store }
+    },
     data() {
       return {
         tests: [],
@@ -98,6 +106,7 @@
           { key: 'competence', label: 'Kompetenz' },
           { key: 'test_family', label: 'Testfamilie' },
           { key: 'level', label: 'Niveaustufe' },
+          { key: 'test_type_id', label: 'Test-Typ' },
           !this.showExport && { key: 'version', label: 'Version' },
           !this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'updated_at', label: 'Letzes Update' },
@@ -115,6 +124,12 @@
     },
 
     methods: {
+      getTestTypeLabel(testTypeId) {
+        const testType = this.store.staticData.testTypes.find(
+          testType => testType.id === (testTypeId || 1)
+        )
+        return testType?.name || 'unbekannt'
+      },
       formatDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
       },
