@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_login, except: %i[info login frontend login_frontend logout_frontend]
+  before_action :check_maintenance, except: %i[login]
   before_action :set_locale
 
   #Normaler Zugang
@@ -127,8 +128,7 @@ class ApplicationController < ActionController::Base
 
   private
 
-  #Login aus Session holen und ggf. Masquerading aktivieren
-  def set_login
+  def check_maintenance
     if ENV['MAINTENANCE'] == 'true'
       if !session.has_key?('user')
         render :maintenance, layout: false
@@ -140,7 +140,12 @@ class ApplicationController < ActionController::Base
         end
         @login = user
       end
-    elsif (session.has_key?('masquerading'))
+    end
+  end
+
+  #Login aus Session holen und ggf. Masquerading aktivieren
+  def set_login
+    if (session.has_key?('masquerading'))
       #Masquerading aktiv
       @login = User.find(session[:masquerading])
       @masquerade = true
