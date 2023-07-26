@@ -14,4 +14,4 @@ deploy_staging:
   only:
     - staging
   script:
-    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME
+    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_STAGING
