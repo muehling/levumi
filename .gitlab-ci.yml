@@ -2,7 +2,8 @@ stages:
   - deploy
 
 variables:
-  APP_NAME: levumi2
+  APP_NAME_STAGING: levumi2-staging
+  APP_NAME_PROD: levumi2-prod
 
 deploy_staging:
   image: ilyasemenov/gitlab-ci-git-push
