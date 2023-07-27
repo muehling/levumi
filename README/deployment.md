@@ -90,3 +90,19 @@ git push
 ```
 
 As with `staging`, the push to `master` will trigger a Gitlab pipeline that will automatically attempt to deploy the code to the production environment. If the deployment succeeded, please check levumi.de if everything still works as intended.
+
+### Maintenance Mode
+
+For server or database maintenance tasks, Levumi can be put into maintenance mode. When in maintenance mode, only a notification page is shown, and only users with the capability `admin` can log in.
+
+The maintenance mode can be activated with
+
+```
+dokku config:set levumi2 MAINTENANCE="true"
+```
+
+and deactivated again with
+
+```
+dokku config:unset levumi2 MAINTENANCE
+```
