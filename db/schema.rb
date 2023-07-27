@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
+ActiveRecord::Schema[7.0].define(version: 2023_02_09_070918) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,16 +39,23 @@ ActiveRecord::Schema[7.0].define(version: 2022_07_21_080259) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "annotation_categories", charset: "utf8mb3", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "annotations", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "assessment_id"
     t.bigint "student_id"
     t.bigint "group_id"
     t.integer "view"
-    t.text "content"
     t.date "start"
     t.date "end"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.bigint "annotation_category_id"
+    t.index ["annotation_category_id"], name: "index_annotations_on_annotation_category_id"
     t.index ["assessment_id"], name: "index_annotations_on_assessment_id"
     t.index ["group_id"], name: "index_annotations_on_group_id"
     t.index ["student_id"], name: "index_annotations_on_student_id"
