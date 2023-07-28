@@ -360,6 +360,7 @@
         this.areaSelected = data.area
         this.competenceSelected = data.competence
         this.familySelected = data.family
+        this.testTypeSelected = data.type
         this.test_selected = data.test
         this.loadAssessment(data.test, false)
         this.jQuery('html, body').animate(
