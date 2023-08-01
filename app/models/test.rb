@@ -104,6 +104,7 @@ class Test < ApplicationRecord
   def as_json(options = {})
     json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
+    json['competence_id'] = self.test_family.competence.id
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
@@ -265,16 +266,17 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
+    duration = Rails.env.production? ? 24.hours : 2.seconds
     student_ids =
       Rails
         .cache
-        .fetch('all_not_demo_students', expires_in: 24.hours) do
+        .fetch('all_not_demo_students', expires_in: duration) do
           Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
         end
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
     Rails
       .cache
-      .fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do
+      .fetch("has_results_#{cache_key_with_version}", expires_in: duration) do
         Result.where(
           student_id: student_ids,
           assessment_id: assessment_ids,
@@ -285,16 +287,17 @@ class Test < ApplicationRecord
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
+    duration = Rails.env.production? ? 24.hours : 2.seconds
     student_ids =
       Rails
         .cache
-        .fetch('all_not_demo_students', expires_in: 24.hours) do
+        .fetch('all_not_demo_students', expires_in: duration) do
           Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
         end
     assessment_ids =
       Rails
         .cache
-        .fetch("assessments_for_test_#{cache_key_with_version}", expires_in: 24.hours) do
+        .fetch("assessments_for_test_#{cache_key_with_version}", expires_in: duration) do
           Assessment.where(test_id: self.id).pluck('id')
         end
 

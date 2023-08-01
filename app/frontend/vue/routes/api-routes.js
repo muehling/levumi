@@ -78,6 +78,27 @@ export default {
     create: { url: '/test_types', method: 'POST' },
     delete: id => ({ url: `/test_types/${id}`, method: 'DELETE' }),
   },
+  targets: {
+    createStudentTarget: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'POST',
+      data,
+    }),
+    getStudentTargets: (groupId, testId) => ({
+      // gets all student targets for an assessment instead of just one to minimize request count
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'GET',
+    }),
+    updateStudentTarget: (groupId, testId, targetId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'PUT',
+      data,
+    }),
+    deleteStudentTarget: (groupId, testId, targetId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'DELETE',
+    }),
+  },
   administration: {
     areas: {
       update: id => ({ url: `/areas/${id}`, method: 'PUT' }),

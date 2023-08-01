@@ -41,7 +41,14 @@ export const useGlobalStore = defineStore('global', {
       this.genericMessage = { title: '', message: '' }
     },
     setLogin(data) {
-      this.login = data
+      let settings = {}
+      try {
+        settings = JSON.parse(data.settings)
+      } catch (e) {
+        // nothing to do
+      }
+      const d = { ...data, settings }
+      this.login = d
     },
 
     async fetchAnnotationCategories() {

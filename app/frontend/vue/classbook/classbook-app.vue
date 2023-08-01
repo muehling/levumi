@@ -12,7 +12,7 @@
           <div v-else>
             <!-- reguläre Darstellung mit Klassenliste -->
             <b-tabs pills>
-              <b-tab active>
+              <b-tab active lazy>
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
@@ -37,6 +37,7 @@
                       :key="`${group.id}/${group.label}`"
                       :active="index === firstOwnIndex"
                       class="m-3"
+                      lazy
                     >
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
@@ -56,7 +57,7 @@
               </b-tab>
 
               <!-- Geteilte Klassen -->
-              <b-tab :disabled="sharedGroups.length === 0">
+              <b-tab :disabled="sharedGroups.length === 0" lazy>
                 <template slot="title">
                   Mit mir geteilte Klassen
                   <span v-if="new_shares" class="badge badge-info">Neu!</span
@@ -70,6 +71,7 @@
                       :key="group.id"
                       :active="index === firstSharedIndex"
                       class="m-3"
+                      lazy
                     >
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
@@ -84,7 +86,7 @@
               </b-tab>
 
               <!-- Klassenarchiv -->
-              <b-tab :disabled="archivedGroups.length === 0">
+              <b-tab :disabled="archivedGroups.length === 0" lazy>
                 <template slot="title">
                   Archivierte Klassen ({{ archivedGroups.length }})
                 </template>
@@ -97,7 +99,7 @@
                         Keine Klassen im Archiv vorhanden.
                       </div>
                     </div>
-                    <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3">
+                    <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3" lazy>
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
@@ -211,7 +213,7 @@
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
-            'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können.',
+            'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können. Diese Beispielklasse dient dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen. Daher werden keine Daten gespeichert. Für Testungen von realen Schüler*innen legen Sie bitte eine neue Klasse an. ',
             'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
             'Wenn Sie mit Klassen nicht mehr länger aktiv arbeiten, können Sie sie in ihr Archiv verschieben. Die Klasse wird nicht mehr unter Diagnostik angezeigt. Sie können Klassen auch wieder aus dem Archiv zurückholen. Probieren Sie das gerne mit Ihrer Beispielklasse aus!',
             'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',

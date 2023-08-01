@@ -15,6 +15,7 @@
               v-for="(group, index) in ownActiveGroups"
               :key="group.id"
               :active="$root.pre_select && $root.pre_select.group == group.id"
+              lazy
               @click="getTestsForGroup(group.id)"
             >
               <!-- Beispielklasse kursiv darstellen -->
@@ -28,6 +29,7 @@
                     triggers="hover"
                     offset="20"
                     variant="secondary"
+                    delay="300"
                   >
                     Geteilt von {{ group.belongs_to }}
                   </b-tooltip>

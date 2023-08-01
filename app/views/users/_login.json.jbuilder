@@ -18,6 +18,7 @@ json.login do
     :town,
     :updated_at
   )
+  json.settings @login.settings ? JSON.parse(@login.settings) : {}
   json.has_tested_students @login.has_tested_students
   json.is_masquerading session[:masquerading]
 end
