@@ -25,7 +25,7 @@
       </b-nav>
 
       <hr v-if="areaSelected && areaSelected !== -1" />
-      <b-nav v-if="areaSelected && areaSelected !== -1" pills class="mt-1">
+      <b-nav v-if="areaSelected && areaSelected !== -1 && enableTestTypes" pills class="mt-1">
         <!-- Alle Typen -->
         <b-nav-item
           v-for="testType in usedTestTypes"
@@ -47,7 +47,7 @@
         </b-nav-item>
       </b-nav>
 
-      <hr v-if="testTypeSelected && testTypeSelected !== -1" />
+      <hr v-if="testTypeSelected && testTypeSelected !== -1 && enableTestTypes" />
       <b-nav v-if="testTypeSelected && testTypeSelected !== -1" pills class="mt-1">
         <!-- Alle Kompetenzen des gewählten Lernbereichs -->
         <b-nav-item
@@ -219,14 +219,17 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.competence
             : 0,
+        enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.family
             : 0,
-        testTypeSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.type
-            : undefined,
+        testTypeSelected: this.enableTestTypes
+          ? 1
+          : this.$root.pre_select && this.$root.pre_select.group === this.group.id
+          ? this.$root.pre_select.type
+          : undefined,
+
         results:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.assessment
@@ -300,6 +303,16 @@
         return this.groupInfo?.areas.filter(area => area.used || !this.group.read_only)
       },
       usedCompetences() {
+        console.log(
+          'meh',
+          this.areaSelected,
+          this.groupInfo?.competences.filter(
+            competence =>
+              (competence.used || !this.group.read_only) &&
+              competence.info.area_id == this.areaSelected
+          )
+        )
+
         return this.groupInfo?.competences.filter(
           competence =>
             (competence.used || !this.group.read_only) &&
@@ -408,7 +421,9 @@
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedArea(area) {
         this.areaSelected = area
-        if (this.usedTestTypes.length === 1) {
+        console.log('wa', area)
+
+        if (this.usedTestTypes.length === 1 || !this.enableTestTypes) {
           this.testTypeSelected = 1
         } else {
           this.testTypeSelected = -1
