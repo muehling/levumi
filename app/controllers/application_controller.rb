@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_action :set_login, except: %i[info login frontend login_frontend logout_frontend]
+  before_action :check_maintenance, except: %i[login]
   before_action :set_locale
 
   #Normaler Zugang
@@ -33,9 +34,14 @@ class ApplicationController < ActionController::Base
       u.save
       redirect_to '/start'
     else
-      @retry = true
-      @no_script = true
-      render :start
+      if ENV['MAINTENANCE'] == 'true'
+        @retry = true
+        render :maintenance
+      else
+        @retry = true
+        @no_script = true
+        render :start
+      end
     end
   end
 
@@ -81,9 +87,7 @@ class ApplicationController < ActionController::Base
           @no_script = true
           render :frontend, layout: 'test_select'
         end
-        format.json do
-          render json: { tests: s.get_assessments, student: { id: s.id, login: s.login } }
-        end
+        format.json { head :ok }
       end
     else
       head 403
@@ -124,26 +128,39 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def check_maintenance
+    if ENV['MAINTENANCE'] == 'true'
+      if !session.has_key?('user')
+        render :maintenance, layout: false
+      else
+        user = User.find_by_id(session[:user])
+        if !user || !user.has_capability?('admin')
+          reset_session
+          redirect_to root_path
+        end
+        @login = user
+      end
+    end
+  end
+
   #Login aus Session holen und ggf. Masquerading aktivieren
   def set_login
     if (session.has_key?('masquerading'))
       #Masquerading aktiv
       @login = User.find(session[:masquerading])
       @masquerade = true
-    else
-      if session.has_key?('user')
-        #Session existiert
-        user = User.find_by_id(session[:user])
-        if !user
-          reset_session
-          redirect_to '/'
-        end
-        @login = user
-      else
-        #TODO might be necessary to return an error here for api calls
-        # only redirect to frontpage if not already there to avoid endless cycle
-        redirect_to '/' if request.fullpath != '/' && request.fullpath != '/?logout=true'
+    elsif session.has_key?('user')
+      #Session existiert
+      user = User.find_by_id(session[:user])
+      if !user
+        reset_session
+        redirect_to root_path
       end
+      @login = user
+    else
+      #TODO might be necessary to return an error here for api calls
+      # only redirect to frontpage if not already there to avoid endless cycle
+      redirect_to root_path if request.fullpath != '/' && request.fullpath != '/?logout=true'
     end
   end
 
