@@ -190,6 +190,7 @@
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarMyData">
               <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
+              <a href="#" class="dropdown-item" @click="editUserSettings">Einstellungen ändern</a>
               <b-link
                 :href="`/users/${login.id}.text`"
                 class="dropdown-item"
@@ -245,6 +246,7 @@
       </div>
     </nav>
     <edit-user-dialog ref="editUserDialog" @refetch="updateUser" />
+    <user-settings-dialog ref="userSettingsDialog" @refetch="updateUser" />
   </div>
 </template>
 <script>
@@ -256,6 +258,7 @@
   import ContactForm from './forms/contact-form.vue'
   import EditUserDialog from '../users/components/edit-user-dialog.vue'
   import router from '../routes/frontend-routes'
+  import UserSettingsDialog from '../users/components/user-settings-dialog.vue'
 
   export default {
     name: 'NavBar',
@@ -263,6 +266,7 @@
       ContactForm,
       EditUserDialog,
       RouterLink,
+      UserSettingsDialog,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -308,6 +312,9 @@
       getCSRFToken,
       editOwnProfile() {
         this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
+      },
+      editUserSettings() {
+        this.$refs.userSettingsDialog.open({ user: this.globalStore.login })
       },
       async endMasquerade() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'GET' })

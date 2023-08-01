@@ -44,6 +44,7 @@ class Test < ApplicationRecord
   def as_json(options = {})
     json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
+    json['competence_id'] = self.test_family.competence.id
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level

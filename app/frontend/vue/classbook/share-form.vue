@@ -102,6 +102,9 @@
           <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
           </b-button>
+          <b-button variant="outline-primary" size="sm" class="ml-3" @click="requestUnshare">
+            Klassen entfernen
+          </b-button>
         </b-form>
       </div>
       <div v-else>
