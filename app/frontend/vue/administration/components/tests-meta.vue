@@ -167,7 +167,6 @@
         }
       },
       async renameItem(type, id, newName) {
-        console.log('rename', type, id, newName)
         const res = await ajax({
           ...apiRoutes.administration[type].update(id),
           data: { name: newName },

@@ -43,12 +43,15 @@ class Result < ApplicationRecord
       types = User.find(ids).pluck(:account_type)
       start += "\"#{ids.join(',')}\",\"#{types.join(',')}\","
     end
+    test_timestamp = "#{test_date} #{created_at.strftime('%H:%M:%S')}"
     start +=
-      "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA' : student.gender}\",\"#{student.birthmonth.nil? ? 'NA' : student.birthmonth}\",\"#{student.sen.nil? ? 'NA' : student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_date}\",\"#{test_week}\","
+      "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA' : student.gender}\",\"#{student.birthmonth.nil? ? 'NA' : student.birthmonth}\",\"#{student.sen.nil? ? 'NA' : student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_timestamp}\",\"#{test_week}\","
     res = ''
     self.data.each do |d|
       res = res + start
-      d.each { |k, v| res = res + '"' + v.to_s + '",' }
+
+      # temporary fix - substitute all `\"` with `'`, lest the exported csv is broken
+      d.each { |k, v| res = res + '"' + v.to_s.tr('\\"', "'") + '",' }
       res = res.slice(0, res.length - 1) + "\n" #Letztes Komma entfernen und newline anhängen
     end
     return res
