@@ -14,7 +14,7 @@ Levumi is configured to deploy to both servers using Gitlab pipelines and Dokku.
 
 ### Database connections
 
-The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container:
+The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container (`sudo` privileges are required):
 
 ```
 dokku enter levumi2
@@ -90,3 +90,19 @@ git push
 ```
 
 As with `staging`, the push to `master` will trigger a Gitlab pipeline that will automatically attempt to deploy the code to the production environment. If the deployment succeeded, please check levumi.de if everything still works as intended.
+
+### Maintenance Mode
+
+For server or database maintenance tasks, Levumi can be put into maintenance mode. When in maintenance mode, only a notification page is shown, and only users with the capability `admin` can log in.
+
+The maintenance mode can be activated with
+
+```
+dokku config:set levumi2 MAINTENANCE="true"
+```
+
+and deactivated again with
+
+```
+dokku config:unset levumi2 MAINTENANCE
+```

@@ -363,7 +363,7 @@
           width: 400,
           height: 400,
           type: 'canvas',
-          data: this.student.login,
+          data: `${window.location.origin}/testen_login?login=${this.student.login}`,
           dotsOptions: {
             color: '#000000',
           },

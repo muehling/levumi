@@ -294,7 +294,7 @@
           title = `Ganze Klasse - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
         } else {
-          title = `${this.getStudentById(this.selectedStudentId).name} - ${view.label}`
+          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
         }
         await this.createPdf(title, filename)

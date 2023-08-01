@@ -62,6 +62,7 @@ class AssessmentsController < ApplicationController
             student_test: a.test.student_test,
             result_count: a.results.length,
             #FIXME the production data crashed this with 'Mysql2::Error: Out of sort memory, consider increasing server sort buffer size '
+            #FIXME this is in all probability due to too large results of certain tests. Fix these tests first, and clean up the database.
             #last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
             test_id: a.test.id,
             test_family_id: a.test.test_family.id,

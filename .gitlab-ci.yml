@@ -2,7 +2,8 @@ stages:
   - deploy
 
 variables:
-  APP_NAME: levumi2
+  APP_NAME_STAGING: levumi2-staging
+  APP_NAME_PROD: levumi2-prod
 
 deploy_staging:
   image: ilyasemenov/gitlab-ci-git-push
@@ -13,4 +14,15 @@ deploy_staging:
   only:
     - staging
   script:
-    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME
+    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_STAGING
+
+deploy_production:
+  image: ilyasemenov/gitlab-ci-git-push
+  stage: deploy
+  environment:
+    name: production
+    url: https://levumi.de/
+  only:
+    - master
+  script:
+    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_PROD
