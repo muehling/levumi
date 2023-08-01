@@ -2,13 +2,13 @@ class UserMailer < ApplicationMailer
   def welcome
     @user = params[:user]
     @password = params[:password]
-    mail(to: @user.email, subject: 'Herzlich Willkommen bei Levumi!')
+    mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:WELCOME])
   end
 
   def notify
     @user = params[:user]
     @body = params[:body]
-    mail(to: @user.email, subject: 'Neuigkeiten von Levumi')
+    mail(to: @user.email, subject: MailSubjects::LOGGABLE[:NEWS])
   end
 
   def support
@@ -16,15 +16,28 @@ class UserMailer < ApplicationMailer
     @body = params[:body]
     subject =
       if params[:subject].nil?
-        'Nachricht vom Levumi-Kontaktformular'
+        MailSubjects::LOGGABLE[:UNSPECIFIC_SUPPORT]
       else
-        'Nachricht von Levumi - ' + params[:subject]
+        MailSubjects::LOGGABLE[:SPECIFIC_SUPPORT] + params[:subject]
       end
 
-    mail(
-      bcc: %w[jana.jungjohann@ur.de beckmann@leibniz-ipn.de],
-      from: @user.email,
-      subject: subject
-    )
+    subject_prefix = Rails.env.staging? ? 'STAGING ' : ''
+
+    recipients =
+      if Rails.env.development? || Rails.env.staging?
+        'beckmann@leibniz-ipn.de'
+      else
+        %w[jana.jungjohann@ur.de beckmann@leibniz-ipn.de]
+      end
+
+    complete_subject = "#{subject_prefix.to_s}#{subject}"
+
+    mail(bcc: recipients, from: @user.email, subject: complete_subject)
+  end
+
+  def new_share
+    @recipient = params[:recipient]
+    @share_key = params[:share_key]
+    mail(to: @recipient.email, subject: MailSubjects::NON_LOGGABLE[:NEW_SHARE])
   end
 end
