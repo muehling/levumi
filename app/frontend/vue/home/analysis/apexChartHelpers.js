@@ -196,7 +196,7 @@ const commonOptions = () => ({
     min: 0,
     forceNiceScale: true,
     labels: {
-      formatter: val => val?.toFixed(2),
+      formatter: val => (typeof val === 'number' ? val?.toFixed(2) : val),
     },
   },
 })
