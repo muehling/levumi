@@ -26,7 +26,7 @@ export const updates = [
   },
   {
     intro_state: 8,
-    date: '05.07.2023',
+    date: '01.08.2023',
     title: 'Ziele und Trendlinien',
     message: `Das Auswertungsdiagramm wurde um die Möglichkeit erweitert, Trendlinien und Zielwerte darzustellen. 
     Diese müssen in den (ebenfalls neu hinzugekommenen) "Benutzereinstellungen" unter "Meine Daten" aktiviert werden und
