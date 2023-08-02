@@ -44,13 +44,15 @@ class Test < ApplicationRecord
   def self.tests_meta
     all_families =
       TestFamily.all.map do |family|
+        tests_for_family = Test.where(test_family_id: family.id)
         {
-          test_count: Test.where(test_family_id: family.id).count,
+          test_count: tests_for_family.count,
           used_test_types:
             Test
               .where(test_family_id: family.id)
               .map { |test| test.test_type_id ? test.test_type_id : 1 }
               .uniq,
+          test_ids: tests_for_family.pluck(:id),
           id: family.id,
           name: family.name,
           competence_id: family.competence_id
@@ -58,33 +60,31 @@ class Test < ApplicationRecord
       end
     all_competences =
       Competence.all.map do |competence|
+        families_for_competence =
+          all_families.select { |family| family[:competence_id] == competence.id }
         {
-          test_count:
-            all_families
-              .select { |family| family[:competence_id] == competence.id }
-              .reduce(0) { |sum, family| sum + family[:test_count] },
+          test_count: families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
           name: competence.name,
           used_test_types:
-            all_families
-              .select { |family| family[:competence_id] == competence.id }
+            families_for_competence
               .reduce([]) { |acc, family| acc + family[:used_test_types] }
               .uniq,
+          test_ids: families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
           id: competence.id,
           area_id: competence.area_id
         }
       end
     all_areas =
       Area.all.map do |area|
+        competences_for_area =
+          all_competences.select { |competence| competence[:area_id] == area.id }
         {
           test_count:
-            all_competences
-              .select { |competence| competence[:area_id] == area.id }
-              .reduce(0) { |sum, competence| sum + competence[:test_count] },
+            competences_for_area.reduce(0) { |sum, competence| sum + competence[:test_count] },
           used_test_types:
-            all_competences
-              .select { |competence| competence[:area_id] == area.id }
-              .reduce([]) { |acc, family| acc + family[:used_test_types] }
-              .uniq,
+            competences_for_area.reduce([]) { |acc, family| acc + family[:used_test_types] }.uniq,
+          test_ids:
+            competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
           name: area.name,
           id: area.id
         }

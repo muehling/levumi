@@ -134,10 +134,8 @@
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
       },
 
-      markTestAsUsed(testId, groupInfoIndex) {
-        //FIXME entirely too sideeffecty
-        const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
-        test.used = true
+      markTestAsUsed(testId, groupId) {
+        this.groupInfo.find(group => group.group_id === groupId).used_test_ids.push(testId)
       },
       getTestsForGroup(groupId) {
         const group = this.globalStore.groups.find(group => group.id === groupId)
