@@ -338,14 +338,16 @@
           .sort((a, b) => (b?.name < a?.name ? 1 : -1))
       },
       usedTests() {
-        return this.tests.filter(test => {
-          return (
-            (this.groupInfo.used_test_ids.find(t => t.id === test.info.id) ||
-              !this.group.read_only) &&
-            (test.info.test_type_id === this.testTypeSelected ||
-              (test.info.test_type_id === null && this.testTypeSelected === 1))
-          )
-        })
+        return this.tests
+          .filter(test => {
+            return (
+              (this.groupInfo.used_test_ids.find(t => t.id === test.info.id) ||
+                !this.group.read_only) &&
+              (test.info.test_type_id === this.testTypeSelected ||
+                (test.info.test_type_id === null && this.testTypeSelected === 1))
+            )
+          })
+          .sort((a, b) => (b?.level < a?.level ? 1 : -1))
       },
       usedTestTypes() {
         const currentArea = this.testMetaData.areas.find(area => area.id === this.areaSelected)
@@ -399,7 +401,7 @@
 
       handleClickTest(test) {
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = undefined
         if (test.used) {
           if (test.versions.length === 1) {
@@ -414,7 +416,7 @@
 
       handleClickVersion(version) {
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = undefined
         if (version.used) {
           this.loadAssessment(version, true)
@@ -480,7 +482,7 @@
         this.competenceSelected = -1
         this.familySelected = -1
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = null
       },
       setSelectedTestType(testType) {
@@ -488,7 +490,7 @@
         this.competenceSelected = -1
         this.familySelected = -1
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = null
       },
       //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
@@ -496,14 +498,14 @@
         this.competenceSelected = competence
         this.familySelected = -1
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = null
       },
       //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedFamily(family) {
         this.familySelected = family
         this.test_selected = -1
-        this.version_selected = -1
+        this.version_selected = 0
         this.results = null
       },
 
