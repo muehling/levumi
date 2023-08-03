@@ -374,13 +374,17 @@
         const annotations = this.results.annotations.filter(a => annotationId !== a.id)
         this.$set(this.results, 'annotations', annotations)
       },
-      setPreselect(data) {
+      async setPreselect(data) {
         this.areaSelected = data.area
         this.competenceSelected = data.competence
         this.familySelected = data.family
         this.testTypeSelected = data.type
         this.test_selected = data.test
-        this.loadAssessment(data.test, false)
+
+        await this.$nextTick() // wait until computed properties have refreshed
+        const test = this.usedTests.find(t => t.info.id === data.test)
+
+        this.loadAssessment(test, false)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
