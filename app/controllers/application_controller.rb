@@ -132,6 +132,8 @@ class ApplicationController < ActionController::Base
     if ENV['MAINTENANCE'] == 'true'
       if !session.has_key?('user')
         render :maintenance, layout: false
+      elsif session.has_key?('masquerading')
+        # no redirect when using masquerade in maintenance module
       else
         user = User.find_by_id(session[:user])
         if !user || !user.has_capability?('admin')
