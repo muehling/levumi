@@ -211,7 +211,7 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.competence
             : 0,
-        enableTestTypes: true, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
+        enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.family
@@ -290,46 +290,52 @@
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
       usedAreas() {
-        return this.testMetaData.areas.reduce((acc, area) => {
-          area.used = !!this.groupInfo.used_test_ids.some(usedId =>
-            area.test_ids.find(testId => testId === usedId)
-          )
-          if (area.used || !this.group.read_only) {
-            acc.push(area)
-          }
-          return acc
-        }, [])
+        return this.testMetaData.areas
+          .reduce((acc, area) => {
+            area.used = !!this.groupInfo.used_test_ids.some(usedId =>
+              area.test_ids.find(testId => testId === usedId)
+            )
+            if (area.used || !this.group.read_only) {
+              acc.push(area)
+            }
+            return acc
+          }, [])
+          .sort((a, b) => (b?.name < a?.name ? 1 : -1))
       },
       usedCompetences() {
-        return this.testMetaData?.competences.reduce((acc, competence) => {
-          competence.used = !!this.groupInfo.used_test_ids.some(usedId =>
-            competence.test_ids.find(testId => testId === usedId)
-          )
+        return this.testMetaData?.competences
+          .reduce((acc, competence) => {
+            competence.used = !!this.groupInfo.used_test_ids.some(usedId =>
+              competence.test_ids.find(testId => testId === usedId)
+            )
 
-          if (
-            (competence.used || !this.group.read_only) &&
-            competence.area_id === this.areaSelected &&
-            competence.used_test_types.find(test_type => test_type === this.testTypeSelected)
-          ) {
-            acc.push(competence)
-          }
-          return acc
-        }, [])
+            if (
+              (competence.used || !this.group.read_only) &&
+              competence.area_id === this.areaSelected &&
+              competence.used_test_types.find(test_type => test_type === this.testTypeSelected)
+            ) {
+              acc.push(competence)
+            }
+            return acc
+          }, [])
+          .sort((a, b) => (b?.name < a?.name ? 1 : -1))
       },
       usedFamilies() {
-        return this.testMetaData?.test_families.reduce((acc, family) => {
-          family.used = !!this.groupInfo.used_test_ids.some(usedId =>
-            family.test_ids.find(testId => testId === usedId)
-          )
-          if (
-            (family.used || !this.group.read_only) &&
-            family.competence_id === this.competenceSelected &&
-            family.used_test_types.find(test_type => test_type === this.testTypeSelected)
-          ) {
-            acc.push(family)
-          }
-          return acc
-        }, [])
+        return this.testMetaData?.test_families
+          .reduce((acc, family) => {
+            family.used = !!this.groupInfo.used_test_ids.some(usedId =>
+              family.test_ids.find(testId => testId === usedId)
+            )
+            if (
+              (family.used || !this.group.read_only) &&
+              family.competence_id === this.competenceSelected &&
+              family.used_test_types.find(test_type => test_type === this.testTypeSelected)
+            ) {
+              acc.push(family)
+            }
+            return acc
+          }, [])
+          .sort((a, b) => (b?.name < a?.name ? 1 : -1))
       },
       usedTests() {
         return this.tests.filter(test => {
