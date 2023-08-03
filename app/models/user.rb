@@ -61,13 +61,12 @@ class User < ApplicationRecord
     end
   end
 
-  #Informationen für Userübersicht sammeln: Pro Gruppe alle verwendeten Tests, Familien, Kompetenzen und Bereiche und alle noch verfügbaren sammeln. Vermeidet redundante Anfragen.
-  # TODO: Optimmierbar? - Zumindest nicht alle Attribute benötigt...Zwischenspeichern von Anfragen auch möglich?
+  # get all used tests per group
   def get_home_info
-    all_tests = Test.all.pluck(:id)
-    all_families = TestFamily.all.pluck(:id)
-    all_competences = Competence.all.pluck(:id)
-    all_areas = Area.all.pluck(:id)
+    all_tests = Test.pluck(:id)
+    all_families = TestFamily.pluck(:id)
+    all_competences = Competence.pluck(:id)
+    all_areas = Area.pluck(:id)
 
     result = []
     groups
@@ -75,47 +74,8 @@ class User < ApplicationRecord
       .order(id: :desc)
       .each do |group|
         used = group.assessments.map { |a| a.test_id }
-
-        used_tests = Test.where(id: used)
-        unused_tests = Test.where(id: all_tests - used, archive: false)
-
-        used = used_tests.map { |a| a.test_family_id }
-        used_families = TestFamily.where(id: used)
-        unused_families = TestFamily.where(id: all_families - used)
-
-        used = used_families.map { |f| f.competence_id }
-        used_competences = Competence.where(id: used)
-        unused_competences = Competence.where(id: all_competences - used)
-
-        used = used_competences.map { |c| c.area_id }
-        used_areas = Area.where(id: used)
-        unused_areas = Area.where(id: all_areas - used)
-
-        result += [
-          {
-            group_id: group.id,
-            areas:
-              (
-                used_areas.map { |a| { info: a, used: true } } +
-                  unused_areas.map { |a| { info: a, used: false } }
-              ).sort! { |a, b| a[:info].name <=> b[:info].name },
-            competences:
-              (
-                used_competences.map { |c| { info: c, used: true } } +
-                  unused_competences.map { |c| { info: c, used: false } }
-              ).sort! { |a, b| a[:info].name <=> b[:info].name },
-            families:
-              (
-                used_families.map { |f| { info: f, used: true } } +
-                  unused_families.map { |f| { info: f, used: false } }
-              ).sort! { |a, b| a[:info].name <=> b[:info].name },
-            tests:
-              (
-                used_tests.map { |t| { info: t, used: true } } +
-                  unused_tests.map { |t| { info: t, used: false } }
-              ).sort! { |a, b| a[:info].level <=> b[:info].level }
-          }
-        ]
+        used_tests = Test.where(id: used).pluck(:id)
+        result += [{ group_id: group.id, used_test_ids: used_tests }]
       end
     return result
   end

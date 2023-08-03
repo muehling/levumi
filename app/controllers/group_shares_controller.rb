@@ -5,19 +5,33 @@ class GroupSharesController < ApplicationController
   #POST /groups
   def create #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     if @group.owner == @login
-      user = User.find_by_email(params[:email])
-      if user.nil? || !user.is_registered
-        head 404 #(Vollständig registrierter) Nutzer nicht gefunden
-      elsif GroupShare.exists?(user: user, group: @group)
-        head 403 #Existiert schon
+      @recipient = User.find_by_email(params[:email])
+      if @recipient.nil?
+        render json: { message: 'Diese Email-Adresse ist nicht registriert!' }, status: :forbidden
+      elsif !@recipient.is_registered
+        render json: {
+                 message:
+                   'Der Inhaber dieses Accounts hat die Registrierung noch nicht vollständig abgeschlossen!'
+               },
+               status: :forbidden
+      elsif GroupShare.exists?(user: @recipient, group: @group)
+        render json: {
+                 message: 'Die Klasse wurde bereits mit diesem Nutzer geteilt!'
+               },
+               status: :forbidden
       else
-        GroupShare.create(
-          group: @group,
-          user: user,
-          owner: false,
-          key: nil,
-          read_only: params.require(:group_share)[:read_only].to_i
-        )
+        if GroupShare.create(
+             group: @group,
+             user: @recipient,
+             owner: false,
+             key: nil,
+             read_only: params.require(:group_share)[:read_only].to_i
+           )
+          UserMailer
+            .with(recipient: @recipient, share_key: params[:share_key])
+            .new_share
+            .deliver_later
+        end
         render json: @group.as_hash(@login)
       end
     end

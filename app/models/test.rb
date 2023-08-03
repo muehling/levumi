@@ -5,6 +5,7 @@ class Test < ApplicationRecord
   before_destroy :cleanup
 
   has_many :assessments, dependent: :destroy
+  has_one :type
   belongs_to :test_family
 
   #Zu einem Test gehörende Dateien => Active_Storage
@@ -40,10 +41,70 @@ class Test < ApplicationRecord
     }
   end
 
+  def self.tests_meta
+    all_families =
+      TestFamily.all.map do |family|
+        tests_for_family = Test.where(test_family_id: family.id)
+        {
+          test_count: tests_for_family.count,
+          used_test_types:
+            Test
+              .where(test_family_id: family.id)
+              .map { |test| test.test_type_id ? test.test_type_id : 1 }
+              .uniq,
+          test_ids: tests_for_family.pluck(:id),
+          id: family.id,
+          name: family.name,
+          competence_id: family.competence_id
+        }
+      end
+    all_competences =
+      Competence.all.map do |competence|
+        families_for_competence =
+          all_families.select { |family| family[:competence_id] == competence.id }
+        {
+          test_count: families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
+          name: competence.name,
+          used_test_types:
+            families_for_competence
+              .reduce([]) { |acc, family| acc + family[:used_test_types] }
+              .uniq,
+          test_ids: families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
+          id: competence.id,
+          area_id: competence.area_id
+        }
+      end
+    all_areas =
+      Area.all.map do |area|
+        competences_for_area =
+          all_competences.select { |competence| competence[:area_id] == area.id }
+        {
+          test_count:
+            competences_for_area.reduce(0) { |sum, competence| sum + competence[:test_count] },
+          used_test_types:
+            competences_for_area.reduce([]) { |acc, family| acc + family[:used_test_types] }.uniq,
+          test_ids:
+            competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
+          name: area.name,
+          id: area.id
+        }
+      end
+
+    return(
+      {
+        areas: all_areas,
+        test_families: all_families,
+        competences: all_competences,
+        tests: Test.all
+      }
+    )
+  end
+
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
     json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
+    json['competence_id'] = self.test_family.competence.id
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
@@ -205,16 +266,17 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
+    duration = Rails.env.production? ? 24.hours : 2.seconds
     student_ids =
       Rails
         .cache
-        .fetch('all_not_demo_students', expires_in: 24.hours) do
+        .fetch('all_not_demo_students', expires_in: duration) do
           Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
         end
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
     Rails
       .cache
-      .fetch("has_results_#{cache_key_with_version}", expires_in: 24.hours) do
+      .fetch("has_results_#{cache_key_with_version}", expires_in: duration) do
         Result.where(
           student_id: student_ids,
           assessment_id: assessment_ids,
@@ -225,16 +287,17 @@ class Test < ApplicationRecord
 
   #Alle Ergebnisse eines Tests als CSV-Export
   def as_csv
+    duration = Rails.env.production? ? 24.hours : 2.seconds
     student_ids =
       Rails
         .cache
-        .fetch('all_not_demo_students', expires_in: 24.hours) do
+        .fetch('all_not_demo_students', expires_in: duration) do
           Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
         end
     assessment_ids =
       Rails
         .cache
-        .fetch("assessments_for_test_#{cache_key_with_version}", expires_in: 24.hours) do
+        .fetch("assessments_for_test_#{cache_key_with_version}", expires_in: duration) do
           Assessment.where(test_id: self.id).pluck('id')
         end
 

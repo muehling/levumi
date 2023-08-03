@@ -30,7 +30,7 @@ export default {
     info: '/tests/info',
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
-    testMetaData: { url: '/test_meta', method: 'POST', contentType: 'omit' },
+    testMetaData: { url: '/tests_meta' },
     checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
   },
   assessments: {
@@ -72,6 +72,32 @@ export default {
     index: '/annotation_categories',
     create: { url: '/annotation_categories', method: 'POST' },
     delete: id => ({ url: `/annotation_categories/${id}`, method: 'DELETE' }),
+  },
+  testTypes: {
+    index: '/test_types',
+    create: { url: '/test_types', method: 'POST' },
+    delete: id => ({ url: `/test_types/${id}`, method: 'DELETE' }),
+  },
+  targets: {
+    createStudentTarget: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'POST',
+      data,
+    }),
+    getStudentTargets: (groupId, testId) => ({
+      // gets all student targets for an assessment instead of just one to minimize request count
+      url: `/groups/${groupId}/assessments/${testId}/targets`,
+      method: 'GET',
+    }),
+    updateStudentTarget: (groupId, testId, targetId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'PUT',
+      data,
+    }),
+    deleteStudentTarget: (groupId, testId, targetId) => ({
+      url: `/groups/${groupId}/assessments/${testId}/targets/${targetId}`,
+      method: 'DELETE',
+    }),
   },
   administration: {
     areas: {

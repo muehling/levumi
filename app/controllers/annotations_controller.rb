@@ -7,7 +7,7 @@ class AnnotationsController < ApplicationController
         a.annotations.create(
           params
             .require(:annotation)
-            .permit(:start, :end, :annotation_category_id, :group_id, :student_id, :view)
+            .permit(:start, :end, :annotation_category_id, :trend_threshold, :group_id, :student_id, :view)
         )
 
       #user_id und group_id werden nicht auf "Stimmigkeit" geprüft, ist aber wg. Bindung an Assessment unkritisch. Annotation wird ggf. nur nicht angezeigt werden.

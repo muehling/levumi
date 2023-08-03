@@ -37,10 +37,10 @@
               </b-button>
             </td>
             <td>
-              <span v-if="!share.accepted"
-                >Bitte teilen Sie {{ share.user }} den Zugangsschlüssel mit:
-                <b>{{ shareKey }}</b></span
-              >
+              <span v-if="!share.accepted">
+                Der Zugangsschlüssel lautet <b>{{ shareKey }}</b> und wurde per Mail an
+                {{ share.user }} gesendet.
+              </span>
             </td>
           </tr>
         </tbody>
@@ -58,20 +58,17 @@
       <b-collapse :id="'collapse_share_' + group.id" class="mt-2 mb-4" :visible="isShown">
         <b-form inline class="text-small" @submit="submitNewShare">
           <label for="email">Teilen mit&nbsp;&nbsp;</label>
-          <div>
+          <div class="email-input-wrapper">
             <b-input
               v-model="email"
-              class="mr-2"
+              class="mr-2 position-relative"
               name="email"
               placeholder="E-Mail Adresse"
               size="sm"
-              :state="exists || notFound ? false : null"
+              :state="errorMessage !== '' ? false : null"
             />
-            <b-form-invalid-feedback v-if="notFound"
-              >E-Mail Adresse nicht bekannt!
-            </b-form-invalid-feedback>
-            <b-form-invalid-feedback v-else-if="exists"
-              >Klasse bereits mit dieser E-Mail geteilt!
+            <b-form-invalid-feedback v-if="errorMessage" class="position-absolute">
+              {{ errorMessage }}
             </b-form-invalid-feedback>
           </div>
           <b-form-radio-group
@@ -84,9 +81,7 @@
             <i class="fas fa-check"></i> Teilen
           </b-button>
           <b-button
-            v-b-popover.hover="
-              'Um die Klasse mit einer anderen Lehrkraft zu teilen, benötigen Sie die E-Mail Adresse, mit der diese Person bei Levumi registriert ist. <br/> Geben Sie die Adresse ein und wählen Sie, ob die Person mit der Klasse selbst Testungen durchführen und Sie verändern darf, oder lediglich die existierenden Messungen ansehen kann. Sie müssen der Person selbstständig den Klassenschlüssel mitteilen, der Ihnen nach dem Teilen angezeigt wird. Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet.'
-            "
+            v-b-popover.hover="shareGroupHelp"
             class="ml-3"
             size="sm"
             variant="info"
@@ -96,6 +91,7 @@
           </b-button>
         </b-form>
       </b-collapse>
+      <span v-if="errorMessage !== ''">&nbsp;</span>
     </div>
     <!-- geteilte Klasse => Teilung beenden -->
     <div v-else>
@@ -105,6 +101,9 @@
           <b-input v-model="key" class="mr-2" placeholder="Code" size="sm" />
           <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
+          </b-button>
+          <b-button variant="outline-primary" size="sm" class="ml-3" @click="requestUnshare">
+            Klassen entfernen
           </b-button>
         </b-form>
       </div>
@@ -132,6 +131,7 @@
   } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { userHelp } from '../../utils/userHelp'
 
   export default {
     name: 'ShareForm',
@@ -146,12 +146,11 @@
     },
     data() {
       return {
-        notFound: false,
-        exists: false,
         rightsSelected: 1,
         key: '',
         email: '',
         isShown: false,
+        errorMessage: '',
       }
     },
     computed: {
@@ -159,6 +158,9 @@
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
           : null
+      },
+      shareGroupHelp() {
+        return userHelp.shareGroup
       },
     },
     beforeCreate() {
@@ -197,7 +199,8 @@
           this.success(data)
           return data
         } else {
-          this.failure(res)
+          const error = await res.json()
+          this.errorMessage = error.message
           return null
         }
       },
@@ -228,11 +231,11 @@
         e.preventDefault()
         e.stopPropagation()
 
-        this.notFound = false
-        this.exists = false
+        this.errorMessage = ''
         const data = {
           email: this.email,
           group_share: { read_only: this.rightsSelected },
+          share_key: this.shareKey,
         }
         const result = this.submitData({
           url: `/groups/${this.group.id}/group_shares/`,
@@ -267,13 +270,7 @@
           return false
         }
       },
-      failure(err) {
-        if (err.status == 404) {
-          this.notFound = true
-        } else {
-          this.exists = true
-        }
-      },
+
       prepareKey() {
         return encryptKey(this.key)
       },
@@ -285,3 +282,9 @@
     },
   }
 </script>
+
+<style>
+  .email-input-wrapper {
+    max-width: 20em;
+  }
+</style>

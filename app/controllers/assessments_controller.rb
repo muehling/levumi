@@ -65,6 +65,7 @@ class AssessmentsController < ApplicationController
             #FIXME this is in all probability due to too large results of certain tests. Fix these tests first, and clean up the database.
             #last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
             test_id: a.test.id,
+            test_type_id: a.test.test_type_id || 1,
             test_family_id: a.test.test_family.id,
             competence_id: a.test.test_family.competence.id,
             area_id: a.test.test_family.competence.area.id

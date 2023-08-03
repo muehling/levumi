@@ -64,6 +64,7 @@
   import { ajax } from '../../utils/ajax'
   import { format } from 'date-fns'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import intersection from 'lodash/intersection'
@@ -86,7 +87,8 @@
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
-      return { assessmentsStore }
+      const globalStore = useGlobalStore()
+      return { assessmentsStore, globalStore }
     },
     data() {
       return {
@@ -182,12 +184,17 @@
         }
       },
       setPreselect(test) {
+        const type =
+          this.globalStore.staticData.testTypes.find(
+            testType => testType.id === (test.test_type_id || 1)
+          ) || 1
         this.$emit('set-preselect', {
           group: this.group.id,
           area: test.area_id,
           competence: test.competence_id,
           family: test.test_family_id,
           test: test.test_id,
+          type: type.id,
         })
       },
       formatLastDate(date) {

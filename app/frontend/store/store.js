@@ -41,21 +41,37 @@ export const useGlobalStore = defineStore('global', {
       this.genericMessage = { title: '', message: '' }
     },
     setLogin(data) {
-      this.login = data
+      let settings = {}
+      try {
+        settings = JSON.parse(data.settings)
+      } catch (e) {
+        // nothing to do
+      }
+      const d = { ...data, settings }
+      this.login = d
     },
 
     async fetchAnnotationCategories() {
       const res = await ajax({ url: apiRoutes.annotationCategories.index })
       const data = await res.json()
-
       this.staticData.annotationCategories = data
+    },
+    async fetchTestTypes() {
+      const res = await ajax({ url: apiRoutes.testTypes.index })
+      const data = await res.json()
+      this.staticData.testTypes = data
+    },
+
+    async fetchTestMetaData() {
+      const res = await ajax({ ...apiRoutes.tests.testMetaData })
+      const data = await res.json()
+      this.staticData.testMetaData = data
     },
 
     async fetch(showLoader = false) {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
       const coreData = await res.json()
-
       this.shareKeys = coreData.share_keys
       this.groups = coreData.groups
       this.groupInfo = coreData.groupInfo
@@ -67,6 +83,8 @@ export const useGlobalStore = defineStore('global', {
         focusTypes: coreData.focusTypes,
         accountTypes: coreData.accountTypes,
         annotationCategories: coreData.annotationCategories,
+        testTypes: coreData.testTypes,
+        testMetaData: coreData.testMetaData,
       }
 
       // decrypt student names

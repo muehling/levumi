@@ -15,6 +15,7 @@
               v-for="(group, index) in ownActiveGroups"
               :key="group.id"
               :active="$root.pre_select && $root.pre_select.group == group.id"
+              lazy
               @click="getTestsForGroup(group.id)"
             >
               <!-- Beispielklasse kursiv darstellen -->
@@ -28,6 +29,7 @@
                     triggers="hover"
                     offset="20"
                     variant="secondary"
+                    delay="300"
                   >
                     Geteilt von {{ group.belongs_to }}
                   </b-tooltip>
@@ -132,10 +134,8 @@
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
       },
 
-      markTestAsUsed(testId, groupInfoIndex) {
-        //FIXME entirely too sideeffecty
-        const test = this.groupInfo[groupInfoIndex].tests.find(test => test.info.id === testId)
-        test.used = true
+      markTestAsUsed(testId, groupId) {
+        this.groupInfo.find(group => group.group_id === groupId).used_test_ids.push(testId)
       },
       getTestsForGroup(groupId) {
         const group = this.globalStore.groups.find(group => group.id === groupId)
