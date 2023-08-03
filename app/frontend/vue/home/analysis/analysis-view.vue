@@ -195,7 +195,7 @@
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
-    inject: ['studentName', 'weeks', 'student_name_parts', 'printDate', 'readOnly'],
+    inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves

@@ -5,6 +5,7 @@ class Test < ApplicationRecord
   before_destroy :cleanup
 
   has_many :assessments, dependent: :destroy
+  has_one :type
   belongs_to :test_family
 
   #Zu einem Test gehörende Dateien => Active_Storage
@@ -38,6 +39,65 @@ class Test < ApplicationRecord
       area: test_family.competence.area.name,
       student_test: student_test
     }
+  end
+
+  def self.tests_meta
+    all_families =
+      TestFamily.all.map do |family|
+        tests_for_family = Test.where(test_family_id: family.id)
+        {
+          test_count: tests_for_family.count,
+          used_test_types:
+            Test
+              .where(test_family_id: family.id)
+              .map { |test| test.test_type_id ? test.test_type_id : 1 }
+              .uniq,
+          test_ids: tests_for_family.pluck(:id),
+          id: family.id,
+          name: family.name,
+          competence_id: family.competence_id
+        }
+      end
+    all_competences =
+      Competence.all.map do |competence|
+        families_for_competence =
+          all_families.select { |family| family[:competence_id] == competence.id }
+        {
+          test_count: families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
+          name: competence.name,
+          used_test_types:
+            families_for_competence
+              .reduce([]) { |acc, family| acc + family[:used_test_types] }
+              .uniq,
+          test_ids: families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
+          id: competence.id,
+          area_id: competence.area_id
+        }
+      end
+    all_areas =
+      Area.all.map do |area|
+        competences_for_area =
+          all_competences.select { |competence| competence[:area_id] == area.id }
+        {
+          test_count:
+            competences_for_area.reduce(0) { |sum, competence| sum + competence[:test_count] },
+          used_test_types:
+            competences_for_area.reduce([]) { |acc, family| acc + family[:used_test_types] }.uniq,
+          test_ids:
+            competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
+          name: area.name,
+          id: area.id
+        }
+      end
+
+    return(
+      {
+        areas: all_areas,
+        test_families: all_families,
+        competences: all_competences,
+        tests: Test.all
+      }
+    )
   end
 
   #JSON Export, nur relevante Attribute übernehmen

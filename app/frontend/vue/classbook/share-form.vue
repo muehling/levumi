@@ -199,7 +199,6 @@
           this.success(data)
           return data
         } else {
-          console.log('res', res)
           const error = await res.json()
           this.errorMessage = error.message
           return null

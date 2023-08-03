@@ -36,6 +36,7 @@ Rails.application.routes.draw do
   get '/statistiken', to: 'users#show'
   get '/nutzerverwaltung', to: 'users#show'
   get '/administration', to: 'users#show'
+  get '/uebungen', to: 'users#show'
 
   # API endpoints
   put '/users/:id/mail', to: 'users#user_mail'
@@ -69,6 +70,7 @@ Rails.application.routes.draw do
   end
   resources :materials
   resources :annotation_categories
+  resources :test_types
   resources :areas
   resources :competences
   resources :test_families

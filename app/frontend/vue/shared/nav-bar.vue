@@ -176,6 +176,15 @@
               </router-link>
             </div>
           </li>
+          <li v-if="masquerade">
+            <b-link
+              :href="`/users/${login.id}.text`"
+              class="dropdown-item"
+              :disabled="!hasTestedStudents"
+            >
+              Testungen exportieren
+            </b-link>
+          </li>
           <li v-if="!masquerade" id="intro6" class="nav-item dropdown">
             <a
               id="navbarMyData"

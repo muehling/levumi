@@ -1,5 +1,5 @@
 <template>
-  <div id="annotation-categories">
+  <div id="annotation-categories" class="col-10 col-xl-6 card p-4">
     <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
     <div>
       <div
@@ -43,9 +43,6 @@
   export default {
     name: 'AnnotationCategoriesDialog',
     components: { ConfirmDialog },
-    props: {
-      users: Array,
-    },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -62,7 +59,7 @@
     methods: {
       parseDisplayName(completeName) {
         const [name, group, index] = completeName.split('#')
-        return `${name}${group ? ', Gruppe' + group : ''}${index ? ', Index: ' + index : ''}`
+        return `${name}${group ? ', Gruppe: ' + group : ''}${index ? ', Index: ' + index : ''}`
       },
       async createAnnotationCategory() {
         this.isLoading = true
@@ -84,7 +81,7 @@
       },
       async deleteCategory(id) {
         const ok = await this.$refs.confirmDialog.open({
-          message: `Anmerkungstyp wird gelöscht. Fortfahren`,
+          message: `Anmerkungstyp wird gelöscht. Fortfahren?`,
           okText: 'Ja, löschen',
           title: 'Anmerkungstyp löschen',
         })
