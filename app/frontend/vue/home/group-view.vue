@@ -63,6 +63,7 @@
             v-if="!competence.used && competence.description != undefined"
             :target="group.id + '_competence_' + competence.id"
             triggers="hover"
+            placement="topright"
           >
             <div v-html="competence.description"></div>
           </b-popover>
@@ -84,6 +85,7 @@
             v-if="!family.used && family.description != undefined"
             :target="group.id + '_family_' + family.id"
             triggers="hover"
+            placement="topright"
           >
             <div v-html="family.description"></div>
           </b-popover>
@@ -100,18 +102,19 @@
           lazy
           @click="handleClickTest(test)"
         >
-          <span :class="test.used ? 'font-weight-bold' : 'text-muted'">{{ test.info.level }}</span>
+          <span :class="test.used ? 'font-weight-bold' : ''">{{ test.info.level }}</span>
           <b-popover
             v-if="!test.used && test.info.description?.short !== undefined"
             :target="group.id + '_test_' + test.info.id"
             triggers="hover"
+            placement="topright"
           >
             <div v-html="test.info.description.short"></div>
           </b-popover>
         </b-nav-item>
       </b-nav>
-      <hr v-if="versions.length > 1" />
-      <b-nav v-if="versions.length > 1" pills class="mt-1">
+      <hr v-if="usedVersions.length > 1" />
+      <b-nav v-if="usedVersions.length > 1" pills class="mt-1">
         <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
         <b-nav-item
           v-for="version in usedVersions"
@@ -121,13 +124,12 @@
           lazy
           @click="handleClickVersion(version)"
         >
-          <span :class="version.used ? 'font-weight-bold' : 'text-muted'">{{
-            version.info.label
-          }}</span>
+          <span :class="version.used ? 'font-weight-bold' : ''">{{ version.info.label }}</span>
           <b-popover
             v-if="!version.used && version.info.description.short != undefined"
             :target="group.id + '_version_' + version.info.id"
             triggers="hover"
+            placement="topright"
           >
             <div v-html="version.info.description.short"></div>
           </b-popover>
@@ -136,7 +138,19 @@
     </b-card>
     <b-row :id="'assessment-jump' + group.id">
       <b-col>
-        <div v-if="!isLoadingUpdate && !results">
+        <div v-if="isLoadingUpdate" class="spinner" style="padding-bottom: 75px">
+          <div class="bounce1"></div>
+          <div class="bounce2"></div>
+          <div class="bounce3"></div>
+        </div>
+        <div v-else-if="!hasResults && version_selected" class="alert alert-secondary">
+          <p>
+            Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung
+            in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste
+            Testversion, in der Sie ab jetzt die Testungen durchführen können.
+          </p>
+        </div>
+        <div v-else-if="!isLoadingUpdate && !hasResults">
           <p class="m-5 text-center text-muted">
             <span v-if="globalStore.studentsInGroups[group.id].length == 0">
               Aktuell sind noch keine Schüler:innen für die Klasse angelegt. Bitte legen Sie diese
@@ -155,21 +169,16 @@
           </p>
         </div>
         <!-- Spinner für die AJAX-Requests zum Laden eines gewählten Assessments-->
-        <div v-if="isLoadingUpdate" class="spinner" style="padding-bottom: 75px">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-        </div>
 
         <assessment-view
-          v-else-if="results"
+          v-else-if="hasResults"
           :active="results.active"
           :annotations="annotations"
           :configuration="results.configuration"
-          :excludes="results.excludes"
+          :excludes="results?.excludes"
           :group="group"
           :read-only="group.read_only"
-          :results="results.series"
+          :results="results?.series"
           :student-test="results.student_test"
           :test="results.test"
           @update="loadAssessment(test_selected)"
@@ -347,7 +356,7 @@
                 (test.info.test_type_id === null && this.testTypeSelected === 1))
             )
           })
-          .sort((a, b) => (b?.level < a?.level ? 1 : -1))
+          .sort((a, b) => (b?.info.level < a?.info.level ? 1 : -1))
       },
       usedTestTypes() {
         const currentArea = this.testMetaData.areas.find(area => area.id === this.areaSelected)
@@ -362,9 +371,10 @@
         return typeLabels
       },
       usedVersions() {
-        return this.versions.filter(
-          version => version.used || (!version.info.archive && !this.group.read_only)
-        )
+        return this.versions.filter(version => version.used || !this.group.read_only)
+      },
+      hasResults() {
+        return this.results
       },
     },
     async mounted() {
@@ -400,14 +410,13 @@
       },
 
       handleClickTest(test) {
-        this.test_selected = -1
-        this.version_selected = 0
-        this.results = undefined
         if (test.used) {
           if (test.versions.length === 1) {
             this.loadAssessment(test, false)
           } else {
             this.test_selected = test.info.id
+            this.version_selcted = test.info.id
+            this.loadAssessment(test, false)
           }
         } else {
           this.createAssessment(test, false)
@@ -415,14 +424,7 @@
       },
 
       handleClickVersion(version) {
-        this.test_selected = -1
-        this.version_selected = 0
-        this.results = undefined
-        if (version.used) {
-          this.loadAssessment(version, true)
-        } else {
-          this.createAssessment(version, true)
-        }
+        this.loadAssessment(version, true)
       },
 
       //Neues Assessment anlegen und, bei Erfolg, laden.
@@ -446,28 +448,28 @@
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
       async loadAssessment(test, isVersion) {
+        if (!test.info.id) {
+          return
+        }
         if (isVersion) {
           this.version_selected = test.info.id
         } else {
           this.test_selected = test.info.id
         }
-        //return
-        if (!test.info.id) {
-          return
-        }
+
         this.isLoadingUpdate = true //Spinner anzeigen
         const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.info.id}` }) // TODO: durch api-routes Aufruf ersetzen
         if (res.status === 200) {
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
-        } else if (res.status === 404) {
+        } else if (res.status === 404 && !isVersion) {
           // safety net in case no assessment could be found.
           this.createAssessment({ info: { id: test.info.id } }, isVersion)
         } else {
           // only hide spinner, nothing to show
           this.isLoadingUpdate = false
-          this.results = {}
+          this.results = undefined
         }
       },
 
@@ -483,7 +485,7 @@
         this.familySelected = -1
         this.test_selected = -1
         this.version_selected = 0
-        this.results = null
+        this.results = undefined
       },
       setSelectedTestType(testType) {
         this.testTypeSelected = testType
@@ -491,7 +493,7 @@
         this.familySelected = -1
         this.test_selected = -1
         this.version_selected = 0
-        this.results = null
+        this.results = undefined
       },
       //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedCompetence(competence) {
@@ -499,14 +501,14 @@
         this.familySelected = -1
         this.test_selected = -1
         this.version_selected = 0
-        this.results = null
+        this.results = undefined
       },
       //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedFamily(family) {
         this.familySelected = family
         this.test_selected = -1
         this.version_selected = 0
-        this.results = null
+        this.results = undefined
       },
 
       propagateUsedTest(testId) {
