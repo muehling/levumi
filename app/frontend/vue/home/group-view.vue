@@ -347,7 +347,7 @@
                 (test.info.test_type_id === null && this.testTypeSelected === 1))
             )
           })
-          .sort((a, b) => (b?.level < a?.level ? 1 : -1))
+          .sort((a, b) => (b?.info.level < a?.info.level ? 1 : -1))
       },
       usedTestTypes() {
         const currentArea = this.testMetaData.areas.find(area => area.id === this.areaSelected)
