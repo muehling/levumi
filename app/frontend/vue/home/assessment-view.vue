@@ -34,7 +34,7 @@
           </div>
           <div v-else-if="students.length == 0">
             <p>
-              Es sind in dieser Klasse noch keine Schüler:innen angelegt. Um in dieser Klasse Testen
+              Es sind in dieser Klasse noch keine Schüler:innen angelegt. Um in dieser Klasse testen
               zu können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
             </p>
           </div>
