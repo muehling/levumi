@@ -313,6 +313,8 @@
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
       groupedResults() {
+        console.log('assessment-view grouped results', this.results)
+
         //Results nach Wochen gruppieren, für die Ergebnisliste
         const result = this.results.reduce((acc, res, i) => {
           acc[res.test_week] = acc[res.test_week] || []
@@ -371,6 +373,8 @@
         return printDate(date)
       },
       get_result(student) {
+        console.log('get_result', student, this.results)
+
         //Prüft ob es für "heute" schon ein Ergebnis gibt.
         let d = new Date()
         let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)))

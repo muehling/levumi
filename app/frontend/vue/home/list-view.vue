@@ -19,16 +19,24 @@
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
+          <th>Kürzel</th>
           <th>Test</th>
           <th>Anzahl Testungen</th>
+          <th>Letzter Test</th>
           <th>Wöchentliche Testung</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sortedList" :key="test.test + '/' + test.name" class="assessment-line">
+        <tr
+          v-for="test in sortedList"
+          :key="test.test_id + '/' + test.name"
+          class="assessment-line"
+        >
+          <td>{{ test.shorthand }}</td>
           <td @click="setPreselect(test)">{{ test.name }}</td>
           <td>{{ test.result_count }}</td>
+          <td>{{ test.last_test }}</td>
           <!--<td>{{ formatLastDate(test.last_test) }}</td>-->
           <td>
             <b-btn
@@ -128,6 +136,7 @@
         const byType = []
         const byStatus = []
         const assessments = this.assessmentsStore.getAssessments(this.group.id)
+        console.log('sortedList', assessments)
 
         // not accepted shared groups will return
         if (isEmpty(assessments)) {

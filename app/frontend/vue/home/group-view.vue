@@ -260,7 +260,18 @@
       },
       tests: function () {
         let res = []
-        for (let i = 0; i < this.testMetaData?.tests.length; ++i) {
+        const tests = this.testMetaData.tests.reduce((acc, test) => {
+          if (test.test_family_id === this.familySelected && test.label === 'Aktuell') {
+            const isTestUsed = this.groupInfo.used_test_ids.find(testId => testId === test.id)
+            const versions = this.testMetaData.tests.filter(
+              version =>
+                version.level === test.level && version.test_family_id === this.familySelected
+            )
+            acc.push({ info: test, used: isTestUsed, versions })
+          }
+          return acc
+        }, [])
+        /*for (let i = 0; i < this.testMetaData?.tests.length; ++i) {
           if (
             this.testMetaData?.tests[i].test_family_id == this.familySelected &&
             this.testMetaData?.tests[i].label === 'Aktuell'
@@ -280,9 +291,9 @@
             }
             res.push({ info: this.testMetaData?.tests[i], used, versions })
           }
-        }
-
-        return res
+        }*/
+        return tests
+        //  return res
       },
       //Alle Versionen des gewählten Tests
       versions() {
@@ -295,6 +306,7 @@
           }
           return acc
         }, [])
+        console.log('versions', res)
 
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
@@ -448,6 +460,8 @@
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
       async loadAssessment(test, isVersion) {
+        console.log('loadassessment', test)
+
         if (!test.info.id) {
           return
         }
