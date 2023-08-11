@@ -90,8 +90,10 @@
       },
       async saveChanges() {
         const data = {
-          description: { full: this.description, short: this.shortDescription },
-          test_type_id: this.selectedTestType.id,
+          test: {
+            description: { full: this.description, short: this.shortDescription },
+            test_type_id: this.selectedTestType.id,
+          },
         }
         const res = await ajax({ ...apiRoutes.tests.update(this.testId), data })
 

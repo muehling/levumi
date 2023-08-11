@@ -57,6 +57,7 @@ class AssessmentsController < ApplicationController
         {
           id: a.id,
           active: a.active,
+          archive: a.test.archive,
           # test: a.test.id, # TODO replace usage with test_id (see below)
           shorthand: a.test.shorthand,
           name: a.test.full_name,

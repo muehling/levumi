@@ -98,7 +98,7 @@
           v-for="test in usedTests"
           :id="group.id + '_test_' + test.info.id"
           :key="test.info.id"
-          :active="test.info.id === test_selected"
+          :active="test.info.id === testSelected"
           lazy
           @click="handleClickTest(test)"
         >
@@ -120,7 +120,7 @@
           v-for="version in usedVersions"
           :id="group.id + '_version_' + version.info.id"
           :key="version.info.id"
-          :active="version.info.id === version_selected"
+          :active="version.info.id === versionSelected"
           lazy
           @click="handleClickVersion(version)"
         >
@@ -142,13 +142,6 @@
           <div class="bounce1"></div>
           <div class="bounce2"></div>
           <div class="bounce3"></div>
-        </div>
-        <div v-else-if="!hasResults && version_selected" class="alert alert-secondary">
-          <p>
-            Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung
-            in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste
-            Testversion, in der Sie ab jetzt die Testungen durchführen können.
-          </p>
         </div>
         <div v-else-if="!isLoadingUpdate && !hasResults">
           <p class="m-5 text-center text-muted">
@@ -172,7 +165,6 @@
 
         <assessment-view
           v-else-if="hasResults"
-          :active="results.active"
           :annotations="annotations"
           :configuration="results.configuration"
           :excludes="results?.excludes"
@@ -181,7 +173,7 @@
           :results="results?.series"
           :student-test="results.student_test"
           :test="results.test"
-          @update="loadAssessment(test_selected)"
+          @update="loadAssessment(testSelected)"
           @remove-entry="removeEntry"
         >
         </assessment-view>
@@ -196,6 +188,7 @@
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
   import isEmpty from 'lodash/isEmpty'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'GroupView',
@@ -208,7 +201,8 @@
     },
     setup() {
       const globalStore = useGlobalStore()
-      return { globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { globalStore, assessmentsStore }
     },
     data: function () {
       return {
@@ -235,19 +229,22 @@
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.assessment
             : undefined,
-        test_selected:
+        testSelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
             : 0,
         isLoadingUpdate: false,
         isLoading: false,
-        version_selected:
+        versionSelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
             : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
       }
     },
     computed: {
+      allAssessments() {
+        return this.assessmentsStore.getAssessments(this.group.id)
+      },
       testMetaData: function () {
         return this.globalStore.staticData.testMetaData
       },
@@ -259,8 +256,7 @@
         return this.groupInfo.length > 0
       },
       tests: function () {
-        let res = []
-        const tests = this.testMetaData.tests.reduce((acc, test) => {
+        return this.testMetaData.tests.reduce((acc, test) => {
           if (test.test_family_id === this.familySelected && test.label === 'Aktuell') {
             const isTestUsed = this.groupInfo.used_test_ids.find(testId => testId === test.id)
             const versions = this.testMetaData.tests.filter(
@@ -271,42 +267,21 @@
           }
           return acc
         }, [])
-        /*for (let i = 0; i < this.testMetaData?.tests.length; ++i) {
-          if (
-            this.testMetaData?.tests[i].test_family_id == this.familySelected &&
-            this.testMetaData?.tests[i].label === 'Aktuell'
-          ) {
-            let versions = []
-            let used = false
-            for (let j = 0; j < this.testMetaData?.tests.length; ++j) {
-              if (
-                this.testMetaData?.tests[i].level == this.testMetaData?.tests[j].level &&
-                this.testMetaData?.tests[j].test_family_id == this.familySelected
-              ) {
-                versions.push(this.testMetaData?.tests[j])
-                used = !!this.groupInfo.used_test_ids.find(
-                  testId => testId === this.testMetaData?.tests[j].id
-                )
-              }
-            }
-            res.push({ info: this.testMetaData?.tests[i], used, versions })
-          }
-        }*/
-        return tests
-        //  return res
       },
-      //Alle Versionen des gewählten Tests
+      //all versions of the selected test
       versions() {
-        const level = this.testMetaData.tests.find(test => test.id === this.test_selected)?.level
-
+        const level = this.testMetaData.tests.find(test => test.id === this.testSelected)?.level
+        if (!level) {
+          return []
+        }
         const res = this.testMetaData.tests.reduce((acc, test) => {
-          if (test.level === level && test.test_family_id === this.familySelected) {
+          const assessment = this.allAssessments.find(assessment => assessment.test_id === test.id)
+          if (test.level === level && test.test_family_id === this.familySelected && !!assessment) {
             const used = !!this.groupInfo.used_test_ids.find(id => id === test.id)
             acc.push({ info: test, used })
           }
           return acc
         }, [])
-        console.log('versions', res)
 
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
@@ -400,21 +375,23 @@
         annotations.splice(0, 0, annotation)
         this.$set(this.results, 'annotations', annotations)
       },
+
       removeAnnotation(annotationId) {
         const annotations = this.results.annotations.filter(a => annotationId !== a.id)
         this.$set(this.results, 'annotations', annotations)
       },
-      async setPreselect(data) {
+
+      async setPreselect(data, isVersion) {
         this.areaSelected = data.area
         this.competenceSelected = data.competence
         this.familySelected = data.family
         this.testTypeSelected = data.type
-        this.test_selected = data.test
+        this.testSelected = data.test
+        this.versionSelected = data.version
 
         await this.$nextTick() // wait until computed properties have refreshed
-        const test = this.usedTests.find(t => t.info.id === data.test)
 
-        this.loadAssessment(test, false)
+        this.loadAssessment(isVersion ? data.version : data.test, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -424,11 +401,13 @@
       handleClickTest(test) {
         if (test.used) {
           if (test.versions.length === 1) {
+            this.testSelected = test.info.id
+            this.versionSelected = test.info.id
             this.loadAssessment(test, false)
           } else {
-            this.test_selected = test.info.id
-            this.version_selcted = test.info.id
-            this.loadAssessment(test, false)
+            this.testSelected = test.info.id
+            this.versionSelected = test.info.id
+            this.loadAssessment(test.info.id, false)
           }
         } else {
           this.createAssessment(test, false)
@@ -436,7 +415,7 @@
       },
 
       handleClickVersion(version) {
-        this.loadAssessment(version, true)
+        this.loadAssessment(version.info.id, true)
       },
 
       //Neues Assessment anlegen und, bei Erfolg, laden.
@@ -459,27 +438,32 @@
         }
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-      async loadAssessment(test, isVersion) {
-        console.log('loadassessment', test)
+      async loadAssessment(testId, isVersion) {
+        const usedVersions = this.usedTests.reduce((acc, test) => {
+          acc = acc.concat(test.versions)
+          return acc
+        }, [])
 
-        if (!test.info.id) {
+        const test = usedVersions.find(b => b.id === testId)
+
+        if (!test) {
           return
         }
         if (isVersion) {
-          this.version_selected = test.info.id
+          this.versionSelected = test.id
         } else {
-          this.test_selected = test.info.id
+          this.testSelected = test.id
         }
 
         this.isLoadingUpdate = true //Spinner anzeigen
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.info.id}` }) // TODO: durch api-routes Aufruf ersetzen
+        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.id}` }) // TODO: durch api-routes Aufruf ersetzen
         if (res.status === 200) {
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
         } else if (res.status === 404 && !isVersion) {
           // safety net in case no assessment could be found.
-          this.createAssessment({ info: { id: test.info.id } }, isVersion)
+          this.createAssessment({ info: { id: test.id } }, isVersion)
         } else {
           // only hide spinner, nothing to show
           this.isLoadingUpdate = false
@@ -491,37 +475,38 @@
       setSelectedArea(area) {
         this.areaSelected = area
         if (this.usedTestTypes.length === 1 || !this.enableTestTypes) {
-          this.testTypeSelected = 1
+          this.testTypeSelected = this.usedTestTypes[0].id
         } else {
           this.testTypeSelected = -1
         }
+
         this.competenceSelected = -1
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       setSelectedTestType(testType) {
         this.testTypeSelected = testType
         this.competenceSelected = -1
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedCompetence(competence) {
         this.competenceSelected = competence
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedFamily(family) {
         this.familySelected = family
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
 
