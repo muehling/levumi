@@ -113,8 +113,21 @@
           </b-popover>
         </b-nav-item>
       </b-nav>
-      <hr v-if="usedVersions.length > 1" />
-      <b-nav v-if="usedVersions.length > 1" pills class="mt-1">
+      <hr
+        v-if="
+          usedVersions.length > 1 ||
+          (usedVersions.length === 1 && usedVersions[0].info.archive === true)
+        "
+      />
+
+      <b-nav
+        v-if="
+          usedVersions.length > 1 ||
+          (usedVersions.length === 1 && usedVersions[0].info.archive === true)
+        "
+        pills
+        class="mt-1"
+      >
         <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
         <b-nav-item
           v-for="version in usedVersions"
@@ -337,7 +350,7 @@
         return this.tests
           .filter(test => {
             return (
-              (this.groupInfo.used_test_ids.find(t => t.id === test.info.id) ||
+              (this.groupInfo.used_test_ids.find(id => id === test.info.id) ||
                 !this.group.read_only) &&
               (test.info.test_type_id === this.testTypeSelected ||
                 (test.info.test_type_id === null && this.testTypeSelected === 1))
@@ -403,7 +416,7 @@
           if (test.versions.length === 1) {
             this.testSelected = test.info.id
             this.versionSelected = test.info.id
-            this.loadAssessment(test, false)
+            this.loadAssessment(test.info.id, false)
           } else {
             this.testSelected = test.info.id
             this.versionSelected = test.info.id
@@ -445,7 +458,6 @@
         }, [])
 
         const test = usedVersions.find(b => b.id === testId)
-
         if (!test) {
           return
         }
