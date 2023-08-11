@@ -367,8 +367,10 @@
         if (isEmpty(typeLabels)) {
           typeLabels.unshift(this.globalStore.staticData.testTypes[0])
         }
-        //TODO sobald das TestTypes-Feature angeschaltet wird, müssen hier die used-Flags an die TestTypes gemapped werden.
-        return typeLabels
+        return typeLabels.map(typeLabel => {
+          typeLabel.used = typeLabel.id === this.testTypeSelected
+          return typeLabel
+        })
       },
       usedVersions() {
         return this.versions.filter(version => version.used || !this.group.read_only)
