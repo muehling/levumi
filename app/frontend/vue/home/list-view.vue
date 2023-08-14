@@ -204,38 +204,40 @@
         }
         this.isUpdating = []
       },
-      setPreselect(test) {
+      setPreselect(assessment) {
         const type =
           this.globalStore.staticData.testTypes.find(
-            testType => testType.id === (test.test_type_id || 1)
+            testType => testType.id === (assessment.test_type_id || 1)
           ) || 1
 
         const selectedTest = this.globalStore.staticData.testMetaData.tests.find(
-          t => t.id === test.test_id
+          t => t.id === assessment.test_id
         )
 
+        // TODO in case the level or test_family of a new version has changed, this will fail
+        // TODO find some way to properly identify new versions of a test
         // in case of an archived version, this is the id of the current test
-        const currentTestId = test.archive
+        const currentTestId = assessment.archive
           ? this.globalStore.staticData.testMetaData.tests.find(
               current =>
-                current.level === selectedTest.level &&
+                current.shorthand === selectedTest.shorthand &&
                 current.test_family_id === selectedTest.test_family_id &&
                 !current.archive
             )?.id
-          : test.test_id
+          : assessment.test_id
 
         this.$emit(
           'set-preselect',
           {
-            group: this.group.id,
-            area: test.area_id,
-            competence: test.competence_id,
-            family: test.test_family_id,
-            test: currentTestId,
-            version: selectedTest.id,
-            type: type.id,
+            groupId: this.group.id,
+            areaId: assessment.area_id,
+            competenceId: assessment.competence_id,
+            familyId: assessment.test_family_id,
+            testId: currentTestId,
+            versionId: selectedTest.id,
+            typeId: type.id,
           },
-          !!test.archive
+          !!assessment.archive
         )
       },
       formatLastDate(date) {

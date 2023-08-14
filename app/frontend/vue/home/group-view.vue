@@ -220,31 +220,31 @@
     data: function () {
       return {
         areaSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.area
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.areaId
             : 0,
         competenceSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.competence
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.competenceId
             : 0,
         enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.family
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.familyId
             : 0,
         testTypeSelected: this.enableTestTypes
           ? 1
-          : this.$root.pre_select && this.$root.pre_select.group === this.group.id
-          ? this.$root.pre_select.type
+          : this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+          ? this.$root.pre_select.testTypeId
           : undefined,
 
         results:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.assessment
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.assessmentId
             : undefined,
         testSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.test
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.testId
             : 0,
         isLoadingUpdate: false,
         isLoading: false,
@@ -397,16 +397,16 @@
       },
 
       async setPreselect(data, isVersion) {
-        this.areaSelected = data.area
-        this.competenceSelected = data.competence
-        this.familySelected = data.family
-        this.testTypeSelected = data.type
-        this.testSelected = data.test
-        this.versionSelected = data.version
+        this.areaSelected = data.areaId
+        this.competenceSelected = data.competenceId
+        this.familySelected = data.familyId
+        this.testTypeSelected = data.typeId
+        this.testSelected = data.testId
+        this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
 
-        this.loadAssessment(isVersion ? data.version : data.test, isVersion)
+        this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -415,15 +415,9 @@
 
       handleClickTest(test) {
         if (test.used) {
-          if (test.versions.length === 1) {
-            this.testSelected = test.info.id
-            this.versionSelected = test.info.id
-            this.loadAssessment(test.info.id, false)
-          } else {
-            this.testSelected = test.info.id
-            this.versionSelected = test.info.id
-            this.loadAssessment(test.info.id, false)
-          }
+          this.testSelected = test.info.id
+          this.versionSelected = test.info.id
+          this.loadAssessment(test.info.id, false)
         } else {
           this.createAssessment(test, false)
         }
@@ -434,22 +428,24 @@
       },
 
       //Neues Assessment anlegen und, bei Erfolg, laden.
-      createAssessment(test, isVersion) {
+      async createAssessment(test, isVersion) {
         if (test.info.archive) {
           return
         }
         if (test.info.label !== 'Aktuell') {
-          this.loadAssessment(test, isVersion)
+          this.loadAssessment(test.info.id, isVersion)
         } else {
-          ajax({
+          const res = await ajax({
             contentType: 'application/x-www-form-urlencoded',
             data: `test_id=${test.info.id}`,
             method: 'post',
             url: `/groups/${this.group.id}/assessments/`,
-          }).then(() => {
-            this.propagateUsedTest(test.info.id)
-            this.loadAssessment(test, isVersion)
           })
+
+          if (res.status === 200) {
+            this.propagateUsedTest(test.info.id)
+            this.loadAssessment(test.info.id, isVersion)
+          }
         }
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
@@ -476,7 +472,7 @@
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
         } else if (res.status === 404 && !isVersion) {
-          // safety net in case no assessment could be found.
+          // when no assessment is found, create one.
           this.createAssessment({ info: { id: test.id } }, isVersion)
         } else {
           // only hide spinner, nothing to show

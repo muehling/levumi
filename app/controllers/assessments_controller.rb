@@ -51,26 +51,27 @@ class AssessmentsController < ApplicationController
   #GET /groups/:group_id/assessments
   def index
     data =
-      @group.assessments
-        # .select { |a| !a.test.archive || (a.test.archive && a.results.count > 0) }
+      @group
+        .assessments
+        .select { |a| !a.test.archive || (a.test.archive && a.results.count > 0) }
         .map do |a|
-        {
-          id: a.id,
-          active: a.active,
-          archive: a.test.archive,
-          # test: a.test.id, # TODO replace usage with test_id (see below)
-          shorthand: a.test.shorthand,
-          name: a.test.full_name,
-          student_test: a.test.student_test,
-          result_count: a.results.length,
-          last_test: a.results.exists? ? a.results.last.test_date : '',
-          test_id: a.test.id,
-          test_type_id: a.test.test_type_id || 1,
-          test_family_id: a.test.test_family.id,
-          competence_id: a.test.test_family.competence.id,
-          area_id: a.test.test_family.competence.area.id
-        }
-      end
+          {
+            id: a.id,
+            active: a.active,
+            archive: a.test.archive,
+            # test: a.test.id, # TODO replace usage with test_id (see below)
+            shorthand: a.test.shorthand,
+            name: a.test.full_name,
+            student_test: a.test.student_test,
+            result_count: a.results.length,
+            last_test: a.results.exists? ? a.results.last.test_date : '',
+            test_id: a.test.id,
+            test_type_id: a.test.test_type_id || 1,
+            test_family_id: a.test.test_family.id,
+            competence_id: a.test.test_family.competence.id,
+            area_id: a.test.test_family.competence.area.id
+          }
+        end
     render json: data
   end
 
