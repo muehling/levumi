@@ -16,7 +16,7 @@
         <b-nav-item
           v-for="area in usedAreas"
           :key="area.id"
-          :active="area.id == areaSelected"
+          :active="area.id === areaSelected"
           lazy
           @click="setSelectedArea(area.id)"
         >
@@ -31,7 +31,7 @@
           v-for="testType in usedTestTypes"
           :id="group.id + '_test_type_' + testType.id"
           :key="testType.id"
-          :active="testType.id == testTypeSelected"
+          :active="testType.id === testTypeSelected"
           lazy
           @click="setSelectedTestType(testType.id)"
         >
@@ -54,7 +54,7 @@
           v-for="competence in usedCompetences"
           :id="group.id + '_competence_' + competence.id"
           :key="competence.id"
-          :active="competence.id == competenceSelected"
+          :active="competence.id === competenceSelected"
           lazy
           @click="setSelectedCompetence(competence.id)"
         >
@@ -76,7 +76,7 @@
           v-for="family in usedFamilies"
           :id="group.id + '_family_' + family.id"
           :key="family.id"
-          :active="family.id == familySelected"
+          :active="family.id === familySelected"
           lazy
           @click="setSelectedFamily(family.id)"
         >
@@ -139,7 +139,7 @@
         >
           <span :class="version.used ? 'font-weight-bold' : ''">{{ version.info.label }}</span>
           <b-popover
-            v-if="!version.used && version.info.description.short != undefined"
+            v-if="!version.used && !!version.info.description.short"
             :target="group.id + '_version_' + version.info.id"
             triggers="hover"
             placement="topright"
@@ -361,14 +361,17 @@
       usedTestTypes() {
         const currentArea = this.testMetaData.areas.find(area => area.id === this.areaSelected)
 
-        const typeLabels = this.globalStore.staticData.testTypes.filter(testType => {
+        const typeLabels = this.testMetaData.test_types.filter(testType => {
           return currentArea.used_test_types.find(testTypeId => testTypeId === testType.id)
         })
         if (isEmpty(typeLabels)) {
-          typeLabels.unshift(this.globalStore.staticData.testTypes[0])
+          typeLabels.unshift(this.testMetaData.test_types[0])
         }
+
         return typeLabels.map(typeLabel => {
-          typeLabel.used = typeLabel.id === this.testTypeSelected
+          typeLabel.used = !!this.groupInfo.used_test_ids.some(usedId =>
+            typeLabel.test_ids.find(id => id === usedId)
+          )
           return typeLabel
         })
       },
