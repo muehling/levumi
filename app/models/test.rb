@@ -74,6 +74,14 @@ class Test < ApplicationRecord
           area_id: competence.area_id
         }
       end
+    all_test_types =
+      TestType.all.map do |test_type|
+        tests_for_test_type = Test.where(test_type_id: test_type.id).pluck(:id)
+        if (test_type.id == 1)
+          tests_for_test_type = tests_for_test_type + Test.where(test_type_id: nil).pluck(:id)
+        end
+        { test_ids: tests_for_test_type, name: test_type.name, id: test_type.id }
+      end
     all_areas =
       Area.all.map do |area|
         competences_for_area =
@@ -95,7 +103,8 @@ class Test < ApplicationRecord
         areas: all_areas,
         test_families: all_families,
         competences: all_competences,
-        tests: Test.all
+        tests: Test.all,
+        test_types: all_test_types
       }
     )
   end
