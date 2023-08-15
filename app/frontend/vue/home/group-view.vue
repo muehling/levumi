@@ -1,12 +1,18 @@
 <template>
   <div classname="group-view">
+    <span>KlassenId {{ group.id }}</span>
     <div v-if="!!group.id" class="mb-2 mt-2">
       <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
         <!-- Listenansicht für alle Tests -->
-        <list-view :group="group" :read_only="group.read_only" @set-preselect="setPreselect">
+        <list-view
+          :group="group"
+          :read_only="group.read_only"
+          :default-test-type="defaultTestType"
+          @set-preselect="setPreselect"
+        >
         </list-view>
       </b-collapse>
     </div>
@@ -227,7 +233,7 @@
           this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
             ? this.$root.pre_select.competenceId
             : 0,
-        enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
+        enableTestTypes: true, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
           this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
             ? this.$root.pre_select.familyId
@@ -257,6 +263,9 @@
     computed: {
       allAssessments() {
         return this.assessmentsStore.getAssessments(this.group.id)
+      },
+      defaultTestType() {
+        return this.testMetaData.test_types[0]
       },
       testMetaData: function () {
         return this.globalStore.staticData.testMetaData
@@ -353,7 +362,8 @@
               (this.groupInfo.used_test_ids.find(id => id === test.info.id) ||
                 !this.group.read_only) &&
               (test.info.test_type_id === this.testTypeSelected ||
-                (test.info.test_type_id === null && this.testTypeSelected === 1))
+                (test.info.test_type_id === null &&
+                  this.testTypeSelected === this.defaultTestType.id))
             )
           })
           .sort((a, b) => (b?.info.level < a?.info.level ? 1 : -1))
@@ -388,9 +398,6 @@
     },
 
     methods: {
-      getDefaultTestTypeId() {
-        return this.testMetaData.test_types[0]?.id
-      },
       addAnnotation(annotation) {
         const annotations = this.results.annotations
         annotations.splice(0, 0, annotation)

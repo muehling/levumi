@@ -19,6 +19,7 @@
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
+          <th>Id</th>
           <th>Kürzel</th>
           <th>Test</th>
           <th>Anzahl Testungen</th>
@@ -33,6 +34,7 @@
           :key="assessment.test_id + '/' + assessment.name"
           class="assessment-line"
         >
+          <td>{{ assessment.test_id }}</td>
           <td>{{ assessment.shorthand }}</td>
           <td @click="setPreselect(assessment)">{{ assessment.name }}</td>
           <td>{{ assessment.result_count }}</td>
@@ -95,6 +97,7 @@
     components: { ConfirmDialog },
     props: {
       group: Object,
+      defaultTestType: Object,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
@@ -207,8 +210,8 @@
       setPreselect(assessment) {
         const type =
           this.globalStore.staticData.testTypes.find(
-            testType => testType.id === (assessment.test_type_id || 1)
-          ) || 1
+            testType => testType.id === (assessment.test_type_id || this.defaultTestTypeId)
+          ) || this.defaultTestType
 
         const selectedTest = this.globalStore.staticData.testMetaData.tests.find(
           t => t.id === assessment.test_id
@@ -221,8 +224,7 @@
           ? this.globalStore.staticData.testMetaData.tests.find(
               current =>
                 current.shorthand === selectedTest.shorthand &&
-                current.test_family_id === selectedTest.test_family_id &&
-                !current.archive
+                current.test_family_id === selectedTest.test_family_id
             )?.id
           : assessment.test_id
 
