@@ -388,6 +388,9 @@
     },
 
     methods: {
+      getDefaultTestTypeId() {
+        return this.testMetaData.test_types[0]?.id
+      },
       addAnnotation(annotation) {
         const annotations = this.results.annotations
         annotations.splice(0, 0, annotation)

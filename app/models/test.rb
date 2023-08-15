@@ -50,7 +50,7 @@ class Test < ApplicationRecord
           used_test_types:
             Test
               .where(test_family_id: family.id)
-              .map { |test| test.test_type_id ? test.test_type_id : 1 }
+              .map { |test| test.test_type_id ? test.test_type_id : TestType.first[:id] }
               .uniq,
           test_ids: tests_for_family.pluck(:id),
           id: family.id,
@@ -97,6 +97,11 @@ class Test < ApplicationRecord
           id: area.id
         }
       end
+
+    # safety net in case someone forgot to add a test type
+    all_test_types = [
+      { id: 1, name: 'NO TEST TYPE FOUND', test_ids: Test.all.pluck(:id) }
+    ] if all_test_types.empty?
 
     return(
       {
