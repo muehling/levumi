@@ -110,7 +110,7 @@
         >
           <span :class="test.used ? 'font-weight-bold' : ''">{{ test.info.level }}</span>
           <b-popover
-            v-if="!test.used && test.info.description?.short !== undefined"
+            v-if="!test.used && !!test.info.description?.short"
             :target="group.id + '_test_' + test.info.id"
             triggers="hover"
             placement="topright"
@@ -233,7 +233,7 @@
           this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
             ? this.$root.pre_select.competenceId
             : 0,
-        enableTestTypes: true, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
+        enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
           this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
             ? this.$root.pre_select.familyId
@@ -279,7 +279,7 @@
       },
       tests: function () {
         return this.testMetaData.tests.reduce((acc, test) => {
-          if (test.test_family_id === this.familySelected && test.label === 'Aktuell') {
+          if (test.test_family_id === this.familySelected && test.is_latest) {
             const isTestUsed = this.groupInfo.used_test_ids.find(testId => testId === test.id)
             const versions = this.testMetaData.tests.filter(
               version =>
@@ -445,7 +445,7 @@
         if (test.info.archive) {
           return
         }
-        if (test.info.label !== 'Aktuell') {
+        if (!test.info.is_latest) {
           this.loadAssessment(test.info.id, isVersion)
         } else {
           const res = await ajax({

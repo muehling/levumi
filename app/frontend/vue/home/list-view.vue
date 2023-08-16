@@ -224,7 +224,8 @@
           ? this.globalStore.staticData.testMetaData.tests.find(
               current =>
                 current.shorthand === selectedTest.shorthand &&
-                current.test_family_id === selectedTest.test_family_id
+                current.test_family_id === selectedTest.test_family_id &&
+                current.is_latest
             )?.id
           : assessment.test_id
 

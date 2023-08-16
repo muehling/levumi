@@ -122,6 +122,8 @@ class Test < ApplicationRecord
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
+    json['is_latest'] =
+      Test.where(shorthand: self.shorthand).order(updated_at: :desc).first[:id] == self.id
     json
   end
 
