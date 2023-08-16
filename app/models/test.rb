@@ -116,14 +116,18 @@ class Test < ApplicationRecord
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
+    latest_version = Test.where(shorthand: self.shorthand, archive: false).first
+    if latest_version.nil?
+      latest_version = Test.where(shorthand: self.shorthand).order(updated_at: :desc).first
+    end
+
     json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
     json['competence_id'] = self.test_family.competence.id
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
-    json['is_latest'] =
-      Test.where(shorthand: self.shorthand).order(updated_at: :desc).first[:id] == self.id
+    json['is_latest'] = latest_version[:id] == self.id
     json
   end
 
