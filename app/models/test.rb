@@ -50,7 +50,7 @@ class Test < ApplicationRecord
           used_test_types:
             Test
               .where(test_family_id: family.id)
-              .map { |test| test.test_type_id ? test.test_type_id : 1 }
+              .map { |test| test.test_type_id ? test.test_type_id : TestType.first[:id] }
               .uniq,
           test_ids: tests_for_family.pluck(:id),
           id: family.id,
@@ -74,6 +74,14 @@ class Test < ApplicationRecord
           area_id: competence.area_id
         }
       end
+    all_test_types =
+      TestType.all.map do |test_type|
+        tests_for_test_type = Test.where(test_type_id: test_type.id).pluck(:id)
+        if (test_type.id == 1)
+          tests_for_test_type = tests_for_test_type + Test.where(test_type_id: nil).pluck(:id)
+        end
+        { test_ids: tests_for_test_type, name: test_type.name, id: test_type.id }
+      end
     all_areas =
       Area.all.map do |area|
         competences_for_area =
@@ -90,24 +98,36 @@ class Test < ApplicationRecord
         }
       end
 
+    # safety net in case someone forgot to add a test type
+    all_test_types = [
+      { id: 1, name: 'NO TEST TYPE FOUND', test_ids: Test.all.pluck(:id) }
+    ] if all_test_types.empty?
+
     return(
       {
         areas: all_areas,
         test_families: all_families,
         competences: all_competences,
-        tests: Test.all
+        tests: Test.all,
+        test_types: all_test_types
       }
     )
   end
 
   #JSON Export, nur relevante Attribute übernehmen
   def as_json(options = {})
+    latest_version = Test.where(shorthand: self.shorthand, archive: false).first
+    if latest_version.nil?
+      latest_version = Test.where(shorthand: self.shorthand).order(updated_at: :desc).first
+    end
+
     json = super(except: %i[created_at updated_at])
     json['area_id'] = self.test_family.competence.area.id
     json['competence_id'] = self.test_family.competence.id
     json['label'] =
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
+    json['is_latest'] = latest_version[:id] == self.id
     json
   end
 

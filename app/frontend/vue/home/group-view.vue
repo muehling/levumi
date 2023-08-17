@@ -1,12 +1,18 @@
 <template>
   <div classname="group-view">
+    <span>KlassenId {{ group.id }}</span>
     <div v-if="!!group.id" class="mb-2 mt-2">
       <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
         <!-- Listenansicht für alle Tests -->
-        <list-view :group="group" :read_only="group.read_only" @set-preselect="setPreselect">
+        <list-view
+          :group="group"
+          :read_only="group.read_only"
+          :default-test-type="defaultTestType"
+          @set-preselect="setPreselect"
+        >
         </list-view>
       </b-collapse>
     </div>
@@ -16,7 +22,7 @@
         <b-nav-item
           v-for="area in usedAreas"
           :key="area.id"
-          :active="area.id == areaSelected"
+          :active="area.id === areaSelected"
           lazy
           @click="setSelectedArea(area.id)"
         >
@@ -31,7 +37,7 @@
           v-for="testType in usedTestTypes"
           :id="group.id + '_test_type_' + testType.id"
           :key="testType.id"
-          :active="testType.id == testTypeSelected"
+          :active="testType.id === testTypeSelected"
           lazy
           @click="setSelectedTestType(testType.id)"
         >
@@ -54,7 +60,7 @@
           v-for="competence in usedCompetences"
           :id="group.id + '_competence_' + competence.id"
           :key="competence.id"
-          :active="competence.id == competenceSelected"
+          :active="competence.id === competenceSelected"
           lazy
           @click="setSelectedCompetence(competence.id)"
         >
@@ -76,7 +82,7 @@
           v-for="family in usedFamilies"
           :id="group.id + '_family_' + family.id"
           :key="family.id"
-          :active="family.id == familySelected"
+          :active="family.id === familySelected"
           lazy
           @click="setSelectedFamily(family.id)"
         >
@@ -98,13 +104,13 @@
           v-for="test in usedTests"
           :id="group.id + '_test_' + test.info.id"
           :key="test.info.id"
-          :active="test.info.id === test_selected"
+          :active="test.info.id === testSelected"
           lazy
           @click="handleClickTest(test)"
         >
           <span :class="test.used ? 'font-weight-bold' : ''">{{ test.info.level }}</span>
           <b-popover
-            v-if="!test.used && test.info.description?.short !== undefined"
+            v-if="!test.used && !!test.info.description?.short"
             :target="group.id + '_test_' + test.info.id"
             triggers="hover"
             placement="topright"
@@ -113,20 +119,33 @@
           </b-popover>
         </b-nav-item>
       </b-nav>
-      <hr v-if="usedVersions.length > 1" />
-      <b-nav v-if="usedVersions.length > 1" pills class="mt-1">
+      <hr
+        v-if="
+          usedVersions.length > 1 ||
+          (usedVersions.length === 1 && usedVersions[0].info.archive === true)
+        "
+      />
+
+      <b-nav
+        v-if="
+          usedVersions.length > 1 ||
+          (usedVersions.length === 1 && usedVersions[0].info.archive === true)
+        "
+        pills
+        class="mt-1"
+      >
         <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
         <b-nav-item
           v-for="version in usedVersions"
           :id="group.id + '_version_' + version.info.id"
           :key="version.info.id"
-          :active="version.info.id === version_selected"
+          :active="version.info.id === versionSelected"
           lazy
           @click="handleClickVersion(version)"
         >
           <span :class="version.used ? 'font-weight-bold' : ''">{{ version.info.label }}</span>
           <b-popover
-            v-if="!version.used && version.info.description.short != undefined"
+            v-if="!version.used && !!version.info.description.short"
             :target="group.id + '_version_' + version.info.id"
             triggers="hover"
             placement="topright"
@@ -142,13 +161,6 @@
           <div class="bounce1"></div>
           <div class="bounce2"></div>
           <div class="bounce3"></div>
-        </div>
-        <div v-else-if="!hasResults && version_selected" class="alert alert-secondary">
-          <p>
-            Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung
-            in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste
-            Testversion, in der Sie ab jetzt die Testungen durchführen können.
-          </p>
         </div>
         <div v-else-if="!isLoadingUpdate && !hasResults">
           <p class="m-5 text-center text-muted">
@@ -172,7 +184,6 @@
 
         <assessment-view
           v-else-if="hasResults"
-          :active="results.active"
           :annotations="annotations"
           :configuration="results.configuration"
           :excludes="results?.excludes"
@@ -181,7 +192,7 @@
           :results="results?.series"
           :student-test="results.student_test"
           :test="results.test"
-          @update="loadAssessment(test_selected)"
+          @update="loadAssessment(testSelected)"
           @remove-entry="removeEntry"
         >
         </assessment-view>
@@ -196,6 +207,7 @@
   import AssessmentView from './assessment-view.vue'
   import ListView from './list-view.vue'
   import isEmpty from 'lodash/isEmpty'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'GroupView',
@@ -208,46 +220,53 @@
     },
     setup() {
       const globalStore = useGlobalStore()
-      return { globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { globalStore, assessmentsStore }
     },
     data: function () {
       return {
         areaSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.area
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.areaId
             : 0,
         competenceSelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.competence
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.competenceId
             : 0,
         enableTestTypes: false, // TODO when removed, also adapt ll. 28, 50, 425, 227-228
         familySelected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.family
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.familyId
             : 0,
         testTypeSelected: this.enableTestTypes
           ? 1
-          : this.$root.pre_select && this.$root.pre_select.group === this.group.id
-          ? this.$root.pre_select.type
+          : this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+          ? this.$root.pre_select.testTypeId
           : undefined,
 
         results:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.assessment
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.assessmentId
             : undefined,
-        test_selected:
-          this.$root.pre_select && this.$root.pre_select.group === this.group.id
-            ? this.$root.pre_select.test
+        testSelected:
+          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+            ? this.$root.pre_select.testId
             : 0,
         isLoadingUpdate: false,
         isLoading: false,
-        version_selected:
+        versionSelected:
           this.$root.pre_select && this.$root.pre_select.group === this.group.id
             ? this.$root.pre_select.test
             : 0, //Funktioniert, da bei Deep-Link immer die aktuelle Version gewählt sein muss.
       }
     },
     computed: {
+      allAssessments() {
+        return this.assessmentsStore.getAssessments(this.group.id)
+      },
+      defaultTestType() {
+        return this.testMetaData.test_types[0]
+      },
       testMetaData: function () {
         return this.globalStore.staticData.testMetaData
       },
@@ -259,37 +278,27 @@
         return this.groupInfo.length > 0
       },
       tests: function () {
-        let res = []
-        for (let i = 0; i < this.testMetaData?.tests.length; ++i) {
-          if (
-            this.testMetaData?.tests[i].test_family_id == this.familySelected &&
-            this.testMetaData?.tests[i].label === 'Aktuell'
-          ) {
-            let versions = []
-            let used = false
-            for (let j = 0; j < this.testMetaData?.tests.length; ++j) {
-              if (
-                this.testMetaData?.tests[i].level == this.testMetaData?.tests[j].level &&
-                this.testMetaData?.tests[j].test_family_id == this.familySelected
-              ) {
-                versions.push(this.testMetaData?.tests[j])
-                used = !!this.groupInfo.used_test_ids.find(
-                  testId => testId === this.testMetaData?.tests[j].id
-                )
-              }
-            }
-            res.push({ info: this.testMetaData?.tests[i], used, versions })
+        return this.testMetaData.tests.reduce((acc, test) => {
+          if (test.test_family_id === this.familySelected && test.is_latest) {
+            const isTestUsed = this.groupInfo.used_test_ids.find(testId => testId === test.id)
+            const versions = this.testMetaData.tests.filter(
+              version =>
+                version.level === test.level && version.test_family_id === this.familySelected
+            )
+            acc.push({ info: test, used: isTestUsed, versions })
           }
-        }
-
-        return res
+          return acc
+        }, [])
       },
-      //Alle Versionen des gewählten Tests
+      //all versions of the selected test
       versions() {
-        const level = this.testMetaData.tests.find(test => test.id === this.test_selected)?.level
-
+        const level = this.testMetaData.tests.find(test => test.id === this.testSelected)?.level
+        if (!level) {
+          return []
+        }
         const res = this.testMetaData.tests.reduce((acc, test) => {
-          if (test.level === level && test.test_family_id === this.familySelected) {
+          const assessment = this.allAssessments.find(assessment => assessment.test_id === test.id)
+          if (test.level === level && test.test_family_id === this.familySelected && !!assessment) {
             const used = !!this.groupInfo.used_test_ids.find(id => id === test.id)
             acc.push({ info: test, used })
           }
@@ -350,10 +359,11 @@
         return this.tests
           .filter(test => {
             return (
-              (this.groupInfo.used_test_ids.find(t => t.id === test.info.id) ||
+              (this.groupInfo.used_test_ids.find(id => id === test.info.id) ||
                 !this.group.read_only) &&
               (test.info.test_type_id === this.testTypeSelected ||
-                (test.info.test_type_id === null && this.testTypeSelected === 1))
+                (test.info.test_type_id === null &&
+                  this.testTypeSelected === this.defaultTestType.id))
             )
           })
           .sort((a, b) => (b?.info.level < a?.info.level ? 1 : -1))
@@ -361,14 +371,19 @@
       usedTestTypes() {
         const currentArea = this.testMetaData.areas.find(area => area.id === this.areaSelected)
 
-        const typeLabels = this.globalStore.staticData.testTypes.filter(testType => {
+        const typeLabels = this.testMetaData.test_types.filter(testType => {
           return currentArea.used_test_types.find(testTypeId => testTypeId === testType.id)
         })
         if (isEmpty(typeLabels)) {
-          typeLabels.unshift(this.globalStore.staticData.testTypes[0])
+          typeLabels.unshift(this.testMetaData.test_types[0])
         }
-        //TODO sobald das TestTypes-Feature angeschaltet wird, müssen hier die used-Flags an die TestTypes gemapped werden.
-        return typeLabels
+
+        return typeLabels.map(typeLabel => {
+          typeLabel.used = !!this.groupInfo.used_test_ids.some(usedId =>
+            typeLabel.test_ids.find(id => id === usedId)
+          )
+          return typeLabel
+        })
       },
       usedVersions() {
         return this.versions.filter(version => version.used || !this.group.read_only)
@@ -388,21 +403,23 @@
         annotations.splice(0, 0, annotation)
         this.$set(this.results, 'annotations', annotations)
       },
+
       removeAnnotation(annotationId) {
         const annotations = this.results.annotations.filter(a => annotationId !== a.id)
         this.$set(this.results, 'annotations', annotations)
       },
-      async setPreselect(data) {
-        this.areaSelected = data.area
-        this.competenceSelected = data.competence
-        this.familySelected = data.family
-        this.testTypeSelected = data.type
-        this.test_selected = data.test
+
+      async setPreselect(data, isVersion) {
+        this.areaSelected = data.areaId
+        this.competenceSelected = data.competenceId
+        this.familySelected = data.familyId
+        this.testTypeSelected = data.typeId
+        this.testSelected = data.testId
+        this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
-        const test = this.usedTests.find(t => t.info.id === data.test)
 
-        this.loadAssessment(test, false)
+        this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -411,61 +428,65 @@
 
       handleClickTest(test) {
         if (test.used) {
-          if (test.versions.length === 1) {
-            this.loadAssessment(test, false)
-          } else {
-            this.test_selected = test.info.id
-            this.version_selcted = test.info.id
-            this.loadAssessment(test, false)
-          }
+          this.testSelected = test.info.id
+          this.versionSelected = test.info.id
+          this.loadAssessment(test.info.id, false)
         } else {
           this.createAssessment(test, false)
         }
       },
 
       handleClickVersion(version) {
-        this.loadAssessment(version, true)
+        this.loadAssessment(version.info.id, true)
       },
 
       //Neues Assessment anlegen und, bei Erfolg, laden.
-      createAssessment(test, isVersion) {
+      async createAssessment(test, isVersion) {
         if (test.info.archive) {
           return
         }
-        if (test.info.label !== 'Aktuell') {
-          this.loadAssessment(test, isVersion)
+        if (!test.info.is_latest) {
+          this.loadAssessment(test.info.id, isVersion)
         } else {
-          ajax({
+          const res = await ajax({
             contentType: 'application/x-www-form-urlencoded',
             data: `test_id=${test.info.id}`,
             method: 'post',
             url: `/groups/${this.group.id}/assessments/`,
-          }).then(() => {
-            this.propagateUsedTest(test.info.id)
-            this.loadAssessment(test, isVersion)
           })
+
+          if (res.status === 200) {
+            this.propagateUsedTest(test.info.id)
+            this.loadAssessment(test.info.id, isVersion)
+          }
         }
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-      async loadAssessment(test, isVersion) {
-        if (!test.info.id) {
+      async loadAssessment(testId, isVersion) {
+        const usedVersions = this.usedTests.reduce((acc, test) => {
+          acc = acc.concat(test.versions)
+          return acc
+        }, [])
+
+        const test = usedVersions.find(b => b.id === testId)
+        if (!test) {
           return
         }
         if (isVersion) {
-          this.version_selected = test.info.id
+          this.versionSelected = test.id
         } else {
-          this.test_selected = test.info.id
+          this.testSelected = test.id
         }
 
         this.isLoadingUpdate = true //Spinner anzeigen
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.info.id}` }) // TODO: durch api-routes Aufruf ersetzen
+        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.id}` }) // TODO: durch api-routes Aufruf ersetzen
         if (res.status === 200) {
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
         } else if (res.status === 404 && !isVersion) {
-          // safety net in case no assessment could be found.
-          this.createAssessment({ info: { id: test.info.id } }, isVersion)
+          // when no assessment is found, create one.
+          this.createAssessment({ info: { id: test.id } }, isVersion)
         } else {
           // only hide spinner, nothing to show
           this.isLoadingUpdate = false
@@ -477,37 +498,38 @@
       setSelectedArea(area) {
         this.areaSelected = area
         if (this.usedTestTypes.length === 1 || !this.enableTestTypes) {
-          this.testTypeSelected = 1
+          this.testTypeSelected = this.usedTestTypes[0].id
         } else {
           this.testTypeSelected = -1
         }
+
         this.competenceSelected = -1
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       setSelectedTestType(testType) {
         this.testTypeSelected = testType
         this.competenceSelected = -1
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       //Kompetenz setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedCompetence(competence) {
         this.competenceSelected = competence
         this.familySelected = -1
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
       //Testfamilie setzen und folgende Wahlmöglichkeiten zurücksetzen
       setSelectedFamily(family) {
         this.familySelected = family
-        this.test_selected = -1
-        this.version_selected = 0
+        this.testSelected = -1
+        this.versionSelected = 0
         this.results = undefined
       },
 
