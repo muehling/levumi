@@ -73,22 +73,16 @@
           </div>
           <b-form-radio-group
             v-model="rightsSelected"
-            :options="options_rights"
+            :options="permissionOptions"
             name="group_share[read_only]"
           >
           </b-form-radio-group>
           <b-button type="submit" variant="outline-success" size="sm">
             <i class="fas fa-check"></i> Teilen
           </b-button>
-          <b-button
-            v-b-popover.hover="shareGroupHelp"
-            class="ml-3"
-            size="sm"
-            variant="info"
-            title="Klasse teilen"
-          >
-            <span><i class="fas fa-question"></i></span>
-          </b-button>
+          <span v-b-popover.hover="shareGroupHelp" style="font-size: 1rem" class="mt-1 ml-2">
+            <i class="fas fa-circle-question"></i>
+          </span>
         </b-form>
       </b-collapse>
       <span v-if="errorMessage !== ''">&nbsp;</span>
@@ -98,7 +92,7 @@
       <p>Klasse wurde geteilt von: {{ group.belongs_to }}</p>
       <div v-if="group.key == null">
         <b-form inline :validated="checkKey()" @submit="acceptShare">
-          <b-input v-model="key" class="mr-2" placeholder="Code" size="sm" />
+          <b-input v-model="keyInput" class="mr-2" placeholder="Code" size="sm" />
           <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
           </b-button>
@@ -147,29 +141,32 @@
     data() {
       return {
         rightsSelected: 1,
-        key: '',
+        keyInput: '',
         email: '',
         isShown: false,
         errorMessage: '',
+        shareKey: this.newKey(),
       }
     },
     computed: {
-      shareKey() {
-        return this.globalStore.shareKeys[this.group.id]
-          ? decryptKey(this.globalStore.shareKeys[this.group.id])
-          : null
-      },
+      // shareKey() {
+      //
+      //   return this.globalStore.shareKeys[this.group.id]
+      //     ? decryptKey(this.globalStore.shareKeys[this.group.id])
+      //     : null
+      // },
       shareGroupHelp() {
         return userHelp.shareGroup
       },
+      permissionOptions() {
+        return [
+          { text: 'Nur Ansicht', value: 1, disabled: 0 },
+          { text: 'Ansicht und verwenden', value: 0, disabled: 0 },
+          { text: 'Anonym teilen', value: 2, disabled: 0 },
+        ]
+      },
     },
-    beforeCreate() {
-      // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
-      this.options_rights = [
-        { text: 'Nur Ansicht', value: 1, disabled: 0 },
-        { text: 'Ansicht und verwenden', value: 0, disabled: 0 },
-      ]
-    },
+
     methods: {
       async requestUnshare() {
         const ok = await this.$refs.confirmDialog.open({
@@ -215,6 +212,7 @@
           method: 'put',
           data,
         })
+
         if (result) {
           const newGroups = this.globalStore.groups.filter(group => group.id !== result.id)
           newGroups.push(result)
@@ -232,9 +230,11 @@
         e.stopPropagation()
 
         this.errorMessage = ''
+        const isReadOnly = this.rightsSelected === 0 ? false : true
+        const isAnonymous = this.rightsSelected === 2 ? true : false
         const data = {
           email: this.email,
-          group_share: { read_only: this.rightsSelected },
+          group_share: { read_only: isReadOnly, is_anonymous: isAnonymous },
           share_key: this.shareKey,
         }
         const result = this.submitData({
@@ -261,18 +261,27 @@
         })
       },
       checkKey() {
-        if (this.key !== undefined && this.key !== '') {
+        if (this.keyInput) {
           // The Accept button will remain disabled until the key can be successfully decrypted with the auth_token
-          // TODO add user message
-          const decrypted = decryptWithKey(this.group.auth_token, this.key)
+          const decrypted = decryptWithKey(this.group.auth_token, this.keyInput)
           return decrypted ? true : false
         } else {
           return false
         }
       },
+      newKey() {
+        return Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, '')
+          .substr(0, 6)
+      },
 
       prepareKey() {
-        return encryptKey(this.key)
+        if (this.group.is_anonymous) {
+          return 'anonymous'
+        } else {
+          return encryptKey(this.keyInput)
+        }
       },
       success(object) {
         //Klasse updaten und View aktualisieren
