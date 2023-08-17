@@ -53,17 +53,18 @@ class AssessmentsController < ApplicationController
     data =
       @group
         .assessments
-        .select { |a| !a.test.archive }
+        .select { |a| !a.test.archive || (a.test.archive && a.results.count > 0) }
         .map do |a|
           {
+            id: a.id,
             active: a.active,
-            test: a.test.id, # TODO replace usage with test_id (see below)
+            archive: a.test.archive,
+            # test: a.test.id, # TODO replace usage with test_id (see below)
+            shorthand: a.test.shorthand,
             name: a.test.full_name,
             student_test: a.test.student_test,
             result_count: a.results.length,
-            #FIXME the production data crashed this with 'Mysql2::Error: Out of sort memory, consider increasing server sort buffer size '
-            #FIXME this is in all probability due to too large results of certain tests. Fix these tests first, and clean up the database.
-            #last_test: a.results.exists? ? a.results.order('created_at DESC').first.test_date : '',
+            last_test: a.results.exists? ? a.results.last.test_date : '',
             test_id: a.test.id,
             test_type_id: a.test.test_type_id || 1,
             test_family_id: a.test.test_family.id,

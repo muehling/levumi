@@ -2,13 +2,13 @@
   data = {mode: Rails.env}
   if @assessment
     data[:pre_select] = {
-        group: @assessment.group_id,
-        area: @assessment.test.test_family.competence.area_id,
-        competence: @assessment.test.test_family.competence_id,
-        family: @assessment.test.test_family_id,
-        test: @assessment.test_id,
-        assessment: @assessment.get_data,
-        test_type: @assessment.test.test_type_id
+        groupId: @assessment.group_id,
+        areaId: @assessment.test.test_family.competence.area_id,
+        competenceId: @assessment.test.test_family.competence_id,
+        familyId: @assessment.test.test_family_id,
+        testId: @assessment.test_id,
+        assessmentId: @assessment.get_data,
+        testTypeId: @assessment.test.test_type_id
     }
   end
 %>

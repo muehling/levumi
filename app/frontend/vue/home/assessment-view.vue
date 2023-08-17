@@ -20,20 +20,20 @@
             </p>
           </div>
           <div v-if="readOnly">
-            <p>
+            <p class="text-small">
               Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen
               Messungen durchführen.
             </p>
           </div>
           <div v-else-if="test.archive">
-            <p>
+            <p class="text-small">
               Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung
               in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste
               Testversion, in der Sie ab jetzt die Testungen durchführen können.
             </p>
           </div>
           <div v-else-if="students.length == 0">
-            <p>
+            <p class="text-small">
               Es sind in dieser Klasse noch keine Schüler:innen angelegt. Um in dieser Klasse testen
               zu können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
             </p>
@@ -107,10 +107,11 @@
               <b-button
                 class="btn btn-sm"
                 :variant="isactive ? ' btn-danger' : ' btn-success'"
-                :disabled="!isAllowed"
+                :disabled="!isAllowed || isUpdating"
                 @click="toggleAssessment()"
               >
-                <i :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
+                <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
+                <i v-else class="fas fa-spinner fa-spin"></i>
                 {{
                   isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
                 }}
@@ -287,7 +288,6 @@
       }
     },
     props: {
-      active: Boolean,
       annotations: Array,
       configuration: Object,
       excludes: Array,
@@ -306,6 +306,7 @@
       return {
         excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
+        isUpdating: false,
       }
     },
     computed: {
@@ -332,19 +333,11 @@
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
       isactive() {
-        // TODO: Kann hier nicht einfach das property this.active verwendet werden? Es scheint als ob es mal hierfür vorgesehen war, denn es wird aktuell tatsächlich gar nicht verwendet.
-        // TODO: Wird es nicht genutzt, da der assessmentsStore eh gebraucht wird um nach toggleAssessment den neuen Zustand zu fetchen?
-        // TODO: Aber der fragliche active Wert wird ja auch in group-view in loadAssessment nachgeladen... ist der fetch nicht also unnötig?
-        //
-        // TODO: Nach etwas herumprobieren schätze ich, dass der bestehende Weg dem props weiterreichen wohl vorzuziehen ist, da props-Änderungen zu kompletten re-renders führen, was hier wohl nicht gewünscht wäre.
-        // TODO: In dem Fall sollte aber das ungenutzte prop "active" entfernt werden.
         const assessments = this.assessmentsStore.assessments[this.group.id]
-        return assessments?.find(a => a.test === this.test.id)?.active
+
+        return assessments?.find(a => a.test_id === this.test.id)?.active
       },
       isAllowed() {
-        //TODO when masquerading, the check for isAdmin will probably mostly fail, because login.capabilities are not
-        //TODO the ones of the masquerading user, but the one's being masqueraded as
-
         return (
           this.globalStore.login.is_masquerading === null ||
           (!!this.globalStore.login.is_masquerading && !this.group.read_only) ||
@@ -433,14 +426,16 @@
         return getStudent(this.group.id, id).name
       },
       async toggleAssessment() {
+        this.isUpdating = true
         const res = await ajax(
           apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
             assessment: { active: this.isactive ? 0 : 1 },
           })
         )
         if (res.status === 200) {
-          this.assessmentsStore.fetch(this.group.id)
+          await this.assessmentsStore.fetch(this.group.id)
         }
+        this.isUpdating = false
       },
       getItemName(item, fallback) {
         if (isObject(this.test.items[0])) {

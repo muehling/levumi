@@ -73,7 +73,13 @@ class User < ApplicationRecord
       .where(archive: false)
       .order(id: :desc)
       .each do |group|
-        used = group.assessments.map { |a| a.test_id }
+        used =
+          group
+            .assessments
+            .select do |assessment|
+              !assessment.test.archive || (assessment.test.archive && assessment.results.count > 0)
+            end
+            .map { |assessment| assessment.test_id }
         used_tests = Test.where(id: used).pluck(:id)
         result += [{ group_id: group.id, used_test_ids: used_tests }]
       end

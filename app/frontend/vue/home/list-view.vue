@@ -19,26 +19,39 @@
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
+          <th>Id</th>
+          <th>Kürzel</th>
           <th>Test</th>
           <th>Anzahl Testungen</th>
+          <th>Letzter Test</th>
           <th>Wöchentliche Testung</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="test in sortedList" :key="test.test + '/' + test.name" class="assessment-line">
-          <td @click="setPreselect(test)">{{ test.name }}</td>
-          <td>{{ test.result_count }}</td>
-          <!--<td>{{ formatLastDate(test.last_test) }}</td>-->
+        <tr
+          v-for="assessment in sortedList"
+          :key="assessment.test_id + '/' + assessment.name"
+          class="assessment-line"
+        >
+          <td>{{ assessment.test_id }}</td>
+          <td>{{ assessment.shorthand }}</td>
+          <td @click="setPreselect(assessment)">{{ assessment.name }}</td>
+          <td>{{ assessment.result_count }}</td>
+          <td>{{ formatLastDate(assessment.last_test) }}</td>
           <td>
             <b-btn
-              v-if="test.student_test"
+              v-if="assessment.student_test"
               class="btn-sm"
-              :variant="test.active ? 'outline-danger' : 'outline-success'"
-              @click="toggleAssessment(test)"
+              :variant="assessment.active ? 'outline-danger' : 'outline-success'"
+              @click="toggleAssessment(assessment)"
             >
-              <i :class="`fas fa-${test.active ? 'pause' : 'play'}`"></i>
-              {{ test.active ? 'Pausieren' : 'Aktivieren' }}
+              <i
+                v-if="!checkIsUpdating(assessment.test_id)"
+                :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"
+              ></i>
+              <i v-else class="fas fa-spinner fa-spin"></i>
+              {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
             <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
               >(Lehrkräfte-Übung)</b-btn
@@ -46,10 +59,10 @@
           </td>
           <td>
             <b-btn
-              :id="`delete-button-${test.test}`"
+              :id="`delete-button-${assessment.test}`"
               class="btn-sm"
-              :variant="test.result_count ? 'outline-danger' : 'outline-secondary'"
-              @click="deleteAssessment(test)"
+              :variant="assessment.result_count ? 'outline-danger' : 'outline-secondary'"
+              @click="deleteAssessment(assessment)"
               ><i class="fas fa-trash"></i
             ></b-btn>
           </td>
@@ -84,6 +97,7 @@
     components: { ConfirmDialog },
     props: {
       group: Object,
+      defaultTestType: Object,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
@@ -108,6 +122,7 @@
           { text: 'Aktivierte Testungen', value: Filter.ActiveTests },
           { text: 'Pausierte Testungen', value: Filter.InactiveTests },
         ],
+        isUpdating: [],
       }
     },
     computed: {
@@ -154,13 +169,20 @@
         }
         const intersected = intersection(byResult, byType, byStatus)
 
-        return intersected.length ? intersected.sort((a, b) => a.name.localeCompare(b.name)) : []
+        return intersected.length
+          ? intersected.sort(
+              (a, b) => a.shorthand.localeCompare(b.shorthand) || a.name.localeCompare(b.name)
+            )
+          : []
       },
     },
     async created() {
       await this.updateList()
     },
     methods: {
+      checkIsUpdating(testId) {
+        return this.isUpdating.find(id => id === testId)
+      },
       async handleToggleActive() {
         let ok = true
         if (this.assessmentsStore.getAssessments(this.group.id).length !== this.sortedList.length) {
@@ -175,42 +197,68 @@
         if (!ok) {
           return
         }
+        this.isUpdating = this.sortedList.map(assessment => assessment.test_id)
         const res = await ajax({
           ...apiRoutes.assessments.updateAll(this.group.id),
           data: { active: !this.allTestsActive },
         })
         if (res.status === 200) {
-          this.assessmentsStore.fetch(this.group.id)
+          await this.assessmentsStore.fetch(this.group.id)
         }
+        this.isUpdating = []
       },
-      setPreselect(test) {
+      setPreselect(assessment) {
         const type =
           this.globalStore.staticData.testTypes.find(
-            testType => testType.id === (test.test_type_id || 1)
-          ) || 1
-        this.$emit('set-preselect', {
-          group: this.group.id,
-          area: test.area_id,
-          competence: test.competence_id,
-          family: test.test_family_id,
-          test: test.test_id,
-          type: type.id,
-        })
+            testType => testType.id === (assessment.test_type_id || this.defaultTestTypeId)
+          ) || this.defaultTestType
+
+        const selectedTest = this.globalStore.staticData.testMetaData.tests.find(
+          t => t.id === assessment.test_id
+        )
+
+        // TODO in case the level or test_family of a new version has changed, this will fail
+        // TODO find some way to properly identify new versions of a test
+        // in case of an archived version, this is the id of the current test
+        const currentTestId = assessment.archive
+          ? this.globalStore.staticData.testMetaData.tests.find(
+              current =>
+                current.shorthand === selectedTest.shorthand &&
+                current.test_family_id === selectedTest.test_family_id &&
+                current.is_latest
+            )?.id
+          : assessment.test_id
+
+        this.$emit(
+          'set-preselect',
+          {
+            groupId: this.group.id,
+            areaId: assessment.area_id,
+            competenceId: assessment.competence_id,
+            familyId: assessment.test_family_id,
+            testId: currentTestId,
+            versionId: selectedTest.id,
+            typeId: type.id,
+          },
+          !!assessment.archive
+        )
       },
       formatLastDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
       },
-      async toggleAssessment(test) {
+      async toggleAssessment(assessment) {
+        this.isUpdating.push(assessment.test_id)
         const res = await ajax({
-          url: `/groups/${this.group.id}/assessments/${test.test}`,
+          url: `/groups/${this.group.id}/assessments/${assessment.test_id}`,
           method: 'put',
-          data: { assessment: { active: test.active ? 0 : 1 } },
+          data: { assessment: { active: assessment.active ? 0 : 1 } },
         })
         if (res.status === 200) {
-          this.updateList()
+          await this.updateList()
         }
       },
-      async deleteAssessment(test) {
+      async deleteAssessment(assessment) {
+        this.isUpdating.push(assessment.test_id)
         const ok = await this.$refs.confirmDialog.open({
           title: 'Testung löschen',
           message: 'Möchten Sie diesen Test von der Klasse entfernen?',
@@ -219,7 +267,7 @@
         })
 
         if (ok) {
-          const res = await ajax(apiRoutes.assessments.delete(this.group.id, test.test))
+          const res = await ajax(apiRoutes.assessments.delete(this.group.id, assessment.test_id))
           if (res.status === 200) {
             this.updateList()
           }
@@ -227,6 +275,7 @@
       },
       async updateList() {
         await this.assessmentsStore.fetch(this.group.id)
+        this.isUpdating = []
       },
     },
   }
