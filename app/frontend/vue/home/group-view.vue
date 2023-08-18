@@ -1,6 +1,5 @@
 <template>
   <div classname="group-view">
-    <span>KlassenId {{ group.id }}</span>
     <div v-if="!!group.id" class="mb-2 mt-2">
       <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
