@@ -24,7 +24,7 @@ class StudentsController < ApplicationController
   def show
     s = Student.find(params[:id])
     respond_to do |format|
-      format.js do #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung => Schüleransicht
+      format.json do #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung => Schüleransicht
         unless s.nil?
           render json: s.get_assessments
         else

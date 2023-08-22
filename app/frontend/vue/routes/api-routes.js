@@ -113,4 +113,7 @@ export default {
       delete: id => ({ url: `/test_families/${id}`, method: 'DELETE' }),
     },
   },
+  students: {
+    activeAssessments: id => ({ url: `/students/${id}` }),
+  },
 }
