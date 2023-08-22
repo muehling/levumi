@@ -27,11 +27,11 @@ If you have not yet run Levumi locally, please follow the following steps.
 
 1. clone the repository
 2. change into the project root folder
-3. install the node modules: `yarn`
-4. build the containers locally from the terminal: `docker-compose build`
-5. start the containers: `docker-compose up`
-6. open a new terminal, and enter the `web` container: `docker-compose exec web bash`
-7. in the container, first create the database: `rails db:create`
+3. build the containers locally from the terminal: `docker-compose build`
+4. start the containers: `docker-compose up`
+5. open a new terminal, and enter the `web` container: `docker-compose exec web bash`
+6. install the node modules: `yarn`
+7. create the database: `rails db:create`
 8. then create the database structure: `rails db:migrate`
 9. if you need some basic sample data, run `rails db:seed`
 10. access the application in the browser of your choice at `localhost:3000`
