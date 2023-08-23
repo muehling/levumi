@@ -4,9 +4,7 @@
     <td>
       <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
       <div v-if="!empty && !editMode">
-        <b-link :href="'students/' + student.id + '#' + student.name" target="_blank">
-          {{ student.name }}
-        </b-link>
+        {{ student.name }}
       </div>
       <div v-else-if="editMode">
         <!-- Form anzeigen -->
@@ -150,12 +148,13 @@
               diese Woche schon bearbeitet.
             </p>
             <ul v-if="!!activeAssessments">
-              <li
-                v-for="line in activeAssessments"
-                :key="line.text"
-                :class="line.isOpen ? 'text-secondary' : 'text-success'"
-              >
-                {{ line.text }}
+              <li v-for="line in activeAssessments" :key="line.text">
+                <router-link
+                  :class="line.isOpen ? 'text-secondary' : 'text-success'"
+                  :to="{ name: 'Diagnostik', params: { testId: line.testId } }"
+                >
+                  {{ line.text }}
+                </router-link>
               </li>
             </ul>
           </div>
@@ -282,10 +281,11 @@
   import QRCodeStyling from 'qr-code-styling'
   import LoadingDots from '../shared/loading-dots.vue'
   import apiRoutes from '../routes/api-routes'
+  import { RouterLink } from 'vue-router'
 
   export default {
     name: 'StudentRow',
-    components: { ConfirmDialog, LoadingDots },
+    components: { ConfirmDialog, LoadingDots, RouterLink },
     props: {
       empty: Boolean,
       groupId: Number,
@@ -481,6 +481,7 @@
             text: `${a.test_info.area} - ${a.test_info.competence} - ${a.test_info.family} - ${
               a.test_info.level
             } ${a.test_info.student_test ? '' : '(Lehrkräfte-Übung)'}`,
+            testId: a.test_info.id,
           }))
 
           this.isLoadingAssessments = false
