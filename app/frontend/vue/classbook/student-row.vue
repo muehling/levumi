@@ -4,9 +4,7 @@
     <td>
       <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
       <div v-if="!empty && !editMode">
-        <b-link :href="'students/' + student.id + '#' + student.name" target="_blank">
-          {{ student.name }}
-        </b-link>
+        {{ student.name }}
       </div>
       <div v-else-if="editMode">
         <!-- Form anzeigen -->
@@ -99,34 +97,71 @@
           <b-button-group>
             <b-btn
               v-b-modal="'modal_settings_' + student.id"
+              v-b-popover.hover.topright="'Schrifteinstellungen'"
               class="mr-1"
               variant="outline-secondary"
               size="sm"
-              title="Schrifteinstellungen"
             >
               <i class="fas fa-text-height"></i>
             </b-btn>
             <b-btn
+              v-b-popover.hover.topright="'Bearbeiten'"
               variant="outline-secondary"
+              class="mr-1"
               size="sm"
-              title="Bearbeiten"
               @click="editMode = true"
             >
               <i class="fas fa-user-edit"></i>
             </b-btn>
             <b-btn
               v-b-modal="'qr_code_' + student.id"
+              v-b-popover.hover.topright="'QR-Code'"
               variant="outline-secondary"
+              class="mr-1"
               size="sm"
-              title="QRCode"
             >
               <i class="fas fa-qrcode"></i>
+            </b-btn>
+            <b-btn
+              v-b-modal="'test_info_' + student.id"
+              v-b-popover.hover.topright="'Test-Info'"
+              variant="outline-secondary"
+              class="mr-1"
+              @click="loadData"
+            >
+              <i class="fas fa-circle-info"></i>
             </b-btn>
           </b-button-group>
         </b-button-toolbar>
         <b-modal
+          :id="'test_info_' + student.id"
+          title="Aktive Tests"
+          scrollable
+          hide-footer
+          static
+          size="lg"
+        >
+          <loading-dots v-if="isLoadingAssessments" />
+          <div v-else>
+            <p>
+              Folgende Tests sind aktuell für {{ student.name }} aktiviert. Tests in Grün wurden
+              diese Woche schon bearbeitet.
+            </p>
+            <ul v-if="!!activeAssessments">
+              <li v-for="line in activeAssessments" :key="line.text">
+                <router-link
+                  :class="line.isOpen ? 'text-secondary' : 'text-success'"
+                  :to="{ name: 'Diagnostik', params: { testId: line.testId } }"
+                >
+                  {{ line.text }}
+                </router-link>
+              </li>
+            </ul>
+          </div>
+        </b-modal>
+        <b-modal
           :id="'qr_code_' + student.id"
-          :title="'QRCode für ' + student.name"
+          :title="'QR-Code für ' + student.name"
           scrollable
           hide-footer
           static
@@ -244,10 +279,13 @@
   import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import QRCodeStyling from 'qr-code-styling'
+  import LoadingDots from '../shared/loading-dots.vue'
+  import apiRoutes from '../routes/api-routes'
+  import { RouterLink } from 'vue-router'
 
   export default {
     name: 'StudentRow',
-    components: { ConfirmDialog },
+    components: { ConfirmDialog, LoadingDots, RouterLink },
     props: {
       empty: Boolean,
       groupId: Number,
@@ -259,9 +297,9 @@
     data: function () {
       return {
         editMode: this.empty && this.open,
-        loading: false,
+        isLoadingAssessments: false,
         name: this.student.name,
-        results: undefined,
+        activeAssessments: undefined,
 
         //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
         fontFamily:
@@ -431,26 +469,25 @@
         }
         return res
       },
-      //TODO wird nicht gebraucht?
-      /*loadData(student) {
-              this.loading = true;
-              //AJAX-Request senden
-              console.log('load');
 
-              fetch('/students/' + student, {
-                headers: {
-                  Accept: 'text/javascript',
-                  'X-Requested-With': 'XMLHttpRequest',
-                  'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-                },
-                credentials: 'include',
-              }).then((response) => {
-                return response.text().then((text) => {
-                  this.results = JSON.parse(text);
-                  this.loading = false; //Spinner verstecken
-                });
-              });
-            },*/
+      async loadData() {
+        this.isLoadingAssessments = true
+        const response = await ajax(apiRoutes.students.activeAssessments(this.student.id))
+        if (response.status === 200) {
+          const text = await response.text()
+
+          this.activeAssessments = JSON.parse(text).map(a => ({
+            isOpen: a.open,
+            text: `${a.test_info.area} - ${a.test_info.competence} - ${a.test_info.family} - ${
+              a.test_info.level
+            } ${a.test_info.student_test ? '' : '(Lehrkräfte-Übung)'}`,
+            testId: a.test_info.id,
+          }))
+
+          this.isLoadingAssessments = false
+        }
+      },
+
       remove() {
         this.$emit('update:students', { index: this.index, object: null })
       },

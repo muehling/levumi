@@ -391,6 +391,28 @@
         return this.results
       },
     },
+    watch: {
+      '$route.params.testId': {
+        immediate: true,
+        handler(id) {
+          if (!id) {
+            return
+          }
+          const test = this.globalStore.staticData.testMetaData.tests.find(test => test.id === id)
+          if (!test) {
+            return
+          }
+          const preselect = {
+            areaId: test.area_id,
+            competenceId: test.competence_id,
+            familyId: test.test_family_id,
+            typeId: test.test_type_id || this.defaultTestType.id,
+            testId: test.id,
+          }
+          this.setPreselect(preselect, false)
+        },
+      },
+    },
     async mounted() {
       this.$root.$on(`annotation-added-${this.group.id}`, this.addAnnotation)
       this.$root.$on(`annotation-removed-${this.group.id}`, this.removeAnnotation)

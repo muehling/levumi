@@ -1,6 +1,6 @@
 <template>
   <div class="mt-3">
-    <table class="table table-sm table-striped table-responsive-md text-small">
+    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
           <th>Name</th>
@@ -17,7 +17,7 @@
         <student-row
           v-for="(student, index) in students"
           :key="student.id"
-          :student="{ ...student }"
+          :student="student"
           :group-id="groupId"
           :index="index"
           :empty="false"
