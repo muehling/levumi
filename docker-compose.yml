@@ -39,7 +39,7 @@ services:
     environment:
       - MYSQL_DATABASE=levumi2_dev
       - MYSQL_ROOT_PASSWORD=password
-      - MYSQL_USER=root
+      - MYSQL_USER=mysql
       - MYSQL_PASSWORD=password
     ports:
       - '3307:3306'
