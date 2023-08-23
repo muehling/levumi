@@ -295,6 +295,8 @@ if Rails.env.development?
     i = i + 1
   end
 
+  TestType.create(name: 'LVD')
+
   AnnotationCategory.create(name: 'Test')
 
   Annotation.create(
