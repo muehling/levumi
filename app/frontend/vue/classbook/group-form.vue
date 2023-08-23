@@ -137,7 +137,7 @@
       },
       success(event) {
         // propagate new data from ajax call to parent component
-        this.$emit('update:groups', { object: event })
+        // this.$emit('update:groups', { object: event })
         this.globalStore.fetch()
         if (!this.group.id) {
           this.key = this.newKey()
