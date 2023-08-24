@@ -125,14 +125,8 @@
           if (!data.groupId) {
             return
           }
-
-          //todo das haut noch nicht hin. beim absprung aus dem klassenbuch wird die falsche klasse gewählt und das falsche assessment geladne
           await this.$nextTick()
           this.selectedGroupId = data.groupId
-          console.log('home app watcher', data.groupId)
-
-          //   this.$root.pre_select = this.$root.pre_select || {}
-          //   this.$root.pre_select.group = data.groupId
         },
       },
     },

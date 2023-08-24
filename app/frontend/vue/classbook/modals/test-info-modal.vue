@@ -45,8 +45,6 @@
       student: Object,
     },
     data: function () {
-      console.log('student', this.student)
-
       return {
         activeAssessments: [],
         isLoadingAssessments: false,
@@ -69,7 +67,6 @@
         const response = await ajax(apiRoutes.students.activeAssessments(this.student.id))
         if (response.status === 200) {
           const text = await response.text()
-          console.log('wtf', JSON.parse(text))
 
           this.activeAssessments = JSON.parse(text).map(a => ({
             isOpen: a.open,

@@ -92,47 +92,47 @@
     </td>
 
     <td>
-      <span :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
-        <b-button-toolbar>
-          <b-button-group>
-            <b-btn
-              v-b-modal="'modal_settings_' + student.id"
-              v-b-popover.hover.topright="'Schrifteinstellungen'"
-              class="mr-1"
-              variant="outline-secondary"
-              size="sm"
-              @click="handleClickAction(student, 'font-settings')"
-            >
-              <i class="fas fa-text-height"></i>
-            </b-btn>
-            <b-btn
-              v-b-popover.hover.topright="'Bearbeiten'"
-              variant="outline-secondary"
-              class="mr-1"
-              size="sm"
-              @click="editMode = true"
-            >
-              <i class="fas fa-user-edit"></i>
-            </b-btn>
-            <b-btn
-              v-b-popover.hover.topright="'QR-Code'"
-              variant="outline-secondary"
-              class="mr-1"
-              size="sm"
-              @click="handleClickAction(student, 'qr-code')"
-            >
-              <i class="fas fa-qrcode"></i>
-            </b-btn>
-            <b-btn
-              v-b-popover.hover.topright="'Test-Info'"
-              variant="outline-secondary"
-              class="mr-1"
-              @click="handleClickAction(student, 'test-info')"
-            >
-              <i class="fas fa-circle-info"></i>
-            </b-btn>
-          </b-button-group>
-        </b-button-toolbar>
+      <span>
+        <b-button-group :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
+          <b-btn
+            v-b-modal="'modal_settings_' + student.id"
+            v-b-popover.hover.topright="'Schrifteinstellungen'"
+            class="mr-1"
+            variant="outline-secondary"
+            size="sm"
+            @click="handleClickAction(student, 'font-settings')"
+          >
+            <i class="fas fa-text-height"></i>
+          </b-btn>
+          <b-btn
+            v-b-popover.hover.topright="'Bearbeiten'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="editMode = true"
+          >
+            <i class="fas fa-user-edit"></i>
+          </b-btn>
+          <b-btn
+            v-b-popover.hover.topright="'QR-Code'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="handleClickAction(student, 'qr-code')"
+          >
+            <i class="fas fa-qrcode"></i>
+          </b-btn>
+        </b-button-group>
+
+        <b-btn
+          v-if="!!student.id"
+          v-b-popover.hover.topright="'Test-Info'"
+          variant="outline-secondary"
+          class="mr-1"
+          @click="handleClickAction(student, 'test-info')"
+        >
+          <i class="fas fa-circle-info"></i>
+        </b-btn>
       </span>
       <span :class="!readOnly && editMode ? '' : 'd-none'">
         <b-button-toolbar class="flex-nowrap">
@@ -269,8 +269,6 @@
 
     methods: {
       handleClickAction(student, action) {
-        console.log('meh', student, action)
-
         this.$emit('click-student-action', student, action)
       },
       changeMonth() {

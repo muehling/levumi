@@ -88,13 +88,10 @@
 
     methods: {
       resetSelectedStudent() {
-        console.log('reset')
-
         this.selectedStudent = undefined
         this.action = undefined
       },
       handleClickStudent(student, action) {
-        console.log('handle select student', student, action)
         this.selectedStudent = student
         this.selectedModal = action
       },

@@ -404,6 +404,11 @@
           if (!test) {
             return
           }
+          // might happen that there is more than one group-view mounted. In this case, only update the relevant one.
+          if (data.groupId !== this.group.id) {
+            return
+          }
+
           const preselect = {
             areaId: test.area_id,
             competenceId: test.competence_id,
@@ -411,7 +416,7 @@
             typeId: test.test_type_id || this.defaultTestType.id,
             testId: test.id,
           }
-          this.setPreselect(preselect, true)
+          this.setPreselect(preselect, false, true)
         },
       },
     },
@@ -441,9 +446,8 @@
         this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
-        console.log('group view set preselect', data, isVersion, this.group)
+        await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 
-        this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -470,7 +474,7 @@
           return
         }
         if (!test.info.is_latest) {
-          this.loadAssessment(test.info.id, isVersion)
+          this.loadAssessment(test.info.id, isVersion, true)
         } else {
           const res = await ajax({
             contentType: 'application/x-www-form-urlencoded',
@@ -501,7 +505,6 @@
         } else {
           this.testSelected = test.id
         }
-        console.log('load', testId, isVersion, noRetry)
 
         this.isLoadingUpdate = true //Spinner anzeigen
         const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.id}` }) // TODO: durch api-routes Aufruf ersetzen
