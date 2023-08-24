@@ -12,17 +12,16 @@ import AdministrationApp from '../administration/administration-app.vue'
 import VueRouter from 'vue-router'
 
 const routes = [
-  { path: '/start', component: HomeApp }, // Diagnostik
-
-  { path: '/klassenbuch', component: ClassBookApp }, // Klassenbuch
-  { path: '/materialien', component: MaterialsApp }, // Fördermaterialien
-  { path: '/testuebersicht', component: TestsApp }, // Tests
-  { path: '/testverwaltung', component: TestsAdmin },
-  { path: '/testexport', component: TestsExport },
-  { path: '/nutzerverwaltung', component: UsersApp }, // Benutzerverwaltung
-  { path: '/materialverwaltung', component: MaterialsAdmin }, // Benutzerverwaltung
-  { path: '/statistiken', component: StatisticsApp }, // Statistiken
-  { path: '/administration', component: AdministrationApp }, // Administration
+  { path: '/start', component: HomeApp, name: 'Diagnostik' }, // Diagnostik
+  { path: '/klassenbuch', component: ClassBookApp, name: 'ClassBook' }, // Klassenbuch
+  { path: '/materialien', component: MaterialsApp, name: 'Materials' }, // Fördermaterialien
+  { path: '/testuebersicht', component: TestsApp, name: 'Tests' }, // Tests
+  { path: '/testverwaltung', component: TestsAdmin, name: 'TestsAdmin' },
+  { path: '/testexport', component: TestsExport, name: 'TestsExport' },
+  { path: '/nutzerverwaltung', component: UsersApp, name: 'Users' }, // Benutzerverwaltung
+  { path: '/materialverwaltung', component: MaterialsAdmin, name: 'MaterialsAdmin' }, // Benutzerverwaltung
+  { path: '/statistiken', component: StatisticsApp, name: 'Statistics' }, // Statistiken
+  { path: '/administration', component: AdministrationApp, name: 'Administration' }, // Administration
   { path: '/groups/:groupId/assessments/:assessmentId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /start if the data can be kept
 ]
 

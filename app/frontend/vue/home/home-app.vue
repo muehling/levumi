@@ -14,7 +14,8 @@
             <b-tab
               v-for="(group, index) in ownActiveGroups"
               :key="group.id"
-              :active="$root.pre_select && $root.pre_select.group == group.id"
+              v-model="selectedGroupId"
+              :active="selectedGroupId === group.id"
               lazy
               @click="getTestsForGroup(group.id)"
             >
@@ -38,7 +39,7 @@
               </template>
 
               <!-- Zweite Ebene - gewählte Klasse -->
-              <div v-if="!group.key">
+              <div v-if="!group.key && !group.is_anonymous">
                 <b-card bg-variant="light" class="col-lg-8 col-xl-6 mt-3">
                   <p>
                     Sie müssen zuerst den Sicherheitscode zur Freischaltung der geteilten Klasse im
@@ -94,6 +95,11 @@
       const assessmentsStore = useAssessmentsStore()
       return { globalStore, assessmentsStore }
     },
+    data() {
+      return {
+        selectedGroupId: undefined,
+      }
+    },
     computed: {
       ownActiveGroups() {
         return this.globalStore.groups
@@ -101,6 +107,7 @@
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       groups() {
+        // the first element is only intended as a placeholder for new groups and is not needed here
         return this.globalStore.groups.filter(group => group.id)
       },
       groupInfo() {
@@ -110,7 +117,21 @@
         return this.globalStore.login.intro_state < 4
       },
     },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          // needed to activate the relevant group when jumping to diagnostics from the classbook
+          if (!data.groupId) {
+            return
+          }
+          await this.$nextTick()
+          this.selectedGroupId = data.groupId
+        },
+      },
+    },
     mounted() {
+      this.selectedGroupId = this.$root.pre_select?.group || this.ownActiveGroups[0]?.id
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [

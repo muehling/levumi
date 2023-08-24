@@ -4,9 +4,7 @@
     <td>
       <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
       <div v-if="!empty && !editMode">
-        <b-link :href="'students/' + student.id + '#' + student.name" target="_blank">
-          {{ student.name }}
-        </b-link>
+        {{ student.name }}
       </div>
       <div v-else-if="editMode">
         <!-- Form anzeigen -->
@@ -94,109 +92,47 @@
     </td>
 
     <td>
-      <span :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
-        <b-button-toolbar>
-          <b-button-group>
-            <b-btn
-              v-b-modal="'modal_settings_' + student.id"
-              class="mr-1"
-              variant="outline-secondary"
-              size="sm"
-              title="Schrifteinstellungen"
-            >
-              <i class="fas fa-text-height"></i>
-            </b-btn>
-            <b-btn
-              variant="outline-secondary"
-              size="sm"
-              title="Bearbeiten"
-              @click="editMode = true"
-            >
-              <i class="fas fa-user-edit"></i>
-            </b-btn>
-            <b-btn
-              v-b-modal="'qr_code_' + student.id"
-              variant="outline-secondary"
-              size="sm"
-              title="QRCode"
-            >
-              <i class="fas fa-qrcode"></i>
-            </b-btn>
-          </b-button-group>
-        </b-button-toolbar>
-        <b-modal
-          :id="'qr_code_' + student.id"
-          :title="'QRCode für ' + student.name"
-          scrollable
-          hide-footer
-          static
-        >
-          <p>
-            Code: {{ student.login }} <br />
-            QR-Code:
-          </p>
-          <div class="text-center">
-            <div :id="`qr-${student.id}`"></div>
-          </div>
-        </b-modal>
-        <b-modal
-          :id="'modal_settings_' + student.id"
-          :title="'Schrifteinstellungen für ' + student.name"
-          size="xl"
-          scrollable
-          hide-footer
-          lazy
-        >
-          <p
-            class="mt-5 mb-5 text-center"
-            :style="'font-size:' + fontSize * 3 + 'em;font-family:\'' + fontFamily + '\''"
+      <span>
+        <b-button-group :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
+          <b-btn
+            v-b-modal="'modal_settings_' + student.id"
+            v-b-popover.hover.topright="'Schrifteinstellungen'"
+            class="mr-1"
+            variant="outline-secondary"
+            size="sm"
+            @click="handleClickAction(student, 'font-settings')"
           >
-            Das ist ein Beispieltext!
-          </p>
-          <b-button-toolbar justify>
-            <b-button-group size="sm">
-              <b-btn variant="outline-primary" :pressed="fontSize == 1" @click="fontSize = 1"
-                >Normal
-              </b-btn>
-              <b-btn variant="outline-primary" :pressed="fontSize == 2" @click="fontSize = 2"
-                >Vergrößert
-              </b-btn>
-              <b-btn variant="outline-primary" :pressed="fontSize == 3" @click="fontSize = 3"
-                >Stark vergrößert</b-btn
-              >
-            </b-button-group>
-            <b-button-group size="sm">
-              <b-btn
-                variant="outline-primary"
-                :pressed="fontFamily == 'serif'"
-                @click="fontFamily = 'serif'"
-                >Rechnerschrift</b-btn
-              >
-              <b-btn
-                variant="outline-primary"
-                :pressed="fontFamily == 'Fibel Nord'"
-                @click="fontFamily = 'Fibel Nord'"
-                >Fibel Nord</b-btn
-              >
-              <b-btn
-                variant="outline-primary"
-                :pressed="fontFamily == 'Grundschrift'"
-                @click="fontFamily = 'Grundschrift'"
-                >Grundschulschrift</b-btn
-              >
-              <b-btn
-                variant="outline-primary"
-                :pressed="fontFamily == 'Grundschrift Grundlinie'"
-                @click="fontFamily = 'Grundschrift Grundlinie'"
-                >Grundschulschrift Grundlinie</b-btn
-              >
-            </b-button-group>
-          </b-button-toolbar>
-
-          <b-btn class="mt-3" variant="outline-success" @click="changeFontSettings">
-            <i class="fas fa-check"></i> Speichern
+            <i class="fas fa-text-height"></i>
           </b-btn>
-        </b-modal>
+          <b-btn
+            v-b-popover.hover.topright="'Bearbeiten'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="editMode = true"
+          >
+            <i class="fas fa-user-edit"></i>
+          </b-btn>
+          <b-btn
+            v-b-popover.hover.topright="'QR-Code'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="handleClickAction(student, 'qr-code')"
+          >
+            <i class="fas fa-qrcode"></i>
+          </b-btn>
+        </b-button-group>
+
+        <b-btn
+          v-if="!!student.id"
+          v-b-popover.hover.topright="'Test-Info'"
+          variant="outline-secondary"
+          class="mr-1"
+          @click="handleClickAction(student, 'test-info')"
+        >
+          <i class="fas fa-circle-info"></i>
+        </b-btn>
       </span>
       <span :class="!readOnly && editMode ? '' : 'd-none'">
         <b-button-toolbar class="flex-nowrap">
@@ -242,8 +178,8 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
+
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import QRCodeStyling from 'qr-code-styling'
 
   export default {
     name: 'StudentRow',
@@ -259,19 +195,12 @@
     data: function () {
       return {
         editMode: this.empty && this.open,
-        loading: false,
+        isLoadingAssessments: false,
         name: this.student.name,
-        results: undefined,
+        activeAssessments: undefined,
 
         //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
-        fontFamily:
-          this.student.settings === undefined || this.student.settings['font_family'] === undefined
-            ? 'Fibel Nord'
-            : decodeURIComponent(this.student.settings['font_family']),
-        fontSize:
-          this.student.settings === undefined || this.student.settings['font_size'] === undefined
-            ? '1'
-            : this.student.settings['font_size'],
+
         gender: this.student.gender !== undefined ? this.student.gender : null,
         month:
           this.student.birthmonth !== undefined
@@ -337,10 +266,11 @@
         { text: 'Migrationshintergrund', value: 'Migrationshintergrund' },
       ]
     },
-    mounted() {
-      this.generateQRCode()
-    },
+
     methods: {
+      handleClickAction(student, action) {
+        this.$emit('click-student-action', student, action)
+      },
       changeMonth() {
         if (this.year === null) {
           this.year = this.years[0]
@@ -355,22 +285,7 @@
         this.month = null
         this.year = null
       },
-      generateQRCode() {
-        if (!this.student.login) {
-          return
-        }
-        const qrCode = new QRCodeStyling({
-          width: 400,
-          height: 400,
-          type: 'canvas',
-          data: `${window.location.origin}/testen_login?login=${this.student.login}`,
-          dotsOptions: {
-            color: '#000000',
-          },
-        })
-        const el = document.getElementById('qr-' + this.student.id)
-        qrCode.append(el)
-      },
+
       async requestDelete() {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Schüler löschen',
@@ -385,26 +300,6 @@
           if (res.status === 200) {
             this.remove()
           }
-        }
-      },
-
-      async changeFontSettings() {
-        const data = {
-          student: {
-            settings: {
-              font_family: encodeURIComponent(this.fontFamily),
-              font_size: encodeURIComponent(this.fontSize),
-            },
-          },
-        }
-        const res = await ajax({
-          url: `/students/${this.student.id}`,
-          method: 'put',
-          data,
-        })
-        if (res.status === 200) {
-          const data = await res.json()
-          this.update(data)
         }
       },
 
@@ -431,26 +326,7 @@
         }
         return res
       },
-      //TODO wird nicht gebraucht?
-      /*loadData(student) {
-              this.loading = true;
-              //AJAX-Request senden
-              console.log('load');
 
-              fetch('/students/' + student, {
-                headers: {
-                  Accept: 'text/javascript',
-                  'X-Requested-With': 'XMLHttpRequest',
-                  'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-                },
-                credentials: 'include',
-              }).then((response) => {
-                return response.text().then((text) => {
-                  this.results = JSON.parse(text);
-                  this.loading = false; //Spinner verstecken
-                });
-              });
-            },*/
       remove() {
         this.$emit('update:students', { index: this.index, object: null })
       },
@@ -485,7 +361,7 @@
           this.tags = []
         }
         //Falls Update aus Settings: Modal schließen
-        this.$bvModal.hide('modal_settings_' + this.student.id)
+        //    this.$bvModal.hide('modal_settings_' + this.student.id)
       },
     },
   }

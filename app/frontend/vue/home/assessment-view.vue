@@ -268,7 +268,7 @@
   import compact from 'lodash/compact'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import isObject from 'lodash/isObject'
-  import SupportView from './support-view.vue'
+  import SupportView from './supports/support-view.vue'
   import uniq from 'lodash/uniq'
   import apiRoutes from '../routes/api-routes'
   import { printDate } from '../../utils/date'

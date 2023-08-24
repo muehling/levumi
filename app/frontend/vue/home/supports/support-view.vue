@@ -40,9 +40,9 @@
 </template>
 
 <script>
-  import { getCSRFToken } from '../../utils/ajax'
-  import { getStudent } from '../../utils/helpers'
-  import MaterialView from '../materials/material-view.vue'
+  import { getCSRFToken } from '../../../utils/ajax'
+  import { getStudent } from '../../../utils/helpers'
+  import MaterialView from '../../materials/material-view.vue'
 
   export default {
     name: 'SupportView',

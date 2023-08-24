@@ -18,7 +18,11 @@
               {{ share.user }}
             </td>
             <td>
+              <div v-if="share.is_anonymous" class="d-inline">
+                <span class="mr-4">Klasse ist anonym geteilt.</span>
+              </div>
               <b-button
+                v-if="!share.is_anonymous"
                 class="btn btn-sm mr-1"
                 :variant="share.read_only ? 'primary' : 'outline-primary'"
                 @click="changeAccessLevel(share.id, 1)"
@@ -26,6 +30,7 @@
                 <i class="fas fa-glasses"></i> Nur Ansicht
               </b-button>
               <b-button
+                v-if="!share.is_anonymous"
                 class="btn btn-sm mr-1"
                 :variant="!share.read_only ? 'primary' : 'outline-primary'"
                 @click="changeAccessLevel(share.id, 0)"
@@ -37,10 +42,14 @@
               </b-button>
             </td>
             <td>
-              <span v-if="!share.accepted">
+              <span v-if="!share.accepted && !share.is_anonymous">
                 Der Zugangsschlüssel lautet <b>{{ shareKey }}</b> und wurde per Mail an
                 {{ share.user }} gesendet.
               </span>
+              <span v-else-if="!share.accepted && share.is_anonymous"
+                >{{ share.user }} wurde per Mail benachrichtigt.</span
+              >
+              <span v-else-if="share.accepted">{{ share.user }} hat die Anfrage angenommen.</span>
             </td>
           </tr>
         </tbody>
@@ -70,24 +79,27 @@
             <b-form-invalid-feedback v-if="errorMessage" class="position-absolute">
               {{ errorMessage }}
             </b-form-invalid-feedback>
+            <context-help
+              help-text="Geben Sie hier die Email-Adresse der Person ein, mit der Sie
+            die Klasse teilen möchten. Die Person wird dann per Mail informiert. Bei nicht-anonymem
+            Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler:innen-Namen.
+            Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder 
+            beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet."
+              class-name="mt-2"
+            />
           </div>
-          <b-form-radio-group
-            v-model="rightsSelected"
-            :options="options_rights"
-            name="group_share[read_only]"
-          >
+          <b-form-radio-group v-model="rightsSelected" class="ml-4" name="group_share[read_only]">
+            <b-form-radio
+              v-for="option in permissionOptions"
+              :key="option.text"
+              :value="option.value"
+            >
+              <span>{{ option.text }}</span>
+              <context-help :help-text="option.helpText" class-name="ml-1 mr-3" />
+            </b-form-radio>
           </b-form-radio-group>
           <b-button type="submit" variant="outline-success" size="sm">
             <i class="fas fa-check"></i> Teilen
-          </b-button>
-          <b-button
-            v-b-popover.hover="shareGroupHelp"
-            class="ml-3"
-            size="sm"
-            variant="info"
-            title="Klasse teilen"
-          >
-            <span><i class="fas fa-question"></i></span>
           </b-button>
         </b-form>
       </b-collapse>
@@ -95,10 +107,16 @@
     </div>
     <!-- geteilte Klasse => Teilung beenden -->
     <div v-else>
-      <p>Klasse wurde geteilt von: {{ group.belongs_to }}</p>
-      <div v-if="group.key == null">
+      <div v-if="!group.key">
         <b-form inline :validated="checkKey()" @submit="acceptShare">
-          <b-input v-model="key" class="mr-2" placeholder="Code" size="sm" />
+          <span class="mr-4">Klasse wurde geteilt von: {{ group.belongs_to }}</span>
+          <b-input
+            v-if="!group.is_anonymous"
+            v-model="keyInput"
+            class="ml-4 mr-2"
+            placeholder="Code"
+            size="sm"
+          />
           <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
           </b-button>
@@ -110,7 +128,7 @@
       <div v-else>
         <p>
           Sie können die Klasse
-          {{ group.read_only ? ' nur ansehen' : ' ansehen und verwenden' }}
+          {{ group.read_only ? ' nur ansehen.' : ' ansehen und verwenden.' }}
         </p>
         <b-btn class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
           <i class="fas fa-trash"></i> Teilen beenden
@@ -131,11 +149,11 @@
   } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import { userHelp } from '../../utils/userHelp'
+  import ContextHelp from '../shared/context-help.vue'
 
   export default {
     name: 'ShareForm',
-    components: { ConfirmDialog },
+    components: { ConfirmDialog, ContextHelp },
     props: {
       group: Object,
       index: Number,
@@ -147,7 +165,7 @@
     data() {
       return {
         rightsSelected: 1,
-        key: '',
+        keyInput: '',
         email: '',
         isShown: false,
         errorMessage: '',
@@ -159,17 +177,32 @@
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
           : null
       },
-      shareGroupHelp() {
-        return userHelp.shareGroup
+      permissionOptions() {
+        return [
+          {
+            text: 'Nur Ansicht',
+            value: 1,
+            disabled: 0,
+            helpText:
+              'Die Person darf die Klasse nicht bearbeiten, kann jedoch Messungen und Namen der Schüler:innen sehen.',
+          },
+          {
+            text: 'Ansicht und verwenden',
+            value: 0,
+            disabled: 0,
+            helpText: 'Die Person darf die Klasse bearbeiten und Messungen durchführen.',
+          },
+          {
+            text: 'Anonym teilen',
+            value: 2,
+            disabled: 0,
+            helpText:
+              'Die Person darf die Klasse nicht bearbeiten; Namen der Schüler:innen sind anonymisiert. Bei anonym geteilten Klassen kann die Berechtigungsstufe im Nachhinein nicht geändert werden.',
+          },
+        ]
       },
     },
-    beforeCreate() {
-      // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
-      this.options_rights = [
-        { text: 'Nur Ansicht', value: 1, disabled: 0 },
-        { text: 'Ansicht und verwenden', value: 0, disabled: 0 },
-      ]
-    },
+
     methods: {
       async requestUnshare() {
         const ok = await this.$refs.confirmDialog.open({
@@ -196,7 +229,9 @@
         const res = await ajax(params)
         if (res.status === 200) {
           const data = await res.json()
-          this.success(data)
+
+          this.$emit('update:groups', { index: this.index, object: data })
+          this.isShown = false
           return data
         } else {
           const error = await res.json()
@@ -215,6 +250,7 @@
           method: 'put',
           data,
         })
+
         if (result) {
           const newGroups = this.globalStore.groups.filter(group => group.id !== result.id)
           newGroups.push(result)
@@ -232,9 +268,11 @@
         e.stopPropagation()
 
         this.errorMessage = ''
+        const isReadOnly = this.rightsSelected === 0 ? false : true
+        const isAnonymous = this.rightsSelected === 2 ? true : false
         const data = {
           email: this.email,
-          group_share: { read_only: this.rightsSelected },
+          group_share: { read_only: isReadOnly, is_anonymous: isAnonymous },
           share_key: this.shareKey,
         }
         const result = this.submitData({
@@ -242,6 +280,7 @@
           method: 'post',
           data,
         })
+
         if (result) {
           this.email = ''
           this.rightsSelected = 1
@@ -261,10 +300,12 @@
         })
       },
       checkKey() {
-        if (this.key !== undefined && this.key !== '') {
+        if (this.group.is_anonymous) {
+          return true
+        }
+        if (this.keyInput) {
           // The Accept button will remain disabled until the key can be successfully decrypted with the auth_token
-          // TODO add user message
-          const decrypted = decryptWithKey(this.group.auth_token, this.key)
+          const decrypted = decryptWithKey(this.group.auth_token, this.keyInput)
           return decrypted ? true : false
         } else {
           return false
@@ -272,12 +313,11 @@
       },
 
       prepareKey() {
-        return encryptKey(this.key)
-      },
-      success(object) {
-        //Klasse updaten und View aktualisieren
-        this.$emit('update:groups', { index: this.index, object })
-        this.isShown = false
+        if (this.group.is_anonymous) {
+          return 'anonymous'
+        } else {
+          return encryptKey(this.keyInput)
+        }
       },
     },
   }

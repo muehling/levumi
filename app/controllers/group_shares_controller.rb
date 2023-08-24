@@ -25,10 +25,15 @@ class GroupSharesController < ApplicationController
              user: @recipient,
              owner: false,
              key: nil,
-             read_only: params.require(:group_share)[:read_only].to_i
+             read_only: params.require(:group_share)[:read_only],
+             is_anonymous: params.require(:group_share)[:is_anonymous]
            )
           UserMailer
-            .with(recipient: @recipient, share_key: params[:share_key])
+            .with(
+              recipient: @recipient,
+              share_key: params[:share_key],
+              is_anonymous: params.require(:group_share)[:is_anonymous]
+            )
             .new_share
             .deliver_later
         end
@@ -39,7 +44,7 @@ class GroupSharesController < ApplicationController
 
   #PUT /groups/:id
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    unless !@share.update(params.require(:group_share).permit(:key, :read_only))
+    unless !@share.update(params.require(:group_share).permit(:key, :read_only, :is_anonymous))
       render json: @group.as_hash(@login)
     else
       head 304

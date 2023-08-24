@@ -391,6 +391,35 @@
         return this.results
       },
     },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        handler(data) {
+          if (!data.testId) {
+            return
+          }
+          const test = this.globalStore.staticData.testMetaData.tests.find(
+            test => test.id === data.testId
+          )
+          if (!test) {
+            return
+          }
+          // might happen that there is more than one group-view mounted. In this case, only update the relevant one.
+          if (data.groupId !== this.group.id) {
+            return
+          }
+
+          const preselect = {
+            areaId: test.area_id,
+            competenceId: test.competence_id,
+            familyId: test.test_family_id,
+            typeId: test.test_type_id || this.defaultTestType.id,
+            testId: test.id,
+          }
+          this.setPreselect(preselect, false, true)
+        },
+      },
+    },
     async mounted() {
       this.$root.$on(`annotation-added-${this.group.id}`, this.addAnnotation)
       this.$root.$on(`annotation-removed-${this.group.id}`, this.removeAnnotation)
@@ -417,8 +446,8 @@
         this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
+        await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 
-        this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -445,7 +474,7 @@
           return
         }
         if (!test.info.is_latest) {
-          this.loadAssessment(test.info.id, isVersion)
+          this.loadAssessment(test.info.id, isVersion, true)
         } else {
           const res = await ajax({
             contentType: 'application/x-www-form-urlencoded',
@@ -456,12 +485,12 @@
 
           if (res.status === 200) {
             this.propagateUsedTest(test.info.id)
-            this.loadAssessment(test.info.id, isVersion)
+            this.loadAssessment(test.info.id, isVersion, true)
           }
         }
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-      async loadAssessment(testId, isVersion) {
+      async loadAssessment(testId, isVersion, noRetry) {
         const usedVersions = this.usedTests.reduce((acc, test) => {
           acc = acc.concat(test.versions)
           return acc
@@ -483,7 +512,7 @@
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
-        } else if (res.status === 404 && !isVersion) {
+        } else if (res.status === 404 && !isVersion && !noRetry) {
           // when no assessment is found, create one.
           this.createAssessment({ info: { id: test.id } }, isVersion)
         } else {
