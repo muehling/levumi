@@ -14,7 +14,8 @@
             <b-tab
               v-for="(group, index) in ownActiveGroups"
               :key="group.id"
-              :active="$root.pre_select && $root.pre_select.group == group.id"
+              v-model="selectedGroupId"
+              :active="selectedGroupId === group.id"
               lazy
               @click="getTestsForGroup(group.id)"
             >
@@ -94,6 +95,11 @@
       const assessmentsStore = useAssessmentsStore()
       return { globalStore, assessmentsStore }
     },
+    data() {
+      return {
+        selectedGroupId: undefined,
+      }
+    },
     computed: {
       ownActiveGroups() {
         return this.globalStore.groups
@@ -111,7 +117,27 @@
         return this.globalStore.login.intro_state < 4
       },
     },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          // needed to activate the relevant group when jumping to diagnostics from the classbook
+          if (!data.groupId) {
+            return
+          }
+
+          //todo das haut noch nicht hin. beim absprung aus dem klassenbuch wird die falsche klasse gewählt und das falsche assessment geladne
+          await this.$nextTick()
+          this.selectedGroupId = data.groupId
+          console.log('home app watcher', data.groupId)
+
+          //   this.$root.pre_select = this.$root.pre_select || {}
+          //   this.$root.pre_select.group = data.groupId
+        },
+      },
+    },
     mounted() {
+      this.selectedGroupId = this.$root.pre_select?.group || this.ownActiveGroups[0]?.id
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [

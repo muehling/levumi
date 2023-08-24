@@ -392,13 +392,15 @@
       },
     },
     watch: {
-      '$route.params.testId': {
+      '$route.params': {
         immediate: true,
-        handler(id) {
-          if (!id) {
+        handler(data) {
+          if (!data.testId) {
             return
           }
-          const test = this.globalStore.staticData.testMetaData.tests.find(test => test.id === id)
+          const test = this.globalStore.staticData.testMetaData.tests.find(
+            test => test.id === data.testId
+          )
           if (!test) {
             return
           }
@@ -409,7 +411,7 @@
             typeId: test.test_type_id || this.defaultTestType.id,
             testId: test.id,
           }
-          this.setPreselect(preselect, false)
+          this.setPreselect(preselect, true)
         },
       },
     },
@@ -439,6 +441,7 @@
         this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
+        console.log('group view set preselect', data, isVersion, this.group)
 
         this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
@@ -478,12 +481,12 @@
 
           if (res.status === 200) {
             this.propagateUsedTest(test.info.id)
-            this.loadAssessment(test.info.id, isVersion)
+            this.loadAssessment(test.info.id, isVersion, true)
           }
         }
       },
       //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-      async loadAssessment(testId, isVersion) {
+      async loadAssessment(testId, isVersion, noRetry) {
         const usedVersions = this.usedTests.reduce((acc, test) => {
           acc = acc.concat(test.versions)
           return acc
@@ -498,6 +501,7 @@
         } else {
           this.testSelected = test.id
         }
+        console.log('load', testId, isVersion, noRetry)
 
         this.isLoadingUpdate = true //Spinner anzeigen
         const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.id}` }) // TODO: durch api-routes Aufruf ersetzen
@@ -505,7 +509,7 @@
           const text = await res.text()
           this.results = JSON.parse(text)
           this.isLoadingUpdate = false //Spinner verstecken
-        } else if (res.status === 404 && !isVersion) {
+        } else if (res.status === 404 && !isVersion && !noRetry) {
           // when no assessment is found, create one.
           this.createAssessment({ info: { id: test.id } }, isVersion)
         } else {

@@ -107,7 +107,7 @@
     </div>
     <!-- geteilte Klasse => Teilung beenden -->
     <div v-else>
-      <div v-if="group.key == null">
+      <div v-if="!group.key">
         <b-form inline :validated="checkKey()" @submit="acceptShare">
           <span class="mr-4">Klasse wurde geteilt von: {{ group.belongs_to }}</span>
           <b-input
