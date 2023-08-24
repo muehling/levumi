@@ -13,7 +13,7 @@
       QR-Code:
     </p>
     <div class="text-center">
-      <div :id="`qr-${student.id}`"></div>
+      <div id="qr"></div>
     </div>
   </b-modal>
 </template>
@@ -25,7 +25,8 @@
     watch: {
       'student.id': {
         immediate: true,
-        handler() {
+        async handler() {
+          await this.$nextTick()
           this.generateQRCode()
         },
       },
@@ -47,7 +48,7 @@
             color: '#000000',
           },
         })
-        const el = document.getElementById('qr-' + this.student.id)
+        const el = document.getElementById('qr')
         qrCode.append(el)
       },
     },
