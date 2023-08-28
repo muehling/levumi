@@ -40,15 +40,14 @@
 </template>
 
 <script>
-  import { getCSRFToken } from '../../utils/ajax'
-  import { getStudent } from '../../utils/helpers'
-  import MaterialView from '../materials/material-view.vue'
-
+  import MaterialView from '../../materials/material-view.vue'
+  import { getCSRFToken } from '../../../utils/ajax'
+  import { getStudent } from '../../../utils/helpers'
   export default {
-    name: 'SupportView',
+    name: 'SupportGeneralSuggestions',
     components: { MaterialView },
     props: {
-      group: Number,
+      groupId: Number,
       test: Number,
     },
     data: function () {
@@ -58,7 +57,7 @@
       }
     },
     created() {
-      fetch('/materials?test=' + this.test + '&group=' + this.group, {
+      fetch('/materials?test=' + this.test + '&group=' + this.groupId, {
         headers: {
           Accept: 'text/javascript',
           'X-Requested-With': 'XMLHttpRequest',
@@ -75,7 +74,7 @@
     methods: {
       getStudentName(id) {
         //Student-Objekt aus globaler Variable holen
-        return getStudent(this.group, id).name
+        return getStudent(this.groupId, id).name
       },
       generic(entry) {
         if (entry.materials.length == 0) {

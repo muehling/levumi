@@ -388,7 +388,7 @@
         return this.versions.filter(version => version.used || !this.group.read_only)
       },
       hasResults() {
-        return this.results
+        return !!this.results
       },
     },
     watch: {
@@ -499,20 +499,14 @@
           this.testSelected = test.id
         }
 
-        this.isLoadingUpdate = true //Spinner anzeigen
-        const res = await ajax({ url: `/groups/${this.group.id}/assessments/${test.id}` }) // TODO: durch api-routes Aufruf ersetzen
-        if (res.status === 200) {
-          const text = await res.text()
-          this.results = JSON.parse(text)
-          this.isLoadingUpdate = false //Spinner verstecken
-        } else if (res.status === 404 && !isVersion) {
+        this.isLoadingUpdate = true
+        this.results = await this.assessmentsStore.fetchCurrentAssessment(this.group.id, test.id)
+
+        if (!this.results && !isVersion) {
           // when no assessment is found, create one.
           this.createAssessment({ info: { id: test.id } }, isVersion)
-        } else {
-          // only hide spinner, nothing to show
-          this.isLoadingUpdate = false
-          this.results = undefined
         }
+        this.isLoadingUpdate = false
       },
 
       //Lernbereich setzen und folgende Wahlmöglichkeiten zurücksetzen

@@ -7,6 +7,7 @@ export const useAssessmentsStore = defineStore('assessments', {
   state: () => ({
     isLoading: false,
     assessments: {},
+    currentAssessment: undefined,
   }),
   actions: {
     setAssessments(groupId, assessments) {
@@ -14,6 +15,22 @@ export const useAssessmentsStore = defineStore('assessments', {
     },
     getAssessments(groupId) {
       return this.assessments[groupId] || []
+    },
+    setCurrentAssessment(assessment) {
+      this.currentAssessment = assessment
+    },
+    getCurrentAssessment() {
+      return this.currentAssessment
+    },
+    async fetchCurrentAssessment(groupId, testId) {
+      const res = await ajax(apiRoutes.assessments.currentAssessment(groupId, testId))
+      if (res.status === 200) {
+        const text = await res.text()
+        this.currentAssessment = JSON.parse(text)
+      } else {
+        this.currentAssessment = undefined
+      }
+      return this.currentAssessment
     },
     async fetch(groupId) {
       this.isLoading = true
