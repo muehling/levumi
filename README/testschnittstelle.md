@@ -27,11 +27,12 @@ Alle anderen Funktionen sind optional.
 
     Array mit genau einem Eintrag pro Item der Testung in der Reihenfolge der Testung
     Eintrag im Array ist ein Hash mit den folgenden Keys und Werten:
-    	* item: Shorthand des Items
-    	* result: Item-Rohwert (wird in diesem Format exportiert)
-    	* (optional) time: Bearbeitungszeit des Items in ms
-    	* (optional) answer: Gegebene Antwort
-    	* (optional) ...
+    	* item: Id/Shorthand des Items
+    	* result: Integer, 1 bei korrekter Antwort, 0 bei falscher Antwort
+    	* (optional) time: Integer, Bearbeitungszeit des Items in ms
+    	* (optional) answer: String, die gegebene Antwort
+    	* (optional) group: Integer, Index der Dimension des Items. Zur Auswertung muss die test.json den Key item_dimensions enthalten.
+        * (optional) ...
     Die verwendeten Keys müssen pro Test einheitlich sein und werden als eigene Spalte exportiert.
 
 ##### callback
@@ -112,6 +113,8 @@ In der test.json werden die Metadaten des Tests definiert. Folgende Felder müss
 - `version`: Zahl, bezeichnet die Testversion
 - `student_test`: Zahl, 0 für vom Lehrer bzw. 1 für vom Schüler durchgeführte Tests
 - `configuration`: Objekt, Definintion der Auswertungen
+  - `item_dimensions`: Objekt mit den Item-Dimensionen, z. B {"1": "Addition mit Zehnerübergang", "2": "Addition ohne Zehnerübergang"}. Wird zum gezielten Vorschlagen
+    von Fördermaterialien verwendet. Wenn die `ìtem_dimensions` angegeben werden, muss das gespeicherte `data`-Attribut einen Wert für `group` enthalten.
   - `views`: Array mit je einem Objekt pro Auswertung. Jedes Objekt muss die folgenden Attribute erhalten:
     - `key`: Eindeutiger Bezeichner
     - `label`: Dargestellte Bezeichnung

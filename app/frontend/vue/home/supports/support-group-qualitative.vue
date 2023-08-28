@@ -1,18 +1,17 @@
 <template>
   <div>
-    Qualitative
     <b-card class="mt-2">
       <table class="table table-striped table-sm table-borderless">
         <thead>
-          <th></th>
-          <th v-for="(item, index) in itemDictionary" :key="item + index">{{ item }}</th>
+          <th>Name</th>
+          <th v-for="(item, index) in itemDictionary" :key="'header' + item + index">{{ item }}</th>
         </thead>
         <tbody>
           <tr v-for="student in students" :key="student.id">
-            <td>
-              {{ student.name }}
+            <td>{{ student.name }}</td>
+            <td v-for="(item, index) in itemDictionary" :key="'line' + item + index">
+              {{ getTrendForStudentAndDimension(student.id, index) }}
             </td>
-            <td>{{ getSeriesForStudent(student.id).length }}</td>
           </tr>
         </tbody>
       </table>
@@ -23,6 +22,9 @@
 <script>
   import { useAssessmentsStore } from '../../../store/assessmentsStore'
   import { useGlobalStore } from '../../../store/store'
+  import groupBy from 'lodash/groupBy'
+  import takeRight from 'lodash/takeRight'
+
   export default {
     name: 'SupportGroupQualitative',
     components: {},
@@ -42,7 +44,6 @@
     },
     computed: {
       itemDictionary() {
-        console.log('arghg', this.assessmentsStore.getCurrentAssessment())
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
       series() {
@@ -51,25 +52,61 @@
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
-      seriesForStudents() {
-        const a = this.series.reduce((acc, series) => {
-          acc[series.student_id] = acc[series.student_id] || {}
-          acc[series.student_id][series.data.group] =
-            acc[series.student_id][series.data.group] || {}
-
-          acc[series.student_id][series.data.group] += series.report.positive
-          return acc
-        }, {})
-        return a
+      seriesByStudent() {
+        return groupBy(this.series, 'student_id')
       },
     },
     methods: {
       getSeriesForStudent(studentId) {
-        console.log('series', studentId, this.seriesForStudents[studentId])
-
-        return this.series.filter(s => s.student_id === studentId)
+        return takeRight(this.seriesByStudent[studentId], 3)
       },
-      getTrendPerStudentAndDimension(studentId, dimensionIndex) {},
+      getTrendForStudentAndDimension(studentId, dimIndex) {
+        const series = this.getSeriesForStudent(studentId)
+        const dataForDim = series.map(s => ({
+          ...s,
+          data: s.data.filter(d => parseInt(d.group, 10) === parseInt(dimIndex, 10)),
+        }))
+
+        // one object per data point, with the numbers of right wrong and total answers
+        const answersByResult = dataForDim.map(d => {
+          return d.data.reduce((acc, r) => {
+            const key = r.result === 0 ? 'f' : 'r'
+            acc[key] = acc[key] ? acc[key] + 1 : 1
+            acc['t'] = acc['t'] ? acc['t'] + 1 : 1
+            return acc
+          }, {})
+        })
+
+        const relationCorrectToTotal = answersByResult.map(answer => {
+          const a = (answer['r'] || 0) / answer['t']
+          return Math.round(a * 100) / 100
+        })
+
+        //DEBUG STRING
+        //if (
+        //  relationCorrectToTotal.length > 2 &&
+        //  !isNaN(relationCorrectToTotal.reduce((acc, r) => acc + r, 0))
+        //) {
+        //  return `${JSON.stringify(answersByResult)} ### ${relationCorrectToTotal}`
+        //} else {
+        //  return undefined
+        //}
+
+        if (
+          relationCorrectToTotal.length > 2 &&
+          !isNaN(relationCorrectToTotal.reduce((acc, r) => acc + r, 0))
+        ) {
+          return relationCorrectToTotal
+        } else {
+          return undefined
+        }
+      },
+      getBackgroundColor(studentId, dimIndex) {
+        const trendData = this.getTrendForStudentAndDimension(studentId, dimIndex)
+        if (!trendData) {
+          return
+        }
+      },
     },
   }
 </script>
