@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row>
+    <b-row class="d-flex justify-content-between">
       <b-button-group class="ml-3" size="sm">
         <b-button
           class="mr-2"
@@ -33,6 +33,24 @@
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
+      <div>
+        <label class="text-small">Filtern nach Förderbedarf: </label>
+        <b-dropdown
+          :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
+          variant="primary"
+          class="ml-2 text-right"
+          right
+          size="sm"
+        >
+          <b-dropdown-item
+            v-for="need in supportNeeds"
+            :key="need.id"
+            class="text-small"
+            @click="selectedSupportNeedFilter = need.id"
+            >{{ need.name }}</b-dropdown-item
+          >
+        </b-dropdown>
+      </div>
     </b-row>
     <b-row class="mt-2">
       <b-button-group class="ml-3">
@@ -169,10 +187,21 @@
 </template>
 
 <script>
+  import { ajax } from '@/utils/ajax'
+  import { computed } from 'vue'
+  import { createTrendline } from './linearRegressionHelpers'
+  import { printDate } from '../../../utils/date'
+  import { useGlobalStore } from '@/store/store'
+  import { useAssessmentsStore } from '@/store/assessmentsStore'
+  import { useTestsStore } from '@/store/testsStore'
   import AnnotationsSection from './annotations-section.vue'
+  import apiRoutes from '../../routes/api-routes'
   import autoTable from 'jspdf-autotable'
+  import cloneDeep from 'lodash/cloneDeep'
   import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
+  import takeRight from 'lodash/takeRight'
+  import TargetControls from './target-controls.vue'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -183,15 +212,7 @@
     prepareOptions,
     apexChartOptions,
   } from './apexChartHelpers'
-  import { printDate } from '../../../utils/date'
-  import { ajax } from '@/utils/ajax'
-  import apiRoutes from '../../routes/api-routes'
-  import { createTrendline } from './linearRegressionHelpers'
-  import { computed } from 'vue'
-  import TargetControls from './target-controls.vue'
-  import { useTestsStore } from '@/store/testsStore'
-  import { useGlobalStore } from '@/store/store'
-  import cloneDeep from 'lodash/cloneDeep'
+
   export default {
     name: 'AnalysisView',
     components: { AnnotationsSection, TargetControls },
@@ -216,7 +237,8 @@
     setup() {
       const testsStore = useTestsStore()
       const globalStore = useGlobalStore()
-      return { testsStore, globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { testsStore, globalStore, assessmentsStore }
     },
     data: function () {
       return {
@@ -224,20 +246,39 @@
         chartOptions: apexChartOptions([]).line, // just so that apexcharts is happy being initialized correctly
         dateUntilVal: null,
         deviationVal: null,
+        forceUpdate: undefined,
         graphData: [],
         isInitialized: false,
+        maxY: 0,
         selectedStudentId: -1,
+        selectedSupportNeedFilter: undefined,
         selectedView: 0,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
         targetControlVisible: false,
         targetVal: null,
-        maxY: 0,
-        forceUpdate: undefined,
       }
     },
     computed: {
+      supportNeeds() {
+        return [
+          { name: 'Alle', id: undefined },
+          { name: 'Hoher Förderbedarf', id: -1 },
+          { name: 'Mittlerer Förderbedarf', id: 0 },
+          { name: 'Aktuell kein zusätzlicher Förderbedarf', id: 1 },
+        ]
+      },
+
+      seriesByStudent() {
+        const series = this.assessmentsStore.getSeriesByStudent()
+        for (let s in series) {
+          series[s] = takeRight(series[s], 3)
+        }
+
+        return series
+      },
+
       settings() {
         return cloneDeep(this.globalStore.login.settings)
       },
@@ -272,12 +313,7 @@
         return false
       },
       has_student_views() {
-        for (let i = 0; i < this.configuration.views.length; ++i) {
-          if (this.configuration.views[i].student == true) {
-            return true
-          }
-        }
-        return false
+        return this.configuration.views.some(view => view.student)
       },
       table_visible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
@@ -320,7 +356,19 @@
         return res
       },
       studentsWithResults() {
-        return this.students.filter(student => this.has_results(student))
+        if (this.selectedSupportNeedFilter !== undefined) {
+          {
+            const students = Object.entries(this.seriesByStudent).filter(
+              s => s[1][s[1].length - 1].report.trend === this.selectedSupportNeedFilter
+            )
+            const needyStudents = students.map(s => parseInt(s[0], 10))
+            return this.students.filter(
+              student => this.hasResults(student) && needyStudents.find(s => s == student.id)
+            )
+          }
+        }
+
+        return this.students.filter(student => this.hasResults(student))
       },
       selectedStudent() {
         return this.selectedStudentId !== -1
@@ -336,31 +384,21 @@
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
-        //return Boolean(this.viewConfig.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
         return this.settings.targets?.enabled
       },
       dateUntilIsEnabled() {
         return this.settings.targets?.enabled || this.settings.trends?.enabled
-        //return this.settings.useEndDate || (this.targetIsEnabled && this.targetIsSlopeVariant)
-        // if a slope target is to be shown then we need dateUntil anyway
-        //return (
-        //  Boolean(this.viewConfig.targetOptions?.selectEndDate) ||
-        //  (this.targetIsEnabled && this.targetIsSlopeVariant)
-        //)
       },
       deviationIsEnabled() {
         return this.targetIsEnabled && this.settings.targets?.deviation
-        //return Boolean(this.viewConfig.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
         return this.settings.trends?.enabled
-        //return Boolean(this.viewConfig.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
-        return this.settings.trends.extrapolate
-        //return Boolean(this.viewConfig.trendOptions?.extrapolate)
+        return this.settings.trends?.extrapolate
       },
       deviationStored() {
         const dev = this.targetStored?.deviation
@@ -452,6 +490,9 @@
       settings() {
         this.forceUpdate = Symbol()
         this.isInitialized = false
+        this.updateView(false)
+      },
+      studentsWithResults() {
         this.updateView(false)
       },
     },
@@ -824,13 +865,8 @@
         }
       },
 
-      has_results(student) {
-        for (let i = 0; i < this.results.length; ++i) {
-          if (this.results[i].student_id == student.id) {
-            return true
-          }
-        }
-        return false
+      hasResults(student) {
+        return this.results.some(result => result.student_id === student.id)
       },
 
       removeAnnotation(id) {
