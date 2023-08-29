@@ -44,7 +44,6 @@
     },
     computed: {
       hasItemDictionary() {
-        console.log(this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions)
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
     },
