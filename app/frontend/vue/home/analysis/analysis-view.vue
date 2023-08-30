@@ -70,6 +70,7 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <apexchart
+          v-if="graphData.length"
           ref="levumiChart"
           :key="forceUpdate"
           :type="currentChartType"
@@ -78,6 +79,11 @@
           :options="chartOptions"
           :series="chartSeries"
         />
+        <div v-else class="m-4 p-4" style="height: 500px">
+          <b-alert class="m-4 p-4" variant="danger" show
+            >Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!</b-alert
+          >
+        </div>
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
@@ -689,6 +695,7 @@
         }
 
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
+
         this.graphData = gData
 
         await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors

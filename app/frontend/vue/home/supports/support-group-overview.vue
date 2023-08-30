@@ -59,13 +59,13 @@
         return series
       },
       highSupportStudents() {
-        return this.getStudentsForTrend(1)
+        return this.getStudentsForTrend(-1)
       },
       mediumSupportStudents() {
         return this.getStudentsForTrend(0)
       },
       noSupportStudents() {
-        return this.getStudentsForTrend(-1)
+        return this.getStudentsForTrend(1)
       },
       tableRows() {
         const rows = zip(
