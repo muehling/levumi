@@ -1,25 +1,23 @@
 <template>
   <div>
-    <b-card class="mt-2">
-      <table class="table table-sm table-bordered">
-        <thead>
-          <th>Name</th>
-          <th v-for="(item, index) in itemDictionary" :key="'header' + item + index">{{ item }}</th>
-        </thead>
-        <tbody>
-          <tr v-for="student in students" :key="student.id">
-            <td>{{ student.name }}</td>
-            <td
-              v-for="(item, index) in itemDictionary"
-              :key="'line' + item + index"
-              :style="`background-color: ${getBackgroundColor(student.id, index)};`"
-            >
-              {{ getTrendForStudentAndDimension(student.id, index) }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </b-card>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <th>Name</th>
+        <th v-for="(item, index) in itemDictionary" :key="'header' + item + index">{{ item }}</th>
+      </thead>
+      <tbody>
+        <tr v-for="student in students" :key="student.id">
+          <td>{{ student.name }}</td>
+          <td
+            v-for="(item, index) in itemDictionary"
+            :key="'line' + item + index"
+            :style="`background-color: ${getBackgroundColor(student.id, index)};`"
+          >
+            {{ getTrendForStudentAndDimension(student.id, index) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 

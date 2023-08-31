@@ -87,107 +87,126 @@
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
-      <b-col>
-        <b-row class="ml-1">
-          <b-col>
-            <b-button
-              v-if="!readOnly"
-              id="annotation_btn"
-              :aria-expanded="annotationControlVisible ? 'true' : 'false'"
-              aria-controls="annotation_collapse"
-              size="sm"
-              :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
-              @click="toggleCollapse('annotation_collapse')"
-            >
-              Anmerkungen
-              <i
-                :class="`when-closed fas ${
-                  annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'
-                }`"
-              ></i>
-            </b-button>
-            <b-button
-              v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
-              id="target_btn"
-              class="ml-2"
-              :aria-expanded="targetControlVisible ? 'true' : 'false'"
-              aria-controls="target_collapse"
-              size="sm"
-              :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
-              @click="toggleCollapse('target_collapse')"
-            >
-              Ziele und Trends
-              <i
-                :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
-              ></i>
-            </b-button>
-            <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
-              <i class="fas fa-file-pdf"></i>
-              PDF erzeugen
-            </b-button>
-          </b-col>
-        </b-row>
-        <b-row class="ml-1">
-          <b-col class="mr-4">
-            <annotations-section
-              :annotations="annotations"
-              :group="group"
-              :test="test"
-              :selected-student="selectedStudent"
-              :selected-view="selectedView"
-              :annotation-control-visible.sync="annotationControlVisible"
-              :trend-is-enabled="trendIsEnabled"
-              @annotation-removed="removeAnnotation"
-            />
-            <TargetControls
-              :target-val="targetVal"
-              :deviation-val="deviationVal"
-              :date-until-val="dateUntilVal"
-              :date-until-is-enabled="dateUntilIsEnabled"
-              :target-is-enabled="targetIsEnabled"
-              :deviation-is-enabled="deviationIsEnabled"
-              :target-val-stored="targetValStored"
-              :date-until-stored="dateUntilStored"
-              :deviation-stored="deviationStored"
-              :student-targets="studentTargets"
-              :selected-student-id="selectedStudentId"
-              :target-control-visible.sync="targetControlVisible"
-              :target-valid="targetValid"
-              :test="test"
-              :group="group"
-              :readonly-suppressed="isReadOnlySuppressed"
-            ></TargetControls>
-          </b-col>
-        </b-row>
-      </b-col>
+      <b-row class="ml-1">
+        <b-col>
+          <b-button
+            v-if="!readOnly"
+            id="annotation_btn"
+            :aria-expanded="annotationControlVisible ? 'true' : 'false'"
+            aria-controls="annotation_collapse"
+            size="sm"
+            :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
+            @click="toggleCollapse('annotation_collapse')"
+          >
+            Anmerkungen
+            <i
+              :class="`when-closed fas ${
+                annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'
+              }`"
+            ></i>
+          </b-button>
+          <b-button
+            v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
+            id="target_btn"
+            class="ml-2"
+            :aria-expanded="targetControlVisible ? 'true' : 'false'"
+            aria-controls="target_collapse"
+            size="sm"
+            :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
+            @click="toggleCollapse('target_collapse')"
+          >
+            Ziele und Trends
+            <i
+              :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
+            ></i>
+          </b-button>
+          <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
+            <i class="fas fa-file-pdf"></i>
+            PDF erzeugen
+          </b-button>
+        </b-col>
+      </b-row>
+      <b-row class="ml-1">
+        <b-col class="mr-4">
+          <annotations-section
+            :annotations="annotations"
+            :group="group"
+            :test="test"
+            :selected-student="selectedStudent"
+            :selected-view="selectedView"
+            :annotation-control-visible.sync="annotationControlVisible"
+            :trend-is-enabled="trendIsEnabled"
+            @annotation-removed="removeAnnotation"
+          />
+          <TargetControls
+            :target-val="targetVal"
+            :deviation-val="deviationVal"
+            :date-until-val="dateUntilVal"
+            :date-until-is-enabled="dateUntilIsEnabled"
+            :target-is-enabled="targetIsEnabled"
+            :deviation-is-enabled="deviationIsEnabled"
+            :target-val-stored="targetValStored"
+            :date-until-stored="dateUntilStored"
+            :deviation-stored="deviationStored"
+            :student-targets="studentTargets"
+            :selected-student-id="selectedStudentId"
+            :target-control-visible.sync="targetControlVisible"
+            :target-valid="targetValid"
+            :test="test"
+            :group="group"
+            :readonly-suppressed="isReadOnlySuppressed"
+          ></TargetControls>
+        </b-col>
+      </b-row>
     </b-row>
+    <hr v-if="isSupportSectionVisible" class="section-divider" />
+    <b-row :hidden="!isSupportSectionVisible" class="mt-4">
+      <b-tabs class="w-100" pills no-body card>
+        <b-tab title="Förderbedarf - Übersicht" lazy>
+          <support-group-overview :group="group" :test="test.id" />
+        </b-tab>
+        <b-tab v-if="hasItemDictionary" title="Qualitative Auswertung" lazy>
+          <support-group-qualitative :group="group" :test="test.id" />
+        </b-tab>
+      </b-tabs>
+    </b-row>
+    <hr v-if="table_visible" class="section-divider" />
     <b-row :hidden="!table_visible">
-      <div id="table" class="m-4" style="width: 100%">
-        <table class="table table-sm table-striped table-borderless mt-1 text-small">
-          <thead>
-            <tr>
-              <th>Woche ab dem</th>
-              <th v-for="col in columns" :key="col">{{ col }}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="entry in table_data" :key="entry.week">
-              <td>{{ printDate(entry.week) }}</td>
-              <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <b-tabs class="w-100" pills no-body card>
+        <b-tab title="Details" lazy>
+          <div id="table" class="w-100">
+            <table class="table table-sm table-striped table-borderless mt-1 text-small">
+              <thead>
+                <tr>
+                  <th>Woche ab dem</th>
+                  <th v-for="col in columns" :key="col">{{ col }}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="entry in table_data" :key="entry.week">
+                  <td>{{ printDate(entry.week) }}</td>
+                  <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </b-tab>
+      </b-tabs>
     </b-row>
+    <hr v-if="selectedViewType != 'graph'" class="section-divider" />
     <b-row :hidden="selectedViewType !== 'graph'">
-      <b-table-lite
-        id="simple-table"
-        class="mt-4 text-small"
-        small
-        striped
-        hover
-        :items="simpleTableData"
-      ></b-table-lite>
+      <b-tabs class="w-100" pills no-body card>
+        <b-tab title="Tabellarische Daten" lazy>
+          <b-table-lite
+            id="simple-table"
+            class="mt-4 text-small"
+            small
+            striped
+            hover
+            :items="simpleTableData"
+          ></b-table-lite>
+        </b-tab>
+      </b-tabs>
     </b-row>
   </div>
 </template>
@@ -208,6 +227,9 @@
   import jsPDF from 'jspdf'
   import takeRight from 'lodash/takeRight'
   import TargetControls from './target-controls.vue'
+
+  import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
+  import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -221,7 +243,12 @@
 
   export default {
     name: 'AnalysisView',
-    components: { AnnotationsSection, TargetControls },
+    components: {
+      AnnotationsSection,
+      TargetControls,
+      SupportGroupOverview,
+      SupportGroupQualitative,
+    },
     inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
@@ -267,6 +294,15 @@
       }
     },
     computed: {
+      isSupportInformationAvailable() {
+        return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
+      },
+      isSupportSectionVisible() {
+        return this.viewConfig.type === 'graph' && this.isSupportInformationAvailable
+      },
+      hasItemDictionary() {
+        return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
+      },
       supportNeeds() {
         return [
           { name: 'Alle', id: undefined },
@@ -948,3 +984,8 @@
     },
   }
 </script>
+
+<style>
+  .section-divider {
+  }
+</style>

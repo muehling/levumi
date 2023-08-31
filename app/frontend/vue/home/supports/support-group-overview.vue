@@ -1,25 +1,23 @@
 <template>
   <div>
-    <b-card class="mt-2">
-      <table class="table table-sm table-bordered">
-        <thead>
-          <th
-            v-for="item in supportNeeds"
-            :key="'header' + item.color"
-            :style="`background-color: ${item.color};`"
-          >
-            {{ item.name }}
-          </th>
-        </thead>
-        <tbody>
-          <tr v-for="(row, rowIndex) in tableRows" :key="`support-row-${rowIndex}`">
-            <td v-for="(student, index) in row" :key="'line' + index + '/' + rowIndex">
-              {{ student?.name }}
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </b-card>
+    <table class="table table-sm table-bordered">
+      <thead>
+        <th
+          v-for="item in supportNeeds"
+          :key="'header' + item.color"
+          :style="`background-color: ${item.color};`"
+        >
+          {{ item.name }}
+        </th>
+      </thead>
+      <tbody>
+        <tr v-for="(row, rowIndex) in tableRows" :key="`support-row-${rowIndex}`">
+          <td v-for="(student, index) in row" :key="'line' + index + '/' + rowIndex">
+            {{ student?.name }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
