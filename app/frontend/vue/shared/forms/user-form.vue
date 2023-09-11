@@ -61,7 +61,19 @@
         @change-town="t => (town = t)"
         @change-school-type="st => (schoolType = st)"
         @change-focus-type="ft => (focusType = ft)"
-      ></extra-data-form>
+      >
+      </extra-data-form>
+      <div v-if="canEditSettingsJson">
+        <b-button v-b-toggle.json-edit variant="outline-secondary">User-Config ändern</b-button>
+        <b-collapse id="json-edit" class="mt-2">
+          <b-form-textarea
+            v-model="settings"
+            placeholder="Enter something..."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </b-collapse>
+      </div>
     </b-form>
     <div class="d-flex justify-content-end">
       <b-button
@@ -88,11 +100,12 @@
 <script>
   import { ajax } from '../../../utils/ajax'
   import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
-  import { hasCapability } from '../../../utils/user'
+  import { hasCapability, isAdmin } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
   import ConfirmDialog from '../confirm-dialog.vue'
   import ExtraDataForm from './extra-data-form.vue'
+  import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
 
   export default {
@@ -111,17 +124,18 @@
     data() {
       return {
         // local state
-        email: this.user.email,
         accountType: this.user.account_type,
-        state: this.user.state,
-        institution: this.user.institution,
+        email: this.user.email,
         errors: [],
+        focusType: this.user.focus,
+        institution: this.user.institution,
         password: '',
         passwordConfirm: '',
-        securityAnswer: '',
-        town: this.user.town,
         schoolType: this.user.school_type,
-        focusType: this.user.focus,
+        securityAnswer: '',
+        settings: this.user.settings,
+        state: this.user.state,
+        town: this.user.town,
       }
     },
     computed: {
@@ -143,6 +157,9 @@
       canEditUser() {
         return hasCapability('user', this.globalStore.login?.capabilities)
       },
+      canEditSettingsJson() {
+        return isAdmin(this.globalStore.login?.capabilities)
+      },
       accountTypeText() {
         return this.accountTypes?.find(at => at.id === this.accountType)?.label
       },
@@ -159,6 +176,18 @@
       hasStateErrors() {
         return Object.keys(this.errors).find(e => e === 'state')
       },
+      hasSettingsErrors() {
+        if (isEmpty(this.settings)) {
+          return false
+        }
+        try {
+          JSON.parse(this.settings)
+        } catch (e) {
+          console.log('user settings json cannot be parsed')
+          return true
+        }
+        return false
+      },
 
       /********************************
        * checks whether the submit button needs to be disabled
@@ -167,7 +196,11 @@
         const hasPasswordRelatedChange =
           this.password !== '' || this.passwordConfirm !== '' || this.securityAnswer !== ''
 
-        const isIncomplete = this.email === '' || !this.state || this.accountType === undefined
+        const isIncomplete =
+          this.email === '' ||
+          !this.state ||
+          this.accountType === undefined ||
+          this.hasSettingsErrors
 
         const isPasswordInvalid =
           this.password === '' ||
