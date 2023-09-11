@@ -1,9 +1,9 @@
 <template>
   <b-tabs pills card>
-    <b-tab title="Allgemeine Empfehlungen" lazy>
+    <b-tab v-if="canSeeGeneral" title="Allgemeine Empfehlungen" lazy>
       <support-general-suggestions :group-id="group.id" :test="test" />
     </b-tab>
-    <b-tab title="Förderung" lazy>
+    <b-tab v-if="canSeeSuggestions" title="Förderung" lazy>
       <support-group-suggestions :group="group" :test="test" />
     </b-tab>
   </b-tabs>
@@ -35,6 +35,12 @@
     computed: {
       hasItemDictionary() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
+      },
+      canSeeGeneral() {
+        return true
+      },
+      canSeeSuggestions() {
+        return true
       },
     },
     methods: {},
