@@ -4,31 +4,13 @@ task 'export_students_and_results', [:group_id] => :environment do |_, args|
   group = Group.find(args[:group_id])
   students = group.students.includes(:results)
   puts "Group: #{group.label}, student count: #{students.count}"
-  student_data =
-    CSV.generate(headers: false) do |csv|
-      students.each do |student|
-        puts student.login
-        csv << [student.login, student.name]
-      end
-    end
-  File.write('students.csv', student_data)
 
-  results_data =
-    CSV.generate(headers: false) do |csv|
-      students.each do |student|
-        puts student.results.count
-        student.results.each do |r|
-          csv << [
-            r.student_id,
-            r.test_date,
-            r.test_week,
-            r.views.to_s.tr('\\"', "'"),
-            r.report.to_s.tr('\\"', "'"),
-            r.data.to_s.tr('\\"', "'")
-          ]
-        end
-      end
-    end
-  File.write('results.csv', results_data)
+  File.open('students.json', 'w') { |file| file.write(students.to_json) }
+
+  student_ids = students.pluck(:id)
+
+  results = Result.where(student_id: student_ids)
+  File.open('results.json', 'w') { |file| file.write(results.to_json) }
+
   puts 'Done.'
 end
