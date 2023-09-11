@@ -63,18 +63,18 @@
         </div>
       </b-form>
     </b-collapse>
-    <b-button variant="success" class="mb-1" @click="exportQrCodes">
-      <i class="fas fa-print"></i> QR-Code PDF
+    <b-button variant="success" class="mb-1" :disabled="isGeneratingQrCodes" @click="exportQrCodes">
+      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
     </b-button>
   </div>
 </template>
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { useGlobalStore } from '../../store/store'
   import { encryptKey, encryptWithKey } from '../../utils/encryption'
-
+  import { useGlobalStore } from '../../store/store'
   import jsPDF from 'jspdf'
+  import QRCodeStyling from 'qr-code-styling'
 
   export default {
     name: 'GroupForm',
@@ -89,6 +89,7 @@
       return {
         label: !this.group?.id ? '' : this.group.label,
         key: !this.group?.id ? this.newKey() : '',
+        isGeneratingQrCodes: false,
       }
     },
     computed: {
@@ -156,14 +157,33 @@
         const key = this.key ? this.key : this.newKey()
         return encryptWithKey(key, key)
       },
-      exportQrCodes() {
+
+      blobToBase64(blob) {
+        return new Promise((resolve, _) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.readAsDataURL(blob)
+        })
+      },
+
+      async exportQrCodes() {
+        this.isGeneratingQrCodes = true
         const pdf = new jsPDF()
         let height = 10
         for (let i = 0; i < this.students.length; i++) {
-          // these are rendered in student-list.vue
-          const qrElement = this.jQuery('#qr-' + this.students[i].id + ' canvas')[0]
-          if (qrElement) {
-            const base64Image = qrElement.toDataURL('image/jpeg', 1)
+          const qrCode = new QRCodeStyling({
+            width: 400,
+            height: 400,
+            type: 'canvas',
+            data: `${window.location.origin}/testen_login?login=${this.students[i].login}`,
+            dotsOptions: {
+              color: '#000000',
+            },
+          })
+          const qrData = await qrCode.getRawData('jpeg')
+
+          if (qrCode) {
+            const base64Image = await this.blobToBase64(qrData)
             const levumiImg = new Image()
             levumiImg.src = '/images/shared/Levumi-normal.jpg'
 
@@ -180,6 +200,7 @@
           }
         }
         pdf.save(`QR-Codes ${this.group.label}.pdf`)
+        this.isGeneratingQrCodes = false
       },
     },
   }
