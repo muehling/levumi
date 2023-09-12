@@ -160,12 +160,16 @@
       </b-row>
     </b-row>
     <hr v-if="isSupportSectionVisible" class="section-divider" />
-    <b-row :hidden="!isSupportSectionVisible" class="mt-4">
+    <b-row v-if="isSupportSectionVisible" class="mt-4">
       <b-tabs class="w-100" pills no-body card>
-        <b-tab title="Förderbedarf - Übersicht" lazy>
+        <b-tab v-if="isGroupSupportOverviewVisible" title="Förderbedarf - Übersicht" lazy>
           <support-group-overview :group="group" :test="test.id" />
         </b-tab>
-        <b-tab v-if="hasItemDictionary" title="Qualitative Auswertung" lazy>
+        <b-tab
+          v-if="hasItemDictionary && isGroupQualitativeOverviewVisible"
+          title="Qualitative Auswertung"
+          lazy
+        >
           <support-group-qualitative :group="group" :test="test.id" />
         </b-tab>
       </b-tabs>
@@ -216,13 +220,13 @@
   import { computed } from 'vue'
   import { createTrendline } from './linearRegressionHelpers'
   import { printDate } from '../../../utils/date'
+  import { checkUserSettings } from '../../../utils/user'
   import { useGlobalStore } from '@/store/store'
   import { useAssessmentsStore } from '@/store/assessmentsStore'
   import { useTestsStore } from '@/store/testsStore'
   import AnnotationsSection from './annotations-section.vue'
   import apiRoutes from '../../routes/api-routes'
   import autoTable from 'jspdf-autotable'
-  import cloneDeep from 'lodash/cloneDeep'
   import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
   import takeRight from 'lodash/takeRight'
@@ -298,7 +302,21 @@
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
       isSupportSectionVisible() {
-        return this.viewConfig.type === 'graph' && this.isSupportInformationAvailable
+        return (
+          this.viewConfig.type === 'graph' &&
+          this.isSupportInformationAvailable &&
+          (checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview') ||
+            checkUserSettings(this.settings, 'visibilities.analysisView.groupQualitativeOverview'))
+        )
+      },
+      isGroupSupportOverviewVisible() {
+        return checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview')
+      },
+      isGroupQualitativeOverviewVisible() {
+        return checkUserSettings(
+          this.settings,
+          'visibilities.analysisView.groupQualitativeOverview'
+        )
       },
       hasItemDictionary() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
@@ -322,7 +340,7 @@
       },
 
       settings() {
-        return cloneDeep(this.globalStore.login.settings)
+        return this.globalStore.login.settings
       },
       viewsWithGroupAndStudent() {
         return this.configuration.views.filter(

@@ -121,3 +121,32 @@ Ruby gems are installed into the container during container build time. If you n
 docker-compose down
 docker-compose build
 ```
+
+### User Config
+
+Certain features can be turned on and off through the edit-user dialogue or directly editing the settings json (admins only). These settings are saved as json in the person's profile in the database. Currently supported keys are
+
+```
+{
+  "targets": { // "targets" feature in the analysis view
+    "enabled":true,
+    "deviation":true,
+    "slope":true
+  },
+  "trends": { // "trends" feature in the analysis view
+    "enabled":false,
+    "extrapolate":true
+  },
+  "visibilities": { // governs visibilities of elements
+    "analysisView": {
+      "groupSupportOverview":true,
+      "groupQualitativeOverview":true
+    },
+    "supportView": {
+      "generalSuggestions":true,
+      "supportSuggestions":true
+    }
+  }
+}
+
+```

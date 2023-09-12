@@ -133,7 +133,10 @@
         passwordConfirm: '',
         schoolType: this.user.school_type,
         securityAnswer: '',
-        settings: this.user.settings,
+        settings:
+          typeof this.user.settings === 'string'
+            ? this.user.settings
+            : JSON.stringify(this.user.settings),
         state: this.user.state,
         town: this.user.town,
       }
@@ -230,6 +233,11 @@
           data.user.town = this.town
           data.user.school_type = this.schoolType
           data.user.focus = this.focusType
+        }
+        console.log('miau', this.settings, this.user.settings, this.settings !== this.user.settings)
+
+        if (this.settings && this.settings !== this.user.settings) {
+          data.user.settings = this.settings
         }
 
         let res
