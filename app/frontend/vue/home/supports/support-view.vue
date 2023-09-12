@@ -1,16 +1,18 @@
 <template>
   <b-tabs pills card>
-    <b-tab v-if="canSeeGeneral" title="Allgemeine Empfehlungen" lazy>
+    <b-tab v-if="isGeneralSuggestionsVisible" title="Allgemeine Empfehlungen" lazy>
       <support-general-suggestions :group-id="group.id" :test="test" />
     </b-tab>
-    <b-tab v-if="canSeeSuggestions" title="Förderung" lazy>
+    <b-tab v-if="isSupportSuggestionsVisible" title="Förderung" lazy>
       <support-group-suggestions :group="group" :test="test" />
     </b-tab>
   </b-tabs>
 </template>
 
 <script>
+  import { checkUserSettings } from '../../../utils/user'
   import { useAssessmentsStore } from '../../../store/assessmentsStore'
+  import { useGlobalStore } from '../../../store/store'
   import SupportGeneralSuggestions from './support-general-suggestions.vue'
   import SupportGroupSuggestions from './support-group-suggestions.vue'
   export default {
@@ -25,7 +27,8 @@
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
-      return { assessmentsStore }
+      const globalStore = useGlobalStore()
+      return { assessmentsStore, globalStore }
     },
     data: function () {
       return {
@@ -36,11 +39,17 @@
       hasItemDictionary() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
-      canSeeGeneral() {
-        return true
+      isGeneralSuggestionsVisible() {
+        return checkUserSettings(
+          this.globalStore.login.settings,
+          'visibilities.supportView.generalSuggestions'
+        )
       },
-      canSeeSuggestions() {
-        return true
+      isSupportSuggestionsVisible() {
+        return checkUserSettings(
+          this.globalStore.login.settings,
+          'visibilities.supportView.supportSuggestions'
+        )
       },
     },
     methods: {},

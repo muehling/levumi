@@ -234,7 +234,6 @@
           data.user.school_type = this.schoolType
           data.user.focus = this.focusType
         }
-        console.log('miau', this.settings, this.user.settings, this.settings !== this.user.settings)
 
         if (this.settings && this.settings !== this.user.settings) {
           data.user.settings = this.settings
