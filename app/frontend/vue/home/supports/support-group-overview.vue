@@ -13,7 +13,7 @@
       <tbody>
         <tr v-for="(row, rowIndex) in tableRows" :key="`support-row-${rowIndex}`">
           <td v-for="(student, index) in row" :key="'line' + index + '/' + rowIndex">
-            {{ student?.name }}
+            {{ student }}
           </td>
         </tr>
       </tbody>
@@ -52,35 +52,49 @@
       seriesByStudent() {
         const series = this.assessmentsStore.getSeriesByStudent()
         for (let s in series) {
-          series[s] = takeRight(series[s], 3)
+          const lastThree = takeRight(series[s], 3)
+          series[s] = lastThree.map(result => {
+            return result.report.positive.length
+          })
         }
         return series
       },
       highSupportStudents() {
-        return this.getStudentsForTrend(-1)
+        const students = Object.entries(this.seriesByStudent).filter(s => {
+          const [x1, x2, x3] = s[1]
+          return x1 >= x3
+        })
+
+        return students
       },
       mediumSupportStudents() {
-        return this.getStudentsForTrend(0)
+        const students = Object.entries(this.seriesByStudent).filter(s => {
+          const [x1, x2, x3] = s[1]
+          return x1 < x3 && (x1 > x2 || x2 > x3)
+        })
+        return students
       },
       noSupportStudents() {
-        return this.getStudentsForTrend(1)
+        const students = Object.entries(this.seriesByStudent).filter(s => {
+          const [x1, x2, x3] = s[1]
+          return x1 < x3 && x1 <= x2 && x2 <= x3
+        })
+        return students
       },
       tableRows() {
         const rows = zip(
-          this.highSupportStudents.map(id => this.students.find(s => s?.id === id)),
-          this.mediumSupportStudents.map(id => this.students.find(s => s?.id === id)),
-          this.noSupportStudents.map(id => this.students.find(s => s?.id === id))
+          this.highSupportStudents.map(
+            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+          ),
+          this.mediumSupportStudents.map(
+            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+          ),
+          this.noSupportStudents.map(
+            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+          )
         )
 
         return rows
-      },
-    },
-    methods: {
-      getStudentsForTrend(trendValue) {
-        const students = Object.entries(this.seriesByStudent).filter(
-          s => s[1][s[1].length - 1].report.trend === trendValue
-        )
-        return students.map(s => parseInt(s[0], 10))
       },
     },
   }

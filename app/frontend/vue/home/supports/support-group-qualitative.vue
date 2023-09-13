@@ -95,16 +95,18 @@
         }
       },
       getBackgroundColor(studentId, dimIndex) {
-        const trendData = this.getTrendForStudentAndDimension(studentId, dimIndex)
-        if (!trendData) {
+        const data = this.getTrendForStudentAndDimension(studentId, dimIndex)
+        if (!data) {
           return
         }
-        const lastTwoAverage = (trendData[0] + trendData[1]) / 2
-        if (lastTwoAverage > trendData[2]) {
+
+        const [x1, x2, x3] = data
+
+        if (x1 >= x3) {
           return 'red'
-        } else if (lastTwoAverage === trendData[2]) {
+        } else if (x1 < x3 && (x1 > x2 || x2 > x3)) {
           return 'yellow'
-        } else {
+        } else if (x1 < x3 && x1 <= x2 && x2 <= x3) {
           return 'lightblue'
         }
       },

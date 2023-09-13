@@ -40,10 +40,16 @@
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
       isGeneralSuggestionsVisible() {
-        return checkUserSettings(
-          this.globalStore.login.settings,
-          'visibilities.supportView.generalSuggestions'
-        )
+        // if there is no visibilities.supportView setting, display the standard tab
+        if (!checkUserSettings(this.globalStore.login.settings, 'visibilities.suppportView')) {
+          return true
+        } else {
+          // otherwise use the setting
+          return checkUserSettings(
+            this.globalStore.login.settings,
+            'visibilities.supportView.generalSuggestions'
+          )
+        }
       },
       isSupportSuggestionsVisible() {
         return checkUserSettings(
