@@ -123,7 +123,7 @@
         return !!this.tests
       },
       noTestsAvailable() {
-        return this.tests.reduce((acc, test) => acc && test.test_info.student_test, true)
+        return this.studentTests.length === 0
       },
     },
     created() {
