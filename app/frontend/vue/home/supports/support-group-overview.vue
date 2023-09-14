@@ -1,5 +1,19 @@
 <template>
   <div>
+    <div>
+      <b-button
+        v-b-toggle.supportGroupOverviewExplanation
+        variant="outline-secondary"
+        class="mb-3 btn-sm"
+        >Erläuterungen</b-button
+      >
+      <b-collapse id="supportGroupOverviewExplanation">
+        <p>
+          Die Zahlen in den eckigen Klammern entsprechen den Gesamtzahlen der richtigen Antworten
+          der letzten drei Testzeitpunkte.
+        </p>
+      </b-collapse>
+    </div>
     <table class="table table-sm table-bordered">
       <thead>
         <th
@@ -7,7 +21,8 @@
           :key="'header' + item.color"
           :style="`background-color: ${item.color};`"
         >
-          {{ item.name }}
+          {{ item.name }}<br />
+          <span class="font-weight-normal text-small font-italic">{{ item.explanation }}</span>
         </th>
       </thead>
       <tbody>
@@ -41,9 +56,23 @@
     computed: {
       supportNeeds() {
         return [
-          { name: 'Hoher Förderbedarf', color: 'red' },
-          { name: 'Mittlerer Förderbedarf', color: 'yellow' },
-          { name: 'Aktuell kein zusätzlicher Förderbedarf', color: 'lightblue' },
+          {
+            name: 'Hoher Förderbedarf',
+            explanation: '(Es gibt keine Leistungssteigerung im Vergleich zum vorletzten Test)',
+            color: 'red',
+          },
+          {
+            name: 'Mittlerer Förderbedarf',
+            explanation:
+              '(Es gibt eine Leistungssteigerung im Vergleich zum vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg)',
+            color: 'yellow',
+          },
+          {
+            name: 'Aktuell kein zusätzlicher Förderbedarf',
+            explanation:
+              '(Es gibt eine kontinuierliche Leistungssteigerung seit dem vorletzten Test)',
+            color: 'lightblue',
+          },
         ]
       },
       students() {
@@ -61,7 +90,7 @@
       },
       highSupportStudents() {
         const students = Object.entries(this.seriesByStudent).filter(s => {
-          const [x1, x2, x3] = s[1]
+          const [x1, _, x3] = s[1]
           return x1 >= x3
         })
 
@@ -84,13 +113,25 @@
       tableRows() {
         const rows = zip(
           this.highSupportStudents.map(
-            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+            id =>
+              this.students.find(s => s.id === parseInt(id[0]))?.name +
+              ' [' +
+              id[1].join(', ') +
+              ']'
           ),
           this.mediumSupportStudents.map(
-            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+            id =>
+              this.students.find(s => s.id === parseInt(id[0]))?.name +
+              ' [' +
+              id[1].join(', ') +
+              ']'
           ),
           this.noSupportStudents.map(
-            id => this.students.find(s => s.id === parseInt(id[0]))?.name + ' ' + id[1]
+            id =>
+              this.students.find(s => s.id === parseInt(id[0]))?.name +
+              ' [' +
+              id[1].join(', ') +
+              ']'
           )
         )
 

@@ -162,12 +162,16 @@
     <hr v-if="isSupportSectionVisible" class="section-divider" />
     <b-row v-if="isSupportSectionVisible" class="mt-4">
       <b-tabs class="w-100" pills no-body card>
-        <b-tab v-if="isGroupSupportOverviewVisible" title="Förderbedarf - Übersicht" lazy>
+        <b-tab
+          v-if="isGroupSupportOverviewVisible"
+          title="Übersicht Förderbedarf Ganze Klasse"
+          lazy
+        >
           <support-group-overview :group="group" :test="test.id" />
         </b-tab>
         <b-tab
           v-if="hasItemDictionary && isGroupQualitativeOverviewVisible"
-          title="Qualitative Auswertung"
+          title="Qualitative Auswertung Förderbedarf Ganze Klasse"
           lazy
         >
           <support-group-qualitative :group="group" :test="test.id" />

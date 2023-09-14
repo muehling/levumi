@@ -1,5 +1,35 @@
 <template>
   <div>
+    <div>
+      <b-button
+        v-b-toggle.supportGroupQualitativeExplanation
+        variant="outline-secondary"
+        class="mb-3 btn-sm"
+        >Erläuterungen</b-button
+      >
+      <b-collapse id="supportGroupQualitativeExplanation">
+        <p>
+          Die Zahlen in den eckigen Klammern entsprechen dem Verhältnis der richtigen Antworten zur
+          Gesamtzahl der Antworten der letzten drei Testzeitpunkte.
+        </p>
+        <p>
+          <b>Rot = Hoher Förderbedarf</b>: Es gibt keine Leistungssteigerung im Vergleich zum
+          vorletzten Test z.B. [0.67, 1, 0.5].
+        </p>
+        <p>
+          <b>Gelb = Mittlerer Förderbedarf</b>: Es gibt eine Leistungssteigerung im Vergleich zum
+          vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg z.B.
+          [0.67, 0, 1].
+        </p>
+        <p>
+          <b>Blau = Aktuell kein zusätzlicher Förderbedarf</b>: Es gibt eine kontinuierliche
+          Leistungssteigerung seit dem vorletzten Test z.B. [0.5, 0.67, 1]."
+        </p>
+        <p>
+          Ist eine Zelle leer, liegen weniger als drei Ergebnisse für die betreffende Dimension vor.
+        </p>
+      </b-collapse>
+    </div>
     <table class="table table-sm table-bordered">
       <thead>
         <th>Name</th>
