@@ -423,7 +423,7 @@
       },
       studentName(id) {
         //Student-Objekt aus globaler Variable holen
-        return getStudent(this.group.id, id).name
+        return getStudent(this.group.id, id)?.name
       },
       async toggleAssessment() {
         this.isUpdating = true
