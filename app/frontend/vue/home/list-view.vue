@@ -12,7 +12,7 @@
         :options="availableFilters"
       ></b-form-checkbox-group>
       <b-btn size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
-        <i :class="`fas fa-${!allTestsActive ? 'pause' : 'play'}`"></i>
+        <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
         {{ toggleButtonText }}</b-btn
       >
     </b-form-group>
