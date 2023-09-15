@@ -8,10 +8,7 @@
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
-          @click="
-            setSelectedView(0)
-            setStudentAndUpdate(-1)
-          "
+          @click="setStudentAndUpdate(-1)"
           >Ganze Klasse</b-button
         >
         <b-dropdown
@@ -42,8 +39,8 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="selectedView === index"
-          @click="setSelectedView(index)"
+          :pressed="selectedView === view.key"
+          @click="setSelectedView(view.key)"
         >
           {{ view.label }}
         </b-button>
@@ -110,7 +107,7 @@
               :group="group"
               :test="test"
               :selected-student="selectedStudent"
-              :selected-view="selectedView"
+              :selected-view-key="selectedView"
               :annotation-control-visible.sync="annotationControlVisible"
               :trend-is-enabled="trendIsEnabled"
               @annotation-removed="removeAnnotation"
@@ -137,7 +134,7 @@
         </b-row>
       </b-col>
     </b-row>
-    <b-row :hidden="!table_visible">
+    <b-row :hidden="!tableVisible">
       <div id="table" class="m-4" style="width: 100%">
         <table class="table table-sm table-striped table-borderless mt-1 text-small">
           <thead>
@@ -227,7 +224,7 @@
         graphData: [],
         isInitialized: false,
         selectedStudentId: -1,
-        selectedView: 0,
+        selectedView: this.test?.configuration.views[0].key,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
@@ -252,7 +249,11 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        return this.configuration.views[this.selectedView]
+        if (this.selectedView) {
+          return this.configuration.views.find(view => view.key === this.selectedView)
+        } else {
+          return this.configuration.views[0]
+        }
       },
       columns() {
         return this.viewConfig.columns || []
@@ -279,11 +280,11 @@
         }
         return false
       },
-      table_visible() {
+      tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
       table_data() {
-        if (this.viewConfig.type === 'graph') {
+        if (!this.tableVisible) {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -469,8 +470,8 @@
       )
     },
     methods: {
-      setSelectedView(index) {
-        this.selectedView = index
+      setSelectedView(key) {
+        this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
       },
@@ -554,6 +555,7 @@
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
+        this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
@@ -564,7 +566,7 @@
 
       async updateView(animate) {
         const view = this.viewConfig
-        if (view.type === 'table') {
+        if (view.type !== 'graph' && view.type !== 'graph_table') {
           return
         }
 
@@ -674,7 +676,6 @@
 
       updateAnnotations() {
         //Kommentare einfügen
-
         const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
 
         // get annotations that need to be drawn in the current chart
