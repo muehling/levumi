@@ -49,6 +49,13 @@
     const font_size = <%= @student.get_setting("font_size") %>
     window.font_size = font_size
 
+    function preventNavigation(navEvent) {
+        // Cancel the event as stated by the standard.
+        navEvent.preventDefault();
+        // Chrome requires returnValue to be set.
+        navEvent.returnValue = '';
+    }
+
     //Funktionen für Testumgebung bereitstellen
     function saveResults(views, report, data, callback) {
         let url = '<%= student_results_url(@student)%>'
@@ -87,12 +94,16 @@
                         $('#error_message').show()
                     })
             })
+        // Once the results have been saved we assume it is safe to allow navigation again
+        // This is also a measure to make sure that the event listener is removed, even when exit() is not called
+        window.removeEventListener('beforeunload', preventNavigation, true);
     }
     window.saveResults = saveResults
 
     //Testfenster schließen
     function exit() {
         window.location.href = '<%= @redirect %>'
+        window.removeEventListener('beforeunload', preventNavigation, true);
     }
     window.exit = exit
 
@@ -176,6 +187,9 @@
       //window.location.hash = 'no-back-button'
       //window.location.hash = 'Again-No-back-button'
       //window.onhashchange = function() { window.location.hash = 'no-back-button' }
+
+      // interrupt attempts to navigate away
+      window.addEventListener('beforeunload', preventNavigation, true)
       document.title = "<%= @test.level %>"
     <%end%>
 </script>
