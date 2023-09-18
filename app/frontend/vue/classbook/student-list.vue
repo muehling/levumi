@@ -53,6 +53,7 @@
       v-if="selectedStudent && selectedModal === 'font-settings'"
       :student="selectedStudent"
       @hide-student-row-modal="resetSelectedStudent"
+      @update="update"
     />
   </div>
 </template>
