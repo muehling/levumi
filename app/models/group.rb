@@ -12,6 +12,7 @@ class Group < ApplicationRecord
   #Liefere Objekt für Frontend, das Group und GroupShare vereint
   def as_hash(user)
     group_share = group_shares.where(user: user).first #Kombination aus User & Group muss eindeutig sein!
+
     data = {
       id: id,
       label: label,

@@ -63,9 +63,6 @@
         </div>
       </b-form>
     </b-collapse>
-    <b-button variant="success" class="mb-1" :disabled="isGeneratingQrCodes" @click="exportQrCodes">
-      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
-    </b-button>
   </div>
 </template>
 
@@ -73,8 +70,6 @@
   import { ajax } from '../../utils/ajax'
   import { encryptKey, encryptWithKey } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
-  import jsPDF from 'jspdf'
-  import QRCodeStyling from 'qr-code-styling'
 
   export default {
     name: 'GroupForm',
@@ -89,7 +84,6 @@
       return {
         label: !this.group?.id ? '' : this.group.label,
         key: !this.group?.id ? this.newKey() : '',
-        isGeneratingQrCodes: false,
       }
     },
     computed: {
@@ -156,51 +150,6 @@
       generate_token() {
         const key = this.key ? this.key : this.newKey()
         return encryptWithKey(key, key)
-      },
-
-      blobToBase64(blob) {
-        return new Promise((resolve, _) => {
-          const reader = new FileReader()
-          reader.onloadend = () => resolve(reader.result)
-          reader.readAsDataURL(blob)
-        })
-      },
-
-      async exportQrCodes() {
-        this.isGeneratingQrCodes = true
-        const pdf = new jsPDF()
-        let height = 10
-        for (let i = 0; i < this.students.length; i++) {
-          const qrCode = new QRCodeStyling({
-            width: 400,
-            height: 400,
-            type: 'canvas',
-            data: `${window.location.origin}/testen_login?login=${this.students[i].login}`,
-            dotsOptions: {
-              color: '#000000',
-            },
-          })
-          const qrData = await qrCode.getRawData('jpeg')
-
-          if (qrCode) {
-            const base64Image = await this.blobToBase64(qrData)
-            const levumiImg = new Image()
-            levumiImg.src = '/images/shared/Levumi-normal.jpg'
-
-            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
-            pdf.text('Name: ' + this.students[i].name, 110, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
-            pdf.line(0, height + 43, 210, height + 45)
-            height = height + 46
-            if (height >= 250) {
-              height = 10
-              pdf.addPage()
-            }
-          }
-        }
-        pdf.save(`QR-Codes ${this.group.label}.pdf`)
-        this.isGeneratingQrCodes = false
       },
     },
   }

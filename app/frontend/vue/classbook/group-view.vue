@@ -14,6 +14,15 @@
       <share-form v-if="displayShareForm" :group="group" @update:groups="updateGroup($event)">
       </share-form>
     </div>
+    <b-button
+      v-if="canCreateQrCodes"
+      variant="success"
+      class="mb-1 btn-sm"
+      :disabled="isGeneratingQrCodes"
+      @click="exportQrCodes"
+    >
+      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
+    </b-button>
     <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only">
     </student-list>
   </div>
@@ -37,12 +46,14 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { isMasquerading } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-form.vue'
+  import jsPDF from 'jspdf'
+  import QRCodeStyling from 'qr-code-styling'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
-  import { isMasquerading } from '../../utils/user'
 
   export default {
     name: 'GroupView',
@@ -61,7 +72,15 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
+    data() {
+      return {
+        isGeneratingQrCodes: false,
+      }
+    },
     computed: {
+      canCreateQrCodes() {
+        return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
+      },
       date: function () {
         let date = new Date(this.group?.updated_at)
         return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear()
@@ -72,6 +91,9 @@
       },
       displayShareForm() {
         return !isMasquerading(this.globalStore.login) && this.group.id
+      },
+      students() {
+        return this.globalStore.studentsInGroups[this.group.id] || []
       },
     },
     methods: {
@@ -121,6 +143,50 @@
             this.$emit('update:groups', remainingGroups)
           }
         }
+      },
+      blobToBase64(blob) {
+        return new Promise((resolve, _) => {
+          const reader = new FileReader()
+          reader.onloadend = () => resolve(reader.result)
+          reader.readAsDataURL(blob)
+        })
+      },
+
+      async exportQrCodes() {
+        this.isGeneratingQrCodes = true
+        const pdf = new jsPDF()
+        let height = 10
+        for (let i = 0; i < this.students.length; i++) {
+          const qrCode = new QRCodeStyling({
+            width: 400,
+            height: 400,
+            type: 'canvas',
+            data: `${window.location.origin}/testen_login?login=${this.students[i].login}`,
+            dotsOptions: {
+              color: '#000000',
+            },
+          })
+          const qrData = await qrCode.getRawData('jpeg')
+
+          if (qrCode) {
+            const base64Image = await this.blobToBase64(qrData)
+            const levumiImg = new Image()
+            levumiImg.src = '/images/shared/Levumi-normal.jpg'
+
+            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
+            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
+            pdf.text('Name: ' + this.students[i].name, 110, height + 10)
+            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
+            pdf.line(0, height + 43, 210, height + 45)
+            height = height + 46
+            if (height >= 250) {
+              height = 10
+              pdf.addPage()
+            }
+          }
+        }
+        pdf.save(`QR-Codes ${this.group.label}.pdf`)
+        this.isGeneratingQrCodes = false
       },
     },
   }

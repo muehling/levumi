@@ -62,12 +62,20 @@
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
+  import { useGlobalStore } from '../../../store/store'
+
   export default {
     name: 'FontSettingsModal',
     props: {
       student: Object,
     },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data: function () {
+      console.log('miau', this.student)
+
       return {
         fontFamily:
           this.student.settings === undefined || this.student.settings['font_family'] === undefined
@@ -99,7 +107,12 @@
         })
         if (res.status === 200) {
           const data = await res.json()
-          //    this.update(data)
+
+          let index = this.globalStore.studentsInGroups[this.student.group_id].findIndex(
+            s => s.id === this.student.id
+          )
+          this.$emit('update', { object: data, index })
+          this.hideModal()
         }
       },
     },

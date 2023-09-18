@@ -53,6 +53,7 @@
       v-if="selectedStudent && selectedModal === 'font-settings'"
       :student="selectedStudent"
       @hide-student-row-modal="resetSelectedStudent"
+      @update="update"
     />
   </div>
 </template>
@@ -114,6 +115,7 @@
         else {
           this.students.splice(val.index, 1)
         }
+        console.log('update', val)
 
         this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },

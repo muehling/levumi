@@ -8,10 +8,7 @@
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
-          @click="
-            setSelectedView(0)
-            setStudentAndUpdate(-1)
-          "
+          @click="setStudentAndUpdate(-1)"
           >Ganze Klasse</b-button
         >
         <b-dropdown
@@ -42,8 +39,8 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="selectedView === index"
-          @click="setSelectedView(index)"
+          :pressed="selectedView === view.key"
+          @click="setSelectedView(view.key)"
         >
           {{ view.label }}
         </b-button>
@@ -110,7 +107,7 @@
               :group="group"
               :test="test"
               :selected-student="selectedStudent"
-              :selected-view="selectedView"
+              :selected-view-key="selectedView"
               :annotation-control-visible.sync="annotationControlVisible"
               :trend-is-enabled="trendIsEnabled"
               @annotation-removed="removeAnnotation"
@@ -137,7 +134,7 @@
         </b-row>
       </b-col>
     </b-row>
-    <b-row :hidden="!table_visible">
+    <b-row :hidden="!tableVisible">
       <div id="table" class="m-4" style="width: 100%">
         <table class="table table-sm table-striped table-borderless mt-1 text-small">
           <thead>
@@ -165,6 +162,9 @@
         :items="simpleTableData"
       ></b-table-lite>
     </b-row>
+    <b-row v-if="niveaus_visible">
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
+    </b-row>
   </div>
 </template>
 
@@ -189,12 +189,13 @@
   import { createTrendline } from './linearRegressionHelpers'
   import { computed } from 'vue'
   import TargetControls from './target-controls.vue'
+  import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import { useTestsStore } from '@/store/testsStore'
   import { useGlobalStore } from '@/store/store'
   import cloneDeep from 'lodash/cloneDeep'
   export default {
     name: 'AnalysisView',
-    components: { AnnotationsSection, TargetControls },
+    components: { AnnotationsSection, NiveauOverview, TargetControls },
     inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
@@ -203,6 +204,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
+        testData: computed(() => this.testData),
       }
     },
     props: {
@@ -227,7 +229,7 @@
         graphData: [],
         isInitialized: false,
         selectedStudentId: -1,
-        selectedView: 0,
+        selectedView: this.test?.configuration.views[0].key,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
@@ -252,7 +254,14 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        return this.configuration.views[this.selectedView]
+        if (this.selectedView) {
+          return this.configuration.views.find(view => view.key === this.selectedView)
+        } else {
+          return this.configuration.views[0]
+        }
+      },
+      nivConfig() {
+        return this.viewConfig.niv_config
       },
       columns() {
         return this.viewConfig.columns || []
@@ -279,11 +288,14 @@
         }
         return false
       },
-      table_visible() {
+      tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
+      niveaus_visible() {
+        return this.viewConfig.type === 'niveaus'
+      },
       table_data() {
-        if (this.viewConfig.type === 'graph') {
+        if (!this.tableVisible) {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -469,8 +481,8 @@
       )
     },
     methods: {
-      setSelectedView(index) {
-        this.selectedView = index
+      setSelectedView(key) {
+        this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
       },
@@ -554,6 +566,10 @@
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
+        // some combinations of views/selectedStudent/presence of results yield no views
+        if (this.viewsWithGroupAndStudent.length) {
+          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+        }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
@@ -564,7 +580,8 @@
 
       async updateView(animate) {
         const view = this.viewConfig
-        if (view.type === 'table') {
+        // return early if the view type has no graph
+        if (!['graph', 'graph_table'].includes(view.type)) {
           return
         }
 
