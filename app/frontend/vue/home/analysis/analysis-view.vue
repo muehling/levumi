@@ -162,6 +162,9 @@
         :items="simpleTableData"
       ></b-table-lite>
     </b-row>
+    <b-row v-if="niveaus_visible">
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
+    </b-row>
   </div>
 </template>
 
@@ -186,12 +189,13 @@
   import { createTrendline } from './linearRegressionHelpers'
   import { computed } from 'vue'
   import TargetControls from './target-controls.vue'
+  import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import { useTestsStore } from '@/store/testsStore'
   import { useGlobalStore } from '@/store/store'
   import cloneDeep from 'lodash/cloneDeep'
   export default {
     name: 'AnalysisView',
-    components: { AnnotationsSection, TargetControls },
+    components: { AnnotationsSection, NiveauOverview, TargetControls },
     inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
@@ -200,6 +204,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
+        testData: computed(() => this.testData),
       }
     },
     props: {
@@ -255,6 +260,9 @@
           return this.configuration.views[0]
         }
       },
+      nivConfig() {
+        return this.viewConfig.niv_config
+      },
       columns() {
         return this.viewConfig.columns || []
       },
@@ -282,6 +290,9 @@
       },
       tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
+      },
+      niveaus_visible() {
+        return this.viewConfig.type === 'niveaus'
       },
       table_data() {
         if (!this.tableVisible) {
@@ -566,7 +577,8 @@
 
       async updateView(animate) {
         const view = this.viewConfig
-        if (view.type !== 'graph' && view.type !== 'graph_table') {
+        // return early if the view type has no graph
+        if (!['graph', 'graph_table'].includes(view.type)) {
           return
         }
 
@@ -676,6 +688,7 @@
 
       updateAnnotations() {
         //Kommentare einfügen
+
         const studentId = this.selectedStudentId !== -1 ? this.selectedStudentId : null
 
         // get annotations that need to be drawn in the current chart
