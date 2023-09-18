@@ -145,7 +145,7 @@
       annotations: Array,
       group: Object,
       selectedStudent: Object,
-      selectedView: Number,
+      selectedViewKey: String,
       test: Object,
       annotationControlVisible: Boolean,
       trendIsEnabled: Boolean,
@@ -167,10 +167,10 @@
           this.$emit('update:annotationControlVisible', value)
         },
       },
-      currentAnnotations: function () {
+      currentAnnotations() {
         return this.annotations.filter(annotation => {
           return (
-            annotation.view === this.selectedView &&
+            annotation.view === this.selectedViewKey &&
             ((this.selectedStudent && this.selectedStudent?.id == annotation.student_id) ||
               (!this.selectedStudent && annotation.group_id != null))
           )
@@ -226,7 +226,7 @@
             end: this.annotationEnd,
             annotation_category_id: this.annotationCategoryId,
             trend_threshold: this.annotationIsTrendThreshold,
-            view: this.selectedView,
+            view: this.selectedViewKey,
           },
         }
 

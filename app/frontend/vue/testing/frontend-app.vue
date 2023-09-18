@@ -38,6 +38,7 @@
         </b-card>
       </div>
     </div>
+    <div class="footer-spacer"></div>
   </div>
   <div v-else>
     <!-- Login Form anzeigen -->
@@ -123,7 +124,7 @@
         return !!this.tests
       },
       noTestsAvailable() {
-        return this.tests.reduce((acc, test) => acc && test.test_info.student_test, true)
+        return this.studentTests.length === 0
       },
     },
     created() {
@@ -198,5 +199,8 @@
   }
   .test-card > .card {
     hyphens: auto;
+  }
+  .footer-spacer {
+    height: 4em;
   }
 </style>

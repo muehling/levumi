@@ -22,6 +22,7 @@
           :index="index"
           :empty="false"
           :read-only="readOnly"
+          @click-student-action="handleClickStudent"
           @update:students="update($event)"
         >
         </student-row>
@@ -38,6 +39,22 @@
         ></student-row>
       </tbody>
     </table>
+    <test-info-modal
+      v-if="selectedStudent && selectedModal === 'test-info'"
+      :student="selectedStudent"
+      @hide-student-row-modal="resetSelectedStudent"
+    />
+    <qr-code-modal
+      v-if="selectedStudent && selectedModal === 'qr-code'"
+      :student="selectedStudent"
+      @hide-student-row-modal="resetSelectedStudent"
+    />
+    <font-settings-modal
+      v-if="selectedStudent && selectedModal === 'font-settings'"
+      :student="selectedStudent"
+      @hide-student-row-modal="resetSelectedStudent"
+      @update="update"
+    />
   </div>
 </template>
 
@@ -45,10 +62,13 @@
   import { decryptStudentName } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import StudentRow from './student-row.vue'
+  import TestInfoModal from './modals/test-info-modal.vue'
+  import QrCodeModal from './modals/qr-code-modal.vue'
+  import FontSettingsModal from './modals/font-settings-modal.vue'
 
   export default {
     name: 'StudentList',
-    components: { StudentRow },
+    components: { StudentRow, TestInfoModal, QrCodeModal, FontSettingsModal },
     props: {
       groupId: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
       readOnly: Boolean,
@@ -56,6 +76,9 @@
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
+    },
+    data: function () {
+      return { selectedStudent: undefined, selectedModal: undefined }
     },
     computed: {
       students() {
@@ -65,6 +88,14 @@
     },
 
     methods: {
+      resetSelectedStudent() {
+        this.selectedStudent = undefined
+        this.action = undefined
+      },
+      handleClickStudent(student, action) {
+        this.selectedStudent = student
+        this.selectedModal = action
+      },
       update(val) {
         //Student einfügen, updaten oder löschen und View aktualisieren
         if (val.object !== null) {
@@ -84,6 +115,7 @@
         else {
           this.students.splice(val.index, 1)
         }
+        console.log('update', val)
 
         this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },

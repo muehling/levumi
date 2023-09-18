@@ -27,9 +27,9 @@ If you have not yet run Levumi locally, please follow the following steps.
 
 1. clone the repository
 2. change into the project root folder
-3. build the containers locally from the terminal: `docker-compose build`
-4. start the containers: `docker-compose up`
-5. open a new terminal, and enter the `web` container: `docker-compose exec web bash`
+3. build the containers locally from the terminal: `sudo docker-compose build`
+4. start the containers: `sudo docker-compose up`
+5. open a new terminal, and enter the `web` container: `sudo docker-compose exec web bash`
 6. install the node modules: `yarn`
 7. create the database: `rails db:create`
 8. then create the database structure: `rails db:migrate`
@@ -40,7 +40,7 @@ If you have not yet run Levumi locally, please follow the following steps.
 
 ## Development
 
-Once the containers have been built, the project can simply be started with `docker-compose up`
+Once the containers have been built, the project can simply be started with `sudo docker-compose up`
 In the browser, the development environment is marked as `DEV` in a red box in the header, to avoid confusion.
 
 ### Project Structure
@@ -70,7 +70,7 @@ The repository provides configurations for both Prettier and ESLint. Please conf
 If needed, you can access the Rails console in the `web` container:
 
 ```
-docker-compose exec web bash
+sudo docker-compose exec web bash
 rails c
 ```
 
@@ -81,7 +81,7 @@ Usually, it should not be necessary to access the database directly. It is usual
 If really necessary, the database container can be entered with
 
 ```
-docker-compose exec db bash
+sudo docker-compose exec db bash
 ```
 
 Inside the container, you have access to the MySQL CLI:
@@ -96,10 +96,10 @@ Username and password can be read from the `docker-compose.yml`
 
 If you need different databases (e. g. a small one for daily development purposes, and a different one with a production dump), these can easily be switched:
 
-- stop everything: `docker-compose down`
+- stop everything: `sudo docker-compose down`
 - in the `docker-compose.yml`, change the name of the `MYSQL_DATABASE` in the `environment` of the `db` service
 - the same name needs to be put into `config/database.yml` under `development -> database`
-- restart everything: `docker-compose up`
+- restart everything: `sudo docker-compose up`
   If the database does not yet exist, it needs to be created (see steps 5-7 in Initial Setup). Then, you can either seed the new database, import a dump, or start with an empty database.
 
 ### Adding node modules or ruby gems
@@ -109,7 +109,7 @@ Node modules can be added with yarn:
 The node modules folder is mounted into the container, so that new packages _should_ be available directly after installation. If not, please enter the container and install the node modules again
 
 ```
-docker-compose exec web bash
+sudo docker-compose exec web bash
 yarn
 ```
 
@@ -118,8 +118,8 @@ Note that this changes the ownership of the node_modules folder to the container
 Ruby gems are installed into the container during container build time. If you need a new gem, please add it manually to the Gemfile, run `bundle install`, and then stop and rebuild your container:
 
 ```
-docker-compose down
-docker-compose build
+sudo docker-compose down
+sudo docker-compose build
 ```
 
 ### User Config

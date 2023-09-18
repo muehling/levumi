@@ -8,10 +8,7 @@
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
-          @click="
-            setSelectedView(0)
-            setStudentAndUpdate(-1)
-          "
+          @click="setStudentAndUpdate(-1)"
           >Ganze Klasse</b-button
         >
         <b-dropdown
@@ -60,8 +57,8 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="selectedView === index"
-          @click="setSelectedView(index)"
+          :pressed="selectedView === view.key"
+          @click="setSelectedView(view.key)"
         >
           {{ view.label }}
         </b-button>
@@ -87,77 +84,79 @@
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
-      <b-row class="ml-1">
-        <b-col>
-          <b-button
-            v-if="!readOnly"
-            id="annotation_btn"
-            :aria-expanded="annotationControlVisible ? 'true' : 'false'"
-            aria-controls="annotation_collapse"
-            size="sm"
-            :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
-            @click="toggleCollapse('annotation_collapse')"
-          >
-            Anmerkungen
-            <i
-              :class="`when-closed fas ${
-                annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'
-              }`"
-            ></i>
-          </b-button>
-          <b-button
-            v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
-            id="target_btn"
-            class="ml-2"
-            :aria-expanded="targetControlVisible ? 'true' : 'false'"
-            aria-controls="target_collapse"
-            size="sm"
-            :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
-            @click="toggleCollapse('target_collapse')"
-          >
-            Ziele und Trends
-            <i
-              :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
-            ></i>
-          </b-button>
-          <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
-            <i class="fas fa-file-pdf"></i>
-            PDF erzeugen
-          </b-button>
-        </b-col>
-      </b-row>
-      <b-row class="ml-1">
-        <b-col class="mr-4">
-          <annotations-section
-            :annotations="annotations"
-            :group="group"
-            :test="test"
-            :selected-student="selectedStudent"
-            :selected-view="selectedView"
-            :annotation-control-visible.sync="annotationControlVisible"
-            :trend-is-enabled="trendIsEnabled"
-            @annotation-removed="removeAnnotation"
-          />
-          <TargetControls
-            :target-val="targetVal"
-            :deviation-val="deviationVal"
-            :date-until-val="dateUntilVal"
-            :date-until-is-enabled="dateUntilIsEnabled"
-            :target-is-enabled="targetIsEnabled"
-            :deviation-is-enabled="deviationIsEnabled"
-            :target-val-stored="targetValStored"
-            :date-until-stored="dateUntilStored"
-            :deviation-stored="deviationStored"
-            :student-targets="studentTargets"
-            :selected-student-id="selectedStudentId"
-            :target-control-visible.sync="targetControlVisible"
-            :target-valid="targetValid"
-            :test="test"
-            :group="group"
-            :readonly-suppressed="isReadOnlySuppressed"
-          ></TargetControls>
-        </b-col>
-      </b-row>
+      <b-col>
+        <b-row class="ml-1">
+          <b-col>
+            <b-button
+              v-if="!readOnly"
+              id="annotation_btn"
+              :aria-expanded="annotationControlVisible ? 'true' : 'false'"
+              aria-controls="annotation_collapse"
+              size="sm"
+              :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
+              @click="toggleCollapse('annotation_collapse')"
+            >
+              Anmerkungen
+              <i
+                :class="`when-closed fas ${
+                  annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'
+                }`"
+              ></i>
+            </b-button>
+            <b-button
+              v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
+              id="target_btn"
+              class="ml-2"
+              :aria-expanded="targetControlVisible ? 'true' : 'false'"
+              aria-controls="target_collapse"
+              size="sm"
+              :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
+              @click="toggleCollapse('target_collapse')"
+            >
+              Ziele und Trends
+              <i
+                :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
+              ></i>
+            </b-button>
+            <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
+              <i class="fas fa-file-pdf"></i>
+              PDF erzeugen
+            </b-button>
+          </b-col>
+        </b-row>
+        <b-row class="ml-1">
+          <b-col class="mr-4">
+            <annotations-section
+              :annotations="annotations"
+              :group="group"
+              :test="test"
+              :selected-student="selectedStudent"
+              :selected-view-key="selectedView"
+              :annotation-control-visible.sync="annotationControlVisible"
+              :trend-is-enabled="trendIsEnabled"
+              @annotation-removed="removeAnnotation"
+            />
+            <TargetControls
+              :target-val="targetVal"
+              :deviation-val="deviationVal"
+              :date-until-val="dateUntilVal"
+              :date-until-is-enabled="dateUntilIsEnabled"
+              :target-is-enabled="targetIsEnabled"
+              :deviation-is-enabled="deviationIsEnabled"
+              :target-val-stored="targetValStored"
+              :date-until-stored="dateUntilStored"
+              :deviation-stored="deviationStored"
+              :student-targets="studentTargets"
+              :selected-student-id="selectedStudentId"
+              :target-control-visible.sync="targetControlVisible"
+              :target-valid="targetValid"
+              :test="test"
+              :group="group"
+              :readonly-suppressed="isReadOnlySuppressed"
+            ></TargetControls>
+          </b-col>
+        </b-row>
+      </b-col>
     </b-row>
     <hr v-if="isSupportSectionVisible" class="section-divider" />
     <b-row v-if="isSupportSectionVisible" class="mt-4">
@@ -178,28 +177,24 @@
         </b-tab>
       </b-tabs>
     </b-row>
-    <hr v-if="table_visible" class="section-divider" />
-    <b-row :hidden="!table_visible">
-      <b-tabs class="w-100" pills no-body card>
-        <b-tab title="Details" lazy>
-          <div id="table" class="w-100">
-            <table class="table table-sm table-striped table-borderless mt-1 text-small">
-              <thead>
-                <tr>
-                  <th>Woche ab dem</th>
-                  <th v-for="col in columns" :key="col">{{ col }}</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="entry in table_data" :key="entry.week">
-                  <td>{{ printDate(entry.week) }}</td>
-                  <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </b-tab>
-      </b-tabs>
+
+    <b-row :hidden="!tableVisible">
+      <div id="table" class="m-4" style="width: 100%">
+        <table class="table table-sm table-striped table-borderless mt-1 text-small">
+          <thead>
+            <tr>
+              <th>Woche ab dem</th>
+              <th v-for="col in columns" :key="col">{{ col }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="entry in table_data" :key="entry.week">
+              <td>{{ printDate(entry.week) }}</td>
+              <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </b-row>
     <hr v-if="selectedViewType != 'graph'" class="section-divider" />
     <b-row :hidden="selectedViewType !== 'graph'">
@@ -216,28 +211,31 @@
         </b-tab>
       </b-tabs>
     </b-row>
+    <b-row v-if="niveaus_visible">
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
+    </b-row>
   </div>
 </template>
 
 <script>
   import { ajax } from '@/utils/ajax'
+  import { checkUserSettings } from '../../../utils/user'
   import { computed } from 'vue'
   import { createTrendline } from './linearRegressionHelpers'
   import { printDate } from '../../../utils/date'
-  import { checkUserSettings } from '../../../utils/user'
-  import { useGlobalStore } from '@/store/store'
   import { useAssessmentsStore } from '@/store/assessmentsStore'
+  import { useGlobalStore } from '@/store/store'
   import { useTestsStore } from '@/store/testsStore'
   import AnnotationsSection from './annotations-section.vue'
   import apiRoutes from '../../routes/api-routes'
   import autoTable from 'jspdf-autotable'
   import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
-  import takeRight from 'lodash/takeRight'
-  import TargetControls from './target-controls.vue'
-
+  import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
+  import takeRight from 'lodash/takeRight'
+  import TargetControls from './target-controls.vue'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -253,10 +251,12 @@
     name: 'AnalysisView',
     components: {
       AnnotationsSection,
+      NiveauOverview,
       TargetControls,
       SupportGroupOverview,
       SupportGroupQualitative,
     },
+
     inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
@@ -265,6 +265,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
+        testData: computed(() => this.testData),
       }
     },
     props: {
@@ -293,7 +294,7 @@
         maxY: 0,
         selectedStudentId: -1,
         selectedSupportNeedFilter: undefined,
-        selectedView: 0,
+        selectedView: this.test?.configuration.views[0].key,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
@@ -357,7 +358,14 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        return this.configuration.views[this.selectedView]
+        if (this.selectedView) {
+          return this.configuration.views.find(view => view.key === this.selectedView)
+        } else {
+          return this.configuration.views[0]
+        }
+      },
+      nivConfig() {
+        return this.viewConfig.niv_config
       },
       columns() {
         return this.viewConfig.columns || []
@@ -379,11 +387,14 @@
       has_student_views() {
         return this.configuration.views.some(view => view.student)
       },
-      table_visible() {
+      tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
+      niveaus_visible() {
+        return this.viewConfig.type === 'niveaus'
+      },
       table_data() {
-        if (this.viewConfig.type === 'graph') {
+        if (!this.tableVisible) {
           return []
         }
         let weeks = this.weeks.slice().reverse()
@@ -574,8 +585,8 @@
       )
     },
     methods: {
-      setSelectedView(index) {
-        this.selectedView = index
+      setSelectedView(key) {
+        this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
       },
@@ -659,6 +670,10 @@
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
+        // some combinations of views/selectedStudent/presence of results yield no views
+        if (this.viewsWithGroupAndStudent.length) {
+          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+        }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
@@ -669,7 +684,8 @@
 
       async updateView(animate) {
         const view = this.viewConfig
-        if (view.type === 'table') {
+        // return early if the view type has no graph
+        if (!['graph', 'graph_table'].includes(view.type)) {
           return
         }
 

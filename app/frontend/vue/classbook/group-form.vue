@@ -63,18 +63,13 @@
         </div>
       </b-form>
     </b-collapse>
-    <b-button variant="success" class="mb-1" @click="exportQrCodes">
-      <i class="fas fa-print"></i> QR-Code PDF
-    </b-button>
   </div>
 </template>
 
 <script>
   import { ajax } from '../../utils/ajax'
-  import { useGlobalStore } from '../../store/store'
   import { encryptKey, encryptWithKey } from '../../utils/encryption'
-
-  import jsPDF from 'jspdf'
+  import { useGlobalStore } from '../../store/store'
 
   export default {
     name: 'GroupForm',
@@ -155,31 +150,6 @@
       generate_token() {
         const key = this.key ? this.key : this.newKey()
         return encryptWithKey(key, key)
-      },
-      exportQrCodes() {
-        const pdf = new jsPDF()
-        let height = 10
-        for (let i = 0; i < this.students.length; i++) {
-          // these are rendered in student-list.vue
-          const qrElement = this.jQuery('#qr-' + this.students[i].id + ' canvas')[0]
-          if (qrElement) {
-            const base64Image = qrElement.toDataURL('image/jpeg', 1)
-            const levumiImg = new Image()
-            levumiImg.src = '/images/shared/Levumi-normal.jpg'
-
-            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
-            pdf.text('Name: ' + this.students[i].name, 110, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
-            pdf.line(0, height + 43, 210, height + 45)
-            height = height + 46
-            if (height >= 250) {
-              height = 10
-              pdf.addPage()
-            }
-          }
-        }
-        pdf.save(`QR-Codes ${this.group.label}.pdf`)
       },
     },
   }

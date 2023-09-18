@@ -392,16 +392,23 @@
       },
     },
     watch: {
-      '$route.params.testId': {
+      '$route.params': {
         immediate: true,
-        handler(id) {
-          if (!id) {
+        handler(data) {
+          if (!data.testId) {
             return
           }
-          const test = this.globalStore.staticData.testMetaData.tests.find(test => test.id === id)
+          const test = this.globalStore.staticData.testMetaData.tests.find(
+            test => test.id === data.testId
+          )
           if (!test) {
             return
           }
+          // might happen that there is more than one group-view mounted. In this case, only update the relevant one.
+          if (data.groupId !== this.group.id) {
+            return
+          }
+
           const preselect = {
             areaId: test.area_id,
             competenceId: test.competence_id,
@@ -409,7 +416,7 @@
             typeId: test.test_type_id || this.defaultTestType.id,
             testId: test.id,
           }
-          this.setPreselect(preselect, false)
+          this.setPreselect(preselect, false, true)
         },
       },
     },
@@ -439,8 +446,8 @@
         this.versionSelected = data.versionId
 
         await this.$nextTick() // wait until computed properties have refreshed
+        await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 
-        this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
         this.jQuery('html, body').animate(
           { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
           'slow'
@@ -467,7 +474,7 @@
           return
         }
         if (!test.info.is_latest) {
-          this.loadAssessment(test.info.id, isVersion)
+          this.loadAssessment(test.info.id, isVersion, true)
         } else {
           const res = await ajax({
             contentType: 'application/x-www-form-urlencoded',
@@ -478,7 +485,7 @@
 
           if (res.status === 200) {
             this.propagateUsedTest(test.info.id)
-            this.loadAssessment(test.info.id, isVersion)
+            this.loadAssessment(test.info.id, isVersion, true)
           }
         }
       },

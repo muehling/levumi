@@ -94,7 +94,6 @@ export const useGlobalStore = defineStore('global', {
 
           return acc
         }, {})
-
         this.studentsInGroups = studentsInGroups
       }
       this.isLoading = false
