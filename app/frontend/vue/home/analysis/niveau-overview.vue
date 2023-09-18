@@ -125,7 +125,6 @@
       containerStyle() {
         let s = {}
         s['max-height'] = this.desiredHeight + 'px'
-        console.log(s)
         return s
       },
       overviewHeight() {

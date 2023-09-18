@@ -566,7 +566,10 @@
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
-        this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+        // some combinations of views/selectedStudent/presence of results yield no views
+        if (this.viewsWithGroupAndStudent.length) {
+          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+        }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
