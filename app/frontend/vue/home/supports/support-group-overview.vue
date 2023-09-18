@@ -12,6 +12,10 @@
           Die Zahlen in den eckigen Klammern entsprechen den Gesamtzahlen der richtigen Antworten
           der letzten drei Testzeitpunkte.
         </p>
+        <p v-for="item in supportNeeds" :key="item.color">
+          <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          {{ item.explanation }}
+        </p>
       </b-collapse>
     </div>
     <table class="table table-sm table-bordered">
@@ -21,8 +25,7 @@
           :key="'header' + item.color"
           :style="`background-color: ${item.color};`"
         >
-          {{ item.name }}<br />
-          <span class="font-weight-normal text-small font-italic">{{ item.explanation }}</span>
+          {{ item.name }}
         </th>
       </thead>
       <tbody>
@@ -58,19 +61,19 @@
         return [
           {
             name: 'Hoher Förderbedarf',
-            explanation: '(Es gibt keine Leistungssteigerung im Vergleich zum vorletzten Test)',
+            explanation: 'Es gibt keine Leistungssteigerung im Vergleich zum vorletzten Test.',
             color: 'red',
           },
           {
             name: 'Mittlerer Förderbedarf',
             explanation:
-              '(Es gibt eine Leistungssteigerung im Vergleich zum vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg)',
+              'Es gibt eine Leistungssteigerung im Vergleich zum vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg.',
             color: 'yellow',
           },
           {
             name: 'Aktuell kein zusätzlicher Förderbedarf',
             explanation:
-              '(Es gibt eine kontinuierliche Leistungssteigerung seit dem vorletzten Test)',
+              'Es gibt eine kontinuierliche Leistungssteigerung seit dem vorletzten Test.',
             color: 'lightblue',
           },
         ]

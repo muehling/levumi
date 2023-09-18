@@ -9,21 +9,21 @@
       >
       <b-collapse id="supportGroupQualitativeExplanation">
         <p>
-          Die Zahlen in den eckigen Klammern entsprechen dem Verhältnis der richtigen Antworten zur
-          Gesamtzahl der Antworten der letzten drei Testzeitpunkte.
+          Die Zahlen in den eckigen Klammern entsprechen der Anzahl der richtigen Antworten im
+          Verhältnis zur Gesamtzahl der Antworten der letzten drei Testzeitpunkte.
         </p>
         <p>
           <b>Rot = Hoher Förderbedarf</b>: Es gibt keine Leistungssteigerung im Vergleich zum
-          vorletzten Test z.B. [0.67, 1, 0.5].
+          vorletzten Test z.B. [1/3, 1/1, 0/1].
         </p>
         <p>
           <b>Gelb = Mittlerer Förderbedarf</b>: Es gibt eine Leistungssteigerung im Vergleich zum
           vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg z.B.
-          [0.67, 0, 1].
+          [1/3, 1/1, 0/1].
         </p>
         <p>
           <b>Blau = Aktuell kein zusätzlicher Förderbedarf</b>: Es gibt eine kontinuierliche
-          Leistungssteigerung seit dem vorletzten Test z.B. [0.5, 0.67, 1]."
+          Leistungssteigerung seit dem vorletzten Test z.B. [2/3, 3/4, 4/4]."
         </p>
         <p>
           Ist eine Zelle leer, liegen weniger als drei Ergebnisse für die betreffende Dimension vor.
@@ -43,7 +43,7 @@
             :key="'line' + item + index"
             :style="`background-color: ${getBackgroundColor(student.id, index)};`"
           >
-            {{ getTrendForStudentAndDimension(student.id, index) }}
+            {{ getDisplayValue(getTrendForStudentAndDimension(student.id, index)?.answers) }}
           </td>
         </tr>
       </tbody>
@@ -80,6 +80,13 @@
       },
     },
     methods: {
+      getDisplayValue(result) {
+        if (!result) {
+          return ''
+        }
+
+        return '[' + result.map(r => (r.r ? r.r : '0') + '/' + r.t).join(', ') + ']'
+      },
       // calculates the right/wrong answers per item dimension, as this information is not included in result.report
       getTrendForStudentAndDimension(studentId, dimIndex) {
         const series = takeRight(this.seriesByStudent[studentId], 3)
@@ -119,18 +126,30 @@
           relationCorrectToTotal.length > 2 &&
           !isNaN(relationCorrectToTotal.reduce((acc, r) => acc + r, 0))
         ) {
-          return relationCorrectToTotal
+          return { relation: relationCorrectToTotal, answers: answersByResult }
         } else {
           return undefined
         }
       },
       getBackgroundColor(studentId, dimIndex) {
         const data = this.getTrendForStudentAndDimension(studentId, dimIndex)
+
         if (!data) {
           return
         }
 
-        const [x1, x2, x3] = data
+        const [x1, x2, x3] = data.relation
+
+        // some edge cases
+        if (x1 === 1 && x2 === 1 && x3 === 1) {
+          return 'lightblue'
+        }
+        if (x1 === 1 && x3 === 1 && x2 <= 0.33) {
+          return 'red'
+        }
+        if (x1 === 1 && x3 === 1 && x2 > 0.33) {
+          return 'yellow'
+        }
 
         if (x1 >= x3) {
           return 'red'
