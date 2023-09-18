@@ -115,7 +115,6 @@
         else {
           this.students.splice(val.index, 1)
         }
-        console.log('update', val)
 
         this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
       },

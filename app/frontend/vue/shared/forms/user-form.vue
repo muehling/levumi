@@ -63,9 +63,10 @@
         @change-focus-type="ft => (focusType = ft)"
       >
       </extra-data-form>
-      <div v-if="canEditSettingsJson">
+      <div v-if="canEditSettingsJson" class="mb-3">
         <b-button v-b-toggle.json-edit variant="outline-secondary">User-Config ändern</b-button>
         <b-collapse id="json-edit" class="mt-2">
+          <p><i>Scito quid facias.</i></p>
           <b-form-textarea
             v-model="settings"
             placeholder="Enter something..."
@@ -100,7 +101,7 @@
 <script>
   import { ajax } from '../../../utils/ajax'
   import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
-  import { hasCapability, isAdmin } from '../../../utils/user'
+  import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
   import ConfirmDialog from '../confirm-dialog.vue'
@@ -161,7 +162,7 @@
         return hasCapability('user', this.globalStore.login?.capabilities)
       },
       canEditSettingsJson() {
-        return isAdmin(this.globalStore.login?.capabilities)
+        return hasCapability('user', this.globalStore.login?.capabilities)
       },
       accountTypeText() {
         return this.accountTypes?.find(at => at.id === this.accountType)?.label

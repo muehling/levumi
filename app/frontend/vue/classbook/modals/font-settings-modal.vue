@@ -74,8 +74,6 @@
       return { globalStore }
     },
     data: function () {
-      console.log('miau', this.student)
-
       return {
         fontFamily:
           this.student.settings === undefined || this.student.settings['font_family'] === undefined
