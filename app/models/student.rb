@@ -74,9 +74,7 @@ class Student < ApplicationRecord
     all_assessments = Assessment.where(group_id: self.group_id, test_id: tests, active: true)
     week = Date.commercial(Date.today.year, Date.today.cweek)
     result = []
-    puts '##################################################'
-    puts all_assessments.count
-    puts self.group_id
+ 
     all_assessments.each do |a|
       unless a.excludes.include?(self.id)
         result += [

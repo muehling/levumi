@@ -68,6 +68,8 @@
       student: Object,
     },
     data: function () {
+      console.log('miau', this.student)
+
       return {
         fontFamily:
           this.student.settings === undefined || this.student.settings['font_family'] === undefined
@@ -99,6 +101,8 @@
         })
         if (res.status === 200) {
           const data = await res.json()
+          console.log('data', data)
+
           //    this.update(data)
         }
       },

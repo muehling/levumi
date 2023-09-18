@@ -116,4 +116,7 @@ export default {
   students: {
     activeAssessments: id => ({ url: `/students/${id}` }),
   },
+  groups: {
+    group: id => ({ url: `/groups/${id}` }),
+  },
 }

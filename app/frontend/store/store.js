@@ -67,6 +67,10 @@ export const useGlobalStore = defineStore('global', {
       const data = await res.json()
       this.staticData.testMetaData = data
     },
+    async fetchGroup(groupId) {
+      const res = await ajax({ ...apiRoutes.groups.group(id) })
+      //const data =
+    },
 
     async fetch(showLoader = false) {
       this.isLoading = showLoader
@@ -94,7 +98,6 @@ export const useGlobalStore = defineStore('global', {
 
           return acc
         }, {})
-
         this.studentsInGroups = studentsInGroups
       }
       this.isLoading = false
