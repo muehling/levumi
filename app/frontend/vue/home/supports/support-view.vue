@@ -41,7 +41,7 @@
       },
       isGeneralSuggestionsVisible() {
         // if there is no visibilities.supportView setting, display the standard tab
-        if (!checkUserSettings(this.globalStore.login.settings, 'visibilities.suppportView')) {
+        if (!checkUserSettings(this.globalStore.login.settings, 'visibilities.supportView')) {
           return true
         } else {
           // otherwise use the setting

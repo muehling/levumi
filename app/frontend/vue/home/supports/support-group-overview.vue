@@ -18,11 +18,12 @@
         </p>
       </b-collapse>
     </div>
-    <table class="table table-sm table-bordered">
+    <table class="table table-sm table-bordered support-table">
       <thead>
         <th
           v-for="item in supportNeeds"
           :key="'header' + item.color"
+          width="33%"
           :style="`background-color: ${item.color};`"
         >
           {{ item.name }}
@@ -30,7 +31,7 @@
       </thead>
       <tbody>
         <tr v-for="(row, rowIndex) in tableRows" :key="`support-row-${rowIndex}`">
-          <td v-for="(student, index) in row" :key="'line' + index + '/' + rowIndex">
+          <td v-for="(student, index) in row" :key="'line' + index + '/' + rowIndex" width="33%">
             {{ student }}
           </td>
         </tr>
@@ -143,3 +144,8 @@
     },
   }
 </script>
+<style>
+  .support-table {
+    table-layout: fixed;
+  }
+</style>
