@@ -158,7 +158,7 @@
         </b-row>
       </b-col>
     </b-row>
-    <hr v-if="isSupportSectionVisible" class="section-divider" />
+    <hr class="section-divider" />
     <b-row v-if="isSupportSectionVisible" class="mt-4">
       <b-tabs class="w-100" pills no-body card>
         <b-tab
@@ -219,17 +219,18 @@
 
 <script>
   import { ajax } from '@/utils/ajax'
-  import { checkUserSettings } from '../../../utils/user'
+  import { checkUserSettings } from '@/utils/user'
   import { computed } from 'vue'
+  import { createSimpleTableData, createHtmlTableFromViewConfig } from './data/createTableData'
   import { createTrendline } from './linearRegressionHelpers'
-  import { printDate } from '../../../utils/date'
+  import { getTrendFromResults } from '@/utils/helpers'
+  import { printDate } from '@/utils/date'
   import { useAssessmentsStore } from '@/store/assessmentsStore'
   import { useGlobalStore } from '@/store/store'
   import { useTestsStore } from '@/store/testsStore'
   import AnnotationsSection from './annotations-section.vue'
-  import apiRoutes from '../../routes/api-routes'
+  import apiRoutes from '@/vue/routes/api-routes'
   import autoTable from 'jspdf-autotable'
-  import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
   import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
@@ -329,9 +330,9 @@
       supportNeeds() {
         return [
           { name: 'Alle', id: undefined },
-          { name: 'Hoher Förderbedarf', id: -1 },
-          { name: 'Mittlerer Förderbedarf', id: 0 },
-          { name: 'Aktuell kein zusätzlicher Förderbedarf', id: 1 },
+          { name: 'Hoher Förderbedarf', id: 'HIGH_SUPPORT' },
+          { name: 'Mittlerer Förderbedarf', id: 'MEDIUM_SUPPORT' },
+          { name: 'Aktuell kein zusätzlicher Förderbedarf', id: 'NO_SUPPORT' },
         ]
       },
 
@@ -397,44 +398,27 @@
         if (!this.tableVisible) {
           return []
         }
-        let weeks = this.weeks.slice().reverse()
-        let res = []
-        for (let w = 0; w < weeks.length; ++w) {
-          let found = false
-          for (let r = 0; r < this.results.length; ++r) {
-            if (
-              this.results[r].student_id === this.selectedStudentId &&
-              this.results[r].test_week === weeks[w]
-            ) {
-              let temp = {}
-              for (let i = 0; i < this.viewConfig.column_keys.length; ++i) {
-                let key = this.viewConfig.column_keys[i]
-                let name = this.viewConfig.columns[i]
-                temp[name] = this.results[r].views[this.viewConfig.key][key]
-                if (temp[name] === undefined) {
-                  temp[name] = '-'
-                }
-              }
-              res.push(deepmerge({ week: weeks[w] }, temp))
-              found = true
-              break
-            }
-          }
-          if (!found) {
-            let temp = {}
-            for (let c = 0; c < this.columns.length; ++c) {
-              temp[this.columns[c]] = '-'
-            }
-            res.push(deepmerge({ week: weeks[w] }, temp))
-          }
-        }
-        return res
+        return createHtmlTableFromViewConfig({
+          weeks: this.weeks,
+          results: this.results,
+          viewConfig: this.viewConfig,
+          selectedStudentId: this.selectedStudentId,
+          columns: this.columns,
+        })
       },
       studentsWithResults() {
         if (this.selectedSupportNeedFilter !== undefined) {
           {
-            const students = Object.entries(this.seriesByStudent).filter(
-              s => s[1][s[1].length - 1].report.trend === this.selectedSupportNeedFilter
+            const series = this.assessmentsStore.getSeriesByStudent()
+            for (let s in series) {
+              const lastThree = takeRight(series[s], 3)
+              series[s] = lastThree.map(result => {
+                return result.report.positive.length
+              })
+            }
+
+            const students = Object.entries(series).filter(
+              s => getTrendFromResults(s[1]) === this.selectedSupportNeedFilter
             )
             const needyStudents = students.map(s => parseInt(s[0], 10))
             return this.students.filter(
@@ -778,18 +762,7 @@
         }
         this.updateAnnotations()
 
-        // this is the input for <b-table-lite> component, which is shown below the graph
-        this.simpleTableData = gData.map(lineData => {
-          const data = lineData.data.reduce((acc, d) => {
-            // createSeries contains raw dates, so we need to format them here
-            acc[formatDate ? d.x : printDate(d.x)] = d.y || '-'
-            return acc
-          }, {})
-          return {
-            name: lineData.name,
-            ...data,
-          }
-        })
+        this.simpleTableData = createSimpleTableData(gData, formatDate)
 
         this.isInitialized = true
       },

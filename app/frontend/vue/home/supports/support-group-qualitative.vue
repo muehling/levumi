@@ -55,6 +55,7 @@
   import { useAssessmentsStore } from '../../../store/assessmentsStore'
   import { useGlobalStore } from '../../../store/store'
   import takeRight from 'lodash/takeRight'
+  import { getTrendFromResults } from '../../../utils/helpers'
 
   export default {
     name: 'SupportGroupQualitative',
@@ -138,25 +139,14 @@
           return
         }
 
-        const [x1, x2, x3] = data.relation
-
-        // some edge cases
-        if (x1 === 1 && x2 === 1 && x3 === 1) {
-          return 'lightblue'
-        }
-        if (x1 === 1 && x3 === 1 && x2 <= 0.33) {
-          return 'red'
-        }
-        if (x1 === 1 && x3 === 1 && x2 > 0.33) {
-          return 'yellow'
-        }
-
-        if (x1 >= x3) {
-          return 'red'
-        } else if (x1 < x3 && (x1 > x2 || x2 > x3)) {
-          return 'yellow'
-        } else if (x1 < x3 && x1 <= x2 && x2 <= x3) {
-          return 'lightblue'
+        const trend = getTrendFromResults(data.relation)
+        switch (trend) {
+          case 'NO_SUPPORT':
+            return 'lightblue'
+          case 'HIGH_SUPPORT':
+            return 'red'
+          case 'MEDIUM_SUPPORT':
+            return 'yellow'
         }
       },
     },

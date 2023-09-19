@@ -12,6 +12,10 @@
           Die Zahlen in den eckigen Klammern entsprechen den Gesamtzahlen der richtigen Antworten
           der letzten drei Testzeitpunkte.
         </p>
+        <p>
+          Für nicht in der Tabelle enthaltene Schüler:innen liegen nicht genug Ergebnisse vor, um
+          den Förderbedarf zu ermitteln.
+        </p>
         <p v-for="item in supportNeeds" :key="item.color">
           <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
           {{ item.explanation }}
@@ -45,6 +49,7 @@
   import { useAssessmentsStore } from '../../../store/assessmentsStore'
   import { useGlobalStore } from '../../../store/store'
   import zip from 'lodash/zip'
+  import { getTrendFromResults } from '../../../utils/helpers'
   export default {
     name: 'SupportGroupOverview',
     components: {},
@@ -94,23 +99,20 @@
       },
       highSupportStudents() {
         const students = Object.entries(this.seriesByStudent).filter(s => {
-          const [x1, _, x3] = s[1]
-          return x1 >= x3
+          return getTrendFromResults(s[1]) === 'HIGH_SUPPORT'
         })
 
         return students
       },
       mediumSupportStudents() {
         const students = Object.entries(this.seriesByStudent).filter(s => {
-          const [x1, x2, x3] = s[1]
-          return x1 < x3 && (x1 > x2 || x2 > x3)
+          return getTrendFromResults(s[1]) === 'MEDIUM_SUPPORT'
         })
         return students
       },
       noSupportStudents() {
         const students = Object.entries(this.seriesByStudent).filter(s => {
-          const [x1, x2, x3] = s[1]
-          return x1 < x3 && x1 <= x2 && x2 <= x3
+          return getTrendFromResults(s[1]) === 'NO_SUPPORT'
         })
         return students
       },
