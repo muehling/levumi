@@ -30,7 +30,7 @@
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
-      <div>
+      <div v-if="isSupportFilterVisible">
         <label class="text-small">Filtern nach Förderbedarf: </label>
         <b-dropdown
           :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
@@ -118,7 +118,7 @@
                 :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
               ></i>
             </b-button>
-            <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
+            <b-button class="ml-2" size="sm" variant="outline-primary" @click="exportGraph">
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
@@ -323,6 +323,9 @@
           this.settings,
           'visibilities.analysisView.groupQualitativeOverview'
         )
+      },
+      isSupportFilterVisible() {
+        return checkUserSettings(this.settings, 'visibilities.analysisView.supportFilter')
       },
       hasItemDictionary() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
@@ -578,7 +581,17 @@
         return this.students.find(student => student.id === id)?.name
       },
 
-      async createPdf(title, filename) {
+      async exportGraph() {
+        let title
+        let filename
+        let view = this.viewConfig
+        if (this.selectedStudentId === -1) {
+          title = `Ganze Klasse - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
+        } else {
+          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
+        }
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
         pdf.text(title, 10, 20)
@@ -595,20 +608,6 @@
         autoTable(pdf, { html: '#simple-table' })
 
         pdf.save(filename + '.pdf')
-      },
-
-      async export_graph() {
-        let title
-        let filename
-        let view = this.viewConfig
-        if (this.selectedStudentId === -1) {
-          title = `Ganze Klasse - ${view.label}`
-          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
-        } else {
-          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
-          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
-        }
-        await this.createPdf(title, filename)
       },
 
       createSeries(studentId, seriesKey, formatDate) {
