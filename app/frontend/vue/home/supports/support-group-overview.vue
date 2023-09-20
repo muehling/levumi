@@ -68,13 +68,13 @@
           {
             name: 'Hoher Förderbedarf',
             explanation: 'Es gibt keine Leistungssteigerung im Vergleich zum vorletzten Test.',
-            color: 'red',
+            color: '#F7A2A2',
           },
           {
             name: 'Mittlerer Förderbedarf',
             explanation:
               'Es gibt eine Leistungssteigerung im Vergleich zum vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg.',
-            color: 'yellow',
+            color: '#FEEFAB',
           },
           {
             name: 'Aktuell kein zusätzlicher Förderbedarf',

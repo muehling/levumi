@@ -144,9 +144,9 @@
           case 'NO_SUPPORT':
             return 'lightblue'
           case 'HIGH_SUPPORT':
-            return 'red'
+            return '#F7A2A2'
           case 'MEDIUM_SUPPORT':
-            return 'yellow'
+            return '#FEEFAB'
         }
       },
     },
