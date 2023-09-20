@@ -248,7 +248,7 @@
 
       <!-- Vorschläge für Fördermaterial -->
       <b-tab title="Fördern">
-        <support-view :group="group" :test="test.id"> </support-view>
+        <support-view :group="group" :test-id="test.id"> </support-view>
       </b-tab>
 
       <!-- Testinfos darstellen -->

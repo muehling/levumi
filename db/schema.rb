@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_15_060708) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_082731) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -120,6 +120,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_060708) do
     t.json "items"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "group"
     t.index ["area_id"], name: "index_material_supports_on_area_id"
     t.index ["competence_id"], name: "index_material_supports_on_competence_id"
     t.index ["material_id"], name: "index_material_supports_on_material_id"
@@ -166,8 +167,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_15_060708) do
   create_table "shadow_students", charset: "utf8mb3", force: :cascade do |t|
     t.integer "original_id"
     t.integer "group"
-    t.integer "account_type", null: false
-    t.integer "state", null: false
+    t.integer "account_type"
+    t.integer "state"
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"

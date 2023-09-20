@@ -50,6 +50,7 @@ Rails.application.routes.draw do
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   delete 'delete_area/:id', to: 'areas#destroy_safe'
+  get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
 
   #Reguläres REST-Routing
   resources :users

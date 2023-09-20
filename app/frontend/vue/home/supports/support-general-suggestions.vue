@@ -49,7 +49,7 @@
     components: { MaterialView },
     props: {
       groupId: Number,
-      test: Number,
+      testId: Number,
     },
     data: function () {
       return {
@@ -58,7 +58,7 @@
       }
     },
     created() {
-      fetch('/materials?test=' + this.test + '&group=' + this.groupId, {
+      fetch('/materials?test=' + this.testId + '&group=' + this.groupId, {
         headers: {
           Accept: 'text/javascript',
           'X-Requested-With': 'XMLHttpRequest',

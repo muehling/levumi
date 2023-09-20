@@ -1,10 +1,10 @@
 <template>
   <b-tabs pills card>
     <b-tab v-if="isGeneralSuggestionsVisible" title="Allgemeine Empfehlungen" lazy>
-      <support-general-suggestions :group-id="group.id" :test="test" />
+      <support-general-suggestions :group-id="group.id" :test-id="testId" />
     </b-tab>
     <b-tab v-if="isSupportSuggestionsVisible" title="Förderung" lazy>
-      <support-group-suggestions :group="group" :test="test" />
+      <support-group-suggestions :group="group" :test-id="testId" />
     </b-tab>
   </b-tabs>
 </template>
@@ -23,7 +23,7 @@
     },
     props: {
       group: Object,
-      test: Number,
+      testId: Number,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()

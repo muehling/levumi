@@ -24,6 +24,7 @@ export default {
     info: '/materials/info',
     index: '/materials',
     import: { url: '/materials', method: 'POST', contentType: 'omit' },
+    materialsForTest: id => `/materials/test/${id}`,
   },
   tests: {
     index: '/tests',
