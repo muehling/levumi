@@ -139,6 +139,7 @@
         const data = {
           user: {
             settings: JSON.stringify({
+              ...this.user.settings,
               targets: {
                 enabled: this.targets.enabled,
                 deviation: this.targets.deviation,
