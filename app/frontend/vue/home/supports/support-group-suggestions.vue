@@ -30,22 +30,42 @@
         </p>
       </b-collapse>
     </div>
-    <table class="table table-sm table-bordered">
+    <table class="table table-sm table-bordered table-striped table-hover group-suggestions">
       <thead>
         <th>Name</th>
-        <th v-for="(item, index) in itemDictionary" :key="'header' + item + index">{{ item }}</th>
+        <th
+          v-for="(item, index) in itemDictionary"
+          :key="'header' + item + index"
+          class="text-small"
+        >
+          {{ item }}
+        </th>
       </thead>
       <tbody>
-        <tr v-for="student in students" :key="student.id">
-          <td>{{ student.name }}</td>
-          <td v-for="(item, index) in itemDictionary" :key="'line' + item + index">
-            <p
-              v-for="(material, i) in getMaterialSuggestions(student.id, index)"
-              :key="i"
-              class="mb-0"
+        <tr v-for="(student, studentIndex) in students" :key="student.id">
+          <td class="text-small">{{ student.name }}</td>
+          <td
+            v-for="(item, index) in itemDictionary"
+            :key="'line' + item + index"
+            class="text-small"
+          >
+            <b-dropdown
+              v-if="materialsPerStudentAndDimension[studentIndex][index]?.suggestions?.length"
+              text="Fördermaterial"
+              variant="outline-secondary"
+              size="sm"
+              :toggle-class="materialsPerStudentAndDimension[studentIndex][index].intent"
             >
-              {{ material.text }}
-            </p>
+              <b-dropdown-item
+                v-for="material in materialsPerStudentAndDimension[studentIndex][index].suggestions"
+                :key="material.label"
+                class="mb-0 text-small"
+                :href="material.link"
+                target="_blank"
+              >
+                {{ material.label }}
+              </b-dropdown-item>
+            </b-dropdown>
           </td>
         </tr>
       </tbody>
@@ -54,11 +74,12 @@
 </template>
 
 <script>
+  import { getTrendFromResults } from '@/utils/helpers'
   import { useAssessmentsStore } from '@/store/assessmentsStore'
   import { useGlobalStore } from '@/store/store'
-  import takeRight from 'lodash/takeRight'
-  import { getTrendFromResults } from '@/utils/helpers'
   import { useMaterialsStore } from '@/store/materialsStore'
+  import flatten from 'lodash/flatten'
+  import takeRight from 'lodash/takeRight'
 
   export default {
     name: 'SupportGroupSuggestions',
@@ -82,6 +103,22 @@
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
+      },
+      materialsPerStudentAndDimension() {
+        const materials = []
+        this.students.forEach((student, index) => {
+          materials[index] = []
+          for (let item in this.itemDictionary) {
+            const suggestions = this.getMaterialSuggestions(student.id, item)
+
+            materials[index][parseInt(item, 10)] = {
+              intent: suggestions?.intent,
+              suggestions: suggestions?.materials,
+            }
+          }
+        })
+
+        return materials
       },
     },
     async created() {
@@ -130,15 +167,21 @@
         if (!data) {
           return
         }
+        if (!this.materialsStore.materials.materials) {
+          return
+        }
 
         const trend = getTrendFromResults(data.relation)
         let materials
         let supports
+        let intent
         switch (trend) {
           case 'NO_SUPPORT':
             return undefined
           case 'HIGH_SUPPORT':
-          case 'MEDIUM_SUPPORT':
+            intent = 'outline-danger'
+          case 'MEDIUM_SUPPORT': //eslint-disable-line no-fallthrough
+            intent = intent || 'outline-warning'
             supports = this.materialsStore.materialsForTest.filter(
               material => material.group === parseInt(dimIndex, 10)
             )
@@ -147,28 +190,33 @@
                 material => material.id === support.material_id
               )
             )
-            return materials.map(material => ({
-              text: material.files.reduce((acc, f) => (acc += f.name + '\n'), ''),
-            }))
-        }
-      },
 
-      getBackgroundColor(studentId, dimIndex) {
-        const data = this.getTrendForStudentAndDimension(studentId, dimIndex)
-
-        if (!data) {
-          return
+            return {
+              intent,
+              materials: flatten(
+                materials.map(material =>
+                  material.files.map(file => ({ label: file.name, link: file.path }))
+                )
+              ),
+            }
         }
-        const trend = getTrendFromResults(data.relation)
-        switch (trend) {
-          case 'NO_SUPPORT':
-            return 'lightblue'
-          case 'HIGH_SUPPORT':
-            return 'red'
-          case 'MEDIUM_SUPPORT':
-            return 'yellow'
-        }
+        return undefined
       },
     },
   }
 </script>
+
+<style>
+  .group-suggestions .btn.dropdown-toggle {
+    color: black;
+  }
+  .group-suggestions .btn.dropdown-toggle.outline-warning {
+    border-color: #feefab !important;
+    background-color: #feefab !important;
+  }
+
+  .group-suggestions .btn.dropdown-toggle.outline-danger {
+    border-color: #f7a2a2 !important;
+    background-color: #f7a2a2 !important;
+  }
+</style>
