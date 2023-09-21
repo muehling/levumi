@@ -52,9 +52,11 @@
         }
       },
       isSupportSuggestionsVisible() {
-        return checkUserSettings(
-          this.globalStore.login.settings,
-          'visibilities.supportView.supportSuggestions'
+        return (
+          checkUserSettings(
+            this.globalStore.login.settings,
+            'visibilities.supportView.supportSuggestions'
+          ) && this.hasItemDictionary
         )
       },
     },
