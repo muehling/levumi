@@ -13,11 +13,6 @@ export const prepareOptions = (
   animate,
   yMax
 ) => {
-  // if any series wants to be of type rangeArea then the whole chart needs to be
-  // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
-  if (!['line', 'bar', 'rangeArea'].includes(chartType)) {
-    chartType = 'line'
-  }
   let opt
   // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
   const needRangeAreaChart =
@@ -26,19 +21,20 @@ export const prepareOptions = (
   if (needRangeAreaChart) {
     opt = apexChartOptions(weekLabels).rangeArea
   } else {
-    // we allow only bar and rangeArea as custom chart types, all others default to line
+    // we allow only bar, boxPlot and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
         opt = apexChartOptions(weekLabels).bar
+        break
+      case 'boxPlot':
+        opt = apexChartOptions(weekLabels).boxPlot
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea
         break
       case 'line':
-        opt = apexChartOptions(weekLabels).rangeArea
-        break
       default:
-        opt = apexChartOptions(weekLabels).rangeArea
+        opt = apexChartOptions(weekLabels).line
     }
   }
   const options = deepmerge(cloneDeep(opt), customOptions)
@@ -52,7 +48,7 @@ export const prepareOptions = (
     options.yaxis = {}
   }
 
-  // check the y axis needs to be adjusted to display a trend or target
+  // check the y-axis needs to be adjusted to display a trend or target
   if (yMax) {
     options.yaxis.max = yMax
   } else {
@@ -92,6 +88,41 @@ export const apexChartOptions = weekLabels => ({
       type: 'category',
       categories: weekLabels,
       tickPlacement: 'on',
+    },
+    tooltip: { ...commonTooltip() },
+  },
+  boxPlot: {
+    chart: {
+      ...commonChart(),
+      type: 'bar',
+    },
+    stroke: {
+      curve: 'straight',
+      width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+    },
+    fill: {
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      type: 'solid',
+    },
+    plotOptions: {
+      bar: {
+        horizontal: true,
+        barHeight: "40%",
+      },
+      boxPlot: {
+        colors: {
+          upper: '#e8e8f1',
+          lower: '#ffffff'
+        }
+      }
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '13px'
+        }
+      }
     },
     tooltip: { ...commonTooltip() },
   },
@@ -374,6 +405,19 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
     },
   },
 })
+
+export function quantile(arr, q) {
+  const asc = arr => arr.sort((a, b) => a - b)
+  const sorted = asc(arr)
+  const pos = (sorted.length - 1) * q
+  const base = Math.floor(pos)
+  const rest = pos - base
+  if (sorted[base + 1] !== undefined) {
+    return sorted[base] + rest * (sorted[base + 1] - sorted[base])
+  } else {
+    return sorted[base]
+  }
+}
 
 export function addTargetToChartData(
   graphData,

@@ -117,12 +117,12 @@ In der test.json werden die Metadaten des Tests definiert. Folgende Felder müss
     - `label`: Dargestellte Bezeichnung
     - `student`: Boolean, true, falls Einzelauswertungen angezeigt werden sollen
     - `group`: Boolean, true, falls die Gruppenauswertung angezeigt werden soll
-    - `type`: Text, aktuell werden `table`, `bar`, `graph_table` und `graph` unterstützt
+    - `type`: Text, aktuell werden `table`, `graph_table` und `graph` unterstützt
     - `column_keys`: Array aus Texten. Die Keys müssen mit den in der test.js an die `saveResults`-Funktion geschickten Keys übereinstimmen.
     - `columns`: Array aus Texten. Spaltenbeschriftungen
     - `series_keys`: Array aus Texten, analog zu `column_keys`
     - `series`: Array aus Texten, analog zu `column`
-    - `options`: optional, für `bar` und `graph` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/
+    - `options`: optional, für `graph` und `graph_table` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/. (Aktuell werden die Charttypen `line`, `bar`, `rangeArea` und `boxPlot` unterstützt.)
 - `items`: Objekt mit einem Key/Value-Paar pro Test-Item. Der Key ist dabei die Id des Test-Items in der `test.js`, Value entspricht i. d. R. der `description`
 
 ## Dokumentation Fördermaterial

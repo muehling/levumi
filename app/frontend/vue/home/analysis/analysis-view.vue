@@ -62,7 +62,7 @@
         />
       </b-col>
     </b-row>
-    <b-row :hidden="!graph_visible">
+    <b-row :hidden="!graph_visible || viewConfig.options.chart.type === 'boxPlot'">
       <b-col>
         <b-row class="ml-1">
           <b-col>
@@ -131,7 +131,6 @@
               :target-valid="targetValid"
               :test="test"
               :group="group"
-              :readonly-suppressed="isReadOnlySuppressed"
             ></TargetControls>
           </b-col>
         </b-row>
@@ -187,6 +186,7 @@
     targetRangeAnnotationOptions,
     prepareOptions,
     apexChartOptions,
+    quantile,
   } from './apexChartHelpers'
   import { printDate } from '../../../utils/date'
   import { ajax } from '@/utils/ajax'
@@ -343,10 +343,6 @@
       },
       chartSeries() {
         return [...this.graphData]
-      },
-      isReadOnlySuppressed() {
-        //TODO might not be needed
-        return Boolean(this.viewConfig.readOnlySuppressed)
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
@@ -525,6 +521,32 @@
         await this.createPdf(title, filename)
       },
 
+      createBoxPlotData() {
+        const bPlotData = []
+        const view = this.viewConfig
+        // get the results from the latest test week
+        const results = this.results.filter(result => result?.test_week === this.weeks[this.weeks.length-1])
+        // go through the results and for each category collect the values from all results
+        for (const i in view.series_keys) {
+          const series_key = view.series_keys[i]
+          // collect only the results of the category and filter out undefined/null values
+          let catResults = results
+              .map(result => result?.views[view.key][series_key])
+              .filter(r => r !== undefined && r !== null)
+          // calculate the quartiles for this category
+          const quartiles = []
+          for (const q of [0.0,0.25,0.5,0.75,1.0]) {
+            quartiles.push(quantile(catResults,q))
+          }
+          // add a data point
+          bPlotData.push({
+            x: view.series[i],
+            y: quartiles
+          })
+        }
+        return bPlotData
+      },
+
       createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
@@ -577,13 +599,17 @@
       },
 
       async updateView(animate) {
-        const view = this.viewConfig
         // return early if the view type has no graph
-        if (!['graph', 'graph_table'].includes(view.type)) {
+        if (!this.graph_visible) {
           return
         }
+        const view = this.viewConfig
 
-        const trueChartType = view.options.chart.type
+        let trueChartType = view.options?.chart?.type
+        // if the chart type was not specified in the view config we default to line
+        if (!trueChartType) {
+          trueChartType = 'line'
+        }
         const preparedOptions = prepareOptions(
           trueChartType,
           view.options,
@@ -594,18 +620,29 @@
           this.maxYValue
         )
 
-        const formatDate = trueChartType === 'bar'
+        // bar and boxPlot are currently the only supported non-line charts
+        const nonLineChart = ['bar','boxPlot'].includes(trueChartType)
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          gData = this.studentsWithResults.map(student => {
-            return {
-              name: student.name,
+          if (trueChartType === 'boxPlot') {
+            // in case this is a box-plot do not create a series per student, but instead create data points
+            // with each point having a task type as its category (x) and its quartiles as y-values
+            gData = [{
               type: trueChartType,
-              data: this.createSeries(student.id, undefined, formatDate),
-            }
-          })
+              data: this.createBoxPlotData(),
+            }]
+          } else {
+            // else this is a graph with one series per student reaching over all available dates
+            gData = this.studentsWithResults.map(student => {
+              return {
+                name: student.name,
+                type: trueChartType,
+                data: this.createSeries(student.id, undefined, nonLineChart),
+              }
+            })
+          }
         } else {
           const student = this.students.find(s => s.id === this.selectedStudentId)
           // individual student data with single series
@@ -614,7 +651,7 @@
               {
                 name: student.name,
                 type: trueChartType,
-                data: this.createSeries(student.id, undefined, formatDate),
+                data: this.createSeries(student.id, undefined, nonLineChart),
               },
             ]
             if (this.trendIsEnabled && trueChartType !== 'bar') {
@@ -638,27 +675,25 @@
               return {
                 name: view.series[index],
                 type: trueChartType,
-                data: this.createSeries(student.id, series_key, formatDate),
+                data: this.createSeries(student.id, series_key, nonLineChart),
               }
             })
           }
         }
 
-        // trends and targets are displayed only for non-bar charts and views with a single series
-        if (trueChartType !== 'bar') {
-          if (!view.series_keys) {
-            if (trendlineData) {
-              addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
-            }
-            if (this.targetIsEnabled) {
-              this.appendSlopeTarget(gData, preparedOptions)
-            }
-            if (
-              (trendlineData && this.extrapolationIsEnabled) ||
-              (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
-            ) {
-              this.expandXAxis(gData)
-            }
+        // trends and targets are displayed only for line graphs charts and views with a single series
+        if (!nonLineChart && !view.series_keys) {
+          if (trendlineData) {
+            addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
+          }
+          if (this.targetIsEnabled) {
+            this.appendSlopeTarget(gData, preparedOptions)
+          }
+          if (
+            (trendlineData && this.extrapolationIsEnabled) ||
+            (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
+          ) {
+            this.expandXAxis(gData)
           }
         }
 
@@ -675,7 +710,7 @@
         this.simpleTableData = gData.map(lineData => {
           const data = lineData.data.reduce((acc, d) => {
             // createSeries contains raw dates, so we need to format them here
-            acc[formatDate ? d.x : printDate(d.x)] = d.y || '-'
+            acc[nonLineChart ? d.x : printDate(d.x)] = d.y || '-'
             return acc
           }, {})
           return {
