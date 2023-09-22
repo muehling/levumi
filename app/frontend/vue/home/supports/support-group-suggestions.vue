@@ -207,6 +207,9 @@
 </script>
 
 <style>
+  .group-suggestions .b-dropdown {
+    width: 100%;
+  }
   .group-suggestions .btn.dropdown-toggle {
     color: black;
   }
