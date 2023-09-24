@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row>
+    <b-row class="d-flex justify-content-between">
       <b-button-group class="ml-3" size="sm">
         <b-button
           class="mr-2"
@@ -8,10 +8,7 @@
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
-          @click="
-            setSelectedView(0)
-            setStudentAndUpdate(-1)
-          "
+          @click="setStudentAndUpdate(-1)"
           >Ganze Klasse</b-button
         >
         <b-dropdown
@@ -33,6 +30,24 @@
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
+      <div v-if="isSupportFilterVisible">
+        <label class="text-small">Filtern nach Förderbedarf: </label>
+        <b-dropdown
+          :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
+          variant="primary"
+          class="ml-2 text-right"
+          right
+          size="sm"
+        >
+          <b-dropdown-item
+            v-for="need in supportNeeds"
+            :key="need.id"
+            class="text-small"
+            @click="selectedSupportNeedFilter = need.id"
+            >{{ need.name }}</b-dropdown-item
+          >
+        </b-dropdown>
+      </div>
     </b-row>
     <b-row class="mt-2">
       <b-button-group class="ml-3">
@@ -42,8 +57,8 @@
           class="mr-2 shadow-none"
           size="sm"
           variant="outline-secondary"
-          :pressed="selectedView === index"
-          @click="setSelectedView(index)"
+          :pressed="selectedView === view.key"
+          @click="setSelectedView(view.key)"
         >
           {{ view.label }}
         </b-button>
@@ -52,6 +67,7 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <apexchart
+          v-if="graphData.length"
           ref="levumiChart"
           :key="forceUpdate"
           :type="currentChartType"
@@ -60,6 +76,11 @@
           :options="chartOptions"
           :series="chartSeries"
         />
+        <div v-else class="m-4 p-4" style="height: 500px">
+          <b-alert class="m-4 p-4" variant="danger" show
+            >Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!</b-alert
+          >
+        </div>
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
@@ -97,7 +118,7 @@
                 :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
               ></i>
             </b-button>
-            <b-button class="ml-2" size="sm" variant="outline-primary" @click="export_graph">
+            <b-button class="ml-2" size="sm" variant="outline-primary" @click="exportGraph">
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
@@ -110,7 +131,7 @@
               :group="group"
               :test="test"
               :selected-student="selectedStudent"
-              :selected-view="selectedView"
+              :selected-view-key="selectedView"
               :annotation-control-visible.sync="annotationControlVisible"
               :trend-is-enabled="trendIsEnabled"
               @annotation-removed="removeAnnotation"
@@ -137,7 +158,27 @@
         </b-row>
       </b-col>
     </b-row>
-    <b-row :hidden="!table_visible">
+    <hr class="section-divider" />
+    <b-row v-if="isSupportSectionVisible" class="mt-4">
+      <b-tabs class="w-100" pills no-body card>
+        <b-tab
+          v-if="isGroupSupportOverviewVisible"
+          title="Übersicht Förderbedarf Ganze Klasse"
+          lazy
+        >
+          <support-group-overview :group="group" :test="test.id" />
+        </b-tab>
+        <b-tab
+          v-if="hasItemDictionary && isGroupQualitativeOverviewVisible"
+          title="Qualitative Auswertung Förderbedarf Ganze Klasse"
+          lazy
+        >
+          <support-group-qualitative :group="group" :test="test.id" />
+        </b-tab>
+      </b-tabs>
+    </b-row>
+
+    <b-row :hidden="!tableVisible">
       <div id="table" class="m-4" style="width: 100%">
         <table class="table table-sm table-striped table-borderless mt-1 text-small">
           <thead>
@@ -155,24 +196,47 @@
         </table>
       </div>
     </b-row>
+    <hr v-if="selectedViewType != 'graph'" class="section-divider" />
     <b-row :hidden="selectedViewType !== 'graph'">
-      <b-table-lite
-        id="simple-table"
-        class="mt-4 text-small"
-        small
-        striped
-        hover
-        :items="simpleTableData"
-      ></b-table-lite>
+      <b-tabs class="w-100" pills no-body card>
+        <b-tab title="Tabellarische Daten" lazy>
+          <b-table-lite
+            id="simple-table"
+            class="mt-4 text-small"
+            small
+            striped
+            hover
+            :items="simpleTableData"
+          ></b-table-lite>
+        </b-tab>
+      </b-tabs>
+    </b-row>
+    <b-row v-if="niveaus_visible">
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
   </div>
 </template>
 
 <script>
+  import { ajax } from '@/utils/ajax'
+  import { checkUserSettings } from '@/utils/user'
+  import { computed } from 'vue'
+  import { createSimpleTableData, createHtmlTableFromViewConfig } from './data/createTableData'
+  import { createTrendline } from './linearRegressionHelpers'
+  import { getTrendFromResults } from '@/utils/helpers'
+  import { printDate } from '@/utils/date'
+  import { useAssessmentsStore } from '@/store/assessmentsStore'
+  import { useGlobalStore } from '@/store/store'
+  import { useTestsStore } from '@/store/testsStore'
   import AnnotationsSection from './annotations-section.vue'
+  import apiRoutes from '@/vue/routes/api-routes'
   import autoTable from 'jspdf-autotable'
-  import deepmerge from 'deepmerge'
   import jsPDF from 'jspdf'
+  import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
+  import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
+  import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
+  import takeRight from 'lodash/takeRight'
+  import TargetControls from './target-controls.vue'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -183,18 +247,17 @@
     prepareOptions,
     apexChartOptions,
   } from './apexChartHelpers'
-  import { printDate } from '../../../utils/date'
-  import { ajax } from '@/utils/ajax'
-  import apiRoutes from '../../routes/api-routes'
-  import { createTrendline } from './linearRegressionHelpers'
-  import { computed } from 'vue'
-  import TargetControls from './target-controls.vue'
-  import { useTestsStore } from '@/store/testsStore'
-  import { useGlobalStore } from '@/store/store'
-  import cloneDeep from 'lodash/cloneDeep'
+
   export default {
     name: 'AnalysisView',
-    components: { AnnotationsSection, TargetControls },
+    components: {
+      AnnotationsSection,
+      NiveauOverview,
+      TargetControls,
+      SupportGroupOverview,
+      SupportGroupQualitative,
+    },
+
     inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
     provide: function () {
       return {
@@ -203,6 +266,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
+        testData: computed(() => this.testData),
       }
     },
     props: {
@@ -216,7 +280,8 @@
     setup() {
       const testsStore = useTestsStore()
       const globalStore = useGlobalStore()
-      return { testsStore, globalStore }
+      const assessmentsStore = useAssessmentsStore()
+      return { testsStore, globalStore, assessmentsStore }
     },
     data: function () {
       return {
@@ -224,22 +289,67 @@
         chartOptions: apexChartOptions([]).line, // just so that apexcharts is happy being initialized correctly
         dateUntilVal: null,
         deviationVal: null,
+        forceUpdate: undefined,
         graphData: [],
         isInitialized: false,
+        maxY: 0,
         selectedStudentId: -1,
-        selectedView: 0,
+        selectedSupportNeedFilter: undefined,
+        selectedView: this.test?.configuration.views[0].key,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
         targetControlVisible: false,
         targetVal: null,
-        maxY: 0,
-        forceUpdate: undefined,
       }
     },
     computed: {
+      isSupportInformationAvailable() {
+        return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
+      },
+      isSupportSectionVisible() {
+        return (
+          this.viewConfig.type === 'graph' &&
+          this.isSupportInformationAvailable &&
+          (checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview') ||
+            checkUserSettings(this.settings, 'visibilities.analysisView.groupQualitativeOverview'))
+        )
+      },
+      isGroupSupportOverviewVisible() {
+        return checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview')
+      },
+      isGroupQualitativeOverviewVisible() {
+        return checkUserSettings(
+          this.settings,
+          'visibilities.analysisView.groupQualitativeOverview'
+        )
+      },
+      isSupportFilterVisible() {
+        return checkUserSettings(this.settings, 'visibilities.analysisView.supportFilter')
+      },
+      hasItemDictionary() {
+        return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
+      },
+      supportNeeds() {
+        return [
+          { name: 'Alle', id: undefined },
+          { name: 'Hoher Förderbedarf', id: 'HIGH_SUPPORT' },
+          { name: 'Mittlerer Förderbedarf', id: 'MEDIUM_SUPPORT' },
+          { name: 'Aktuell kein zusätzlicher Förderbedarf', id: 'NO_SUPPORT' },
+        ]
+      },
+
+      seriesByStudent() {
+        const series = this.assessmentsStore.getSeriesByStudent()
+        for (let s in series) {
+          series[s] = takeRight(series[s], 3)
+        }
+
+        return series
+      },
+
       settings() {
-        return cloneDeep(this.globalStore.login.settings)
+        return this.globalStore.login.settings
       },
       viewsWithGroupAndStudent() {
         return this.configuration.views.filter(
@@ -252,7 +362,14 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        return this.configuration.views[this.selectedView]
+        if (this.selectedView) {
+          return this.configuration.views.find(view => view.key === this.selectedView)
+        } else {
+          return this.configuration.views[0]
+        }
+      },
+      nivConfig() {
+        return this.viewConfig.niv_config
       },
       columns() {
         return this.viewConfig.columns || []
@@ -272,55 +389,48 @@
         return false
       },
       has_student_views() {
-        for (let i = 0; i < this.configuration.views.length; ++i) {
-          if (this.configuration.views[i].student == true) {
-            return true
-          }
-        }
-        return false
+        return this.configuration.views.some(view => view.student)
       },
-      table_visible() {
+      tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
+      niveaus_visible() {
+        return this.viewConfig.type === 'niveaus'
+      },
       table_data() {
-        if (this.viewConfig.type === 'graph') {
+        if (!this.tableVisible) {
           return []
         }
-        let weeks = this.weeks.slice().reverse()
-        let res = []
-        for (let w = 0; w < weeks.length; ++w) {
-          let found = false
-          for (let r = 0; r < this.results.length; ++r) {
-            if (
-              this.results[r].student_id === this.selectedStudentId &&
-              this.results[r].test_week === weeks[w]
-            ) {
-              let temp = {}
-              for (let i = 0; i < this.viewConfig.column_keys.length; ++i) {
-                let key = this.viewConfig.column_keys[i]
-                let name = this.viewConfig.columns[i]
-                temp[name] = this.results[r].views[this.viewConfig.key][key]
-                if (temp[name] === undefined) {
-                  temp[name] = '-'
-                }
-              }
-              res.push(deepmerge({ week: weeks[w] }, temp))
-              found = true
-              break
-            }
-          }
-          if (!found) {
-            let temp = {}
-            for (let c = 0; c < this.columns.length; ++c) {
-              temp[this.columns[c]] = '-'
-            }
-            res.push(deepmerge({ week: weeks[w] }, temp))
-          }
-        }
-        return res
+        return createHtmlTableFromViewConfig({
+          weeks: this.weeks,
+          results: this.results,
+          viewConfig: this.viewConfig,
+          selectedStudentId: this.selectedStudentId,
+          columns: this.columns,
+        })
       },
       studentsWithResults() {
-        return this.students.filter(student => this.has_results(student))
+        if (this.selectedSupportNeedFilter !== undefined) {
+          {
+            const series = this.assessmentsStore.getSeriesByStudent()
+            for (let s in series) {
+              const lastThree = takeRight(series[s], 3)
+              series[s] = lastThree.map(result => {
+                return result.report.positive.length
+              })
+            }
+
+            const students = Object.entries(series).filter(
+              s => getTrendFromResults(s[1]) === this.selectedSupportNeedFilter
+            )
+            const needyStudents = students.map(s => parseInt(s[0], 10))
+            return this.students.filter(
+              student => this.hasResults(student) && needyStudents.find(s => s == student.id)
+            )
+          }
+        }
+
+        return this.students.filter(student => this.hasResults(student))
       },
       selectedStudent() {
         return this.selectedStudentId !== -1
@@ -336,31 +446,21 @@
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
-        //return Boolean(this.viewConfig.targetOptions?.type === 'slope')
       },
       targetIsEnabled() {
         return this.settings.targets?.enabled
       },
       dateUntilIsEnabled() {
         return this.settings.targets?.enabled || this.settings.trends?.enabled
-        //return this.settings.useEndDate || (this.targetIsEnabled && this.targetIsSlopeVariant)
-        // if a slope target is to be shown then we need dateUntil anyway
-        //return (
-        //  Boolean(this.viewConfig.targetOptions?.selectEndDate) ||
-        //  (this.targetIsEnabled && this.targetIsSlopeVariant)
-        //)
       },
       deviationIsEnabled() {
         return this.targetIsEnabled && this.settings.targets?.deviation
-        //return Boolean(this.viewConfig.targetOptions?.selectDeviation)
       },
       trendIsEnabled() {
         return this.settings.trends?.enabled
-        //return Boolean(this.viewConfig.trendOptions?.enabled)
       },
       extrapolationIsEnabled() {
-        return this.settings.trends.extrapolate
-        //return Boolean(this.viewConfig.trendOptions?.extrapolate)
+        return this.settings.trends?.extrapolate
       },
       deviationStored() {
         const dev = this.targetStored?.deviation
@@ -454,6 +554,9 @@
         this.isInitialized = false
         this.updateView(false)
       },
+      studentsWithResults() {
+        this.updateView(false)
+      },
     },
     async created() {
       await this.testsStore.fetch()
@@ -469,8 +572,8 @@
       )
     },
     methods: {
-      setSelectedView(index) {
-        this.selectedView = index
+      setSelectedView(key) {
+        this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
       },
@@ -478,7 +581,17 @@
         return this.students.find(student => student.id === id)?.name
       },
 
-      async createPdf(title, filename) {
+      async exportGraph() {
+        let title
+        let filename
+        let view = this.viewConfig
+        if (this.selectedStudentId === -1) {
+          title = `Ganze Klasse - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
+        } else {
+          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
+        }
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
         pdf.text(title, 10, 20)
@@ -495,20 +608,6 @@
         autoTable(pdf, { html: '#simple-table' })
 
         pdf.save(filename + '.pdf')
-      },
-
-      async export_graph() {
-        let title
-        let filename
-        let view = this.viewConfig
-        if (this.selectedStudentId === -1) {
-          title = `Ganze Klasse - ${view.label}`
-          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
-        } else {
-          title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
-          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
-        }
-        await this.createPdf(title, filename)
       },
 
       createSeries(studentId, seriesKey, formatDate) {
@@ -554,6 +653,10 @@
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
+        // some combinations of views/selectedStudent/presence of results yield no views
+        if (this.viewsWithGroupAndStudent.length) {
+          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+        }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
@@ -564,7 +667,8 @@
 
       async updateView(animate) {
         const view = this.viewConfig
-        if (view.type === 'table') {
+        // return early if the view type has no graph
+        if (!['graph', 'graph_table'].includes(view.type)) {
           return
         }
 
@@ -648,6 +752,7 @@
         }
 
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
+
         this.graphData = gData
 
         await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors
@@ -656,18 +761,7 @@
         }
         this.updateAnnotations()
 
-        // this is the input for <b-table-lite> component, which is shown below the graph
-        this.simpleTableData = gData.map(lineData => {
-          const data = lineData.data.reduce((acc, d) => {
-            // createSeries contains raw dates, so we need to format them here
-            acc[formatDate ? d.x : printDate(d.x)] = d.y || '-'
-            return acc
-          }, {})
-          return {
-            name: lineData.name,
-            ...data,
-          }
-        })
+        this.simpleTableData = createSimpleTableData(gData, formatDate)
 
         this.isInitialized = true
       },
@@ -824,13 +918,8 @@
         }
       },
 
-      has_results(student) {
-        for (let i = 0; i < this.results.length; ++i) {
-          if (this.results[i].student_id == student.id) {
-            return true
-          }
-        }
-        return false
+      hasResults(student) {
+        return this.results.some(result => result.student_id === student.id)
       },
 
       removeAnnotation(id) {
@@ -905,3 +994,8 @@
     },
   }
 </script>
+
+<style>
+  .section-divider {
+  }
+</style>

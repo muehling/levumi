@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
+ActiveRecord::Schema[7.0].define(version: 2023_09_20_082731) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -49,7 +49,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.bigint "assessment_id"
     t.bigint "student_id"
     t.bigint "group_id"
-    t.integer "view"
+    t.text "view"
     t.date "start"
     t.date "end"
     t.datetime "created_at", precision: nil, null: false
@@ -97,6 +97,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.bigint "group_id"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "is_anonymous"
     t.index ["group_id"], name: "index_group_shares_on_group_id"
     t.index ["user_id"], name: "index_group_shares_on_user_id"
   end
@@ -119,6 +120,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.json "items"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.integer "group"
     t.index ["area_id"], name: "index_material_supports_on_area_id"
     t.index ["competence_id"], name: "index_material_supports_on_competence_id"
     t.index ["material_id"], name: "index_material_supports_on_material_id"
@@ -165,8 +167,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
   create_table "shadow_students", charset: "utf8mb3", force: :cascade do |t|
     t.integer "original_id"
     t.integer "group"
-    t.integer "account_type", null: false
-    t.integer "state", null: false
+    t.integer "account_type"
+    t.integer "state"
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
@@ -232,6 +234,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_29_072005) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "test_type_id"
+    t.boolean "is_support"
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end

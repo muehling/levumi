@@ -248,7 +248,7 @@
 
       <!-- Vorschläge für Fördermaterial -->
       <b-tab title="Fördern">
-        <support-view :group="group.id" :test="test.id"> </support-view>
+        <support-view :group="group" :test-id="test.id"> </support-view>
       </b-tab>
 
       <!-- Testinfos darstellen -->
@@ -263,17 +263,16 @@
   import { ajax } from '../../utils/ajax'
   import { getStudent } from '../../utils/helpers'
   import { isAdmin } from '../../utils/user'
+  import { printDate } from '../../utils/date'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AnalysisView from './analysis/analysis-view.vue'
+  import apiRoutes from '../routes/api-routes'
   import compact from 'lodash/compact'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import isObject from 'lodash/isObject'
   import SupportView from './supports/support-view.vue'
   import uniq from 'lodash/uniq'
-  import apiRoutes from '../routes/api-routes'
-  import { printDate } from '../../utils/date'
-
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'AssessmentView',
@@ -423,7 +422,7 @@
       },
       studentName(id) {
         //Student-Objekt aus globaler Variable holen
-        return getStudent(this.group.id, id).name
+        return getStudent(this.group.id, id)?.name
       },
       async toggleAssessment() {
         this.isUpdating = true

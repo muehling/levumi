@@ -61,7 +61,20 @@
         @change-town="t => (town = t)"
         @change-school-type="st => (schoolType = st)"
         @change-focus-type="ft => (focusType = ft)"
-      ></extra-data-form>
+      >
+      </extra-data-form>
+      <div v-if="canEditSettingsJson" class="mb-3">
+        <b-button v-b-toggle.json-edit variant="outline-secondary">User-Config ändern</b-button>
+        <b-collapse id="json-edit" class="mt-2">
+          <p><i>Scito quid facias.</i></p>
+          <b-form-textarea
+            v-model="settings"
+            placeholder="Enter something..."
+            rows="3"
+            max-rows="6"
+          ></b-form-textarea>
+        </b-collapse>
+      </div>
     </b-form>
     <div class="d-flex justify-content-end">
       <b-button
@@ -93,6 +106,7 @@
   import apiRoutes from '../../routes/api-routes'
   import ConfirmDialog from '../confirm-dialog.vue'
   import ExtraDataForm from './extra-data-form.vue'
+  import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
 
   export default {
@@ -111,17 +125,21 @@
     data() {
       return {
         // local state
-        email: this.user.email,
         accountType: this.user.account_type,
-        state: this.user.state,
-        institution: this.user.institution,
+        email: this.user.email,
         errors: [],
+        focusType: this.user.focus,
+        institution: this.user.institution,
         password: '',
         passwordConfirm: '',
-        securityAnswer: '',
-        town: this.user.town,
         schoolType: this.user.school_type,
-        focusType: this.user.focus,
+        securityAnswer: '',
+        settings:
+          typeof this.user.settings === 'string'
+            ? this.user.settings
+            : JSON.stringify(this.user.settings),
+        state: this.user.state,
+        town: this.user.town,
       }
     },
     computed: {
@@ -143,6 +161,9 @@
       canEditUser() {
         return hasCapability('user', this.globalStore.login?.capabilities)
       },
+      canEditSettingsJson() {
+        return hasCapability('user', this.globalStore.login?.capabilities)
+      },
       accountTypeText() {
         return this.accountTypes?.find(at => at.id === this.accountType)?.label
       },
@@ -159,6 +180,18 @@
       hasStateErrors() {
         return Object.keys(this.errors).find(e => e === 'state')
       },
+      hasSettingsErrors() {
+        if (isEmpty(this.settings)) {
+          return false
+        }
+        try {
+          JSON.parse(this.settings)
+        } catch (e) {
+          console.log('user settings json cannot be parsed')
+          return true
+        }
+        return false
+      },
 
       /********************************
        * checks whether the submit button needs to be disabled
@@ -167,7 +200,11 @@
         const hasPasswordRelatedChange =
           this.password !== '' || this.passwordConfirm !== '' || this.securityAnswer !== ''
 
-        const isIncomplete = this.email === '' || !this.state || this.accountType === undefined
+        const isIncomplete =
+          this.email === '' ||
+          !this.state ||
+          this.accountType === undefined ||
+          this.hasSettingsErrors
 
         const isPasswordInvalid =
           this.password === '' ||
@@ -197,6 +234,10 @@
           data.user.town = this.town
           data.user.school_type = this.schoolType
           data.user.focus = this.focusType
+        }
+
+        if (this.settings && this.settings !== this.user.settings) {
+          data.user.settings = this.settings
         }
 
         let res

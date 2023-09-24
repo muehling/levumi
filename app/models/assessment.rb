@@ -26,6 +26,7 @@ class Assessment < ApplicationRecord
   #Rückgabe: Hash
   def get_data
     res = {}
+    res['id'] = self.id
     res['active'] = self.active
     res['excludes'] = self.excludes
     res['test'] = self.test

@@ -1,5 +1,6 @@
 class MaterialsController < ApplicationController
-  before_action :set_material, except: %i[index create get_material_data]
+  before_action :set_material,
+                except: %i[index create get_material_data get_specific_materials_for_test]
   before_action :is_allowed, only: %i[create destroy]
 
   #GET /materials
@@ -38,6 +39,11 @@ class MaterialsController < ApplicationController
 
   def get_material_data
     @data = Material.get_material_info
+  end
+
+  def get_specific_materials_for_test
+    materials = MaterialSupport.where(test_id: params[:test_id]).where.not(group: nil)
+    render json: materials
   end
 
   private
