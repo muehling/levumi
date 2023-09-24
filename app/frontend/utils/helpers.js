@@ -30,3 +30,30 @@ export const getAnnotationOptions = () => {
 
   return categories.sort((a, b) => a.group - b.group || a.index - b.index)
 }
+
+export const getTrendFromResults = data => {
+  if (!data || data.length < 3) {
+    return
+  }
+
+  const [x1, x2, x3] = data
+
+  // some edge cases
+  if (x1 === 1 && x2 === 1 && x3 === 1) {
+    return 'NO_SUPPORT'
+  }
+  if (x1 === 1 && x3 === 1 && x2 <= 0.33) {
+    return 'HIGH_SUPPORT'
+  }
+  if (x1 === 1 && x3 === 1 && x2 > 0.33) {
+    return 'MEDIUM_SUPPORT'
+  }
+
+  if (x1 >= x3) {
+    return 'HIGH_SUPPORT'
+  } else if (x1 < x3 && (x1 > x2 || x2 > x3)) {
+    return 'MEDIUM_SUPPORT'
+  } else if (x1 < x3 && x1 <= x2 && x2 <= x3) {
+    return 'NO_SUPPORT'
+  }
+}

@@ -27,7 +27,7 @@ class Material < ApplicationRecord
 
   #Legt neue Eintrag in material_supports an. Übergegeben werden außer für items Felder von Bezeichnern (name bzw. shorthand).
   # Für items wird ein Feld von Hashes erwartet, die jeweils item (shorthand) und test (shorthand) als keys beinhalten.
-  def attach_to(areas: [], competences: [], test_families: [], tests: [], items: [])
+  def attach_to(areas: [], competences: [], test_families: [], tests: [], groups: [], items: [])
     areas.each do |a|
       area = Area.find_by_name(a)
       MaterialSupport.create(material_id: self.id, area_id: area.id) unless area.nil?
@@ -52,6 +52,12 @@ class Material < ApplicationRecord
       test = Test.find_by_shorthand(i['test'])
       unless test.nil?
         MaterialSupport.create(material_id: self.id, test_id: test.id, items: i['items'])
+      end
+    end
+    groups.each do |g|
+      test = Test.find_by_shorthand(g['test'])
+      unless test.nil?
+        MaterialSupport.create(material_id: self.id, test_id: test.id, group: g['group'])
       end
     end
   end
@@ -79,11 +85,14 @@ class Material < ApplicationRecord
               filename: f.name.split('/').last
             )
           end
+        puts '#################################'
+        puts val['groups']
         material.attach_to(
           areas: val['areas'],
           competences: val['competences'],
           test_families: val['test_families'],
           tests: val['tests'],
+          groups: val['groups'],
           items: val['items']
         )
       end

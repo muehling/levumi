@@ -1,12 +1,14 @@
 import { ajax } from '../utils/ajax'
 import { defineStore } from 'pinia'
 import apiRoutes from '../vue/routes/api-routes'
+import groupBy from 'lodash/groupBy'
 import Vue from 'vue'
 
 export const useAssessmentsStore = defineStore('assessments', {
   state: () => ({
     isLoading: false,
     assessments: {},
+    currentAssessment: undefined,
   }),
   actions: {
     setAssessments(groupId, assessments) {
@@ -14,6 +16,30 @@ export const useAssessmentsStore = defineStore('assessments', {
     },
     getAssessments(groupId) {
       return this.assessments[groupId] || []
+    },
+    setCurrentAssessment(assessment) {
+      this.currentAssessment = assessment
+    },
+    getCurrentAssessment() {
+      return this.currentAssessment
+    },
+    getSeriesByStudent() {
+      if (!this.currentAssessment) {
+        console.error('assessmentsStore: currentAssessment not set')
+        return
+      }
+      return groupBy(this.currentAssessment.series, 'student_id')
+    },
+
+    async fetchCurrentAssessment(groupId, testId) {
+      const res = await ajax(apiRoutes.assessments.currentAssessment(groupId, testId))
+      if (res.status === 200) {
+        const text = await res.text()
+        this.currentAssessment = JSON.parse(text)
+      } else {
+        this.currentAssessment = undefined
+      }
+      return this.currentAssessment
     },
     async fetch(groupId) {
       this.isLoading = true

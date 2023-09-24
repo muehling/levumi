@@ -4,34 +4,35 @@ This section contains information about the server environment, and how to deplo
 
 ## Servers
 
-The production version of Levumi is currently hosted on `levumi.informatik.uni-kiel.de`, the staging environment is hosted on `levumi-staging.informatik.uni-kiel.de`. Please contact the repository owner if you need access to one of the servers directly.
+Both the production and the staging systems of Levumi are hosted on `ruapehu.informatik.uni-kiel.de`. Please contact the repository owner if you need access the server directly.
 
 The applications can be accessed under `levumi.de` (production) and `staging.levumi.de` (staging).
 
 ## Dokku
 
 Levumi is configured to deploy to both servers using Gitlab pipelines and Dokku. Automatic deployments will only work in the Gitlab of the Institut für Informatik. The Github version is only a mirror, and is intended to be used by users who are not members of the CAU.
+The dokku apps are called `levumi2-prod` for the production system and `levumi2-staging` for the staging system.
 
 ### Database connections
 
 The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container (`sudo` privileges are required):
 
 ```
-dokku enter levumi2
+dokku enter levumi2-prod
 rails c
 ```
 
 Direct access to the database is rarely (if ever) necessary. Should the need really arise, you can open a MySQL CLI in the database container as follows:
 
 ```
-dokku mysql:enter levumi2_db
+dokku mysql:enter levumi2-prod_db
 mysql -u <username> -p
 ```
 
 The necessary credentials can be pulled from the environment variables in the application container:
 
 ```
-dokku enter levumi2
+dokku enter levumi2-prod
 env | grep DOKKU_MYSQL
 ```
 
@@ -74,9 +75,7 @@ yarn audit
 
 Please update any vulnerable dependencies in the package.json (and run `yarn` to update the yarn.lock as well) before progessing.
 
-Both of these steps will be done automatically when pushing to master soon(ish).
-
-Afterwards, merge your code first into `develop`, then merge `develop` into `master`:
+Afterwards, merge your feature first into `develop`, then merge `develop` into `master`:
 
 ```
 git checkout develop
@@ -89,7 +88,7 @@ git merge develop --no-ff
 git push
 ```
 
-As with `staging`, the push to `master` will trigger a Gitlab pipeline that will automatically attempt to deploy the code to the production environment. If the deployment succeeded, please check levumi.de if everything still works as intended.
+As with `staging`, the push to `master` will trigger a Gitlab pipeline that will automatically attempt to deploy the code to the production environment. If the deployment succeeded, please check levumi.de if everything still works as intended. If the deployment fails, no harm is done - the system will simply use the previous container.
 
 ### Maintenance Mode
 

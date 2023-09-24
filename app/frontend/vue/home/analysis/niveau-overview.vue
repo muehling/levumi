@@ -244,7 +244,7 @@
     color: black;
     height: 100%;
     max-width: 100%;
-    overflow: scroll;
+    overflow: auto;
   }
   .l-niv {
     flex-wrap: nowrap;
@@ -271,7 +271,7 @@
     display: flex;
     align-self: center;
     max-height: 100%;
-    overflow: scroll;
+    overflow: auto;
   }
   .example-div {
     /* take up half the space, leading to two columns of examples being shown */

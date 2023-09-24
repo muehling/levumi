@@ -7,6 +7,7 @@ export const useMaterialsStore = defineStore('materials', {
   state: () => ({
     isLoading: false,
     materials: [],
+    materialsForTest: [],
   }),
   actions: {
     setMaterials(materials) {
@@ -17,6 +18,13 @@ export const useMaterialsStore = defineStore('materials', {
       const res = await ajax({ url: apiRoutes.materials.info })
       const data = await res.json()
       this.setMaterials(data.materials)
+      this.isLoading = false
+    },
+    async fetchMaterialsForTest(testId) {
+      this.isLoading = true
+      const res = await ajax({ url: apiRoutes.materials.materialsForTest(testId) })
+
+      this.materialsForTest = await res.json()
       this.isLoading = false
     },
   },

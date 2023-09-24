@@ -69,7 +69,7 @@ class Result < ApplicationRecord
 
   #Eintrag 'trend' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte
   def get_trend
-    report.nil? || report['trend'].nil? ? 0 : report['trend']
+    report.nil? || report['trend'].nil? ? 0 : report['trend'].to_i
   end
 
   #Eintrag 'items' aus 'support' zurückliefern, falls vorhanden => Security-Check für fehlerhafte Result-Objekte

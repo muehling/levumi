@@ -24,6 +24,7 @@ export default {
     info: '/materials/info',
     index: '/materials',
     import: { url: '/materials', method: 'POST', contentType: 'omit' },
+    materialsForTest: id => `/materials/test/${id}`,
   },
   tests: {
     index: '/tests',
@@ -57,6 +58,7 @@ export default {
       method: 'DELETE',
     }),
     updateAll: groupId => ({ url: `/groups/${groupId}/assessments`, method: 'PUT' }),
+    currentAssessment: (groupId, testId) => ({ url: `/groups/${groupId}/assessments/${testId}` }),
   },
   annotations: {
     create: (groupId, testId) => ({
