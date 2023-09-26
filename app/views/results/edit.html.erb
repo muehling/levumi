@@ -49,6 +49,12 @@
     const font_size = <%= @student.get_setting("font_size") %>
     window.font_size = font_size
 
+     function preventNavigation(navEvent) {
+        navEvent.preventDefault();
+        navEvent.returnValue = '';
+    }
+
+
     let isLoading = false
 
     async function sendResult(data, method, callback){
@@ -92,12 +98,14 @@
                 window["$"]('#error_message').show()
             }
         }
+        window.removeEventListener('beforeunload', preventNavigation, true);
     }
     window.saveResults = saveResults
 
     //Testfenster schließen
     function exit() {
         window.location.href = '<%= @redirect %>'
+        window.removeEventListener('beforeunload', preventNavigation, true);
     }
     window.exit = exit
 
@@ -176,11 +184,7 @@
     window.showFeedback = showFeedback
 
     <%if @test.student_test%>
-      //Backspace als "Zurück" verhindern
-      // should be obsolete, as even Firefox no longer navigates with backspace
-      //window.location.hash = 'no-back-button'
-      //window.location.hash = 'Again-No-back-button'
-      //window.onhashchange = function() { window.location.hash = 'no-back-button' }
+      window.addEventListener('beforeunload', preventNavigation, true)
       document.title = "<%= @test.level %>"
     <%end%>
 </script>
