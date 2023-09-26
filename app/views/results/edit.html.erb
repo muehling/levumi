@@ -49,44 +49,49 @@
     const font_size = <%= @student.get_setting("font_size") %>
     window.font_size = font_size
 
-    //Funktionen für Testumgebung bereitstellen
-    function saveResults(views, report, data, callback) {
-        let url = '<%= student_results_url(@student)%>'
-        let header = {
+    let isLoading = false
+
+    async function sendResult(data, method, callback){
+        const url = '<%= student_results_url(@student)%>'
+        const header = {
             'Content-Type': 'application/x-www-form-urlencoded',
             'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
+            'X-CSRF-Token': window["$"]('meta[name="csrf-token"]').attr('content')
         }
-        let body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(views)) + '&report=' + encodeURIComponent(JSON.stringify(report)) + '&data=' + encodeURIComponent(JSON.stringify(data))
-        fetch(url, {
-            method: 'POST',
+        const body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(data.views)) + '&report=' + encodeURIComponent(JSON.stringify(data.report)) + '&data=' + encodeURIComponent(JSON.stringify(data.data))
+        
+        if (isLoading){{
+            // prevent multiple posting, in case a student clicks a submit button multiple times
+            return
+        }}
+
+        isLoading = true
+        const response = await fetch(url, {
+            method,
             headers: header,
             credentials: 'include',
             body: body
         })
-            .then(function(response){
-                if(!response.ok)
-                    throw Error(response.statusText)
-            })
-            .then(data => callback())
-            .catch(error => {
-                //Bei Fehler versuche die Daten nochmal abzuspeichern
-                fetch(url, {
-                    method: 'PUT',
-                    headers: header,
-                    credentials: 'include',
-                    body: body
-                })
-                    .then(function(response){
-                        if(!response.ok)
-                            throw Error(response.statusText)
-                    })
-                    .then(data => callback())
-                    .catch(error => {
-                        //Zweimal erfolglos => Fehlermeldung anzeigen
-                        $('#error_message').show()
-                    })
-            })
+        isLoading = false
+        if (response.ok){
+            callback()
+        } else {
+            throw Error(response.statusText)
+        }
+    }
+
+    //Funktionen für Testumgebung bereitstellen
+    async function saveResults(views, report, data, callback) {
+        const d = {views, report, data}
+        try {
+            await sendResult(d, "POST", callback)
+        } catch (e){
+            try {
+                await sendResult(d, 'PUT', callback)
+            } catch(e){
+                window["$"]('#error_message').show()
+            }
+        }
     }
     window.saveResults = saveResults
 
@@ -143,7 +148,7 @@
     //Anzeigen des Feedbacks
     //Erhält zum einen, wie das Ergebnis aufgefasst wird (-1(schlechter), 0(gleich/erstes mal), 1(besser))
     function showFeedback(result, timedout) {
-        $('#testspace').html(
+        window["$"]('#testspace').html(
             "<div style='text-align: center'>" +
             "<img id='pic' style='width: 300px'/>" +
             "<p style=\"font-family: 'serif'; font-size:1.5em; margin-top: 10%\" id='feedback_text' class='text-center'></p>" +
@@ -151,22 +156,22 @@
         )
         if (result == 0) {
 
-            $('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-normal.jpg' %>')
+            window["$"]('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-normal.jpg' %>')
         } else if (result == 1) {
-            $('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-jubelt.gif' %>')
+            window["$"]('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-jubelt.gif' %>')
         } else {
-            $('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-liest.gif' %>')
+            window["$"]('#pic').attr('src', '<%= asset_path '/images/shared/Levumi-liest.gif' %>')
         } if (timedout) {
-            $('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster' +
+            window["$"]('#feedback_text').html('Zeit abgelaufen.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können das Testfenster' +
                 ' nun schließen.<br/><br/><button class="btn btn-warning btn-lg exit-button">Fenster schließen!</button>')
                 .css('margin-top','0%')
         } else {
-            $('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
+            window["$"]('#feedback_text').html('Alle Items beantwortet.<br/>Die Testergebnisse wurden gespeichert!<br/>Sie können' +
                 ' das Testfenster nun schließen.<br/><br/><button class="btn btn-warning btn-lg exit-button">Fenster schließen!</button>')
                 .css('margin-top','0%')
         }
 
-        $(".exit-button").on("click", exit)
+        window["$"](".exit-button").on("click", exit)
     }
     window.showFeedback = showFeedback
 
