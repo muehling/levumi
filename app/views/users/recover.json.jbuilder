@@ -1,1 +1,7 @@
-json.user { json.security_digest @user.security_digest }
+json.user do
+  if @user
+    json.security_digest @user.security_digest
+  else
+    json.security_digest ''
+  end
+end
