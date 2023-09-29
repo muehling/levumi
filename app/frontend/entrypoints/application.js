@@ -23,6 +23,10 @@ import router from '../vue/routes/frontend-routes'
 
 import '../styles/application.scss'
 
+import a11yChecker from 'a11y-checker'
+
+a11yChecker()
+
 window.bootstrap = bootstrap
 
 // TODO only needed for recover.html.erb
