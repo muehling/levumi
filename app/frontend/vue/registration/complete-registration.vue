@@ -80,7 +80,7 @@
           user: {
             password: this.password,
             password_confirmation: this.passwordConfirm,
-            security_digest: encryptWithKey(this.securityAnswer, this.password),
+            security_digest: encryptWithKey(this.password, this.securityAnswer),
           },
           key: encryptWithKey(key, this.password),
           auth_token: encryptWithKey(key, key),

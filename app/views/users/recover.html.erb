@@ -3,7 +3,7 @@
   </div>
   <div class='col-6'>
     <div class='card card-header mt-5 ml-5 mr-5'>
-      Passwort zurücksetzen
+      Passwort wiederherstellen
     </div>
     <div class='card card-body ml-5 mr-5'>
       <form id="password-reset">
@@ -29,6 +29,10 @@
 const submit = async e => {
   e.preventDefault()
   e.stopPropagation()
+
+  const email =  $('#email').val()
+  const security =  $('#security').val()
+
   const res = await fetch('/passwort', {
     method: 'post',
     headers: {
@@ -37,22 +41,29 @@ const submit = async e => {
       'Content-Type': 'application/json',
       'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
     },
-    body: JSON.stringify({ email: $('#email').val(), security: $('#security').val() }),
+    body: JSON.stringify({ email, security }),
   })
 
   if (res.status === 200) {
     const data = await res.json()
     let pw = ''
     try {
-      pw = sjcl.decrypt($('#security').val(), data.user.security_digest)
+      pw = sjcl.decrypt(security, data.user.security_digest)
     } catch (e) {
       // error message is displayed in the else case below
   }
   if (pw) {
     $('#res').html(
-        "<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>Überprüfung erfolgreich<br>Hier klicken, um das Passwort anzeigen:</button><div class='collapse alert alert-success mt-3' id='collapse'></div>"
+        `<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
+        Überprüfung erfolgreich<br>
+        Hier klicken, um das Passwort anzeigen:
+        </button>
+        <div class='collapse mt-3' id='collapse'><p class="alert alert-success">${pw}</p>
+          <p>Bitte kehren Sie zur <a href="/">Startseite</a> zurück, um sich mit Ihrer Email-Adresse und dem angezeigten Passwort einzuloggen.</p>
+        </div>
+        `
       )
-      $('#collapse').html('<a href="/">' + pw + '</>')
+      
     } else {
       $('#res').html(
         "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"

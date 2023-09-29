@@ -10,8 +10,8 @@
         placeholder="Neues Passwort"
         @input="$emit('change-password', $event)"
       ></b-form-input>
-      <small id="passwordHelp" class="form-text text-muted"
-        >Passwort bleibt unverändert, wenn nichts eingegeben wird.</small
+      <small id="passwordHelp" class="form-text text-muted">
+        Bitte geben Sie ein neues Passwort ein.</small
       >
     </b-form-group>
     <b-form-group>
