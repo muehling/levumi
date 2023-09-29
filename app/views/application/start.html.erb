@@ -14,10 +14,10 @@
           <div class='dropdown-menu dropdown-menu-sm-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
             <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3 mx-3 mx-md-0 mw-100', onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
               <div class='form-group'>
-                <input type='email' name='email' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
+                <input type='email' name='email' aria-label='Email-Adresse eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
               </div>
               <div class='form-group'>
-                <input type='password' name='password' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
+                <input type='password' name='password' aria-label='Passwort eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
                 <div class='invalid-feedback'>
                   Benutzername oder Passwort ist falsch!
                 </div>
@@ -101,13 +101,13 @@
       </div>
     </div>
     <div class='text-center mt-3'>
-      <p class='lead'>
-        Der <a href='https://www.levumi-blog.uni-kiel.de' target='_blank'>Levumi Blog</a> unterstützt Sie bei allen Fragen rund um die Plattform und informiert über praxisrelevante <a href='#', onclick="$('#projects').modal('show');">Forschungsergebnisse</a>. <br/>
+      <p class='lead' id="blog-description">
+        Der <a href='https://www.levumi-blog.uni-kiel.de' aria-describedby="blog-description" target='_blank'>Levumi Blog</a> unterstützt Sie bei allen Fragen rund um die Plattform und informiert über praxisrelevante <a href='#', onclick="$('#projects').modal('show');">Forschungsergebnisse</a>. <br/>
         Das folgende Video stellt Ihnen die Plattform kurz vor.
       </p>
 
         <div class="embed-responsive embed-responsive-16by9 video-container">
-          <iframe class='embed-responsive-item' width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe title="Dieses Video stellt Ihnen die kostenfreie Online-Plattform Levumi vor und gibt Ihnen einen Einblick, inwiefern Sie durch die Arbeit mit Levumi profitieren können." class='embed-responsive-item' width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
         </div>
 
 
