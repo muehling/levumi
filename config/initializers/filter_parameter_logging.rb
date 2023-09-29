@@ -17,4 +17,5 @@ Rails.application.config.filter_parameters += %i[
   share_key
   security_digest
   password_digest
+  security
 ]

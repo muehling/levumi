@@ -34,4 +34,13 @@ export const updates = [
     Kontexthilfe.
     `,
   },
+  {
+    intro_state: 9,
+    date: '29.09.2023',
+    title: 'Änderung an der Verschlüsselung der Sicherheitsantwort',
+    message: `Aufgrund einer Änderung an der Verschlüsselung der Sicherheitsantwort ist es notwendig, dass 
+    Sie Ihre Antwort auf die Sicherheitsfrage einmal
+    aktualisieren. Dies können Sie unter <b>'Meine Daten - Profildaten ändern'</b> im Abschnitt <b>'Passwort ändern'</b> tun.
+    Sie müssen dazu auch Ihr Passwort einmal eingeben und bestätigen, brauchen dieses jedoch nicht zu ändern.`,
+  },
 ]

@@ -27,7 +27,7 @@ class UserMailer < ApplicationMailer
       if Rails.env.development? || Rails.env.staging?
         'beckmann@leibniz-ipn.de'
       else
-        %w[jana.jungjohann@ur.de beckmann@leibniz-ipn.de]
+        %w[jana.jungjohann@tu-dortmund.de beckmann@leibniz-ipn.de]
       end
 
     complete_subject = "#{subject_prefix.to_s}#{subject}"
