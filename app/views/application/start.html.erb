@@ -12,9 +12,9 @@
             Einloggen
           </a>
           <div class='dropdown-menu dropdown-menu-sm-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
-            <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3 mx-3 mx-md-0 mw-100', onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
+            <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3 mx-3 mx-md-0 mw-100', aria: { label: 'Einloggen' }, onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
               <div class='form-group'>
-                <input type='email' name='email' aria-label='Email-Adresse eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
+                <input type='email' name='email' aria-label='Email-Adresse eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='login-email' placeholder='E-Mail Adresse'>
               </div>
               <div class='form-group'>
                 <input type='password' name='password' aria-label='Passwort eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
@@ -113,12 +113,9 @@
 
     <div class='text-center mt-3'>
       <p class='lead'>Interessiert? Dann einfach einen kostenfreien <a href='#', onclick="$('#modal').modal('show');">Zugang anlegen</a></p>
-      <p class='lead'>Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden! <a href='https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi', target='_blank'>Jetzt abonnieren</a></p>
+      <p id="levumi-newsletter" class='lead'>Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden! <a href='https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi', target='_blank' aria-describedby="levumi-newsletter">Jetzt abonnieren</a></p>
     </div>
   </div>
-
-  <%= render 'application/imprint' %>
-  <%= render 'application/privacy' %>
-  <%= render 'application/about' %>
+  
   <%= render 'application/footer', show_about: true %>
 <% end %>
