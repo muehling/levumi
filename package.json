@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@prettier/plugin-ruby": "^2.1.0",
-    "a11y-checker": "^2.2.1",
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-vue": "^9.3.0",

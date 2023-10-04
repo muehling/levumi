@@ -99,7 +99,6 @@
 <script>
   import { ajax, getCSRFToken } from '../../utils/ajax'
   import { isMobile, isTablet } from 'mobile-device-detect'
-  import a11yChecker from 'a11y-checker'
   import QrReader from './qr-reader.vue'
   export default {
     name: 'FrontendApp',
@@ -128,9 +127,6 @@
       noTestsAvailable() {
         return this.studentTests.length === 0
       },
-    },
-    mounted() {
-      a11yChecker()
     },
     created() {
       window.addEventListener('beforeunload', this.auto_logout)
