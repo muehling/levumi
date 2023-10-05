@@ -61,7 +61,7 @@
               aria-label="Zugangscode eingeben"
               @submit.prevent="handleSubmit"
             >
-              <b-form-group>
+              <b-form-group aria-label="Zugangscode eingeben">
                 <input type="hidden" name="authenticity_token" :value="includeCSRFToken()" />
                 <b-form-input
                   v-model="loginCode"
