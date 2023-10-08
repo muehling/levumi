@@ -4,14 +4,14 @@
       <template v-for="n in niveauArray">
         <b-row :key="n" cols="3" class="niveau" :style="styleForLevel(n)">
           <b-col cols="2" class="l-niv">
-            <span class="niv-name" style="display: flex; align-items: end; white-space: nowrap;">{{"Niveau " + n}}</span>
+            <span class="niv-name">{{"Niveau " + n}}</span>
             <div id="normal-container" style="width: 100%; height: 100%">
               <svg
                   v-if="n === niveauArray[0]"
                   class="normal-dist"
                   width="100%"
                   :height="overviewHeight + 'px'"
-                  :viewBox="'0 '+ normalShift * 119.85765 +' 21.41 119.85765'"
+                  :viewBox="'0 '+ (normalPlotMean * (1/normalPlotStdDeviation) * 119.85765 - ((1/normalPlotStdDeviation - 1) * 119.85765)/2) +' 21.41 '+ 1/normalPlotStdDeviation * 119.85765"
                   preserveAspectRatio=none
               >
                 <defs
@@ -159,9 +159,14 @@ export default {
       return 500 + this.niveauArray.length * 100
     },
     /** A percentage value determining how much the normal should be shifted upwards from its middle position. */
-    normalShift() {
-      return this.nivConfig.normal_shift / 100
-    }
+    normalPlotMean() {
+      return this.nivConfig.normal_mean ? (this.nivConfig.normal_mean * (5/4)) / 10 : 0
+    },
+    /** The standard deviation of the shown normal function, as specified in the test.
+     *  Used directly as a y-scale factor. */
+    normalPlotStdDeviation() {
+      return this.nivConfig.normal_sd ? this.nivConfig.normal_sd : 1
+    },
   },
   mounted() {
     this.loaded = true
@@ -239,8 +244,6 @@ export default {
   max-width: 1800px;
 }
 .niveau {
-//border-radius: 12px!important;
-//padding: 3px;
   border: 0 solid #b9b9b9;
   border-bottom-width: 1px;
 }
@@ -270,6 +273,11 @@ export default {
   position: relative;
   display: flex;
 }
+.niv-name {
+  display: flex;
+  align-items: end;
+  white-space: nowrap;
+}
 @media (max-width: 892px) {
   .niv-name {
     align-self: center;
@@ -280,7 +288,6 @@ export default {
 }
 .headline-col {
   display: flex;
-  padding: 0.2rem;
   position: relative;
   height: 100%;
 }

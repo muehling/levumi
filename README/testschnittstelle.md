@@ -117,11 +117,18 @@ In der test.json werden die Metadaten des Tests definiert. Folgende Felder müss
     - `label`: Dargestellte Bezeichnung
     - `student`: Boolean, true, falls Einzelauswertungen angezeigt werden sollen
     - `group`: Boolean, true, falls die Gruppenauswertung angezeigt werden soll
-    - `type`: Text, aktuell werden `table`, `bar`, `graph_table` und `graph` unterstützt
+    - `type`: Text, aktuell werden `table`, `bar`, `graph_table`, `graph` und `niveau` unterstützt
     - `column_keys`: Array aus Texten. Die Keys müssen mit den in der test.js an die `saveResults`-Funktion geschickten Keys übereinstimmen.
     - `columns`: Array aus Texten. Spaltenbeschriftungen
     - `series_keys`: Array aus Texten, analog zu `column_keys`
     - `series`: Array aus Texten, analog zu `column`
+    - `niv_config`: Objekt, Konfiguration für den Fall, dass `type` = `niveau`
+      - `example_texts`: Array von Arrays, welche Texte von Beispielaufgaben eines bestimmten Niveaus enthalten (Hinweis: ⌹ wird als Bruchzeichen verwendet; Beispiel: der Bruch `1/4` muss so geschrieben werden, falls es als Bruch dargestellt werden soll: `1⌹4`)
+      - `headlines`: Array aus Texten, je eine Niveaubeschreibung für jedes Niveau
+      - `explanations`: Array aus Texten, je eine längere Niveaubeschreibung für jedes Niveau (optional)
+      - `heights`: Array aus Texten, jeder Text enthält den prozentualen Anteil eines Niveaus (Beispiel: `["41.555%","24.754%","33.691%"]`)
+      - `normal_mean`: Zahl, Mittelwert einer visuell über die Niveaustufen gelegten Normalverteilung, welche die Verteilung der Schüler-Personenparameter in der Stichprobe visualisieren soll. Die Abszisse umfasst dabei den Bereich von -4 bis 4, wobei -4 der Beginn des untersten Niveaus und 4 das Ende des obersten Niveaus ist
+      - `normal_sd`: Zahl, Standardabweichung ebendieser Normalverteilung
     - `options`: optional, für `bar` und `graph` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/
 - `items`: Objekt mit einem Key/Value-Paar pro Test-Item. Der Key ist dabei die Id des Test-Items in der `test.js`, Value entspricht i. d. R. der `description`
 
