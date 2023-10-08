@@ -62,7 +62,7 @@
         />
       </b-col>
     </b-row>
-    <b-row :hidden="!graph_visible || viewConfig.options.chart.type === 'boxPlot'">
+    <b-row :hidden="!annotationAndTargetRowVisible">
       <b-col>
         <b-row class="ml-1">
           <b-col>
@@ -154,7 +154,7 @@
         </table>
       </div>
     </b-row>
-    <b-row :hidden="selectedViewType !== 'graph'">
+    <b-row :hidden="!simpleTableVisible">
       <b-table-lite
         id="simple-table"
         class="mt-4 text-small"
@@ -267,9 +267,6 @@
       columns() {
         return this.viewConfig.columns || []
       },
-      selectedViewType() {
-        return this.viewConfig.type
-      },
       graph_visible() {
         return this.viewConfig.type === 'graph' || this.viewConfig.type === 'graph_table'
       },
@@ -292,8 +289,16 @@
       table_visible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
+      simpleTableVisible() {
+        return this.viewConfig.type === 'graph' && !(this.viewConfig.options?.chart?.type === 'groupedStackedBars')
+      },
+
       niveaus_visible() {
         return this.viewConfig.type === 'niveaus'
+      },
+      annotationAndTargetRowVisible() {
+        // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
+        return this.graph_visible && !(this.viewConfig.options?.chart?.type === 'groupedStackedBar') // TODO: groupedStackedBar is a placeholder, as the apexcharts site is currently down
       },
       table_data() {
         // return early if the view type has no table
@@ -521,30 +526,34 @@
         await this.createPdf(title, filename)
       },
 
-      createBoxPlotData() {
-        const bPlotData = []
+      createGroupedStackedColumnData() {
         const view = this.viewConfig
-        // get the results from the latest test week
-        const results = this.results.filter(result => result?.test_week === this.weeks[this.weeks.length-1])
-        // go through the results and for each category collect the values from all results
-        for (const i in view.series_keys) {
-          const series_key = view.series_keys[i]
-          // collect only the results of the category and filter out undefined/null values
-          let catResults = results
-              .map(result => result?.views[view.key][series_key])
-              .filter(r => r !== undefined && r !== null)
-          // calculate the quartiles for this category
-          const quartiles = []
-          for (const q of [0.0,0.25,0.5,0.75,1.0]) {
-            quartiles.push(quantile(catResults,q))
+        // go over all test weeks
+        return this.weeks.map(week => {
+          const wResults = this.results.filter(res => res?.test_week === week)
+          // the stacked columns for this week shall go into 'group'
+          const group = []
+          // go through the results and for each category collect the values from all results
+          for (const i in view.series_keys) {
+            const series_key = view.series_keys[i]
+            // collect only the results of the category and filter out undefined/null values
+            let catResults = wResults
+                .map(res => res?.views[view.key][series_key])
+                .filter(r => r !== undefined && r !== null)
+            // calculate the quartiles for this category
+            const quartiles = []
+            for (const q of [0.0,0.25,0.5,0.75,1.0]) {
+              quartiles.push(quantile(catResults,q))
+            }
+            // add a stacked column to the group
+            group.push({
+              // TODO
+              //x: view.series[i],
+              //y: quartiles
+            })
           }
-          // add a data point
-          bPlotData.push({
-            x: view.series[i],
-            y: quartiles
-          })
-        }
-        return bPlotData
+          return group
+        })
       },
 
       createSeries(studentId, seriesKey, formatDate) {
@@ -620,18 +629,18 @@
           this.maxYValue
         )
 
-        // bar and boxPlot are currently the only supported non-line charts
-        const nonLineChart = ['bar','boxPlot'].includes(trueChartType)
+        // bar and grouped stacked bar are currently the only supported non-line charts
+        const nonLineChart = ['bar','groupedStackedBar'].includes(trueChartType)
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          if (trueChartType === 'boxPlot') {
-            // in case this is a box-plot do not create a series per student, but instead create data points
-            // with each point having a task type as its category (x) and its quartiles as y-values
+          if (trueChartType === 'groupedStackedBar') {
+            // in case this is a grouped stacked bar chart do not create a series per student, but instead create
+            // a group of stacked bars per week for the whole class
             gData = [{
               type: trueChartType,
-              data: this.createBoxPlotData(),
+              data: this.createGroupedStackedColumnData(),
             }]
           } else {
             // else this is a graph with one series per student reaching over all available dates

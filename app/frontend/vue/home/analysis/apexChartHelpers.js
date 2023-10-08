@@ -26,8 +26,8 @@ export const prepareOptions = (
       case 'bar':
         opt = apexChartOptions(weekLabels).bar
         break
-      case 'boxPlot':
-        opt = apexChartOptions(weekLabels).boxPlot
+      case 'groupedStackedBar':
+        opt = apexChartOptions(weekLabels).groupedStackedBar
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea
@@ -110,7 +110,8 @@ export const apexChartOptions = weekLabels => ({
         horizontal: true,
         barHeight: "40%",
       },
-      boxPlot: {
+      groupedStackedBar: {
+        // TODO
         colors: {
           upper: '#e8e8f1',
           lower: '#ffffff'
