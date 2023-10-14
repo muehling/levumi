@@ -47,12 +47,12 @@
             <template v-for="(example, key) in examplesForLevel(n)">
               <div :key="key" class="example-div">
                 <span v-for="(line, lineKey) in example.lines" :key="lineKey" style="display: block">
-                  <span v-for="(part, partKey) in line" :key="partKey" style="display: inline-flex; vertical-align: middle">
-                    <div v-if="part.type === 'text-fraction'" class="fraction">
+                  <span v-for="(part, partKey) in line" :key="partKey" style="display: inline; vertical-align: middle">
+                    <span v-if="part.type === 'text-fraction'" class="fraction">
                       <p class="numerator">{{part.numerator}}</p>
                       <p class="denominator">{{part.denominator}}</p>
-                    </div>
-                    <span v-else-if="part.type === 'plain-text'" style="display: inline-flex">{{part.text}}</span>
+                    </span>
+                    <span v-else-if="part.type === 'plain-text'" v-html="part.text"></span>
                   </span>
                 </span>
                 <img  v-if="example.image !== undefined" class="example-img" :src="example.image.filepath" :alt="'eine Beispielaufgabe für das Niveau' + n">
@@ -60,8 +60,8 @@
             </template>
           </b-col>
           <b-col cols="4" lg="3" class="headline-col">
-            <span class="explanation-tooltip">{{explanationForLevel(n)}}</span>
-            <span class="headline">{{headlineForLevel(n)}}</span>
+            <span class="explanation-tooltip" v-html="explanationForLevel(n)"></span>
+            <span class="headline" v-html="headlineForLevel(n)"></span>
           </b-col>
         </b-row>
       </template>
@@ -182,22 +182,35 @@ export default {
         const image = example_images.find(img => img.filename.startsWith(A + E + level + "_" + i))
         // first break the text into lines
         const lines = text.split("\n")
-        // search the text for incidences of \S+⌹\S+ and split it there, keeping the separator
-        const fracRegex = /(\S+⌹\S+)/
+        // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
+        const fracRegex = /([A-Za-z0-9]+⌹[A-Za-z0-9]+)/
+        const htmlRegex = /(<\S+>.*<\/\S+>)/
         for (let j = 0; j < lines.length; ++j) {
           let k = -1
-          lines[j] = lines[j]
-              .split(fracRegex)
-              // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
-              .map(s => {
-                ++k
-                if (fracRegex.test(s)) {
-                  const slots = s.split('⌹')
-                  return {type: 'text-fraction', id: k, numerator: slots[0], denominator: slots[1]}
-                } else {
-                  return {type: 'plain-text', id: k, text: s}
-                }
-              })
+          // first split the text into html elements and free text
+          const htmlElements = lines[j].split(htmlRegex)
+          // html elements are treated as atomic and not split further
+          // free text is instead split to make space for fractions, keeping spaces
+          lines[j] = htmlElements.flatMap(elem => {
+            if (htmlRegex.test(elem)) {
+              ++k
+              return [{type: 'plain-text', id: k, text: elem}]
+            } else {
+              return elem.split(fracRegex)
+                  // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
+                  .map(s => {
+                    ++k
+                    if (fracRegex.test(s) && !htmlRegex.test(s)) {
+                      const slots = s.split('⌹')
+                      return {type: 'text-fraction', id: k, numerator: slots[0], denominator: slots[1]}
+                    } else {
+                      return {type: 'plain-text', id: k, text: s}
+                    }
+                  })
+            }
+          })
+          //console.log("words: ", words)
+          // all words that are not html elements are then scanned for fractions
         }
         ++i
         return {lines: lines, image: image}
@@ -292,7 +305,7 @@ export default {
   height: 100%;
 }
 .headline {
-  display: flex;
+  display: inline;
   align-self: center;
   max-height: 100%;
   overflow: scroll;
@@ -335,6 +348,7 @@ export default {
   border-radius: 4px;
   padding: 11px;
   position: absolute;
+  display: inline;
   width: 115%;
   transform: translate(-100%, 0%);
   visibility: hidden;
@@ -357,6 +371,7 @@ export default {
   font-size: 75%;
   margin: 1pt;
   text-align: center;
+  vertical-align: middle;
 }
 .numerator {
   border-bottom: 1px solid black;
