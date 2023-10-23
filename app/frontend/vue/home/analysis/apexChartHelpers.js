@@ -24,10 +24,7 @@ export const prepareOptions = (
     // we allow only bar, boxPlot and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
-        opt = apexChartOptions(weekLabels).bar
-        break
-      case 'groupedStackedBar':
-        opt = apexChartOptions(weekLabels).groupedStackedBar
+        opt = customOptions?.chart?.stacked ? apexChartOptions(weekLabels).groupedStackedBar : apexChartOptions(weekLabels).bar
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea
@@ -91,10 +88,11 @@ export const apexChartOptions = weekLabels => ({
     },
     tooltip: { ...commonTooltip() },
   },
-  boxPlot: {
+  groupedStackedBar: {
     chart: {
       ...commonChart(),
       type: 'bar',
+      stacked: true,
     },
     stroke: {
       curve: 'straight',
@@ -107,24 +105,40 @@ export const apexChartOptions = weekLabels => ({
     },
     plotOptions: {
       bar: {
-        horizontal: true,
-        barHeight: "40%",
+        horizontal: false,
       },
-      groupedStackedBar: {
-        // TODO
-        colors: {
-          upper: '#e8e8f1',
-          lower: '#ffffff'
-        }
-      }
+    },
+    xaxis: {
+      tooltip: { enabled: false },
+      type: 'category',
+      categories: weekLabels,
     },
     yaxis: {
       labels: {
         style: {
           fontSize: '13px'
-        }
-      }
+        },
+        formatter: (val) => { return val > 1.0 ? '' : val.toFixed(1) },
+      },
+      min: 0.0,
+      max: 1.0,
+      decimalsInFloat: 1,
     },
+    legend: {
+      show: false,
+    },
+    colors: [
+      'rgba(255,255,255,0)',
+      '#80f1d7',
+      '#34a8ff',
+      '#1ee32e',
+      '#8bff95',
+      'rgba(255,255,255,0)',
+      '#ffe3ab',
+      '#ff9861',
+      '#dcc21e',
+      '#f7ff85', // TODO: add more color sequences to avoid repetition
+    ],
     tooltip: { ...commonTooltip() },
   },
   line: {

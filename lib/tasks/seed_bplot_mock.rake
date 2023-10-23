@@ -35,20 +35,14 @@ task 'seed_bplot_mock' => :environment do
     [0.16, 0.18, 0.19, 0.29, 0.23, 0.57, 0.51, 0.55, 0.68],
     [0.12, 0.25, 0.29, 0.27, 0.23, 0.28, 0.44, 0.46, 0.55]
   ]
-  # define the sequence of correctness results per task type and then student
-  # info: instruction starts at 3rd point, instruction change is at 6th point
-  box_plot_rows = [
-    [{'Text': 0.19, 'Identifizieren': 0.39}, {'Text': 0.43, 'Identifizieren': 0.43}, {'Text': 0.35, 'Identifizieren': 0.55}],
-    [{'Text': 0.58, 'Identifizieren': 0.58}, {'Text': 0.74, 'Identifizieren': 0.74}, {'Text': 0.71, 'Identifizieren': 0.81}],
-    [{'Text': 0.57, 'Identifizieren': 0.57}, {'Text': 0.55, 'Identifizieren': 0.55}, {'Text': 0.60, 'Identifizieren': 0.66}],
-    [{'Text': 0.63, 'Identifizieren': 0.63}, {'Text': 0.69, 'Identifizieren': 0.69}, {'Text': 0.70, 'Identifizieren': 0.74}],
-    [{'Text': 0.27, 'Identifizieren': 0.27}, {'Text': 0.36, 'Identifizieren': 0.36}, {'Text': 0.40, 'Identifizieren': 0.45}],
-    [{'Text': 0.46, 'Identifizieren': 0.46}, {'Text': 0.42, 'Identifizieren': 0.42}, {'Text': 0.53, 'Identifizieren': 0.80}],
-    [{'Text': 0.42, 'Identifizieren': 0.42}, {'Text': 0.56, 'Identifizieren': 0.56}, {'Text': 0.63, 'Identifizieren': 0.68}],
-    [{'Text': 0.40, 'Identifizieren': 0.40}, {'Text': 0.48, 'Identifizieren': 0.48}, {'Text': 0.53, 'Identifizieren': 0.69}],
-    [{'Text': 0.51, 'Identifizieren': 0.51}, {'Text': 0.55, 'Identifizieren': 0.55}, {'Text': 0.68, 'Identifizieren': 0.60}],
-    [{'Text': 0.44, 'Identifizieren': 0.44}, {'Text': 0.46, 'Identifizieren': 0.46}, {'Text': 0.55, 'Identifizieren': 0.75}],
-  ]
+  # define the sequence of box-plot (or percentile band) results per task type and then student
+  box_plot_rows = []
+  for i in 0..8 do
+    box_plot_rows[i] = []
+    for j in 0..8 do
+      box_plot_rows[i][j] = {'Text': rand, 'Identifizieren': rand}
+    end
+  end
   # the date when the latest result was measured
   end_date = DateTime.new(2023,3,30)
 
@@ -67,7 +61,7 @@ task 'seed_bplot_mock' => :environment do
         test_date: end_date - 7 * k,
         views: {
           'correctness': c_row[k],
-          'exerciseTypeBoxPlots': b_row[0]
+          'exerciseTypeBoxPlots': b_row[k]
         },
         report: rep,
         data: []

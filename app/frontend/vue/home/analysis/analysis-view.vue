@@ -290,7 +290,7 @@
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
       simpleTableVisible() {
-        return this.viewConfig.type === 'graph' && !(this.viewConfig.options?.chart?.type === 'groupedStackedBars')
+        return this.viewConfig.type === 'graph' && !(this.viewConfig.options?.chart?.stacked)
       },
 
       niveaus_visible() {
@@ -298,7 +298,7 @@
       },
       annotationAndTargetRowVisible() {
         // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
-        return this.graph_visible && !(this.viewConfig.options?.chart?.type === 'groupedStackedBar') // TODO: groupedStackedBar is a placeholder, as the apexcharts site is currently down
+        return this.graph_visible && !(this.viewConfig.options?.chart?.stacked)
       },
       table_data() {
         // return early if the view type has no table
@@ -528,11 +528,20 @@
 
       createGroupedStackedColumnData() {
         const view = this.viewConfig
+        const series = []
+        // create stackable elements with the names of the series
+        for (const sName of view.series) {
+          for (const q of [0.0,0.25,0.5,0.75,1.0]) {
+            series.push({
+              name: `${sName} ${q}-Perzentil`,
+              group: sName,
+              data: []
+            })
+          }
+        }
         // go over all test weeks
-        return this.weeks.map(week => {
+        this.weeks.forEach(week => {
           const wResults = this.results.filter(res => res?.test_week === week)
-          // the stacked columns for this week shall go into 'group'
-          const group = []
           // go through the results and for each category collect the values from all results
           for (const i in view.series_keys) {
             const series_key = view.series_keys[i]
@@ -545,15 +554,13 @@
             for (const q of [0.0,0.25,0.5,0.75,1.0]) {
               quartiles.push(quantile(catResults,q))
             }
-            // add a stacked column to the group
-            group.push({
-              // TODO
-              //x: view.series[i],
-              //y: quartiles
-            })
+            // add the quantiles for this week to the matching series
+            for (let j=0; j<5; ++j) {
+              series[i*5 + j].data.push(j === 0 ? quartiles[j] : quartiles[j] - quartiles[j-1])
+            }
           }
-          return group
         })
+        return series
       },
 
       createSeries(studentId, seriesKey, formatDate) {
@@ -630,18 +637,16 @@
         )
 
         // bar and grouped stacked bar are currently the only supported non-line charts
-        const nonLineChart = ['bar','groupedStackedBar'].includes(trueChartType)
+        const nonLineChart = ['bar'].includes(trueChartType)
+        const stackedBarChart = trueChartType === 'bar' && view.options?.chart?.stacked
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          if (trueChartType === 'groupedStackedBar') {
+          if (stackedBarChart) {
             // in case this is a grouped stacked bar chart do not create a series per student, but instead create
             // a group of stacked bars per week for the whole class
-            gData = [{
-              type: trueChartType,
-              data: this.createGroupedStackedColumnData(),
-            }]
+            gData = this.createGroupedStackedColumnData()
           } else {
             // else this is a graph with one series per student reaching over all available dates
             gData = this.studentsWithResults.map(student => {
@@ -716,17 +721,19 @@
         this.updateAnnotations()
 
         // this is the input for <b-table-lite> component, which is shown below the graph
-        this.simpleTableData = gData.map(lineData => {
-          const data = lineData.data.reduce((acc, d) => {
-            // createSeries contains raw dates, so we need to format them here
-            acc[nonLineChart ? d.x : printDate(d.x)] = d.y || '-'
-            return acc
-          }, {})
-          return {
-            name: lineData.name,
-            ...data,
-          }
-        })
+        if (!stackedBarChart) {
+          this.simpleTableData = gData.map(lineData => {
+            const data = lineData.data.reduce((acc, d) => {
+              // createSeries contains raw dates, so we need to format them here
+              acc[nonLineChart ? d.x : printDate(d.x)] = d.y || '-'
+              return acc
+            }, {})
+            return {
+              name: lineData.name,
+              ...data,
+            }
+          })
+        }
 
         this.isInitialized = true
       },
