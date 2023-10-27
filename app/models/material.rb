@@ -85,8 +85,6 @@ class Material < ApplicationRecord
               filename: f.name.split('/').last
             )
           end
-        puts '#################################'
-        puts val['groups']
         material.attach_to(
           areas: val['areas'],
           competences: val['competences'],
