@@ -13,7 +13,7 @@
           <div class="text-muted text-small">Lernbereich auswählen</div>
           <b-button-group>
             <b-button
-              v-for="area in mData.areas"
+              v-for="area in filteredAreas"
               :key="area.id"
               class="mr-1"
               variant="outline-primary"
@@ -30,12 +30,12 @@
           </b-button-group>
         </b-col>
       </b-row>
-      <b-row v-if="filtered_competences.length > 0" class="mt-2">
+      <b-row v-if="filteredCompetences.length > 0" class="mt-2">
         <b-col md="12">
           <div class="text-muted text-small">Kompetenz auswählen</div>
           <b-button-group>
             <b-button
-              v-for="competence in filtered_competences"
+              v-for="competence in filteredCompetences"
               :key="competence.id"
               class="mr-1"
               variant="outline-primary"
@@ -51,12 +51,12 @@
           </b-button-group>
         </b-col>
       </b-row>
-      <b-row v-if="filtered_families.length > 0" class="mt-2">
+      <b-row v-if="filteredTestFamilies.length > 0" class="mt-2">
         <b-col md="12">
           <div class="text-muted text-small">Testart auswählen</div>
           <b-button-group>
             <b-button
-              v-for="family in filtered_families"
+              v-for="family in filteredTestFamilies"
               :key="family.id"
               class="mr-1"
               variant="outline-primary"
@@ -71,12 +71,12 @@
           </b-button-group>
         </b-col>
       </b-row>
-      <b-row v-if="filtered_tests.length > 0" class="mt-2">
+      <b-row v-if="filteredTests.length > 0" class="mt-2">
         <b-col md="12">
           <div class="text-muted text-small">Niveaustufe auswählen</div>
           <b-button-group>
             <b-button
-              v-for="test in filtered_tests"
+              v-for="test in filteredTests"
               :key="test.id"
               class="mr-1"
               variant="outline-primary"
@@ -90,11 +90,11 @@
       </b-row>
       <b-row class="mt-3">
         <b-col md="12">
-          <b-card v-if="filtered_materials.length > 0" no-body>
+          <b-card v-if="filteredMaterials.length > 0" no-body>
             <!-- b-tabs funktioniert nicht bei anfangs leerer Liste, daher eigene Lösung -->
             <b-tabs card pills vertical>
               <b-tab
-                v-for="material in filtered_materials"
+                v-for="material in filteredMaterials"
                 :key="material.id"
                 :title="material.name"
               >
@@ -144,28 +144,31 @@
       mData() {
         return this.materialsStore.materials
       },
-      filtered_competences() {
+      filteredAreas() {
+        return this.mData.areas
+      },
+      filteredCompetences() {
         return this.mData.competences
           ? Object.values(this.mData.competences).filter(
               competence => competence.area_id === this.selected_area
             )
           : []
       },
-      filtered_families() {
+      filteredTestFamilies() {
         return this.mData.test_families
           ? Object.values(this.mData.test_families).filter(
               family => family.competence_id === this.selected_competence
             )
           : []
       },
-      filtered_tests() {
+      filteredTests() {
         return this.mData.tests
           ? Object.values(this.mData.tests).filter(
               test => test.test_family_id === this.selected_family
             )
           : []
       },
-      filtered_materials() {
+      filteredMaterials() {
         const supports = this.mData.supports ? Object.values(this.mData.supports) : []
 
         const materialIds = flatten([
