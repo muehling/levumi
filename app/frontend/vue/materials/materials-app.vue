@@ -119,15 +119,18 @@
 </template>
 
 <script>
-  import MaterialView from './material-view.vue'
+  import { checkUserSettings } from '../../utils/user'
+  import { useGlobalStore } from '../../store/store'
   import { useMaterialsStore } from '../../store/materialsStore'
   import flatten from 'lodash/flatten'
+  import MaterialView from './material-view.vue'
   export default {
     name: 'MaterialsApp',
     components: { MaterialView },
     setup() {
+      const globalStore = useGlobalStore()
       const materialsStore = useMaterialsStore()
-      return { materialsStore }
+      return { materialsStore, globalStore }
     },
     data: function () {
       return {
@@ -145,7 +148,20 @@
         return this.materialsStore.materials
       },
       filteredAreas() {
-        return this.mData.areas
+        //TODO remove once DDM is done
+        if (
+          checkUserSettings(
+            this.globalStore.login.settings,
+            'visibilities.general.hideArthMaterials'
+          )
+        ) {
+          const arthIds = this.mData.tests
+            .filter(test => test.shorthand === 'ARTH' || test.shorthand === 'ARTH_SHORT')
+            .map(test => test.area_id)
+          return this.mData.areas.filter(area => arthIds.findIndex(id => id === area.id))
+        } else {
+          return this.mData.areas
+        }
       },
       filteredCompetences() {
         return this.mData.competences

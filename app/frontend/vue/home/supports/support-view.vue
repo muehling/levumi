@@ -64,6 +64,7 @@
           ) && this.hasItemDictionary
         )
       },
+      // custom DDM component without recommendations
       isAllSuggestionsVisible() {
         return checkUserSettings(
           this.globalStore.login.settings,
