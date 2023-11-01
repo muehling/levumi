@@ -104,8 +104,8 @@
 
     //Testfenster schließen
     function exit() {
-        window.location.href = '<%= @redirect %>'
         window.removeEventListener('beforeunload', preventNavigation, true);
+        window.location.href = '<%= @redirect %>'
     }
     window.exit = exit
 
