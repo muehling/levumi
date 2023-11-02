@@ -36,7 +36,7 @@
     "eslint": "^8.22.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-vue": "^9.3.0",
-    "postcss": "^8.4.16",
+    "postcss": "^8.4.31",
     "postcss-nesting": "^10.1.10",
     "prettier": "^2.3",
     "sass": "^1.53.0",
@@ -55,6 +55,8 @@
     "json5": "^2.2.2",
     "decode-uri-component": "^0.2.1",
     "semver": "^7.5.2",
-    "word-wrap": "^1.2.4"
+    "word-wrap": "^1.2.4",
+    "@babel/traverse": "^7.23.2",
+    "postcss": "^8.4.31"
   }
 }
