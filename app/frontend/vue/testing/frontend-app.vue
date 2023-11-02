@@ -31,6 +31,7 @@
             :href="'/students/' + student.id + '/results/new?test_id=' + test.test_info.id"
             :disabled="!test.open"
             :variant="test.open ? 'outline-success' : 'success'"
+            :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
             @click="logout = false"
           >
             {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
@@ -57,9 +58,10 @@
               action="/testen_login"
               method="post"
               accept-charset="UTF-8"
+              aria-label="Zugangscode eingeben"
               @submit.prevent="handleSubmit"
             >
-              <b-form-group>
+              <b-form-group aria-label="Zugangscode eingeben">
                 <input type="hidden" name="authenticity_token" :value="includeCSRFToken()" />
                 <b-form-input
                   v-model="loginCode"
@@ -95,10 +97,9 @@
 </template>
 
 <script>
-  import QrReader from './qr-reader.vue'
   import { ajax, getCSRFToken } from '../../utils/ajax'
-
   import { isMobile, isTablet } from 'mobile-device-detect'
+  import QrReader from './qr-reader.vue'
   export default {
     name: 'FrontendApp',
     components: {

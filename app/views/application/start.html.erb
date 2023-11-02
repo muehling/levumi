@@ -1,23 +1,23 @@
 <%= content_for :navbar do %>
   <!-- Navbar mit Login-Dialog -->
   <nav class='navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex'>
-    <a class='navbar-brand d-block d-xs-inline' href='#'><img src='/images/shared/Levumi-normal_small.png' alt='Levumi' width='48' height='48'/>Levumi</a>
+    <a class='navbar-brand d-block d-xs-inline' href='#'><img src='/images/shared/Levumi-normal_small.png' alt='Levumi - Startseite' width='48' height='48'/>Levumi</a>
     <%= link_to raw('Zugang für Schülerinnen<br class="d-md-none"> und Schüler'), '/testen', class: 'btn btn-outline-secondary'%>
     <div class='mt-2 mt-md-0'>
       <% if @login%>
         <div><a class="btn btn-outline-secondary" href='/start'><%=@login.email%></a></div>
       <%else%>
         <div class='dropdown <%= @retry ? 'show':'' %>'>
-          <a class='btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry.to_s %>'>
+          <a class='btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry ? @retry.to_s : "false"%>'>
             Einloggen
           </a>
           <div class='dropdown-menu dropdown-menu-sm-right <%= @retry ? 'show':'' %>' aria-labelledby='navbarDropdown'>
-            <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3 mx-3 mx-md-0 mw-100', onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
+            <%= form_tag url_for(controller: 'application', action: 'login'), class: 'px-4 py-3 mx-3 mx-md-0 mw-100', aria: { label: 'Einloggen' }, onsubmit: "sessionStorage['login'] = $('#password').val();" do%>
               <div class='form-group'>
-                <input type='email' name='email' class='form-control <%= @retry ? 'is-invalid':'' %>' id='email' placeholder='E-Mail Adresse'>
+                <input type='email' name='email' aria-label='Email-Adresse eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='login-email' placeholder='E-Mail Adresse'>
               </div>
               <div class='form-group'>
-                <input type='password' name='password' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
+                <input type='password' name='password' aria-label='Passwort eingeben' class='form-control <%= @retry ? 'is-invalid':'' %>' id='password' placeholder='Passwort'>
                 <div class='invalid-feedback'>
                   Benutzername oder Passwort ist falsch!
                 </div>
@@ -38,7 +38,7 @@
 
 <%= content_for :modal do %>
   <!-- Dialog zur Registrierung -->
-  <div class='modal-header'>
+  <div class='modal-header' id='modal-header'>
     <h5 class='modal-title'>Registrierung</h5>
     <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
       <span aria-hidden='true'>&times;</span>
@@ -52,26 +52,26 @@
 <%= content_for :body do %>
 
   <div class="container-fluid">
-    <div id="carousel" class="carousel slide carousel-fade" data-ride="carousel">
+    <section id="carousel" class="carousel slide carousel-fade" data-ride="carousel" aria-label="Allgemeine Informationen über Levumi">
       <div class="carousel-inner">
 
-        <div class="carousel-item active">
+        <section class="carousel-item active" aria-describedby="tab-0">
           <div class="container">
             <div class="flex-fill">
               <div class='img_container alphabet-img'>
-                <p class='lead m-auto'>
+                <p id="tab-0" class='lead m-auto'>
                   Levumi - Kompetenzorientierte Lernverlaufsdiagnostik, einfach gemacht!
                 </p>
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="carousel-item">
+        <section class="carousel-item" aria-describedby="tab-1">
           <div class="container">
             <div class="flex-fill">
               <div class='img_container grownups-img'>
-              <p class='lead' style="width: 80%">
+              <p id="tab-1" class='lead' style="width: 80%">
                 Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar.<br/>
                 Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik an.<br/>
                 Wenn es Fördermaterial gibt, so wird Ihnen dieses spezifisch für Ihre Schüler:innen empfohlen.<br/>
@@ -81,13 +81,13 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
-        <div class="carousel-item">
+        <section class="carousel-item" aria-describedby="tab-2">
           <div class="container">
             <div class="flex-fill">
               <div class='img_container children-img'>
-                <p class='lead mt-auto ml-auto' style="width: 80%">
+                <p id="tab-2" class='lead mt-auto ml-auto' style="width: 80%">
                   Levumi unterstützt Regelschullehrkräfte und sonderpädagogische Lehrkräfte bei der Diagnose und Förderung einzelner Schüler:innen sowie der gesamten Schulklasse.<br/>
                   Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler:innen sichtbar machen und Schwierigkeiten im Lernen frühzeitig erkennen.<br/>
                   Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von Levumi!<br/>
@@ -96,29 +96,24 @@
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
       </div>
-    </div>
-    <div class='text-center mt-3'>
-      <p class='lead'>
-        Der <a href='https://www.levumi-blog.uni-kiel.de' target='_blank'>Levumi Blog</a> unterstützt Sie bei allen Fragen rund um die Plattform und informiert über praxisrelevante <a href='#', onclick="$('#projects').modal('show');">Forschungsergebnisse</a>. <br/>
+    </section>
+    <section class='text-center mt-3' aria-label="Blog, Videobeschreibung und Newsletter">
+      <p class='lead' id="blog-description">
+        Der <a href='https://www.levumi-blog.uni-kiel.de' aria-describedby="blog-description" target='_blank'>Levumi Blog</a> unterstützt Sie bei allen Fragen rund um die Plattform und informiert über praxisrelevante <a href='#', onclick="$('#projects').modal('show');">Forschungsergebnisse</a>. <br/>
         Das folgende Video stellt Ihnen die Plattform kurz vor.
       </p>
-
-        <div class="embed-responsive embed-responsive-16by9 video-container">
-          <iframe class='embed-responsive-item' width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-
-
-    <div class='text-center mt-3'>
-      <p class='lead'>Interessiert? Dann einfach einen kostenfreien <a href='#', onclick="$('#modal').modal('show');">Zugang anlegen</a></p>
-      <p class='lead'>Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden! <a href='https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi', target='_blank'>Jetzt abonnieren</a></p>
-    </div>
+      <div class="embed-responsive embed-responsive-16by9 video-container">
+        <iframe title="Dieses Video stellt Ihnen die kostenfreie Online-Plattform Levumi vor und gibt Ihnen einen Einblick, inwiefern Sie durch die Arbeit mit Levumi profitieren können." class='embed-responsive-item' width="560" height="315" src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+      </div>
+      <div class='text-center mt-3'>
+        <p class='lead'>Interessiert? Dann einfach einen kostenfreien <a href='#', onclick="$('#modal').modal('show');">Zugang anlegen</a></p>
+        <p id="levumi-newsletter" class='lead'>Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden! <a href='https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi', target='_blank' aria-describedby="levumi-newsletter">Jetzt abonnieren</a></p>
+      </div>
+    </section>
   </div>
-
-  <%= render 'application/imprint' %>
-  <%= render 'application/privacy' %>
-  <%= render 'application/about' %>
+  
   <%= render 'application/footer', show_about: true %>
 <% end %>

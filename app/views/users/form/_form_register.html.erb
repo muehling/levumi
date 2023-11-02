@@ -1,6 +1,6 @@
 <!-- Form für Selbstregistrierung auf Hauptseite -->
 
-<%= form_for user, authenticity_token: true do |f| %>
+<%= form_for user, authenticity_token: true, html: { 'aria-label' => 'Anmeldung' } do |f| %>
 
   <%= render 'users/form/email', f: f, user: user, readOnly: false %>
 
@@ -26,7 +26,7 @@
     }
   })
 
-  $('#user-messages').toast({animation: true, autohide: false})
+  $('#user-messages').toast({animation: true, autohide: false}).toast('hide')
 
   $("#main-register").on("click", (e)=>{
     e.preventDefault()

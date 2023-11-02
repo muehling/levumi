@@ -1,9 +1,9 @@
 <!-- Auswahl des Bundeslands, in allen Forms verwendet -->
 
 <div class='form-group row'>
-  <%= f.label label, class: 'col-sm-4 col-form-label' %>
+  <%= f.label label, class: 'col-sm-4 col-form-label', for: 'select-state' %>
   <div class='col-sm-8 pl-0'>
-    <%= f.select(:state, federal_states, {}, {class: 'custom-select' + (user.errors[:state].any? ? ' is-invalid' : '')}) %>
+    <%= f.select(:state, federal_states, {}, {id: 'select-state', class: 'custom-select' + (user.errors[:state].any? ? ' is-invalid' : '')}) %>
     <div class='invalid-feedback'>
       Bitte auswählen!
     </div>

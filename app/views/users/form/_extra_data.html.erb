@@ -2,7 +2,7 @@
   <div class='form-group row'>
     <%= f.label 'Institution', class: 'col-sm-4 col-form-label' %>
     <div class='col-sm-8 pl-0'>
-      <%= f.text_field :institution, id: 'institution', class: 'form-control'%>
+      <%= f.text_field :institution, id: 'institution', class: 'form-control' aria: { label: 'An welcher Forschungseinrichtung sind Sie tätig?' }%>
       <small id="focusHelp" class="form-text text-muted">An welcher Forschungseinrichtung sind Sie tätig?</small>
     </div>
   </div>
@@ -12,20 +12,20 @@
   <div class='form-group row'>
     <%= f.label 'Ort', class: 'col-sm-4 col-form-label' %>
     <div class='col-sm-8 pl-0'>
-      <%= f.text_field :town, id: 'town', class: 'form-control'%>
+      <%= f.text_field :town, id: 'town', class: 'form-control' aria: { label: 'Wo befindet sich Ihre Schule?' }%>
       <small id="focusHelp" class="form-text text-muted">Wo befindet sich Ihre Schule?</small>
     </div>
   </div>
   <div class='form-group row'>
     <%= f.label 'Schulart', class: 'col-sm-4 col-form-label' %>
     <div class='col-sm-8 pl-0'>
-      <%= f.select(:school_type, school_types, {}, {class: 'custom-select'}) %>
+      <%= f.select(:school_type, school_types, {}, {class: 'custom-select'}) aria: { label: 'Schultyp' }%>
     </div>
   </div>
   <div class='form-group row'>
     <%= f.label 'Tätigkeit', class: 'col-sm-4 col-form-label' %>
     <div class='col-sm-8 pl-0'>
-      <%= f.select(:focus, focus_types, {}, {class: 'custom-select'}) %>
+      <%= f.select(:focus, focus_types, {}, {class: 'custom-select'}) aria: { label: 'Tätigkeit' }%>
       <small id="focusHelp" class="form-text text-muted">Was ist Ihre überwiegende Tätigkeit?</small>
     </div>
   </div>

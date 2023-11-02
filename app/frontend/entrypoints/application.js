@@ -8,7 +8,6 @@ import * as sjcl from 'sjcl'
 import BootstrapVue from 'bootstrap-vue'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-
 import RootApp from '../vue/root-app.vue'
 import ClassBookApp from '../vue/classbook/classbook-app.vue'
 import HomeApp from '../vue/home/home-app.vue'
