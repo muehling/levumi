@@ -805,7 +805,7 @@
           })
         // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
         this.annotations.forEach(annotation => {
-          this.$refs.levumiChart.removeAnnotation('a' + annotation.id)
+          this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
         })
 
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))

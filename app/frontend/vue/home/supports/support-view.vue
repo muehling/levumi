@@ -3,6 +3,9 @@
     <b-tab v-if="isGeneralSuggestionsVisible" title="Allgemeine Empfehlungen" lazy>
       <support-general-suggestions :group-id="group.id" :test-id="testId" />
     </b-tab>
+    <b-tab v-if="isAllSuggestionsVisible" title="Allgemeine Empfehlungen" lazy>
+      <all-suggestions-for-test :group-id="group.id" :test-id="testId" />
+    </b-tab>
     <b-tab v-if="isSupportSuggestionsVisible" title="Fördermaterialien" lazy>
       <support-group-suggestions :group="group" :test-id="testId" />
     </b-tab>
@@ -14,12 +17,14 @@
   import { useAssessmentsStore } from '../../../store/assessmentsStore'
   import { useGlobalStore } from '../../../store/store'
   import SupportGeneralSuggestions from './support-general-suggestions.vue'
+  import AllSuggestionsForTest from './all-suggestions-for-test.vue' //TODO rename 2 AllMaterialsForTest
   import SupportGroupSuggestions from './support-group-suggestions.vue'
   export default {
     name: 'SupportView',
     components: {
       SupportGeneralSuggestions,
       SupportGroupSuggestions,
+      AllSuggestionsForTest,
     },
     props: {
       group: Object,
@@ -57,6 +62,13 @@
             this.globalStore.login.settings,
             'visibilities.supportView.supportSuggestions'
           ) && this.hasItemDictionary
+        )
+      },
+      // custom DDM component without recommendations
+      isAllSuggestionsVisible() {
+        return checkUserSettings(
+          this.globalStore.login.settings,
+          'visibilities.supportView.allSuggestionsForTest'
         )
       },
     },

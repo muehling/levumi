@@ -54,10 +54,12 @@ class Material < ApplicationRecord
         MaterialSupport.create(material_id: self.id, test_id: test.id, items: i['items'])
       end
     end
-    groups.each do |g|
-      test = Test.find_by_shorthand(g['test'])
-      unless test.nil?
-        MaterialSupport.create(material_id: self.id, test_id: test.id, group: g['group'])
+    if groups
+      groups.each do |g|
+        test = Test.find_by_shorthand(g['test'])
+        unless test.nil?
+          MaterialSupport.create(material_id: self.id, test_id: test.id, group: g['group'])
+        end
       end
     end
   end
@@ -85,8 +87,6 @@ class Material < ApplicationRecord
               filename: f.name.split('/').last
             )
           end
-        puts '#################################'
-        puts val['groups']
         material.attach_to(
           areas: val['areas'],
           competences: val['competences'],
