@@ -158,7 +158,7 @@
                 Testverwaltung
               </router-link>
               <router-link
-                v-if="checkCapability('materials')"
+                v-if="checkCapability('material')"
                 to="/materialverwaltung"
                 class="dropdown-item"
               >
