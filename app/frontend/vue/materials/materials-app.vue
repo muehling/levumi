@@ -148,12 +148,14 @@
         return this.materialsStore.materials
       },
       filteredAreas() {
-        //TODO remove once DDM is done
+        // hides ARTH materials from everyone who does not have hideArthMaterials set to true
+        //TODO remove check once DDM is done. then, always return all areas.
         if (
           checkUserSettings(
             this.globalStore.login.settings,
             'visibilities.general.hideArthMaterials'
-          )
+          ) ||
+          !checkUserSettings(this.globalStore.login.settings, 'visibilities.general')
         ) {
           const arthIds = this.mData.tests
             .filter(test => test.shorthand === 'ARTH' || test.shorthand === 'ARTH_SHORT')
