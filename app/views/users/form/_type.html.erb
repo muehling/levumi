@@ -5,17 +5,17 @@
       <label class='col-form-label'><%= label %></label>
     <% else %>
       <div class='custom-control custom-control-inline pl-0'>
-        <label class='form-check-label'><%= label %></label>
+        <label id="input_account_type_check" class='form-check-label'><%= label %></label>
       </div>
     <% end %>
   </div>
   <div class='col-sm-8  pl-0'>
     <% if readOnly %>
-      <input type='text' readonly class='form-control-plaintext' value='<%= account_types[user.account_type] %>'>
+      <input type='text' id="input_account_type_text" readonly class='form-control-plaintext' value='<%= account_types[user.account_type] %>'>
     <% else %>
         <% (0..2).each do |i| %>
-          <div class='form-check'>
-            <%= f.radio_button :account_type, i, class: 'form-check-input' + (user.errors[:account_type].any? ? ' is-invalid' : ''), checked: user.account_type == i%>
+          <div class='form-check' id=<%='input_account_type_check_' + i.to_s%>>
+            <%= f.radio_button :account_type, i, class: 'form-check-input' + (user.errors[:account_type].any? ? ' is-invalid' : ''), aria: {describedby: "input_account_type_check"}, checked: user.account_type == i%>
             <%= f.label :account_type, account_types[i], value: i, class: 'form-check-label' %>
             <% if i == 2 %>
               <div class='invalid-feedback'>

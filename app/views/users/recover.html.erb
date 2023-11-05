@@ -8,7 +8,7 @@
     <div class='card card-body ml-5 mr-5'>
       <form id="password-reset">
         <div class='form-group'>
-          <input type='email' name='email' class='form-control' id='email' placeholder='E-Mail Adresse'>
+          <input type='email' name='email' class='form-control' id='email-input' placeholder='E-Mail Adresse'>
         </div>
         <div class='form-group'>
           <label for='security'>In welcher Stadt wurden Sie geboren?</label>
@@ -30,7 +30,7 @@ const submit = async e => {
   e.preventDefault()
   e.stopPropagation()
 
-  const email =  $('#email').val()
+  const email =  $('#email-input').val()
   const security =  $('#security').val()
 
   const res = await fetch('/passwort', {

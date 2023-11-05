@@ -41,6 +41,7 @@ class MaterialsController < ApplicationController
     @data = Material.get_material_info
   end
 
+  # used to generate specific suggestions based on the item groups
   def get_specific_materials_for_test
     materials = MaterialSupport.where(test_id: params[:test_id]).where.not(group: nil)
     render json: materials

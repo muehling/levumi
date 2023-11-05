@@ -96,7 +96,7 @@ class UsersController < ApplicationController
 
   #DEL /users/:id
   def destroy
-    if !@login.has_capability?('admin') || !@login.has_capability?('user')
+    if !@login.has_capability?('user')
       head :forbidden
       return
     end

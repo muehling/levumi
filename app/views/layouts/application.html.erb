@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="de">
   <head>
     <title>Levumi</title>
     <%= csrf_meta_tags %>
@@ -9,6 +9,7 @@
     <%= vite_stylesheet_tag 'application' %>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
 
     <%= yield :head if content_for? :head %>
     <%= vite_client_tag %>
@@ -39,7 +40,7 @@
   <div id='toast-wrapper'>
     <div id='user-messages' role='alert' class='toast mt-4'>
       <div class='toast-header d-flex justify-content-between align-items-center'>
-        <h5 class=''>Registrierung</h5>
+        <h5 class='text-secondary'>Registrierung</h5>
         <button type='button' class='close' data-dismiss='toast' aria-label='Close'>
           <span aria-hidden='true'>&times;</span>
         </button>

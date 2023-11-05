@@ -25,7 +25,7 @@
           })
       }
       $('#navbar_text').html('Dein Login Code: <%= @student.login %>')
-      $('#navbar_button').html("<button class='btn btn-outline-secondary' >Abmelden</button>").on("click", logout)
+      $('#navbar_button').html("<button class='btn btn-outline-secondary' aria-label='Abmelden'>Abmelden</button>").on("click", logout)
   </script>
 <% end %>
 
