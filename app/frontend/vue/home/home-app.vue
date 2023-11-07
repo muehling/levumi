@@ -122,9 +122,12 @@
         immediate: true,
         async handler(data) {
           // needed to activate the relevant group when jumping to diagnostics from the classbook
+          console.log('watcher', data)
+
           if (!data.groupId) {
             return
           }
+          await this.assessmentsStore.fetchCurrentAssessment(data.groupId, data.testId)
           await this.$nextTick()
           this.selectedGroupId = data.groupId
         },
@@ -147,9 +150,6 @@
         })
       }
     },
-    updated() {
-      this.$root.pre_select = undefined
-    },
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
@@ -161,7 +161,8 @@
       getTestsForGroup(groupId) {
         const group = this.globalStore.groups.find(group => group.id === groupId)
         if (group.key) {
-          this.assessmentsStore.fetch(groupId)
+          //  this.assessmentsStore.fetch(groupId)
+          this.assessmentsStore.currentAssessment = undefined
         }
       },
     },

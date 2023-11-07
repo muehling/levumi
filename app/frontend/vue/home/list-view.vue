@@ -97,7 +97,6 @@
     components: { ConfirmDialog },
     props: {
       group: Object,
-      defaultTestType: Object,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
@@ -126,6 +125,9 @@
       }
     },
     computed: {
+      defaultTestType() {
+        return this.globalStore.staticData.testMetaData.test_types[0]
+      },
       toggleButtonVariant() {
         return !this.allTestsActive ? 'outline-success' : 'outline-danger'
       },
@@ -207,41 +209,45 @@
         }
         this.isUpdating = []
       },
-      setPreselect(assessment) {
-        const type =
-          this.globalStore.staticData.testTypes.find(
-            testType => testType.id === (assessment.test_type_id || this.defaultTestTypeId)
-          ) || this.defaultTestType
-
-        const selectedTest = this.globalStore.staticData.testMetaData.tests.find(
-          t => t.id === assessment.test_id
+      async setPreselect(assessment) {
+        this.assessmentData = await this.assessmentsStore.fetchCurrentAssessment(
+          this.group.id,
+          assessment.test_id
         )
-
-        // TODO in case the level or test_family of a new version has changed, this will fail
-        // TODO find some way to properly identify new versions of a test
-        // in case of an archived version, this is the id of the current test
-        const currentTestId = assessment.archive
-          ? this.globalStore.staticData.testMetaData.tests.find(
-              current =>
-                current.shorthand === selectedTest.shorthand &&
-                current.test_family_id === selectedTest.test_family_id &&
-                current.is_latest
-            )?.id
-          : assessment.test_id
-
-        this.$emit(
-          'set-preselect',
-          {
-            groupId: this.group.id,
-            areaId: assessment.area_id,
-            competenceId: assessment.competence_id,
-            familyId: assessment.test_family_id,
-            testId: currentTestId,
-            versionId: selectedTest.id,
-            typeId: type.id,
-          },
-          !!assessment.archive
-        )
+        //  const type =
+        //    this.globalStore.staticData.testTypes.find(
+        //      testType => testType.id === (assessment.test_type_id || this.defaultTestTypeId)
+        //    ) || this.defaultTestType
+        //
+        //  const selectedTest = this.globalStore.staticData.testMetaData.tests.find(
+        //    t => t.id === assessment.test_id
+        //  )
+        //
+        //  // TODO in case the level or test_family of a new version has changed, this will fail
+        //  // TODO find some way to properly identify new versions of a test
+        //  // in case of an archived version, this is the id of the current test
+        //  const currentTestId = assessment.archive
+        //    ? this.globalStore.staticData.testMetaData.tests.find(
+        //        current =>
+        //          current.shorthand === selectedTest.shorthand &&
+        //          current.test_family_id === selectedTest.test_family_id &&
+        //          current.is_latest
+        //      )?.id
+        //    : assessment.test_id
+        //
+        //  this.$emit(
+        //    'set-preselect',
+        //    {
+        //      groupId: this.group.id,
+        //      areaId: assessment.area_id,
+        //      competenceId: assessment.competence_id,
+        //      familyId: assessment.test_family_id,
+        //      testId: currentTestId,
+        //      versionId: selectedTest.id,
+        //      typeId: type.id,
+        //    },
+        //    !!assessment.archive
+        //  )
       },
       formatLastDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
@@ -258,13 +264,13 @@
         }
       },
       async deleteAssessment(assessment) {
-        this.isUpdating.push(assessment.test_id)
         const ok = await this.$refs.confirmDialog.open({
           title: 'Testung löschen',
           message: 'Möchten Sie diesen Test von der Klasse entfernen?',
           okText: 'Testung löschen',
           okIntent: 'outline-danger',
         })
+        this.isUpdating.push(assessment.test_id)
 
         if (ok) {
           const res = await ajax(apiRoutes.assessments.delete(this.group.id, assessment.test_id))

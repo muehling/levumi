@@ -11,4 +11,11 @@ $success-color: #34823e;
 $success-color-dark: #2a642f;
 $levumi-color: rgba(94, 86, 187, 0.7);
 
+$theme-colors: (
+  'primary': #5a598c,
+  'danger': #b73631,
+  'secondary': #616970,
+  'success': #34823e,
+);
+
 $link-color: $primary-color;

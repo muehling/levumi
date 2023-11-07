@@ -595,7 +595,7 @@
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
         pdf.text(title, 10, 20)
-        const uri = await this.$refs.levumiChart.dataURI()
+        const uri = await this.$refs.levumiChart?.dataURI()
         pdf.addImage(
           uri['imgURI'],
           'PNG',
@@ -808,8 +808,8 @@
           this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
         })
 
-        xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
-        points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
+        xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
+        points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
@@ -890,8 +890,8 @@
       updateNonSlopeTarget() {
         if (this.targetAdded) {
           // first, if there already is a target line remove it
-          this.$refs.levumiChart.removeAnnotation('target-annotation') // line for target itself
-          this.$refs.levumiChart.removeAnnotation('target-range-annotation') // range for allowed deviation
+          this.$refs.levumiChart?.removeAnnotation('target-annotation') // line for target itself
+          this.$refs.levumiChart?.removeAnnotation('target-range-annotation') // range for allowed deviation
           this.targetAdded = false
         }
 
@@ -901,12 +901,12 @@
               ? this.targetVal - this.targetVal * (this.deviationVal / 100)
               : null
           if (y2) {
-            this.$refs.levumiChart.addYaxisAnnotation(
+            this.$refs.levumiChart?.addYaxisAnnotation(
               targetRangeAnnotationOptions(this.targetVal, y2)
             )
           }
 
-          this.$refs.levumiChart.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
+          this.$refs.levumiChart?.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
           this.targetAdded = true // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
@@ -923,7 +923,7 @@
       },
 
       removeAnnotation(id) {
-        this.$refs.levumiChart.removeAnnotation('a' + id)
+        this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {

@@ -40,7 +40,7 @@ class AssessmentsController < ApplicationController
 
   #DEL /groups/:group_id/assessments/:id
   def destroy
-    return :not_acceptable if @assessment.results.exists?
+    #return :not_acceptable if @assessment.results.exists?
     if @assessment.destroy
       head :ok
     else
