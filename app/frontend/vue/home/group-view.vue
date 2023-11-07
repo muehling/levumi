@@ -1,11 +1,16 @@
 <template>
   <div classname="group-view">
     <div v-if="!!group.id" class="mb-2 mt-2">
-      <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
+      <b-btn v-b-modal.active-tests-modal variant="outline-secondary" size="sm">
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
-      <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
-        <!-- Listenansicht für alle Tests -->
+      <b-modal
+        :id="'active-tests-modal'"
+        ref="groupTestList"
+        size="xl"
+        scrollable
+        :title="'Testübersicht ' + group.label"
+      >
         <list-view
           :group="group"
           :read_only="group.read_only"
@@ -13,7 +18,8 @@
           @set-preselect="setPreselect"
         >
         </list-view>
-      </b-collapse>
+      </b-modal>
+      <create-assessment-view />
     </div>
     <b-card bg-variant="light" class="mt-3">
       <b-nav pills>
@@ -202,15 +208,16 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
-  import ListView from './list-view.vue'
+  import CreateAssessmentView from './create-assessment-view.vue'
   import isEmpty from 'lodash/isEmpty'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import ListView from './list-view.vue'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentView, ListView },
+    components: { AssessmentView, ListView, CreateAssessmentView },
 
     props: {
       group: Object,
@@ -444,7 +451,7 @@
         this.testTypeSelected = data.typeId
         this.testSelected = data.testId
         this.versionSelected = data.versionId
-
+        this.$refs.groupTestList.hide()
         await this.$nextTick() // wait until computed properties have refreshed
         await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 

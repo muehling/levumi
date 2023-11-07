@@ -923,7 +923,7 @@
       },
 
       removeAnnotation(id) {
-        this.$refs.levumiChart.removeAnnotation('a' + id)
+        this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {
