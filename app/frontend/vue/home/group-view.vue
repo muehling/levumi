@@ -19,7 +19,6 @@
         >
         </list-view>
       </b-modal>
-      <create-assessment-view />
     </div>
     <b-card bg-variant="light" class="mt-3">
       <b-nav pills>
@@ -211,13 +210,12 @@
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
-  import CreateAssessmentView from './create-assessment-view.vue'
   import isEmpty from 'lodash/isEmpty'
   import ListView from './list-view.vue'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentView, ListView, CreateAssessmentView },
+    components: { AssessmentView, ListView },
 
     props: {
       group: Object,
