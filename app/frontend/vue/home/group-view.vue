@@ -1,16 +1,10 @@
 <template>
   <div classname="group-view">
     <div v-if="!!group.id" class="mb-2 mt-2">
-      <b-btn v-b-modal.active-tests-modal variant="outline-secondary" size="sm">
+      <b-btn v-b-toggle="'collapse_test_' + group.id" variant="outline-secondary" size="sm">
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
-      <b-modal
-        :id="'active-tests-modal'"
-        ref="groupTestList"
-        size="xl"
-        scrollable
-        :title="'Testübersicht ' + group.label"
-      >
+      <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
         <list-view
           :group="group"
           :read_only="group.read_only"
@@ -18,7 +12,7 @@
           @set-preselect="setPreselect"
         >
         </list-view>
-      </b-modal>
+      </b-collapse>
     </div>
     <b-card bg-variant="light" class="mt-3">
       <b-nav pills>
@@ -449,7 +443,6 @@
         this.testTypeSelected = data.typeId
         this.testSelected = data.testId
         this.versionSelected = data.versionId
-        this.$refs.groupTestList.hide()
         await this.$nextTick() // wait until computed properties have refreshed
         await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 
