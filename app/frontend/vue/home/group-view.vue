@@ -14,6 +14,7 @@
         >
         </list-view>
       </b-collapse>
+      <create-assessment-view />
     </div>
     <b-card bg-variant="light" class="mt-3">
       <b-nav pills>
@@ -204,13 +205,14 @@
   import { ajax } from '../../utils/ajax'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
+  import CreateAssessmentView from './create-assessment-view.vue'
   import ListView from './list-view.vue'
   import isEmpty from 'lodash/isEmpty'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentView, ListView },
+    components: { AssessmentView, ListView, CreateAssessmentView },
 
     props: {
       group: Object,
