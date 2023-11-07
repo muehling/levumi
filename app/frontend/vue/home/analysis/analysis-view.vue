@@ -621,9 +621,9 @@
             return { x: formatDate ? printDate(week) : week, y: null }
           }
           let point = this.XYFromResult(currentResult, seriesKey, formatDate)
-          point.y = point.y?.toFixed(2)
-          if (point.y === undefined) {
-            point.y = null
+
+          if (point.y !== null) {
+            point.y = point.y.toFixed(2)
           }
 
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))

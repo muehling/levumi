@@ -189,7 +189,6 @@
           :group="group"
           :read-only="group.read_only"
           :results="results?.series"
-          :student-test="results.student_test"
           :test="results.test"
           @update="loadAssessment(testSelected)"
           @remove-entry="removeEntry"

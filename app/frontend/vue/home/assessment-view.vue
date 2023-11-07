@@ -12,13 +12,7 @@
           ></span>
         </div>
         <!-- Neue Messungen -->
-        <div class="alert alert-secondary">
-          <div v-if="!test.student_test">
-            <p class="text-small">
-              Dieser Test ist für die Durchführung durch Lehrkräfte gedacht und kann daher nicht
-              aktiviert oder pausiert werden.
-            </p>
-          </div>
+        <div class="mb-3">
           <div v-if="readOnly">
             <p class="text-small">
               Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen
@@ -38,106 +32,13 @@
               zu können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
             </p>
           </div>
-          <div v-else-if="!studentTest">
-            <p class="text-light bg-secondary">&nbsp;Durchführung</p>
-            <p class="text-small">{{ test.description.usage }}</p>
-            <p class="text-light bg-secondary">&nbsp;Hinweise</p>
-            <p class="text-small">
-              Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden
-              Sie auf diese Seite zurückgeleitet.<br />
-              Grün hinterlegte Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen
-              möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!
-            </p>
-            <!-- Schüler anzeigen um Messung zu starten. -->
-            <b-button-group size="sm" class="flex-wrap">
-              <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
-              <b-button
-                v-for="student in students"
-                :key="student.id"
-                :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                :disabled="get_result(student.id) > 0 || !isAllowed"
-                :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                :href="
-                  '/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name
-                "
-              >
-                {{ student.name }}
-              </b-button>
-            </b-button-group>
-          </div>
           <div v-else>
-            <p class="text-light bg-secondary">&nbsp;Durchführung</p>
-            <p>{{ test.description.usage }}</p>
-            <p class="text-light bg-secondary">&nbsp;Hinweise</p>
-            <p>
-              Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem
-              <a href="/testen" target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den
-              Namen öffnet den Zugang dieser Schüler:in.
-            </p>
-            <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
-            <p>
-              Sie können sehen, welche Schüler:innen den Test in dieser Woche bereits durchgeführt
-              haben - ihre Namen sind grün hinterlegt.
-            </p>
-            <!-- Schüler nur als Info anzeigen -->
-            <b-button-group size="sm" class="flex-wrap">
-              <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
-              <form
-                v-for="student in students"
-                :key="student.id"
-                method="post"
-                class="mr-1 mb-3"
-                target="_blank"
-                :action="'/testen_login?login=' + student.login"
-              >
-                <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
-                <b-button
-                  v-if="!excludeList.includes(student.id)"
-                  :key="student.id"
-                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!isactive || !isAllowed"
-                  type="submit"
-                >
-                  {{ student.name }}<br />{{ student.login }}
-                </b-button>
-              </form>
-            </b-button-group>
-            <br />
-            <div>
-              <b-button
-                class="btn btn-sm"
-                :variant="isactive ? ' btn-danger' : ' btn-success'"
-                :disabled="!isAllowed || isUpdating"
-                @click="toggleAssessment()"
-              >
-                <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
-                <i v-else class="fas fa-spinner fa-spin"></i>
-                {{
-                  isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
-                }}
-              </b-button>
-
-              <b-dropdown size="sm" text="Schüler:innen zuweisen" class="ml-1">
-                <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
-                  <b-dropdown-item
-                    v-for="student in includedStudents"
-                    :key="student.id"
-                    @click="exclude(student.id)"
-                  >
-                    {{ student.name }}
-                  </b-dropdown-item>
-                </b-dropdown-group>
-                <b-dropdown-group id="dropdown-group-2" header="In Test einschließen">
-                  <b-dropdown-item
-                    v-for="student in excludedStudents"
-                    :key="student.id"
-                    @click="include(student.id)"
-                  >
-                    {{ student.name }}
-                  </b-dropdown-item>
-                </b-dropdown-group>
-              </b-dropdown>
-            </div>
+            <assessment-view-students
+              :excludes="excludes"
+              :group="group"
+              :results="results"
+              :test="test"
+            />
           </div>
         </div>
         <!-- Liste der alten Messungen -->
@@ -262,7 +163,6 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { getStudent } from '../../utils/helpers'
-  import { isAdmin } from '../../utils/user'
   import { printDate } from '../../utils/date'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
@@ -273,10 +173,11 @@
   import isObject from 'lodash/isObject'
   import SupportView from './supports/support-view.vue'
   import uniq from 'lodash/uniq'
+  import AssessmentViewStudents from './assessment-view-students.vue'
 
   export default {
     name: 'AssessmentView',
-    components: { AnalysisView, SupportView, ConfirmDialog },
+    components: { AnalysisView, SupportView, ConfirmDialog, AssessmentViewStudents },
     provide: function () {
       return {
         autoScroll: this.auto_scroll,
@@ -293,7 +194,6 @@
       group: Object,
       readOnly: Boolean,
       results: Array,
-      studentTest: Boolean,
       test: Object,
     },
     setup() {
@@ -303,9 +203,7 @@
     },
     data: function () {
       return {
-        excludeList: this.excludes || [],
         deep_link: this.$root.pre_select && this.$root.pre_select.test == this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-        isUpdating: false,
       }
     },
     computed: {
@@ -322,26 +220,13 @@
 
         return result
       },
-      includedStudents() {
-        return this.students.filter(student => !this.excludeList.includes(student.id))
-      },
-      excludedStudents() {
-        return this.students.filter(student => this.excludeList.includes(student.id))
-      },
+
       weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
       isactive() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
-
         return assessments?.find(a => a.test_id === this.test.id)?.active
-      },
-      isAllowed() {
-        return (
-          this.globalStore.login.is_masquerading === null ||
-          (!!this.globalStore.login.is_masquerading && !this.group.read_only) ||
-          isAdmin(this.globalStore.login.capabilities)
-        )
       },
     },
     methods: {
@@ -349,47 +234,10 @@
         //Scrollt Seite, bis übergebenes Element sichtbar ist.
         this.jQuery(element)[0].scrollIntoView(false)
       },
-      async exclude(studentId) {
-        //AJAX-Request senden
 
-        const res = await ajax(
-          apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId)
-        )
-        if (res.status === 200) {
-          this.excludeList.push(studentId)
-        }
-      },
       formatDate(date) {
         return printDate(date)
       },
-      get_result(student) {
-        //Prüft ob es für "heute" schon ein Ergebnis gibt.
-        let d = new Date()
-        let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)))
-        for (let i = 0; i < this.results.length; ++i) {
-          if (
-            this.results[i].student_id == student &&
-            new Date(this.results[i].test_week).toDateString() == bow.toDateString()
-          ) {
-            return this.results[i].id
-          }
-        }
-        return 0
-      },
-      getCSRFToken() {
-        return document.getElementsByName('csrf-token')[0].getAttribute('content')
-      },
-      async include(studentId) {
-        //AJAX-Request senden
-
-        const res = await ajax(
-          apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId)
-        )
-        if (res.status === 200) {
-          this.excludeList = this.excludeList.filter(item => item !== studentId)
-        }
-      },
-
       async deleteResult(result, index) {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Messung löschen',
@@ -423,18 +271,6 @@
       studentName(id) {
         //Student-Objekt aus globaler Variable holen
         return getStudent(this.group.id, id)?.name
-      },
-      async toggleAssessment() {
-        this.isUpdating = true
-        const res = await ajax(
-          apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
-            assessment: { active: this.isactive ? 0 : 1 },
-          })
-        )
-        if (res.status === 200) {
-          await this.assessmentsStore.fetch(this.group.id)
-        }
-        this.isUpdating = false
       },
       getItemName(item, fallback) {
         if (isObject(this.test.items[0])) {
