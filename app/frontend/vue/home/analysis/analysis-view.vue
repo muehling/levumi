@@ -253,10 +253,6 @@
     apexChartOptions,
   } from './apexChartHelpers'
 
-  import { printDate } from '../../../utils/date'
-  import { createTrendline } from './linearRegressionHelpers'
-  import NiveauOverview from "@/vue/home/analysis/niveau-overview.vue";
-  import cloneDeep from 'lodash/cloneDeep'
   export default {
     name: 'AnalysisView',
     components: {

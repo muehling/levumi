@@ -52,7 +52,7 @@ export const prepareOptions = (
     options.yaxis = {}
   }
 
-  // check the y axis needs to be adjusted to display a trend or target
+  // check the y-axis needs to be adjusted to display a trend or target
   if (yMax) {
     options.yaxis.max = yMax
   } else {
@@ -224,7 +224,7 @@ const commonTooltip = () => ({
   intersect: false,
 })
 
-/** credit goes to @Splinter0 on github: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
+/** credit goes to @Splinter0 on GitHub: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
 function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   const hoverXaxis = w.globals.seriesX[seriesIndex][dataPointIndex]
   const hoverIndexes = w.globals.seriesX.map(seriesX => {
