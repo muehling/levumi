@@ -214,6 +214,11 @@
     <b-row v-if="niveaus_visible">
       <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
+    <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
+      <niveau-overview
+          :niv-config="nivConfig"
+      ></niveau-overview>
+    </b-row>
   </div>
 </template>
 
@@ -248,6 +253,10 @@
     apexChartOptions,
   } from './apexChartHelpers'
 
+  import { printDate } from '../../../utils/date'
+  import { createTrendline } from './linearRegressionHelpers'
+  import NiveauOverview from "@/vue/home/analysis/niveau-overview.vue";
+  import cloneDeep from 'lodash/cloneDeep'
   export default {
     name: 'AnalysisView',
     components: {

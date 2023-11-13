@@ -12,7 +12,7 @@
               class="normal-dist"
               width="100%"
               :height="overviewHeight + 'px'"
-              :viewBox="'0 ' + normalShift * 119.85765 + ' 21.41 119.85765'"
+              :viewBox="'0 ' + (normalPlotMean * (1/normalPlotStdDeviation) * 119.85765 - ((1/normalPlotStdDeviation - 1) * 119.85765)/2) +' 21.41 '+ 1/normalPlotStdDeviation * 119.85765"
               preserveAspectRatio="none"
             >
               <defs id="defs73643">
@@ -53,15 +53,13 @@
               <span
                 v-for="(part, partKey) in line"
                 :key="partKey"
-                style="display: inline-flex; vertical-align: middle"
+                style="display: inline; vertical-align: middle"
               >
-                <div v-if="part.type === 'text-fraction'" class="fraction">
+                <span v-if="part.type === 'text-fraction'" class="fraction">
                   <p class="numerator">{{ part.numerator }}</p>
                   <p class="denominator">{{ part.denominator }}</p>
-                </div>
-                <span v-else-if="part.type === 'plain-text'" style="display: inline-flex">{{
-                  part.text
-                }}</span>
+                </span>
+                <span v-else-if="part.type === 'plain-text'" v-html="part.text"></span>
               </span>
             </span>
             <img
@@ -73,10 +71,11 @@
           </div>
         </b-col>
         <b-col cols="4" lg="3" class="headline-col">
-          <span class="explanation-tooltip">{{ explanationForLevel(n) }}</span>
-          <span class="headline">{{ headlineForLevel(n) }}</span>
+          <span class="explanation-tooltip" v-html="explanationForLevel(n)"></span>
+          <span class="headline" v-html="headlineForLevel(n)"></span>
         </b-col>
       </b-row>
+
     </b-container>
   </div>
 </template>
@@ -138,8 +137,13 @@
         return 500 + this.niveauArray.length * 100
       },
       /** A percentage value determining how much the normal should be shifted upwards from its middle position. */
-      normalShift() {
-        return this.nivConfig.normal_shift / 100
+      normalPlotMean() {
+        return this.nivConfig.normal_mean ? (this.nivConfig.normal_mean * (5/4)) / 10 : 0
+      },
+      /** The standard deviation of the shown normal function, as specified in the test.
+       *  Used directly as a y-scale factor. */
+      normalPlotStdDeviation() {
+        return this.nivConfig.normal_sd ?? 1
       },
     },
     mounted() {
@@ -147,41 +151,45 @@
     },
     methods: {
       examplesForLevel(level) {
-        const example_texts = this.nivConfig.example_texts[level - 1]
-        const example_images = this.exampleImages.filter(img =>
-          img.filename.startsWith(A + E + level)
-        )
+        const example_texts = this.nivConfig.example_texts[level-1]
+        const example_images = this.exampleImages.filter(img => img.filename.startsWith(A + E + level))
         // build examples from texts, adding images where appropriate
         let i = 1
         return example_texts.map(text => {
           // search for a corresponding image
-          const image = example_images.find(img => img.filename.startsWith(A + E + level + '_' + i))
+          const image = example_images.find(img => img.filename.startsWith(A + E + level + "_" + i))
           // first break the text into lines
-          const lines = text.split('\n')
-          // search the text for incidences of \S+⌹\S+ and split it there, keeping the separator
-          const fracRegex = /(\S+⌹\S+)/
+          const lines = text.split("\n")
+          // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
+          const fracRegex = /([A-Za-z0-9]+⌹[A-Za-z0-9]+)/
+          const htmlRegex = /(<\S+>.*<\/\S+>)/
           for (let j = 0; j < lines.length; ++j) {
             let k = -1
-            lines[j] = lines[j]
-              .split(fracRegex)
-              // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
-              .map(s => {
+            // first split the text into html elements and free text
+            const htmlElements = lines[j].split(htmlRegex)
+            // html elements are treated as atomic and not split further
+            // free text is instead split to make space for fractions, keeping spaces
+            lines[j] = htmlElements.flatMap(elem => {
+              if (htmlRegex.test(elem)) {
                 ++k
-                if (fracRegex.test(s)) {
-                  const slots = s.split('⌹')
-                  return {
-                    type: 'text-fraction',
-                    id: k,
-                    numerator: slots[0],
-                    denominator: slots[1],
+                return [{type: 'plain-text', id: k, text: elem}]
+              } else {
+                return elem.split(fracRegex)
+                // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
+                .map(s => {
+                  ++k
+                  if (fracRegex.test(s) && !htmlRegex.test(s)) {
+                    const slots = s.split('⌹')
+                    return {type: 'text-fraction', id: k, numerator: slots[0], denominator: slots[1]}
+                  } else {
+                    return {type: 'plain-text', id: k, text: s}
                   }
-                } else {
-                  return { type: 'plain-text', id: k, text: s }
-                }
-              })
+                })
+              }
+            })
           }
           ++i
-          return { lines: lines, image: image }
+          return {lines: lines, image: image}
         })
       },
       headlineForLevel(level) {
@@ -206,7 +214,6 @@
 <style>
   #niveau-overview {
     width: 100%;
-
     margin: 2.3rem;
     font-weight: bold;
   }
@@ -311,6 +318,7 @@
     border-radius: 4px;
     padding: 11px;
     position: absolute;
+    display: inline;
     width: 115%;
     transform: translate(-100%, 0%);
     visibility: hidden;
@@ -333,6 +341,7 @@
     font-size: 75%;
     margin: 1pt;
     text-align: center;
+    vertical-align: middle;
   }
   .numerator {
     border-bottom: 1px solid black;
