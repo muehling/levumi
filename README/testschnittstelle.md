@@ -120,13 +120,13 @@ In der test.json werden die Metadaten des Tests definiert. Folgende Felder müss
     - `label`: Dargestellte Bezeichnung
     - `student`: Boolean, true, falls Einzelauswertungen angezeigt werden sollen
     - `group`: Boolean, true, falls die Gruppenauswertung angezeigt werden soll
-    - `type`: Text, aktuell werden `table`, `bar`, `graph_table`, `graph` und `niveau` unterstützt
+    - `type`: Text, aktuell werden `table`, `graph_table`, `graph` und `niveau` unterstützt
     - `column_keys`: Array aus Texten. Die Keys müssen mit den in der test.js an die `saveResults`-Funktion geschickten Keys übereinstimmen.
     - `columns`: Array aus Texten. Spaltenbeschriftungen
     - `series_keys`: Array aus Texten, analog zu `column_keys`
     - `series`: Array aus Texten, analog zu `column`
     - `niv_config`: Objekt, Konfiguration für den Fall, dass `type` = `niveau` ([siehe Konfiguration der Ansicht zu Anforderungsstufen](./anforderungsstufen_ansicht/anforderungsstufen-ansicht.md))
-    - `options`: optional, für `bar` und `graph` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/
+    - `options`: optional, für `graph` und `graph_table` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/
 - `items`: Objekt mit einem Key/Value-Paar pro Test-Item. Der Key ist dabei die Id des Test-Items in der `test.js`, Value entspricht i. d. R. der `description`
 
 ## Dokumentation Fördermaterial

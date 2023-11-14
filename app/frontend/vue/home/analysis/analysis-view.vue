@@ -312,7 +312,7 @@
       },
       isSupportSectionVisible() {
         return (
-          this.viewConfig.type === 'graph' &&
+          this.selectedViewType === 'graph' &&
           this.isSupportInformationAvailable &&
           (checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview') ||
             checkUserSettings(this.settings, 'visibilities.analysisView.groupQualitativeOverview'))
@@ -381,7 +381,7 @@
         return this.viewConfig.type
       },
       graph_visible() {
-        return this.viewConfig.type === 'graph' || this.viewConfig.type === 'graph_table'
+        return this.selectedViewType === 'graph' || this.selectedViewType === 'graph_table'
       },
       has_group_views() {
         for (let i = 0; i < this.configuration.views.length; ++i) {
@@ -395,14 +395,13 @@
         return this.configuration.views.some(view => view.student)
       },
       tableVisible() {
-        return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
+        return this.selectedViewType === 'table' || this.selectedViewType === 'graph_table'
       },
       simpleTableVisible() {
-        return this.viewConfig.type === 'graph' && !this.viewConfig.options?.chart?.stacked
+        return this.selectedViewType === 'graph' && !this.viewConfig.options?.chart?.stacked
       },
-
       niveaus_visible() {
-        return this.viewConfig.type === 'niveaus'
+        return this.selectedViewType === 'niveaus'
       },
       annotationAndTargetRowVisible() {
         // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
