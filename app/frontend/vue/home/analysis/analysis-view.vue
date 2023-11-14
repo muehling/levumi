@@ -165,9 +165,7 @@
       ></b-table-lite>
     </b-row>
     <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
-      <niveau-overview
-          :niv-config="nivConfig"
-      ></niveau-overview>
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
   </div>
 </template>
@@ -194,7 +192,7 @@
   import { createTrendline } from './linearRegressionHelpers'
   import { computed } from 'vue'
   import TargetControls from './target-controls.vue'
-  import NiveauOverview from "@/vue/home/analysis/niveau-overview.vue";
+  import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import { useTestsStore } from '@/store/testsStore'
   import { useGlobalStore } from '@/store/store'
   import cloneDeep from 'lodash/cloneDeep'
@@ -290,7 +288,7 @@
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
       simpleTableVisible() {
-        return this.viewConfig.type === 'graph' && !(this.viewConfig.options?.chart?.stacked)
+        return this.viewConfig.type === 'graph' && !this.viewConfig.options?.chart?.stacked
       },
 
       niveaus_visible() {
@@ -298,7 +296,7 @@
       },
       annotationAndTargetRowVisible() {
         // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
-        return this.graph_visible && !(this.viewConfig.options?.chart?.stacked)
+        return this.graph_visible && !this.viewConfig.options?.chart?.stacked
       },
       table_data() {
         // return early if the view type has no table
@@ -531,11 +529,11 @@
         const series = []
         // create stackable elements with the names of the series
         for (const sName of view.series) {
-          for (const q of [0.0,0.25,0.5,0.75,1.0]) {
+          for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
             series.push({
-              name: `${sName} ${q}-Perzentil`,
+              name: `${sName} ${q}`,
               group: sName,
-              data: []
+              data: [],
             })
           }
         }
@@ -547,16 +545,16 @@
             const series_key = view.series_keys[i]
             // collect only the results of the category and filter out undefined/null values
             let catResults = wResults
-                .map(res => res?.views[view.key][series_key])
-                .filter(r => r !== undefined && r !== null)
+              .map(res => res?.views[view.key][series_key])
+              .filter(r => r !== undefined && r !== null)
             // calculate the quartiles for this category
             const quartiles = []
-            for (const q of [0.0,0.25,0.5,0.75,1.0]) {
-              quartiles.push(quantile(catResults,q))
+            for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
+              quartiles.push(quantile(catResults, q))
             }
             // add the quantiles for this week to the matching series
-            for (let j=0; j<5; ++j) {
-              series[i*5 + j].data.push(j === 0 ? quartiles[j] : quartiles[j] - quartiles[j-1])
+            for (let j = 0; j < 5; ++j) {
+              series[i * 5 + j].data.push(j === 0 ? quartiles[j] : quartiles[j] - quartiles[j - 1])
             }
           }
         })
