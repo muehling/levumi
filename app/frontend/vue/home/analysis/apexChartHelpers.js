@@ -13,11 +13,6 @@ export const prepareOptions = (
   animate,
   yMax
 ) => {
-  // if any series wants to be of type rangeArea then the whole chart needs to be
-  // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
-  if (!['line', 'bar', 'rangeArea'].includes(chartType)) {
-    chartType = 'line'
-  }
   let opt
   // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
   const needRangeAreaChart =
@@ -29,16 +24,16 @@ export const prepareOptions = (
     // we allow only bar and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
-        opt = apexChartOptions(weekLabels).bar
+        opt = customOptions?.chart?.stacked
+          ? apexChartOptions(weekLabels).groupedStackedBar
+          : apexChartOptions(weekLabels).bar
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea
         break
       case 'line':
-        opt = apexChartOptions(weekLabels).rangeArea
-        break
       default:
-        opt = apexChartOptions(weekLabels).rangeArea
+        opt = apexChartOptions(weekLabels).line
     }
   }
   const options = deepmerge(cloneDeep(opt), customOptions)
@@ -55,7 +50,7 @@ export const prepareOptions = (
   // check the y-axis needs to be adjusted to display a trend or target
   if (yMax) {
     options.yaxis.max = yMax
-  } else {
+  } else if (options.yaxis.max === undefined) {
     options.yaxis.max = function (max) {
       return max * 1.1
     }
@@ -95,6 +90,82 @@ export const apexChartOptions = weekLabels => ({
     },
     tooltip: { ...commonTooltip() },
   },
+  groupedStackedBar: {
+    chart: {
+      ...commonChart(),
+      type: 'bar',
+      stacked: true,
+    },
+    stroke: {
+      curve: 'straight',
+      width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+    },
+    fill: {
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      type: 'solid',
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '50%',
+      },
+    },
+    xaxis: {
+      tooltip: { enabled: false },
+      type: 'category',
+      categories: weekLabels,
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '13px',
+        },
+        formatter: val => {
+          return val > 1.0 ? '' : val.toFixed(1)
+        },
+      },
+      min: 0.0,
+      max: 1.0,
+      //decimalsInFloat: 1,
+    },
+    colors: [
+      'rgba(255,255,255,0)',
+      '#80f1ad',
+      '#06a438',
+      'rgb(30,227,46)',
+      '#8bff95',
+      'rgba(255,255,255,0)',
+      '#ffebab',
+      '#b7a10f',
+      '#dcc21e',
+      '#f7ff85',
+      'rgba(255,255,255,0)',
+      '#f7abff',
+      '#a33cb4',
+      '#c546ff',
+      '#d685ff',
+      'rgba(255,255,255,0)',
+      '#abc3ff',
+      '#2034a4',
+      '#2f49ff',
+      '#85a1ff',
+      'rgba(255,255,255,0)',
+      '#ffabbf',
+      '#b70f3c',
+      '#dc1e41',
+      '#ff85b0',
+      'rgba(255,255,255,0)',
+      '#abfff0',
+      '#0fb7b1',
+      '#1edcdc',
+      '#96fff6',
+    ],
+    tooltip: {
+      ...commonTooltip(),
+      custom: customPercentileBandTooltip,
+    },
+  },
   line: {
     ...commonOptions(),
     chart: {
@@ -116,6 +187,21 @@ export const apexChartOptions = weekLabels => ({
       padding: {
         right: 35,
         left: 35,
+      },
+    },
+    legend: {
+      position: 'top',
+      offsetY: 5,
+      // eslint-disable-next-line no-unused-vars
+      formatter: function (seriesName, _opts) {
+        const splitName = seriesName.split(' ')
+        // only render the first series name (ending in " 0")
+        if (splitName[1] === '0') {
+          // don't render the 0
+          return splitName[0]
+        } else {
+          return ''
+        }
       },
     },
     tooltip: {
@@ -256,6 +342,70 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   return `<div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${date}</div>${hoverList}`
 }
 
+// eslint-disable-next-line no-unused-vars
+function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }) {
+  const s = w.globals.series
+  // calculate how many stacks there are per date
+  const stackCount = s.length / 5
+  // for each stack (task type) get the quartile values and build fitting messages
+  const stacks = []
+  const yLabels = [
+    'erstes Viertel der Klasse:',
+    'zweites Viertel der Klasse:',
+    'drittes Viertel der Klasse:',
+    'viertes Viertel der Klasse:',
+  ]
+
+  const f = n => n.toFixed(2)
+  for (let seriesIndex = 0; seriesIndex < stackCount; ++seriesIndex) {
+    // push a new array representing a series of a certain (task) type to be filled
+    const seriesStart = seriesIndex * 5
+    // reconstruct the real quartiles here by adding up the series values
+    const quartiles = []
+    let sum = 0.0
+    for (let i = 0; i < 5; ++i) {
+      sum += Number(series[seriesStart + i][dataPointIndex])
+      quartiles.push(sum)
+    }
+
+    const lowest = `${f(quartiles[0])} - ${f(quartiles[1])}`
+    const low = `${f(quartiles[1])} - ${f(quartiles[2])}`
+    const high = `${f(quartiles[2])} - ${f(quartiles[3])}`
+    const highest = `${f(quartiles[3])} - ${f(quartiles[4])}`
+    stacks.push([lowest, low, high, highest])
+  }
+
+  let html = ''
+  stacks.forEach((stack, stackIndex) => {
+    html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                    <div class="apexcharts-tooltip-y-group">
+                        <span class="apexcharts-tooltip-text-y-label">
+                            Verteilung der Lösungsraten beim Typ
+                        </span>
+                        <span class="apexcharts-tooltip-text-y-value">"${
+                          w.globals.seriesNames[5 * stackIndex].split(' ')[0]
+                        }":</span>
+                    </div>
+                </div>
+            </div>`
+    for (let i = 3; i >= 0; --i) {
+      html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                  <span class="apexcharts-tooltip-marker" style="background-color: ${
+                    w.globals.markers.colors[5 * stackIndex + i + 1]
+                  };"></span>
+                  <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                      <div class="apexcharts-tooltip-y-group">
+                          <span class="apexcharts-tooltip-text-y-label">${yLabels[i]} </span>
+                          <span class="apexcharts-tooltip-text-y-value">${stack[i]}</span>
+                      </div>
+                  </div>
+              </div>`
+    }
+  })
+  return html
+}
+
 const apexColors = () => [
   '#449DD1',
   '#F86624',
@@ -374,6 +524,19 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
     },
   },
 })
+
+export function quantile(arr, q) {
+  const asc = arr => arr.sort((a, b) => a - b)
+  const sorted = asc(arr)
+  const pos = (sorted.length - 1) * q
+  const base = Math.floor(pos)
+  const rest = pos - base
+  if (sorted[base + 1] !== undefined) {
+    return sorted[base] + rest * (sorted[base + 1] - sorted[base])
+  } else {
+    return sorted[base]
+  }
+}
 
 export function addTargetToChartData(
   graphData,

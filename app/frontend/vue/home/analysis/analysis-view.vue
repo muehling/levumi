@@ -83,7 +83,7 @@
         </div>
       </b-col>
     </b-row>
-    <b-row :hidden="!graph_visible">
+    <b-row :hidden="!annotationAndTargetRowVisible">
       <b-col>
         <b-row class="ml-1">
           <b-col>
@@ -152,7 +152,6 @@
               :target-valid="targetValid"
               :test="test"
               :group="group"
-              :readonly-suppressed="isReadOnlySuppressed"
             ></TargetControls>
           </b-col>
         </b-row>
@@ -197,7 +196,7 @@
       </div>
     </b-row>
     <hr v-if="selectedViewType != 'graph'" class="section-divider" />
-    <b-row :hidden="selectedViewType !== 'graph'">
+    <b-row :hidden="!simpleTableVisible">
       <b-tabs class="w-100" pills no-body card>
         <b-tab title="Tabellarische Daten" lazy>
           <b-table-lite
@@ -215,9 +214,7 @@
       <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
     <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
-      <niveau-overview
-          :niv-config="nivConfig"
-      ></niveau-overview>
+      <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
   </div>
 </template>
@@ -251,6 +248,7 @@
     targetRangeAnnotationOptions,
     prepareOptions,
     apexChartOptions,
+    quantile,
   } from './apexChartHelpers'
 
   export default {
@@ -399,8 +397,16 @@
       tableVisible() {
         return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
       },
+      simpleTableVisible() {
+        return this.viewConfig.type === 'graph' && !this.viewConfig.options?.chart?.stacked
+      },
+
       niveaus_visible() {
         return this.viewConfig.type === 'niveaus'
+      },
+      annotationAndTargetRowVisible() {
+        // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
+        return this.graph_visible && !this.viewConfig.options?.chart?.stacked
       },
       table_data() {
         if (!this.tableVisible) {
@@ -444,10 +450,6 @@
       },
       chartSeries() {
         return [...this.graphData]
-      },
-      isReadOnlySuppressed() {
-        //TODO might not be needed
-        return Boolean(this.viewConfig.readOnlySuppressed)
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
@@ -615,6 +617,43 @@
         pdf.save(filename + '.pdf')
       },
 
+      createGroupedStackedColumnData() {
+        const view = this.viewConfig
+        const series = []
+        // create stackable elements with the names of the series
+        for (const sName of view.series) {
+          for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
+            series.push({
+              name: `${sName} ${q}`,
+              group: sName,
+              data: [],
+            })
+          }
+        }
+        // go over all test weeks
+        this.weeks.forEach(week => {
+          const wResults = this.results.filter(res => res?.test_week === week)
+          // go through the results and for each category collect the values from all results
+          for (const i in view.series_keys) {
+            const series_key = view.series_keys[i]
+            // collect only the results of the category and filter out undefined/null values
+            let catResults = wResults
+                .map(res => res?.views[view.key][series_key])
+                .filter(r => r !== undefined && r !== null)
+            // calculate the quartiles for this category
+            const quartiles = []
+            for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
+              quartiles.push(quantile(catResults, q))
+            }
+            // add the quantiles for this week to the matching series
+            for (let j = 0; j < 5; ++j) {
+              series[i * 5 + j].data.push(j === 0 ? quartiles[j] : quartiles[j] - quartiles[j - 1])
+            }
+          }
+        })
+        return series
+      },
+
       createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
@@ -671,13 +710,17 @@
       },
 
       async updateView(animate) {
-        const view = this.viewConfig
         // return early if the view type has no graph
-        if (!['graph', 'graph_table'].includes(view.type)) {
+        if (!this.graph_visible) {
           return
         }
+        const view = this.viewConfig
 
-        const trueChartType = view.options.chart.type
+        let trueChartType = view.options?.chart?.type
+        // if the chart type was not specified in the view config we default to line
+        if (!trueChartType) {
+          trueChartType = 'line'
+        }
         const preparedOptions = prepareOptions(
           trueChartType,
           view.options,
@@ -688,18 +731,27 @@
           this.maxYValue
         )
 
-        const formatDate = trueChartType === 'bar'
+        // bar and grouped stacked bar are currently the only supported non-line charts
+        const nonLineChart = ['bar'].includes(trueChartType)
+        const stackedBarChart = trueChartType === 'bar' && view.options?.chart?.stacked
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          gData = this.studentsWithResults.map(student => {
-            return {
-              name: student.name,
-              type: trueChartType,
-              data: this.createSeries(student.id, undefined, formatDate),
-            }
-          })
+          if (stackedBarChart) {
+            // in case this is a grouped stacked bar chart do not create a series per student, but instead create
+            // a group of stacked bars per week for the whole class
+            gData = this.createGroupedStackedColumnData()
+          } else {
+            // else this is a graph with one series per student reaching over all available dates
+            gData = this.studentsWithResults.map(student => {
+              return {
+                name: student.name,
+                type: trueChartType,
+                data: this.createSeries(student.id, undefined, nonLineChart),
+              }
+            })
+          }
         } else {
           const student = this.students.find(s => s.id === this.selectedStudentId)
           // individual student data with single series
@@ -708,7 +760,7 @@
               {
                 name: student.name,
                 type: trueChartType,
-                data: this.createSeries(student.id, undefined, formatDate),
+                data: this.createSeries(student.id, undefined, nonLineChart),
               },
             ]
             if (this.trendIsEnabled && trueChartType !== 'bar') {
@@ -732,32 +784,29 @@
               return {
                 name: view.series[index],
                 type: trueChartType,
-                data: this.createSeries(student.id, series_key, formatDate),
+                data: this.createSeries(student.id, series_key, nonLineChart),
               }
             })
           }
         }
 
-        // trends and targets are displayed only for non-bar charts and views with a single series
-        if (trueChartType !== 'bar') {
-          if (!view.series_keys) {
-            if (trendlineData) {
-              addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
-            }
-            if (this.targetIsEnabled) {
-              this.appendSlopeTarget(gData, preparedOptions)
-            }
-            if (
-              (trendlineData && this.extrapolationIsEnabled) ||
-              (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
-            ) {
-              this.expandXAxis(gData)
-            }
+        // trends and targets are displayed only for line graphs charts and views with a single series
+        if (!nonLineChart && !view.series_keys) {
+          if (trendlineData) {
+            addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
+          }
+          if (this.targetIsEnabled) {
+            this.appendSlopeTarget(gData, preparedOptions)
+          }
+          if (
+            (trendlineData && this.extrapolationIsEnabled) ||
+            (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
+          ) {
+            this.expandXAxis(gData)
           }
         }
 
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
-
         this.graphData = gData
 
         await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors
@@ -766,7 +815,9 @@
         }
         this.updateAnnotations()
 
-        this.simpleTableData = createSimpleTableData(gData, formatDate)
+        if (this.simpleTableVisible) {
+          this.simpleTableData = createSimpleTableData(gData, nonLineChart)
+        }
 
         this.isInitialized = true
       },
