@@ -6,7 +6,7 @@
     <b-tab v-if="isAllSuggestionsVisible" title="Allgemeine Empfehlungen" lazy>
       <all-suggestions-for-test :group-id="group.id" :test-id="testId" />
     </b-tab>
-    <b-tab v-if="isSupportSuggestionsVisible" title="Fördermaterialien" lazy>
+    <b-tab v-if="isSupportSuggestionsVisible" title="Individuelle Empfehlungen" lazy>
       <support-group-suggestions :group="group" :test-id="testId" />
     </b-tab>
   </b-tabs>

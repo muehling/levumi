@@ -12,21 +12,10 @@
           Die Zahlen in den eckigen Klammern entsprechen der Anzahl der richtigen Antworten im
           Verhältnis zur Gesamtzahl der Antworten der letzten drei Testzeitpunkte.
         </p>
-        <p>
-          <b>Rot = Hoher Förderbedarf</b>: Es gibt keine Leistungssteigerung im Vergleich zum
-          vorletzten Test z.B. [1/3, 1/1, 0/1].
-        </p>
-        <p>
-          <b>Gelb = Mittlerer Förderbedarf</b>: Es gibt eine Leistungssteigerung im Vergleich zum
-          vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg z.B.
-          [1/3, 1/1, 0/1].
-        </p>
-        <p>
-          <b>Blau = Aktuell kein zusätzlicher Förderbedarf</b>: Es gibt eine kontinuierliche
-          Leistungssteigerung seit dem vorletzten Test z.B. [2/3, 3/4, 4/4]."
-        </p>
-        <p>
-          Ist eine Zelle leer, liegen weniger als drei Ergebnisse für die betreffende Dimension vor.
+        <p v-for="item in supportNeeds" :key="item.color">
+          <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <strong class="ml-2">{{ item.name + ': ' }}</strong
+          >{{ item.explanation }}
         </p>
       </b-collapse>
     </div>
@@ -95,6 +84,28 @@
       return { globalStore, assessmentsStore, materialsStore }
     },
     computed: {
+      supportNeeds() {
+        return [
+          {
+            name: 'Hoher Förderbedarf',
+            explanation:
+              'Es gibt keine Leistungssteigerung im Vergleich zum vorletzten Test, z.B. [1/3, 1/1, 0/1].',
+            color: '#F7A2A2',
+          },
+          {
+            name: 'Mittlerer Förderbedarf',
+            explanation:
+              'Es gibt eine Leistungssteigerung im Vergleich zum vorletzten Test, jedoch war diese nicht kontinuierlich über die drei Tests hinweg, z.B. [1/3, 1/1, 0/1].',
+            color: '#FEEFAB',
+          },
+          {
+            name: 'Aktuell kein zusätzlicher Förderbedarf',
+            explanation:
+              'Es gibt eine kontinuierliche Leistungssteigerung seit dem vorletzten Test, z.B. [2/3, 3/4, 4/4].',
+            color: 'lightblue',
+          },
+        ]
+      },
       itemDictionary() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
