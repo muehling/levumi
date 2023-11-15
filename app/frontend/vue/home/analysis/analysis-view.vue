@@ -163,14 +163,14 @@
       <b-tabs class="w-100" pills no-body card>
         <b-tab
           v-if="isGroupSupportOverviewVisible"
-          title="Übersicht Förderbedarf Ganze Klasse"
+          title="Übersicht Förderbedarf ganze Klasse"
           lazy
         >
           <support-group-overview :group="group" :test="test.id" />
         </b-tab>
         <b-tab
           v-if="hasItemDictionary && isGroupQualitativeOverviewVisible"
-          title="Qualitative Auswertung Förderbedarf Ganze Klasse"
+          title="Qualitative Auswertung Förderbedarf ganze Klasse"
           lazy
         >
           <support-group-qualitative :group="group" :test="test.id" />
@@ -923,7 +923,7 @@
       },
 
       removeAnnotation(id) {
-        this.$refs.levumiChart.removeAnnotation('a' + id)
+        this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {

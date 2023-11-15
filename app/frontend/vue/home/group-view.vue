@@ -5,7 +5,6 @@
         <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
       >
       <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
-        <!-- Listenansicht für alle Tests -->
         <list-view
           :group="group"
           :read_only="group.read_only"
@@ -202,11 +201,11 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
-  import ListView from './list-view.vue'
   import isEmpty from 'lodash/isEmpty'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import ListView from './list-view.vue'
 
   export default {
     name: 'GroupView',
@@ -444,7 +443,6 @@
         this.testTypeSelected = data.typeId
         this.testSelected = data.testId
         this.versionSelected = data.versionId
-
         await this.$nextTick() // wait until computed properties have refreshed
         await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
 

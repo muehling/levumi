@@ -18,6 +18,7 @@
         </p>
         <p v-for="item in supportNeeds" :key="item.color">
           <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+          <strong class="ml-2">{{ item.name + ': ' }}</strong>
           {{ item.explanation }}
         </p>
       </b-collapse>
