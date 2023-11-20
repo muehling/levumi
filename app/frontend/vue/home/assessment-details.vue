@@ -1,143 +1,39 @@
 <template>
   <b-card no-body class="mt-3 pb-0 mb-1">
-    <b-tabs pills card lazy>
-      <b-tab :active="deep_link" class="m-3">
+    <loading-dots :is-loading="isLoading" />
+    <b-tabs v-if="!isLoading" pills card lazy>
+      <b-tab :active="!hasResults" class="m-3">
         <div slot="title">
           Messungen ({{ test.shorthand }})
-          <span v-if="!isactive && test.student_test" class="badge badge-danger"
+          <span v-if="!isActive && test.student_test" class="badge badge-danger"
             ><i class="fas fa-pause"></i
           ></span>
-          <span v-if="isactive && test.student_test" class="badge badge-success"
+          <span v-if="isActive && test.student_test" class="badge badge-success"
             ><i class="fas fa-play"></i
           ></span>
         </div>
         <!-- Neue Messungen -->
-        <div class="alert alert-secondary">
-          <div v-if="!test.student_test">
-            <p class="text-small">
-              Dieser Test ist für die Durchführung durch Lehrkräfte gedacht und kann daher nicht
-              aktiviert oder pausiert werden.
-            </p>
-          </div>
-          <div v-if="readOnly">
-            <p class="text-small">
-              Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen
-              Messungen durchführen.
-            </p>
-          </div>
-          <div v-else-if="test.archive">
-            <p class="text-small">
+        <div class="mb-3">
+          <div v-if="test.archive">
+            <p>
               Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung
               in der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste
               Testversion, in der Sie ab jetzt die Testungen durchführen können.
             </p>
           </div>
           <div v-else-if="students.length == 0">
-            <p class="text-small">
-              Es sind in dieser Klasse noch keine Schüler:innen angelegt. Um in dieser Klasse testen
-              zu können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
+            <p>
+              In dieser Klasse sind noch keine Schüler:innen angelegt. Um in dieser Klasse testen zu
+              können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
             </p>
-          </div>
-          <div v-else-if="!test.student_test">
-            <p class="text-light bg-secondary">&nbsp;Durchführung</p>
-            <p class="text-small">{{ test.description.usage }}</p>
-            <p class="text-light bg-secondary">&nbsp;Hinweise</p>
-            <p class="text-small">
-              Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden
-              Sie auf diese Seite zurückgeleitet.<br />
-              Grün hinterlegte Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen
-              möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!
-            </p>
-            <!-- Schüler anzeigen um Messung zu starten. -->
-            <b-button-group size="sm" class="flex-wrap">
-              <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
-              <b-button
-                v-for="student in students"
-                :key="student.id"
-                :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-                :disabled="get_result(student.id) > 0 || !isAllowed"
-                :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-                :href="
-                  '/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name
-                "
-              >
-                {{ student.name }}
-              </b-button>
-            </b-button-group>
           </div>
           <div v-else>
-            <p class="text-light bg-secondary">&nbsp;Durchführung</p>
-            <p>{{ test.description.usage }}</p>
-            <p class="text-light bg-secondary">&nbsp;Hinweise</p>
-            <p>
-              Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem
-              <a href="/testen" target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den
-              Namen öffnet den Zugang dieser Schüler:in.
-            </p>
-            <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
-            <p>
-              Sie können sehen, welche Schüler:innen den Test in dieser Woche bereits durchgeführt
-              haben - ihre Namen sind grün hinterlegt.
-            </p>
-            <!-- Schüler nur als Info anzeigen -->
-            <b-button-group size="sm" class="flex-wrap">
-              <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
-              <form
-                v-for="student in students"
-                :key="student.id"
-                method="post"
-                class="mr-1 mb-3"
-                target="_blank"
-                :action="'/testen_login?login=' + student.login"
-              >
-                <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
-                <b-button
-                  v-if="!excludeList.includes(student.id)"
-                  :key="student.id"
-                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!isactive || !isAllowed"
-                  type="submit"
-                >
-                  {{ student.name }}<br />{{ student.login }}
-                </b-button>
-              </form>
-            </b-button-group>
-            <br />
-            <div>
-              <b-button
-                class="btn btn-sm"
-                :variant="isactive ? ' btn-danger' : ' btn-success'"
-                :disabled="!isAllowed || isUpdating"
-                @click="toggleAssessment()"
-              >
-                <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
-                <i v-else class="fas fa-spinner fa-spin"></i>
-                {{
-                  isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren'
-                }}
-              </b-button>
-
-              <b-dropdown size="sm" text="Schüler:innen zuweisen" class="ml-1">
-                <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
-                  <b-dropdown-item
-                    v-for="student in includedStudents"
-                    :key="student.id"
-                    @click="exclude(student.id)"
-                  >
-                    {{ student.name }}
-                  </b-dropdown-item>
-                </b-dropdown-group>
-                <b-dropdown-group id="dropdown-group-2" header="In Test einschließen">
-                  <b-dropdown-item
-                    v-for="student in excludedStudents"
-                    :key="student.id"
-                    @click="include(student.id)"
-                  >
-                    {{ student.name }}
-                  </b-dropdown-item>
-                </b-dropdown-group>
-              </b-dropdown>
-            </div>
+            <assessment-view-students
+              :excludes="assessment.excludes"
+              :group="group"
+              :results="results"
+              :test="test"
+            />
           </div>
         </div>
         <!-- Liste der alten Messungen -->
@@ -225,14 +121,16 @@
           </div>
           <confirm-dialog ref="confirmDialog" />
         </div>
+        <div v-else>Für diesen Test liegen noch keine Messungen vor.</div>
       </b-tab>
 
       <!-- Auswertungstab mit Graph -->
       <b-tab
         title="Auswertung"
-        :active="!deep_link"
+        :active="hasResults"
         class="m-3"
         :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0"
+        lazy
         @click="auto_scroll('#annotations-section')"
       >
         <analysis-view
@@ -243,7 +141,7 @@
           :results="assessmentData.series"
           :students="students"
           :test="test"
-          :is-loading-update="isLoadingUpdate"
+          :is-loading-update="isLoading"
         ></analysis-view>
       </b-tab>
 
@@ -269,15 +167,23 @@
   import { useGlobalStore } from '../../store/store'
   import AnalysisView from './analysis/analysis-view.vue'
   import apiRoutes from '../routes/api-routes'
+  import AssessmentViewStudents from './assessment-view-students.vue'
   import compact from 'lodash/compact'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import isObject from 'lodash/isObject'
+  import LoadingDots from '../shared/loading-dots.vue'
   import SupportView from './supports/support-view.vue'
   import uniq from 'lodash/uniq'
 
   export default {
     name: 'AssessmentDetails',
-    components: { AnalysisView, SupportView, ConfirmDialog },
+    components: {
+      AnalysisView,
+      AssessmentViewStudents,
+      ConfirmDialog,
+      LoadingDots,
+      SupportView,
+    },
     provide: function () {
       return {
         autoScroll: this.auto_scroll,
@@ -299,14 +205,18 @@
     data: function () {
       return {
         excludeList: this.excludes || [],
-        //deep_link: this.$root.pre_select && this.$root.pre_select.test === this.test.id, //Wurde eine Anfrage für ein/dieses Assessment gestartet?
-        deep_link: true,
         isUpdating: false,
       }
     },
     computed: {
-      isLoadingUpdate() {
+      hasResults() {
+        return !!this.results.length
+      },
+      isLoading() {
         return this.assessmentsStore.isLoading
+      },
+      assessment() {
+        return this.assessmentsStore.currentAssessment
       },
       test() {
         return this.assessmentsStore.currentAssessment?.test
@@ -339,7 +249,7 @@
       weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
-      isactive() {
+      isActive() {
         const assessments = this.assessmentsStore.assessments[this.group.id]
 
         return assessments?.find(a => a.test_id === this.test.id)?.active
@@ -369,33 +279,6 @@
       },
       formatDate(date) {
         return printDate(date)
-      },
-      get_result(student) {
-        //Prüft ob es für "heute" schon ein Ergebnis gibt.
-        let d = new Date()
-        let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)))
-        for (let i = 0; i < this.results.length; ++i) {
-          if (
-            this.results[i].student_id == student &&
-            new Date(this.results[i].test_week).toDateString() == bow.toDateString()
-          ) {
-            return this.results[i].id
-          }
-        }
-        return 0
-      },
-      getCSRFToken() {
-        return document.getElementsByName('csrf-token')[0].getAttribute('content')
-      },
-      async include(studentId) {
-        //AJAX-Request senden
-
-        const res = await ajax(
-          apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId)
-        )
-        if (res.status === 200) {
-          this.excludeList = this.excludeList.filter(item => item !== studentId)
-        }
       },
 
       async deleteResult(result, index) {
@@ -432,18 +315,7 @@
         //Student-Objekt aus globaler Variable holen
         return getStudent(this.group.id, id)?.name
       },
-      async toggleAssessment() {
-        this.isUpdating = true
-        const res = await ajax(
-          apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
-            assessment: { active: this.isactive ? 0 : 1 },
-          })
-        )
-        if (res.status === 200) {
-          await this.assessmentsStore.fetch(this.group.id)
-        }
-        this.isUpdating = false
-      },
+
       getItemName(item, fallback) {
         if (isObject(this.test.items[0])) {
           return this.test.items.find(n => n.id === item).label

@@ -1,32 +1,26 @@
 <template>
   <div classname="group-view">
-    <div v-if="!!group.id" class="mb-2 mt-2">
-      <b-btn
-        v-b-toggle="'collapse_test_' + group.id"
-        variant="outline-secondary"
-        size="sm"
-        class="d-inline"
-      >
-        <i class="fas fa-list"></i> Testübersicht der Klasse</b-btn
-      >
-      <b-collapse :id="'collapse_test_' + group.id" class="mt-2 mb-4" :visible="false">
-        <!-- Listenansicht für alle Tests -->
-        <list-view :group="group" @set-preselect="setPreselect" />
-      </b-collapse>
-
-      <create-assessment-view :group="group" :group-info="groupInfo" @select-test="setPreselect" />
+    <div v-if="readOnly">
+      <p>
+        Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
+        durchführen oder Einstellungen ändern.
+      </p>
     </div>
-    <assessment-view
-      :group="group"
-      :group-info="groupInfo"
-      :assessment-data="assessmentData"
-      :current-test-id="testSelected"
-      :is-loading-update="isLoadingUpdate"
-    />
+    <div v-if="!!group.id" class="mb-2 mt-2">
+      <list-view :group="group" />
+      <create-assessment-view
+        v-if="isAllowed"
+        :group="group"
+        :group-info="groupInfo"
+        @select-test="setPreselect"
+      />
+    </div>
+    <assessment-view :group="group" :current-test-id="testSelected" />
   </div>
 </template>
 
 <script>
+  import { isAdmin } from '../../utils/user'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
@@ -40,7 +34,7 @@
     props: {
       group: Object,
       groupInfo: Object,
-      index: Number,
+      isActive: Boolean,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -94,24 +88,16 @@
         return this.globalStore.staticData.testMetaData
       },
       annotations: function () {
-        return this.assessmentData.annotations
+        return this.assessmentData?.annotations
       },
-
-      // tests: function () {
-      //   return this.testMetaData.tests.reduce((acc, test) => {
-      //     if (test.test_family_id === this.familySelected && test.is_latest) {
-      //       const isTestUsed = this.groupInfo.used_test_ids.find(testId => testId === test.id)
-      //       const versions = this.testMetaData.tests.filter(
-      //         version =>
-      //           version.level === test.level && version.test_family_id === this.familySelected
-      //       )
-      //       acc.push({ info: test, used: isTestUsed, versions })
-      //     }
-      //     return acc
-      //   }, [])
-      // },
+      isAllowed() {
+        return !this.group.read_only || isAdmin(this.globalStore.login.capabilities)
+      },
+      readOnly() {
+        return !!this.group.read_only
+      },
     },
-    watch: {
+    /* watch: {
       '$route.params': {
         immediate: true,
         handler(data) {
@@ -139,7 +125,7 @@
           this.setPreselect(preselect, false, true)
         },
       },
-    },
+    },*/
     async mounted() {
       this.$root.$on(`annotation-added-${this.group.id}`, this.addAnnotation)
       this.$root.$on(`annotation-removed-${this.group.id}`, this.removeAnnotation)
@@ -158,29 +144,7 @@
       },
 
       async setPreselect(data, isVersion) {
-        this.areaSelected = data.areaId
-        this.competenceSelected = data.competenceId
-        this.familySelected = data.familyId
-        this.testTypeSelected = data.typeId || this.defaultTestType.id
         this.testSelected = data.testId
-        this.versionSelected = data.versionId
-
-        //  await this.$nextTick() // wait until computed properties have refreshed
-        //  await this.loadAssessment(isVersion ? data.versionId : data.testId, isVersion)
-
-        //  this.jQuery('html, body').animate(
-        //    { scrollTop: this.jQuery('#assessment-jump' + this.group.id).offset().top },
-        //    'slow'
-        //  )
-      },
-
-      //Gewähltes Assessment nachladen und Daten in Assessment-View weiterreichen.
-      async loadAssessment(testId, isVersion) {
-        console.log('load Assessment: move me')
-      },
-
-      propagateUsedTest(testId) {
-        this.$emit('test-used', testId, this.group.id)
       },
     },
   }

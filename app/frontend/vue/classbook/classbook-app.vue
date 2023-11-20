@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <div v-if="isLoading">... loading...</div>
+    <div v-if="isLoading"><loading-dots :is-loading="isLoading" /></div>
     <div v-else>
       <b-row class="mt-3">
         <b-col md="12">
@@ -66,20 +66,14 @@
 
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
-                    <b-tab
-                      v-for="(group, index) in sharedGroups"
-                      :key="group.id"
-                      :active="index === firstSharedIndex"
-                      class="m-3"
-                      lazy
-                    >
+                    <b-tab v-for="(group, index) in sharedGroups" :key="group.id" class="m-3" lazy>
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
                         <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
                       </template>
-                      <group-view :groups="groups" :group="group"></group-view>
+                      <group-view :groups="sharedGroups" :group="group"></group-view>
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -131,6 +125,7 @@
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
   import isEmpty from 'lodash/isEmpty'
+  import LoadingDots from '../shared/loading-dots.vue'
 
   export default {
     name: 'ClassBookApp',
@@ -138,6 +133,7 @@
       GroupView,
       GroupForm,
       IntroPopover,
+      LoadingDots,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -188,14 +184,6 @@
           a = this.ownActiveGroups?.findIndex(g => g.owner && !g.archive && g.id) || 0
         }
         return a
-      },
-      firstSharedIndex: function () {
-        for (let i = 1; i < this.groups.length; ++i) {
-          if (!this.groups[i].owner) {
-            return i
-          }
-        }
-        return 0
       },
       new_shares: function () {
         for (let i = 1; i < this.groups.length; ++i) {

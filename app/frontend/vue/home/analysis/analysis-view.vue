@@ -522,6 +522,8 @@
         return val === undefined ? null : val
       },
       testData() {
+        //TODO this is the only used for the attachedLevelImages. Might be better
+        //TODO to include the information in this.test to save an api call.
         return this.testsStore.tests
           .find(area => area.id === this.test.area_id)
           .competences?.find(competence => competence.id === this.test.competence_id)
@@ -623,7 +625,7 @@
           let point = this.XYFromResult(currentResult, seriesKey, formatDate)
 
           if (point.y !== null) {
-            point.y = point.y.toFixed(2)
+            point.y = point.y?.toFixed(2)
           }
 
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))

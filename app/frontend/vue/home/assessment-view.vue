@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-card bg-variant="light" class="mt-3">
-      <b-nav v-if="currentTestId" pills>
+    <b-card v-if="!!assessmentData" bg-variant="light" class="mt-3">
+      <b-nav pills>
         <b-nav-item class=""
           ><span class="font-weight-bold">{{ currentArea?.name || '' }}</span></b-nav-item
         >
@@ -45,29 +45,45 @@
     </b-card>
     <b-row :id="'assessment-jump' + group.id">
       <b-col>
-        <div v-if="isLoadingUpdate" class="spinner" style="padding-bottom: 75px">
-          <div class="bounce1"></div>
-          <div class="bounce2"></div>
-          <div class="bounce3"></div>
-        </div>
-        <div v-else-if="!isLoadingUpdate && !hasResults">
-          <p class="m-5 text-center text-muted">
-            <span v-if="globalStore.studentsInGroups[group.id].length == 0">
+        <div v-if="!hasResults">
+          <b-card
+            v-if="globalStore.studentsInGroups[group.id].length === 0"
+            bg-variant="white"
+            class="col-lg-8 col-xl-6 mt-3"
+          >
+            <p class="text-center">
               Aktuell sind noch keine Schüler:innen für die Klasse angelegt. Bitte legen Sie diese
               zuerst im Klassenbuch an, damit Sie testen können!
-            </span>
-            <span v-else>
-              Kehren Sie zu Ihren vorherigen Tests zurück (fett gedruckt) oder wählen Sie einen
-              neuen Test aus der Liste.
-            </span>
-          </p>
+            </p>
+          </b-card>
+          <b-card
+            v-else-if="assessmentsStore.assessments[group.id]?.length == 0"
+            bg-variant="white"
+            class="col-lg-8 col-xl-6 mt-3"
+          >
+            <p class="text-center">
+              Keine aktiven Tests mit Messungen vorhanden! <br />
+              Legen Sie zunächst über den Button "Testverwaltung" einen Test für diese Klasse an.
+            </p>
+          </b-card>
+          <div v-else>
+            <p v-if="assessmentsStore.assessments[group.id]?.length > 1" class="text-left">
+              Bitte wählen Sie einen Test aus der Liste aus. Um später zu einem anderen Test zu
+              wechseln, können Sie den Button <strong>Testübersicht</strong> verwenden.
+              <span v-if="!group.read_only"
+                >Weitere Tests können Sie über die <strong>Testverwaltung</strong> aktivieren.</span
+              >
+            </p>
+            <b-card>
+              <group-assessments :group="group" :is-stand-alone="true" />
+            </b-card>
+          </div>
         </div>
         <assessment-details
-          v-else-if="assessmentData && currentTest"
+          v-else-if="assessmentData && assessmentData.groupId === group.id"
           :key="assessmentData.id"
           :assessment-data="assessmentData"
           :group="group"
-          @update="loadAssessment(testSelected)"
           @remove-entry="removeEntry"
         >
         </assessment-details>
@@ -79,13 +95,13 @@
   import AssessmentDetails from './assessment-details.vue'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
+  import GroupAssessments from './group-assessments.vue'
+  import LoadingDots from '../shared/loading-dots.vue'
   export default {
     name: 'AssessmentView',
-    components: { AssessmentDetails },
+    components: { AssessmentDetails, GroupAssessments, LoadingDots },
     props: {
       group: Object,
-      groupInfo: Object,
-      index: Number,
       currentTestId: Number,
     },
     setup() {
@@ -97,6 +113,9 @@
       return { enableTestTypes: true }
     },
     computed: {
+      allAssessments() {
+        return this.assessmentsStore.assessments[this.group.id]
+      },
       assessmentData() {
         return this.assessmentsStore.currentAssessment
       },
@@ -141,7 +160,7 @@
       testTypeSelected() {
         return this.currentTest?.test_type_id
       },
-      isLoadingUpdate() {
+      isLoading() {
         return this.assessmentsStore.isLoading
       },
       versions() {
@@ -162,23 +181,12 @@
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
     },
-    watch: {
-      currentTestId: {
-        immediate: true,
-        handler(data) {
-          console.log('data', data)
-        },
-      },
-    },
     methods: {
       removeEntry(index) {
-        this.assessmentData.series.splice(index, 1)
+        this.assessmentData.series.splice(index, 1) // todo Mutation von computed prop, sollte nicht erlaubt sein
       },
       async handleClickVersion(version) {
         await this.assessmentsStore.fetchCurrentAssessment(this.group.id, version.info.id)
-      },
-      async loadAssessment(testId, isVersion) {
-        this.assessmentData = this.assessmentsStore.getCurrentAssessment()
       },
     },
   }

@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  before_action :set_group, only: %i[update destroy]
+  before_action :set_group, only: %i[update destroy get_test_data]
 
   #GET /klassenbuch
   def index
@@ -49,6 +49,15 @@ class GroupsController < ApplicationController
       head :ok #200 als Rückmeldung an Vue-Component
     else
       head :not_acceptable
+    end
+  end
+
+  def get_test_data
+    puts @group.inspect
+    if !@group.nil?
+      render json: @group.test_data
+    else
+      head :not_found
     end
   end
 

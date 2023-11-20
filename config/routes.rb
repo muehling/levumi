@@ -51,6 +51,7 @@ Rails.application.routes.draw do
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   delete 'delete_area/:id', to: 'areas#destroy_safe'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
+  get 'groups/:id/test_data', to: 'groups#get_test_data'
 
   #Reguläres REST-Routing
   resources :users

@@ -120,5 +120,6 @@ export default {
   },
   groups: {
     group: id => ({ url: `/groups/${id}` }),
+    getTestData: id => ({ url: `/groups/${id}/test_data` }),
   },
 }

@@ -47,7 +47,7 @@ class Test < ApplicationRecord
         tests_for_family = Test.where(test_family_id: family.id)
         {
           test_count: tests_for_family.count,
-          used_test_types:
+          test_type_ids:
             Test
               .where(test_family_id: family.id)
               .map { |test| test.test_type_id ? test.test_type_id : TestType.first[:id] }
@@ -65,11 +65,10 @@ class Test < ApplicationRecord
         {
           test_count: families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
           name: competence.name,
-          used_test_types:
-            families_for_competence
-              .reduce([]) { |acc, family| acc + family[:used_test_types] }
-              .uniq,
+          test_type_ids:
+            families_for_competence.reduce([]) { |acc, family| acc + family[:test_type_ids] }.uniq,
           test_ids: families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
+          test_family_ids: families_for_competence.pluck(:id),
           id: competence.id,
           area_id: competence.area_id
         }
@@ -77,20 +76,30 @@ class Test < ApplicationRecord
     all_test_types =
       TestType.all.map do |test_type|
         tests_for_test_type = Test.where(test_type_id: test_type.id).pluck(:id)
+        competences_for_test_type =
+          all_competences.select { |competence| competence[:test_type_ids].include? test_type.id }
         if (test_type.id == 1)
           tests_for_test_type = tests_for_test_type + Test.where(test_type_id: nil).pluck(:id)
         end
-        { test_ids: tests_for_test_type, name: test_type.name, id: test_type.id }
+        {
+          test_ids: tests_for_test_type,
+          name: test_type.name,
+          id: test_type.id,
+          competence_ids: competences_for_test_type.pluck(:id)
+        }
       end
     all_areas =
       Area.all.map do |area|
         competences_for_area =
           all_competences.select { |competence| competence[:area_id] == area.id }
+
         {
           test_count:
             competences_for_area.reduce(0) { |sum, competence| sum + competence[:test_count] },
-          used_test_types:
-            competences_for_area.reduce([]) { |acc, family| acc + family[:used_test_types] }.uniq,
+          test_type_ids:
+            competences_for_area
+              .reduce([]) { |acc, competence| acc + competence[:test_type_ids] }
+              .uniq,
           test_ids:
             competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
           name: area.name,
@@ -108,7 +117,7 @@ class Test < ApplicationRecord
         areas: all_areas,
         test_families: all_families,
         competences: all_competences,
-        tests: Test.all,
+        tests: Test.all.as_json,
         test_types: all_test_types
       }
     )

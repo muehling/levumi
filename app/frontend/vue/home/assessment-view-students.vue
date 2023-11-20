@@ -8,6 +8,7 @@
     ></b-button>
     <b-collapse id="assessmentViewStudentsExplanation">
       <b-card class="mb-4">
+        <p class="text-light bg-secondary">&nbsp;Lehrkräfte-Übung</p>
         <p>
           Dieser Test ist für die Durchführung durch Lehrkräfte gedacht und kann daher nicht
           aktiviert oder pausiert werden.
@@ -15,7 +16,7 @@
         <p v-if="test.description?.usage" class="text-light bg-secondary">&nbsp;Durchführung</p>
         <p v-if="test.description?.usage" class="text-small">{{ test.description.usage }}</p>
         <p class="text-light bg-secondary">&nbsp;Hinweise</p>
-        <p class="text-small">
+        <p>
           Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie
           auf diese Seite zurückgeleitet.<br />
           Grün hinterlegte Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen
@@ -33,9 +34,9 @@
         v-for="student in students"
         :key="student.id"
         class="mr-2 mb-2"
-        :variant="get_result(student.id) > 0 ? 'success' : 'outline-success'"
-        :disabled="get_result(student.id) > 0 || !isAllowed"
-        :title="get_result(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
+        :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
+        :disabled="getResult(student.id) > 0 || !isAllowed"
+        :title="getResult(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
         :href="'/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name"
       >
         {{ student.name }}
@@ -45,9 +46,10 @@
   <div v-else>
     <div class="">
       <b-button
+        v-if="isAllowed"
         class="btn btn-sm"
         :variant="isactive ? ' btn-danger' : ' btn-success'"
-        :disabled="!isAllowed || isUpdating"
+        :disabled="isUpdating"
         @click="toggleAssessment()"
       >
         <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
@@ -55,7 +57,7 @@
         {{ isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
       </b-button>
 
-      <b-dropdown size="sm" class="ml-1" variant="outline-secondary" no-caret
+      <b-dropdown v-if="isAllowed" size="sm" class="ml-1" variant="outline-secondary" no-caret
         ><template #button-content>
           Schüler:innen ein-/ausschließen<i class="fas fa-caret-down ml-2"></i
         ></template>
@@ -78,6 +80,9 @@
           </b-dropdown-item>
         </b-dropdown-group>
       </b-dropdown>
+      <b-button variant="outline-secondary" class="ml-1 btn btn-sm" @click="refetch"
+        ><i class="fas fa-refresh mr-2"></i>Aktualisieren
+      </b-button>
       <b-button
         v-b-toggle.assessmentViewStudentsExplanation
         variant="outline-secondary"
@@ -94,7 +99,8 @@
         <p>
           Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem
           <a href="/testen" target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen
-          öffnet den Zugang dieser Schüler:in.
+          öffnet den Zugang dieser Schüler:in. Wenn Sie für eine Schüler:in einen Test durchführen,
+          können Sie die Ergebnisse mit dem Button <strong>Aktualisieren</strong> erneut abrufen.
         </p>
         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
         <p>
@@ -108,7 +114,6 @@
       </b-card>
     </b-collapse>
     <hr />
-    <!-- Schüler nur als Info anzeigen -->
     <table>
       <thead>
         <tr>
@@ -132,7 +137,7 @@
                 <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
                 <b-button
                   :key="student.id"
-                  :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
+                  :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
                   :disabled="!isactive || !isAllowed"
                   type="submit"
                 >
@@ -147,7 +152,7 @@
                 v-for="student in excludedStudents"
                 :key="student.id"
                 :disabled="true"
-                :variant="get_result(student.id) > 0 ? 'success' : 'outline-secondary'"
+                :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
                 class="mr-2 mb-2"
                 >{{ student.name }}<br />{{ student.login }}</b-button
               >
@@ -205,14 +210,16 @@
       },
       isAllowed() {
         return (
-          this.globalStore.login.is_masquerading === null ||
-          (!!this.globalStore.login.is_masquerading && !this.group.read_only) ||
+          (this.globalStore.login.is_masquerading === null && !this.group.read_only) ||
           isAdmin(this.globalStore.login.capabilities)
         )
       },
     },
     methods: {
-      get_result(studentId) {
+      async refetch() {
+        await this.assessmentsStore.fetchCurrentAssessment(this.group.id, this.test.id)
+      },
+      getResult(studentId) {
         //Prüft ob es für "heute" schon ein Ergebnis gibt.
         let d = new Date()
         let bow = new Date(d.setDate(d.getDate() - d.getDay() + (d.getDay() === 0 ? -6 : 1)))
