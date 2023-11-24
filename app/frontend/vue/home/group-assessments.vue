@@ -6,7 +6,12 @@
           v-model="selectedFilters"
           :options="availableFilters"
         ></b-form-checkbox-group>
-        <b-btn size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
+        <b-btn
+          v-if="isAllowed"
+          size="sm"
+          :variant="toggleButtonVariant"
+          @click="handleToggleActive"
+        >
           <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
           {{ toggleButtonText }}</b-btn
         >
@@ -19,8 +24,8 @@
             <th>Test</th>
             <th>Anzahl Testungen</th>
             <th>Letzter Test</th>
-            <th>Wöchentliche Testung</th>
-            <th></th>
+            <th v-if="isAllowed">Wöchentliche Testung</th>
+            <th v-if="isAllowed"></th>
           </tr>
         </thead>
         <tbody>
@@ -39,7 +44,7 @@
             </td>
             <td>{{ assessment.result_count }}</td>
             <td>{{ formatLastDate(assessment.last_test) }}</td>
-            <td>
+            <td v-if="isAllowed">
               <b-btn
                 v-if="assessment.student_test"
                 class="btn-sm"
@@ -57,7 +62,7 @@
                 >(Lehrkräfte-Übung)</b-btn
               >
             </td>
-            <td>
+            <td v-if="isAllowed">
               <b-btn
                 :id="`delete-button-${assessment.test}`"
                 class="btn-sm"
@@ -76,12 +81,14 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { format } from 'date-fns'
+  import { isAdmin } from '../../utils/user'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import intersection from 'lodash/intersection'
   import isEmpty from 'lodash/isEmpty'
+
   import LoadingDots from '../shared/loading-dots.vue'
 
   const Filter = {
@@ -127,6 +134,9 @@
       }
     },
     computed: {
+      isAllowed() {
+        return !this.group.read_only || isAdmin(this.globalStore.login.capabilities)
+      },
       defaultTestType() {
         return this.globalStore.staticData.testMetaData.test_types[0]
       },
