@@ -22,7 +22,7 @@
           >Testverwaltung für Klasse {{ group.label }}</b-button
         >
         <div class="row">
-          <div class="col-6">
+          <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
             <div class="accordion" role="tablist">
               <b-card v-for="area in areas" :key="area.id" no-body class="mb-0 border-0">
                 <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
@@ -216,7 +216,7 @@
               </b-card>
             </div>
           </div>
-          <div class="col-6 d-flex flex-column">
+          <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
             <div v-if="!selectedTest">
               {{ helpText }}
             </div>
@@ -327,7 +327,6 @@
     name: 'CreateAssessmentView',
     props: {
       group: Object,
-      groupInfo: Object,
     },
     setup() {
       const globalStore = useGlobalStore() // evtl raus
@@ -353,9 +352,13 @@
         return this.globalStore.staticData.testMetaData.test_types[0]
       },
       testMetaData: function () {
-        //todo der umweg über testmetadata muss raus, direkt testData benutzen
-
-        return this.testData
+        return {
+          ...this.globalStore.staticData.testMetaData,
+          tests: this.globalStore.staticData.testMetaData.tests.map(test => ({
+            ...test,
+            is_used: this.testData.used_test_ids?.includes(test.id),
+          })),
+        }
       },
       areas() {
         return this.testMetaData.areas
@@ -377,7 +380,7 @@
       },
       usedAreas() {
         return this.testMetaData.areas.reduce((acc, area) => {
-          const used = !!this.groupInfo.used_test_ids.some(usedId =>
+          const used = !!this.testData.used_test_ids.some(usedId =>
             area.test_ids.find(testId => testId === usedId)
           )
           if (used) {
@@ -388,7 +391,7 @@
       },
       usedCompetences() {
         return this.testMetaData?.competences.reduce((acc, competence) => {
-          const used = !!this.groupInfo.used_test_ids.some(usedId =>
+          const used = !!this.testData.used_test_ids.some(usedId =>
             competence.test_ids.find(testId => testId === usedId)
           )
 
@@ -400,7 +403,7 @@
       },
       usedTestFamilies() {
         return this.testMetaData?.test_families.reduce((acc, family) => {
-          const used = !!this.groupInfo.used_test_ids.some(usedId =>
+          const used = !!this.testData.used_test_ids.some(usedId =>
             family.test_ids.find(testId => testId === usedId)
           )
           if (used) {
@@ -412,7 +415,7 @@
 
       usedTestTypes() {
         return this.testMetaData?.test_types.reduce((acc, testType) => {
-          const used = !!this.groupInfo.used_test_ids.some(usedId =>
+          const used = !!this.testData.used_test_ids.some(usedId =>
             testType.test_ids.find(testId => testId === usedId)
           )
           if (used) {
@@ -452,7 +455,6 @@
       },
     },
     async mounted() {
-      await this.testsStore.fetch()
       const res = await ajax(apiRoutes.groups.getTestData(this.group.id))
       this.testData = await res.json()
     },
@@ -485,12 +487,12 @@
       assessmentExists(type, id) {
         switch (type) {
           case 'area':
-            return this.tests.reduce(
+            return this.tests?.reduce(
               (acc, test) => (test.area_id === id ? acc || test.is_used : acc),
               false
             )
           case 'testType':
-            return this.tests.reduce(
+            return this.tests?.reduce(
               (acc, test) =>
                 test.test_type_id === id && test.area_id === this.selectedAreaId && !test.archive
                   ? acc || test.is_used
@@ -498,7 +500,7 @@
               false
             )
           case 'competence':
-            return this.tests.reduce(
+            return this.tests?.reduce(
               (acc, test) =>
                 test.test_type_id === this.selectedTestTypeId &&
                 test.competence_id === id &&
@@ -509,7 +511,7 @@
             )
 
           case 'testFamily':
-            return this.tests.reduce(
+            return this.tests?.reduce(
               (acc, test) =>
                 test.test_type_id === this.selectedTestTypeId &&
                 test.test_family_id === id &&
@@ -546,6 +548,8 @@
       async refetch() {
         await this.assessmentsStore.fetch(this.group.id)
         this.assessments = this.assessmentsStore.getAssessments(this.group.id)
+        const res = await ajax(apiRoutes.groups.getTestData(this.group.id))
+        this.testData = await res.json()
       },
       reset(level) {
         switch (level) {

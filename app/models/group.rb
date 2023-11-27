@@ -46,22 +46,6 @@ class Group < ApplicationRecord
   end
 
   def test_data
-    tests_meta = Test.tests_meta
-    default_test_type_id = TestType.first.id
-
-    return(
-      {
-        areas: tests_meta[:areas],
-        competences: tests_meta[:competences],
-        test_families: tests_meta[:test_families],
-        test_types: tests_meta[:test_types],
-        tests:
-          tests_meta[:tests].map do |test|
-            test['is_used'] = Assessment.where(group_id: id, test_id: test['id']).exists?
-            test['test_type_id'] = default_test_type_id if test['test_type_id'].nil?
-            test
-          end
-      }
-    )
+    return { used_test_ids: Assessment.where(group_id: id).pluck(:test_id) }
   end
 end

@@ -24,6 +24,7 @@
             <th>Test</th>
             <th>Anzahl Testungen</th>
             <th>Letzter Test</th>
+            <th>Test-Typ</th>
             <th v-if="isAllowed">Wöchentliche Testung</th>
             <th v-if="isAllowed"></th>
           </tr>
@@ -44,6 +45,7 @@
             </td>
             <td>{{ assessment.result_count }}</td>
             <td>{{ formatLastDate(assessment.last_test) }}</td>
+            <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
             <td v-if="isAllowed">
               <b-btn
                 v-if="assessment.student_test"
@@ -66,7 +68,7 @@
               <b-btn
                 :id="`delete-button-${assessment.test}`"
                 class="btn-sm"
-                :variant="assessment.result_count ? 'outline-danger' : 'outline-secondary'"
+                :variant="assessment.result_count ? 'danger' : 'outline-danger'"
                 @click="deleteAssessment(assessment)"
                 ><i class="fas fa-trash"></i
               ></b-btn>
@@ -193,10 +195,14 @@
           : []
       },
     },
-    async mounted() {
-      await this.updateList()
-    },
     methods: {
+      getTestTypeLabel(testTypeId) {
+        return (
+          this.globalStore.staticData.testMetaData.test_types.find(
+            testType => testType.id === testTypeId
+          )?.name || this.defaultTestType.name
+        )
+      },
       checkIsUpdating(testId) {
         return this.isUpdating.find(id => id === testId)
       },

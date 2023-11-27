@@ -137,6 +137,7 @@ class Test < ApplicationRecord
       self.archive ? "Bis #{I18n.localize(self.updated_at, format: '%B %Y')}" : 'Aktuell'
     json['full_name'] = self.test_family.name + ' - ' + self.level
     json['is_latest'] = latest_version[:id] == self.id
+    json['test_type_id'] = self.test_type_id || TestType.first.id
     json
   end
 

@@ -48,26 +48,12 @@
                     </p>
                   </b-card>
                 </div>
-                <group-view
-                  v-else
-                  :group="group"
-                  :is-active="group.id === selectedGroupId"
-                  :group-info="groupInfo.find(gi => gi.group_id === group.id)"
-                  @test-used="markTestAsUsed"
-                />
+                <group-view v-else :group="group" :is-active="group.id === selectedGroupId" />
               </b-tab>
             </b-tabs>
           </b-card>
           <!-- Ansonsten Klasse vorauswählen -->
-          <group-view
-            v-else-if="groups.length > 0"
-            :group="groups[0]"
-            :group-info="groupInfo[0]"
-            :index="0"
-            @test-used="markTestAsUsed"
-          >
-          </group-view>
-
+          <group-view v-else-if="groups.length > 0" :group="groups[0]" />
           <b-card v-else bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
             Keine Klassen vorhanden! Legen Sie eine Klasse an um testen zu können oder verschieben
             Sie eine Klasse aus dem Archiv.
@@ -110,9 +96,6 @@
         // the first element is only intended as a placeholder for new groups and is not needed here
         return this.globalStore.groups.filter(group => group.id)
       },
-      groupInfo() {
-        return this.globalStore.groupInfo
-      },
       showIntro() {
         return this.globalStore.login.intro_state < 4
       },
@@ -153,10 +136,6 @@
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
-      },
-
-      markTestAsUsed(testId, groupId) {
-        this.groupInfo.find(group => group.group_id === groupId).used_test_ids.push(testId)
       },
       async getTestsForGroup(groupId) {
         const group = this.globalStore.groups.find(group => group.id === groupId)
