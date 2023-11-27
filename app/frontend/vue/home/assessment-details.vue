@@ -1,7 +1,7 @@
 <template>
   <b-card no-body class="mt-3 pb-0 mb-1">
     <loading-dots :is-loading="isLoading" />
-    <b-tabs v-if="!isLoading" pills card lazy>
+    <b-tabs v-if="!isLoading" pills card>
       <b-tab :active="!hasResults" class="m-3">
         <div slot="title">
           Messungen ({{ test.shorthand }})
@@ -130,7 +130,6 @@
         :active="hasResults"
         class="m-3"
         :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0"
-        lazy
         @click="auto_scroll('#annotations-section')"
       >
         <analysis-view

@@ -24,7 +24,7 @@
         <div class="row">
           <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
             <div class="accordion" role="tablist">
-              <b-card v-for="area in areas" :key="area.id" no-body class="mb-0 border-0">
+              <b-card v-for="area in areas" :key="'area' + area.id" no-body class="mb-0 border-0">
                 <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                   <b-button
                     v-b-toggle="`area-select-accordion${area.id}`"
@@ -46,7 +46,7 @@
                     <div class="accordion" role="tablist">
                       <b-card
                         v-for="testTypeId in area.test_type_ids"
-                        :key="testTypeId"
+                        :key="'testtype' + testTypeId"
                         no-body
                         class="mb-0 border-0"
                       >
@@ -276,42 +276,47 @@
                   </table>
                 </div>
               </div>
-              <div class="d-flex flex-grow-0 justify-content-end">
-                <b-button
-                  v-if="!assessmentForSelectedTest"
-                  class="mt-3"
-                  variant="success"
-                  @click="createAssessment"
-                  >Test für die Klasse aktivieren</b-button
-                >
-                <b-button
-                  v-if="assessmentForSelectedTest?.student_test && !isAssessmentActive"
-                  class="mt-3"
-                  variant="outline-success"
-                  @click="toggleAssessment"
-                  ><i class="fas fa-play mr-2"></i>Test aktivieren</b-button
-                >
-                <b-button
-                  v-if="assessmentForSelectedTest?.student_test && isAssessmentActive"
-                  class="ml-2 mt-3"
-                  variant="outline-danger"
-                  @click="toggleAssessment"
-                  ><i class="fas fa-pause mr-2"></i>Test pausieren</b-button
-                >
-                <b-button
-                  v-if="assessmentForSelectedTest"
-                  v-b-toggle="resetToggles"
-                  class="ml-2 mt-3"
-                  variant="success"
-                  @click="jumpToAssessment()"
-                  ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
-                >
-              </div>
+            </div>
+            <div class="d-flex flex-grow-0 justify-content-start align-items-end">
+              <b-button
+                v-if="!assessmentForSelectedTest && selectedTestId"
+                class="mt-3"
+                variant="success"
+                @click="createAssessment"
+                >Test für die Klasse aktivieren</b-button
+              >
+              <b-button
+                v-if="assessmentForSelectedTest?.student_test && !isAssessmentActive"
+                class="mt-3"
+                variant="outline-success"
+                @click="toggleAssessment"
+                ><i class="fas fa-play mr-2"></i>Test aktivieren</b-button
+              >
+              <b-button
+                v-if="assessmentForSelectedTest?.student_test && isAssessmentActive"
+                class="ml-2 mt-3"
+                variant="outline-danger"
+                @click="toggleAssessment"
+                ><i class="fas fa-pause mr-2"></i>Test pausieren</b-button
+              >
+              <b-button
+                v-if="assessmentForSelectedTest"
+                v-b-toggle="resetToggles"
+                class="ml-2 mt-3"
+                variant="success"
+                @click="jumpToAssessment()"
+                ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
+              >
+
+              <b-btn
+                v-b-toggle="resetToggles"
+                class="ml-2 mt-3"
+                variant="danger"
+                @click="handleClose"
+                >Abbrechen</b-btn
+              >
             </div>
           </div>
-        </div>
-        <div class="d-flex justify-content-end mt-2">
-          <b-btn v-b-toggle="resetToggles" variant="danger">Abbrechen</b-btn>
         </div>
       </b-card>
     </b-sidebar>
@@ -446,10 +451,10 @@
       },
       resetToggles() {
         return [
-          `area-select-accordion${this.selectedTestTypeId + '/' + this.selectedAreaId}`,
+          `area-select-accordion${this.selectedAreaId}`,
+          `testType-select-accordion${this.selectedTestTypeId + '/' + this.selectedAreaId}`,
           `competence-select-accordion${this.selectedTestTypeId + '/' + this.selectedCompetenceId}`,
           `testFamily-select-accordion${this.selectedTestTypeId + '/' + this.selectedTestFamilyId}`,
-          `testType-select-accordion${this.selectedTestTypeId + '/' + this.selectedAreaId}`,
           'create-assessment-sidebar',
         ]
       },
@@ -459,6 +464,12 @@
       this.testData = await res.json()
     },
     methods: {
+      handleClose() {
+        // reset needs to be in a timeout, otherwise the sections will be immediately expanded again
+        setTimeout(() => {
+          this.reset('area')
+        }, 100)
+      },
       competencesForTestType(areaId, testTypeId) {
         const competences = this.competences.filter(
           competence =>
@@ -551,6 +562,7 @@
         const res = await ajax(apiRoutes.groups.getTestData(this.group.id))
         this.testData = await res.json()
       },
+
       reset(level) {
         switch (level) {
           case 'area':

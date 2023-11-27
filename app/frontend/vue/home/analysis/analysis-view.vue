@@ -561,7 +561,11 @@
       },
     },
     async created() {
-      await this.testsStore.fetch()
+      //TODO testsStore.fetch is quite expensive and only used once for some very particular information, see computed testData
+      //TODO should be replaced with a different api endpoint
+      if (!this.testsStore.tests.length) {
+        await this.testsStore.fetch()
+      }
     },
     mounted() {
       this.loadStudentTargets()

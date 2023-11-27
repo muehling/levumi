@@ -165,12 +165,12 @@
       },
       sharedGroups() {
         return this.groups
-          .filter((group, index) => index > 0 && !group.owner)
+          .filter((group, index) => index > 0 && !group.owner && !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
         return this.groups
-          .filter((group, index) => index > 0 && group.archive)
+          .filter((group, index) => index > 0 && group.archive && group.owner)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
 
