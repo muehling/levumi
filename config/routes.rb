@@ -52,6 +52,8 @@ Rails.application.routes.draw do
   delete 'delete_area/:id', to: 'areas#destroy_safe'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
 
+  get '/registration_error', to: 'application#redirect_to_registration_error'
+
   #Reguläres REST-Routing
   resources :users
 
