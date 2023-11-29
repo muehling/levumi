@@ -48,7 +48,7 @@
 
   $('#user-messages').toast({animation: true, autohide: false}).toast('hide')
 
-  let initialTimestamp = new Date("<%= @render_timestamp %>")
+  let initialTimestamp = "<%= @render_timestamp %>"
   $("#main-register").on("click", (e)=>{
     e.preventDefault()
     e.stopPropagation()
@@ -58,7 +58,7 @@
       "email": raw['user[email]'].trim(),
       "state": raw['user[state]'],
       "account_type": raw['user[account_type]'],
-      "timestamp": new Date(),
+      "timestamp": new Date().toISOString(),
       "render_timestamp": initialTimestamp,
       "comment": $("#registration_comment").val()
     }}
