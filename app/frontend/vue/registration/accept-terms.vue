@@ -7,9 +7,9 @@
             <p class="text-justify">
               Vielen Dank, dass Sie Levumi nutzen möchten. Levumi wird in Kooperation zweier
               Arbeitsgruppen der CAU Kiel und der LMU München betrieben, der Dienst wird auf Servern
-              der Universität Kiel bereitgestellt. Die Nutzung von Levumi setzt voraus, dass Sie
-              unseren hier dargestellten Nutzungsbedingungen zustimmen. Bitte lesen Sie diese
-              sorgfältig durch.
+              der CAU Kiel bereitgestellt. Die Nutzung von Levumi setzt voraus, dass Sie unseren
+              hier dargestellten Nutzungsbedingungen zustimmen. Bitte lesen Sie diese sorgfältig
+              durch.
             </p>
             <h5>Registrierung und Verwendung Ihrer Daten</h5>
             <p class="text-justify">
