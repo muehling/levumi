@@ -8,6 +8,7 @@
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
                 v-b-toggle="`area-select-accordion${area.id}`"
+                class="test-admin-button"
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
                 @click.stop.prevent="expandArea(area.id)"
@@ -32,6 +33,7 @@
                     <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                       <b-button
                         v-b-toggle="`testType-select-accordion${testTypeId + '/' + area.id}`"
+                        class="test-admin-button"
                         block
                         :variant="`${
                           selectedTestTypeId === testTypeId ? 'primary' : 'outline-primary'
@@ -67,6 +69,7 @@
                                 v-b-toggle="
                                   `competence-select-accordion${testTypeId + '/' + competence.id}`
                                 "
+                                class="test-admin-button"
                                 block
                                 :variant="`${
                                   selectedCompetenceId === competence.id
@@ -111,6 +114,7 @@
                                             testTypeId + '/' + testFamily.id
                                           }`
                                         "
+                                        class="test-admin-button"
                                         block
                                         :variant="`${
                                           selectedTestFamilyId === testFamily.id
@@ -151,6 +155,7 @@
                                               role="tab"
                                             >
                                               <b-button
+                                                class="test-admin-button"
                                                 block
                                                 :variant="`${getTestButtonVariant(test.id)}`"
                                                 @click.stop.prevent="displayTestDetail(test.id)"
@@ -420,8 +425,7 @@
       },
     },
     async mounted() {
-      const res = await ajax(apiRoutes.groups.getTestData(this.group.id))
-      this.testData = await res.json()
+      await this.refetch()
     },
     methods: {
       handleClose() {
@@ -596,7 +600,7 @@
 </script>
 <style>
   .card-header {
-    background-color: transparent;
+    background-color: transparent !important;
   }
   .test-details {
     max-height: 80vh;
