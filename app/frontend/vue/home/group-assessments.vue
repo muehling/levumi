@@ -1,6 +1,6 @@
 <template>
   <div class="assessment-list">
-    <b-form-group>
+    <div class="assessment-filter mb-4">
       <b-form-checkbox-group
         v-model="selectedFilters"
         :options="availableFilters"
@@ -9,7 +9,7 @@
         <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
         {{ toggleButtonText }}</b-btn
       >
-    </b-form-group>
+    </div>
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
@@ -273,5 +273,9 @@
 <style scoped>
   .assessment-link {
     cursor: pointer;
+  }
+  .assessment-filter {
+    display: flex;
+    justify-content: space-between;
   }
 </style>

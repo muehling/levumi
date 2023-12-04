@@ -35,7 +35,7 @@
           <div v-else>
             <p v-if="assessmentsStore.assessments[group.id]?.length > 1" class="text-left">
               Bitte wählen Sie einen Test aus der Liste aus. Um später zu einem anderen Test zu
-              wechseln, können Sie den Button <strong>Testübersicht</strong> verwenden.
+              wechseln, können Sie den Button <strong>Zurück zur Testübersicht</strong> verwenden.
               <span v-if="!group.read_only"
                 >Weitere Tests können Sie über die <strong>Testverwaltung</strong> aktivieren.</span
               >
