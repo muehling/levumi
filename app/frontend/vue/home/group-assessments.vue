@@ -1,83 +1,78 @@
 <template>
-  <div>
-    <div class="assessment-list">
-      <b-form-group>
-        <b-form-checkbox-group
-          v-model="selectedFilters"
-          :options="availableFilters"
-        ></b-form-checkbox-group>
-        <b-btn
-          v-if="isAllowed"
-          size="sm"
-          :variant="toggleButtonVariant"
-          @click="handleToggleActive"
+  <div class="assessment-list">
+    <b-form-group>
+      <b-form-checkbox-group
+        v-model="selectedFilters"
+        :options="availableFilters"
+      ></b-form-checkbox-group>
+      <b-btn v-if="isAllowed" size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
+        <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
+        {{ toggleButtonText }}</b-btn
+      >
+    </b-form-group>
+    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
+      <thead>
+        <tr>
+          <th>Id</th>
+          <th>Kürzel</th>
+          <th>Test</th>
+          <th>Anzahl Testungen</th>
+          <th>Letzter Test</th>
+          <th>Test-Typ</th>
+          <th v-if="isAllowed">Wöchentliche Testung</th>
+          <th v-if="isAllowed"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="assessment in sortedList"
+          :key="`${assessment.test_id}/${assessment.name}`"
+          class="assessment-line"
         >
-          <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
-          {{ toggleButtonText }}</b-btn
-        >
-      </b-form-group>
-      <table class="table table-sm table-striped table-hover table-responsive-md text-small">
-        <thead>
-          <tr>
-            <th>Id</th>
-            <th>Kürzel</th>
-            <th>Test</th>
-            <th>Anzahl Testungen</th>
-            <th>Letzter Test</th>
-            <th>Test-Typ</th>
-            <th v-if="isAllowed">Wöchentliche Testung</th>
-            <th v-if="isAllowed"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="assessment in sortedList"
-            :key="assessment.test_id + '/' + assessment.name"
-            class="assessment-line"
-          >
-            <td>{{ assessment.test_id }}</td>
-            <td>{{ assessment.shorthand }}</td>
-            <td v-if="isStandAlone" @click="setPreselect(assessment)">
-              {{ assessment.name }}
-            </td>
-            <td v-else v-b-toggle="'test-list-sidebar'" @click="setPreselect(assessment)">
-              {{ assessment.name }}
-            </td>
-            <td>{{ assessment.result_count }}</td>
-            <td>{{ formatLastDate(assessment.last_test) }}</td>
-            <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
-            <td v-if="isAllowed">
-              <b-btn
-                v-if="assessment.student_test"
-                class="btn-sm"
-                :variant="assessment.active ? 'outline-danger' : 'outline-success'"
-                @click="toggleAssessment(assessment)"
-              >
-                <i
-                  v-if="!checkIsUpdating(assessment.test_id)"
-                  :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"
-                ></i>
-                <i v-else class="fas fa-spinner fa-spin"></i>
-                {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
-              </b-btn>
-              <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
-                >(Lehrkräfte-Übung)</b-btn
-              >
-            </td>
-            <td v-if="isAllowed">
-              <b-btn
-                :id="`delete-button-${assessment.test}`"
-                class="btn-sm"
-                :variant="assessment.result_count ? 'danger' : 'outline-danger'"
-                @click="deleteAssessment(assessment)"
-                ><i class="fas fa-trash"></i
-              ></b-btn>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <confirm-dialog ref="confirmDialog" />
-    </div>
+          <td>{{ assessment.test_id }}</td>
+          <td>{{ assessment.shorthand }}</td>
+          <td class="assessment-link" @click="setPreselect(assessment)">
+            {{ assessment.name }}
+            <i
+              v-if="loadingAssessmentId === assessment.test_id"
+              class="ml-2 fas fa-spinner fa-spin"
+            ></i>
+          </td>
+
+          <td>{{ assessment.result_count }}</td>
+          <td>{{ formatLastDate(assessment.last_test) }}</td>
+          <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
+          <td v-if="isAllowed">
+            <b-btn
+              v-if="assessment.student_test"
+              class="btn-sm"
+              :variant="assessment.active ? 'outline-danger' : 'outline-success'"
+              @click="toggleAssessment(assessment)"
+            >
+              <i
+                v-if="!checkIsUpdating(assessment.test_id)"
+                :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"
+              ></i>
+              <i v-else class="fas fa-spinner fa-spin"></i>
+              {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
+            </b-btn>
+            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
+              >(Lehrkräfte-Übung)</b-btn
+            >
+          </td>
+          <td v-if="isAllowed">
+            <b-btn
+              :id="`delete-button-${assessment.test}`"
+              class="btn-sm"
+              :variant="assessment.result_count ? 'danger' : 'outline-danger'"
+              @click="deleteAssessment(assessment)"
+              ><i class="fas fa-trash"></i
+            ></b-btn>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 <script>
@@ -107,7 +102,6 @@
     components: { ConfirmDialog, LoadingDots },
     props: {
       group: Object,
-      isStandAlone: Boolean,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
@@ -133,6 +127,7 @@
           { text: 'Pausierte Testungen', value: Filter.InactiveTests },
         ],
         isUpdating: [],
+        loadingAssessmentId: undefined,
       }
     },
     computed: {
@@ -154,9 +149,9 @@
           .filter(assessment => assessment.student_test)
           .reduce((acc, assessment) => acc && assessment.active, true)
       },
-      isLoading() {
-        return this.assessmentsStore.isLoading
-      },
+      // isLoading() {
+      //   return this.assessmentsStore.isLoading
+      // },
       sortedList() {
         const byResult = []
         const byType = []
@@ -231,10 +226,12 @@
         this.isUpdating = []
       },
       async setPreselect(assessment) {
+        this.loadingAssessmentId = assessment.test_id
         this.assessmentData = await this.assessmentsStore.fetchCurrentAssessment(
           this.group.id,
           assessment.test_id
         )
+        this.loadingAssessmentId = undefined
       },
       formatLastDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'
@@ -273,3 +270,8 @@
     },
   }
 </script>
+<style scoped>
+  .assessment-link {
+    cursor: pointer;
+  }
+</style>

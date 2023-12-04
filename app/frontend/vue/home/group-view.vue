@@ -6,11 +6,18 @@
         durchführen oder Einstellungen ändern.
       </p>
     </div>
-    <div v-if="!!group.id" class="mb-2 mt-2">
-      <list-view :group="group" />
-      <create-assessment-view v-if="isAllowed" :group="group" @select-test="setPreselect" />
+    <div v-if="!!group.id && !assessmentData && isAllowed" class="mb-2 mt-2">
+      <b-btn variant="outline-secondary" size="sm" class="mb-3" @click="openTestAdmin">
+        <i class="fas fa-gear mr-1"></i>Testverwaltung
+      </b-btn>
     </div>
-    <assessment-view :group="group" :current-test-id="testSelected" />
+    <group-test-admin
+      v-if="!assessmentData && isAllowed && isTestAdminOpen"
+      :group="group"
+      @select-test="setPreselect"
+      @close-test-admin="closeTestAdmin"
+    />
+    <assessment-view v-else :group="group" :current-test-id="testSelected" />
   </div>
 </template>
 
@@ -19,12 +26,11 @@
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import AssessmentView from './assessment-view.vue'
-  import CreateAssessmentView from './create-assessment-view.vue'
-  import ListView from './list-view.vue'
+  import GroupTestAdmin from './group-test-admin.vue'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentView, ListView, CreateAssessmentView },
+    components: { AssessmentView, GroupTestAdmin },
 
     props: {
       group: Object,
@@ -41,6 +47,7 @@
           this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
             ? this.$root.pre_select.testId
             : 0,
+        isTestAdminOpen: false,
       }
     },
     computed: {
@@ -66,6 +73,12 @@
     },
 
     methods: {
+      openTestAdmin() {
+        this.isTestAdminOpen = true
+      },
+      closeTestAdmin() {
+        this.isTestAdminOpen = false
+      },
       addAnnotation(annotation) {
         const annotations = this.assessmentData.annotations
         annotations.splice(0, 0, annotation)

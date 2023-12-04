@@ -1,5 +1,47 @@
 <template>
   <b-card no-body class="mt-3 pb-0 mb-1">
+    <div class="card-header">
+      <b-nav pills>
+        <b-nav-item class="cursor-default"
+          ><span class="font-weight-bold">{{ currentArea?.name || '' }}</span></b-nav-item
+        >
+        <i class="fas fa-arrow-right mt-2 text-primary"></i>
+        <b-nav-item :id="group.id + '_test_type_' + currentTestType?.id" class="ml-3 cursor-default"
+          ><span class="font-weight-bold">{{ currentTestType?.name || '' }}</span>
+        </b-nav-item>
+        <i class="fas fa-arrow-right mt-2 text-primary"></i>
+        <b-nav-item
+          :id="group.id + '_competence_' + currentCompetence?.id"
+          class="ml-3 cursor-default"
+          ><span class="font-weight-bold">{{ currentCompetence?.name || '' }}</span>
+        </b-nav-item>
+        <i class="fas fa-arrow-right mt-2 text-primary"></i>
+        <b-nav-item :id="group.id + '_family_' + currentFamily?.id" class="ml-3 cursor-default"
+          ><span class="font-weight-bold">{{ currentFamily?.name || '' }}</span>
+        </b-nav-item>
+        <i class="fas fa-arrow-right mt-2 text-primary"></i>
+        <b-nav-item :id="group.id + '_test_' + currentTest?.id" active class="ml-3 cursor-default"
+          ><span class="font-weight-bold">{{ currentTest?.level || '' }}</span>
+        </b-nav-item>
+      </b-nav>
+      <b-nav
+        v-if="versions.length > 1 || (versions.length === 1 && versions[0].info.archive === true)"
+        pills
+        class="mt-1"
+      >
+        <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
+        <b-nav-item
+          v-for="version in versions"
+          :id="group.id + '_version_' + version.info.id"
+          :key="version.info.id"
+          :active="version.info.id === versionSelected"
+          lazy
+          @click="handleClickVersion(version)"
+        >
+          <span :class="version.used ? 'font-weight-bold' : ''">{{ version.info.label }}</span>
+        </b-nav-item>
+      </b-nav>
+    </div>
     <loading-dots :is-loading="isLoading" />
     <b-tabs v-if="!isLoading" pills card>
       <b-tab :active="!hasResults" class="m-3">
@@ -58,7 +100,7 @@
               </b-col>
             </b-row>
             <!-- Aufklappbare Details -->
-            <b-collapse :id="'collapse_' + index" @shown="auto_scroll('#collapse_' + index)">
+            <b-collapse :id="'collapse_' + index">
               <b-card class="mt-2">
                 <table class="table table-striped table-sm table-borderless">
                   <thead>
@@ -130,7 +172,6 @@
         :active="hasResults"
         class="m-3"
         :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0"
-        @click="auto_scroll('#annotations-section')"
       >
         <analysis-view
           :key="test.id"
@@ -185,7 +226,6 @@
     },
     provide: function () {
       return {
-        autoScroll: this.auto_scroll,
         printDate: printDate,
         readOnly: this.readOnly,
         studentName: this.studentName,
@@ -208,6 +248,44 @@
       }
     },
     computed: {
+      allAssessments() {
+        return this.assessmentsStore.assessments[this.group.id]
+      },
+      currentArea() {
+        return this.testMetaData.areas.find(area => area.id === this.assessmentData?.test?.area_id)
+      },
+      currentTestType() {
+        return (
+          this.testMetaData.test_types.find(
+            testType => testType.id === this.assessmentData?.test?.test_type_id
+          ) || this.testMetaData.test_types[0]
+        )
+      },
+      currentCompetence() {
+        return this.testMetaData.competences.find(
+          competence => competence.id === this.assessmentData?.test?.competence_id
+        )
+      },
+      currentFamily() {
+        return this.testMetaData.test_families.find(
+          family => family.id === this.assessmentData?.test?.test_family_id
+        )
+      },
+      testMetaData: function () {
+        return this.globalStore.staticData.testMetaData
+      },
+      currentTest() {
+        return this.assessmentData?.test
+      },
+      testSelected() {
+        return this.currentTest?.id
+      },
+      versionSelected() {
+        return this.currentTest?.id
+      },
+      testTypeSelected() {
+        return this.currentTest?.test_type_id
+      },
       hasResults() {
         return !!this.results.length
       },
@@ -260,15 +338,29 @@
           isAdmin(this.globalStore.login.capabilities)
         )
       },
+      versions() {
+        const test = this.testMetaData.tests.find(test => test.id === this.testSelected)
+
+        const tests = this.testMetaData.tests.filter(
+          version => version.shorthand === test?.shorthand
+        )
+        const testIds = tests.map(version => version.id)
+        const assessments = this.assessmentsStore
+          .getAssessments(this.group.id)
+          .filter(assessment => testIds.includes(assessment.test_id))
+        const res = assessments.map(assessment => ({
+          info: tests.find(test => test.id === assessment.test_id),
+          used: true,
+        }))
+
+        return res.sort((a, b) => b?.info.id - a?.info.id)
+      },
     },
     methods: {
-      auto_scroll(element) {
-        //Scrollt Seite, bis übergebenes Element sichtbar ist.
-        //   this.jQuery(element)[0].scrollIntoView(false)
+      async handleClickVersion(version) {
+        await this.assessmentsStore.fetchCurrentAssessment(this.group.id, version.info.id)
       },
       async exclude(studentId) {
-        //AJAX-Request senden
-
         const res = await ajax(
           apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId)
         )
@@ -331,5 +423,11 @@
   .collapsed > .when-opened,
   :not(.collapsed) > .when-closed {
     display: none;
+  }
+  .cursor-default > a {
+    cursor: default;
+  }
+  .cursor-default > a.nav-link:not(.active):hover {
+    color: #5a598c !important;
   }
 </style>
