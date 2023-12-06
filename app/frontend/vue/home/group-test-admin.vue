@@ -1,6 +1,6 @@
 <template>
-  <b-card>
-    <b-button variant="primary" class="mb-4">Testverwaltung für Klasse {{ group.label }}</b-button>
+  <div v-if="!isOpen"></div>
+  <b-card v-else class="mt-3">
     <div class="row">
       <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
         <div class="accordion" role="tablist">
@@ -17,16 +17,12 @@
                 }}</span></b-button
               >
             </b-card-header>
-            <b-collapse
-              :id="`area-select-accordion${area.id}`"
-              accordion="area-select-accordion"
-              role="tabpanel"
-            >
+            <b-collapse :id="`area-select-accordion${area.id}`" role="tabpanel">
               <b-card-body class="pr-0 py-0">
                 <div class="accordion" role="tablist">
                   <b-card
                     v-for="testTypeId in area.test_type_ids"
-                    :key="'testtype' + testTypeId"
+                    :key="'testtype' + testTypeId + '/' + area.id"
                     no-body
                     class="mb-0 border-0"
                   >
@@ -49,7 +45,6 @@
                     </b-card-header>
                     <b-collapse
                       :id="`testType-select-accordion${testTypeId + '/' + area.id}`"
-                      accordion="testType-select-accordion"
                       role="tabpanel"
                     >
                       <b-card-body class="pr-0 py-0">
@@ -89,7 +84,6 @@
                             </b-card-header>
                             <b-collapse
                               :id="`competence-select-accordion${testTypeId + '/' + competence.id}`"
-                              accordion="competence-select-accordion"
                               role="tabpanel"
                             >
                               <b-card-body class="pr-0 py-0">
@@ -136,7 +130,6 @@
                                       :id="`testFamily-select-accordion${
                                         testTypeId + '/' + testFamily.id
                                       }`"
-                                      accordion="testFamily-select-accordion"
                                       role="tabpanel"
                                     >
                                       <b-card-body class="pr-0 py-0">
@@ -194,8 +187,8 @@
         <div v-if="!selectedTest">
           {{ helpText }}
         </div>
-        <div v-else class="flex-grow-1 d-flex flex-column">
-          <div class="flex-grow-1 test-details overflow-auto">
+        <div v-else class="d-flex flex-column">
+          <div class="test-details overflow-auto">
             <p>
               Kürzel: <strong>{{ selectedTest?.shorthand }}</strong>
             </p>
@@ -251,14 +244,21 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end">
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="mt-3"
+            class="ml-2 mt-3"
             variant="success"
             @click="createAssessment"
             >Test für die Klasse aktivieren</b-button
           >
           <b-button
+            v-if="assessmentForSelectedTest"
+            class="ml-2 mt-3"
+            variant="outline-success"
+            @click="jumpToAssessment()"
+            ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
+          >
+          <b-button
             v-if="assessmentForSelectedTest?.student_test && !isAssessmentActive"
-            class="mt-3"
+            class="ml-2 mt-3"
             variant="outline-success"
             @click="toggleAssessment"
             ><i class="fas fa-play mr-2"></i>Test aktivieren</b-button
@@ -272,19 +272,17 @@
           >
           <b-button
             v-if="assessmentForSelectedTest"
-            v-b-toggle="resetToggles"
             class="ml-2 mt-3"
-            variant="success"
-            @click="jumpToAssessment()"
-            ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
+            :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
+            @click="deleteAssessment"
           >
-
-          <b-btn v-b-toggle="resetToggles" class="ml-2 mt-3" variant="danger" @click="handleClose"
-            >Abbrechen</b-btn
-          >
+            <i class="fas fa-trash mr-2"></i>Test löschen
+          </b-button>
+          <b-btn class="ml-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
         </div>
       </div>
     </div>
+    <confirm-dialog ref="confirmDialog" />
   </b-card>
 </template>
 <script>
@@ -293,10 +291,13 @@
   import { useGlobalStore } from '../../store/store'
   import { useTestsStore } from '../../store/testsStore'
   import apiRoutes from '../routes/api-routes'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
   export default {
     name: 'GroupTestAdmin',
+    components: { ConfirmDialog },
     props: {
       group: Object,
+      isOpen: Boolean,
     },
     setup() {
       const globalStore = useGlobalStore() // evtl raus
@@ -312,9 +313,7 @@
         selectedCompetenceId: undefined,
         selectedTestFamilyId: undefined,
         selectedTestId: undefined,
-        assessments: [],
         accordionData: {},
-        testData: {},
       }
     },
     computed: {
@@ -329,6 +328,9 @@
             is_used: this.testData.used_test_ids?.includes(test.id),
           })),
         }
+      },
+      assessments() {
+        return this.assessmentsStore.getAssessments(this.group.id)
       },
       areas() {
         return this.testMetaData.areas
@@ -347,6 +349,9 @@
       },
       selectedTest() {
         return this.tests?.find(test => test.id === this.selectedTestId)
+      },
+      testData() {
+        return this.testsStore.getTestsForGroup(this.group.id) || {}
       },
       usedAreas() {
         return this.testMetaData.areas.reduce((acc, area) => {
@@ -414,26 +419,16 @@
       isAssessmentActive() {
         return this.assessmentForSelectedTest?.active
       },
-      resetToggles() {
-        return [
-          `area-select-accordion${this.selectedAreaId}`,
-          `testType-select-accordion${this.selectedTestTypeId + '/' + this.selectedAreaId}`,
-          `competence-select-accordion${this.selectedTestTypeId + '/' + this.selectedCompetenceId}`,
-          `testFamily-select-accordion${this.selectedTestTypeId + '/' + this.selectedTestFamilyId}`,
-          'create-assessment-sidebar',
-        ]
-      },
     },
-    async mounted() {
-      await this.refetch()
+    watch: {
+      isOpen() {
+        this.reset('area')
+      },
     },
     methods: {
       handleClose() {
-        // reset needs to be in a timeout, otherwise the sections will be immediately expanded again
-        setTimeout(() => {
-          this.reset('area')
-        }, 100)
         this.$emit('close-test-admin')
+        this.reset('area')
       },
       competencesForTestType(areaId, testTypeId) {
         const competences = this.competences.filter(
@@ -523,42 +518,55 @@
       },
       async refetch() {
         await this.assessmentsStore.fetch(this.group.id)
-        this.assessments = this.assessmentsStore.getAssessments(this.group.id)
-        const res = await ajax(apiRoutes.groups.getTestData(this.group.id))
-        this.testData = await res.json()
+        await this.testsStore.fetchUsedTestsForGroup(this.group.id)
       },
 
       reset(level) {
+        const aId = this.selectedAreaId
+        const ttId = this.selectedTestTypeId
+        const cId = this.selectedCompetenceId
+        const tfId = this.selectedTestFamilyId
+
         switch (level) {
           case 'area':
             this.selectedAreaId = undefined
+            this.$root.$emit('bv::toggle::collapse', `area-select-accordion${aId}`)
           case 'testType': //eslint-disable-line no-fallthrough
             this.selectedTestTypeId = undefined
+            this.$root.$emit('bv::toggle::collapse', `testType-select-accordion${ttId + '/' + aId}`)
           case 'competence': // eslint-disable-line no-fallthrough
             this.selectedCompetenceId = undefined
+            this.$root.$emit(
+              'bv::toggle::collapse',
+              `competence-select-accordion${ttId + '/' + cId}`
+            )
           case 'testFamily': // eslint-disable-line no-fallthrough
             this.selectedTestFamilyId = undefined
+            this.$root.$emit(
+              'bv::toggle::collapse',
+              `testFamily-select-accordion${ttId + '/' + tfId}`
+            )
           case 'test': // eslint-disable-line no-fallthrough
             this.selectedTestId = undefined
         }
       },
       expandArea(areaId) {
+        this.reset('area')
         this.selectedAreaId = this.selectedAreaId === areaId ? undefined : areaId
-        this.reset('testType')
       },
       expandTestType(testTypeId) {
+        this.reset('testType')
         this.selectedTestTypeId = this.selectedTestTypeId === testTypeId ? undefined : testTypeId
-        this.reset('competence')
       },
       expandCompetence(competenceId) {
+        this.reset('competence')
         this.selectedCompetenceId =
           this.selectedCompetenceId === competenceId ? undefined : competenceId
-        this.reset('testFamily')
       },
       expandTestFamily(testFamilyId) {
+        this.reset('testFamily')
         this.selectedTestFamilyId =
           this.selectedTestFamilyId === testFamilyId ? undefined : testFamilyId
-        this.reset('test')
       },
       displayTestDetail(testId) {
         this.selectedTestId = testId
@@ -575,7 +583,7 @@
       },
       async jumpToAssessment() {
         await this.assessmentsStore.fetchCurrentAssessment(this.group.id, this.selectedTestId)
-        this.reset('area')
+        this.handleClose()
       },
       async createAssessment() {
         const test = this.globalStore.staticData.testMetaData.tests.find(
@@ -593,6 +601,29 @@
         })
         if (res.status === 200) {
           await this.refetch()
+        }
+      },
+      async deleteAssessment() {
+        const ok = await this.$refs.confirmDialog.open({
+          title: 'Testung löschen',
+          message: `Möchten Sie diesen Test von der Klasse entfernen?${
+            this.assessmentForSelectedTest.result_count
+              ? ' Damit werden auch alle bestehenden Messungen gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!'
+              : ''
+          }`,
+          disableCloseOnBackdrop: true,
+          okText: 'Testung löschen',
+          okIntent: 'danger',
+          cancelText: 'Abbrechen',
+        })
+
+        if (ok) {
+          const res = await ajax(
+            apiRoutes.assessments.delete(this.group.id, this.assessmentForSelectedTest.test_id)
+          )
+          if (res.status === 200) {
+            await this.refetch()
+          }
         }
       },
     },

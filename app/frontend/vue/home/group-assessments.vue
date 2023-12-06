@@ -80,13 +80,12 @@
   import { format } from 'date-fns'
   import { isAdmin } from '../../utils/user'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import { useTestsStore } from '../../store/testsStore'
   import { useGlobalStore } from '../../store/store'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import intersection from 'lodash/intersection'
   import isEmpty from 'lodash/isEmpty'
-
-  import LoadingDots from '../shared/loading-dots.vue'
 
   const Filter = {
     WithResults: 1,
@@ -99,14 +98,15 @@
 
   export default {
     name: 'GroupAssessments',
-    components: { ConfirmDialog, LoadingDots },
+    components: { ConfirmDialog },
     props: {
       group: Object,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
       const globalStore = useGlobalStore()
-      return { assessmentsStore, globalStore }
+      const testsStore = useTestsStore()
+      return { assessmentsStore, globalStore, testsStore }
     },
     data() {
       return {
@@ -149,9 +149,7 @@
           .filter(assessment => assessment.student_test)
           .reduce((acc, assessment) => acc && assessment.active, true)
       },
-      // isLoading() {
-      //   return this.assessmentsStore.isLoading
-      // },
+
       sortedList() {
         const byResult = []
         const byType = []
@@ -265,6 +263,7 @@
       },
       async updateList() {
         await this.assessmentsStore.fetch(this.group.id)
+        await this.testsStore.fetchUsedTestsForGroup(this.group.id)
         this.isUpdating = []
       },
     },
