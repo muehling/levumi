@@ -13,14 +13,13 @@
     <table class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
-          <th>Id</th>
+          <th>Zum Test</th>
           <th>Kürzel</th>
           <th>Test</th>
           <th>Anzahl Testungen</th>
           <th>Letzter Test</th>
           <th>Test-Typ</th>
           <th v-if="isAllowed">Wöchentliche Testung</th>
-          <th v-if="isAllowed"></th>
         </tr>
       </thead>
       <tbody>
@@ -29,14 +28,18 @@
           :key="`${assessment.test_id}/${assessment.name}`"
           class="assessment-line"
         >
-          <td>{{ assessment.test_id }}</td>
-          <td>{{ assessment.shorthand }}</td>
           <td class="assessment-link" @click="setPreselect(assessment)">
-            {{ assessment.name }}
             <i
               v-if="loadingAssessmentId === assessment.test_id"
-              class="ml-2 fas fa-spinner fa-spin"
+              class="ml-4 fas fa-spinner fa-spin"
             ></i>
+            <i v-else class="ml-4 fas fa-magnifying-glass"></i>
+          </td>
+          <td class="assessment-link" @click="setPreselect(assessment)">
+            {{ assessment.shorthand }}
+          </td>
+          <td class="assessment-link" @click="setPreselect(assessment)">
+            {{ assessment.name }}
           </td>
 
           <td>{{ assessment.result_count }}</td>
@@ -59,15 +62,6 @@
             <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
               >(Lehrkräfte-Übung)</b-btn
             >
-          </td>
-          <td v-if="isAllowed">
-            <b-btn
-              :id="`delete-button-${assessment.test}`"
-              class="btn-sm"
-              :variant="assessment.result_count ? 'danger' : 'outline-danger'"
-              @click="deleteAssessment(assessment)"
-              ><i class="fas fa-trash"></i
-            ></b-btn>
           </td>
         </tr>
       </tbody>

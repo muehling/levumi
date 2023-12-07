@@ -8,7 +8,7 @@
     </div>
     <div v-if="!!group.id && !assessmentData && isAllowed && !isTestAdminOpen" class="mb-2 mt-2">
       <b-btn variant="outline-secondary" size="sm" class="mb-3" @click="openTestAdmin">
-        <i class="fas fa-gear mr-1"></i>Testverwaltung
+        <i class="fas fa-gear mr-1"></i>Test hinzufügen / löschen
       </b-btn>
     </div>
     <b-button

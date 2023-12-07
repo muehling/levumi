@@ -117,7 +117,7 @@ class Test < ApplicationRecord
         areas: all_areas,
         test_families: all_families,
         competences: all_competences,
-        tests: Test.all.as_json,
+        tests: Test.all.as_json(exclude_items: true),
         test_types: all_test_types
       }
     )
@@ -130,7 +130,13 @@ class Test < ApplicationRecord
       latest_version = Test.where(shorthand: self.shorthand).order(updated_at: :desc).first
     end
 
-    json = super(except: %i[created_at updated_at])
+    excludes = %i[created_at updated_at]
+    if options[:exclude_items].nil?
+      excludes = %i[created_at updated_at]
+    else
+      excludes = %i[items created_at updated_at]
+    end
+    json = super(except: excludes)
     json['area_id'] = self.test_family.competence.area.id
     json['competence_id'] = self.test_family.competence.id
     json['label'] =

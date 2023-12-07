@@ -18,7 +18,8 @@
       >
         <p class="text-center">
           Keine aktiven Tests mit Messungen vorhanden! <br />
-          Legen Sie zunächst über den Button "Testverwaltung" einen Test für diese Klasse an.
+          Legen Sie zunächst über den Button "Test hinzufügen/löschen" einen Test für diese Klasse
+          an.
         </p>
       </b-card>
       <div v-else>
@@ -26,7 +27,8 @@
           Bitte wählen Sie einen Test aus der Liste aus. Um später zu einem anderen Test zu
           wechseln, können Sie den Button <strong>Zurück zur Testübersicht</strong> verwenden.
           <span v-if="!group.read_only"
-            >Weitere Tests können Sie über die <strong>Testverwaltung</strong> aktivieren.</span
+            >Weitere Tests können Sie über den Button
+            <strong>Test hinzufügen/löschen</strong> aktivieren.</span
           >
         </p>
         <b-card>

@@ -72,6 +72,14 @@ class TestsController < ApplicationController
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
   end
 
+  def get_items
+    if @test
+      render json: @test.items
+    else
+      render json: {}
+    end
+  end
+
   def check_upload_version
     old_test = Test.where(shorthand: params[:shorthand]).where.not(archive: true).first
     if old_test.nil?

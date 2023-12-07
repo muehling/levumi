@@ -268,20 +268,6 @@
             ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
           >
           <b-button
-            v-if="assessmentForSelectedTest?.student_test && !isAssessmentActive"
-            class="ml-2 mt-3"
-            variant="outline-success"
-            @click="toggleAssessment"
-            ><i class="fas fa-play mr-2"></i>Test aktivieren</b-button
-          >
-          <b-button
-            v-if="assessmentForSelectedTest?.student_test && isAssessmentActive"
-            class="ml-2 mt-3"
-            variant="outline-danger"
-            @click="toggleAssessment"
-            ><i class="fas fa-pause mr-2"></i>Test pausieren</b-button
-          >
-          <b-button
             v-if="assessmentForSelectedTest"
             class="ml-2 mt-3"
             :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
@@ -359,7 +345,11 @@
         return this.testMetaData.tests
       },
       selectedTest() {
-        return this.tests?.find(test => test.id === this.selectedTestId)
+        const test = this.tests?.find(test => test.id === this.selectedTestId)
+        if (test && !test.items) {
+          test.items = {}
+        }
+        return test
       },
       testData() {
         return this.testsStore.getTestsForGroup(this.group.id) || {}
@@ -579,18 +569,9 @@
         this.selectedTestFamilyId =
           this.selectedTestFamilyId === testFamilyId ? undefined : testFamilyId
       },
-      displayTestDetail(testId) {
+      async displayTestDetail(testId) {
+        await this.globalStore.getItemsForTest(testId)
         this.selectedTestId = testId
-      },
-      async toggleAssessment() {
-        const res = await ajax({
-          url: `/groups/${this.group.id}/assessments/${this.selectedTestId}`,
-          method: 'put',
-          data: { assessment: { active: this.assessmentForSelectedTest?.active ? 0 : 1 } },
-        })
-        if (res.status === 200) {
-          await this.refetch()
-        }
       },
       async jumpToAssessment() {
         await this.assessmentsStore.fetchCurrentAssessment(this.group.id, this.selectedTestId)

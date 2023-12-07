@@ -33,6 +33,7 @@ export default {
     update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
     testMetaData: { url: '/tests_meta' },
     checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
+    items: id => ({ url: `tests/items/${id}` }),
   },
   assessments: {
     excludeStudent: (groupId, testId, studentId) => ({
