@@ -192,6 +192,9 @@
             <p>
               Kürzel: <strong>{{ selectedTest?.shorthand }}</strong>
             </p>
+            <p v-if="assessmentForSelectedTest?.result_count">
+              {{ assessmentForSelectedTest?.result_count }} Messungen für diese Klasse vorhanden
+            </p>
             <div class="text-left text-small">
               <p v-if="selectedTest.description.short" class="text-light bg-secondary pl-1">
                 Kurzbeschreibung
@@ -241,7 +244,15 @@
             </div>
           </div>
         </div>
-        <div class="d-flex flex-grow-0 justify-content-start align-items-end">
+        <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
+          <b-button
+            v-if="!!selectedTestId"
+            class="ml-2 mt-3"
+            :href="`/results/start_demo/${selectedTestId}`"
+            target="_blank"
+            variant="outline-secondary"
+            >Ausprobieren</b-button
+          >
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
             class="ml-2 mt-3"
@@ -636,9 +647,5 @@
   .test-details {
     max-height: 80vh;
     overflow: auto;
-  }
-
-  #create-assessment-sidebar {
-    top: 4em !important;
   }
 </style>

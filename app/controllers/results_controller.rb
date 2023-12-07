@@ -1,5 +1,5 @@
 class ResultsController < ApplicationController
-  before_action :set_student
+  before_action :set_student, except: %i[start_demo]
 
   before_action :check_login, only: %i[create new]
   skip_before_action :set_login, only: %i[create new]
@@ -27,6 +27,15 @@ class ResultsController < ApplicationController
       end
     else
       head 304
+    end
+  end
+
+  def start_demo
+    if (params.has_key?(:test_id))
+      @test = Test.find(params[:test_id])
+      render 'edit', layout: 'testing'
+    else
+      head 404 # todo error page
     end
   end
 

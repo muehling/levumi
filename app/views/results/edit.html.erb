@@ -38,15 +38,21 @@
         data: JSON.parse("<%= escape_javascript(raw @last_result.data.to_json) %>")
     }
     <% else %>
-    const lastResult = undefined
+        const lastResult = undefined
     <% end %>
     window.lastResult = lastResult
 
+    let font_family
+    let font_size
     //Präferenzen des Kindes setzen
-    const font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
-    window.font_family = font_family
+    <% unless @student.nil? %>
+        font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
 
-    const font_size = <%= @student.get_setting("font_size") %>
+        font_size = <%= @student.get_setting("font_size") %>
+    <% else %>
+
+    <% end %>
+    window.font_family = font_family
     window.font_size = font_size
 
      function preventNavigation(navEvent) {
@@ -58,32 +64,35 @@
     let isLoading = false
 
     async function sendResult(data, method, callback){
-        const url = '<%= student_results_url(@student)%>'
-        const header = {
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'X-Requested-With': 'XMLHttpRequest',
-            'X-CSRF-Token': window["$"]('meta[name="csrf-token"]').attr('content')
-        }
-        const body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(data.views)) + '&report=' + encodeURIComponent(JSON.stringify(data.report)) + '&data=' + encodeURIComponent(JSON.stringify(data.data))
+        <% unless @student.nil? && @assessment.nil? %>
         
-        if (isLoading){{
-            // prevent multiple posting, in case a student clicks a submit button multiple times
-            return
-        }}
+            const url = '<%= student_results_url(@student)%>'
+            const header = {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-CSRF-Token': window["$"]('meta[name="csrf-token"]').attr('content')
+            }
+            const body = 'assessment_id=<%= @assessment %>&views=' + encodeURIComponent(JSON.stringify(data.views)) + '&report=' + encodeURIComponent(JSON.stringify(data.report)) + '&data=' + encodeURIComponent(JSON.stringify(data.data))
+            
+            if (isLoading){{
+                // prevent multiple posting, in case a student clicks a submit button multiple times
+                return
+            }}
 
-        isLoading = true
-        const response = await fetch(url, {
-            method,
-            headers: header,
-            credentials: 'include',
-            body: body
-        })
-        isLoading = false
-        if (response.ok){
-            callback()
-        } else {
-            throw Error(response.statusText)
-        }
+            isLoading = true
+            const response = await fetch(url, {
+                method,
+                headers: header,
+                credentials: 'include',
+                body: body
+            })
+            isLoading = false
+            if (response.ok){
+                callback()
+            } else {
+                throw Error(response.statusText)
+            }
+        <% end %>
     }
 
     //Funktionen für Testumgebung bereitstellen
@@ -105,7 +114,11 @@
     //Testfenster schließen
     function exit() {
         window.removeEventListener('beforeunload', preventNavigation, true);
-        window.location.href = '<%= @redirect %>'
+        <% if @assessment.nil? && @student.nil? %>
+            window.close()
+        <% else %>
+            window.location.href = '<%= @redirect %>'
+        <% end %>
     }
     window.exit = exit
 

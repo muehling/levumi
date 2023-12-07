@@ -49,9 +49,10 @@ Rails.application.routes.draw do
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
-  delete 'delete_area/:id', to: 'areas#destroy_safe'
+  delete '/delete_area/:id', to: 'areas#destroy_safe'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
-  get 'groups/:id/test_data', to: 'groups#get_test_data'
+  get '/groups/:id/test_data', to: 'groups#get_test_data'
+  get '/results/start_demo/:test_id', to: 'results#start_demo'
 
   #Reguläres REST-Routing
   resources :users
