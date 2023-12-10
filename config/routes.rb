@@ -51,7 +51,7 @@ Rails.application.routes.draw do
   get '/users/core_data', to: 'users#get_core_data'
   get '/users/statistics', to: 'users#statistics'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
-  post 'renew_login', to: 'application#renew_login'
+  post '/renew_login', to: 'application#renew_login'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
 

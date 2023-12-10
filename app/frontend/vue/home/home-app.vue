@@ -1,6 +1,6 @@
 <template>
   <b-container fluid>
-    <div v-cloak>
+    <div>
       <b-row>
         <b-col md="12" class="mt-3">
           <!-- Klassenauswahl nur bei mehreren Klassen anzeigen (=> Privatpersonen...) -->
@@ -117,7 +117,7 @@
         },
       },
     },
-    created() {
+    mounted() {
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
