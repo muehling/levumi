@@ -117,6 +117,16 @@ class UsersController < ApplicationController
   end
 
   def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login in der Session.
+    # checks for bot registrations: comment can't be filled, and the user needs at least 5 seconds to fill in the form.
+    if !params[:user][:comment].empty?
+      render json: { message: 'Bot detected', errors: [''] }, status: 403 and return
+    end
+    time1 = Time.parse(params[:user][:timestamp])
+    time2 = Time.parse(params[:user][:render_timestamp])
+    diff = (time1 - time2).abs
+    render json: { message: 'Bot detected', errors: [''] }, status: 403 and return if diff < 5
+
+    #create user and password
     @user = User.new(user_attributes)
     pw = @user.generate_password
     @user.password = pw
@@ -249,6 +259,7 @@ class UsersController < ApplicationController
     temp =
       params
         .require(:user)
+        .except(:comment, :timestamp, :render_timestamp)
         .permit(
           :account_type,
           :email,
