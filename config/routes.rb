@@ -54,6 +54,7 @@ Rails.application.routes.draw do
   post 'renew_login', to: 'application#renew_login'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
+  put '/users/:id/cancel_tutorial', to: 'users#cancel_tutorial'
 
   #Reguläres REST-Routing
   resources :users

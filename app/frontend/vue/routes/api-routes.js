@@ -16,6 +16,7 @@ export default {
     }),
     statistics: '/users/statistics',
     delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
+    // cancelTutorial: id=>
   },
   home: {
     finishIntro: '/willkommen',
