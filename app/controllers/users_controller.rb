@@ -1,6 +1,17 @@
 class UsersController < ApplicationController
   before_action :set_user,
-                except: %i[index show create register recover get_core_data statistics destroy_self]
+                except: %i[
+                  create
+                  destroy_self
+                  get_core_data
+                  index
+                  index_paginated
+                  recover
+                  register
+                  search
+                  show
+                  statistics
+                ]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -85,6 +96,19 @@ class UsersController < ApplicationController
     else
       @users = User.all
     end
+  end
+
+  def index_paginated
+    page_number = params[:page_number].to_i.positive? ? params[:page_number].to_i : 1
+    users_per_page = 20
+    @users = User.limit(users_per_page).offset((page_number - 1) * users_per_page)
+    render :index
+  end
+
+  def search #todo paginierung einbauen
+    search_string = params[:search_term]
+    @users = User.where('LOWER(email) LIKE ?', "%#{search_string}%")
+    render :index
   end
 
   def statistics

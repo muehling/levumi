@@ -1,59 +1,64 @@
 <template>
   <div>
-    <table class="table table-hover table-sm text-small">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">E-Mail Adresse</th>
-          <th scope="col">Account-Typ</th>
-          <th scope="col">Rollen</th>
-          <th scope="col">Bundesland</th>
-          <th scope="col">Zuletzt eingeloggt</th>
-          <th scope="col">Aktionen</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="user in users"
-          :id="`row_${user.id}`"
-          :key="user.id"
-          :class="getUserBackgroundColor(user)"
+    <div class="input-group mb-3">
+      <div class="input-group-prepend">
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+      </div>
+      <b-form-input
+        v-model="searchTerm"
+        class="input-field"
+        placeholder="Nach Email-Adresse suchen..."
+        debounce="500"
+      />
+    </div>
+
+    <div class="input-container d-inline"></div>
+    <b-table small striped hover class="text-small" :items="users" :fields="fields">
+      <template #cell(accountType)="d">
+        <span>{{
+          accountTypes.find(accountType => d.item.account_type === accountType.id).label
+        }}</span>
+      </template>
+      <template #cell(capabilities)="d">
+        <span class="text-capitalize">{{ d.item.capabilities }}</span>
+      </template>
+      <template #cell(created_at)="d">
+        <span>{{ new Date(d.item.created_at).toLocaleString('de-DE') }}</span>
+      </template>
+      <template #cell(last_login)="d">
+        <span>{{ new Date(d.item.last_login).toLocaleString('de-DE') }}</span>
+      </template>
+      <template #cell(actions)="data">
+        <b-btn
+          variant="outline-success"
+          class="edit-user btn btn-sm mr-1"
+          @click="editUser(data.item.id)"
+          ><i class="fas fa-edit"></i> Bearbeiten</b-btn
         >
-          <td>{{ user.id }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            {{ accountTypes.find(accountType => user.account_type === accountType.id).label }}
-          </td>
-          <td class="text-capitalize">{{ user.capabilities || '-' }}</td>
-          <td>{{ states.find(state => state.id === user.state).label }}</td>
-          <td>
-            {{ !user.last_login ? 'Nie' : new Date(user.last_login).toLocaleString('de-DE') }}
-          </td>
-          <td>
-            <b-btn
-              variant="outline-success"
-              class="edit-user btn btn-sm mr-1"
-              @click="editUser(user.id)"
-              ><i class="fas fa-edit"></i> Bearbeiten</b-btn
-            >
-            <b-btn
-              v-if="canDeleteUser(user)"
-              variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
-              @click="requestDeleteUser(user.id)"
-              ><i class="fas fa-trash"></i> Löschen</b-btn
-            >
-            <b-btn
-              v-if="isLoginAsAllowed(user)"
-              variant="outline-secondary"
-              class="delete-user btn btn-sm mr-1"
-              @click="loginAs(user.id)"
-              ><i class="fas fa-user-md"></i> Einloggen als</b-btn
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+        <b-btn
+          v-if="canDeleteUser(data.item)"
+          variant="outline-danger"
+          class="delete-user btn btn-sm mr-1"
+          @click="requestDeleteUser(data.item.id)"
+          ><i class="fas fa-trash"></i> Löschen</b-btn
+        >
+        <b-btn
+          v-if="isLoginAsAllowed(data.item)"
+          variant="outline-secondary"
+          class="delete-user btn btn-sm mr-1"
+          @click="loginAs(data.item.id)"
+          ><i class="fas fa-user-md"></i> Einloggen als</b-btn
+        >
+      </template>
+    </b-table>
+    <b-pagination
+      v-if="searchTerm.length < 3"
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage"
+      aria-controls="usersTable"
+      @change="delegateRefetch"
+    ></b-pagination>
     <confirm-dialog ref="confirmDialog" />
     <edit-user-dialog ref="editUserDialog" @refetch="delegateRefetch" />
   </div>
@@ -73,10 +78,14 @@
     components: { ConfirmDialog, EditUserDialog },
     props: {
       users: Array,
+      totalRows: Number,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
+    },
+    data: function () {
+      return { currentPage: 1, perPage: 20, searchTerm: '' }
     },
     computed: {
       states() {
@@ -91,8 +100,31 @@
       accountTypes() {
         return this.globalStore.staticData.accountTypes
       },
+      fields() {
+        return [
+          { key: 'id', label: 'ID' },
+          { key: 'email', label: 'Name' },
+          { key: 'accountType', label: 'Account-Typ' },
+          { key: 'capabilities', label: 'Rollen' },
+          { key: 'created_at', label: 'Erstellt' },
+          { key: 'last_login', label: 'Zuletzt eingeloggt' },
+          { key: 'actions', label: 'Aktionen' },
+        ]
+      },
     },
-
+    watch: {
+      searchTerm: {
+        immediate: true,
+        async handler() {
+          console.log('search')
+          if (this.searchTerm.length > 3) {
+            this.$emit('refetch', { searchTerm: this.searchTerm })
+          } else if (this.searchTerm === '') {
+            this.$emit('refetch', { currentPage: this.currentPage })
+          }
+        },
+      },
+    },
     methods: {
       async requestDeleteUser(id) {
         const user = this.users.find(user => user.id === id)
@@ -114,12 +146,12 @@
           })
 
           if (res.status === 200) {
-            this.$emit('refetch')
+            this.delegateRefetch()
           }
         }
       },
-      delegateRefetch() {
-        this.$emit('refetch')
+      delegateRefetch(currentPage) {
+        this.$emit('refetch', { currentPage })
       },
       editUser(id) {
         this.$refs.editUserDialog.open({ user: this.users.find(u => u.id === id) })
