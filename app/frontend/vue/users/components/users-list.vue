@@ -26,7 +26,9 @@
         <span>{{ new Date(d.item.created_at).toLocaleString('de-DE') }}</span>
       </template>
       <template #cell(last_login)="d">
-        <span>{{ new Date(d.item.last_login).toLocaleString('de-DE') }}</span>
+        <span>{{
+          d.item.last_login ? new Date(d.item.last_login).toLocaleString('de-DE') : '-'
+        }}</span>
       </template>
       <template #cell(actions)="data">
         <b-btn
@@ -116,7 +118,6 @@
       searchTerm: {
         immediate: true,
         async handler() {
-          console.log('search')
           if (this.searchTerm.length > 3) {
             this.$emit('refetch', { searchTerm: this.searchTerm })
           } else if (this.searchTerm === '') {

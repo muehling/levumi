@@ -50,8 +50,6 @@
     },
     methods: {
       async refetch(params) {
-        console.log('refetch params', params)
-
         if (!this.canViewUsersList) {
           return
         }
