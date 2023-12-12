@@ -10,7 +10,7 @@
       <div>
         Einführung
         <b-btn
-          v-b-popover.hover="'Einführung beenden und nicht erneut anzeigen'"
+          v-b-popover.hover="'Diese Einführung beenden und nicht erneut anzeigen'"
           size="xs"
           class="cancel-tutorial float-right text-secondary"
           variant="outline-light"

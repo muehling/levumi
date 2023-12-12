@@ -126,6 +126,7 @@
   import routes from '../routes/api-routes'
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
+  import Vue from 'vue'
 
   export default {
     name: 'ClassBookApp',
@@ -228,6 +229,7 @@
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
+        Vue.set(this.globalStore.login, 'intro_state', 5)
       },
     },
   }

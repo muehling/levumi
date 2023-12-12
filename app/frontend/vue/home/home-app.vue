@@ -67,11 +67,12 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import Vue from 'vue'
 
   export default {
     name: 'HomeApp',
@@ -136,6 +137,7 @@
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
+        Vue.set(this.globalStore.login, 'intro_state', 4)
       },
       async getTestsForGroup(groupId) {
         const group = this.globalStore.groups.find(group => group.id === groupId)
