@@ -184,7 +184,11 @@ class UsersController < ApplicationController
           if @user.update(user_attributes)
             @user.intro_state = 3
             @user.save
-            @user.create_demo(params[:key], params[:auth_token])
+
+            # don't create demo data after password reset
+            if !@user.groups.exists?(demo: true)
+              @user.create_demo(params[:key], params[:auth_token])
+            end
             @login = @user
             head :ok and return
           end

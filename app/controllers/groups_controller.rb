@@ -53,7 +53,6 @@ class GroupsController < ApplicationController
   end
 
   def get_test_data
-    puts @group.inspect
     if !@group.nil?
       render json: @group.test_data
     else
