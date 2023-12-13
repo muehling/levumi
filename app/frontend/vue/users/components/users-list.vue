@@ -147,7 +147,7 @@
           })
 
           if (res.status === 200) {
-            this.delegateRefetch()
+            this.delegateRefetch({ currentPage: 1 })
           }
         }
       },
