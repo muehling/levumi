@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
                 ]
   before_action :check_maintenance, except: %i[login]
   before_action :set_locale
+  before_action :set_timestamp
 
   #Normaler Zugang
 
@@ -18,7 +19,6 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html do
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
-        @render_timestamp = Time.now
         render :start
       end
     end
@@ -181,5 +181,9 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = :de
+  end
+
+  def set_timestamp
+    @render_timestamp = Time.now
   end
 end
