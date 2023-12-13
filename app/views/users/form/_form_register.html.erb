@@ -19,14 +19,7 @@
 <% end %>
 <script type="module">
 
-  $('#acceptTerms').on("click", function(e){
-    if ($('#acceptTerms').is(':checked')){
-      $('#main-register').prop('disabled', false)
-    } else {
-      $('#main-register').prop('disabled', true)
-    }
-  })
-
+ 
   const getFormContents = ()=>{
     return $('form.new_user')
     .serializeArray()
@@ -82,7 +75,14 @@
             document.getElementById("new_user").reset();
             break
           case 403:
-            window.location.href='/registration_error'
+            const err = await res.json()            
+            switch (err.error){
+              case '1': // most obvious bot: will just send the form fields. It can be safely assumed that this was not a human.
+              case '2': break; // almost as obvious: honeypot is filled
+              default: // forms completed in less than 5 seconds *might* not be bots.
+                window.location.href='/registration_error'
+            }
+        break
           default:
             const data = await res.json()
             const errors = data.errors.join ("; ")
