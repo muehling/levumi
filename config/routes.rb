@@ -56,6 +56,8 @@ Rails.application.routes.draw do
   put '/users/:id/mail', to: 'users#user_mail'
   put '/users/:id/cancel_tutorial', to: 'users#cancel_tutorial'
 
+  get '/registration_error', to: 'application#redirect_to_registration_error'
+
   #Reguläres REST-Routing
   resources :users
 

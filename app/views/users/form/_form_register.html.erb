@@ -13,34 +13,47 @@
     name="acceptTerms"
   />
   <label for="acceptTerms">Ich bin mit den <a href='#' onclick="$('#t_and_c').modal('show')">Nutzungsbedingungen</a> einverstanden.</label>
+  <input type="text" id="registration_comment" value="">
   <button class='btn btn-outline-success' disabled id="main-register">Registrieren</button>
   <button class='btn btn-outline-secondary' id="main-cancel">Abbrechen</button>
 <% end %>
 <script type="module">
 
-  $('#acceptTerms').on("click", function(e){
-    if ($('#acceptTerms').is(':checked')){
-      $('#main-register').prop('disabled', false)
-    } else {
-      $('#main-register').prop('disabled', true)
-    }
-  })
-
-  $('#user-messages').toast({animation: true, autohide: false}).toast('hide')
-
-  $("#main-register").on("click", (e)=>{
-    e.preventDefault()
-    e.stopPropagation()
-
-    const raw = $('form.new_user')
+ 
+  const getFormContents = ()=>{
+    return $('form.new_user')
     .serializeArray()
     .reduce((acc, entry) => {
       return {[entry.name]: entry.value, ...acc}
     }, {})
+  }
+
+  const checkConstraints = ()=>{
+    const raw = getFormContents()
+    if ($('#acceptTerms').is(':checked') && raw['user[email]'] !== "" && raw['user[state]'] !== "0" && !!raw['user[account_type]']){
+      $('#main-register').prop('disabled', false)
+    } else {
+      $('#main-register').prop('disabled', true)
+    }
+  }
+
+  $('#new_user').on('input', checkConstraints)
+
+  $('#user-messages').toast({animation: true, autohide: false}).toast('hide')
+
+  let initialTimestamp = "<%= @render_timestamp %>"
+  $("#main-register").on("click", (e)=>{
+    e.preventDefault()
+    e.stopPropagation()
+
+    const raw = getFormContents()
     const data = {user:{
       "email": raw['user[email]'].trim(),
       "state": raw['user[state]'],
-      "account_type": raw['user[account_type]']
+      "account_type": raw['user[account_type]'],
+      "timestamp": new Date().toISOString(),
+      "render_timestamp": initialTimestamp,
+      "comment": $("#registration_comment").val()
     }}
 
     fetch('/users', {
@@ -61,13 +74,22 @@
             $('#user-messages').toast('show')
             document.getElementById("new_user").reset();
             break
+          case 403:
+            const err = await res.json()            
+            switch (err.error){
+              case '1': // most obvious bot: will just send the form fields. It can be safely assumed that this was not a human.
+              case '2': break; // almost as obvious: honeypot is filled
+              default: // forms completed in less than 5 seconds *might* not be bots.
+                window.location.href='/registration_error'
+            }
+        break
           default:
             const data = await res.json()
-            //TODO less than optimal - needs to be replaced with proper messages
             const errors = data.errors.join ("; ")
             $('#user-messages-body').html("<p>Etwas ist schiefgegangen!<br/>Bitte überprüfen Sie Ihre Eingaben und versuchen es erneut.</p>" + errors)
             $('#user-messages').toast('show')
         }
+        initialTimestamp = new Date()
       })
   })
 

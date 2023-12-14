@@ -50,7 +50,7 @@
             <div class="dropdown-menu" aria-labelledby="navbarHelp">
               <a
                 class="dropdown-item"
-                href="https://www-mailman.uni-regensburg.de/mailman/listinfo/news-levumi"
+                href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
                 target="_blank"
                 >Levumi Newsletter</a
               >

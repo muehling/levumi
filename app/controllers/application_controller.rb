@@ -1,7 +1,16 @@
 class ApplicationController < ActionController::Base
-  before_action :set_login, except: %i[info login frontend login_frontend logout_frontend]
+  before_action :set_login,
+                except: %i[
+                  info
+                  login
+                  frontend
+                  login_frontend
+                  logout_frontend
+                  redirect_to_registration_error
+                ]
   before_action :check_maintenance, except: %i[login]
   before_action :set_locale
+  before_action :set_timestamp
 
   #Normaler Zugang
 
@@ -55,6 +64,10 @@ class ApplicationController < ActionController::Base
     else
       head :not_found
     end
+  end
+
+  def redirect_to_registration_error
+    render :registration_error, layout: 'minimal'
   end
 
   #POST '/logout'
@@ -168,5 +181,9 @@ class ApplicationController < ActionController::Base
 
   def set_locale
     I18n.locale = :de
+  end
+
+  def set_timestamp
+    @render_timestamp = Time.now
   end
 end
