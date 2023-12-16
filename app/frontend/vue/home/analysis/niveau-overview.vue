@@ -12,7 +12,13 @@
               class="normal-dist"
               width="100%"
               :height="overviewHeight + 'px'"
-              :viewBox="'0 ' + (normalPlotMean * (1/normalPlotStdDeviation) * 119.85765 - ((1/normalPlotStdDeviation - 1) * 119.85765)/2) +' 21.41 '+ 1/normalPlotStdDeviation * 119.85765"
+              :viewBox="
+                '0 ' +
+                (normalPlotMean * (1 / normalPlotStdDeviation) * 119.85765 -
+                  ((1 / normalPlotStdDeviation - 1) * 119.85765) / 2) +
+                ' 21.41 ' +
+                (1 / normalPlotStdDeviation) * 119.85765
+              "
               preserveAspectRatio="none"
             >
               <defs id="defs73643">
@@ -75,7 +81,6 @@
           <span class="headline" v-html="headlineForLevel(n)"></span>
         </b-col>
       </b-row>
-
     </b-container>
   </div>
 </template>
@@ -138,7 +143,7 @@
       },
       /** A percentage value determining how much the normal should be shifted upwards from its middle position. */
       normalPlotMean() {
-        return this.nivConfig.normal_mean ? (this.nivConfig.normal_mean * (5/4)) / 10 : 0
+        return this.nivConfig.normal_mean ? (this.nivConfig.normal_mean * (5 / 4)) / 10 : 0
       },
       /** The standard deviation of the shown normal function, as specified in the test.
        *  Used directly as a y-scale factor. */
@@ -151,15 +156,17 @@
     },
     methods: {
       examplesForLevel(level) {
-        const example_texts = this.nivConfig.example_texts[level-1]
-        const example_images = this.exampleImages.filter(img => img.filename.startsWith(A + E + level))
+        const example_texts = this.nivConfig.example_texts[level - 1]
+        const example_images = this.exampleImages.filter(img =>
+          img.filename.startsWith(A + E + level)
+        )
         // build examples from texts, adding images where appropriate
         let i = 1
         return example_texts.map(text => {
           // search for a corresponding image
-          const image = example_images.find(img => img.filename.startsWith(A + E + level + "_" + i))
+          const image = example_images.find(img => img.filename.startsWith(A + E + level + '_' + i))
           // first break the text into lines
-          const lines = text.split("\n")
+          const lines = text.split('\n')
           // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
           const fracRegex = /([A-Za-z0-9]+⌹[A-Za-z0-9]+)/
           const htmlRegex = /(<\S+>.*<\/\S+>)/
@@ -172,24 +179,32 @@
             lines[j] = htmlElements.flatMap(elem => {
               if (htmlRegex.test(elem)) {
                 ++k
-                return [{type: 'plain-text', id: k, text: elem}]
+                return [{ type: 'plain-text', id: k, text: elem }]
               } else {
-                return elem.split(fracRegex)
-                // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
-                .map(s => {
-                  ++k
-                  if (fracRegex.test(s) && !htmlRegex.test(s)) {
-                    const slots = s.split('⌹')
-                    return {type: 'text-fraction', id: k, numerator: slots[0], denominator: slots[1]}
-                  } else {
-                    return {type: 'plain-text', id: k, text: s}
-                  }
-                })
+                return (
+                  elem
+                    .split(fracRegex)
+                    // map this to an array of objects that are either of a 'plain-text' or 'fraction' type
+                    .map(s => {
+                      ++k
+                      if (fracRegex.test(s) && !htmlRegex.test(s)) {
+                        const slots = s.split('⌹')
+                        return {
+                          type: 'text-fraction',
+                          id: k,
+                          numerator: slots[0],
+                          denominator: slots[1],
+                        }
+                      } else {
+                        return { type: 'plain-text', id: k, text: s }
+                      }
+                    })
+                )
               }
             })
           }
           ++i
-          return {lines: lines, image: image}
+          return { lines: lines, image: image }
         })
       },
       headlineForLevel(level) {

@@ -98,7 +98,7 @@ export const apexChartOptions = weekLabels => ({
     },
     stroke: {
       curve: 'straight',
-      width: 1, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      width: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
       dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
     },
     fill: {
@@ -131,39 +131,73 @@ export const apexChartOptions = weekLabels => ({
     },
     colors: [
       'rgba(255,255,255,0)',
-      '#80f1ad',
-      '#06a438',
-      'rgb(30,227,46)',
-      '#8bff95',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(255,224,35,0.1)',
+      '#ffdb00',
+      'rgba(255,224,35,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
       'rgba(255,255,255,0)',
-      '#ffebab',
-      '#b7a10f',
-      '#dcc21e',
-      '#f7ff85',
-      'rgba(255,255,255,0)',
-      '#f7abff',
-      '#a33cb4',
-      '#c546ff',
-      '#d685ff',
-      'rgba(255,255,255,0)',
-      '#abc3ff',
-      '#2034a4',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(32,52,164,0.1)',
       '#2f49ff',
-      '#85a1ff',
+      'rgba(47,73,255,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
       'rgba(255,255,255,0)',
-      '#ffabbf',
-      '#b70f3c',
-      '#dc1e41',
-      '#ff85b0',
-      'rgba(255,255,255,0)',
-      '#abfff0',
-      '#0fb7b1',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(30,220,220,0.1)',
       '#1edcdc',
-      '#96fff6',
+      'rgba(30,220,220,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(141,46,204,0.1)',
+      '#af2ecc',
+      'rgba(141,46,204,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(255,127,36,0.1)',
+      '#ff6a00',
+      'rgba(255,127,35,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+      'rgba(255,255,255,0)',
     ],
     tooltip: {
       ...commonTooltip(),
       custom: customPercentileBandTooltip,
+    },
+    legend: {
+      position: 'top',
+      offsetY: 5,
+      onItemClick: {
+        // should not be toggled, as this would destroy the custom style (gap between stacks) by recreating the elements
+        toggleDataSeries: false,
+      },
+      // eslint-disable-next-line no-unused-vars
+      formatter: function (seriesName, _opts) {
+        const splitName = seriesName.split(' ')
+        // only render the first series name (ending in " 0")
+        if (splitName[1] === '0') {
+          // don't render the 0
+          return splitName[0]
+        } else {
+          return ''
+        }
+      },
     },
   },
   line: {
@@ -187,21 +221,6 @@ export const apexChartOptions = weekLabels => ({
       padding: {
         right: 35,
         left: 35,
-      },
-    },
-    legend: {
-      position: 'top',
-      offsetY: 5,
-      // eslint-disable-next-line no-unused-vars
-      formatter: function (seriesName, _opts) {
-        const splitName = seriesName.split(' ')
-        // only render the first series name (ending in " 0")
-        if (splitName[1] === '0') {
-          // don't render the 0
-          return splitName[0]
-        } else {
-          return ''
-        }
       },
     },
     tooltip: {
@@ -345,34 +364,30 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
 // eslint-disable-next-line no-unused-vars
 function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }) {
   const s = w.globals.series
+  const sCount = 8
   // calculate how many stacks there are per date
-  const stackCount = s.length / 5
+  const stackCount = s.length / sCount
   // for each stack (task type) get the quartile values and build fitting messages
   const stacks = []
-  const yLabels = [
-    'erstes Viertel der Klasse:',
-    'zweites Viertel der Klasse:',
-    'drittes Viertel der Klasse:',
-    'viertes Viertel der Klasse:',
-  ]
+  const yLabels = ['25%-Perzentil:', '50%-Perzentil:', '75%-Perzentil:']
 
   const f = n => n.toFixed(2)
   for (let seriesIndex = 0; seriesIndex < stackCount; ++seriesIndex) {
     // push a new array representing a series of a certain (task) type to be filled
-    const seriesStart = seriesIndex * 5
+    const seriesStart = seriesIndex * sCount
     // reconstruct the real quartiles here by adding up the series values
-    const quartiles = []
+    const percentiles = []
     let sum = 0.0
-    for (let i = 0; i < 5; ++i) {
+    // go up to 8, as there are 8 series when including the artificial separator lines
+    for (let i = 0; i < sCount; ++i) {
       sum += Number(series[seriesStart + i][dataPointIndex])
-      quartiles.push(sum)
+      percentiles.push(sum)
     }
-
-    const lowest = `${f(quartiles[0])} - ${f(quartiles[1])}`
-    const low = `${f(quartiles[1])} - ${f(quartiles[2])}`
-    const high = `${f(quartiles[2])} - ${f(quartiles[3])}`
-    const highest = `${f(quartiles[3])} - ${f(quartiles[4])}`
-    stacks.push([lowest, low, high, highest])
+    // the separator lines are at indices 2, 4 and 6
+    const low = `${f(percentiles[2])}`
+    const mid = `${f(percentiles[4])}`
+    const high = `${f(percentiles[6])}`
+    stacks.push([low, mid, high])
   }
 
   let html = ''
@@ -384,15 +399,15 @@ function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }
                             Verteilung der Lösungsraten beim Typ
                         </span>
                         <span class="apexcharts-tooltip-text-y-value">"${
-                          w.globals.seriesNames[5 * stackIndex].split(' ')[0]
+                          w.globals.seriesNames[sCount * stackIndex].split(' ')[0]
                         }":</span>
                     </div>
                 </div>
             </div>`
-    for (let i = 3; i >= 0; --i) {
+    for (let i = 2; i >= 0; --i) {
       html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
                   <span class="apexcharts-tooltip-marker" style="background-color: ${
-                    w.globals.markers.colors[5 * stackIndex + i + 1]
+                    w.globals.markers.colors[sCount * stackIndex + (i + 1) * 2]
                   };"></span>
                   <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
                       <div class="apexcharts-tooltip-y-group">
@@ -403,6 +418,15 @@ function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }
               </div>`
     }
   })
+  html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                    <div class="apexcharts-tooltip-y-group">
+                        <span class="apexcharts-tooltip-text-y-label">
+                            <b>Hinweis:</b> Jeder transparente Abschnitt stellt je ein Viertel der Klasse dar.
+                        </span>
+                    </div>
+                </div>
+            </div>`
   return html
 }
 
@@ -648,5 +672,27 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
 
   if (createEnableTooltip && !isArray(opt.tooltip.enabledOnSeries)) {
     opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
+  }
+}
+
+/**
+ * Adds a small gap between the stacks by adding transforms to the g-elements of the series.
+ */
+export function postProcessGroupedStackedBars(viewConfig) {
+  // first get the series names which are the base of the 'seriesName' attribute added by ApexCharts
+  const seriesNames = viewConfig.series
+  // get all series
+  const gSeries = document.querySelectorAll('.apexcharts-series')
+  let i = 0
+  for (let sName of seriesNames) {
+    // currentSeries contains all g-elements belonging to sName
+    const currentSeries = Array.from(gSeries).filter(gS =>
+      gS.getAttribute('seriesName').startsWith(sName)
+    )
+    console.log('currentSeries: ', currentSeries)
+    for (let g of currentSeries) {
+      g.style.transform = `translateX(${i * 10}px)`
+    }
+    i++
   }
 }

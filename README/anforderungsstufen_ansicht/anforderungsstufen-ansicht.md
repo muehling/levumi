@@ -12,10 +12,10 @@ Der für die hier dokumentierte Ansicht relevante Teil ist der Inhalt des `niv_c
 
 - ...
 - `configuration`
-    - `views`
-        - `type`: Text, aktuell werden `table`, `bar`, `graph_table`, `graph` und `niveau` unterstützt
-        - `niv_config`: Objekt, Konfiguration für den Fall, dass `type` = `niveau`
-- ...     
+  - `views`
+    - `type`: Text, aktuell werden `table`, `bar`, `graph_table`, `graph` und `niveau` unterstützt
+    - `niv_config`: Objekt, Konfiguration für den Fall, dass `type` = `niveau`
+- ...
 
 ### Konfigurationsoptionen
 

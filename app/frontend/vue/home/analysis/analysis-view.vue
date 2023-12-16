@@ -249,6 +249,7 @@
     prepareOptions,
     apexChartOptions,
     quantile,
+    postProcessGroupedStackedBars,
   } from './apexChartHelpers'
 
   export default {
@@ -637,8 +638,8 @@
             const series_key = view.series_keys[i]
             // collect only the results of the category and filter out undefined/null values
             let catResults = wResults
-                .map(res => res?.views[view.key][series_key])
-                .filter(r => r !== undefined && r !== null)
+              .map(res => res?.views[view.key][series_key])
+              .filter(r => r !== undefined && r !== null)
             // calculate the quartiles for this category
             const quartiles = []
             for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
@@ -650,6 +651,33 @@
             }
           }
         })
+        // postprocess the series: add artificial series to create separator lines for the quartiles
+        const EPSILON = 0.009
+        function decreaseBy(arrayToDecrease, amount) {
+          arrayToDecrease.forEach((el, index, array) => {
+            array[index] = el - amount
+          })
+        }
+        for (let sIndex = view.series.length - 1; sIndex >= 0; --sIndex) {
+          const sName = view.series[sIndex]
+          // first take half an EPSILON off the first quartile and add that to the last quartile
+          // this is to center the separator lines onto the values they are actually meant to represent
+          decreaseBy(series[sIndex * 5 + 1].data, EPSILON / 2)
+          decreaseBy(series[sIndex * 5 + 4].data, -(EPSILON / 2))
+          for (let j = 4; j > 1; --j) {
+            const q = 25 * j
+            const indexToSplice = sIndex * 5 + j
+            const referenceData = series[indexToSplice].data
+            // add a series with values similar to the reference series, but increased by EPSILON
+            series.splice(indexToSplice, 0, {
+              name: `${sName} ${q}%-Perzentil`,
+              group: sName,
+              data: referenceData.map(() => EPSILON),
+            })
+            // decrease the reference series by EPSILON in order not to inflate the results
+            decreaseBy(referenceData, EPSILON)
+          }
+        }
         return series
       },
 
@@ -865,6 +893,8 @@
 
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
         points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
+
+        postProcessGroupedStackedBars(this.viewConfig)
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
