@@ -89,8 +89,17 @@ class UsersController < ApplicationController
 
   def statistics
     if @login.has_capability?('stats')
-      @userinfo = User.get_statistics
-      @testinfo = Test.get_statistics
+      # legacy statistics
+      #@userinfo = User.get_statistics
+      #@testinfo = Test.get_statistics
+
+      @monthly_results = User.get_monthly_results
+
+      # @all_registrations_by_type_and_month = User.get_all_registrations_by_type_and_month
+
+      # @active_users_by_month = User.get_active_users_by_month
+      @registrations_by_month_and_state = User.get_registrations_by_month_and_state
+      @active_assessments_by_month = User.get_active_assessments_by_month
     end
   end
 
