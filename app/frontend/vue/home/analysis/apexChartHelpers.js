@@ -689,7 +689,6 @@ export function postProcessGroupedStackedBars(viewConfig) {
     const currentSeries = Array.from(gSeries).filter(gS =>
       gS.getAttribute('seriesName').startsWith(sName)
     )
-    console.log('currentSeries: ', currentSeries)
     for (let g of currentSeries) {
       g.style.transform = `translateX(${i * 10}px)`
     }

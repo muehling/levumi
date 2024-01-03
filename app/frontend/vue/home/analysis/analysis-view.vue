@@ -210,9 +210,6 @@
         </b-tab>
       </b-tabs>
     </b-row>
-    <b-row v-if="niveaus_visible">
-      <niveau-overview :niv-config="nivConfig"></niveau-overview>
-    </b-row>
     <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
       <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
@@ -638,7 +635,7 @@
             const series_key = view.series_keys[i]
             // collect only the results of the category and filter out undefined/null values
             let catResults = wResults
-              .map(res => res?.views[view.key][series_key])
+              .map(res => res?.views?.[view.key]?.[series_key])
               .filter(r => r !== undefined && r !== null)
             // calculate the quartiles for this category
             const quartiles = []
@@ -833,6 +830,8 @@
           }
         }
 
+        this.graphData = []
+        await this.$nextTick() // wait until the chart data is reset before setting the options, otherwise apexcharts will throw errors
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
         this.graphData = gData
 
@@ -841,6 +840,9 @@
           this.updateNonSlopeTarget()
         }
         this.updateAnnotations()
+        if (stackedBarChart) {
+          postProcessGroupedStackedBars(this.viewConfig)
+        }
 
         if (this.simpleTableVisible) {
           this.simpleTableData = createSimpleTableData(gData, nonLineChart)
@@ -893,8 +895,6 @@
 
         xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
         points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
-
-        postProcessGroupedStackedBars(this.viewConfig)
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
