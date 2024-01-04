@@ -46,19 +46,29 @@
       },
     },
     mounted() {
-      this.refetch({ currentPage: 1 })
+      this.refetch({ searchTerm: '', pageSize: 20, currentPage: 1 })
     },
     methods: {
       async refetch(params) {
         if (!this.canViewUsersList) {
           return
         }
-        let res
-        if (params.currentPage) {
-          res = await ajax({ url: `/users/page/${params?.currentPage || 1}` })
-        } else {
-          res = await ajax({ url: `users/search/${params.searchTerm}` })
+
+        let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
+        if (params.searchTerm) {
+          urlParams += `&search_term=${params.searchTerm}`
         }
+        if (params.startDateRegistration && params.endDateRegistration) {
+          urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
+        }
+        if (params.startDateLogin && params.endDateLogin) {
+          urlParams += `&start_date_login=${params.startDateLogin}&end_date_login=${params.endDateLogin}`
+        }
+
+        const res = await ajax({
+          url: `users/search${urlParams}`,
+        })
+
         if (res.status === 200) {
           const data = await res.json()
           this.totalUsers = data.total_users

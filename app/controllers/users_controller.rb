@@ -102,12 +102,35 @@ class UsersController < ApplicationController
     page_number = params[:page_number].to_i.positive? ? params[:page_number].to_i : 1
     users_per_page = 20
     @users = User.limit(users_per_page).offset((page_number - 1) * users_per_page)
+    @total_users = User.count
     render :index
   end
 
-  def search #todo paginierung einbauen
-    search_string = params[:search_term]
-    @users = User.where('LOWER(email) LIKE ?', "%#{search_string}%")
+  def search
+    search_string = params[:search_term] || ''
+    index = params[:index].to_i.positive? ? params[:index].to_i : 1
+    page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+
+    conditions = []
+    conditions << ['LOWER(email) LIKE ?', "%#{search_string}%"] if search_string != ''
+
+    if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
+      start_date = Date.parse(params[:start_date_registration])
+      end_date = Date.parse(params[:end_date_registration])
+      conditions << ['created_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    if !params[:start_date_login].nil? && !params[:end_date_login].nil?
+      start_date = Date.parse(params[:start_date_login])
+      end_date = Date.parse(params[:end_date_login])
+      conditions << ['last_login BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    users =
+      User.where(conditions.map { |condition| condition.shift }.join(' AND '), *conditions.flatten)
+
+    @users = users.limit(page_size).offset((index - 1) * page_size)
+    @total_users = users.count
     render :index
   end
 

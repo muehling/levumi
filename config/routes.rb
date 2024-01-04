@@ -47,7 +47,7 @@ Rails.application.routes.draw do
   get '/tests/info', to: 'tests#get_tests_data'
   get '/users/core_data', to: 'users#get_core_data'
   get '/users/page/:page_number', to: 'users#index_paginated'
-  get '/users/search/:search_term', to: 'users#search'
+  get '/users/search', to: 'users#search'
   get '/users/statistics', to: 'users#statistics'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   post 'renew_login', to: 'application#renew_login'
