@@ -118,31 +118,36 @@ class UsersController < ApplicationController
 
   def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login in der Session.
     # checks for bot registrations: comment can't be filled, and the user needs at least 5 seconds to fill in the form.
-
-    if params[:user] &&
-         (
-           !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
-             params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
-         )
-      puts '############################# timestamps missing'
-      render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
+    if session.has_key?('user')
+      #Session existiert
+      user = User.find_by_id(session[:user])
     end
+    if user.nil? || !user.has_capability?('user')
+      if params[:user] &&
+           (
+             !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
+               params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
+           )
+        puts '############################# timestamps missing'
+        render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
+      end
 
-    if params[:user] &&
-         (
-           (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
-             !params[:user].has_key?(:comment)
-         )
-      puts '############################# comment missing or filled'
-      render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
-    end
+      if params[:user] &&
+           (
+             (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
+               !params[:user].has_key?(:comment)
+           )
+        puts '############################# comment missing or filled'
+        render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
+      end
 
-    time1 = Time.parse(params[:user][:timestamp])
-    time2 = Time.parse(params[:user][:render_timestamp])
-    diff = (time1 - time2).abs
-    if diff < 5
-      puts '############################# time difference too short'
-      render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
+      time1 = Time.parse(params[:user][:timestamp])
+      time2 = Time.parse(params[:user][:render_timestamp])
+      diff = (time1 - time2).abs
+      if diff < 5
+        puts '############################# time difference too short'
+        render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
+      end
     end
 
     #create user and password
