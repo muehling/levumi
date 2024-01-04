@@ -47,12 +47,14 @@ class Result < ApplicationRecord
     start +=
       "\"#{student.id}\",\"#{student.login}\",\"#{assessment.group_id}\",\"#{student.gender.nil? ? 'NA' : student.gender}\",\"#{student.birthmonth.nil? ? 'NA' : student.birthmonth}\",\"#{student.sen.nil? ? 'NA' : student.sen}\",\"#{student.tag_list}\",\"#{assessment.test_id}\",\"#{test_timestamp}\",\"#{test_week}\","
     res = ''
-    self.data.each do |d|
-      res = res + start
+    if self.data.kind_of?(Array)
+      self.data.each do |d|
+        res = res + start
 
-      # temporary fix - substitute all `\"` with `'`, lest the exported csv is broken
-      d.each { |k, v| res = res + '"' + v.to_s.tr('\\"', "'") + '",' }
-      res = res.slice(0, res.length - 1) + "\n" #Letztes Komma entfernen und newline anhängen
+        # temporary fix - substitute all `\"` with `'`, lest the exported csv is broken
+        d.each { |k, v| res = res + '"' + v.to_s.tr('\\"', "'") + '",' }
+        res = res.slice(0, res.length - 1) + "\n" #Letztes Komma entfernen und newline anhängen
+      end
     end
     return res
   end
