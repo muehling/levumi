@@ -1,59 +1,151 @@
 <template>
   <div>
-    <table class="table table-hover table-sm text-small">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">E-Mail Adresse</th>
-          <th scope="col">Account-Typ</th>
-          <th scope="col">Rollen</th>
-          <th scope="col">Bundesland</th>
-          <th scope="col">Zuletzt eingeloggt</th>
-          <th scope="col">Aktionen</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="user in users"
-          :id="`row_${user.id}`"
-          :key="user.id"
-          :class="getUserBackgroundColor(user)"
-        >
-          <td>{{ user.id }}</td>
-          <td>{{ user.email }}</td>
-          <td>
-            {{ accountTypes.find(accountType => user.account_type === accountType.id).label }}
-          </td>
-          <td class="text-capitalize">{{ user.capabilities || '-' }}</td>
-          <td>{{ states.find(state => state.id === user.state).label }}</td>
-          <td>
-            {{ !user.last_login ? 'Nie' : new Date(user.last_login).toLocaleString('de-DE') }}
-          </td>
-          <td>
-            <b-btn
-              variant="outline-success"
-              class="edit-user btn btn-sm mr-1"
-              @click="editUser(user.id)"
-              ><i class="fas fa-edit"></i> Bearbeiten</b-btn
-            >
-            <b-btn
-              v-if="canDeleteUser(user)"
-              variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
-              @click="requestDeleteUser(user.id)"
-              ><i class="fas fa-trash"></i> Löschen</b-btn
-            >
-            <b-btn
-              v-if="isLoginAsAllowed(user)"
-              variant="outline-secondary"
-              class="delete-user btn btn-sm mr-1"
-              @click="loginAs(user.id)"
-              ><i class="fas fa-user-md"></i> Einloggen als</b-btn
-            >
-          </td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="input-group mb-2 p-0 col-lg-8 col-xl-6">
+      <div class="input-group-prepend my-1">
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+      </div>
+      <b-form-input
+        v-model="searchTerm"
+        class="input-field my-1"
+        placeholder="Nach Email-Adresse suchen..."
+        debounce="500"
+      />
+      <b-btn class="btn-sm ml-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
+        <i class="fas fa-trash"></i>
+      </b-btn>
+    </div>
+    <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
+      <label
+        for="start-date-registration"
+        class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4"
+        >Registriert zwischen</label
+      >
+      <b-form-datepicker
+        id="start-date-registration"
+        v-model="startDateRegistration"
+        class="my-1 mr-3 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Startdatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+      ></b-form-datepicker>
+      <b-form-datepicker
+        id="end-date-registration"
+        v-model="endDateRegistration"
+        class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Enddatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+      ></b-form-datepicker>
+      <b-btn
+        class="btn-sm ml-2 my-1"
+        variant="outline-secondary"
+        @click="startDateRegistration = endDateRegistration = undefined"
+      >
+        <i class="fas fa-trash"></i>
+      </b-btn>
+    </div>
+    <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
+      <label for="start-date-login" class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4"
+        >Zuletzt angemeldet zwischen</label
+      >
+      <b-form-datepicker
+        id="start-date-login"
+        v-model="startDateLogin"
+        class="my-1 mr-3 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Startdatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+      ></b-form-datepicker>
+      <b-form-datepicker
+        id="end-date-login"
+        v-model="endDateLogin"
+        class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Enddatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
+      ></b-form-datepicker>
+      <b-btn
+        class="btn-sm ml-2 my-1"
+        variant="outline-secondary"
+        @click="startDateLogin = endDateLogin = undefined"
+      >
+        <i class="fas fa-trash"></i>
+      </b-btn>
+    </div>
+
+    <div class="input-container d-inline"></div>
+    <b-table small striped hover class="text-small" :items="users" :fields="fields">
+      <template #cell(accountType)="d">
+        <span>{{
+          accountTypes.find(accountType => d.item.account_type === accountType.id).label
+        }}</span>
+      </template>
+      <template #cell(capabilities)="d">
+        <span class="text-capitalize">{{ d.item.capabilities }}</span>
+      </template>
+      <template #cell(created_at)="d">
+        <span>{{ new Date(d.item.created_at).toLocaleString('de-DE') }}</span>
+      </template>
+      <template #cell(last_login)="d">
+        <span>{{
+          d.item.last_login ? new Date(d.item.last_login).toLocaleString('de-DE') : '-'
+        }}</span>
+      </template>
+      <template #cell(actions)="data">
+        <div class="text-nowrap">
+          <b-btn
+            variant="outline-success"
+            class="edit-user btn btn-sm mr-1"
+            @click="editUser(data.item.id)"
+            ><i class="fas fa-edit"></i><span class="d-none d-lg-inline"> Bearbeiten</span></b-btn
+          >
+          <b-btn
+            v-if="canDeleteUser(data.item)"
+            variant="outline-danger"
+            class="delete-user btn btn-sm mr-1"
+            @click="requestDeleteUser(data.item.id)"
+            ><i class="fas fa-trash"></i><span class="d-none d-lg-inline"> Löschen</span></b-btn
+          >
+          <b-btn
+            v-if="isLoginAsAllowed(data.item)"
+            variant="outline-secondary"
+            class="delete-user btn btn-sm mr-1"
+            @click="loginAs(data.item.id)"
+            ><i class="fas fa-user-md"></i
+            ><span class="d-none d-lg-inline"> Einloggen als</span></b-btn
+          >
+        </div>
+      </template>
+    </b-table>
+    <div class="d-flex">
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        first-number
+        last-number
+        active-class="bg-primary"
+        aria-controls="usersTable"
+      >
+        <template #page="{ page, active }">
+          <b v-if="active" class="bg-primary">{{ page }}</b>
+          <span v-else>{{ page }}</span>
+        </template>
+      </b-pagination>
+      <div class="ml-3 p-1">
+        <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
+          <b-dropdown-item @click="perPage = 10"> 10 Einträge </b-dropdown-item>
+          <b-dropdown-item @click="perPage = 20"> 20 Einträge </b-dropdown-item>
+          <b-dropdown-item @click="perPage = 40"> 40 Einträge </b-dropdown-item>
+          <b-dropdown-item @click="perPage = 100"> 100 Einträge </b-dropdown-item>
+          <b-dropdown-item @click="perPage = 200"> 200 Einträge </b-dropdown-item>
+        </b-dropdown>
+      </div>
+    </div>
     <confirm-dialog ref="confirmDialog" />
     <edit-user-dialog ref="editUserDialog" @refetch="delegateRefetch" />
   </div>
@@ -68,15 +160,34 @@
   import differenceInDays from 'date-fns/differenceInDays'
   import EditUserDialog from './edit-user-dialog.vue'
 
+  const watchHandler = {
+    immediate: true,
+    handler() {
+      this.delegateRefetch()
+    },
+  }
+
   export default {
     name: 'UsersList',
     components: { ConfirmDialog, EditUserDialog },
     props: {
       users: Array,
+      totalRows: Number,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
+    },
+    data: function () {
+      return {
+        currentPage: 1,
+        perPage: 20,
+        searchTerm: '',
+        startDateRegistration: undefined,
+        endDateRegistration: undefined,
+        startDateLogin: undefined,
+        endDateLogin: undefined,
+      }
     },
     computed: {
       states() {
@@ -91,8 +202,27 @@
       accountTypes() {
         return this.globalStore.staticData.accountTypes
       },
+      fields() {
+        return [
+          { key: 'id', label: 'ID' },
+          { key: 'email', label: 'Name' },
+          { key: 'accountType', label: 'Account-Typ' },
+          { key: 'capabilities', label: 'Rollen' },
+          { key: 'created_at', label: 'Erstellt' },
+          { key: 'last_login', label: 'Zuletzt eingeloggt' },
+          { key: 'actions', label: 'Aktionen' },
+        ]
+      },
     },
-
+    watch: {
+      searchTerm: watchHandler,
+      currentPage: watchHandler,
+      startDateRegistration: watchHandler,
+      endDateRegistration: watchHandler,
+      startDateLogin: watchHandler,
+      endDateLogin: watchHandler,
+      perPage: watchHandler,
+    },
     methods: {
       async requestDeleteUser(id) {
         const user = this.users.find(user => user.id === id)
@@ -114,12 +244,20 @@
           })
 
           if (res.status === 200) {
-            this.$emit('refetch')
+            this.delegateRefetch()
           }
         }
       },
       delegateRefetch() {
-        this.$emit('refetch')
+        this.$emit('refetch', {
+          searchTerm: this.searchTerm.length > 3 ? this.searchTerm : '',
+          pageSize: this.perPage,
+          currentPage: this.currentPage,
+          startDateLogin: this.startDateLogin,
+          endDateLogin: this.endDateLogin,
+          startDateRegistration: this.startDateRegistration,
+          endDateRegistration: this.endDateRegistration,
+        })
       },
       editUser(id) {
         this.$refs.editUserDialog.open({ user: this.users.find(u => u.id === id) })
@@ -152,3 +290,8 @@
     },
   }
 </script>
+<style>
+  .date-label {
+    white-space: nowrap;
+  }
+</style>

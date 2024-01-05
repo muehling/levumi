@@ -20,7 +20,7 @@
 
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ml-3">
-          <li id="intro1" class="nav-item active">
+          <li id="intro1" class="nav-item">
             <router-link class="nav-link" to="/start">Diagnostik</router-link>
           </li>
           <li id="intro2" class="nav-item">

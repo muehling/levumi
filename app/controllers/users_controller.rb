@@ -1,6 +1,17 @@
 class UsersController < ApplicationController
   before_action :set_user,
-                except: %i[index show create register recover get_core_data statistics destroy_self]
+                except: %i[
+                  create
+                  destroy_self
+                  get_core_data
+                  index
+                  index_paginated
+                  recover
+                  register
+                  search
+                  show
+                  statistics
+                ]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -85,6 +96,42 @@ class UsersController < ApplicationController
     else
       @users = User.all
     end
+  end
+
+  def index_paginated
+    page_number = params[:page_number].to_i.positive? ? params[:page_number].to_i : 1
+    users_per_page = 20
+    @users = User.limit(users_per_page).offset((page_number - 1) * users_per_page)
+    @total_users = User.count
+    render :index
+  end
+
+  def search
+    search_string = params[:search_term] || ''
+    index = params[:index].to_i.positive? ? params[:index].to_i : 1
+    page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+
+    conditions = []
+    conditions << ['LOWER(email) LIKE ?', "%#{search_string}%"] if search_string != ''
+
+    if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
+      start_date = Date.parse(params[:start_date_registration])
+      end_date = Date.parse(params[:end_date_registration])
+      conditions << ['created_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    if !params[:start_date_login].nil? && !params[:end_date_login].nil?
+      start_date = Date.parse(params[:start_date_login])
+      end_date = Date.parse(params[:end_date_login])
+      conditions << ['last_login BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    users =
+      User.where(conditions.map { |condition| condition.shift }.join(' AND '), *conditions.flatten)
+
+    @users = users.limit(page_size).offset((index - 1) * page_size)
+    @total_users = users.count
+    render :index
   end
 
   def statistics
