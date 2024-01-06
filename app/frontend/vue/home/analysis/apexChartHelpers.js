@@ -24,9 +24,11 @@ export const prepareOptions = (
     // we allow only bar and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
-        opt = customOptions?.chart?.stacked
-          ? apexChartOptions(weekLabels).groupedStackedBar
-          : apexChartOptions(weekLabels).bar
+        if (customOptions?.chart?.stacked) {
+          opt = apexChartOptions(weekLabels).groupedStackedBar
+        } else {
+          opt = apexChartOptions(weekLabels).bar
+        }
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea

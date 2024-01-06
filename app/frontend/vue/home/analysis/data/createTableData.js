@@ -36,7 +36,7 @@ export const createHtmlTableFromViewConfig = data => {
         for (let i = 0; i < data.viewConfig.column_keys.length; ++i) {
           let key = data.viewConfig.column_keys[i]
           let name = data.viewConfig.columns[i]
-          temp[name] = data.results[r].views[data.viewConfig.key][key]
+          temp[name] = data.results[r].views?.[data.viewConfig.key]?.[key]
           if (temp[name] === undefined) {
             temp[name] = '-'
           }

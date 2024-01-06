@@ -682,13 +682,15 @@
         const results = this.results.filter(result => result?.student_id === studentId)
 
         return this.weeks.map(week => {
-          const currentResult = results.find(r => r?.test_week === week)
+          const currentResult = results.find(r => r?.test_week === week)?.views?.[
+            this.viewConfig.key
+          ]
 
           // if a week has no results add a point with an empty y value for this week
-          if (!currentResult) {
+          if (currentResult === null || currentResult === undefined) {
             return { x: formatDate ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
+          let point = this.XYFromResult(currentResult, seriesKey, formatDate, week)
           point.y = point.y?.toFixed(2)
           if (point.y === undefined) {
             point.y = null
@@ -698,22 +700,21 @@
           return point
         })
       },
-      XYFromResult(result, seriesKey, formatDate) {
-        if (!result) {
+      XYFromResult(result, seriesKey, formatDate, week) {
+        if (result === null || result === undefined) {
           return undefined
         }
         let yVal
-        const view = this.viewConfig
         if (seriesKey) {
-          yVal = result?.views[view.key][seriesKey]
+          yVal = result?.[seriesKey]
         } else {
-          yVal = result?.views[view.key]
+          yVal = result
         }
         if (yVal === undefined) {
           yVal = null
         }
         return {
-          x: formatDate ? printDate(result.test_week) : result.test_week || null,
+          x: formatDate ? printDate(week) : week ?? null,
           y: yVal,
         }
       },
