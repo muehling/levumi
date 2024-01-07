@@ -191,11 +191,10 @@ export const apexChartOptions = weekLabels => ({
       },
       // eslint-disable-next-line no-unused-vars
       formatter: function (seriesName, _opts) {
-        const splitName = seriesName.split(' ')
         // only render the first series name (ending in " 0")
-        if (splitName[1] === '0') {
+        if (seriesName.endsWith('0')) {
           // don't render the 0
-          return splitName[0]
+          return seriesName.replace('0', '')
         } else {
           return ''
         }
@@ -401,7 +400,7 @@ function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }
                             Verteilung der Lösungsraten beim Typ
                         </span>
                         <span class="apexcharts-tooltip-text-y-value">"${
-                          w.globals.seriesNames[sCount * stackIndex].split(' ')[0]
+                          w.globals.seriesNames[sCount * stackIndex].replace('0','')
                         }":</span>
                     </div>
                 </div>
@@ -679,6 +678,7 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
 
 /**
  * Adds a small gap between the stacks by adding transforms to the g-elements of the series.
+ * This is basically a hack, so best check this for functionality when upgrading ApexCharts.
  */
 export function postProcessGroupedStackedBars(viewConfig) {
   // first get the series names which are the base of the 'seriesName' attribute added by ApexCharts
@@ -689,7 +689,8 @@ export function postProcessGroupedStackedBars(viewConfig) {
   for (let sName of seriesNames) {
     // currentSeries contains all g-elements belonging to sName
     const currentSeries = Array.from(gSeries).filter(gS =>
-      gS.getAttribute('seriesName').startsWith(sName)
+      // replace spaces with x as that's how they're escaped apparently
+      gS.getAttribute('seriesName').startsWith(sName.replace(' ', 'x'))
     )
     for (let g of currentSeries) {
       g.style.transform = `translateX(${i * 10}px)`
