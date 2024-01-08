@@ -1,0 +1,27 @@
+admin_user:
+  id: 1
+  email: 'admin@example.com'
+  password_digest: '$2a$12$wxVddyVrBgF29eAtGDrgWujTSNVwcMF1izA7YoOPlvYTpIQfiVf2i'
+  security_digest: 'tbd'
+  capabilities: 'admin'
+  last_login: '2022-11-16 07:34:57.117653'
+  account_type: 1
+  state: 1
+  institution: 'Uni'
+  town: 'Town'
+  tc_accepted: '2022-11-16 07:34:57.117653'
+  intro_state: 5
+
+other_user:
+  id: 2
+  email: 'user@example.com'
+  password_digest: '$2a$12$wxVddyVrBgF29eAtGDrgWujTSNVwcMF1izA7YoOPlvYTpIQfiVf2i'
+  security_digest: ''
+  capabilities: ''
+  last_login: '2022-11-16 07:34:57.117653'
+  account_type: 1
+  state: 1
+  institution: 'Uni'
+  town: 'Town'
+  tc_accepted: '2022-11-16 07:34:57.117653'
+  intro_state: 5

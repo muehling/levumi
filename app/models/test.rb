@@ -263,8 +263,7 @@ class Test < ApplicationRecord
           .each do |f|
             test.script_files.attach(
               io: StringIO.new(f.get_input_stream.read),
-              filename: f.name.split('/').last,
-              content_type: 'text/javascript'
+              filename: f.name.split('/').last
             )
           end
 

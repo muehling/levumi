@@ -1,0 +1,17 @@
+group_1:
+  id: 1
+  label: 'Klasse 1'
+  demo: false
+  archive: false
+
+group_2:
+  id: 2
+  label: 'Klasse 2'
+  demo: false
+  archive: false
+
+group_3:
+  id: 3
+  label: 'Klasse 3'
+  demo: false
+  archive: false
