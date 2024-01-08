@@ -196,7 +196,7 @@ DEPENDENCIES
   mysql2
   puma (~> 6.0)
   rack-cors
-  rails (~> 7.0.3, >= 7.0.3.1)
+  rails (~> 7.0.3, >= 7.0.4.1)
   rubyzip (~> 2.3.0)
   sprockets-rails
   tzinfo-data
@@ -206,4 +206,4 @@ RUBY VERSION
    ruby 3.1.2p20
 
 BUNDLED WITH
-   2.3.26
+   2.3.18

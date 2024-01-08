@@ -19,3 +19,10 @@ $theme-colors: (
 );
 
 $link-color: $primary-color;
+
+$theme-colors: (
+  'primary': $primary-color,
+  'secondary': $secondary-color,
+  'danger': $danger-color,
+  'success': $success-color,
+);

@@ -16,7 +16,7 @@ export default {
     }),
     statistics: '/users/statistics',
     delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
-    // cancelTutorial: id=>
+    index: pageNumber => ({ url: `/users/page/${pageNumber}` }),
   },
   home: {
     finishIntro: '/willkommen',

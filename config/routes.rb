@@ -49,12 +49,14 @@ Rails.application.routes.draw do
   get '/tests/info', to: 'tests#get_tests_data'
   get '/tests/items/:id', to: 'tests#get_items'
   get '/users/core_data', to: 'users#get_core_data'
+  get '/users/page/:page_number', to: 'users#index_paginated'
+  get '/users/search', to: 'users#search'
   get '/users/statistics', to: 'users#statistics'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   post '/renew_login', to: 'application#renew_login'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
-  put '/users/:id/mail', to: 'users#user_mail'
   put '/users/:id/cancel_tutorial', to: 'users#cancel_tutorial'
+  put '/users/:id/mail', to: 'users#user_mail'
 
   get '/registration_error', to: 'application#redirect_to_registration_error'
 

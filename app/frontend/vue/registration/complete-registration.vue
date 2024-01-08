@@ -1,6 +1,6 @@
 <template>
   <b-container>
-    <div class="d-flex justify-content-center pt-4">
+    <div id="complete-registration" class="d-flex justify-content-center pt-4">
       <div class="col-lg-8 col-xl-6">
         <b-card title="Registrierung abschließen">
           <b-card title="Passwort festlegen" class="mt-4">
