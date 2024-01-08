@@ -175,7 +175,7 @@ class UsersController < ApplicationController
              !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
                params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
            )
-        puts '############################# timestamps missing'
+        #puts '############################# timestamps missing'
         render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
       end
 
@@ -184,7 +184,7 @@ class UsersController < ApplicationController
              (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
                !params[:user].has_key?(:comment)
            )
-        puts '############################# comment missing or filled'
+        #puts '############################# comment missing or filled'
         render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
       end
 
@@ -192,7 +192,7 @@ class UsersController < ApplicationController
       time2 = Time.parse(params[:user][:render_timestamp])
       diff = (time1 - time2).abs
       if diff < 5
-        puts '############################# time difference too short'
+        #puts '############################# time difference too short'
         render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
       end
     end

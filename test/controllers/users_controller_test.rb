@@ -54,9 +54,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test 'UsersController::create -> correct request' do
-    user = users :admin_user
-    login_as user
-
+    # create new user without being logged in
     post users_url,
          headers: {
            'Accept': 'application/json'
@@ -65,11 +63,17 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
            user: {
              email: 'newguy@example.com',
              account_type: 1,
-             state: 1
+             state: 1,
+             timestamp: Time.now + 14.seconds,
+             render_timestamp: Time.now,
+             comment: ''
            }
          }
     assert_response :success
 
+    # log in and check number of users
+    user = users :admin_user
+    login_as user
     parsed = fetch_users
     assert_equal parsed['users'].length, 3
   end
@@ -84,7 +88,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
              email: 'newguy@example.com'
            }
          }
-    assert_response :bad_request
+    assert_response :forbidden
   end
 
   test 'UsersController::create -> register from backend' do
