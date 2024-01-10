@@ -14,13 +14,19 @@
   <% end %>
 </style>
 <!-- Hauptseite rendern -->
+<% if @assessment.nil? && @student.nil? %>
+    <div class="m-4 text-center"><button id="end-preview" class="btn btn-danger">Vorschau beenden</button></div>
+<% end %>
 <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
-
 <!-- Testskripte laden und Testumgebung definieren -->
 <script type="module">
     // all variables and functions declared here that are part of the interface of the tests
     // need to be exposed in the global namespace. Otherwise, not all tests work, depending
     // on implementation.
+
+    <% if @assessment.nil? && @student.nil? %>
+        window["$"]('#end-preview').on('click', exit)
+    <% end %>
 
     //Medienpfade für Test bekannt machen (aus ActiveStorage)
     var media_paths = {
@@ -47,7 +53,6 @@
     //Präferenzen des Kindes setzen
     <% unless @student.nil? %>
         font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
-
         font_size = <%= @student.get_setting("font_size") %>
     <% else %>
 
