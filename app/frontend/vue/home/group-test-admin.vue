@@ -7,7 +7,8 @@
           <b-card v-for="area in areas" :key="'area' + area.id" no-body class="mb-0 border-0">
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
-                v-b-toggle="`area-select-accordion${area.id}`"
+                :aria-expanded="selectedAreaId === area.id ? 'true' : 'false'"
+                :aria-controls="`area-select-accordion${area.id}`"
                 class="test-admin-button"
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
@@ -17,7 +18,11 @@
                 }}</span></b-button
               >
             </b-card-header>
-            <b-collapse :id="`area-select-accordion${area.id}`" role="tabpanel">
+            <b-collapse
+              :id="`area-select-accordion${area.id}`"
+              :visible="selectedAreaId === area.id"
+              role="tabpanel"
+            >
               <b-card-body class="pr-0 py-0">
                 <div class="accordion" role="tablist">
                   <b-card
@@ -28,7 +33,8 @@
                   >
                     <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                       <b-button
-                        v-b-toggle="`testType-select-accordion${testTypeId + '/' + area.id}`"
+                        :aria-expanded="selectedTestTypeId === testTypeId ? 'true' : 'false'"
+                        :aria-controls="`testType-select-accordion${testTypeId + '/' + area.id}`"
                         class="test-admin-button"
                         block
                         :variant="`${
@@ -45,6 +51,7 @@
                     </b-card-header>
                     <b-collapse
                       :id="`testType-select-accordion${testTypeId + '/' + area.id}`"
+                      :visible="selectedTestTypeId === testTypeId && selectedAreaId === area.id"
                       role="tabpanel"
                     >
                       <b-card-body class="pr-0 py-0">
@@ -61,9 +68,12 @@
                               role="tab"
                             >
                               <b-button
-                                v-b-toggle="
-                                  `competence-select-accordion${testTypeId + '/' + competence.id}`
+                                :aria-expanded="
+                                  selectedCompetenceId === competence.id ? 'true' : 'false'
                                 "
+                                :aria-controls="`competence-select-accordion${
+                                  testTypeId + '/' + competence.id
+                                }`"
                                 class="test-admin-button"
                                 block
                                 :variant="`${
@@ -84,6 +94,7 @@
                             </b-card-header>
                             <b-collapse
                               :id="`competence-select-accordion${testTypeId + '/' + competence.id}`"
+                              :visible="selectedCompetenceId === competence.id"
                               role="tabpanel"
                             >
                               <b-card-body class="pr-0 py-0">
@@ -103,11 +114,12 @@
                                       role="tab"
                                     >
                                       <b-button
-                                        v-b-toggle="
-                                          `testFamily-select-accordion${
-                                            testTypeId + '/' + testFamily.id
-                                          }`
+                                        :aria-expanded="
+                                          selectedTestFamilyId === testFamily.id ? 'true' : 'false'
                                         "
+                                        :aria-controls="`testFamily-select-accordion${
+                                          testTypeId + '/' + testFamily.id
+                                        }`"
                                         class="test-admin-button"
                                         block
                                         :variant="`${
@@ -130,6 +142,7 @@
                                       :id="`testFamily-select-accordion${
                                         testTypeId + '/' + testFamily.id
                                       }`"
+                                      :visible="testFamily.id === selectedTestFamilyId"
                                       role="tabpanel"
                                     >
                                       <b-card-body class="pr-0 py-0">
@@ -184,7 +197,16 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest">
+        <div v-if="!selectedTest" class="col-lg-6">
+          <p>
+            Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
+            eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests
+            kennenzulernen und für die Klassen freischalten zu können.
+          </p>
+          <p>
+            Ist eine Zeile fett gedruckt, befindet sich in dieser Kategorie bereits ein aktivierter
+            Test.
+          </p>
           {{ helpText }}
         </div>
         <div v-else class="d-flex flex-column">
@@ -402,15 +424,15 @@
       },
       helpText() {
         if (this.selectedTestFamilyId) {
-          return 'Bitte wählen Sie links in der Navigation einen Test aus. Grün umrandete Tests sind für die Klasse bereits aktiviert.'
+          return 'Bitte wählen Sie in der Navigation einen Test aus. Grün umrandete Tests sind für die Klasse bereits aktiviert.'
         } else if (this.selectedCompetenceId) {
-          return 'Bitte wählen Sie links in der Navigation eine Testfamilie aus.'
+          return 'Bitte wählen Sie in der Navigation eine Testfamilie aus.'
         } else if (this.selectedTestTypeId) {
-          return 'Bitte wählen Sie links in der Navigation eine Lernkompetenz aus.'
+          return 'Bitte wählen Sie in der Navigation eine Lernkompetenz aus.'
         } else if (this.selectedAreaId) {
-          return 'Bitte wählen Sie links in der Navigation einen Test-Typen aus.'
+          return 'Bitte wählen Sie in der Navigation einen Test-Typen aus.'
         } else if (!this.selectedAreaId) {
-          return 'Bitte wählen Sie links in der Navigation einen Lernbereich aus.'
+          return 'Bitte wählen Sie in der Navigation einen Lernbereich aus.'
         }
         return ''
       },
@@ -426,6 +448,7 @@
         this.reset('area')
       },
     },
+
     methods: {
       handleClose() {
         this.$emit('close-test-admin')
@@ -523,49 +546,34 @@
       },
 
       reset(level) {
-        const aId = this.selectedAreaId
-        const ttId = this.selectedTestTypeId
-        const cId = this.selectedCompetenceId
-        const tfId = this.selectedTestFamilyId
-
         switch (level) {
           case 'area':
             this.selectedAreaId = undefined
-            this.$root.$emit('bv::toggle::collapse', `area-select-accordion${aId}`)
           case 'testType': //eslint-disable-line no-fallthrough
             this.selectedTestTypeId = undefined
-            this.$root.$emit('bv::toggle::collapse', `testType-select-accordion${ttId + '/' + aId}`)
           case 'competence': // eslint-disable-line no-fallthrough
             this.selectedCompetenceId = undefined
-            this.$root.$emit(
-              'bv::toggle::collapse',
-              `competence-select-accordion${ttId + '/' + cId}`
-            )
           case 'testFamily': // eslint-disable-line no-fallthrough
             this.selectedTestFamilyId = undefined
-            this.$root.$emit(
-              'bv::toggle::collapse',
-              `testFamily-select-accordion${ttId + '/' + tfId}`
-            )
           case 'test': // eslint-disable-line no-fallthrough
             this.selectedTestId = undefined
         }
       },
       expandArea(areaId) {
-        this.reset('area')
+        this.reset('testType')
         this.selectedAreaId = this.selectedAreaId === areaId ? undefined : areaId
       },
       expandTestType(testTypeId) {
-        this.reset('testType')
         this.selectedTestTypeId = this.selectedTestTypeId === testTypeId ? undefined : testTypeId
+        this.reset('competence')
       },
       expandCompetence(competenceId) {
-        this.reset('competence')
+        this.reset('testFamily')
         this.selectedCompetenceId =
           this.selectedCompetenceId === competenceId ? undefined : competenceId
       },
       expandTestFamily(testFamilyId) {
-        this.reset('testFamily')
+        this.reset('test')
         this.selectedTestFamilyId =
           this.selectedTestFamilyId === testFamilyId ? undefined : testFamilyId
       },

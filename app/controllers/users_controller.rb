@@ -291,16 +291,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def cancel_tutorial
-    if @user.intro_state < 5
-      if @user.update(intro_state: 5)
-        head :ok and return
-      else
-        head :bad_request
-      end
-    end
-  end
-
   def get_core_data
     @groups_object = [Group.new] + @login.get_classbook_info
 

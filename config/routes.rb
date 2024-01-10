@@ -55,7 +55,6 @@ Rails.application.routes.draw do
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   post '/renew_login', to: 'application#renew_login'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
-  put '/users/:id/cancel_tutorial', to: 'users#cancel_tutorial'
   put '/users/:id/mail', to: 'users#user_mail'
 
   get '/registration_error', to: 'application#redirect_to_registration_error'
