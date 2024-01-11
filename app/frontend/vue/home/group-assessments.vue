@@ -177,7 +177,7 @@
 
         return intersected.length
           ? intersected.sort(
-              (a, b) => a.shorthand.localeCompare(b.shorthand) || a.name.localeCompare(b.name)
+              (a, b) => a.name.localeCompare(b.name) || a.shorthand.localeCompare(b.shorthand)
             )
           : []
       },
