@@ -107,6 +107,10 @@ class UsersController < ApplicationController
   end
 
   def search
+    if !@login.has_capability?('user')
+      head :forbidden and return
+    end
+    
     search_string = params[:search_term] || ''
     index = params[:index].to_i.positive? ? params[:index].to_i : 1
     page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20

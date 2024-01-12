@@ -30,27 +30,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     parsed = fetch_users
 
-    assert_equal parsed['users'].length, 2
+    assert_equal parsed['users'].length, 3
     assert_equal parsed['users'].first['email'], 'admin@example.com'
-  end
-
-  test 'UsersController::destroy' do
-    user = users :admin_user
-    login_as user
-
-    delete user_url(user.id), headers: { 'Accept': 'application/json' }
-
-    # delete self, not possible
-    assert_response :success # debatable, no one has been deleted
-    parsed = fetch_users
-    assert_equal parsed['users'].length, 2
-
-    # delete other user
-    user = users :other_user
-    delete user_url(user.id), headers: { 'Accept': 'application/json' }
-    assert_response :success
-    parsed = fetch_users
-    assert_equal parsed['users'].length, 1
   end
 
   test 'UsersController::create -> correct request' do
@@ -75,7 +56,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     user = users :admin_user
     login_as user
     parsed = fetch_users
-    assert_equal parsed['users'].length, 3
+    assert_equal parsed['users'].length, 4
   end
 
   test 'UsersController::create -> incomplete parameters' do
@@ -107,6 +88,86 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
          }
     assert_response :success
     parsed = fetch_users
-    assert_equal parsed['users'].length, 3
+    assert_equal parsed['users'].length, 4
   end
+
+  test 'UsersController::destroy' do
+    user = users :admin_user
+    login_as user
+
+    delete user_url(user.id), headers: { 'Accept': 'application/json' }
+
+    # delete self, not possible
+    assert_response :success # debatable, no one has been deleted
+    parsed = fetch_users
+    assert_equal parsed['users'].length, 3
+
+    # delete other user
+    user = users :other_user
+    delete user_url(user.id), headers: { 'Accept': 'application/json' }
+    assert_response :success
+    parsed = fetch_users
+    assert_equal parsed['users'].length, 2
+  end
+ 
+  test 'UsersController::search -> no admin user' do
+    user = users :other_user
+    login_as user
+    
+    get "#{users_search_url}?search_term=admin"
+
+    assert_response :forbidden
+  end 
+
+  test 'UsersController::search -> admin user' do
+    user = users :admin_user
+    login_as user
+    
+    get "#{users_search_url}?search_term=admin"
+
+    assert_response :ok
+  end 
+
+  test 'UsersController::search -> test user' do
+    user = users :hacker_user
+    login_as user
+    
+    get "#{users_search_url}?search_term=admin"
+
+    assert_response :forbidden
+  end
+  
+  test 'UsersController::search -> (Mail) right number of hits ' do
+    user = users :admin_user
+    login_as user
+    
+    get "#{users_search_url}?search_term=@example", headers: {
+      'Accept': 'application/json'
+    }
+    parsed = JSON.parse(@response.body)
+    assert_equal parsed['total_users'], 3
+  end 
+
+  test 'UsersController::search -> (Date) right number of hits' do
+    user = users :admin_user
+    login_as user
+    
+    get "#{users_search_url}?start_date_registration='2022-11-16 07:34:57.117653'&end_date_registration='2022-11-16 07:34:57.117653'", headers: {
+      'Accept': 'application/json'
+    }
+    parsed = JSON.parse(@response.body)
+    assert_equal parsed['total_users'], 2
+  end 
+
+  test 'UsersController::search -> (Last Login) right number of hits' do
+    user = users :admin_user
+    login_as user
+    
+    get "#{users_search_url}?start_date_login='2020-11-16 07:34:57.117653'&end_date_login='2023-11-16 07:34:57.117653'", headers: {
+      'Accept': 'application/json'
+    }
+    parsed = JSON.parse(@response.body)
+    assert_equal parsed['total_users'], 1
+  end 
+
 end
