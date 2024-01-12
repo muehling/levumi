@@ -451,8 +451,8 @@
 
     methods: {
       handleClose() {
-        this.$emit('close-test-admin')
         this.reset('area')
+        this.$router.push(`/diagnostik/${this.group.id}`)
       },
       competencesForTestType(areaId, testTypeId) {
         const competences = this.competences.filter(

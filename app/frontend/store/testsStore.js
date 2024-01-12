@@ -24,6 +24,9 @@ export const useTestsStore = defineStore('tests', {
       this.isLoading = false
     },
     async fetchUsedTestsForGroup(groupId) {
+      if (!groupId) {
+        return
+      }
       const res = await ajax(apiRoutes.groups.getTestData(groupId))
       const testData = await res.json()
       Vue.set(this.testsForGroup, groupId, testData)

@@ -44,6 +44,9 @@ export const useAssessmentsStore = defineStore('assessments', {
       return this.currentAssessment
     },
     async fetch(groupId) {
+      if (!groupId) {
+        return
+      }
       this.isLoading = true
       const res = await ajax(apiRoutes.assessments.info(groupId))
 

@@ -34,7 +34,6 @@
   import InputDialog from './shared/input-dialog.vue'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
-  import router from './routes/frontend-routes'
   import { updates } from '../utils/updates'
 
   export default {
@@ -156,7 +155,7 @@
       },
       async logout() {
         await ajax({ url: apiRoutes.users.logout, method: 'POST' })
-        router.push('/')
+        this.$router.push('/')
         window.location.reload()
       },
       async sendLogin(text) {

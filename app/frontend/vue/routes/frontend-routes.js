@@ -12,7 +12,17 @@ import AdministrationApp from '../administration/administration-app.vue'
 import VueRouter from 'vue-router'
 
 const routes = [
-  { path: '/start', component: HomeApp, name: 'Diagnostik' }, // Diagnostik
+  { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
+  { path: '/diagnostik', component: HomeApp, name: 'Diagnostik' },
+  {
+    path: '/diagnostik/:groupId',
+    component: HomeApp,
+    name: 'GroupDiagnostics',
+    children: [
+      { path: ':location', component: HomeApp, props: true },
+      { path: ':location/:testId', component: HomeApp, props: true },
+    ],
+  },
   { path: '/klassenbuch', component: ClassBookApp, name: 'ClassBook' }, // Klassenbuch
   { path: '/materialien', component: MaterialsApp, name: 'Materials' }, // Fördermaterialien
   { path: '/testuebersicht', component: TestsApp, name: 'Tests' }, // Tests

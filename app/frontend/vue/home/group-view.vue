@@ -6,7 +6,10 @@
         durchführen oder Einstellungen ändern.
       </p>
     </div>
-    <div v-if="!!group.id && !assessmentData && isAllowed && !isTestAdminOpen" class="mb-2 mt-2">
+    <div
+      v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen"
+      class="mb-2 mt-2"
+    >
       <b-btn variant="outline-secondary" size="sm" class="mb-3" @click="openTestAdmin">
         <i class="fas fa-gear mr-1"></i>Test hinzufügen / löschen
       </b-btn>
@@ -20,31 +23,26 @@
     >
       <i class="fas fa-backward-step mr-1"></i> Zurück zur Testübersicht
     </b-button>
-    <group-test-admin
-      v-if="isAllowed"
-      :group="group"
-      :is-open="isTestAdminOpen"
-      @close-test-admin="closeTestAdmin"
-    />
-    <assessment-view v-if="!isTestAdminOpen" :group="group" />
+    <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
+    <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
+    <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
   </div>
 </template>
 
 <script>
   import { isAdmin } from '../../utils/user'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useTestsStore } from '../../store/testsStore'
   import { useGlobalStore } from '../../store/store'
+  import { useTestsStore } from '../../store/testsStore'
+  import AssessmentDetails from './assessment-details.vue'
   import AssessmentView from './assessment-view.vue'
   import GroupTestAdmin from './group-test-admin.vue'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentView, GroupTestAdmin },
-
+    components: { AssessmentDetails, AssessmentView, GroupTestAdmin },
     props: {
-      group: Object,
-      isActive: Boolean,
+      selectedGroupId: Number,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -55,10 +53,12 @@
     data: function () {
       return {
         testSelected:
-          this.$root.pre_select && this.$root.pre_select.groupId === this.group.id
+          this.$root.pre_select && this.$root.pre_select.groupId === this.$route.params.groupId
             ? this.$root.pre_select.testId
             : 0,
         isTestAdminOpen: false,
+        isTestDetailsOpen: false,
+        isTestListOpen: true,
       }
     },
     computed: {
@@ -69,34 +69,71 @@
       annotations: function () {
         return this.assessmentData?.annotations
       },
+      groups() {
+        // the first element is only intended as a placeholder for new groups and is not needed here
+        return this.globalStore.groups.filter(group => group.id)
+      },
+      group() {
+        return this.groups.find(group => group.id === this.selectedGroupId)
+      },
       isAllowed() {
-        return !this.group.read_only || isAdmin(this.globalStore.login.capabilities)
+        return !this.group?.read_only || isAdmin(this.globalStore.login.capabilities)
       },
       readOnly() {
-        return !!this.group.read_only
+        return !!this.group?.read_only
+      },
+    },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          switch (data.location) {
+            case 'testverwaltung':
+              this.isTestDetailsOpen = false
+              this.isTestAdminOpen = true
+              this.isTestListOpen = false
+              break
+            case 'testdetails':
+              this.isTestDetailsOpen = true
+              this.isTestAdminOpen = false
+              this.isTestListOpen = false
+              if (this.assessmentsStore.currentAssessment?.test?.id !== parseInt(data.testId, 10)) {
+                await this.assessmentsStore.fetchCurrentAssessment(this.group.id, data.testId)
+              }
+              break
+            default:
+              this.isTestAdminOpen = false
+              this.isTestDetailsOpen = false
+              this.isTestListOpen = true
+          }
+        },
       },
     },
 
     async mounted() {
-      this.$root.$on(`annotation-added-${this.group.id}`, this.addAnnotation)
-      this.$root.$on(`annotation-removed-${this.group.id}`, this.removeAnnotation)
-      await this.assessmentsStore.fetch(this.group.id)
-      await this.testsStore.fetchUsedTestsForGroup(this.group.id)
+      this.update()
     },
-
     methods: {
-      openTestAdmin() {
-        this.isTestAdminOpen = true
+      async update() {
+        const groupId = this.$route.params.groupId
+        if (!groupId) {
+          return
+        }
+
+        this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
+        this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
+
+        await this.assessmentsStore.fetch(groupId)
+        await this.testsStore.fetchUsedTestsForGroup(groupId)
       },
-      closeTestAdmin() {
-        this.isTestAdminOpen = false
+      openTestAdmin() {
+        this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
       },
       addAnnotation(annotation) {
         const annotations = this.assessmentData.annotations
         annotations.splice(0, 0, annotation)
         this.$set(this.assessmentData, 'annotations', annotations)
       },
-
       removeAnnotation(annotationId) {
         const annotations = this.assessmentData.annotations.filter(a => annotationId !== a.id)
         this.$set(this.assessmentData, 'annotations', annotations)
@@ -106,7 +143,10 @@
       },
       backToOverview() {
         this.assessmentsStore.setCurrentAssessment(undefined)
-        this.isTestAdminOpen = false
+        this.$router.push(`/diagnostik/${this.selectedGroupId}`)
+      },
+      removeEntry(index) {
+        this.assessmentData.series.splice(index, 1) // todo Mutation von computed prop, sollte nicht erlaubt sein
       },
     },
   }

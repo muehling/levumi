@@ -1,8 +1,9 @@
 <template>
   <div>
-    <div v-if="!hasResults">
+    <div v-if="!selectedGroupId">{{ '/' + selectedGroupId + '/' }}</div>
+    <div v-else-if="!hasResults">
       <b-card
-        v-if="globalStore.studentsInGroups[group.id].length === 0"
+        v-if="globalStore.studentsInGroups[selectedGroupId].length === 0"
         bg-variant="white"
         class="col-lg-8 col-xl-6 mt-3"
       >
@@ -12,7 +13,7 @@
         </p>
       </b-card>
       <b-card
-        v-else-if="assessmentsStore.assessments[group.id]?.length == 0"
+        v-else-if="assessmentsStore.assessments[selectedGroupId]?.length == 0"
         bg-variant="white"
         class="col-lg-8 col-xl-6 mt-3"
       >
@@ -23,7 +24,7 @@
         </p>
       </b-card>
       <div v-else>
-        <p v-if="assessmentsStore.assessments[group.id]?.length > 1" class="text-left">
+        <p v-if="assessmentsStore.assessments[selectedGroupId]?.length > 1" class="text-left">
           Bitte wählen Sie einen Test aus der Liste aus. Um später zu einem anderen Test zu
           wechseln, können Sie den Button <strong>Zurück zur Testübersicht</strong> verwenden.
           <span v-if="!group.read_only"
@@ -36,27 +37,17 @@
         </b-card>
       </div>
     </div>
-
-    <assessment-details
-      v-else-if="hasResults && assessmentData.groupId === group.id"
-      :key="assessmentData.id"
-      :assessment-data="assessmentData"
-      :group="group"
-      @remove-entry="removeEntry"
-    >
-    </assessment-details>
   </div>
 </template>
 <script>
-  import AssessmentDetails from './assessment-details.vue'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import GroupAssessments from './group-assessments.vue'
   export default {
     name: 'AssessmentView',
-    components: { AssessmentDetails, GroupAssessments },
+    components: { GroupAssessments },
     props: {
-      group: Object,
+      selectedGroupId: Number,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -64,16 +55,11 @@
       return { globalStore, assessmentsStore }
     },
     computed: {
-      assessmentData() {
-        return this.assessmentsStore.getCurrentAssessment()
-      },
       hasResults() {
         return !!this.assessmentData
       },
-    },
-    methods: {
-      removeEntry(index) {
-        this.assessmentData.series.splice(index, 1) // todo Mutation von computed prop, sollte nicht erlaubt sein
+      group() {
+        return this.globalStore.groups.find(group => group.id === this.selectedGroupId)
       },
     },
   }

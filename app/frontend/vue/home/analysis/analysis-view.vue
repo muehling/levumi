@@ -825,7 +825,7 @@
         }
         // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
         // first calculate the start point
-        let startWeek = this.weeks.reduce((acc, w) => (w < acc ? w : acc))
+        let startWeek = this.weeks.reduce((acc, w) => (w < acc ? w : acc), '2090-01-01')
         const startWeekResults = this.results.filter(res => res.test_week === startWeek)
         let startY
         if (this.selectedStudentId === -1) {

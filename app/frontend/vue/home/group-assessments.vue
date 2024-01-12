@@ -224,6 +224,7 @@
           assessment.test_id
         )
         this.loadingAssessmentId = undefined
+        this.$router.push(`/diagnostik/${this.group.id}/testdetails/${assessment.test_id}`)
       },
       formatLastDate(date) {
         return date ? format(new Date(date), 'dd.MM.yyyy') : '-'

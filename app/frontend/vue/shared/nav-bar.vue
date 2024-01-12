@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/start">
+      <a class="navbar-brand" href="/diagnostik">
         <img src="/images/shared/Levumi-normal_small.png" alt="Levumi" height="48" />
         Levumi
       </a>
@@ -21,7 +21,7 @@
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ml-3">
           <li id="intro1" class="nav-item">
-            <router-link class="nav-link" to="/start">Diagnostik</router-link>
+            <router-link class="nav-link" to="/diagnostik">Diagnostik</router-link>
           </li>
           <li id="intro2" class="nav-item">
             <router-link class="nav-link" to="/klassenbuch"

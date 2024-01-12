@@ -1,5 +1,6 @@
 <template>
-  <b-card no-body class="mt-3 pb-0 mb-1">
+  <loading-dots v-if="isLoading" :is-loading="isLoading" />
+  <b-card v-else no-body class="mt-3 pb-0 mb-1">
     <div class="card-header">
       <b-nav pills>
         <b-nav-item class="cursor-default"
@@ -42,7 +43,6 @@
         </b-nav-item>
       </b-nav>
     </div>
-    <loading-dots :is-loading="isLoading" />
     <b-tabs v-if="!isLoading" pills card>
       <b-tab :active="!hasResults" class="m-3">
         <div slot="title">
@@ -233,7 +233,6 @@
       }
     },
     props: {
-      assessmentData: Object,
       group: Object,
     },
     setup() {
@@ -248,6 +247,9 @@
       }
     },
     computed: {
+      assessmentData() {
+        return this.assessmentsStore.getCurrentAssessment()
+      },
       allAssessments() {
         return this.assessmentsStore.assessments[this.group.id]
       },
@@ -277,9 +279,6 @@
       currentTest() {
         return this.assessmentData?.test
       },
-      testSelected() {
-        return this.currentTest?.id
-      },
       versionSelected() {
         return this.currentTest?.id
       },
@@ -287,10 +286,10 @@
         return this.currentTest?.test_type_id
       },
       hasResults() {
-        return !!this.results.length
+        return !!this.results?.length || false
       },
       isLoading() {
-        return this.assessmentsStore.isLoading
+        return this.assessmentsStore.isLoading || !this.assessment
       },
       assessment() {
         return this.assessmentsStore.currentAssessment
@@ -339,7 +338,7 @@
         )
       },
       versions() {
-        const test = this.testMetaData.tests.find(test => test.id === this.testSelected)
+        const test = this.testMetaData.tests.find(test => test.id === this.currentTest?.id)
 
         const tests = this.testMetaData.tests.filter(
           version => version.shorthand === test?.shorthand

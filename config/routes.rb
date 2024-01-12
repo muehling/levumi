@@ -37,6 +37,10 @@ Rails.application.routes.draw do
   get '/nutzerverwaltung', to: 'users#show'
   get '/administration', to: 'users#show'
   get '/uebungen', to: 'users#show'
+  get '/diagnostik', to: 'users#show'
+  get '/diagnostik/:group_id', to: 'users#show'
+  get '/diagnostik/:group_id/testdetails/:test_id', to: 'users#show'
+  get '/diagnostik/:group_id/testverwaltung', to: 'users#show'
 
   # API endpoints
   delete '/delete_area/:id', to: 'areas#destroy_safe'
