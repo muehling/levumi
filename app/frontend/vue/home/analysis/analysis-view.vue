@@ -237,6 +237,8 @@
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
   import takeRight from 'lodash/takeRight'
   import TargetControls from './target-controls.vue'
+  import uniq from 'lodash/uniq'
+  import compact from 'lodash/compact'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -258,7 +260,7 @@
       SupportGroupQualitative,
     },
 
-    inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
+    inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
@@ -304,6 +306,9 @@
       }
     },
     computed: {
+      weeks() {
+        return compact(uniq(this.results?.map(w => w.test_week)))
+      },
       isSupportInformationAvailable() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },

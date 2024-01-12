@@ -1,7 +1,6 @@
 <template>
   <div>
-    <div v-if="!selectedGroupId">{{ '/' + selectedGroupId + '/' }}</div>
-    <div v-else-if="!hasResults">
+    <div>
       <b-card
         v-if="globalStore.studentsInGroups[selectedGroupId].length === 0"
         bg-variant="white"
@@ -55,9 +54,6 @@
       return { globalStore, assessmentsStore }
     },
     computed: {
-      hasResults() {
-        return !!this.assessmentData
-      },
       group() {
         return this.globalStore.groups.find(group => group.id === this.selectedGroupId)
       },

@@ -583,7 +583,8 @@
       },
       async jumpToAssessment() {
         await this.assessmentsStore.fetchCurrentAssessment(this.group.id, this.selectedTestId)
-        this.handleClose()
+        this.$router.push(`/diagnostik/${this.group.id}/testdetails/${this.selectedTestId}`)
+        this.reset('area')
       },
       async createAssessment() {
         const test = this.globalStore.staticData.testMetaData.tests.find(

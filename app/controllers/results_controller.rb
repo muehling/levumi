@@ -20,7 +20,7 @@ class ResultsController < ApplicationController
           if params.has_key? :student
             @redirect = student_path(@student)
           else
-            @redirect = group_assessment_path(@student.group, @test)
+            @redirect = "/diagnostik/#{@student.group.id}/testdetails/#{@test.id}"
           end
         end
         render 'edit', layout: 'testing'
