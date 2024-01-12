@@ -1,22 +1,19 @@
 <template>
-  <div classname="group-view">
+  <div classname="group-view my-3">
     <div v-if="readOnly">
-      <p>
+      <p class="mt-3">
         Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
         durchführen oder Einstellungen ändern.
       </p>
     </div>
-    <div
-      v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen"
-      class="mb-2 mt-2"
-    >
-      <b-btn variant="outline-secondary" size="sm" class="mb-3" @click="openTestAdmin">
+    <div v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen" class="my-3">
+      <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
         <i class="fas fa-gear mr-1"></i>Test hinzufügen / löschen
       </b-btn>
     </div>
     <b-button
       v-if="isTestDetailsOpen || isTestAdminOpen"
-      class="mb-2 mt-2"
+      class="my-3"
       size="sm"
       variant="outline-secondary"
       @click="backToOverview"
