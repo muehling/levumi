@@ -15,7 +15,7 @@
       </b-btn>
     </div>
     <b-button
-      v-if="!!assessmentData || isTestAdminOpen"
+      v-if="isTestDetailsOpen || isTestAdminOpen"
       class="mb-2 mt-2"
       size="sm"
       variant="outline-secondary"

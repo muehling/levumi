@@ -16,7 +16,6 @@
                 lazy
                 @click="getTestsForGroup(group.id)"
               >
-                {{ group.id + '/' + selectedGroupId + '/' }}
                 <i v-if="group.demo && group.owner">{{ group.label }}</i>
                 <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
                   {{ group.label }}
