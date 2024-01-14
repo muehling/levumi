@@ -5,9 +5,8 @@ class Assessment < ApplicationRecord
   has_many :annotations, dependent: :destroy
   has_many :targets, dependent: :destroy
 
-  #Startwert für Student-Test setzen - standardmäßig inaktiv
   after_create do |assessment|
-    assessment.active = false if assessment.test.student_test
+    assessment.active = true
     assessment.excludes = []
     assessment.save
   end

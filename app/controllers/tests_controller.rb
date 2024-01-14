@@ -64,12 +64,20 @@ class TestsController < ApplicationController
     id = @test.test_family.id
     @test.destroy
     family = TestFamily.find(id)
-    family.destroy if family.tests.empty?
+    family.destroy if family.tests.empty? # TBD: seems a bit dangerous, as there might still be materials belonging to this family
     head :ok
   end
 
   def get_tests_data
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+  end
+
+  def get_items
+    if @test
+      render json: @test.items
+    else
+      render json: {}
+    end
   end
 
   def check_upload_version

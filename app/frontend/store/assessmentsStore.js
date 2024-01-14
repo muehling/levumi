@@ -32,16 +32,21 @@ export const useAssessmentsStore = defineStore('assessments', {
     },
 
     async fetchCurrentAssessment(groupId, testId) {
+      this.isLoading = true
       const res = await ajax(apiRoutes.assessments.currentAssessment(groupId, testId))
       if (res.status === 200) {
         const text = await res.text()
-        this.currentAssessment = JSON.parse(text)
+        this.currentAssessment = { ...JSON.parse(text), groupId }
       } else {
         this.currentAssessment = undefined
       }
+      this.isLoading = false
       return this.currentAssessment
     },
     async fetch(groupId) {
+      if (!groupId) {
+        return
+      }
       this.isLoading = true
       const res = await ajax(apiRoutes.assessments.info(groupId))
 
@@ -52,6 +57,11 @@ export const useAssessmentsStore = defineStore('assessments', {
         this.setAssessments(groupId, [])
       }
       this.isLoading = false
+    },
+    reset() {
+      this.isLoading = false
+      this.assessments = {}
+      this.currentAssessment = undefined
     },
   },
 })

@@ -34,7 +34,6 @@
   import InputDialog from './shared/input-dialog.vue'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
-  import router from './routes/frontend-routes'
   import { updates } from '../utils/updates'
 
   export default {
@@ -107,10 +106,19 @@
           }
         }
       },
+      async updateSeenNews() {
+        const maxIntroState = updates.reduce((acc, update) => Math.max(acc, update.intro_state), 0)
+        const data = { user: { intro_state: maxIntroState } }
+        await ajax({
+          ...apiRoutes.users.update(this.globalStore.login.id),
+          data,
+        })
+      },
       async displayNews() {
-        const messagesToBeDisplayed = updates.filter((update, index) => {
+        const messagesToBeDisplayed = updates.filter(update => {
           if (this.globalStore.login.intro_state === 5) {
-            return index === updates.length - 1 // for newly registered users, arbitrarily display the last news item.
+            this.updateSeenNews() // for newly registered users, don't display any news.
+            return
           } else {
             return update.intro_state > this.globalStore.login.intro_state
           }
@@ -142,17 +150,12 @@
           okText: 'Ok',
           title: 'Neuigkeiten',
         })
-        const maxIntroState = updates.reduce((acc, update) => Math.max(acc, update.intro_state), 0)
 
-        const data = { user: { intro_state: maxIntroState } }
-        await ajax({
-          ...apiRoutes.users.update(this.globalStore.login.id),
-          data,
-        })
+        this.updateSeenNews()
       },
       async logout() {
         await ajax({ url: apiRoutes.users.logout, method: 'POST' })
-        router.push('/')
+        this.$router.push('/')
         window.location.reload()
       },
       async sendLogin(text) {

@@ -1,0 +1,7 @@
+german:
+  id: 1
+  name: 'Deutsch'
+
+math:
+  id: 2
+  name: 'Mathematik'

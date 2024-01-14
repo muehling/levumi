@@ -1,0 +1,19 @@
+reading_numbers:
+  id: 1
+  name: 'Zahlen lesen'
+  area_id: 2
+
+hearing_numbers:
+  id: 2
+  name: 'Zahlendiktat'
+  area_id: 2
+
+spelling:
+  id: 3
+  name: 'Rechtschreibung'
+  area_id: 1
+
+reading:
+  id: 4
+  name: 'Leseverständnis'
+  area_id: 1

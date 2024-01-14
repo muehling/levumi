@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
       session[:user] = u.id
       u.last_login = Time.now
       u.save
-      redirect_to '/start'
+      redirect_to '/diagnostik'
     else
       if ENV['MAINTENANCE'] == 'true'
         @retry = true
@@ -123,7 +123,7 @@ class ApplicationController < ActionController::Base
     u = User.find(params[:user]) #User wird als Parameter übergeben
     if !u.nil? && @login.has_capability?('user')
       session[:masquerading] = u.id
-      redirect_to '/start'
+      redirect_to '/diagnostik'
     else
       redirect_to '/'
     end

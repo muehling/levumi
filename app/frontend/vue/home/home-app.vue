@@ -1,26 +1,21 @@
 <template>
   <b-container fluid>
-    <div v-cloak>
+    <div>
       <b-row>
         <b-col md="12" class="mt-3">
-          <!-- Klassenauswahl nur bei mehreren Klassen anzeigen (=> Privatpersonen...) -->
-          <!-- TODO: Besser! -->
-          <b-tabs v-if="groups.length > 1" pills>
-            <div slot="empty">
-              <div class="text-center text-muted">Keine aktuellen Klassen vorhanden.</div>
-            </div>
-
-            <!-- Oberste Ebene - aktuelle Klassen, falls pre_select gesetzt, direkt auswählen -->
-            <b-tab
-              v-for="(group, index) in ownActiveGroups"
-              :key="group.id"
-              v-model="selectedGroupId"
-              :active="selectedGroupId === group.id"
-              lazy
-              @click="getTestsForGroup(group.id)"
-            >
-              <!-- Beispielklasse kursiv darstellen -->
-              <template slot="title">
+          <b-card v-if="groups.length === 0" bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
+            Keine Klassen vorhanden! Legen Sie eine Klasse an um testen zu können oder verschieben
+            Sie eine Klasse aus dem Archiv.
+          </b-card>
+          <div v-else>
+            <b-nav pills>
+              <b-nav-item
+                v-for="(group, index) in ownActiveGroups"
+                :key="group.id"
+                :active="selectedGroupId === group.id"
+                lazy
+                @click="getTestsForGroup(group.id)"
+              >
                 <i v-if="group.demo && group.owner">{{ group.label }}</i>
                 <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
                   {{ group.label }}
@@ -36,41 +31,20 @@
                   </b-tooltip>
                 </span>
                 <span v-else>{{ group.label }}</span>
-              </template>
+              </b-nav-item>
+            </b-nav>
 
-              <!-- Zweite Ebene - gewählte Klasse -->
-              <div v-if="!group.key && !group.is_anonymous">
-                <b-card bg-variant="light" class="col-lg-8 col-xl-6 mt-3">
-                  <p>
-                    Sie müssen zuerst den Sicherheitscode zur Freischaltung der geteilten Klasse im
-                    Klassenbuch eingeben. Den Sicherheitscode erhalten Sie bzw. können Sie bei der
-                    Person erfragen, die die Klasse mit Ihnen geteilt hat.
-                  </p>
-                </b-card>
-              </div>
-              <group-view
-                v-else
-                :group="group"
-                :index="index"
-                :group-info="groupInfo.find(gi => gi.group_id === group.id)"
-                @test-used="markTestAsUsed"
-              />
-            </b-tab>
-          </b-tabs>
-
-          <!-- Ansonsten Klasse vorauswählen -->
-          <group-view
-            v-else-if="groups.length > 0"
-            :group="groups[0]"
-            :group-info="groupInfo[0]"
-            :index="0"
-            @test-used="markTestAsUsed"
-          >
-          </group-view>
-
-          <div v-else class="text-center text-muted">
-            Keine Klassen vorhanden! Legen Sie eine Klasse an um testen zu können oder verschieben
-            Sie eine Klasse aus dem Archiv.
+            <div v-if="!currentGroup">Lade...</div>
+            <div v-else-if="!currentGroup.key">
+              <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
+                <p>
+                  Sie müssen diese Klasse zunächst im Klassenbuch freischalten. Den ggf.
+                  erforderlichen Sicherheitscode erhalten Sie bzw. können Sie bei der Person
+                  erfragen, die die Klasse mit Ihnen geteilt hat.
+                </p>
+              </b-card>
+            </div>
+            <group-view v-else :key="selectedGroupId" :selected-group-id="selectedGroupId" />
           </div>
         </b-col>
       </b-row>
@@ -81,11 +55,13 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import { useGlobalStore } from '../../store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import Vue from 'vue'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'HomeApp',
@@ -110,28 +86,25 @@
         // the first element is only intended as a placeholder for new groups and is not needed here
         return this.globalStore.groups.filter(group => group.id)
       },
-      groupInfo() {
-        return this.globalStore.groupInfo
-      },
       showIntro() {
         return this.globalStore.login.intro_state < 4
+      },
+      currentGroup() {
+        return this.ownActiveGroups.find(group => group.id === this.selectedGroupId)
       },
     },
     watch: {
       '$route.params': {
         immediate: true,
         async handler(data) {
-          // needed to activate the relevant group when jumping to diagnostics from the classbook
-          if (!data.groupId) {
-            return
+          if (data.groupId) {
+            this.selectedGroupId = parseInt(data.groupId, 10)
           }
           await this.$nextTick()
-          this.selectedGroupId = data.groupId
         },
       },
     },
     mounted() {
-      this.selectedGroupId = this.$root.pre_select?.group || this.ownActiveGroups[0]?.id
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
@@ -146,23 +119,28 @@
           onFinish: this.finishIntro,
         })
       }
-    },
-    updated() {
-      this.$root.pre_select = undefined
+      let selectedGroupId
+      if (this.$route.params.groupId) {
+        selectedGroupId = parseInt(this.$route.params.groupId, 10)
+      } else {
+        const firstActiveGroup = this.ownActiveGroups[0]
+        selectedGroupId = firstActiveGroup.id
+      }
+      this.selectedGroupId = selectedGroupId
+      if (isEmpty(this.assessmentsStore.assessments)) {
+        this.assessmentsStore.fetch(selectedGroupId)
+      }
     },
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
-      },
-
-      markTestAsUsed(testId, groupId) {
-        this.groupInfo.find(group => group.group_id === groupId).used_test_ids.push(testId)
+        Vue.set(this.globalStore.login, 'intro_state', 4)
       },
       getTestsForGroup(groupId) {
-        const group = this.globalStore.groups.find(group => group.id === groupId)
-        if (group.key) {
-          this.assessmentsStore.fetch(groupId)
-        }
+        this.selectedGroupId = groupId
+        this.$router.push({
+          path: `/diagnostik/${groupId}`,
+        })
       },
     },
   }

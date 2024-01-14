@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/start">
+      <a class="navbar-brand" href="/diagnostik">
         <img src="/images/shared/Levumi-normal_small.png" alt="Levumi" height="48" />
         Levumi
       </a>
@@ -21,7 +21,7 @@
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ml-3">
           <li id="intro1" class="nav-item">
-            <router-link class="nav-link" to="/start">Diagnostik</router-link>
+            <router-link class="nav-link" to="/diagnostik">Diagnostik</router-link>
           </li>
           <li id="intro2" class="nav-item">
             <router-link class="nav-link" to="/klassenbuch"
@@ -254,6 +254,7 @@
   import { isRegularUser, hasCapability } from '../../utils/user'
   import { RouterLink } from 'vue-router'
   import { useGlobalStore } from '../../store/store'
+  import { useAssessmentsStore } from '../../store/assessmentsStore'
   import apiRoutes from '../routes/api-routes'
   import ContactForm from './forms/contact-form.vue'
   import EditUserDialog from '../users/components/edit-user-dialog.vue'
@@ -269,8 +270,9 @@
       UserSettingsDialog,
     },
     setup() {
+      const assessmentsStore = useAssessmentsStore()
       const globalStore = useGlobalStore()
-      return { globalStore }
+      return { globalStore, assessmentsStore }
     },
 
     computed: {
@@ -321,6 +323,7 @@
         if (res.status === 200) {
           this.globalStore.fetch(true)
           router.push('/nutzerverwaltung')
+          this.assessmentsStore.reset()
         }
       },
     },

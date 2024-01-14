@@ -175,7 +175,6 @@ class UsersController < ApplicationController
              !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
                params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
            )
-        puts '############################# timestamps missing'
         render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
       end
 
@@ -184,7 +183,6 @@ class UsersController < ApplicationController
              (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
                !params[:user].has_key?(:comment)
            )
-        puts '############################# comment missing or filled'
         render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
       end
 
@@ -192,7 +190,6 @@ class UsersController < ApplicationController
       time2 = Time.parse(params[:user][:render_timestamp])
       diff = (time1 - time2).abs
       if diff < 5
-        puts '############################# time difference too short'
         render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
       end
     end
@@ -265,29 +262,15 @@ class UsersController < ApplicationController
           if @user.update(user_attributes)
             @user.intro_state = 3
             @user.save
-            @user.create_demo(params[:key], params[:auth_token])
+
+            # don't create demo data after password reset
+            if !@user.groups.exists?(demo: true)
+              @user.create_demo(params[:key], params[:auth_token])
+            end
             @login = @user
             head :ok and return
           end
-
-          ##TODO not sure about the intro states - password_form and extra_data are now in one form, so 3 should be correct
-          #when 1
-          #  #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
-          #  if @user.update(user_attributes)
-          #    @user.intro_state = 2
-          #    @user.save
-          #  end
-          #  head :ok and return #Hier entweder zurück wegen Fehler, oder weiter
-          #when 2
-          #  #TC Accept + erste Form => Zweite Form wird geschickt
-          #  @user.update(user_attributes) if params.has_key?(:user) #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
-          #  @user.create_demo(params[:key], params[:auth_token])
-          #  @user.intro_state = 3
-          #  @user.save
-          #  @login = @user
-          #
-          #  #render 'users/show' and return
-          #  head :ok and return
+          # intro_state 2 is currently unused
         when 3
           @user.intro_state = 4
           @user.save
@@ -298,7 +281,7 @@ class UsersController < ApplicationController
           if params.has_key?(:classbook)
             @user.intro_state = 5
             @user.save
-            head 200 and return
+            head :ok and return
           end
         end
       end
