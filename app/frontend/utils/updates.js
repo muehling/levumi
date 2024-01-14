@@ -38,7 +38,7 @@ export const updates = [
     intro_state: 10,
     date: '14.01.2024',
     title: 'Überarbeitung des Diagnostik-Tabs',
-    message: `Der Diagnostik-Tab wurde in mehrere Unterseiten aufgeteilt. Als Einstieg finden Sie dort jetzt eine Auflistung aller Tests, die
+    message: `Der Diagnostik-Tab wurde zur Verbesserung der Übersichtlichkeit in mehrere Unterseiten aufgeteilt. Als Einstieg finden Sie dort jetzt eine Auflistung aller Tests, die
     für eine Klasse aktiviert sind.
     <br/><br/>
     Mit Klick auf einen Test in dieser Liste gelangen Sie zur bekannten Diagnostik-Ansicht, wo Sie die erhobenen Daten tabellarisch und grafisch
