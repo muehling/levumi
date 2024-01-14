@@ -5,7 +5,7 @@
     <%= link_to raw('Zugang für Schülerinnen<br class="d-md-none"> und Schüler'), '/testen', class: 'btn btn-outline-secondary'%>
     <div class='mt-2 mt-md-0'>
       <% if @login%>
-        <div><a class="btn btn-outline-secondary" href='/start'><%=@login.email%></a></div>
+        <div><a class="btn btn-outline-secondary" href='/diagnostik'><%=@login.email%></a></div>
       <%else%>
         <div class='dropdown <%= @retry ? 'show':'' %>'>
           <a class='btn btn-outline-secondary dropdown-toggle' href='#' id='navbarDropdown' role='button' data-toggle='dropdown' aria-haspopup='true' aria-expanded='<%=@retry ? @retry.to_s : "false"%>'>

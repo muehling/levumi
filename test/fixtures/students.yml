@@ -1,0 +1,17 @@
+homer:
+  id: 1
+  login: 'abcde'
+  name: 'homer'
+  group_id: 1
+
+marge:
+  id: 2
+  login: 'bcdef'
+  name: 'marge'
+  group_id: 1
+
+bart:
+  id: 3
+  login: 'cdefg'
+  name: 'bart'
+  group_id: 1

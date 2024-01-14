@@ -1,5 +1,5 @@
 class ResultsController < ApplicationController
-  before_action :set_student
+  before_action :set_student, except: %i[start_demo]
 
   before_action :check_login, only: %i[create new]
   skip_before_action :set_login, only: %i[create new]
@@ -20,13 +20,22 @@ class ResultsController < ApplicationController
           if params.has_key? :student
             @redirect = student_path(@student)
           else
-            @redirect = group_assessment_path(@student.group, @test)
+            @redirect = "/diagnostik/#{@student.group.id}/testdetails/#{@test.id}"
           end
         end
         render 'edit', layout: 'testing'
       end
     else
       head 304
+    end
+  end
+
+  def start_demo
+    if (params.has_key?(:test_id))
+      @test = Test.find(params[:test_id])
+      render 'edit', layout: 'testing'
+    else
+      head 404 # todo error page
     end
   end
 

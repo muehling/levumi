@@ -3,6 +3,7 @@ import { decryptStudentNames } from '../utils/encryption'
 import apiRoutes from '../vue/routes/api-routes'
 
 import { defineStore } from 'pinia'
+import Vue from 'vue'
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
@@ -66,6 +67,21 @@ export const useGlobalStore = defineStore('global', {
       const res = await ajax({ ...apiRoutes.tests.testMetaData })
       const data = await res.json()
       this.staticData.testMetaData = data
+    },
+
+    async getItemsForTest(testId) {
+      const test = this.staticData.testMetaData.tests.find(test => test.id === testId)
+      if (!test) {
+        console.error('globalStore::getItemsForTest: test with given id not found!')
+      }
+      if (test?.items) {
+        return test.items
+      } else {
+        const data = await ajax({ ...apiRoutes.tests.items(testId) })
+        const items = await data.json()
+        test.items = items
+        Vue.set(this.staticData.testMetaData, 'tests', [...this.staticData.testMetaData.tests])
+      }
     },
 
     async fetch(showLoader = false) {

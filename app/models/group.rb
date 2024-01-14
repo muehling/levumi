@@ -29,8 +29,10 @@ class Group < ApplicationRecord
       share_id: group_share.id
     }
     data['belongs_to'] = group_share.group.owner.email
-    data['shares'] = []
-    group_shares.all.each { |c| data['shares'] += [c.as_hash] if c.user != user }
+    if group_share.owner
+      data['shares'] = []
+      group_shares.all.each { |c| data['shares'] += [c.as_hash] if c.user != user }
+    end
     return data
   end
 
@@ -41,5 +43,9 @@ class Group < ApplicationRecord
 
   def read_only(user)
     group_shares.where(user: user).pluck(:read_only).first
+  end
+
+  def test_data
+    return { used_test_ids: Assessment.where(group_id: id).pluck(:test_id) }
   end
 end
