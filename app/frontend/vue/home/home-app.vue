@@ -34,8 +34,7 @@
               </b-nav-item>
             </b-nav>
 
-            <div v-if="!currentGroup">Lade...</div>
-            <div v-else-if="!currentGroup.key">
+            <div v-if="!currentGroup.key">
               <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
                 <p>
                   Sie müssen diese Klasse zunächst im Klassenbuch freischalten. Den ggf.
@@ -127,7 +126,8 @@
         selectedGroupId = firstActiveGroup.id
       }
       this.selectedGroupId = selectedGroupId
-      if (isEmpty(this.assessmentsStore.assessments)) {
+
+      if (isEmpty(this.assessmentsStore.assessments) && this.currentGroup.key) {
         this.assessmentsStore.fetch(selectedGroupId)
       }
     },
