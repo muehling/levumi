@@ -180,6 +180,7 @@ class Test < ApplicationRecord
           #Falls kleiner Version, automatisch archivert.
           old_test.archive = true
           old_test.save
+          assessments_for_old_test = Assessment.where(test_id: old_test.id)
         elsif old_test.version > vals['version']
           #Ältere Version darf neuere nicht ersetzen.
           return nil
@@ -224,6 +225,15 @@ class Test < ApplicationRecord
       test.items = vals['items']
 
       if !test.nil? && test.save
+        # create new assessments in case an old test was archived
+        if (!old_test.nil? && old_test.archive && !assessments_for_old_test.nil?)
+          assessments_for_old_test.each do |old_assessment|
+            new_assessment = old_assessment.dup
+            new_assessment.test_id = test.id
+            new_assessment.save
+          end
+        end
+
         #MaterialSupport-Einträge auf Testebene für neue Version kopieren - Items dürfen sich nicht verändert haben.
         if update_material && !old_test.nil? && old_test != test
           todo = MaterialSupport.where(test_id: old_test.id)
