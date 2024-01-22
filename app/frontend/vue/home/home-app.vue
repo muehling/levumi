@@ -34,7 +34,7 @@
               </b-nav-item>
             </b-nav>
 
-            <div v-if="!currentGroup.key">
+            <div v-if="!currentGroup?.key">
               <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
                 <p>
                   Sie müssen diese Klasse zunächst im Klassenbuch freischalten. Den ggf.
