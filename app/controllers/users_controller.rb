@@ -233,8 +233,11 @@ class UsersController < ApplicationController
   #GET /willkommen
   #POST /willkommen
   def register
-    @user = User.find(session[:user]) #Login nicht gesetzt, da before action nicht ausgeführt.
-    redirect_to '/' if @user.nil?
+    if session[:user].nil? 
+      redirect_to '/' and return #if @user.nil? 
+    else
+      @user = User.find(session[:user]) #Login nicht gesetzt, da before action nicht ausgeführt.
+    end
 
     #GET Anfrage standardmäßig nur am Anfang und Ende, oder bei Unterbrechung des Prozesses
     if request.get?
