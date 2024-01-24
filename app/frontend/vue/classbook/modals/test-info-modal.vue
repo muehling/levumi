@@ -19,10 +19,7 @@
         <li v-for="line in activeAssessments" :key="line.text">
           <router-link
             :class="line.isOpen ? 'text-secondary' : 'text-success'"
-            :to="{
-              name: 'Diagnostik',
-              params: { testId: line.testId, groupId: line.groupId },
-            }"
+            :to="`/diagnostik/${line.groupId}/testdetails/${line.testId}`"
           >
             {{ line.text }}
           </router-link>

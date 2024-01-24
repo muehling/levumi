@@ -6,9 +6,23 @@
     :show="true"
     :target="targets[currentIndex]"
   >
+    <template #title>
+      <div>
+        Einführung
+        <b-btn
+          v-b-popover.hover="'Diese Einführung beenden und nicht erneut anzeigen'"
+          size="xs"
+          class="cancel-tutorial float-right text-secondary"
+          variant="outline-light"
+          @click="cancelTutorial"
+        >
+          <i class="fas fa-xmark"></i>
+        </b-btn>
+      </div>
+    </template>
     <p>{{ messages[currentIndex] }}</p>
-    <div class="text-center">
-      <b-btn @click="next">
+    <div class="text-center mb-2">
+      <b-btn size="sm" class="ml-2" @click="next">
         {{ currentIndex === targets.length - 1 ? "Los geht's" : 'Weiter' }}
       </b-btn>
     </div>
@@ -35,6 +49,10 @@
         this.currentIndex = 0
         this.onFinish = onFinish
       },
+      cancelTutorial() {
+        this.isOpen = false
+        this.onFinish()
+      },
       next() {
         if (this.currentIndex === this.targets.length - 1) {
           this.currentIndex = undefined
@@ -47,3 +65,9 @@
     },
   }
 </script>
+<style scoped>
+  .cancel-tutorial {
+    border-color: transparent !important;
+    margin-top: -0.25em;
+  }
+</style>

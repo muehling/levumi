@@ -237,6 +237,8 @@
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
   import takeRight from 'lodash/takeRight'
   import TargetControls from './target-controls.vue'
+  import uniq from 'lodash/uniq'
+  import compact from 'lodash/compact'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -258,7 +260,7 @@
       SupportGroupQualitative,
     },
 
-    inject: ['studentName', 'weeks', 'printDate', 'readOnly'],
+    inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
@@ -304,6 +306,9 @@
       }
     },
     computed: {
+      weeks() {
+        return compact(uniq(this.results?.map(w => w.test_week)))
+      },
       isSupportInformationAvailable() {
         return this.assessmentsStore.getCurrentAssessment()?.configuration.item_dimensions
       },
@@ -522,6 +527,8 @@
         return val === undefined ? null : val
       },
       testData() {
+        //TODO this is the only used for the attachedLevelImages. Might be better
+        //TODO to include the information in this.test to save an api call.
         return this.testsStore.tests
           .find(area => area.id === this.test.area_id)
           .competences?.find(competence => competence.id === this.test.competence_id)
@@ -559,7 +566,11 @@
       },
     },
     async created() {
-      await this.testsStore.fetch()
+      //TODO testsStore.fetch is quite expensive and only used once for some very particular information, see computed testData
+      //TODO should be replaced with a different api endpoint
+      if (!this.testsStore.tests.length) {
+        await this.testsStore.fetch()
+      }
     },
     mounted() {
       this.loadStudentTargets()
@@ -595,7 +606,7 @@
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
         pdf.text(title, 10, 20)
-        const uri = await this.$refs.levumiChart.dataURI()
+        const uri = await this.$refs.levumiChart?.dataURI()
         pdf.addImage(
           uri['imgURI'],
           'PNG',
@@ -621,9 +632,9 @@
             return { x: formatDate ? printDate(week) : week, y: null }
           }
           let point = this.XYFromResult(currentResult, seriesKey, formatDate)
-          point.y = point.y?.toFixed(2)
-          if (point.y === undefined) {
-            point.y = null
+
+          if (point.y !== null) {
+            point.y = point.y?.toFixed(2)
           }
 
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
@@ -808,8 +819,8 @@
           this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
         })
 
-        xaxis.forEach(annotation => this.$refs.levumiChart.addXaxisAnnotation(annotation))
-        points.forEach(annotation => this.$refs.levumiChart.addPointAnnotation(annotation))
+        xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
+        points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
@@ -819,7 +830,7 @@
         }
         // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
         // first calculate the start point
-        let startWeek = this.weeks.reduce((acc, w) => (w < acc ? w : acc))
+        let startWeek = this.weeks.reduce((acc, w) => (w < acc ? w : acc), '2090-01-01')
         const startWeekResults = this.results.filter(res => res.test_week === startWeek)
         let startY
         if (this.selectedStudentId === -1) {
@@ -890,8 +901,8 @@
       updateNonSlopeTarget() {
         if (this.targetAdded) {
           // first, if there already is a target line remove it
-          this.$refs.levumiChart.removeAnnotation('target-annotation') // line for target itself
-          this.$refs.levumiChart.removeAnnotation('target-range-annotation') // range for allowed deviation
+          this.$refs.levumiChart?.removeAnnotation('target-annotation') // line for target itself
+          this.$refs.levumiChart?.removeAnnotation('target-range-annotation') // range for allowed deviation
           this.targetAdded = false
         }
 
@@ -901,12 +912,12 @@
               ? this.targetVal - this.targetVal * (this.deviationVal / 100)
               : null
           if (y2) {
-            this.$refs.levumiChart.addYaxisAnnotation(
+            this.$refs.levumiChart?.addYaxisAnnotation(
               targetRangeAnnotationOptions(this.targetVal, y2)
             )
           }
 
-          this.$refs.levumiChart.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
+          this.$refs.levumiChart?.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
           this.targetAdded = true // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
         }
       },
