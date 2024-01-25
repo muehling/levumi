@@ -108,6 +108,8 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     parsed = fetch_users
     assert_equal parsed['users'].length, 3
+    #test if other user is still there
+    assert_equal parsed ['users'].include?(user.id), false
   end
  
   test 'UsersController::search -> no admin user' do
