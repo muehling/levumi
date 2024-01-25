@@ -1,0 +1,50 @@
+r1:
+  student_id: 1
+  assessment_id: 1
+  test_date: '2022-11-16'
+  test_week: '2022-11-14'
+  views: '{"V1":6,"V2":{"KG":4.987483233866838,"KT":4.987483233866838,"VG":1.012516766133162,"VT":1.012516766133162}}'
+  report: '{"trend":0,"negative":["I4","I5","I6"],"positive":["I1","I2","I3"]}'
+  data:
+    [
+      { 'item': 'I1', 'result': 0 },
+      { 'item': 'I2', 'result': 0 },
+      { 'item': 'I3', 'result': 0 },
+      { 'item': 'I4', 'result': 1 },
+      { 'item': 'I5', 'result': 1 },
+      { 'item': 'I6', 'result': 1 },
+    ]
+
+r2:
+  student_id: 2
+  assessment_id: 1
+  test_date: '2022-11-16'
+  test_week: '2022-11-14'
+  views: '{"V1":6,"V2":{"KG":4.987483233866838,"KT":4.987483233866838,"VG":1.012516766133162,"VT":1.012516766133162}}'
+  report: '{"trend":0,"negative":["I4","I5","I6"],"positive":["I1","I2","I3"]}'
+  data:
+    [
+      { 'item': 'I1', 'result': 0 },
+      { 'item': 'I2', 'result': 0 },
+      { 'item': 'I3', 'result': 0 },
+      { 'item': 'I4', 'result': 1 },
+      { 'item': 'I5', 'result': 1 },
+      { 'item': 'I6', 'result': 1 },
+    ]
+
+r3:
+  student_id: 3
+  assessment_id: 1
+  test_date: '2022-11-16'
+  test_week: '2022-11-14'
+  views: '{"V1":6,"V2":{"KG":4.987483233866838,"KT":4.987483233866838,"VG":1.012516766133162,"VT":1.012516766133162}}'
+  report: '{"trend":0,"negative":["I4","I5","I6"],"positive":["I1","I2","I3"]}'
+  data:
+    [
+      { 'item': 'I1', 'result': 0 },
+      { 'item': 'I2', 'result': 0 },
+      { 'item': 'I3', 'result': 0 },
+      { 'item': 'I4', 'result': 1 },
+      { 'item': 'I5', 'result': 1 },
+      { 'item': 'I6', 'result': 1 },
+    ]

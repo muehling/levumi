@@ -37,20 +37,29 @@ Rails.application.routes.draw do
   get '/nutzerverwaltung', to: 'users#show'
   get '/administration', to: 'users#show'
   get '/uebungen', to: 'users#show'
+  get '/diagnostik', to: 'users#show'
+  get '/diagnostik/:group_id', to: 'users#show'
+  get '/diagnostik/:group_id/testdetails/:test_id', to: 'users#show'
+  get '/diagnostik/:group_id/testverwaltung', to: 'users#show'
 
   # API endpoints
-  put '/users/:id/mail', to: 'users#user_mail'
-  get '/users/core_data', to: 'users#get_core_data'
-  get '/materials/info', to: 'materials#get_material_data'
-  get '/tests/info', to: 'tests#get_tests_data'
-  get '/users/statistics', to: 'users#statistics'
-  post 'renew_login', to: 'application#renew_login'
+  delete '/delete_area/:id', to: 'areas#destroy_safe'
   delete '/delete_self', to: 'users#destroy_self'
-  put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
-  get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
-  post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
-  delete 'delete_area/:id', to: 'areas#destroy_safe'
+  get '/groups/:id/test_data', to: 'groups#get_test_data'
+  get '/materials/info', to: 'materials#get_material_data'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
+  get '/results/start_demo/:test_id', to: 'results#start_demo'
+  get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
+  get '/tests/info', to: 'tests#get_tests_data'
+  get '/tests/items/:id', to: 'tests#get_items'
+  get '/users/core_data', to: 'users#get_core_data'
+  get '/users/page/:page_number', to: 'users#index_paginated'
+  get '/users/search', to: 'users#search'
+  get '/users/statistics', to: 'users#statistics'
+  post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
+  post '/renew_login', to: 'application#renew_login'
+  put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
+  put '/users/:id/mail', to: 'users#user_mail'
 
   get '/registration_error', to: 'application#redirect_to_registration_error'
 

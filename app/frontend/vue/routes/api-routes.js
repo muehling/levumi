@@ -16,6 +16,7 @@ export default {
     }),
     statistics: '/users/statistics',
     delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
+    index: pageNumber => ({ url: `/users/page/${pageNumber}` }),
   },
   home: {
     finishIntro: '/willkommen',
@@ -30,9 +31,10 @@ export default {
     index: '/tests',
     info: '/tests/info',
     import: { url: '/tests', method: 'POST', contentType: 'omit' },
-    update: id => ({ url: `tests/${id}`, method: 'PATCH' }),
+    update: id => ({ url: `/tests/${id}`, method: 'PATCH' }),
     testMetaData: { url: '/tests_meta' },
     checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
+    items: id => ({ url: `/tests/items/${id}` }),
   },
   assessments: {
     excludeStudent: (groupId, testId, studentId) => ({
@@ -120,5 +122,6 @@ export default {
   },
   groups: {
     group: id => ({ url: `/groups/${id}` }),
+    getTestData: id => ({ url: `/groups/${id}/test_data` }),
   },
 }

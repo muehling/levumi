@@ -1,6 +1,17 @@
 class UsersController < ApplicationController
   before_action :set_user,
-                except: %i[index show create register recover get_core_data statistics destroy_self]
+                except: %i[
+                  create
+                  destroy_self
+                  get_core_data
+                  index
+                  index_paginated
+                  recover
+                  register
+                  search
+                  show
+                  statistics
+                ]
 
   skip_before_action :set_login, only: %i[create register recover]
 
@@ -87,6 +98,42 @@ class UsersController < ApplicationController
     end
   end
 
+  def index_paginated
+    page_number = params[:page_number].to_i.positive? ? params[:page_number].to_i : 1
+    users_per_page = 20
+    @users = User.limit(users_per_page).offset((page_number - 1) * users_per_page)
+    @total_users = User.count
+    render :index
+  end
+
+  def search
+    search_string = params[:search_term] || ''
+    index = params[:index].to_i.positive? ? params[:index].to_i : 1
+    page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+
+    conditions = []
+    conditions << ['LOWER(email) LIKE ?', "%#{search_string}%"] if search_string != ''
+
+    if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
+      start_date = Date.parse(params[:start_date_registration])
+      end_date = Date.parse(params[:end_date_registration])
+      conditions << ['created_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    if !params[:start_date_login].nil? && !params[:end_date_login].nil?
+      start_date = Date.parse(params[:start_date_login])
+      end_date = Date.parse(params[:end_date_login])
+      conditions << ['last_login BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    users =
+      User.where(conditions.map { |condition| condition.shift }.join(' AND '), *conditions.flatten)
+
+    @users = users.limit(page_size).offset((index - 1) * page_size)
+    @total_users = users.count
+    render :index
+  end
+
   def statistics
     if @login.has_capability?('stats')
       # legacy statistics
@@ -127,31 +174,33 @@ class UsersController < ApplicationController
 
   def create #Kann vom Backend oder von der Registrierung ausgelöst werden. Falls Registrierung, gibt es keinen Login in der Session.
     # checks for bot registrations: comment can't be filled, and the user needs at least 5 seconds to fill in the form.
-
-    if params[:user] &&
-         (
-           !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
-             params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
-         )
-      puts '############################# timestamps missing'
-      render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
+    if session.has_key?('user')
+      #Session existiert
+      user = User.find_by_id(session[:user])
     end
+    if user.nil? || !user.has_capability?('user')
+      if params[:user] &&
+           (
+             !params[:user].has_key?(:render_timestamp) || !params[:user].has_key?(:timestamp) ||
+               params[:user][:render_timestamp].empty? || params[:user][:timestamp].empty?
+           )
+        render json: { message: 'Bot detected', error: '1' }, status: :forbidden and return
+      end
 
-    if params[:user] &&
-         (
-           (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
-             !params[:user].has_key?(:comment)
-         )
-      puts '############################# comment missing or filled'
-      render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
-    end
+      if params[:user] &&
+           (
+             (params[:user].has_key?(:comment) && !params[:user][:comment].empty?) ||
+               !params[:user].has_key?(:comment)
+           )
+        render json: { message: 'Bot detected', error: '2' }, status: :forbidden and return
+      end
 
-    time1 = Time.parse(params[:user][:timestamp])
-    time2 = Time.parse(params[:user][:render_timestamp])
-    diff = (time1 - time2).abs
-    if diff < 5
-      puts '############################# time difference too short'
-      render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
+      time1 = Time.parse(params[:user][:timestamp])
+      time2 = Time.parse(params[:user][:render_timestamp])
+      diff = (time1 - time2).abs
+      if diff < 5
+        render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
+      end
     end
 
     #create user and password
@@ -222,29 +271,15 @@ class UsersController < ApplicationController
           if @user.update(user_attributes)
             @user.intro_state = 3
             @user.save
-            @user.create_demo(params[:key], params[:auth_token])
+
+            # don't create demo data after password reset
+            if !@user.groups.exists?(demo: true)
+              @user.create_demo(params[:key], params[:auth_token])
+            end
             @login = @user
             head :ok and return
           end
-
-          ##TODO not sure about the intro states - password_form and extra_data are now in one form, so 3 should be correct
-          #when 1
-          #  #TC Accept => Passwort/Sicherheitsfrage wird angezeigt
-          #  if @user.update(user_attributes)
-          #    @user.intro_state = 2
-          #    @user.save
-          #  end
-          #  head :ok and return #Hier entweder zurück wegen Fehler, oder weiter
-          #when 2
-          #  #TC Accept + erste Form => Zweite Form wird geschickt
-          #  @user.update(user_attributes) if params.has_key?(:user) #Unkritische Attribute, deswegen kein Fehlercheck, if ist nötig für Privat-Accounts, dort wird nichts mitgeschickt (require schlägt dann fehl)
-          #  @user.create_demo(params[:key], params[:auth_token])
-          #  @user.intro_state = 3
-          #  @user.save
-          #  @login = @user
-          #
-          #  #render 'users/show' and return
-          #  head :ok and return
+          # intro_state 2 is currently unused
         when 3
           @user.intro_state = 4
           @user.save
@@ -255,7 +290,7 @@ class UsersController < ApplicationController
           if params.has_key?(:classbook)
             @user.intro_state = 5
             @user.save
-            head 200 and return
+            head :ok and return
           end
         end
       end

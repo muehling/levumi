@@ -20,6 +20,8 @@ class AssessmentsController < ApplicationController
     unless t.nil? || @group.read_only(@login)
       @group.assessments.create(test: t) if @group.assessments.find_by_test_id(t.id).nil?
       head 200
+    else
+      head 403
     end
   end
 
@@ -40,7 +42,7 @@ class AssessmentsController < ApplicationController
 
   #DEL /groups/:group_id/assessments/:id
   def destroy
-    return :not_acceptable if @assessment.results.exists?
+    #return :not_acceptable if @assessment.results.exists?
     if @assessment.destroy
       head :ok
     else

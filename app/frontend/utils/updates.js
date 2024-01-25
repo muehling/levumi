@@ -34,4 +34,18 @@ export const updates = [
     Kontexthilfe.
     `,
   },
+  {
+    intro_state: 10,
+    date: '14.01.2024',
+    title: 'Überarbeitung des Diagnostik-Tabs',
+    message: `Der Diagnostik-Tab wurde zur Verbesserung der Übersichtlichkeit in mehrere Unterseiten aufgeteilt. Als Einstieg finden Sie dort jetzt eine Auflistung aller Tests, die
+    für eine Klasse aktiviert sind.
+    <br/><br/>
+    Mit Klick auf einen Test in dieser Liste gelangen Sie zur bekannten Diagnostik-Ansicht, wo Sie die erhobenen Daten tabellarisch und grafisch
+    aufbereitet finden.
+    <br/><br/>
+    Mit dem Button "Test hinzufügen/löschen" gelangen Sie zur Testverwaltung der 
+    ausgewählten Klasse. Dort können Sie der Klasse Tests hinzufügen oder sie wieder entfernen. Hinzugekommen ist die Möglichkeit, 
+    Tests auszuprobieren zu können, ohne Sie für die Klasse aktivieren zu müssen.`,
+  },
 ]

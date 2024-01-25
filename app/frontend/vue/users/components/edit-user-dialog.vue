@@ -44,7 +44,8 @@
         this.isNew = data.isNew || false
       },
       handleSuccess(res) {
-        this.$emit('refetch', res)
+        const params = this.isNew ? { currentPage: 1 } : res
+        this.$emit('refetch', params)
         this.$refs.infoDialog.open({
           message: !this.isNew
             ? 'Ihre Daten wurden erfolgreich geändert!'
