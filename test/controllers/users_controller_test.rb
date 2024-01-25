@@ -175,31 +175,37 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to('/')
   end
 
-  test 'UsersController::register -> intro_state = 0' do
+  test 'UsersController::register -> new User' do
     user = users :hacker_user
     login_as user
     get willkommen_url
-    ## /diagnostik is a "bad" url for an intro_state==0 
-    puts '####################'
-    puts @response.request.url
-    assert_equal('diagnostik',@response.body)
+    assert_equal('http://www.example.com/willkommen',@response.request.url)
   end
 
-  test 'UsersController::register -> intro_state < 3' do
-    user = users :teaching_user
+  test 'UsersController::register -> intro state 1' do
+    user = users :hacker_user
     login_as user
-    get willkommen_url
-
-    ## /diagnostik is a "bad" url for an intro_state<3 
-    assert_equal('/diagnostik','/diagnostik')
-  end
-
-  test 'UsersController::register -> intro_state = 5' do
-    user = users :other_user
-    login_as user
-    get willkommen_url
-    ## /diagnostik is a "bad" url for an intro_state<3 
+    patch willkommen_url, 
+    headers: {
+      'Accept': 'application/json'
+    },
+    params: {
+      user: {
+        email: 'hacker@example.com',
+        account_type: 1,
+        state: 1,
+      },
+    }
     assert_response :ok
   end
+
+  test 'UsersController::register -> intro state 3' do
+    user = users :teaching_user
+    login_as user
+    patch willkommen_url
+    assert_response :ok
+  end
+  
+ 
 
 end

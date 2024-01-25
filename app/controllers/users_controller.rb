@@ -238,10 +238,13 @@ class UsersController < ApplicationController
 
     #GET Anfrage standardmäßig nur am Anfang und Ende, oder bei Unterbrechung des Prozesses
     if request.get?
+      ##############################################################################
+      #this seems to be not used
       if @user.tc_accepted.nil? || @user.intro_state == 0
         render 'users/intro/terms_and_conditions', layout: 'minimal' and return
       elsif @user.intro_state < 3
         render 'users/intro/forms', layout: 'minimal' and return
+      ##############################################################################
       else
         @login = @user
         render 'users/show' and return
@@ -249,6 +252,8 @@ class UsersController < ApplicationController
     end
 
     if request.patch?
+      ################################################################
+      #currently not used due to bot catching
       if params.has_key?('tc_accepted')
         @user.tc_accepted = Time.now
         @user.intro_state = 1 if @user.intro_state == 0 #Abfrage für spätere TC-Änderungen, dort kein Ändern von intro_state mehr!
@@ -259,12 +264,16 @@ class UsersController < ApplicationController
           redirect_to @user
         end
       else
+        ##############################################################
         case @user.intro_state
+        ##############################################################
+        #not used cause on creation the intro state is 1
         when 0
           #TC Accept hat noch nicht stattgefunden!
           @user.intro_state = 1
           @user.save
           head :ok and return
+        ##############################################################
         when 1
           if @user.update(user_attributes)
             @user.intro_state = 3
