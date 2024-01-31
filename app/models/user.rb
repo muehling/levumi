@@ -176,6 +176,9 @@ class User < ApplicationRecord
     return temp.path
   end
 
+  #############################################
+  ## registrations by type and month
+  #############################################
   def self.get_all_registrations_by_type_and_month
     cached = Rails.cache.fetch('all_regs_by_type_and_month')
 
@@ -210,86 +213,73 @@ class User < ApplicationRecord
     all_users_by_type
   end
 
-  def self.get_active_assessments_by_month
+  #############################################
+  ## active users by month
+  #############################################
+  def self.get_active_users_by_month
+    #done
     users = User.all
+    groups = Group.all
+    group_shares = GroupShare.where(owner: true)
     active_by_month = {}
+    active_users_by_month = {}
     (2020..2023).each do |year|
       (1..12).each do |month|
+        puts "active users: #{month}/#{year}"
         start_date = Date.new(year, month, 1)
         end_date = start_date.end_of_month
         assessment_ids = Result.where(created_at: start_date..end_date).pluck(:assessment_id).uniq
 
-        #assessments = Assessment.where(id: assessment_ids)
+        # das holt die aktiven Assessments, wahrscheinlich nicht so interessant
+        #active_by_month[year.to_s + '/' + month.to_s] = assessment_ids.size
 
-        active_by_month[year.to_s + '/' + month.to_s] = assessment_ids.size
+        assessments = Assessment.where(id: assessment_ids).select(:group_id)
+        group_ids = assessments.pluck(:group_id)
+        user_ids = group_shares.where(group_id: group_ids).pluck(:user_id).uniq
+
+        active_by_month[year.to_s + '/' + month.to_s] = user_ids.size
       end
     end
-
+    puts 'active users by month done'
     active_by_month
   end
 
-  def self.get_registrations_by_month_and_state
-    cached = Rails.cache.fetch('all_regs_by_state_and_month')
-    cached = nil
-    if cached.nil?
-      all_users = User.all
-      all_regs_by_state_and_month =
-        (
-          grouped_by_month = all_users.group_by { |user| user.created_at.beginning_of_month }
-
-          result = {}
-
-          grouped_by_month.each do |month, users_in_month|
-            result[month] = users_in_month.group_by(&:state).transform_values(&:count)
-          end
-        )
-      Rails.cache.write(
-        'all_regs_by_state_and_month',
-        { all_regs_by_state_and_month: all_regs_by_state_and_month },
-        expires_in: 4.weeks
+  #############################################
+  ## registrations by time and state
+  #############################################
+  def self.get_registrations_by_time_and_state(time)
+    ##### done
+    all_users = User.where('intro_state > ?', 3).select(:created_at, :state)
+    all_regs_by_state_and_time =
+      (
+        grouped_by_time =
+          all_users
+            .group_by { |user| user.state }
+            .transform_values do |u1|
+              if time == 'quarter'
+                u1
+                  .group_by { |u2| u2.created_at.beginning_of_quarter }
+                  .transform_values { |u3| u3.count }
+              else
+                u1
+                  .group_by { |u2| u2.created_at.beginning_of_month }
+                  .transform_values { |u3| u3.count }
+              end
+            end
       )
-    else
-      all_users_by_type = cached[:all_regs_by_state_and_month]
-    end
-    all_regs_by_state_and_month
+    puts 'Completed registrations by time and state'
+    all_regs_by_state_and_time
   end
 
-  def self.get_active_users_by_month
-    users = User.all
-    active_by_month = {}
+  def self.get_monthly_resultsTRIAL
+    # funktioniert, ist aber mistig für die Results by Area
+    results_by_month =
+      Result
+        .all
+        .group_by { |result| result.created_at.beginning_of_quarter }
+        .transform_values { |r| r.count }
 
-    ###########################################################
-    ## this is *very* expensive.
-    cached = Rails.cache.fetch('active_users_by_month')
-    if cached.nil?
-      (2020..2023).each do |year|
-        (1..12).each do |month|
-          active_by_month[year.to_s + '/' + month.to_s] = 0
-          users.each do |user|
-            group_share_ids = GroupShare.where(user_id: user.id, owner: true).pluck(:group_id)
-            group_ids = Group.where(id: group_share_ids).pluck(:id)
-            assessment_ids = Assessment.where(group_id: group_ids).pluck(:id)
-
-            start_date = Date.new(year, month, 1)
-            end_date = start_date.end_of_month
-            results = Result.where(assessment_id: assessment_ids, test_date: start_date..end_date)
-            puts '#####################################'
-            puts "#{user.email} #{year} #{month} #{group_share_ids} #{group_ids} #{results.count} #{assessment_ids}"
-            active_by_month[year.to_s + '/' + month.to_s] =
-              active_by_month[year.to_s + '/' + month.to_s] + 1 if results.exists?
-          end
-        end
-      end
-      Rails.cache.write(
-        'active_users_by_month',
-        { active_by_month: active_by_month },
-        expires_in: 4.weeks
-      )
-    else
-      active_by_month = cached[:active_by_month]
-    end
-
-    active_by_month
+    return { results_by_month: results_by_month }
   end
 
   def self.get_monthly_results
@@ -297,57 +287,58 @@ class User < ApplicationRecord
     if cached.nil?
       results_by_month = {}
       results_by_area_and_month = {}
-      areas = Area.all
-      competences = Competence.all
-      test_families = TestFamily.all
-      tests = Test.all
+
+      areas = Area.all.select(:id, :name)
+      competences = Competence.all.select(:id, :area_id)
+      test_families = TestFamily.all.select(:id, :competence_id)
+      tests = Test.all.select(:id, :test_family_id)
+      assessments = Assessment.all.select(:id, :test_id, :group_id)
+
+      tests =
+        tests.map do |test|
+          test[:area_name] = test.test_family.competence.area.name
+          test
+        end
+
+      all_results = Result.all
 
       (2020..2023).each do |year|
         (1..12).each do |month|
-          areas.each do |area|
-            results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area[:name]] = 0
-          end
-
           first_day = Date.new(year, month, 1)
           last_day = first_day.end_of_month
-          results_for_month = Result.where(created_at: first_day..last_day)
 
-          # if (!results_by_month[year.to_s + '/' + month.to_s].nil?)
-          #   results_by_month[year.to_s + '/' + month.to_s] =
-          #     results_by_month[year.to_s + '/' + month.to_s] + results_for_month.count
-          # else
+          #   areas.each do |area|
+          #     results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area[:name]] =
+          #       all_results.select do |i|
+          #         i.area_name === area.name && (first_day..last_day).cover?(i.created_at)
+          #       end.count
+          #   end
+
+          results_for_month =
+            Result
+              .all
+              .select(:created_at, :id, :assessment_id)
+              .select { |i| (first_day..last_day).cover?(i.created_at) }
           results_by_month[year.to_s + '/' + month.to_s] = results_for_month.count
 
-          # end
+          results_for_month.each_with_index do |r, index|
+            puts "Processed #{index + 1} elements..." if (index + 1) % 5000 == 0
+            a = assessments.find { |c| c.id == r.assessment_id }
+            t = tests.find { |x| x.id == a.test_id }
 
-          results_for_month.each do |result|
-            t = tests.find { |x| x.id == result.assessment.test_id }
-            tf = test_families.find { |y| y.id == t.test_family_id }
-            c = competences.find { |z| z.id == tf.competence_id }
-            a = areas.find { |u| u.id == c.area_id }
-            area_name = a[:name]
-
-            # monthly
-            if results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area_name]
-              results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area_name] =
-                results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area_name] + 1
-            else
-              results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + area_name] = 1
-            end
-
-            # quarterly
-            # if results_by_area_and_month[year.to_s + '/' + ((month / 4).abs + 1).to_s + '/' + area_name]
-            #   results_by_area_and_month[year.to_s + '/' + ((month / 4).abs + 1).to_s + '/' + area_name] =
-            #     results_by_area_and_month[year.to_s + '/' + ((month / 4).abs + 1).to_s + '/' + area_name] +
-            #       1
-            # else
-            #   results_by_area_and_month[year.to_s + '/' + ((month / 4).abs + 1).to_s + '/' + area_name] = 1
-            # end
+            results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + t[:area_name]] =
+              if results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + t[:area_name]]
+                results_by_area_and_month[year.to_s + '/' + month.to_s + '/' + t[:area_name]] + 1
+              else
+                1
+              end
           end
-          puts '####################################'
-          puts "#{year}/#{month}: #{results_for_month.count}"
+
+          puts "completed #{year} #{month}"
         end
+        puts "Completed results for #{year}"
       end
+
       Rails.cache.write(
         'monthly_results_by_area',
         {
@@ -359,7 +350,9 @@ class User < ApplicationRecord
     else
       results_by_month = cached[:results_by_month]
       results_by_area_and_month = cached[:results_by_area_and_month]
+      active_users_by_month = cached[:active_users_by_month]
     end
+    puts 'Completed results by month'
     return(
       { results_by_month: results_by_month, results_by_area_and_month: results_by_area_and_month }
     )

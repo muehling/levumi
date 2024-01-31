@@ -144,9 +144,9 @@ class UsersController < ApplicationController
 
       # @all_registrations_by_type_and_month = User.get_all_registrations_by_type_and_month
 
-      # @active_users_by_month = User.get_active_users_by_month
-      @registrations_by_month_and_state = User.get_registrations_by_month_and_state
-      @active_assessments_by_month = User.get_active_assessments_by_month
+      # das sollte gut sein
+      @active_users_by_month = User.get_active_users_by_month
+      @registrations_by_month_and_state = User.get_registrations_by_time_and_state 'quarter'
     end
   end
 

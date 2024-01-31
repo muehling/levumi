@@ -19,6 +19,8 @@ class Test < ApplicationRecord
   validates_presence_of :level
   validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
+  attribute :area_name, :string
+
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     archive ? level + ' (veraltet)' : level

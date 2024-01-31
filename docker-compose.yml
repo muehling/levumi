@@ -51,7 +51,9 @@ services:
       - redis_data:/data
   mailhog:
     container_name: mailhog
-    image: mailhog/mailhog:latest    
+    image: mailhog/mailhog:latest   
+    logging:
+      driver: 'none'  # disable saving logs 
     ports:
       - 1025:1025
       - 8025:8025

@@ -85,28 +85,29 @@
         :series="registeredUsersByMonth"
       />
     </div>
-    <div v-if="activeUsersByTypeAndMonth" class="container mt-3">
-      <h4>Active users by month</h4>
+    <div v-if="registrationsByMonthAndState" class="container mt-3">
+      <h4>Registrations by month and state</h4>
       <apexchart
-        ref="activeUsersByTypeAndMonth"
+        ref="registeredUsersByMonthAndState"
         type="line"
-        height="400px"
+        height="500px"
         width="70%"
         :options="chartOptions"
-        :series="activeUsersByTypeAndMonth"
+        :series="registrationsByMonthAndState"
       />
     </div>
-    <div v-if="activeAssessmentsByMonth" class="container mt-3">
-      <h4>Active assessments by month</h4>
+    <div v-if="activeUsersByMonth" class="container mt-3">
+      <h4>Active users by month</h4>
       <apexchart
-        ref="activeAssessmentsByMonth"
+        ref="activeUsersByMonth"
         type="line"
         height="400px"
         width="70%"
-        :options="twoYOptions"
-        :series="activeAssessmentsByMonth"
+        :options="monthlyOptions"
+        :series="activeUsersByMonth"
       />
     </div>
+
     <div v-if="monthlyResults" class="container mt-3">
       <h4>Total monthly results</h4>
       <apexchart
@@ -138,6 +139,8 @@
   import apiRoutes from '../routes/api-routes'
   import LoadingDots from '../shared/loading-dots.vue'
   import { apexChartOptions } from '../home/analysis/apexChartHelpers'
+  import isArray from 'lodash/isArray'
+  import format from 'date-fns/format'
   export default {
     name: 'StatisticsApp',
     components: { LoadingDots },
@@ -151,14 +154,37 @@
         states: this.globalStore.staticData.states,
         registeredUsersByMonth: undefined,
         activeUsersByTypeAndMonth: undefined,
-        activeAssessmentsByMonth: undefined,
+        activeUsersByMonth: undefined,
+
         monthlyResults: undefined,
         monthlyByArea: undefined,
+        registrationsByMonthAndState: undefined,
       }
     },
     computed: {
       chartOptions() {
-        return apexChartOptions([]).line
+        const o = apexChartOptions([]).line
+        return o
+      },
+      monthlyOptions() {
+        const labels = [
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ]
+        const o = apexChartOptions([]).line
+        o.xaxis.type = 'category'
+        o.xaxis.labels.formatter = o => labels[parseInt(o) - 1]
+        return o
       },
       lineCategoryOptions() {
         const o = apexChartOptions([]).line
@@ -211,33 +237,66 @@
       this.fetch()
     },
     methods: {
-      createActiveAssessmentsByMonth(data) {
-        if (!data.active_assessments_by_month || !data.active_users_by_month) {
-          return undefined
+      createRegistrationsByMonthAndState(data) {
+        //done
+        if (!data.registrations_by_month_and_state) {
+          return
         }
-        const d = Object.entries(data.active_assessments_by_month)?.map(v => {
-          return { x: v[0], y: v[1] }
-        })
-        const b = Object.entries(data.active_users_by_month)?.map(v => {
-          return { x: v[0], y: v[1] }
+
+        const states = [
+          '',
+          'Baden-Württemberg',
+          'Bayern',
+          'Berlin',
+          'Brandenburg',
+          'Bremen',
+          'Hamburg',
+          'Hessen',
+          'Mecklenburg-Vorpommern',
+          'Niedersachsen',
+          'Nordrhein-Westfalen',
+          'Rheinland-Pfalz',
+          'Saarland',
+          'Sachsen',
+          'Sachsen-Anhalt',
+          'Schleswig-Holstein',
+          'Thüringen',
+          'Österreich',
+          'Schweiz',
+          'Anderes Land',
+        ]
+
+        const dataArray = Object.entries(data.registrations_by_month_and_state).map(state => {
+          const data = Object.entries(state[1]).map(d => {
+            return { x: d[0], y: d[1] }
+          })
+          return { name: states[state[0]], data }
         })
 
-        const res = [
-          { data: d, name: 'Active Assessments' },
-          { data: b, name: 'Active Users' },
-        ]
-        console.log('res', res)
-        return res
+        return dataArray
       },
+
       createActiveUsersByMonth(data) {
+        //done
         if (!data.active_users_by_month) {
           return undefined
         }
-        const d = Object.entries(data.active_users_by_month)?.map(v => {
-          return { x: v[0], y: v[1] }
-        })
-        return [{ data: d, name: 'Active users' }]
+        const d = Object.entries(data.active_users_by_month).reduce((acc, d) => {
+          const [year, month] = d[0].split('/')
+          const current = acc.find(a => a.name === year) || { name: year, data: [] }
+          const n = { x: month, y: d[1] }
+          current.data.push(n)
+          if (acc.find(a => a.name === year)) {
+            acc.find(a => a.name === year).data = current.data
+          } else {
+            acc.push(current)
+          }
+          return acc
+        }, [])
+
+        return d
       },
+
       createRegisteredUsersByMonth(data) {
         let registeredUsers = []
         if (data.all_registrations_by_type_and_month) {
@@ -272,7 +331,7 @@
             { data: allRegisteredOthers, name: 'Others' },
           ]
         } else {
-          registeredUsers = [
+          /*registeredUsers = [
             { data: [], name: 'Users total' },
             { data: [], name: 'Teachers' },
             {
@@ -280,7 +339,8 @@
               name: 'Scientists',
             },
             { data: [], name: 'Others' },
-          ]
+          ]*/
+          return undefined
         }
         return registeredUsers
       },
@@ -288,9 +348,11 @@
         let monthlyResults = []
         let monthlyByArea = []
         if (data.monthly_results) {
-          monthlyResults = Object.entries(data.monthly_results?.results_by_month).map(v => {
-            return { x: v[0], y: v[1] }
-          })
+          monthlyResults = Object.entries(data.monthly_results?.results_by_month)
+            .map(v => {
+              return { x: v[0], y: v[1] }
+            })
+            .sort((a, b) => new Date(a.x) - new Date(b.x))
 
           this.monthlyResults = [{ data: monthlyResults, name: 'Results/Month' }]
 
@@ -306,52 +368,33 @@
             acc[dimensions[2]].data.push({ x: dimensions[0] + '/' + dimensions[1], y: v[1] })
             return acc
           }, {})
-          /*  const dings = Object.values(monthlyByArea).map(series => {
-            const res = [
-              { x: '2020/1', y: 0 },
-              { x: '2020/2', y: 0 },
-              { x: '2020/3', y: 0 },
-              { x: '2020/4', y: 0 },
-              { x: '2021/1', y: 0 },
-              { x: '2021/2', y: 0 },
-              { x: '2021/3', y: 0 },
-              { x: '2021/4', y: 0 },
-              { x: '2022/1', y: 0 },
-              { x: '2022/2', y: 0 },
-              { x: '2022/3', y: 0 },
-              { x: '2022/4', y: 0 },
-              { x: '2023/1', y: 0 },
-              { x: '2023/2', y: 0 },
-              { x: '2023/3', y: 0 },
-              { x: '2023/4', y: 0 },
-            ]
-            const blub = res.map(r => {
-              const d = series.data.find(m => m.x === r.x)
-              if (d) {
-                r.y = d.y
-              }
-              return r
-            })
-
-            series.data = blub
-            return series
-          })*/
-          //          console.log('meh', monthlyByArea)
 
           monthlyByArea = Object.values(monthlyByArea)
         }
+
         return monthlyByArea
       },
       async fetch() {
-        const res = await ajax({ url: apiRoutes.users.statistics })
-        const data = await res.json()
-        console.log('data', { ...data.active_users_by_month })
+        const data = localStorage.getItem('statistics')
 
-        this.data = data
-        this.registeredUsersByMonth = this.createRegisteredUsersByMonth(data)
-        this.monthlyByArea = this.createMonthlyResults(data)
-        this.activeUsersByTypeAndMonth = this.createActiveUsersByMonth(data)
-        this.activeAssessmentsByMonth = this.createActiveAssessmentsByMonth(data)
+        if (!JSON.parse(data)) {
+          const res = await ajax({ url: apiRoutes.users.statistics })
+          const data = await res.json()
+          localStorage.setItem('statistics', JSON.stringify(data))
+          this.data = data
+        } else {
+          try {
+            this.data = JSON.parse(data)
+          } catch (e) {
+            console.log(e)
+          }
+        }
+
+        this.registeredUsersByMonth = this.createRegisteredUsersByMonth(this.data)
+        this.monthlyByArea = this.createMonthlyResults(this.data)
+        this.activeUsersByTypeAndMonth = this.createActiveUsersByMonth(this.data)
+        this.activeUsersByMonth = this.createActiveUsersByMonth(this.data)
+        this.registrationsByMonthAndState = this.createRegistrationsByMonthAndState(this.data)
       },
     },
   }
