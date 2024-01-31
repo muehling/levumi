@@ -111,7 +111,34 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     #test if other user is still there
     assert_equal parsed ['users'].include?(user.id), false
   end
- 
+
+  test 'UsersController::destroy -> no admin' do
+    user = users :other_user
+    login_as user
+    delete user_url(user.id), headers: { 'Accept': 'application/json' }
+    assert_response :forbidden
+  end
+
+  test 'UsersController::destroy_self -> no admin' do
+    user = users :other_user
+    login_as user
+
+    delete user_url(user.id), headers: { 'Accept': 'application/json' }
+    assert_response :forbidden
+  end
+  test 'UsersController::destroy_self -> admin' do
+    user = users :admin_user
+    login_as user
+    delete user_url(user.id), headers: { 'Accept': 'application/json' }
+    assert_response :ok
+
+    parsed = fetch_users
+    assert_equal parsed['users'].length, 4
+    #test if other user is still there
+    assert_equal parsed ['users'].include?(user.id), false
+  end
+
+
   test 'UsersController::search -> no admin user' do
     user = users :other_user
     login_as user
@@ -124,9 +151,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   test 'UsersController::search -> admin user' do
     user = users :admin_user
     login_as user
-    
     get "#{users_search_url}?search_term=admin"
-
     assert_response :ok
   end 
 
