@@ -107,10 +107,8 @@ class UsersController < ApplicationController
   end
 
   def search
-    if !@login.has_capability?('user')
-      head :forbidden and return
-    end
-    
+    head :forbidden and return if !@login.has_capability?('user')
+
     search_string = params[:search_term] || ''
     index = params[:index].to_i.positive? ? params[:index].to_i : 1
     page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
@@ -155,6 +153,7 @@ class UsersController < ApplicationController
     if @user.id != @login.id
       #Nicht seinen eigenen Account löschen...
       @user.destroy
+      head :forbidden
     end
 
     @users = User.all #Tabelle in der Benutzerverwaltung wird neu gerendert
@@ -162,6 +161,7 @@ class UsersController < ApplicationController
   end
 
   def destroy_self
+    head :forbidden and return if !@login.is_regular_user?
     @login.destroy
     reset_session
     head :ok
@@ -230,8 +230,8 @@ class UsersController < ApplicationController
   #GET /willkommen
   #POST /willkommen
   def register
-    if session[:user].nil? 
-      redirect_to '/' and return #if @user.nil? 
+    if session[:user].nil?
+      redirect_to '/' and return #if @user.nil?
     else
       @user = User.find(session[:user]) #Login nicht gesetzt, da before action nicht ausgeführt.
     end
@@ -244,7 +244,7 @@ class UsersController < ApplicationController
         render 'users/intro/terms_and_conditions', layout: 'minimal' and return
       elsif @user.intro_state < 3
         render 'users/intro/forms', layout: 'minimal' and return
-      ##############################################################################
+        ##############################################################################
       else
         @login = @user
         render 'users/show' and return
@@ -273,7 +273,7 @@ class UsersController < ApplicationController
           @user.intro_state = 1
           @user.save
           head :ok and return
-        ##############################################################
+          ##############################################################
         when 1
           if @user.update(user_attributes)
             @user.intro_state = 3
