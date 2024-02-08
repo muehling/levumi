@@ -83,7 +83,7 @@
         </div>
       </b-col>
     </b-row>
-    <b-row :hidden="!graph_visible">
+    <b-row :hidden="!annotationAndTargetRowVisible">
       <b-col>
         <b-row class="ml-1">
           <b-col>
@@ -152,7 +152,6 @@
               :target-valid="targetValid"
               :test="test"
               :group="group"
-              :readonly-suppressed="isReadOnlySuppressed"
             ></TargetControls>
           </b-col>
         </b-row>
@@ -197,7 +196,7 @@
       </div>
     </b-row>
     <hr v-if="selectedViewType != 'graph'" class="section-divider" />
-    <b-row :hidden="selectedViewType !== 'graph'">
+    <b-row :hidden="!simpleTableVisible">
       <b-tabs class="w-100" pills no-body card>
         <b-tab title="Tabellarische Daten" lazy>
           <b-table-lite
@@ -211,7 +210,7 @@
         </b-tab>
       </b-tabs>
     </b-row>
-    <b-row v-if="niveaus_visible">
+    <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
       <niveau-overview :niv-config="nivConfig"></niveau-overview>
     </b-row>
   </div>
@@ -248,6 +247,8 @@
     targetRangeAnnotationOptions,
     prepareOptions,
     apexChartOptions,
+    quantile,
+    postProcessGroupedStackedBars,
   } from './apexChartHelpers'
 
   export default {
@@ -314,7 +315,7 @@
       },
       isSupportSectionVisible() {
         return (
-          this.viewConfig.type === 'graph' &&
+          this.selectedViewType === 'graph' &&
           this.isSupportInformationAvailable &&
           (checkUserSettings(this.settings, 'visibilities.analysisView.groupSupportOverview') ||
             checkUserSettings(this.settings, 'visibilities.analysisView.groupQualitativeOverview'))
@@ -383,7 +384,7 @@
         return this.viewConfig.type
       },
       graph_visible() {
-        return this.viewConfig.type === 'graph' || this.viewConfig.type === 'graph_table'
+        return this.selectedViewType === 'graph' || this.selectedViewType === 'graph_table'
       },
       has_group_views() {
         for (let i = 0; i < this.configuration.views.length; ++i) {
@@ -397,10 +398,17 @@
         return this.configuration.views.some(view => view.student)
       },
       tableVisible() {
-        return this.viewConfig.type === 'table' || this.viewConfig.type === 'graph_table'
+        return this.selectedViewType === 'table' || this.selectedViewType === 'graph_table'
+      },
+      simpleTableVisible() {
+        return this.selectedViewType === 'graph' && !this.viewConfig.options?.chart?.stacked
       },
       niveaus_visible() {
-        return this.viewConfig.type === 'niveaus'
+        return this.selectedViewType === 'niveaus'
+      },
+      annotationAndTargetRowVisible() {
+        // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
+        return this.graph_visible && !this.viewConfig.options?.chart?.stacked
       },
       table_data() {
         if (!this.tableVisible) {
@@ -444,10 +452,6 @@
       },
       chartSeries() {
         return [...this.graphData]
-      },
-      isReadOnlySuppressed() {
-        //TODO might not be needed
-        return Boolean(this.viewConfig.readOnlySuppressed)
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
@@ -621,42 +625,116 @@
         pdf.save(filename + '.pdf')
       },
 
+      createGroupedStackedColumnData() {
+        const view = this.viewConfig
+        const series = []
+        // create stackable elements with the names of the series
+        for (const sName of view.series) {
+          for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
+            series.push({
+              name: `${sName} ${q}`,
+              group: sName,
+              data: [],
+            })
+          }
+        }
+        // go over all test weeks
+        this.weeks.forEach(week => {
+          const wResults = this.results.filter(res => res?.test_week === week)
+          // go through the results and for each category collect the values from all results
+          for (const i in view.series_keys) {
+            const series_key = view.series_keys[i]
+            // collect only the results of the category and filter out undefined/null values
+            let catResults = wResults
+              .map(
+                res =>
+                  res?.views?.[
+                    // FIXME: this is a shortlived workaround to enable showing two views that are based on the same data
+                    view.key_data_overwrite ? view.key_data_overwrite : view.key
+                  ]?.[series_key]
+              )
+              .filter(r => r !== undefined && r !== null)
+            // calculate the quartiles for this category
+            const quartiles = []
+            for (const q of [0.0, 0.25, 0.5, 0.75, 1.0]) {
+              quartiles.push(quantile(catResults, q))
+            }
+            // add the quantiles for this week to the matching series
+            for (let j = 0; j < 5; ++j) {
+              series[i * 5 + j].data.push(j === 0 ? quartiles[j] : quartiles[j] - quartiles[j - 1])
+            }
+          }
+        })
+        // postprocess the series: add artificial series to create separator lines for the quartiles
+        const EPSILON = 0.009
+        function decreaseBy(arrayToDecrease, amount) {
+          arrayToDecrease.forEach((el, index, array) => {
+            array[index] = el - amount
+          })
+        }
+        for (let sIndex = view.series.length - 1; sIndex >= 0; --sIndex) {
+          const sName = view.series[sIndex]
+          // first take half an EPSILON off the first quartile and add that to the last quartile
+          // this is to center the separator lines onto the values they are actually meant to represent
+          decreaseBy(series[sIndex * 5 + 1].data, EPSILON / 2)
+          decreaseBy(series[sIndex * 5 + 4].data, -(EPSILON / 2))
+          for (let j = 4; j > 1; --j) {
+            const q = 25 * j
+            const indexToSplice = sIndex * 5 + j
+            const referenceData = series[indexToSplice].data
+            // add a series with values similar to the reference series, but increased by EPSILON
+            series.splice(indexToSplice, 0, {
+              name: `${sName} ${q}%-Perzentil`,
+              group: sName,
+              data: referenceData.map(() => EPSILON),
+            })
+            // decrease the reference series by EPSILON in order not to inflate the results
+            decreaseBy(referenceData, EPSILON)
+          }
+        }
+        return series
+      },
+
       createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
         return this.weeks.map(week => {
-          const currentResult = results.find(r => r?.test_week === week)
+          const currentResult = results.find(r => r?.test_week === week)?.views?.[
+            // FIXME: this is a shortlived workaround to enable showing two views that are based on the same data
+            this.viewConfig.key_data_overwrite
+              ? this.viewConfig.key_data_overwrite
+              : this.viewConfig.key
+          ]
 
           // if a week has no results add a point with an empty y value for this week
-          if (!currentResult) {
+          if (currentResult === null || currentResult === undefined) {
             return { x: formatDate ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
-
-          if (point.y !== null) {
-            point.y = point.y?.toFixed(2)
+          let point = this.XYFromResult(currentResult, seriesKey, formatDate, week)
+          point.y = point.y?.toFixed(2)
+          if (point.y === undefined) {
+            point.y = null
           }
 
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
       },
-      XYFromResult(result, seriesKey, formatDate) {
-        if (!result) {
+      XYFromResult(result, seriesKey, formatDate, week) {
+        if (result === null || result === undefined) {
           return undefined
         }
         let yVal
-        const view = this.viewConfig
         if (seriesKey) {
-          yVal = result?.views[view.key][seriesKey]
+          yVal = result?.[seriesKey]
         } else {
-          yVal = result?.views[view.key]
+          yVal = result
         }
         if (yVal === undefined) {
           yVal = null
         }
         return {
-          x: formatDate ? printDate(result.test_week) : result.test_week || null,
+          x: formatDate ? printDate(week) : week ?? null,
           y: yVal,
         }
       },
@@ -677,13 +755,17 @@
       },
 
       async updateView(animate) {
-        const view = this.viewConfig
         // return early if the view type has no graph
-        if (!['graph', 'graph_table'].includes(view.type)) {
+        if (!this.graph_visible) {
           return
         }
+        const view = this.viewConfig
 
-        const trueChartType = view.options.chart.type
+        let trueChartType = view.options?.chart?.type
+        // if the chart type was not specified in the view config we default to line
+        if (!trueChartType) {
+          trueChartType = 'line'
+        }
         const preparedOptions = prepareOptions(
           trueChartType,
           view.options,
@@ -694,18 +776,27 @@
           this.maxYValue
         )
 
-        const formatDate = trueChartType === 'bar'
+        // bar and grouped stacked bar are currently the only supported non-line charts
+        const nonLineChart = ['bar'].includes(trueChartType)
+        const stackedBarChart = trueChartType === 'bar' && view.options?.chart?.stacked
         let trendlineData = undefined
         let gData = undefined
         // group data
         if (this.selectedStudentId === -1) {
-          gData = this.studentsWithResults.map(student => {
-            return {
-              name: student.name,
-              type: trueChartType,
-              data: this.createSeries(student.id, undefined, formatDate),
-            }
-          })
+          if (stackedBarChart) {
+            // in case this is a grouped stacked bar chart do not create a series per student, but instead create
+            // a group of stacked bars per week for the whole class
+            gData = this.createGroupedStackedColumnData()
+          } else {
+            // else this is a graph with one series per student reaching over all available dates
+            gData = this.studentsWithResults.map(student => {
+              return {
+                name: student.name,
+                type: trueChartType,
+                data: this.createSeries(student.id, undefined, nonLineChart),
+              }
+            })
+          }
         } else {
           const student = this.students.find(s => s.id === this.selectedStudentId)
           // individual student data with single series
@@ -714,7 +805,7 @@
               {
                 name: student.name,
                 type: trueChartType,
-                data: this.createSeries(student.id, undefined, formatDate),
+                data: this.createSeries(student.id, undefined, nonLineChart),
               },
             ]
             if (this.trendIsEnabled && trueChartType !== 'bar') {
@@ -738,32 +829,31 @@
               return {
                 name: view.series[index],
                 type: trueChartType,
-                data: this.createSeries(student.id, series_key, formatDate),
+                data: this.createSeries(student.id, series_key, nonLineChart),
               }
             })
           }
         }
 
-        // trends and targets are displayed only for non-bar charts and views with a single series
-        if (trueChartType !== 'bar') {
-          if (!view.series_keys) {
-            if (trendlineData) {
-              addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
-            }
-            if (this.targetIsEnabled) {
-              this.appendSlopeTarget(gData, preparedOptions)
-            }
-            if (
-              (trendlineData && this.extrapolationIsEnabled) ||
-              (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
-            ) {
-              this.expandXAxis(gData)
-            }
+        // trends and targets are displayed only for line graphs charts and views with a single series
+        if (!nonLineChart && !view.series_keys) {
+          if (trendlineData) {
+            addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
+          }
+          if (this.targetIsEnabled) {
+            this.appendSlopeTarget(gData, preparedOptions)
+          }
+          if (
+            (trendlineData && this.extrapolationIsEnabled) ||
+            (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
+          ) {
+            this.expandXAxis(gData)
           }
         }
 
+        this.graphData = []
+        await this.$nextTick() // wait until the chart data is reset before setting the options, otherwise apexcharts will throw errors
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
-
         this.graphData = gData
 
         await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors
@@ -771,8 +861,13 @@
           this.updateNonSlopeTarget()
         }
         this.updateAnnotations()
+        if (stackedBarChart) {
+          postProcessGroupedStackedBars(this.viewConfig)
+        }
 
-        this.simpleTableData = createSimpleTableData(gData, formatDate)
+        if (this.simpleTableVisible) {
+          this.simpleTableData = createSimpleTableData(gData, nonLineChart)
+        }
 
         this.isInitialized = true
       },
@@ -1005,8 +1100,3 @@
     },
   }
 </script>
-
-<style>
-  .section-divider {
-  }
-</style>

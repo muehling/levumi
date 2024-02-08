@@ -13,11 +13,6 @@ export const prepareOptions = (
   animate,
   yMax
 ) => {
-  // if any series wants to be of type rangeArea then the whole chart needs to be
-  // therefore we need to save the "true" chart type to hand over to all non-rangeArea series (i.e. all except the slope target)
-  if (!['line', 'bar', 'rangeArea'].includes(chartType)) {
-    chartType = 'line'
-  }
   let opt
   // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
   const needRangeAreaChart =
@@ -29,16 +24,18 @@ export const prepareOptions = (
     // we allow only bar and rangeArea as custom chart types, all others default to line
     switch (chartType) {
       case 'bar':
-        opt = apexChartOptions(weekLabels).bar
+        if (customOptions?.chart?.stacked) {
+          opt = apexChartOptions(weekLabels).groupedStackedBar
+        } else {
+          opt = apexChartOptions(weekLabels).bar
+        }
         break
       case 'rangeArea':
         opt = apexChartOptions(weekLabels).rangeArea
         break
       case 'line':
-        opt = apexChartOptions(weekLabels).rangeArea
-        break
       default:
-        opt = apexChartOptions(weekLabels).rangeArea
+        opt = apexChartOptions(weekLabels).line
     }
   }
   const options = deepmerge(cloneDeep(opt), customOptions)
@@ -52,10 +49,10 @@ export const prepareOptions = (
     options.yaxis = {}
   }
 
-  // check the y axis needs to be adjusted to display a trend or target
+  // check the y-axis needs to be adjusted to display a trend or target
   if (yMax) {
-    options.yaxis.max = yMax * 1.1
-  } else {
+    options.yaxis.max = yMax
+  } else if (options.yaxis.max === undefined) {
     options.yaxis.max = function (max) {
       return max * 1.1
     }
@@ -94,6 +91,115 @@ export const apexChartOptions = weekLabels => ({
       tickPlacement: 'on',
     },
     tooltip: { ...commonTooltip() },
+  },
+  groupedStackedBar: {
+    chart: {
+      ...commonChart(),
+      type: 'bar',
+      stacked: true,
+    },
+    stroke: {
+      curve: 'straight',
+      width: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      dashArray: 0, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+    },
+    fill: {
+      opacity: 0.9, // must be kept in, as prepareOptionsAsArrays depends upon its existence
+      type: 'solid',
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '50%',
+      },
+    },
+    xaxis: {
+      tooltip: { enabled: false },
+      type: 'category',
+      categories: weekLabels,
+    },
+    yaxis: {
+      labels: {
+        style: {
+          fontSize: '13px',
+        },
+        formatter: val => {
+          return val > 1.0 ? '' : val.toFixed(1)
+        },
+      },
+      min: 0.0,
+      max: 1.0,
+      //decimalsInFloat: 1,
+    },
+    colors: [
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(255,224,35,0.1)',
+      '#ffdb00',
+      'rgba(255,224,35,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(32,52,164,0.1)',
+      '#2f49ff',
+      'rgba(47,73,255,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(30,220,220,0.1)',
+      '#1edcdc',
+      'rgba(30,220,220,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(141,46,204,0.1)',
+      '#af2ecc',
+      'rgba(141,46,204,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
+      'rgba(255,127,36,0.1)',
+      '#ff6a00',
+      'rgba(255,127,35,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+      'rgba(255,255,255,0)',
+    ],
+    tooltip: {
+      ...commonTooltip(),
+      custom: customPercentileBandTooltip,
+    },
+    legend: {
+      position: 'top',
+      offsetY: 5,
+      onItemClick: {
+        // should not be toggled, as this would destroy the custom style (gap between stacks) by recreating the elements
+        toggleDataSeries: false,
+      },
+      // eslint-disable-next-line no-unused-vars
+      formatter: function (seriesName, _opts) {
+        // only render the first series name (ending in " 0")
+        if (seriesName.endsWith('0')) {
+          // don't render the 0
+          return seriesName.replace('0', '')
+        } else {
+          return ''
+        }
+      },
+    },
   },
   line: {
     ...commonOptions(),
@@ -224,7 +330,7 @@ const commonTooltip = () => ({
   intersect: false,
 })
 
-/** credit goes to @Splinter0 on github: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
+/** credit goes to @Splinter0 on GitHub: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
 function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   const hoverXaxis = w.globals.seriesX[seriesIndex][dataPointIndex]
   const hoverIndexes = w.globals.seriesX.map(seriesX => {
@@ -254,6 +360,75 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   })
   const date = new Date(hoverXaxis).toLocaleDateString('de')
   return `<div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${date}</div>${hoverList}`
+}
+
+// eslint-disable-next-line no-unused-vars
+function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }) {
+  const s = w.globals.series
+  const sCount = 8
+  // calculate how many stacks there are per date
+  const stackCount = s.length / sCount
+  // for each stack (task type) get the quartile values and build fitting messages
+  const stacks = []
+  const yLabels = ['25%-Perzentil:', '50%-Perzentil:', '75%-Perzentil:']
+
+  const f = n => n.toFixed(2)
+  for (let seriesIndex = 0; seriesIndex < stackCount; ++seriesIndex) {
+    // push a new array representing a series of a certain (task) type to be filled
+    const seriesStart = seriesIndex * sCount
+    // reconstruct the real quartiles here by adding up the series values
+    const percentiles = []
+    let sum = 0.0
+    // go up to 8, as there are 8 series when including the artificial separator lines
+    for (let i = 0; i < sCount; ++i) {
+      sum += Number(series[seriesStart + i][dataPointIndex])
+      percentiles.push(sum)
+    }
+    // the separator lines are at indices 2, 4 and 6
+    const low = `${f(percentiles[2])}`
+    const mid = `${f(percentiles[4])}`
+    const high = `${f(percentiles[6])}`
+    stacks.push([low, mid, high])
+  }
+
+  let html = ''
+  stacks.forEach((stack, stackIndex) => {
+    html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                    <div class="apexcharts-tooltip-y-group">
+                        <span class="apexcharts-tooltip-text-y-label">
+                            Verteilung der Lösungsraten beim Typ
+                        </span>
+                        <span class="apexcharts-tooltip-text-y-value">"${w.globals.seriesNames[
+                          sCount * stackIndex
+                        ].replace('0', '')}":</span>
+                    </div>
+                </div>
+            </div>`
+    for (let i = 2; i >= 0; --i) {
+      html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                  <span class="apexcharts-tooltip-marker" style="background-color: ${
+                    w.globals.markers.colors[sCount * stackIndex + (i + 1) * 2]
+                  };"></span>
+                  <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                      <div class="apexcharts-tooltip-y-group">
+                          <span class="apexcharts-tooltip-text-y-label">${yLabels[i]} </span>
+                          <span class="apexcharts-tooltip-text-y-value">${stack[i]}</span>
+                      </div>
+                  </div>
+              </div>`
+    }
+  })
+  html += `<div class="apexcharts-tooltip-series-group apexcharts-active" style="display: flex;">
+                <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
+                    <div class="apexcharts-tooltip-y-group">
+                        <span class="apexcharts-tooltip-text-y-label">
+                            <b>Hinweis:</b> Jeder transparente Abschnitt stellt je ein Viertel der Klasse dar.
+                        </span>
+                    </div>
+                </div>
+            </div>`
+  return html
 }
 
 const apexColors = () => [
@@ -375,6 +550,19 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
   },
 })
 
+export function quantile(arr, q) {
+  const asc = arr => arr.sort((a, b) => a - b)
+  const sorted = asc(arr)
+  const pos = (sorted.length - 1) * q
+  const base = Math.floor(pos)
+  const rest = pos - base
+  if (sorted[base + 1] !== undefined) {
+    return sorted[base] + rest * (sorted[base + 1] - sorted[base])
+  } else {
+    return sorted[base]
+  }
+}
+
 export function addTargetToChartData(
   graphData,
   opt,
@@ -485,5 +673,28 @@ function prepareOptionsAsArrays(opt, size, createEnableTooltip, prepareFills) {
 
   if (createEnableTooltip && !isArray(opt.tooltip.enabledOnSeries)) {
     opt.tooltip.enabledOnSeries = [...Array(size).keys()] // enable tooltip on all series within size
+  }
+}
+
+/**
+ * Adds a small gap between the stacks by adding transforms to the g-elements of the series.
+ * This is basically a hack, so best check this for functionality when upgrading ApexCharts.
+ */
+export function postProcessGroupedStackedBars(viewConfig) {
+  // first get the series names which are the base of the 'seriesName' attribute added by ApexCharts
+  const seriesNames = viewConfig.series
+  // get all series
+  const gSeries = document.querySelectorAll('.apexcharts-series')
+  let i = 0
+  for (let sName of seriesNames) {
+    // currentSeries contains all g-elements belonging to sName
+    const currentSeries = Array.from(gSeries).filter(gS =>
+      // replace spaces with x as that's how they're escaped apparently
+      gS.getAttribute('seriesName').startsWith(sName.replace(' ', 'x'))
+    )
+    for (let g of currentSeries) {
+      g.style.transform = `translateX(${i * 10}px)`
+    }
+    i++
   }
 }
