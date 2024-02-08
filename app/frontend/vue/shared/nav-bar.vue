@@ -21,7 +21,11 @@
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ml-3">
           <li id="intro1" class="nav-item">
-            <router-link class="nav-link" :to="{name:'Diagnostik', params:{forceUpdate:true}}">Diagnostik</router-link>
+            <router-link
+              class="nav-link"
+              :to="{ name: 'Diagnostik', params: { forceUpdate: true } }"
+              >Diagnostik</router-link
+            >
           </li>
           <li id="intro2" class="nav-item">
             <router-link class="nav-link" to="/klassenbuch"
