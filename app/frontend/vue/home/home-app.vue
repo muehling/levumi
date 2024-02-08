@@ -96,6 +96,9 @@
       '$route.params': {
         immediate: true,
         async handler(data) {
+          if (data.forceUpdate) {
+            this.assessmentsStore.setCurrentAssessment(undefined)
+          }
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
           }
