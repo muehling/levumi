@@ -339,7 +339,7 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
 
   let hoverList = ''
   hoverIndexes.forEach((hoverIndex, seriesEachIndex) => {
-    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex]) {
+    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] != undefined) {
       hoverList += `
                         <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
                             <span class="apexcharts-tooltip-marker" style="background-color: ${
@@ -399,9 +399,9 @@ function customPercentileBandTooltip({ series, _seriesIndex, dataPointIndex, w }
                         <span class="apexcharts-tooltip-text-y-label">
                             Verteilung der Lösungsraten beim Typ
                         </span>
-                        <span class="apexcharts-tooltip-text-y-value">"${
-                          w.globals.seriesNames[sCount * stackIndex].replace('0','')
-                        }":</span>
+                        <span class="apexcharts-tooltip-text-y-value">"${w.globals.seriesNames[
+                          sCount * stackIndex
+                        ].replace('0', '')}":</span>
                     </div>
                 </div>
             </div>`
