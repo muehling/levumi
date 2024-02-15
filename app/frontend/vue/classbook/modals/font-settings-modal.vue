@@ -104,8 +104,7 @@
           data,
         })
         if (res.status === 200) {
-          const data = await res.json()
-
+          const data = res.data
           let index = this.globalStore.studentsInGroups[this.student.group_id].findIndex(
             s => s.id === this.student.id
           )

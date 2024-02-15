@@ -19,7 +19,7 @@ export const useTestsStore = defineStore('tests', {
     async fetch() {
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.tests.info })
-      const data = await res.json()
+      const data = res.data
       this.setTests(data.tests)
       this.isLoading = false
     },
@@ -28,7 +28,7 @@ export const useTestsStore = defineStore('tests', {
         return
       }
       const res = await ajax(apiRoutes.groups.getTestData(groupId))
-      const testData = await res.json()
+      const testData = res.data
       Vue.set(this.testsForGroup, groupId, testData)
     },
   },

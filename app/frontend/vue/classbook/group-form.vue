@@ -115,8 +115,7 @@
         }
 
         if (res.status === 200) {
-          const parsed = await res.json()
-          this.success(parsed)
+          this.success(res.data)
           this.label = ''
         }
       },
@@ -125,14 +124,12 @@
           url: '/groups/' + this.group.id + '?group[archive]=1',
           method: 'put',
         })
-        const data = await res.json()
+        const data = res.data
         if (data && res.status === 200) {
           this.success(data)
         }
       },
-      success(event) {
-        // propagate new data from ajax call to parent component
-        // this.$emit('update:groups', { object: event })
+      success() {
         this.globalStore.fetch()
         if (!this.group.id) {
           this.key = this.newKey()

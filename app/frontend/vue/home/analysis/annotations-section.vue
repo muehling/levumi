@@ -242,8 +242,7 @@
         })
 
         if (res.status === 200) {
-          const parsedResult = await res.json()
-          this.$root.$emit(`annotation-added-${this.group.id}`, parsedResult)
+          this.$root.$emit(`annotation-added-${this.group.id}`, res.data)
           this.annotationIsTrendThreshold = false
           this.annotationCategoryId = this.minCategoryId
           this.annotationEnd = null

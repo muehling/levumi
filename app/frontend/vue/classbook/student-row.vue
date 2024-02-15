@@ -336,7 +336,7 @@
           url: `/students${!this.empty ? '/' + this.student.id : ''}?${this.collectData()}`,
           method: this.empty ? 'post' : 'put',
         })
-        const data = await res.json()
+        const data = res.data
         if (data && res.status === 200) {
           this.update(data)
         }

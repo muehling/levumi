@@ -129,7 +129,6 @@
         selectedGroupId = firstActiveGroup.id
       }
       this.selectedGroupId = selectedGroupId
-
       if (isEmpty(this.assessmentsStore.assessments) && this.currentGroup.key) {
         this.assessmentsStore.fetch(selectedGroupId)
       }

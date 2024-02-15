@@ -1,4 +1,7 @@
 class ApplicationController < ActionController::Base
+  protect_from_forgery with: :exception
+  rescue_from ActionController::InvalidAuthenticityToken, with: :handle_invalid_token
+
   before_action :set_login,
                 except: %i[
                   info
@@ -16,6 +19,7 @@ class ApplicationController < ActionController::Base
 
   #GET '/'
   def start
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     respond_to do |format|
       format.html do
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
@@ -80,6 +84,7 @@ class ApplicationController < ActionController::Base
 
   #GET '/testen'
   def frontend
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     @student = Student.find(session[:student]) if session.has_key?(:student)
     respond_to do |format|
       format.html do
@@ -91,16 +96,19 @@ class ApplicationController < ActionController::Base
 
   #POST '/testen_login'
   def login_frontend
+    headers['Cache-Control'] = 'no-store, must-revalidate'
+    head 403 and return if !params[:login].present?
+    head 403 and return if params[:login].empty?
+
     s = Student.find_by_login(params[:login].upcase)
     unless s.nil?
       session[:student] = s.id
       respond_to do |format|
         format.html do
           @student = s
-          @no_script = true
           render :frontend, layout: 'test_select'
         end
-        format.json { head :ok }
+        format.json { render json: { student: s, tests: s.get_assessments }, status: :ok }
       end
     else
       head 403
@@ -112,7 +120,7 @@ class ApplicationController < ActionController::Base
     session.delete(:student)
     respond_to do |format|
       format.html { redirect_to '/testen' }
-      format.js { head 200 }
+      format.json { head :ok }
     end
   end
 
@@ -140,6 +148,13 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def handle_invalid_token
+    respond_to do |format|
+      format.html { redirect_to root_url }
+      format.json { head :unauthorized }
+    end
+  end
 
   def check_maintenance
     if ENV['MAINTENANCE'] == 'true'
@@ -173,7 +188,9 @@ class ApplicationController < ActionController::Base
       end
       @login = user
     else
-      #TODO might be necessary to return an error here for api calls
+      # return 401 for unauthorized api calls
+      head :unauthorized and return if request.format.json?
+
       # only redirect to frontpage if not already there to avoid endless cycle
       redirect_to root_path if request.fullpath != '/' && request.fullpath != '/?logout=true'
     end

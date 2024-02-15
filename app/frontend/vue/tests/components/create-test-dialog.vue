@@ -162,7 +162,7 @@
             return
         }
 
-        const data = await res.json()
+        const data = res.data
         this.testInfo = {
           area: contentObj.area,
           competence: contentObj.competence,

@@ -63,9 +63,9 @@
         this.isLoadingAssessments = true
         const response = await ajax(apiRoutes.students.activeAssessments(this.student.id))
         if (response.status === 200) {
-          const text = await response.text()
+          const data = response.data
 
-          this.activeAssessments = JSON.parse(text).map(a => ({
+          this.activeAssessments = data.map(a => ({
             isOpen: a.open,
             text: `${a.test_info.area} - ${a.test_info.competence} - ${a.test_info.family} - ${
               a.test_info.level
