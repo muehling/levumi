@@ -52,18 +52,20 @@ task 'seed_pband_mock' => :environment do
 
   # go through all students
   for j in 0..8
+  # reverse because we go from last to first result
+  # and per student go through all their results
     s = Student.find(s_ids[j])
-    # reverse because we go from last to first result
+
     c_row = corr_rows[j].reverse
     b_row = box_plot_rows[j].reverse
-    # and per student go through all their results
+
     for k in 0..8
       a.results.create(
         student_id: s.id,
         test_date: end_date - 7 * k,
         views: {
           'correctness': c_row[k],
-          'exerciseTypePercentileBands': b_row[k]
+          'correctnessByExerciseType': b_row[k]
         },
         report: rep,
         data: []

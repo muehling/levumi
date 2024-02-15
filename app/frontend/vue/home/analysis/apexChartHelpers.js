@@ -339,7 +339,7 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
 
   let hoverList = ''
   hoverIndexes.forEach((hoverIndex, seriesEachIndex) => {
-    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex]) {
+    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] != undefined) {
       hoverList += `
                         <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
                             <span class="apexcharts-tooltip-marker" style="background-color: ${

@@ -648,10 +648,7 @@
             let catResults = wResults
               .map(
                 res =>
-                  res?.views?.[
-                    // FIXME: this is a shortlived workaround to enable showing two views that are based on the same data
-                    view.key_data_overwrite ? view.key_data_overwrite : view.key
-                  ]?.[series_key]
+                  res?.views?.[view.uses_data_from ? view.uses_data_from : view.key]?.[series_key]
               )
               .filter(r => r !== undefined && r !== null)
             // calculate the quartiles for this category
@@ -700,10 +697,7 @@
 
         return this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)?.views?.[
-            // FIXME: this is a shortlived workaround to enable showing two views that are based on the same data
-            this.viewConfig.key_data_overwrite
-              ? this.viewConfig.key_data_overwrite
-              : this.viewConfig.key
+            this.viewConfig.uses_data_from ? this.viewConfig.uses_data_from : this.viewConfig.key
           ]
 
           // if a week has no results add a point with an empty y value for this week
