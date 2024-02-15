@@ -50,11 +50,11 @@
               </template>
               <b-button
                 block
-                :href="'/students/' + student.id + '/results/new?test_id=' + test.test_info.id"
+                :href="`/students/${student.id}/results/new?test_id=${test.test_info.id}`"
                 :disabled="!test.open"
                 :variant="test.open ? 'outline-success' : 'success'"
                 :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
-                @click="logout = false"
+                @click="triggerAutoLogout = false"
               >
                 {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
               </b-button>
@@ -143,6 +143,7 @@
         isCodeInvalid: false,
         isCodeEmpty: false,
         loginCode: '',
+        triggerAutoLogout: true,
       }
     },
     computed: {
@@ -157,7 +158,7 @@
       },
     },
     created() {
-      window.addEventListener('beforeunload', this.handleLogout)
+      window.addEventListener('beforeunload', this.autoLogout)
       if (!this.student && window.location.search && window.location.search.startsWith('?login=')) {
         this.loginCode = window.location.search.split('=')[1]
         this.handleLogin()
@@ -170,6 +171,12 @@
     },
 
     methods: {
+      autoLogout() {
+        if (this.triggerAutoLogout) {
+          this.handleLogout()
+        }
+      },
+
       async handleLogout() {
         const res = await fetch('/testen_logout', {
           method: 'POST',
