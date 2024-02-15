@@ -1,4 +1,6 @@
 class StudentsController < ApplicationController
+  before_action :set_student, except: %i[create]
+
   #GET /students
   def index
     render json: @login.students
@@ -19,32 +21,25 @@ class StudentsController < ApplicationController
     end
   end
 
-  #GET /students/:id.js
-  #GET /students/:id.html
   def show
-    s = Student.find(params[:id])
     respond_to do |format|
       format.json do #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung => Schüleransicht
-        unless s.nil?
-          render json: s.get_assessments
+        unless @student.nil?
+          render json: @student.get_assessments
         else
           head 304
         end
       end
       format.html do #Anzeige als eigene Seite => Lehrkraft-Ansicht
-        unless s.nil?
-          @student = s
-          render :show, layout: 'minimal'
-        end
+        render :show, layout: 'minimal' unless @student.nil?
       end
     end
   end
 
   #PUT /students/:id
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    s = Student.find(params[:id])
-    unless s.nil? || s.group.read_only(@login) || !s.update(student_attributes)
-      render json: s
+    unless @student.nil? || @student.group.read_only(@login) || !@student.update(student_attributes)
+      render json: @student
     else
       head 304
     end
@@ -52,12 +47,15 @@ class StudentsController < ApplicationController
 
   #DEL /students/:id
   def destroy
-    s = Student.find(params[:id])
-    s.destroy unless s.nil? || s.group.read_only(@login)
+    @student.destroy unless @student.nil? || @student.group.read_only(@login)
     head :ok #200 als Rückmeldung an Vue-Component
   end
 
   private
+
+  def set_student
+    @student = Student.find(params[:id])
+  end
 
   def student_attributes
     params

@@ -24,15 +24,16 @@ class UserMailer < ApplicationMailer
     subject_prefix = Rails.env.staging? ? 'STAGING ' : ''
 
     recipients =
-      if Rails.env.development? || Rails.env.staging?
+      if Rails.env.development? || Rails.env.staging? || !params[:server_error].nil?
         'beckmann@leibniz-ipn.de'
       else
         %w[jana.jungjohann@tu-dortmund.de beckmann@leibniz-ipn.de]
       end
 
     complete_subject = "#{subject_prefix.to_s}#{subject}"
+    sender = params[:server_error].nil? ? @user.email : 'noreply@levumi.de'
 
-    mail(bcc: recipients, from: @user.email, subject: complete_subject)
+    mail(bcc: recipients, from: sender, subject: complete_subject)
   end
 
   def new_share

@@ -1069,8 +1069,7 @@
       async loadStudentTargets() {
         const res = await ajax(apiRoutes.targets.getStudentTargets(this.group.id, this.test.id))
         if (res.status === 200) {
-          const text = await res.text()
-          const result = JSON.parse(text)
+          const result = res.data
           this.studentTargets = result.targets
         } else {
           this.studentTargets = []

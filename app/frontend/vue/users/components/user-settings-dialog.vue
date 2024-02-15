@@ -164,7 +164,7 @@
           })
           this._close()
         } else {
-          const error = await res.json()
+          const error = res.data
           this.errors = error.errors
         }
       },

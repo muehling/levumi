@@ -20,15 +20,15 @@
 <script type="module">
 
  
-  const getFormContents = ()=>{
+  const getFormContents = () => {
     return $('form.new_user')
     .serializeArray()
     .reduce((acc, entry) => {
-      return {[entry.name]: entry.value, ...acc}
+      return { ...acc, [entry.name]: entry.value}
     }, {})
   }
 
-  const checkConstraints = ()=>{
+  const checkConstraints = () => {
     const raw = getFormContents()
     if ($('#acceptTerms').is(':checked') && raw['user[email]'] !== "" && raw['user[state]'] !== "0" && !!raw['user[account_type]']){
       $('#main-register').prop('disabled', false)
@@ -42,11 +42,18 @@
   $('#user-messages').toast({animation: true, autohide: false}).toast('hide')
 
   let initialTimestamp = "<%= @render_timestamp %>"
-  $("#main-register").on("click", (e)=>{
+  $("#main-register").on("click", (e) => {
     e.preventDefault()
     e.stopPropagation()
 
     const raw = getFormContents()
+
+    if (!raw['user[email]'].includes("@")){
+      $('#user-messages-body').html("<p>Bitte geben Sie eine gültige Emailadresse ein und versuchen es erneut.</p>")
+      $('#user-messages').toast('show')    
+      return
+    }
+
     const data = {user:{
       "email": raw['user[email]'].trim(),
       "state": raw['user[state]'],
@@ -66,7 +73,7 @@
         },
         credentials: 'include',
         body: JSON.stringify(data)
-      }).then(async res=>{
+      }).then(async res => {
         switch(res.status) {
           case 200:
             $('#modal').modal('hide')
@@ -74,6 +81,10 @@
             $('#user-messages').toast('show')
             document.getElementById("new_user").reset();
             break
+          case 401:
+            // invalid token
+            // todo
+            break;
           case 403:
             const err = await res.json()            
             switch (err.error){

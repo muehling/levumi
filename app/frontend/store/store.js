@@ -7,16 +7,17 @@ import Vue from 'vue'
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
+    errorMessage: '',
+    genericMessage: { title: '', message: '' },
+    groupInfo: [],
+    groups: [],
     isLoading: false,
     login: {},
-    studentsInGroups: {},
-    groups: [],
-    groupInfo: [],
+    serverError: undefined,
     masquerade: false,
     shareKeys: {},
     staticData: {},
-    errorMessage: '',
-    genericMessage: { title: '', message: '' },
+    studentsInGroups: {},
   }),
 
   actions: {
@@ -54,18 +55,18 @@ export const useGlobalStore = defineStore('global', {
 
     async fetchAnnotationCategories() {
       const res = await ajax({ url: apiRoutes.annotationCategories.index })
-      const data = await res.json()
+      const data = res.data
       this.staticData.annotationCategories = data
     },
     async fetchTestTypes() {
       const res = await ajax({ url: apiRoutes.testTypes.index })
-      const data = await res.json()
+      const data = res.data
       this.staticData.testTypes = data
     },
 
     async fetchTestMetaData() {
       const res = await ajax({ ...apiRoutes.tests.testMetaData })
-      const data = await res.json()
+      const data = res.data
       this.staticData.testMetaData = data
     },
 
@@ -78,7 +79,7 @@ export const useGlobalStore = defineStore('global', {
         return test.items
       } else {
         const data = await ajax({ ...apiRoutes.tests.items(testId) })
-        const items = await data.json()
+        const items = data.data
         test.items = items
         Vue.set(this.staticData.testMetaData, 'tests', [...this.staticData.testMetaData.tests])
       }
@@ -87,7 +88,7 @@ export const useGlobalStore = defineStore('global', {
     async fetch(showLoader = false) {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
-      const coreData = await res.json()
+      const coreData = res.data
       this.shareKeys = coreData.share_keys
       this.groups = coreData.groups
       this.groupInfo = coreData.groupInfo

@@ -139,7 +139,7 @@
           url: `${apiRoutes.tests.index}${this.showExport ? '?show_export=true' : ''}`,
         })
         if (res.status === 200) {
-          const data = await res.json()
+          const data = res.data
           this.tests = data.tests.map((t, i) => ({
             ...t,
             index: i + 1,
