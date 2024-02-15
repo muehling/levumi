@@ -10,6 +10,7 @@
           <tr>
             <th>Geteilt mit</th>
             <th></th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -228,13 +229,12 @@
       async submitData(params) {
         const res = await ajax(params)
         if (res.status === 200) {
-          const data = await res.json()
-
+          const data = res.data
           this.$emit('update:groups', { index: this.index, object: data })
           this.isShown = false
           return data
         } else {
-          const error = await res.json()
+          const error = res.data
           this.errorMessage = error.message
           return null
         }

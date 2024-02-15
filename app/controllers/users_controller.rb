@@ -80,7 +80,12 @@ class UsersController < ApplicationController
     end
     if params.has_key?('support')
       UserMailer
-        .with(user: @user, body: params['text'], subject: params['subject'])
+        .with(
+          user: @user,
+          body: params['text'],
+          subject: params['subject'],
+          server_error: params['server_error']
+        )
         .support
         .deliver_later
     end
@@ -300,6 +305,7 @@ class UsersController < ApplicationController
   #GET /passwort
   #POST /passwort
   def recover
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     if request.post?
       @user = User.find_by_email(params[:email])
     else
@@ -326,7 +332,8 @@ class UsersController < ApplicationController
           :security_digest,
           :settings,
           :state,
-          :town
+          :town,
+          :server_error
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)

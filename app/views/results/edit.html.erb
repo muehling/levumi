@@ -73,6 +73,7 @@
         
             const url = '<%= student_results_url(@student)%>'
             const header = {
+                'Accept': 'application/json',
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'X-Requested-With': 'XMLHttpRequest',
                 'X-CSRF-Token': window["$"]('meta[name="csrf-token"]').attr('content')
@@ -92,25 +93,21 @@
                 body: body
             })
             isLoading = false
-            if (response.ok){
-                callback()
-            } else {
-                throw Error(response.statusText)
-            }
+            return response
         <% end %>
     }
 
     //Funktionen für Testumgebung bereitstellen
     async function saveResults(views, report, data, callback) {
-        const d = {views, report, data}
-        try {
-            await sendResult(d, "POST", callback)
-        } catch (e){
-            try {
-                await sendResult(d, 'PUT', callback)
-            } catch(e){
+        const d = {views, report, data}               
+        const res = await sendResult(d, "POST", callback)
+      
+        switch (res.status){
+            case 200: callback(); break;
+            case 401: 
+                // todo find a way to repost a student's result in case the csrf token became invalid
+            default: 
                 window["$"]('#error_message').show()
-            }
         }
         window.removeEventListener('beforeunload', preventNavigation, true);
     }

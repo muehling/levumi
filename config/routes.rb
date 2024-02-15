@@ -62,6 +62,7 @@ Rails.application.routes.draw do
   put '/users/:id/mail', to: 'users#user_mail'
 
   get '/registration_error', to: 'application#redirect_to_registration_error'
+  get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
 
   #Reguläres REST-Routing
   resources :users

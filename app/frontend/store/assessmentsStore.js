@@ -35,8 +35,8 @@ export const useAssessmentsStore = defineStore('assessments', {
       this.isLoading = true
       const res = await ajax(apiRoutes.assessments.currentAssessment(groupId, testId))
       if (res.status === 200) {
-        const text = await res.text()
-        this.currentAssessment = { ...JSON.parse(text), groupId }
+        const data = res.data
+        this.currentAssessment = { ...data, groupId }
       } else {
         this.currentAssessment = undefined
       }
@@ -51,7 +51,7 @@ export const useAssessmentsStore = defineStore('assessments', {
       const res = await ajax(apiRoutes.assessments.info(groupId))
 
       if (res.status === 200) {
-        const data = await res.json()
+        const data = res.data
         this.setAssessments(groupId, data)
       } else {
         this.setAssessments(groupId, [])

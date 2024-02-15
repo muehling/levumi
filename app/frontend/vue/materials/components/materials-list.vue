@@ -61,7 +61,7 @@
       async refetch() {
         const res = await ajax({ url: apiRoutes.materials.index })
         if (res.status === 200) {
-          const data = await res.json()
+          const data = res.data
           this.materials = data.materials.map(t => ({
             ...t,
             _rowVariant: t.archive ? 'outline-secondary' : '',

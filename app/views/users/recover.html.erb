@@ -34,7 +34,7 @@ const submit = async e => {
   const security =  $('#security').val()
 
   const res = await fetch('/passwort', {
-    method: 'post',
+    method: 'POST',
     headers: {
       Accept: 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
@@ -44,19 +44,20 @@ const submit = async e => {
     body: JSON.stringify({ email, security }),
   })
 
+  let pw = ''
   if (res.status === 200) {
     const data = await res.json()
-    let pw = ''
     try {
       pw = sjcl.decrypt(security, data.user.security_digest)
     } catch (e) {
       // error message is displayed in the else case below
-  }
+    }
+  } 
   if (pw) {
     $('#res').html(
         `<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
         Überprüfung erfolgreich<br>
-        Hier klicken, um das Passwort anzeigen:
+        Hier klicken, um das Passwort anzeigen
         </button>
         <div class='collapse mt-3' id='collapse'><p class="alert alert-success">${pw}</p>
           <p>Bitte kehren Sie zur <a href="/">Startseite</a> zurück, um sich mit Ihrer Email-Adresse und dem angezeigten Passwort einzuloggen.</p>
@@ -64,11 +65,10 @@ const submit = async e => {
         `
       )
       
-    } else {
-      $('#res').html(
-        "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"
-      )
-    }
+  } else {
+    $('#res').html(
+      "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"
+    )
   }
 }
 $("#password-reset").on("submit", submit)

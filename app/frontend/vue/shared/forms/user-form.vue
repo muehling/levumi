@@ -266,7 +266,7 @@
             this.globalStore.setShareKeys(newKeys)
           }
         } else {
-          const data = await res.json()
+          const data = res.data
           this.errors = data.errors
         }
       },

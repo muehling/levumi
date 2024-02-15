@@ -62,6 +62,13 @@
             <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
               >(Lehrkräfte-Übung)</b-btn
             >
+            <b-button
+              class="btn-sm ml-1"
+              :variant="assessment?.result_count ? 'danger' : 'outline-danger'"
+              @click="deleteAssessment(assessment)"
+            >
+              <i class="fas fa-trash"></i>
+            </b-button>
           </td>
         </tr>
       </tbody>
@@ -243,9 +250,15 @@
       async deleteAssessment(assessment) {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Testung löschen',
-          message: 'Möchten Sie diesen Test von der Klasse entfernen?',
+          message: `Möchten Sie diesen Test von der Klasse entfernen?${
+            assessment?.result_count
+              ? ' Damit werden auch alle bestehenden Messungen gelöscht. Dieser Vorgang kann nicht rückgängig gemacht werden!'
+              : ''
+          }`,
+          disableCloseOnBackdrop: true,
           okText: 'Testung löschen',
-          okIntent: 'outline-danger',
+          okIntent: 'danger',
+          cancelText: 'Abbrechen',
         })
         this.isUpdating.push(assessment.test_id)
 

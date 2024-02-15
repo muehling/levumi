@@ -1,33 +1,8 @@
 <%
-  data = {'tests': nil, student: 0}
+  data = {'tests': nil, student: 0} 
   data['tests'] = @student.get_assessments unless @student.nil?
   data['student'] = {id: @student.id, login: @student.login} unless @student.nil?
 %>
-
-<% unless @student.nil? %>
-  <script type="module">
-      const logout = ()=>{
-        //TODO needs to be handled in frontend-app
-        fetch('/testen_logout', {
-            method: 'POST',
-            headers: {
-              Accept: 'text/javascript',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-            },
-            credentials: 'include',
-          }).then(res=>{
-            if (res.status ===200){
-              window.location.replace("/")
-              sessionStorage.removeItem("login")
-              sessionStorage.removeItem("old_login")
-            }
-          })
-      }
-      $('#navbar_text').html('Dein Login Code: <%= @student.login %>')
-      $('#navbar_button').html("<button class='btn btn-outline-secondary' aria-label='Abmelden'>Abmelden</button>").on("click", logout)
-  </script>
-<% end %>
 
 <div id='levumi' data="<%= data.to_json%>">
 
@@ -41,7 +16,6 @@
       </div>
     </b-row>
   </div>
-
   <!-- Vue-component -->
   <frontend-app></frontend-app>
 

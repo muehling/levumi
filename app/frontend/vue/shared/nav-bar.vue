@@ -309,7 +309,7 @@
 
     methods: {
       async updateUser(res) {
-        const data = await res.json()
+        const data = res.data
         this.globalStore.setLogin({ ...this.globalStore.login, ...data })
       },
       checkCapability(capability) {

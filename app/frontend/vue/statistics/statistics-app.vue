@@ -124,7 +124,7 @@
     methods: {
       async fetch() {
         const res = await ajax({ url: apiRoutes.users.statistics })
-        const data = await res.json()
+        const data = res.data
         this.data = data
       },
     },
