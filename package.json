@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "@fortawesome/fontawesome-free": "^6.2.1",
-    "apexcharts": "^3.36.3",
+    "apexcharts": "^3.43.2-0",
     "axios": "^1.6.5",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2",
@@ -48,16 +48,10 @@
     "vite-plugin-vue2": "^2.0.2"
   },
   "resolutions": {
-    "lodash.template": "^4.5.0",
     "concat-stream": "^1.5.2",
     "glob-parent": "^5.1.2",
     "yargs-parser": "^5.0.1",
     "braces": "^2.3.1",
-    "json5": "^2.2.2",
-    "decode-uri-component": "^0.2.1",
-    "semver": "^7.5.2",
-    "word-wrap": "^1.2.4",
-    "@babel/traverse": "^7.23.2",
     "postcss": "^8.4.31"
   }
 }

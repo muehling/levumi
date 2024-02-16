@@ -70,6 +70,11 @@ GEM
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    bundle-audit (0.1.0)
+      bundler-audit
+    bundler-audit (0.9.1)
+      bundler (>= 1.2.0, < 3)
+      thor (~> 1.0)
     concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
@@ -112,12 +117,12 @@ GEM
       timeout
     net-smtp (0.4.0)
       net-protocol
-    nio4r (2.5.9)
-    nokogiri (1.16.0-x86_64-linux)
+    nio4r (2.7.0)
+    nokogiri (1.16.2-x86_64-linux)
       racc (~> 1.4)
     psych (5.1.1.1)
       stringio
-    puma (6.4.0)
+    puma (6.4.2)
       nio4r (~> 2.0)
     racc (1.7.3)
     rack (2.2.8)
@@ -191,6 +196,7 @@ PLATFORMS
 DEPENDENCIES
   bcrypt (~> 3.1.7)
   bootsnap (>= 1.1.0)
+  bundle-audit (~> 0.1.0)
   debug
   jbuilder (~> 2.5)
   mysql2

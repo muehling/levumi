@@ -1,12 +1,7 @@
 <template>
   <div id="target-controls">
     <b-collapse v-if="targetIsEnabled || dateUntilIsEnabled" id="target_collapse" v-model="visible">
-      <b-form
-        v-if="!readOnly || readonlySuppressed"
-        class="border p-3"
-        accept-charset="UTF-8"
-        onsubmit="return false"
-      >
+      <b-form v-if="!readOnly" class="border p-3" accept-charset="UTF-8" onsubmit="return false">
         <b-alert
           :show="selectedStudentId !== -1 && storedIsNull"
           variant="info"
@@ -175,7 +170,6 @@
       targetValid: Boolean,
       test: Object,
       group: Object,
-      readonlySuppressed: Boolean,
     },
     computed: {
       multipleValues() {

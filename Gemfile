@@ -31,3 +31,5 @@ group :development, :test do
 end
 
 gem 'mysql2'
+
+gem "bundle-audit", "~> 0.1.0"
