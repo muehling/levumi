@@ -140,6 +140,7 @@
       },
       getTestsForGroup(groupId) {
         this.selectedGroupId = groupId
+        this.assessmentsStore.setCurrentAssessment(undefined)
         this.$router.push({
           path: `/diagnostik/${groupId}`,
         })
