@@ -127,6 +127,7 @@ In der test.json werden die Metadaten des Tests definiert. Folgende Felder müss
     - `series`: Array aus Texten, analog zu `column`
     - `niv_config`: Objekt, Konfiguration für den Fall, dass `type` = `niveau` ([siehe Konfiguration der Ansicht zu Anforderungsstufen](./anforderungsstufen_ansicht/anforderungsstufen-ansicht.md))
     - `options`: optional, für `graph` und `graph_table` können hier ergänzende Optionen für die Darstellung hinterlegt werden. Für die Visualisierung wird das Paket `apexcharts` verwendet. Die Dokumentation findet sich hier: https://apexcharts.com/docs/options/annotations/
+    - `uses_data_from`: optional. Muss, wenn gesetzt, exakt dem Key einer anderen View dieses Tests entsprechen. Ist dieser Key gesetzt, benötigen Results keine eigenen Daten für diese View, sondern verwenden stattdessen die der zum angegebenen Key passenden View. Dieses Feature kann genutzt werden, wenn zwei Views eines Tests dieselbe Datenstruktur benötigen.
 - `items`: Objekt mit einem Key/Value-Paar pro Test-Item. Der Key ist dabei die Id des Test-Items in der `test.js`, Value entspricht i. d. R. der `description`
 
 ## Dokumentation Fördermaterial
