@@ -1,120 +1,149 @@
 <template>
-  <div v-if="loading" class="spinner" style="padding-bottom: 75px">
-    <!-- Spinner während Login anzeigen -->
-    <div class="bounce1"></div>
-    <div class="bounce2"></div>
-    <div class="bounce3"></div>
-  </div>
-  <div v-else-if="isLoggedIn">
-    <b-alert :show="noTestsAvailable" variant="secondary">
-      Gerade gibt es keine Tests für dich!
-    </b-alert>
-    <!-- Übersicht anzeigen -->
-    <div class="row">
-      <div
-        v-for="test in studentTests"
-        :key="test.id"
-        class="col-12 col-md-6 col-lg-4 col-xl-2 test-card"
+  <div>
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+      <a class="navbar-brand" href="/"
+        ><img
+          src="/images/shared/Levumi-normal_small.png"
+          alt="Levumi-Icon"
+          width="48"
+          height="48"
+        />Levumi</a
       >
-        <b-card
-          class="w-100 m-2 shadow"
-          body-class="test-card-body px-3"
-          :title="test.test_info.family"
-          :sub-title="test.test_info.level"
-        >
-          <template slot="header">
-            <h4>{{ test.test_info.competence }}</h4>
-            <h6>{{ test.test_info.area }}</h6>
-          </template>
-          <b-button
-            block
-            :href="'/students/' + student.id + '/results/new?test_id=' + test.test_info.id"
-            :disabled="!test.open"
-            :variant="test.open ? 'outline-success' : 'success'"
-            :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
-            @click="logout = false"
+      <ul class="navbar-nav ml-auto">
+        <li v-if="isLoggedIn" id="navbar_button" class="nav-item">
+          <b-button variant="outline-secondary" @click="handleLogout">Abmelden</b-button>
+        </li>
+      </ul>
+      <ul class="navbar-nav ml-auto">
+        <li v-if="isLoggedIn" id="navbar_text" class="navbar-text">
+          {{ student?.login ? `Dein Login-Code: ${student.login}` : '' }}
+        </li>
+      </ul>
+    </nav>
+    <div id="container" class="container-fluid">
+      <div v-if="isLoading" class="spinner" style="padding-bottom: 75px">
+        <!-- Spinner während Login anzeigen -->
+        <div class="bounce1"></div>
+        <div class="bounce2"></div>
+        <div class="bounce3"></div>
+      </div>
+      <div v-else-if="isLoggedIn">
+        <b-alert :show="noTestsAvailable" variant="secondary">
+          Gerade gibt es keine Tests für dich!
+        </b-alert>
+        <!-- Übersicht anzeigen -->
+        <div class="row">
+          <div
+            v-for="test in studentTests"
+            :key="test.id"
+            class="col-12 col-md-6 col-lg-4 col-xl-2 test-card"
           >
-            {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
-          </b-button>
-        </b-card>
+            <b-card
+              class="w-100 m-2 shadow"
+              body-class="test-card-body px-3"
+              :title="test.test_info.family"
+              :sub-title="test.test_info.level"
+            >
+              <template slot="header">
+                <h4>{{ test.test_info.competence }}</h4>
+                <h6>{{ test.test_info.area }}</h6>
+              </template>
+              <b-button
+                block
+                :href="`/students/${student.id}/results/new?test_id=${test.test_info.id}`"
+                :disabled="!test.open"
+                :variant="test.open ? 'outline-success' : 'success'"
+                :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
+                @click="triggerAutoLogout = false"
+              >
+                {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
+              </b-button>
+            </b-card>
+          </div>
+        </div>
+        <div class="footer-spacer"></div>
+      </div>
+      <div v-else>
+        <!-- Login Form anzeigen -->
+        <b-row>
+          <b-col md="3"> </b-col>
+          <b-col md="6">
+            <div v-if="isManualInput">
+              <b-card
+                class="mt-5"
+                style="font-size: 1.2em"
+                header="Gleich geht es los! Gib in das Feld deinen eigenen Zugangscode ein."
+              >
+                <b-form
+                  id="code-form"
+                  ref="codeForm"
+                  accept-charset="UTF-8"
+                  aria-label="Zugangscode eingeben"
+                  @submit.prevent.stop="handleLogin"
+                >
+                  <b-form-group aria-label="Zugangscode eingeben">
+                    <b-form-input
+                      v-model="loginCode"
+                      type="text"
+                      name="login"
+                      placeholder="Zugangscode"
+                      style="font-size: 1.5em"
+                      :formatter="format"
+                    />
+                    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4"
+                      >Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine
+                      Lehrkraft.</b-alert
+                    >
+                    <b-alert :show="isCodeEmpty" variant="danger" class="mt-4"
+                      >Bitte gib deinen Zugangscode ein.</b-alert
+                    >
+                  </b-form-group>
+                  <b-button style="font-size: 1.2em" variant="primary" @click="handleLogin"
+                    >Starten</b-button
+                  >
+                  <b-button
+                    style="font-size: 1.2em; float: right"
+                    type="button"
+                    variant="primary"
+                    @click="switchQr()"
+                    >QR-Code</b-button
+                  >
+                </b-form>
+              </b-card>
+            </div>
+            <div v-else>
+              <qr-reader :switch-qr="switchQr" />
+            </div>
+          </b-col>
+          <b-col md="3"> </b-col>
+        </b-row>
       </div>
     </div>
-    <div class="footer-spacer"></div>
-  </div>
-  <div v-else>
-    <!-- Login Form anzeigen -->
-    <b-row>
-      <b-col md="3"> </b-col>
-      <b-col md="6">
-        <div v-if="isManualInput">
-          <b-card
-            class="mt-5"
-            style="font-size: 1.2em"
-            header="Gleich geht es los! Gib in das Feld deinen eigenen Zugangscode ein."
-          >
-            <b-form
-              id="code-form"
-              ref="codeForm"
-              action="/testen_login"
-              method="post"
-              accept-charset="UTF-8"
-              aria-label="Zugangscode eingeben"
-              @submit.prevent="handleSubmit"
-            >
-              <b-form-group aria-label="Zugangscode eingeben">
-                <input type="hidden" name="authenticity_token" :value="includeCSRFToken()" />
-                <b-form-input
-                  v-model="loginCode"
-                  type="text"
-                  name="login"
-                  placeholder="Zugangscode"
-                  style="font-size: 1.5em"
-                  :formatter="format"
-                />
-                <b-alert :show="isCodeInvalid" variant="danger" class="mt-4"
-                  >Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine
-                  Lehrkraft.</b-alert
-                >
-              </b-form-group>
-              <b-button style="font-size: 1.2em" type="submit" variant="primary">Starten</b-button>
-              <b-button
-                style="font-size: 1.2em; float: right"
-                type="button"
-                variant="primary"
-                @click="switchQr()"
-                >QR-Code</b-button
-              >
-            </b-form>
-          </b-card>
-        </div>
-        <div v-else>
-          <qr-reader :switch-qr="switchQr" />
-        </div>
-      </b-col>
-      <b-col md="3"> </b-col>
-    </b-row>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 
 <script>
-  import { ajax, getCSRFToken } from '../../utils/ajax'
   import { isMobile, isTablet } from 'mobile-device-detect'
   import QrReader from './qr-reader.vue'
+  import ConfirmDialog from '../shared/confirm-dialog.vue'
   export default {
     name: 'FrontendApp',
     components: {
       QrReader,
+      ConfirmDialog,
     },
     data: function () {
       return {
         tests: this.$root.tests,
         student: this.$root.student,
         retry: false,
-        loading: false,
-        logout: true,
+        isLoading: false,
         isManualInput: true,
         isCodeInvalid: false,
+        isCodeEmpty: false,
         loginCode: '',
+        triggerAutoLogout: true,
       }
     },
     computed: {
@@ -129,7 +158,12 @@
       },
     },
     created() {
-      window.addEventListener('beforeunload', this.auto_logout)
+      window.addEventListener('beforeunload', this.autoLogout)
+      if (!this.student && window.location.search && window.location.search.startsWith('?login=')) {
+        this.loginCode = window.location.search.split('=')[1]
+        this.handleLogin()
+      }
+
       // QR-Reader Standardansicht für Tablet und Smartphones
       if (isMobile || isTablet) {
         this.isManualInput = false
@@ -137,46 +171,78 @@
     },
 
     methods: {
-      includeCSRFToken() {
-        return getCSRFToken()
-      },
-      handleLogout() {
-        ajax({ url: '/test_logout', method: 'post' })
-      },
-      auto_logout: function handler() {
-        //Falls Tab geschlossen ohne vorher auszuloggen
-        if (this.logout) {
-          fetch('/testen_logout', {
-            method: 'POST',
-            headers: {
-              Accept: 'text/javascript',
-              'X-Requested-With': 'XMLHttpRequest',
-              'X-CSRF-Token': getCSRFToken(),
-            },
-            credentials: 'include',
-          })
+      autoLogout() {
+        if (this.triggerAutoLogout) {
+          this.handleLogout()
         }
       },
+
+      async handleLogout() {
+        const res = await fetch('/testen_logout', {
+          method: 'POST',
+          headers: {
+            Accept: 'text/html',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': document.getElementsByName('csrf-token')[0].getAttribute('content'),
+          },
+          credentials: 'include',
+        })
+        if (res.status === 200) {
+          this.loginCode = undefined
+          this.student = undefined
+          this.tests = undefined
+          this.isCodeInvalid = false
+          this.isCodeEmpty = false
+        }
+      },
+
       format(val) {
         return val.toUpperCase()
       },
-      async checkCode() {
-        const res = await ajax({
-          url: '/testen_login',
-          method: 'POST',
-          data: { login: this.loginCode },
-        })
-        return res.status == 200
-      },
 
-      async handleSubmit() {
-        const isCodeExisting = await this.checkCode()
-
-        if (isCodeExisting) {
-          this.$refs.codeForm.submit()
-        } else {
-          this.isCodeInvalid = true
+      async handleLogin() {
+        this.isCodeInvalid = false
+        if (!this.loginCode) {
+          this.isCodeEmpty = true
+          return
         }
+        this.isLoading = true
+        this.isCodeEmpty = false
+
+        const res = await fetch('/testen_login', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest',
+            'X-CSRF-Token': document.getElementsByName('csrf-token')[0].getAttribute('content'),
+          },
+          credentials: 'include',
+          body: JSON.stringify({ login: this.loginCode }),
+        })
+
+        let data
+        switch (res.status) {
+          case 200:
+            data = await res.json()
+            this.student = data.student
+            this.tests = data.tests
+            break
+          case 401:
+            await this.$refs.confirmDialog.open({
+              hideCancelButton: true,
+              message: 'Etwas ist schiefgegangen. Bitte probiere es gleich noch einmal!',
+              okIntent: 'outline-success',
+              okText: 'Ok',
+              title: 'Ups',
+            })
+            window.location.reload()
+            break
+          default:
+            this.isCodeInvalid = true
+        }
+        this.isLoading = false
       },
 
       switchQr() {

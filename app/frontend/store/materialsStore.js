@@ -16,15 +16,14 @@ export const useMaterialsStore = defineStore('materials', {
     async fetch() {
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.materials.info })
-      const data = await res.json()
+      const data = res.data
       this.setMaterials(data.materials)
       this.isLoading = false
     },
     async fetchMaterialsForTest(testId) {
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.materials.materialsForTest(testId) })
-
-      this.materialsForTest = await res.json()
+      this.materialsForTest = res.data
       this.isLoading = false
     },
   },

@@ -96,6 +96,9 @@
       '$route.params': {
         immediate: true,
         async handler(data) {
+          if (data.forceUpdate) {
+            this.assessmentsStore.setCurrentAssessment(undefined)
+          }
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
           }
@@ -126,7 +129,6 @@
         selectedGroupId = firstActiveGroup.id
       }
       this.selectedGroupId = selectedGroupId
-
       if (isEmpty(this.assessmentsStore.assessments) && this.currentGroup.key) {
         this.assessmentsStore.fetch(selectedGroupId)
       }
@@ -138,6 +140,7 @@
       },
       getTestsForGroup(groupId) {
         this.selectedGroupId = groupId
+        this.assessmentsStore.setCurrentAssessment(undefined)
         this.$router.push({
           path: `/diagnostik/${groupId}`,
         })

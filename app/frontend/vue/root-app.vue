@@ -71,6 +71,39 @@
         return this.globalStore.login.account_type
       },
     },
+    watch: {
+      'globalStore.serverError': {
+        immediate: true,
+        async handler() {
+          if (this.globalStore.serverError) {
+            switch (this.globalStore.serverError.status) {
+              case 401:
+                await this.$refs.confirmDialog.open({
+                  hideCancelButton: true,
+                  message: `Ihre letzte Aktion konnte nicht abgeschlossen werden, weil die
+                serverseitige Anwendung aktualisiert wurde. Die Seite muss einmal neu geladen werden;
+                bitte führen Sie Ihre Aktion danach erneut aus.`,
+                  okText: 'Seite neu laden',
+                  title: 'Server-Aktualisierung',
+                })
+                window.location.reload()
+                break
+              case 404:
+                if (
+                  this.globalStore.serverError.url === '/renew_login' ||
+                  this.globalStore.serverError.url === '/login'
+                ) {
+                  break
+                }
+                this.sendErrorReport()
+                break
+              default:
+                this.sendErrorReport()
+            }
+          }
+        },
+      },
+    },
     async created() {
       await this.checkLogin()
       if (this.globalStore.login.intro_state >= 5) {
@@ -78,6 +111,42 @@
       }
     },
     methods: {
+      async sendErrorReport() {
+        const errorMessage = JSON.stringify(this.globalStore.serverError)
+        const sendReport = await this.$refs.confirmDialog.open({
+          message: `Bei Ihrer Anfrage ist ein Fehler aufgetreten.
+              Bitte aktualisieren Sie die Seite und führen Sie Ihre Aktion erneut
+              durch. Sollte der Fehler weiterhin auftreten, kontaktieren Sie uns gern über das Kontaktformular.
+              <br/><br/>Zusätzlich können Sie uns bei der Weiterentwicklung
+              von Levumi unterstützen, wenn Sie uns einen anonymen Fehlerbericht senden. Die übertragenen Daten dienen nur
+              der Fehlerbehebung und werden in Übereinstimmung mit unserer Datenschutzerklärung weder langfristig gespeichert
+              noch anderweitig verarbeitet.<br/><br/>Folgende Informationen
+              werden gesendet:<br/>${JSON.stringify(this.globalStore.serverError)}<br/><br/>`,
+          okText: 'Ja, Bericht senden',
+          okIntent: 'outline-success',
+          containsHtml: true,
+          cancelText: 'Bericht nicht senden',
+          title: 'Ein Fehler ist aufgetreten!',
+        })
+        if (sendReport) {
+          await ajax({
+            ...apiRoutes.users.usersMail(this.globalStore.login.id),
+            data: {
+              support: true,
+              server_error: true,
+              text: errorMessage,
+              subject: 'Levumi Serverfehler',
+            },
+          })
+
+          this.globalStore.setGenericMessage({
+            title: 'Fehlerbericht gesendet',
+            message:
+              'Vielen Dank für Ihre Mithilfe. Wir werden uns sobald wie möglich um den Fehler kümmern.',
+          })
+        }
+        this.globalStore.serverError = undefined
+      },
       async checkLogin() {
         const path = window.location.pathname
         if (path !== '/testen' && path !== '/testen_login') {
@@ -170,13 +239,11 @@
         const res = await ajax(
           apiRoutes.users.renewLogin({ email: this.globalStore.login.email, password: pw })
         )
-        switch (res.status) {
-          case 200:
-            sessionStorage.setItem('login', pw)
-            await this.globalStore.fetch()
-            break
-          case 404:
-            this.sendLogin('Das hat leider nicht geklappt. ')
+        if (res.status === 200) {
+          sessionStorage.setItem('login', pw)
+          await this.globalStore.fetch()
+        } else {
+          this.sendLogin('Das hat leider nicht geklappt. ')
         }
       },
     },

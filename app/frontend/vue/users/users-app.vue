@@ -70,11 +70,9 @@
         })
 
         if (res.status === 200) {
-          const data = await res.json()
+          const data = res.data
           this.totalUsers = data.total_users
           Vue.set(this, 'users', data.users)
-        } else {
-          //TODO output error
         }
       },
       createUser() {

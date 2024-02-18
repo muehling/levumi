@@ -105,7 +105,7 @@
           url: '/groups/' + this.group.id + '?group[archive]=0',
           method: 'put',
         })
-        const data = await res.json()
+        const data = res.data
         if (data && res.status === 200) {
           this.updateGroup({
             object: data,

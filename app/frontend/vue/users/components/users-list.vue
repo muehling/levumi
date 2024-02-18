@@ -159,12 +159,13 @@
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import differenceInDays from 'date-fns/differenceInDays'
   import EditUserDialog from './edit-user-dialog.vue'
+  import debounce from 'lodash/debounce'
 
   const watchHandler = {
     immediate: true,
-    handler() {
+    handler: debounce(function () {
       this.delegateRefetch()
-    },
+    }, 100),
   }
 
   export default {

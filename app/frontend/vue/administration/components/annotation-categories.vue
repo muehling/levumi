@@ -70,7 +70,7 @@
         })
 
         if (res.status === 200) {
-          const data = await res.json()
+          const data = res.data
           this.annotationCategories = [...this.annotationCategories, data]
           this.globalStore.fetchAnnotationCategories()
         }
