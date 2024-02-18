@@ -18,6 +18,7 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     respond_to do |format|
       format.text do
         send_file @login.as_zip,
