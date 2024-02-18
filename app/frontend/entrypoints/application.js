@@ -32,7 +32,7 @@ const element = document.getElementById('levumi')
 const init = async () => {
   // TODO remove once all data is fetched from API
   const data = JSON.parse(element.getAttribute('data')) || {}
-
+  console.log('yay, application')
   Vue.use(BootstrapVue)
 
   Vue.use(VueApexCharts)
