@@ -8,6 +8,7 @@
         :group="group"
         @update:groups="updateGroup($event)"
       ></group-form>
+      <move-student-dialog :group="group" />
     </div>
     <div v-if="!single" class="mb-2">
       <!-- Info/Form für Klassen teilen -->
@@ -54,6 +55,7 @@
   import QRCodeStyling from 'qr-code-styling'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
+  import MoveStudentDialog from './move-student-dialog.vue'
 
   export default {
     name: 'GroupView',
@@ -62,6 +64,7 @@
       GroupForm,
       ShareForm,
       ConfirmDialog,
+      MoveStudentDialog,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
