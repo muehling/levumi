@@ -5,7 +5,7 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
-    <%= vite_javascript_tag 'application' %>
+    <%= vite_javascript_tag 'startpage' %>
     <%= vite_stylesheet_tag 'application' %>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,38 +16,10 @@
   </head>
 
   <body>
-  <!-- Platz für Navbar -->
-  <% if content_for? :navbar %>
-    <%= yield :navbar %>
-  <% end %>
+  
 
   <!-- Hauptinhalt der Seite -->
   <%= content_for?(:body) ? yield(:body) : yield %>
-
-  <!-- Platz für Dialoge etc -->
-  <div id='modal' class='modal fade' tabindex='-1'>
-    <div class='modal-dialog'>
-      <div class='modal-content'>
-        <% if content_for? :modal %>
-          <%= yield :modal %>
-        <% else %>
-          <div class='modal-body' id='modal-body'>
-          </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
-  <div id='toast-wrapper'>
-    <div id='user-messages' role='alert' class='toast mt-4'>
-      <div class='toast-header d-flex justify-content-between align-items-center'>
-        <h5 class='text-secondary'>Registrierung</h5>
-        <button type='button' class='close' data-dismiss='toast' aria-label='Close'>
-          <span aria-hidden='true'>&times;</span>
-        </button>
-      </div>
-      <div class='toast-body' id='user-messages-body'></div>
-    </div>
-  </div>
 
   <%= render 'application/imprint' %>
   <%= render 'application/privacy' %>
@@ -68,8 +40,9 @@
       </div>
     </div>
   </div>
+
   </body>
-  <script>
+  <script>  
     if (window.location.search === '?logout=true'){
       sessionStorage.removeItem('login')
     }

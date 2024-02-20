@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/diagnostik">
+      <a class="navbar-brand" href="/">
         <img src="/images/shared/Levumi-normal_small.png" alt="Levumi" height="48" />
         Levumi
       </a>
@@ -241,7 +241,12 @@
           <li v-if="!masquerade" class="nav-item">
             <form action="/logout" method="post">
               <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
-              <button type="submit" class="nav-link border-0 bg-transparent" href="/logout">
+              <button
+                type="submit"
+                class="nav-link border-0 bg-transparent"
+                href="/logout"
+                @click="sessionStorage.removeItem('login')"
+              >
                 Ausloggen
               </button>
             </form>
