@@ -9,10 +9,10 @@
     <template #modal-title>
       {{ title }}
     </template>
-    <div v-if="!containsHtml" class="d-block text-center mb-4">
+    <div v-if="!containsHtml" class="d-block text-center mb-4 text-break">
       {{ message }}
     </div>
-    <div v-else v-html="message"></div>
+    <div v-else class="text-break" v-html="message"></div>
 
     <div class="d-flex justify-content-end">
       <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close">

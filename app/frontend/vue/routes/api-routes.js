@@ -119,6 +119,7 @@ export default {
   },
   students: {
     activeAssessments: id => ({ url: `/students/${id}` }),
+    moveStudents: { url: '/students/move_students', method: 'POST' },
   },
   groups: {
     group: id => ({ url: `/groups/${id}` }),

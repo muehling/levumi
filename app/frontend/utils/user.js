@@ -1,4 +1,5 @@
 import isArray from 'lodash/isArray'
+import { useGlobalStore } from '../store/store'
 
 export const isAdmin = capabilities => {
   return hasCapability('admin', capabilities)
@@ -18,7 +19,10 @@ export const hasCapability = (capability, capabilities) => {
 
 export const isRegistered = user => user.intro_state > 2
 
-export const isMasquerading = user => user.is_masquerading
+export const isMasquerading = () => {
+  const gs = useGlobalStore()
+  return !!gs.login.is_masquerading
+}
 
 // checks the user config for the passed key. keyPath needs to be the full path
 // separated with dots, e. g. "visibilities.supportView.generalSuggestions"

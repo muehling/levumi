@@ -122,17 +122,17 @@
           >
             <i class="fas fa-qrcode"></i>
           </b-btn>
+          <b-btn
+            v-if="!!student.id"
+            v-b-popover.hover.topright="'Test-Info'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="handleClickAction(student, 'test-info')"
+          >
+            <i class="fas fa-circle-info"></i>
+          </b-btn>
         </b-button-group>
-
-        <b-btn
-          v-if="!!student.id"
-          v-b-popover.hover.topright="'Test-Info'"
-          variant="outline-secondary"
-          class="mr-1"
-          @click="handleClickAction(student, 'test-info')"
-        >
-          <i class="fas fa-circle-info"></i>
-        </b-btn>
       </span>
       <span :class="!readOnly && editMode ? '' : 'd-none'">
         <b-button-toolbar class="flex-nowrap">

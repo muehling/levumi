@@ -3,18 +3,13 @@
   <div v-if="group.archive == false">
     <div v-if="!single" class="mb-1">
       <!-- Form zur Umbenennung -->
-      <group-form
-        v-if="group.owner"
-        :group="group"
-        @update:groups="updateGroup($event)"
-      ></group-form>
-      <move-student-dialog :group="group" />
+      <group-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
     </div>
     <div v-if="!single" class="mb-2">
       <!-- Info/Form für Klassen teilen -->
-      <share-form v-if="displayShareForm" :group="group" @update:groups="updateGroup($event)">
-      </share-form>
+      <share-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
     </div>
+    <move-student-dialog v-if="displayActions" :group="group" />
     <b-button
       v-if="canCreateQrCodes"
       variant="success"
@@ -24,8 +19,7 @@
     >
       <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
     </b-button>
-    <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only">
-    </student-list>
+    <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only" />
   </div>
 
   <!-- Darstellung für archivierte Klasse -->
@@ -52,10 +46,10 @@
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-form.vue'
   import jsPDF from 'jspdf'
+  import MoveStudentDialog from './move-student-dialog.vue'
   import QRCodeStyling from 'qr-code-styling'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
-  import MoveStudentDialog from './move-student-dialog.vue'
 
   export default {
     name: 'GroupView',
@@ -94,8 +88,8 @@
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
         return this.group.read_only || this.globalStore.masquerade
       },
-      displayShareForm() {
-        return !isMasquerading(this.globalStore.login) && this.group.id
+      displayActions() {
+        return !isMasquerading() && this.group.id && !this.group.read_only
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []

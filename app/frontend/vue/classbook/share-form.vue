@@ -67,14 +67,16 @@
       </b-btn>
       <b-collapse :id="'collapse_share_' + group.id" class="mt-2 mb-4" :visible="isShown">
         <b-form inline class="text-small" @submit="submitNewShare">
-          <label for="email">Teilen mit&nbsp;&nbsp;</label>
+          <label for="share-email">Teilen mit&nbsp;&nbsp;</label>
           <div class="email-input-wrapper">
             <b-input
+              id="share-email"
               v-model="email"
               class="mr-2 position-relative"
               name="email"
               placeholder="E-Mail Adresse"
               size="sm"
+              autocomplete="false"
               :state="errorMessage !== '' ? false : null"
             />
             <b-form-invalid-feedback v-if="errorMessage" class="position-absolute">

@@ -48,7 +48,9 @@ Rails.application.routes.draw do
   get '/groups/:id/test_data', to: 'groups#get_test_data'
   get '/materials/info', to: 'materials#get_material_data'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
+  get '/registration_error', to: 'application#redirect_to_registration_error'
   get '/results/start_demo/:test_id', to: 'results#start_demo'
+  get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   get '/tests/info', to: 'tests#get_tests_data'
   get '/tests/items/:id', to: 'tests#get_items'
@@ -58,11 +60,9 @@ Rails.application.routes.draw do
   get '/users/statistics', to: 'users#statistics'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   post '/renew_login', to: 'application#renew_login'
+  post '/students/move_students', to: 'students#move_students'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
-
-  get '/registration_error', to: 'application#redirect_to_registration_error'
-  get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
 
   #Reguläres REST-Routing
   resources :users

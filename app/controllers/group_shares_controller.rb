@@ -53,7 +53,7 @@ class GroupSharesController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    # @share.destroy can't be done in the if, because @group.owner needs the groupshare to determine ownership
+    # @share.destroy can't be done outside the if, because @group.owner needs the groupshare to determine ownership
     if (@group.owner == @login)
       #Share wurde vom Besitzer beendet => Klasse rendern
       @share.destroy
