@@ -117,7 +117,9 @@
     <table>
       <thead>
         <tr>
-          <th v-if="includedStudents.length" scope="col">Teilnehmende Schüler:innen</th>
+          <th v-if="includedStudents.length" scope="col" class="pr-4">
+            Teilnehmende Schüler:innen
+          </th>
           <th v-if="excludedStudents.length" scope="col">Ausgeschlossene Schüler:innen</th>
         </tr>
       </thead>

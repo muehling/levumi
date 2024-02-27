@@ -53,12 +53,12 @@
             <div
               v-for="(student, index) in sourceGroupStudents"
               :key="student.id"
-              :class="`p-1${index % 2 ? ' bg-light' : ''}`"
+              :class="`p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
               @mouseover="setActionArrow(1)"
               @mouseleave="setActionArrow(0)"
               @click="handleMoveStudent(student)"
             >
-              <span role="button" class="text-dark"> {{ student.name }}</span>
+              <span class="text-dark"> {{ student.name }}</span>
             </div>
           </b-card>
         </b-col>

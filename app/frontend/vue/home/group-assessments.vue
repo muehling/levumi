@@ -26,7 +26,7 @@
         <tr
           v-for="assessment in sortedList"
           :key="`${assessment.test_id}/${assessment.name}`"
-          class="assessment-line"
+          :class="`assessment-line${assessment.archive ? ' text-muted' : ''}`"
         >
           <td class="assessment-link" @click="setPreselect(assessment)">
             <i
@@ -41,14 +41,13 @@
           <td class="assessment-link" @click="setPreselect(assessment)">
             {{ assessment.name }}
           </td>
-
           <td>{{ assessment.result_count }}</td>
           <td>{{ formatLastDate(assessment.last_test) }}</td>
           <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
-          <td v-if="isAllowed">
+          <td v-if="isAllowed" class="text-nowrap text-right">
             <b-btn
-              v-if="assessment.student_test"
-              class="btn-sm"
+              v-if="assessment.student_test && !assessment.archive"
+              class="btn-sm button-10"
               :variant="assessment.active ? 'outline-danger' : 'outline-success'"
               @click="toggleAssessment(assessment)"
             >
@@ -59,7 +58,11 @@
               <i v-else class="fas fa-spinner fa-spin"></i>
               {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
-            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
+            <b-btn
+              v-else-if="!assessment.archive"
+              class="btn-sm button-10"
+              variant="outline-secondary"
+              disabled
               >(Lehrkräfte-Übung)</b-btn
             >
             <b-button
@@ -284,5 +287,8 @@
   .assessment-filter {
     display: flex;
     justify-content: space-between;
+  }
+  .button-10 {
+    width: 10em;
   }
 </style>

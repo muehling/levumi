@@ -56,6 +56,7 @@ class StudentsController < ApplicationController
     students = Student.where(id: student_ids)
     old_group = Group.find(params[:source_group_id])
     new_group = Group.find(params[:target_group_id])
+    new_group_student_ids = Student.where(group_id: params[:target_group_id]).pluck(:id)
 
     head :no_content and return if old_group.nil? || new_group.nil? || students.empty?
 
@@ -72,8 +73,9 @@ class StudentsController < ApplicationController
           target_assessment = source_assessment.dup
           target_assessment.group_id = params[:target_group_id]
           target_assessment.save
-          new_group_student_ids = Student.where(group_id: new_group.id).pluck(:id)
-          target_assessment.update(excludes: new_group_student_ids)
+          if (!target_assessment.test.archive && target_assessment.test.student_test)
+            target_assessment.update(excludes: new_group_student_ids)
+          end
         end
         student = students.where(id: student_data[:id]).first
         student.update(group_id: params[:target_group_id], name: student_data[:name])

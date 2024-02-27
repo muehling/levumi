@@ -46,6 +46,15 @@ class Group < ApplicationRecord
   end
 
   def test_data
-    return { used_test_ids: Assessment.where(group_id: id).pluck(:test_id) }
+    return(
+      {
+        used_test_ids:
+          Assessment
+            .joins(:test)
+            .where(group_id: id)
+            .where.not(tests: { archive: true })
+            .pluck(:test_id)
+      }
+    )
   end
 end
