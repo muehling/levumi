@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_20_082731) do
+ActiveRecord::Schema[7.0].define(version: 2024_02_27_132841) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_20_082731) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "test_type_id"
     t.boolean "is_support"
+    t.json "required_services"
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end

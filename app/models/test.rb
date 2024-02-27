@@ -223,6 +223,7 @@ class Test < ApplicationRecord
         )
       end
       test.items = vals['items']
+      test.required_services = vals['required_services']
 
       if !test.nil? && test.save
         # create new assessments in case an old test was archived

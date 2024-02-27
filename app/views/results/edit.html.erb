@@ -7,6 +7,10 @@
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
 
+<% if @test.required_services.include? "truefalse" %>
+<%=    render partial: 'services/truefalse' %>
+<% end %>
+
 <!-- Test-Styles einbinden -->
 <style>
   <% @test.style_files.each do |f| %>
@@ -23,6 +27,7 @@
     // all variables and functions declared here that are part of the interface of the tests
     // need to be exposed in the global namespace. Otherwise, not all tests work, depending
     // on implementation.
+
 
     <% if @assessment.nil? && @student.nil? %>
         window["$"]('#end-preview').on('click', exit)
