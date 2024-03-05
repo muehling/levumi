@@ -144,6 +144,7 @@ let currentTask = -1
 let result = []
 let demoStep = 3
 let trend = undefined
+let isPaused = false
 const maxTestDuration = 3 * 60 * 1000 // minutes * seconds * milliseconds
 
 /*##################################################
@@ -161,8 +162,10 @@ const playDemo = () => {
       calcWidget.update({ currentTask: '7 - 3' })
       break
     case 1:
-      hint = ''
-      title = ''
+      //hint = ''
+      //title = ''
+      $('#title').remove()
+      $('#hint').remove()
       calcWidget.update({ continueText: 'Weiter' })
       setNextItem()
       timerWidget.startCounter()
@@ -181,12 +184,21 @@ const setNextItem = () => {
   })
 }
 
+const handlePause = isTimerPaused => {
+  isPaused = isTimerPaused
+}
+
 /*##################################################
 ## store result and display next task
 ##################################################*/
 const next = res => {
   if (demoStep) {
     playDemo()
+    return
+  }
+  if (isPaused) {
+    console.log('nope, paused')
+
     return
   }
   const endTaskTimestamp = stopTimer()
@@ -290,24 +302,26 @@ const save = () => {
 /*##################################################
 ## initial styling
 ##################################################*/
-let fontSize = '3em'
+let fontSize = '3rem'
 switch (font_size) {
   case 2:
-    fontSize = '4em'
+    fontSize = '4rem'
     break
   case 3:
-    fontSize = '4.5em'
+    fontSize = '4.5rem'
     break
 }
-$('#title, #hint, #timer').css({ fontSize, fontFamily: font_family })
+$('#title, #hint, #timer, #pause-button').css({ fontSize, fontFamily: font_family })
 
 /*##################################################
 ## init widgets
 ##################################################*/
+let isAppended = false
 const calcWidget = window.useCalculatorWidget({
   submitHandler: result => next(result),
   inputHandler: () => {
-    if (demoStep === 1) {
+    if (demoStep === 1 && !isAppended) {
+      isAppended = true
       $('#hint').append(' Keine Fragen mehr? Dann starte den Test.')
       calcWidget.update({ continueText: "Los geht's!" })
     }
@@ -315,13 +329,14 @@ const calcWidget = window.useCalculatorWidget({
 })
 
 const timerWidget = window.useTimerWidget({
-  // timedOutHandler: quit,
+  pauseHandler: handlePause,
   displayCounter: true,
   duration: maxTestDuration,
 })
 
 calcWidget.getElement().appendTo('#calculator')
 timerWidget.getElement().appendTo('#timer')
+timerWidget.getPauseButton().appendTo('#timer')
 
 /*##################################################
 ## randomize items and start test

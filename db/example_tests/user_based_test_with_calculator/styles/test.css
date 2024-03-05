@@ -1,8 +1,4 @@
-#timer {
-    position: absolute;
-    right: 1em;
-    top: 1em;
-}
+
 .end-pic-wrapper {
     display: flex;
     justify-content: center;
@@ -10,5 +6,8 @@
 .end-pic {
     max-width: 30vw;
     max-height: 30vh;
-    
+}
+#timer-widget {
+    width: 2em;
+    text-align: left;
 }

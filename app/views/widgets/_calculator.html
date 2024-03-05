@@ -35,19 +35,20 @@
   <div class="container">
     <div class="mx-auto mt-3 col col-md-10 col-lg-6s">
       <div class="numpad">
-        <div id="btn-7" class="btn btn-primary">7</div>
-        <div id="btn-8" class="btn btn-primary">8</div>
-        <div id="btn-9" class="btn btn-primary">9</div>
-        <div id="btn-4" class="btn btn-primary">4</div>
-        <div id="btn-5" class="btn btn-primary">5</div>
-        <div id="btn-6" class="btn btn-primary">6</div>
-        <div id="btn-1" class="btn btn-primary">1</div>
-        <div id="btn-2" class="btn btn-primary">2</div>
-        <div id="btn-3" class="btn btn-primary">3</div>
-        <div id="btn-0" class="btn btn-primary">0</div>
-        <div class="btn btn-warning delete">Löschen</div>
-        <div id="continue"><button class="btn btn-success w-100">Weiter</button></div>
+        <div id="btn-7" class="calc-btn btn btn-primary">7</div>
+        <div id="btn-8" class="calc-btn btn btn-primary">8</div>
+        <div id="btn-9" class="calc-btn btn btn-primary">9</div>
+        <div id="btn-4" class="calc-btn btn btn-primary">4</div>
+        <div id="btn-5" class="calc-btn btn btn-primary">5</div>
+        <div id="btn-6" class="calc-btn btn btn-primary">6</div>
+        <div id="btn-1" class="calc-btn btn btn-primary">1</div>
+        <div id="btn-2" class="calc-btn btn btn-primary">2</div>
+        <div id="btn-3" class="calc-btn btn btn-primary">3</div>
+        <div id="btn-0" class="calc-btn btn btn-primary">0</div>
+        <div class="calc-btn btn btn-warning delete">Löschen</div>
+        <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
       </div>
+      <div id="empty-error" class="text-danger"></div>
     </div>
   </div>
 </div>
@@ -104,10 +105,10 @@
 
   const submit = () => {
     if (currentInputVal === '') {
-      $('#hint').text('Bitte gib eine Zahl ein!')
+      $('#empty-error').text('Bitte gib eine Zahl ein!')
       return
     } else {
-      $('#hint').text('')
+      $('#empty-error').text('')
     }
     handleSubmit(currentInputVal)
     currentInputVal = ''
@@ -134,16 +135,16 @@
   }
 
   const setFontSizes = () => {
-    let fontSize = '3em'
+    let fontSize = '3rem'
     switch (font_size) {
       case 2:
-        fontSize = '4em'
+        fontSize = '4rem'
         break
       case 3:
-        fontSize = '4.5em'
+        fontSize = '4.5rem'
         break
     }
-    $('#task-description').css({ fontSize, fontFamily: font_family })
-    $('.btn').css({ fontSize: '3em', fontFamily: font_family })
+    $('#task-description, #empty-error').css({ fontSize, fontFamily: font_family })
+    $('.calc-btn').css({ fontSize: '3rem', fontFamily: font_family })
   }
 </script>
