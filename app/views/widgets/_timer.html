@@ -1,0 +1,63 @@
+<div id="timer-widget"><p id="counter"></p></div>
+<script type="module">
+  let isCounterDisplayed = false
+  let handleTimedOut = undefined
+  let testDuration = undefined
+  let remainingTime = undefined
+  let startTime = undefined
+  let counterInterval
+  let testTimeout
+
+  const startCounter = () => {
+    remainingTime = testDuration
+    startTime = Date.now()
+    updateCounter()
+    testTimeout = setTimeout(() => {
+      clearInterval(counterInterval)
+      handleTimedOut()
+      remainingTime = 0
+      updateCounter()
+    }, testDuration)
+
+    counterInterval = setInterval(() => {
+      remainingTime -= 1000
+      updateCounter()
+    }, 1000)
+  }
+
+  const stopCounter = () => {
+    clearTimeout(testTimeout)
+    clearInterval(counterInterval)
+  }
+
+  const hasElapsed = () => {
+    return Date.now() - startTime >= testDuration ? true : false
+  }
+
+  const getTotalDuration = () => {
+    return (Date.now() - startTime) / 60000
+  }
+
+  const updateCounter = () => {
+    const totalSeconds = Math.floor(remainingTime / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+
+    $('#counter').html(`${minutes}:${seconds < 10 ? '0' + seconds : seconds}`)
+  }
+
+  const getElement = () => {
+    return $('#timer-widget')
+  }
+
+  window.useTimerWidget = ({
+    displayCounter = false,
+    duration = 300000,
+    timedOutHandler = () => {},
+  }) => {
+    isCounterDisplayed = displayCounter
+    testDuration = duration
+    handleTimedOut = timedOutHandler
+    return { getElement, startCounter, stopCounter, hasElapsed, getTotalDuration }
+  }
+</script>

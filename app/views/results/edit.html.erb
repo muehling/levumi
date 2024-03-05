@@ -1,3 +1,8 @@
+<% unless @test.required_services&.empty? %>
+    <%= content_for :head do %>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% end%>
+<% end%>
 <script>
     //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
     document.title = decodeURI(window.location.hash.replace('#',''))
@@ -7,8 +12,15 @@
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
 
-<% if @test.required_services.include? "truefalse" %>
-<%=    render partial: 'services/truefalse' %>
+
+<% if @test.required_services&.include? "truefalse" %>
+<%=    render partial: 'widgets/truefalse' %>
+<% end %>
+<% if @test.required_services&.include? "calculator" %>
+<%=    render partial: 'widgets/calculator' %>
+<% end %>
+<% if @test.required_services&.include? "timer" %>
+<%=    render partial: 'widgets/timer' %>
 <% end %>
 
 <!-- Test-Styles einbinden -->

@@ -1,0 +1,149 @@
+<style>
+  #delete {
+    white-space: nowrap;
+  }
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+  }
+
+  .delete {
+    grid-column: span 2;
+  }
+  #continue {
+    grid-column: span 3;
+  }
+  #answer {
+    max-width: 4em;
+  }
+  .button {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+</style>
+
+<div id="calculator-widget" class="d-flex justify-content-center flex-column">
+  <div class="text-center">
+    <p id="task-description">
+      <span id="current-task"></span>&nbsp;=&nbsp;
+      <input type="input" id="answer" class="" readonly />
+    </p>
+  </div>
+  <div class="container">
+    <div class="mx-auto mt-3 col col-md-10 col-lg-6s">
+      <div class="numpad">
+        <div id="btn-7" class="btn btn-primary">7</div>
+        <div id="btn-8" class="btn btn-primary">8</div>
+        <div id="btn-9" class="btn btn-primary">9</div>
+        <div id="btn-4" class="btn btn-primary">4</div>
+        <div id="btn-5" class="btn btn-primary">5</div>
+        <div id="btn-6" class="btn btn-primary">6</div>
+        <div id="btn-1" class="btn btn-primary">1</div>
+        <div id="btn-2" class="btn btn-primary">2</div>
+        <div id="btn-3" class="btn btn-primary">3</div>
+        <div id="btn-0" class="btn btn-primary">0</div>
+        <div class="btn btn-warning delete">Löschen</div>
+        <div id="continue"><button class="btn btn-success w-100">Weiter</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  let currentInputVal = ''
+  let handleInput
+  let handleSubmit
+  window.useCalculatorWidget = ({ submitHandler, inputHandler }) => {
+    handleInput = inputHandler
+    handleSubmit = submitHandler
+    setFontSizes()
+    attachHandlers()
+
+    return { update, setNextTask: setCurrentTask, getElement }
+  }
+
+  const update = args => {
+    const { continueText, currentTask } = args
+
+    if (continueText !== undefined) {
+      $('#continue button').text(continueText)
+    }
+    if (currentTask !== undefined) {
+      setCurrentTask(currentTask)
+    }
+  }
+
+  const getElement = () => {
+    return $('#calculator-widget')
+  }
+
+  const attachHandlers = () => {
+    // screen input
+    $('.delete').on('click', removeNumber)
+    for (let i = 0; i < 10; i++) {
+      $(`#btn-${i}`).on('click', () => addNumber(i))
+    }
+
+    // keyboard input
+    document.addEventListener('keydown', e => {
+      if (e.key >= '0' && e.key <= '9') {
+        addNumber(e.key)
+      } else if (e.key === 'Backspace') {
+        removeNumber()
+      } else if (e.key === 'Enter') {
+        submit()
+      }
+    })
+
+    // submit
+    $('#continue').on('click', submit)
+  }
+
+  const submit = () => {
+    if (currentInputVal === '') {
+      $('#hint').text('Bitte gib eine Zahl ein!')
+      return
+    } else {
+      $('#hint').text('')
+    }
+    handleSubmit(currentInputVal)
+    currentInputVal = ''
+    $('#answer').val('')
+  }
+
+  const setCurrentTask = task => {
+    $('#current-task').text(task)
+  }
+
+  const addNumber = num => {
+    currentInputVal += num
+    updateDom()
+  }
+
+  const removeNumber = () => {
+    currentInputVal = currentInputVal.slice(0, -1)
+    updateDom()
+  }
+
+  const updateDom = () => {
+    handleInput(currentInputVal)
+    $('#answer').val(currentInputVal)
+  }
+
+  const setFontSizes = () => {
+    let fontSize = '3em'
+    switch (font_size) {
+      case 2:
+        fontSize = '4em'
+        break
+      case 3:
+        fontSize = '4.5em'
+        break
+    }
+    $('#task-description').css({ fontSize, fontFamily: font_family })
+    $('.btn').css({ fontSize: '3em', fontFamily: font_family })
+  }
+</script>

@@ -6,6 +6,7 @@ class ResultsController < ApplicationController
 
   #GET /students/:student_id/results/new
   def new
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     if params.has_key?(:test_id)
       #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
       @test = Test.find(params[:test_id])
