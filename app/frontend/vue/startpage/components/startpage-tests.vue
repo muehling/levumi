@@ -20,7 +20,7 @@
       </b-row>
     </div>
     <div>
-      <b-card>
+      <b-card class="shadow">
         <tests-app />
       </b-card>
     </div>

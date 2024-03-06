@@ -2,6 +2,7 @@ import { ajax } from '../utils/ajax'
 import { defineStore } from 'pinia'
 import apiRoutes from '../vue/routes/api-routes'
 import Vue from 'vue'
+import isEmpty from 'lodash/isEmpty'
 
 export const useTestsStore = defineStore('tests', {
   state: () => ({
@@ -17,6 +18,9 @@ export const useTestsStore = defineStore('tests', {
       return this.testsForGroup[groupId]
     },
     async fetch() {
+      if (!isEmpty(this.tests)) {
+        return
+      }
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.tests.info })
       const data = res.data
