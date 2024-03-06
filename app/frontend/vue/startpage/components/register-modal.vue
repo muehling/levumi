@@ -1,8 +1,8 @@
 <template>
   <div class="d-inline">
-    <b-button v-b-modal.register-modal class="mr-2" variant="outline-secondary"
-      >Registrieren</b-button
-    >
+    <b-button v-b-modal.register-modal class="mr-2" variant="outline-secondary">
+      Registrieren
+    </b-button>
 
     <b-modal id="register-modal" title="Registrierung" hide-footer no-close-on-backdrop>
       <b-form @submit="handleRegister">
@@ -15,54 +15,48 @@
             v-model="accountType"
             :aria-describedby="ariaDescribedby"
             name="user[account_type]"
-            value="0"
-          >
+            value="0">
             Lehrkraft
           </b-form-radio>
           <b-form-radio
             v-model="accountType"
             :aria-describedby="ariaDescribedby"
             name="user[account_type]"
-            value="1"
-          >
+            value="1">
             Forscher:in
           </b-form-radio>
           <b-form-radio
             v-model="accountType"
             :aria-describedby="ariaDescribedby"
             name="user[account_type]"
-            value="2"
-          >
+            value="2">
             Privatperson
           </b-form-radio>
         </b-form-group>
         <b-form-group label-cols="4" label="Aus...">
-          <b-form-select v-model="state" variant="outline-secondary" :options="states">
-          </b-form-select>
+          <b-form-select v-model="state" variant="outline-secondary" :options="states" />
         </b-form-group>
         <b-form-checkbox
           id="accept-terms"
           v-model="acceptTerms"
           name="accept-terms"
           value="accepted"
-          unchecked-value="not_accepted"
-        >
+          unchecked-value="not_accepted">
           Ich bin mit den
-          <a href="#" data-toggle="modal" data-focus="false" data-target="#t_and_c"
-            >Nutzungsbedingungen</a
-          >
+          <a href="#" data-toggle="modal" data-focus="false" data-target="#t_and_c">
+            Nutzungsbedingungen
+          </a>
           einverstanden
         </b-form-checkbox>
         <div class="d-flex justify-content-right">
-          <b-button id="main-cancel" variant="outline-secondary" class="mr-2" @click="handleClose"
-            >Abbrechen</b-button
-          >
+          <b-button id="main-cancel" variant="outline-secondary" class="mr-2" @click="handleClose">
+            Abbrechen
+          </b-button>
           <b-button
             id="main-register"
             type="submit"
             variant="outline-success"
-            @click="handleRegister"
-          >
+            @click="handleRegister">
             Registrieren
           </b-button>
         </div>

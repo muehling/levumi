@@ -1,12 +1,12 @@
 <template>
-  <b-navbar toggleable="lg">
+  <b-navbar toggleable="lg" type="dark" variant="primary">
     <b-navbar-toggle target="nav-collapse" />
     <b-collapse id="nav-collapse" is-nav>
-      <b-navbar-nav class="mx-auto">
-        <b-nav-item><router-link to="/lehrkraefte">Für Lehrkräfte</router-link></b-nav-item>
-        <b-nav-item><router-link to="/forschung">Für Forschende</router-link></b-nav-item>
-        <b-nav-item><router-link to="/testinventar">Testinventar</router-link></b-nav-item>
-        <b-nav-item><router-link to="/faq">FAQ</router-link></b-nav-item>
+      <b-navbar-nav pills class="mx-auto">
+        <b-nav-item to="/lehrkraefte">Für Lehrkräfte</b-nav-item>
+        <b-nav-item to="/forschung">Für Forschende</b-nav-item>
+        <b-nav-item to="/testinventar">Testinventar</b-nav-item>
+        <b-nav-item to="/faq">FAQ</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>

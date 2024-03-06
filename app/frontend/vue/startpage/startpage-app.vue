@@ -1,14 +1,14 @@
 <template>
-  <div class="h-100">
+  <div class="h-100 main-container">
     <nav class="navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex">
-      <a class="navbar-brand d-block d-xs-inline" href="/"
-        ><img
+      <a class="navbar-brand d-block d-xs-inline" href="/">
+        <img
           src="/images/shared/Levumi-normal_small.png"
           alt="Levumi - Startseite"
           width="48"
-          height="48"
-        />Levumi</a
-      >
+          height="48" />
+        Levumi
+      </a>
       <a href="/testen" class="btn btn-outline-secondary">Zugang für Schülerinnen und Schüler</a>
       <div class="mt-2 mt-md-0">
         <div v-if="isLoggedIn">
@@ -23,30 +23,26 @@
             :class="passwordMismatch ? 'show' : ''"
             variant="outline-secondary"
             text="Einloggen"
-            right
-          >
+            right>
             <div>
               <b-form
                 class="px-4 py-3 mx-3 mx-md-0 mw-100"
                 action="/login"
                 method="POST"
-                @submit="login"
-              >
+                @submit="login">
                 <div class="form-group">
                   <input
                     type="hidden"
                     name="authenticity_token"
                     :value="csrfToken"
-                    autocomplete="off"
-                  />
+                    autocomplete="off" />
                   <b-input
                     id="login-email"
                     type="email"
                     name="email"
                     aria-label="Email-Adresse eingeben"
                     placeholder="E-Mail Adresse"
-                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`"
-                  />
+                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
                 </div>
                 <div class="form-group">
                   <b-input
@@ -56,8 +52,7 @@
                     name="password"
                     aria-label="Passwort eingeben"
                     placeholder="Passwort"
-                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`"
-                  />
+                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
                   <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
                 </div>
                 <b-button type="submit" @click="login">Einloggen</b-button>
@@ -72,7 +67,7 @@
       </div>
     </nav>
     <startpage-nav />
-    <b-container>
+    <b-container class="main-container">
       <router-view />
     </b-container>
     <footer-bar />
@@ -121,5 +116,8 @@
   }
   .register-dropdown {
     width: 36em;
+  }
+  .main-container {
+    margin-bottom: 4em;
   }
 </style>

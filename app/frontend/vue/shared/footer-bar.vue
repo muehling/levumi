@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer w-100 text-center">
+  <footer class="footer w-100 text-center fixed-bottom pt-4">
     <ul class="list-inline text-center">
       <li class="list-inline-item">
         <a href="#" data-toggle="modal" data-target="#imprint">Impressum</a>
@@ -18,9 +18,9 @@
           data-placement="top"
           data-content="Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt."
           data-original-title=""
-          title="Cookie-Hinweis"
-          >Cookie-Hinweis</a
-        >
+          title="Cookie-Hinweis">
+          Cookie-Hinweis
+        </a>
       </li>
       <li class="list-inline-item">
         <a href="#" data-toggle="modal" data-target="#projects">Über das Projekt</a>
@@ -36,6 +36,7 @@
 
 <style>
   .footer {
+    background-color: white;
     position: absolute;
     bottom: 0;
   }
