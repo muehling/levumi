@@ -1,16 +1,35 @@
 <template>
-  <div>
-    <h1>Übersicht über das Testinventar</h1>
+  <div class="mb-4">
+    <div class="my-4">
+      <h3>Das Levumi-Test-Inventar</h3>
+    </div>
+    <div class="mb-4 d-flex flex-row">
+      <b-row>
+        <b-col>
+          <b-card class="shadow">
+            <p>
+              Unsere Tests bieten Ihnen detaillierte Einblicke in den Wissensstand, die Fähigkeiten
+              und den individuellen Lernfortschritt Ihrer Schülerinnen und Schüler. Von
+              grundlegenden Kompetenztests bis hin zu spezialisierten Assessments - unsere Plattform
+              ermöglicht es Ihnen, den Lernprozess gezielt zu unterstützen und die besten
+              Bildungspraktiken zu fördern. Entdecken Sie jetzt die Möglichkeiten und bringen Sie
+              Ihren Unterricht auf ein neues Level der Effektivität und Individualisierung.
+            </p>
+          </b-card>
+        </b-col>
+      </b-row>
+    </div>
     <div>
-      Theoretisch könnte man das recht einfach aus den vorhandenen Testinfo generieren, analog zur
-      bestehenden Testverwaltung. Hätte den Vorteil, dass neue Tests hier direkt nach dem Hochladen
-      aufgeführt werden würden. Falls zu viel/detailliert, könnte man sich auf eine Beschreibung
-      Lernbereiche und Kompetenzen beschränken.
+      <b-card>
+        <tests-app />
+      </b-card>
     </div>
   </div>
 </template>
 <script>
+  import TestsApp from '../../tests/tests-app.vue'
   export default {
     name: 'StartpageTests',
+    components: { TestsApp },
   }
 </script>
