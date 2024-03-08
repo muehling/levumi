@@ -1,8 +1,5 @@
 <template>
   <div class="d-inline">
-    <b-button v-b-modal.move-student-dialog size="sm" variant="outline-secondary">
-      Schüler:innen verschieben
-    </b-button>
     <b-modal
       id="move-student-dialog"
       size="lg"
@@ -13,14 +10,14 @@
       cancel-variant="outline-secondary"
       cancel-title="Abbrechen"
       @ok="handleConfirmMove"
-      @hidden="handleCancel"
-    >
+      @hidden="handleCancel">
       <div class="d-flex mb-3">
-        <span class="flex-grow-1 pt-1"
-          >Wählen Sie die Klasse aus, in die Sie die Schüler:innen verschieben wollen.</span
-        ><b-button v-b-toggle.move-explanation variant="outline-secondary" class="btn-sm"
-          >Hinweise</b-button
-        >
+        <span class="flex-grow-1 pt-1">
+          Wählen Sie die Klasse aus, in die Sie die Schüler:innen verschieben wollen.
+        </span>
+        <b-button v-b-toggle.move-explanation variant="outline-secondary" class="btn-sm">
+          Hinweise
+        </b-button>
       </div>
 
       <b-collapse id="move-explanation">
@@ -56,9 +53,8 @@
               :class="`p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
               @mouseover="setActionArrow(1)"
               @mouseleave="setActionArrow(0)"
-              @click="handleMoveStudent(student)"
-            >
-              <span class="text-dark"> {{ student.name }}</span>
+              @click="handleMoveStudent(student)">
+              <span class="text-dark">{{ student.name }}</span>
             </div>
           </b-card>
         </b-col>
@@ -73,15 +69,13 @@
               :class="`p-1${index % 2 ? ' bg-light' : ''}`"
               @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
               @mouseleave="setActionArrow(0)"
-              @click="handleMoveStudent(student)"
-            >
+              @click="handleMoveStudent(student)">
               <span
                 :class="`${
                   hasStudentMoved(student.id, targetGroupId)
                     ? 'text-dark cursor-pointer'
                     : 'text-muted not-allowed'
-                }`"
-              >
+                }`">
                 {{ student.name }}
               </span>
             </div>

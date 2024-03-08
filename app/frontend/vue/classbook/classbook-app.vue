@@ -20,37 +20,32 @@
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
                     <!-- Neue Klasse anlegen -->
-                    <b-tab :key="firstOwnIndex" :active="false">
+                    <b-tab key="new_group" :active="false" lazy>
                       <template slot="title">
                         <i
                           id="intro_cb_2"
                           class="fas fa-folder-plus fa-lg"
-                          title="Neue Klasse anlegen"
-                        ></i>
+                          title="Neue Klasse anlegen"></i>
                       </template>
-                      <!-- Group-Form mit index 0, da groups[0] ein leeres Objekt beinhaltet, für propagiertes Update die Rückgabe an Stelle 1 einfügen, Objekt an Stelle 0 bleibt erhalten.-->
-                      <group-form :group="groups[0]"> </group-form>
+                      <group-form :group="{}"></group-form>
                     </b-tab>
                     <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                     <b-tab
                       v-for="(group, index) in ownActiveGroups"
                       :key="`${group.id}/${group.label}`"
                       :active="index === firstOwnIndex"
-                      class="m-3"
-                      lazy
-                    >
+                      class=""
+                      lazy>
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label }}</span>
+                        <span v-else>{{ group.label + '/' + group.id }}</span>
                       </template>
                       <group-view
                         :groups="groups"
                         :group="group"
                         :single="false"
-                        @update:groups="updateGroups"
-                      >
-                      </group-view>
+                        @update:groups="updateGroups"></group-view>
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -60,8 +55,8 @@
               <b-tab :disabled="sharedGroups.length === 0" lazy>
                 <template slot="title">
                   Mit mir geteilte Klassen
-                  <span v-if="new_shares" class="badge badge-info">Neu!</span
-                  ><span v-else>({{ sharedGroups.length }})</span>
+                  <span v-if="new_shares" class="badge badge-info">Neu!</span>
+                  <span v-else>({{ sharedGroups.length }})</span>
                 </template>
 
                 <b-card no-body class="mt-3">
@@ -81,9 +76,7 @@
 
               <!-- Klassenarchiv -->
               <b-tab :disabled="archivedGroups.length === 0" lazy>
-                <template slot="title">
-                  Archivierte Klassen ({{ archivedGroups.length }})
-                </template>
+                <template slot="title">Archivierte Klassen ({{ archivedGroups.length }})</template>
 
                 <b-card no-body class="mt-3">
                   <b-tabs pills card vertical>
@@ -99,11 +92,7 @@
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
                       </template>
-                      <group-view
-                        :groups="groups"
-                        :group="group"
-                        @update:groups="updateGroups"
-                      ></group-view>
+                      <group-view :groups="groups" :group="group" @update:groups="updateGroups" />
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -150,28 +139,24 @@
       groups() {
         if (isEmpty(this.globalStore.groups)) {
           return []
+        } else {
+          return this.globalStore.groups
         }
-        const sorted = [...this.globalStore.groups]
-
-        let empty = sorted.shift() //Erstes Element ist leere Gruppe für "new"
-        sorted.sort((a, b) => b.id - a.id) //Rest nach ID absteigend sortieren
-        sorted.unshift(empty)
-        return sorted
       },
 
       ownActiveGroups() {
         return this.groups
-          .filter((group, index) => index > 0 && group.owner && !group.archive)
+          .filter(group => group.owner && !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       sharedGroups() {
         return this.groups
-          .filter((group, index) => index > 0 && !group.owner && !group.archive)
+          .filter(group => !group.owner && !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
         return this.groups
-          .filter((group, index) => index > 0 && group.archive && group.owner)
+          .filter(group => group.archive && group.owner)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
 

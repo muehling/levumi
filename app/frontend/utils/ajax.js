@@ -27,7 +27,7 @@ axiosInstance.interceptors.response.use(
 export const ajax = async ({
   url,
   method = 'GET',
-  data,
+  data = {},
   contentType = 'application/json',
   accept = 'application/json',
 }) => {

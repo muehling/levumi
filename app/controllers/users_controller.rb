@@ -11,6 +11,7 @@ class UsersController < ApplicationController
                   search
                   show
                   statistics
+                  get_classbook_info
                 ]
 
   skip_before_action :set_login, only: %i[create register recover]
@@ -144,6 +145,10 @@ class UsersController < ApplicationController
       @userinfo = User.get_statistics
       @testinfo = Test.get_statistics
     end
+  end
+
+  def get_classbook_info
+    render json: @login.get_classbook_info
   end
 
   #DEL /users/:id

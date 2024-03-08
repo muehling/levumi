@@ -2,71 +2,8 @@
   <div>
     <!-- eigene Klasse => Infos anzeigen und teilen erlauben-->
     <div v-if="group.owner">
-      <table
-        v-if="group.shares.length > 0"
-        class="table table-sm table-striped table-responsive-md text-small"
-      >
-        <thead>
-          <tr>
-            <th>Geteilt mit</th>
-            <th></th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="share in group.shares" :key="share.id">
-            <td>
-              {{ share.user }}
-            </td>
-            <td>
-              <div v-if="share.is_anonymous" class="d-inline">
-                <span class="mr-4">Klasse ist anonym geteilt.</span>
-              </div>
-              <b-button
-                v-if="!share.is_anonymous"
-                class="btn btn-sm mr-1"
-                :variant="share.read_only ? 'primary' : 'outline-primary'"
-                @click="changeAccessLevel(share.id, 1)"
-              >
-                <i class="fas fa-glasses"></i> Nur Ansicht
-              </b-button>
-              <b-button
-                v-if="!share.is_anonymous"
-                class="btn btn-sm mr-1"
-                :variant="!share.read_only ? 'primary' : 'outline-primary'"
-                @click="changeAccessLevel(share.id, 0)"
-              >
-                <i class="fas fa-edit"></i> Ansicht und verwenden
-              </b-button>
-              <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
-                <i class="fas fa-trash"></i> Nicht mehr teilen
-              </b-button>
-            </td>
-            <td>
-              <span v-if="!share.accepted && !share.is_anonymous">
-                Der Zugangsschlüssel lautet <b>{{ shareKey }}</b> und wurde per Mail an
-                {{ share.user }} gesendet.
-              </span>
-              <span v-else-if="!share.accepted && share.is_anonymous"
-                >{{ share.user }} wurde per Mail benachrichtigt.</span
-              >
-              <span v-else-if="share.accepted">{{ share.user }} hat die Anfrage angenommen.</span>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <b-btn
-        id="intro_cb_4"
-        :aria-expanded="isShown"
-        aria-controls="'collapse_share_' + group.id"
-        variant="outline-secondary"
-        size="sm"
-        @click="toggleForm"
-        ><i class="fas fa-handshake"></i> Klasse teilen
-      </b-btn>
       <b-collapse :id="'collapse_share_' + group.id" class="mt-2 mb-4" :visible="isShown">
-        <b-form inline class="text-small" @submit="submitNewShare">
+        <b-form inline class="text-small mt-4" @submit="submitNewShare">
           <label for="share-email">Teilen mit&nbsp;&nbsp;</label>
           <div class="email-input-wrapper">
             <b-input
@@ -77,8 +14,7 @@
               placeholder="E-Mail Adresse"
               size="sm"
               autocomplete="false"
-              :state="errorMessage !== '' ? false : null"
-            />
+              :state="errorMessage !== '' ? false : null" />
             <b-form-invalid-feedback v-if="errorMessage" class="position-absolute">
               {{ errorMessage }}
             </b-form-invalid-feedback>
@@ -88,21 +24,20 @@
             Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler:innen-Namen.
             Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder 
             beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet."
-              class-name="mt-2"
-            />
+              class-name="mt-2" />
           </div>
           <b-form-radio-group v-model="rightsSelected" class="ml-4" name="group_share[read_only]">
             <b-form-radio
               v-for="option in permissionOptions"
               :key="option.text"
-              :value="option.value"
-            >
+              :value="option.value">
               <span>{{ option.text }}</span>
               <context-help :help-text="option.helpText" class-name="ml-1 mr-3" />
             </b-form-radio>
           </b-form-radio-group>
           <b-button type="submit" variant="outline-success" size="sm">
-            <i class="fas fa-check"></i> Teilen
+            <i class="fas fa-check"></i>
+            Teilen
           </b-button>
         </b-form>
       </b-collapse>
@@ -118,8 +53,7 @@
             v-model="keyInput"
             class="ml-4 mr-2"
             placeholder="Code"
-            size="sm"
-          />
+            size="sm" />
           <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
             Jetzt freischalten
           </b-button>
@@ -134,7 +68,8 @@
           {{ group.read_only ? ' nur ansehen.' : ' ansehen und verwenden.' }}
         </p>
         <b-btn class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
-          <i class="fas fa-trash"></i> Teilen beenden
+          <i class="fas fa-trash"></i>
+          Teilen beenden
         </b-btn>
       </div>
     </div>
@@ -149,6 +84,7 @@
     decryptKey,
     decryptWithKey,
     decryptStudentNames,
+    encryptWithKey,
   } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
@@ -172,6 +108,7 @@
         email: '',
         isShown: false,
         errorMessage: '',
+        //  shareKey: this.newKey(),
       }
     },
     computed: {
@@ -223,10 +160,6 @@
             this.globalStore.setGroups(newGroups)
           }
         }
-      },
-
-      toggleForm() {
-        this.isShown = !this.isShown
       },
       async submitData(params) {
         const res = await ajax(params)
@@ -288,13 +221,7 @@
           this.rightsSelected = 1
         }
       },
-      changeAccessLevel(shareId, accessLevel) {
-        this.submitData({
-          url: `/groups/${this.group.id}/group_shares/${shareId}`,
-          method: 'put',
-          data: { group_share: { read_only: accessLevel } },
-        })
-      },
+
       unshare(shareId) {
         this.submitData({
           url: `/groups/${this.group.id}/group_shares/${shareId}`,
@@ -313,7 +240,12 @@
           return false
         }
       },
-
+      newKey() {
+        return Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, '')
+          .substr(0, 6)
+      },
       prepareKey() {
         if (this.group.is_anonymous) {
           return 'anonymous'

@@ -17,6 +17,7 @@ export default {
     statistics: '/users/statistics',
     delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
     index: pageNumber => ({ url: `/users/page/${pageNumber}` }),
+    classbookInfo: { url: '/users/get_classbook_info' },
   },
   home: {
     finishIntro: '/willkommen',

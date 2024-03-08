@@ -1,27 +1,8 @@
 <template>
   <div>
-    <!-- eigene Klasse => Klasse umbenennen / Ins Archiv verschieben-->
-    <div v-if="group && group.id" class="mb-2">
-      <b-btn
-        v-if="!group.demo"
-        v-b-toggle="'collapse_edit_' + group.id"
-        variant="outline-secondary"
-        size="sm"
-        ><i class="fas fa-edit"></i> Klasse umbenennen</b-btn
-      >
-
-      <b-button
-        id="intro_cb_3"
-        class="btn btn-sm float-right"
-        variant="outline-secondary"
-        @click="moveToArchive"
-      >
-        <i class="fas fa-file-export"></i> Klasse in Archiv verschieben
-      </b-button>
-    </div>
     <!-- Ausklappbare Edit-Form - falls neue Klasse, direkt anzeigen -->
     <b-collapse v-if="group && !group.demo" :id="'collapse_edit_' + group.id" :visible="!group.id">
-      <b-form inline accept-charset="UTF-8" class="mb-4" @submit="handleSubmit">
+      <b-form inline accept-charset="UTF-8" class="mt-3" @submit="handleSubmit">
         <label class="sr-only" for="label-input">Klassenbezeichnung</label>
         <b-form-input
           id="label-input"
@@ -29,17 +10,16 @@
           class="mr-2"
           name="group[label]"
           placeholder="Klassenbezeichnung"
-          size="sm"
-        />
+          size="sm" />
         <div v-if="!group.id">
           <!-- Button für neue Klasse, Validierung Name nicht leer -->
           <b-button
             type="submit"
             variant="outline-success"
             size="sm"
-            :disabled="label.trim().length === 0"
-          >
-            <i class="fas fa-plus"></i> Anlegen
+            :disabled="label.trim().length === 0">
+            <i class="fas fa-plus"></i>
+            Anlegen
           </b-button>
         </div>
         <div v-else>
@@ -48,19 +28,19 @@
             v-b-toggle="'collapse_edit_' + group.id"
             type="submit"
             variant="outline-success"
+            class="mr-2"
             size="sm"
             title="Speichern"
-            :disabled="label.trim().length === 0"
-          >
+            :disabled="label.trim().length === 0">
             <i class="fas fa-check"></i>
           </b-button>
           <b-button
             v-b-toggle="'collapse_edit_' + group?.id"
             variant="outline-secondary"
             size="sm"
-            title="Abbrechen"
-            ><i class="fas fa-times"></i
-          ></b-button>
+            title="Abbrechen">
+            <i class="fas fa-times"></i>
+          </b-button>
         </div>
       </b-form>
     </b-collapse>
@@ -71,6 +51,8 @@
   import { ajax } from '../../utils/ajax'
   import { encryptKey, encryptWithKey } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
+  import apiRoutes from '../routes/api-routes'
+  import Vue from 'vue'
 
   export default {
     name: 'GroupForm',
@@ -116,26 +98,11 @@
         }
 
         if (res.status === 200) {
-          this.success(res.data)
+          Vue.set(this.globalStore, 'groups', res.data)
           this.label = ''
         }
       },
-      async moveToArchive() {
-        const res = await ajax({
-          url: '/groups/' + this.group.id + '?group[archive]=1',
-          method: 'put',
-        })
-        const data = res.data
-        if (data && res.status === 200) {
-          this.success(data)
-        }
-      },
-      success() {
-        this.globalStore.fetch()
-        if (!this.group.id) {
-          this.key = this.newKey()
-        }
-      },
+
       newKey() {
         return Math.random()
           .toString(36)

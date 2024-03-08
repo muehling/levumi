@@ -22,7 +22,9 @@ class GroupsController < ApplicationController
         read_only: false,
         key: params.require(:group)[:key]
       )
-      render json: g.as_hash(@login)
+
+      #render json: g.as_hash(@login)
+      render json: @login.get_classbook_info
     else
       head 304
     end
@@ -32,7 +34,7 @@ class GroupsController < ApplicationController
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     unless @group.read_only(@login) ||
              !@group.update(params.require(:group).permit(:label, :archive))
-      render json: @group.as_hash(@login)
+      render json: @login.get_classbook_info
     else
       head 304
     end

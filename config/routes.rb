@@ -53,6 +53,7 @@ Rails.application.routes.draw do
   get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   get '/tests/info', to: 'tests#get_tests_data'
+  get '/users/get_classbook_info', to: 'users#get_classbook_info'
   get '/tests/items/:id', to: 'tests#get_items'
   get '/users/core_data', to: 'users#get_core_data'
   get '/users/page/:page_number', to: 'users#index_paginated'

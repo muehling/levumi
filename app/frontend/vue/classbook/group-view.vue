@@ -1,41 +1,39 @@
 <template>
-  <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
-  <div v-if="group.archive == false">
-    <div v-if="!single" class="mb-1">
-      <!-- Form zur Umbenennung -->
-      <group-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
-    </div>
-    <div v-if="!single" class="mb-2">
-      <!-- Info/Form für Klassen teilen -->
-      <share-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
-    </div>
-    <move-student-dialog v-if="displayActions" :group="group" />
-    <b-button
-      v-if="canCreateQrCodes"
-      variant="success"
-      class="mb-1 btn-sm"
-      :disabled="isGeneratingQrCodes"
-      @click="exportQrCodes"
-    >
-      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
-    </b-button>
-    <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only" />
-  </div>
+  <div>
+    <classbook-actions :group="group" />
+    <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
+    <div v-if="group.archive == false">
+      <div v-if="!single" class="mb-1">
+        <!-- Form zur Umbenennung -->
+        <group-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
+      </div>
+      <div v-if="!single" class="mb-2">
+        <!-- Info/Form für Klassen teilen -->
+        <share-form v-if="true" :group="group" @update:groups="updateGroup($event)" />
+      </div>
+      <move-student-dialog v-if="displayActions" :group="group" />
 
-  <!-- Darstellung für archivierte Klasse -->
-  <div v-else>
-    <p class="text-small">
-      <em>Ins Archiv verschoben am {{ date }}</em
-      ><br />
-      <span>Schüler:innen: {{ group.size }}</span>
-    </p>
-    <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
-      <i class="fas fa-file-import"></i> Klasse aus dem Archiv holen
-    </b-button>
-    <b-btn variant="outline-danger" @click="requestDeleteGroup">
-      <i class="fas fa-trash"></i> Klasse löschen
-    </b-btn>
-    <confirm-dialog ref="confirmDialog" />
+      <shares-display v-if="group.owner" :group="group" />
+      <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only" />
+    </div>
+
+    <!-- Darstellung für archivierte Klasse -->
+    <div v-else>
+      <p class="text-small">
+        <em>Ins Archiv verschoben am {{ date }}</em>
+        <br />
+        <span>Schüler:innen: {{ group.size }}</span>
+      </p>
+      <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
+        <i class="fas fa-file-import"></i>
+        Klasse aus dem Archiv holen
+      </b-button>
+      <b-btn variant="outline-danger" @click="requestDeleteGroup">
+        <i class="fas fa-trash"></i>
+        Klasse löschen
+      </b-btn>
+      <confirm-dialog ref="confirmDialog" />
+    </div>
   </div>
 </template>
 
@@ -43,22 +41,25 @@
   import { ajax } from '../../utils/ajax'
   import { isMasquerading } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
+  import ClassbookActions from './classbook-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-form.vue'
-  import jsPDF from 'jspdf'
   import MoveStudentDialog from './move-student-dialog.vue'
-  import QRCodeStyling from 'qr-code-styling'
   import ShareForm from './share-form.vue'
   import StudentList from './student-list.vue'
+  import Vue from 'vue'
+  import SharesDisplay from './shares-display.vue'
 
   export default {
     name: 'GroupView',
     components: {
-      StudentList,
-      GroupForm,
-      ShareForm,
+      ClassbookActions,
       ConfirmDialog,
+      GroupForm,
       MoveStudentDialog,
+      ShareForm,
+      SharesDisplay,
+      StudentList,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
@@ -69,11 +70,7 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    data() {
-      return {
-        isGeneratingQrCodes: false,
-      }
-    },
+
     computed: {
       canCreateQrCodes() {
         //TODO restore once DDM is done
@@ -104,9 +101,11 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          this.updateGroup({
-            object: data,
-          })
+          Vue.set(this.globalStore, 'groups', res.data)
+          //  this.updateGroup({
+          //    object: data,
+
+          //  })
         }
       },
       /*****************************
@@ -142,53 +141,6 @@
             this.$emit('update:groups', remainingGroups)
           }
         }
-      },
-      blobToBase64(blob) {
-        return new Promise((resolve, _) => {
-          const reader = new FileReader()
-          reader.onloadend = () => resolve(reader.result)
-          reader.readAsDataURL(blob)
-        })
-      },
-
-      async exportQrCodes() {
-        this.isGeneratingQrCodes = true
-        const pdf = new jsPDF()
-        let height = 10
-        for (let i = 0; i < this.students.length; i++) {
-          const qrCode = new QRCodeStyling({
-            width: 400,
-            height: 400,
-            type: 'canvas',
-            data: `${window.location.origin}/testen_login?login=${this.students[i].login}`,
-            dotsOptions: {
-              color: '#000000',
-            },
-          })
-          const qrData = await qrCode.getRawData('jpeg')
-
-          if (qrCode) {
-            const base64Image = await this.blobToBase64(qrData)
-            const levumiImg = new Image()
-            levumiImg.src = '/images/shared/Levumi-normal.jpg'
-            const studentName = this.students[i].name.startsWith('Kind_')
-              ? '______________'
-              : this.students[i].name
-
-            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
-            pdf.text('Name: ' + studentName, 110, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
-            pdf.line(0, height + 43, 210, height + 45)
-            height = height + 46
-            if (height >= 250) {
-              height = 10
-              pdf.addPage()
-            }
-          }
-        }
-        pdf.save(`QR-Codes ${this.group.label}.pdf`)
-        this.isGeneratingQrCodes = false
       },
     },
   }

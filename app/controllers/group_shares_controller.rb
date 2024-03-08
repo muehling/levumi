@@ -57,7 +57,9 @@ class GroupSharesController < ApplicationController
     if (@group.owner == @login)
       #Share wurde vom Besitzer beendet => Klasse rendern
       @share.destroy
-      render json: @group.as_hash(@login)
+
+      #render json: @group.as_hash(@login)
+      render json: @login.get_classbook_info
     else
       #Share wurde vom Benutzer beendet => Nur OK senden für View
       @share.destroy
