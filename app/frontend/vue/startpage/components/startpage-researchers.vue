@@ -46,22 +46,12 @@
             voranzutreiben.
           </p>
           <p>
-            Darüber hinaus bieten wir Ihnen die Möglichkeit, sich mit anderen Forschenden
-            auszutauschen, um Ideen zu teilen, Best Practices zu diskutieren und gemeinsam an der
-            Weiterentwicklung der Bildungsforschung zu arbeiten. Wir glauben an die Kraft der
-            Zusammenarbeit und sind davon überzeugt, dass wir gemeinsam mehr erreichen können.
+            Zudem haben Sie die Freiheit, eigene Testdesigns zu erstellen und individuelle
+            Forschungsfragen zu untersuchen. Für die Testerstellung werden lediglich grundlegende
+            Kenntnisse in HTML, Javascript und CSS benötigt. Und dank unseres einfachen Datenexports
+            im CSV-Format können Sie die Ergebnisse Ihrer Forschung mühelos analysieren und
+            weiterverarbeiten.
           </p>
-        </b-card>
-      </div>
-      <div class="mb-4">
-        <b-card class="shadow" body-class="info-card">
-          <div>
-            Durch die Nutzung unserer Plattform können Sie nicht nur Ihre Forschungsmethoden
-            verfeinern, sondern auch dazu beitragen, innovative Lehr- und Lernstrategien zu
-            entwickeln, die auf fundierten Erkenntnissen basieren. Darüber hinaus bieten wir Ihnen
-            die Möglichkeit, sich mit anderen Forschenden auszutauschen, um Ideen zu teilen und
-            gemeinsam an der Verbesserung der Bildungsforschung zu arbeiten.
-          </div>
         </b-card>
       </div>
     </div>
