@@ -1,5 +1,5 @@
 class AssessmentsController < ApplicationController
-  before_action :set_group
+  before_action :set_group, except: %i[index]
   before_action :set_assessment, only: %i[show update destroy]
 
   #GET /groups/:group_id/assessments/:id
@@ -52,6 +52,12 @@ class AssessmentsController < ApplicationController
 
   #GET /groups/:group_id/assessments
   def index
+    group = @login.groups.find_by(id: params[:group_id])
+    if group.nil?
+      render json: {}
+      return
+    end
+    @group = group
     data =
       @group
         .assessments
@@ -61,7 +67,6 @@ class AssessmentsController < ApplicationController
             id: a.id,
             active: a.active,
             archive: a.test.archive,
-            # test: a.test.id, # TODO replace usage with test_id (see below)
             shorthand: a.test.shorthand,
             name: a.test.full_name,
             student_test: a.test.student_test,
@@ -90,7 +95,6 @@ class AssessmentsController < ApplicationController
   #Gruppenummer aus Parametern holen und Gruppe laden
   def set_group
     @group = @login.groups.find(params[:group_id])
-    redirect_to '/' if @group.nil?
   end
 
   #Assessment laden

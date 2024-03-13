@@ -11,6 +11,9 @@ axiosInstance.interceptors.response.use(
     if (error.config.url === '/login' || error.config.url === '/renew_login') {
       return error.response
     }
+    if (error.response.status === 403) {
+      return error.response
+    }
 
     const store = useGlobalStore()
     store.serverError = {

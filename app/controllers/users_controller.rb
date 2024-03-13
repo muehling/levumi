@@ -299,7 +299,7 @@ class UsersController < ApplicationController
   end
 
   def get_core_data
-    @groups_object = [Group.new] + @login.get_classbook_info
+    @groups_object = @login.get_classbook_info
 
     @shares_object = {}
     @login.group_shares.map { |c| @shares_object[c.group_id] = c.key }

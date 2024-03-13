@@ -1,7 +1,7 @@
 <template>
   <table
     v-if="group.shares.length > 0"
-    class="table table-sm table-striped table-responsive-md text-small">
+    class="mt-4 table table-sm table-striped table-responsive-md text-small">
     <thead>
       <tr>
         <th>Geteilt mit</th>
@@ -10,9 +10,9 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="share in group.shares" :key="share.id">
+      <tr v-for="share in group.shares" :key="share.id + '/' + share.read_only">
         <td>
-          {{ share.user }}
+          {{ share.user + '/' + share.read_only }}
         </td>
         <td>
           <div v-if="share.is_anonymous" class="d-inline">
@@ -81,6 +81,15 @@
           data: { group_share: { read_only: accessLevel } },
         })
         if (res.status === 200) {
+          console.log(
+            'miau',
+            res.data,
+            this.globalStore.groups.find(g => g.id === res.data.id)
+          )
+          const groups = [...this.globalStore.groups]
+          const group = this.globalStore.groups.find(g => g.id === res.data.id)
+          group.read_only = res.data.read_only
+          Vue.set(this.globalStore, 'groups', groups)
           //TODO bestimmt irgendwas updaten
           // const data = res.data
           // this.$emit('update:groups', { index: this.index, object: data })
@@ -93,6 +102,7 @@
           //return null
         }
       },
+
       async unshare(shareId) {
         const res = await ajax({
           url: `/groups/${this.group.id}/group_shares/${shareId}`,

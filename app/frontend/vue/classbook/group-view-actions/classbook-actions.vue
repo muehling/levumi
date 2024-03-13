@@ -1,55 +1,47 @@
 <template>
   <div class="group-actions">
-    <b-button
-      v-if="!group.demo"
-      v-b-toggle="'collapse_edit_' + group.id"
-      class="mr-2"
-      variant="outline-secondary"
-      size="sm">
-      <i class="fas fa-edit"></i>
-      Klasse umbenennen
-    </b-button>
-    <b-button
-      id="intro_cb_4"
-      v-b-toggle="'collapse_share_' + group.id"
-      class="mr-2"
-      variant="outline-secondary"
-      size="sm">
-      <i class="fas fa-handshake"></i>
-      Klasse teilen
-    </b-button>
-    <b-button v-b-modal.move-student-dialog size="sm" variant="outline-secondary" class="mr-2">
-      Schüler:innen verschieben
-    </b-button>
-    <b-button
-      v-if="canCreateQrCodes"
-      variant="success"
-      class="mr-2"
-      size="sm"
-      :disabled="isGeneratingQrCodes"
-      @click="exportQrCodes">
-      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i>
-      QR-Code PDF
-    </b-button>
-    <b-button
-      id="intro_cb_3"
-      class="float-right mr-2"
-      size="sm"
-      variant="outline-secondary"
-      @click="moveToArchive">
-      <i class="fas fa-file-export"></i>
-      Klasse in Archiv verschieben
-    </b-button>
+    <div class="d-inline">
+      <b-button
+        v-if="canCreateQrCodes"
+        variant="success"
+        class="my-2 d-inline"
+        size="sm"
+        :disabled="isGeneratingQrCodes"
+        @click="exportQrCodes">
+        <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i>
+        QR-Code PDF erstellen
+      </b-button>
+      <context-help
+        help-text="Mit dieser Aktion wird ein PDF mit QR-Codes zum Einloggen in die Testoberfläche erstellt. Die QR-Codes können ausgedruckt und an die Schüler:innen ausgeteilt werden."
+        class-name="mt-2 ml-2" />
+    </div>
+    <hr />
+    <div class="d-inline">
+      <b-button
+        id="intro_cb_3"
+        class="my-2 d-inline"
+        size="sm"
+        variant="outline-secondary"
+        @click="moveToArchive">
+        <i class="fas fa-file-export"></i>
+        Klasse in Archiv verschieben
+      </b-button>
+      <context-help
+        help-text="Mit dieser Aktion wird die Klasse archiviert. Ist die Klasse mit anderen Personen geteilt, wird das Teilen automatisch beendet. Wird die Klasse wieder aus dem Archiv geholt, muss sie ggf. erneut mit der Person geteilt werden."
+        class-name="mt-2 ml-2" />
+    </div>
   </div>
 </template>
 <script>
-  import { ajax } from '../../../utils/ajax'
-  import { useGlobalStore } from '../../../store/store'
+  import { ajax } from 'src/utils/ajax'
+  import { useGlobalStore } from 'src/store/store'
+  import ContextHelp from 'src/vue/shared/context-help.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
   import Vue from 'vue'
   export default {
     name: 'ClassbookActions',
+    components: { ContextHelp },
     props: { group: Object },
     setup() {
       const globalStore = useGlobalStore()
@@ -64,7 +56,11 @@
       canCreateQrCodes() {
         return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
       },
+      students() {
+        return this.globalStore.studentsInGroups[this.group.id] || []
+      },
     },
+
     methods: {
       async moveToArchive() {
         const res = await ajax({
@@ -81,7 +77,8 @@
         this.isGeneratingQrCodes = true
         const pdf = new jsPDF()
         let height = 10
-        for (let i = 0; i < this.students.length; i++) {
+
+        for (let i = 0; i < this.group.students.length; i++) {
           const qrCode = new QRCodeStyling({
             width: 400,
             height: 400,
@@ -126,4 +123,3 @@
     },
   }
 </script>
-<style></style>

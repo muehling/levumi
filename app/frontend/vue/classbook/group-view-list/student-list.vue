@@ -23,9 +23,7 @@
           :empty="false"
           :read-only="readOnly"
           @click-student-action="handleClickStudent"
-          @update:students="update($event)"
-        >
-        </student-row>
+          @update:students="update($event)"></student-row>
         <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
         <student-row
           v-if="!readOnly"
@@ -35,36 +33,32 @@
           :index="-1"
           :empty="true"
           :open="students.length === 0"
-          @update:students="update($event)"
-        ></student-row>
+          @update:students="update($event)"></student-row>
       </tbody>
     </table>
     <test-info-modal
       v-if="selectedStudent && selectedModal === 'test-info'"
       :student="selectedStudent"
-      @hide-student-row-modal="resetSelectedStudent"
-    />
+      @hide-student-row-modal="resetSelectedStudent" />
     <qr-code-modal
       v-if="selectedStudent && selectedModal === 'qr-code'"
       :student="selectedStudent"
-      @hide-student-row-modal="resetSelectedStudent"
-    />
+      @hide-student-row-modal="resetSelectedStudent" />
     <font-settings-modal
       v-if="selectedStudent && selectedModal === 'font-settings'"
       :student="selectedStudent"
       @hide-student-row-modal="resetSelectedStudent"
-      @update="update"
-    />
+      @update="update" />
   </div>
 </template>
 
 <script>
-  import { decryptStudentName } from '../../utils/encryption'
-  import { useGlobalStore } from '../../store/store'
+  import { decryptStudentName } from 'src/utils/encryption'
+  import { useGlobalStore } from 'src/store/store'
   import StudentRow from './student-row.vue'
-  import TestInfoModal from './modals/test-info-modal.vue'
-  import QrCodeModal from './modals/qr-code-modal.vue'
-  import FontSettingsModal from './modals/font-settings-modal.vue'
+  import TestInfoModal from 'src/vue/classbook/modals/test-info-modal.vue'
+  import QrCodeModal from 'src/vue/classbook/modals/qr-code-modal.vue'
+  import FontSettingsModal from 'src/vue/classbook/modals/font-settings-modal.vue'
 
   export default {
     name: 'StudentList',
@@ -121,3 +115,4 @@
     },
   }
 </script>
+../../../utils/encryption../../../store/store

@@ -1,95 +1,83 @@
 <template>
   <div class="d-inline">
-    <b-modal
-      id="move-student-dialog"
-      size="lg"
-      title="Schüler:innen verschieben"
-      button-size="sm"
-      ok-variant="outline-success"
-      ok-title="Verschieben"
-      cancel-variant="outline-secondary"
-      cancel-title="Abbrechen"
-      @ok="handleConfirmMove"
-      @hidden="handleCancel">
-      <div class="d-flex mb-3">
-        <span class="flex-grow-1 pt-1">
-          Wählen Sie die Klasse aus, in die Sie die Schüler:innen verschieben wollen.
-        </span>
-        <b-button v-b-toggle.move-explanation variant="outline-secondary" class="btn-sm">
-          Hinweise
-        </b-button>
-      </div>
+    <div class="d-flex mb-3">
+      <span class="flex-grow-1 pt-1">
+        Wählen Sie die Klasse aus, in die Sie die Schüler:innen verschieben wollen.
+      </span>
+      <b-button v-b-toggle.move-explanation variant="outline-secondary" class="btn-sm">
+        Hinweise
+      </b-button>
+    </div>
 
-      <b-collapse id="move-explanation">
+    <b-collapse id="move-explanation">
+      <b-card>
+        <ul>
+          <li>
+            Schüler:innen werden mit allen bisherigen Messergebnissen in die gewählte Klasse
+            verschoben.
+          </li>
+          <li>Nur Schüler:innen der aktuellen Klasse können verschoben werden.</li>
+          <li>
+            Wenn Messergebnisse für einen Test vorhanden sind, der der Zielklasse bisher nicht
+            zugeordnet ist, wird der Test für die Klasse aktiviert. Die bereits vorhandenen
+            Schüler:innen werden jedoch erst einmal ausgeschlossen; wenn gewünscht, müssen die
+            vorhandenen Schüler:innen manuell für die Teilnahme aktiviert werden.
+          </li>
+          <li>
+            Wenn Messergebnisse zu einem in der Zielklasse pausierten Test vorhanden sind, wird
+            dieser Test nicht automatisch aktiviert.
+          </li>
+        </ul>
+      </b-card>
+    </b-collapse>
+    <b-form-select v-model="targetGroupId" :options="groupOptions" />
+    <hr />
+    Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.
+    <b-row>
+      <b-col>
         <b-card>
-          <ul>
-            <li>
-              Schüler:innen werden mit allen bisherigen Messergebnissen in die gewählte Klasse
-              verschoben.
-            </li>
-            <li>Nur Schüler:innen der aktuellen Klasse können verschoben werden.</li>
-            <li>
-              Wenn Messergebnisse für einen Test vorhanden sind, der der Zielklasse bisher nicht
-              zugeordnet ist, wird der Test für die Klasse aktiviert. Die bereits vorhandenen
-              Schüler:innen werden jedoch erst einmal ausgeschlossen; wenn gewünscht, müssen die
-              vorhandenen Schüler:innen manuell für die Teilnahme aktiviert werden.
-            </li>
-            <li>
-              Wenn Messergebnisse zu einem in der Zielklasse pausierten Test vorhanden sind, wird
-              dieser Test nicht automatisch aktiviert.
-            </li>
-          </ul>
+          <div
+            v-for="(student, index) in sourceGroupStudents"
+            :key="student.id"
+            :class="`p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
+            @mouseover="setActionArrow(1)"
+            @mouseleave="setActionArrow(0)"
+            @click="handleMoveStudent(student)">
+            <span class="text-dark">{{ student.name }}</span>
+          </div>
         </b-card>
-      </b-collapse>
-      <b-form-select v-model="targetGroupId" :options="groupOptions" />
-      <hr />
-      Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.
-      <b-row>
-        <b-col>
-          <b-card>
-            <div
-              v-for="(student, index) in sourceGroupStudents"
-              :key="student.id"
-              :class="`p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
-              @mouseover="setActionArrow(1)"
-              @mouseleave="setActionArrow(0)"
-              @click="handleMoveStudent(student)">
-              <span class="text-dark">{{ student.name }}</span>
-            </div>
-          </b-card>
-        </b-col>
-        <b-col cols="1" class="mt-4">
-          <div class="action-arrow">{{ actionArrow }}</div>
-        </b-col>
-        <b-col>
-          <b-card>
-            <div
-              v-for="(student, index) in targetGroupStudents"
-              :key="student.id"
-              :class="`p-1${index % 2 ? ' bg-light' : ''}`"
-              @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
-              @mouseleave="setActionArrow(0)"
-              @click="handleMoveStudent(student)">
-              <span
-                :class="`${
-                  hasStudentMoved(student.id, targetGroupId)
-                    ? 'text-dark cursor-pointer'
-                    : 'text-muted not-allowed'
-                }`">
-                {{ student.name }}
-              </span>
-            </div>
-          </b-card>
-        </b-col>
-      </b-row>
-    </b-modal>
+      </b-col>
+      <b-col cols="1" class="mt-4">
+        <div class="action-arrow">{{ actionArrow }}</div>
+      </b-col>
+      <b-col>
+        <b-card>
+          <div
+            v-for="(student, index) in targetGroupStudents"
+            :key="student.id"
+            :class="`p-1${index % 2 ? ' bg-light' : ''}`"
+            @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
+            @mouseleave="setActionArrow(0)"
+            @click="handleMoveStudent(student)">
+            <span
+              :class="`${
+                hasStudentMoved(student.id, targetGroupId)
+                  ? 'text-dark cursor-pointer'
+                  : 'text-muted not-allowed'
+              }`">
+              {{ student.name }}
+            </span>
+          </div>
+        </b-card>
+      </b-col>
+    </b-row>
   </div>
 </template>
 <script>
-  import { useGlobalStore } from '../../store/store'
-  import { ajax } from '../../utils/ajax'
-  import { decryptStudentNames, encryptWithMasterKeyAndGroup } from '../../utils/encryption'
-  import apiRoutes from '../routes/api-routes'
+  import { useGlobalStore } from 'src/store/store'
+  import { ajax } from 'src/utils/ajax'
+  import { decryptStudentNames, encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
+  import apiRoutes from 'src/vue/routes/api-routes'
   export default {
     name: 'MoveStudentDialog',
     props: { group: Object },
@@ -220,3 +208,4 @@
     height: 2em;
   }
 </style>
+../../../store/store../../../utils/ajax../../../utils/encryption../../routes/api-routes

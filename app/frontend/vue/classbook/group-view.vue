@@ -1,23 +1,44 @@
 <template>
   <div>
-    <classbook-actions :group="group" />
-    <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
-    <div v-if="group.archive == false">
-      <div v-if="!single" class="mb-1">
-        <!-- Form zur Umbenennung -->
-        <group-form v-if="displayActions" :group="group" @update:groups="updateGroup($event)" />
-      </div>
-      <div v-if="!single" class="mb-2">
-        <!-- Info/Form für Klassen teilen -->
-        <share-form v-if="true" :group="group" @update:groups="updateGroup($event)" />
-      </div>
-      <move-student-dialog v-if="displayActions" :group="group" />
+    <b-tabs v-if="group.archive === false" pills>
+      <b-tab title="Schüler:innen" :active="!showActionTab" @click="handleNavigate('')">
+        <student-list
+          v-if="group.key != null"
+          class="mt-4"
+          :group-id="group.id"
+          :read-only="readOnly" />
+      </b-tab>
+      <b-tab title="Aktionen" :active="showActionTab" @click="handleNavigate('aktionen')">
+        <b-row class="mt-4">
+          <b-col sm="4" md="3">
+            <group-view-actions-nav
+              :current="currentNav"
+              @groupview::action="handleSwitchActionPage" />
+          </b-col>
+          <b-col>
+            <b-card :title="actionCardTitle">
+              <div v-if="currentNav === 'general'">
+                <group-form :group="group" @update:groups="updateGroup($event)" />
+                <hr />
+                <classbook-actions
+                  v-if="displayActions"
+                  :group="group"
+                  @toggle-form="onToggleForm" />
+              </div>
+              <div v-if="currentNav === 'share'">
+                <share-form :group="group" @update:groups="updateGroup($event)" />
+                <shares-display v-if="group.owner" :group="group" />
+                <share-status v-if="!group.owner" :group="group" />
+              </div>
+              <div v-if="currentNav === 'movestudents'">
+                <move-student-dialog v-if="displayActions" :group="group" />
+              </div>
+            </b-card>
+          </b-col>
+        </b-row>
+      </b-tab>
+    </b-tabs>
 
-      <shares-display v-if="group.owner" :group="group" />
-      <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only" />
-    </div>
-
-    <!-- Darstellung für archivierte Klasse -->
     <div v-else>
       <p class="text-small">
         <em>Ins Archiv verschoben am {{ date }}</em>
@@ -38,17 +59,19 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { isMasquerading } from '../../utils/user'
-  import { useGlobalStore } from '../../store/store'
-  import ClassbookActions from './classbook-actions/classbook-actions.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { isMasquerading } from 'src/utils/user'
+  import { useGlobalStore } from 'src/store/store'
+  import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import GroupForm from './group-form.vue'
-  import MoveStudentDialog from './move-student-dialog.vue'
-  import ShareForm from './share-form.vue'
-  import StudentList from './student-list.vue'
+  import GroupForm from './group-view-actions/group-form.vue'
+  import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
+  import ShareForm from './group-view-actions/share-form.vue'
+  import StudentList from './group-view-list/student-list.vue'
   import Vue from 'vue'
   import SharesDisplay from './shares-display.vue'
+  import ShareStatus from './share-status.vue'
+  import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
 
   export default {
     name: 'GroupView',
@@ -56,9 +79,11 @@
       ClassbookActions,
       ConfirmDialog,
       GroupForm,
+      GroupViewActionsNav,
       MoveStudentDialog,
       ShareForm,
       SharesDisplay,
+      ShareStatus,
       StudentList,
     },
     props: {
@@ -70,29 +95,74 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-
+    data() {
+      return { currentNav: 'general' }
+    },
     computed: {
+      actionCardTitle() {
+        switch (this.currentNav) {
+          case 'general':
+            return 'Allgemein'
+          case 'share':
+            return 'Klasse teilen'
+          case 'movestudents':
+            return 'Schüler:innen verschieben'
+        }
+        return 'Unbekannte Aktion'
+      },
       canCreateQrCodes() {
-        //TODO restore once DDM is done
-        //return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
-        return true
+        return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
       },
       date: function () {
         let date = new Date(this.group?.updated_at)
         return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear()
       },
-      read_only: function () {
+      readOnly: function () {
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
         return this.group.read_only || this.globalStore.masquerade
       },
       displayActions() {
-        return !isMasquerading() && this.group.id && !this.group.read_only
+        return !isMasquerading() && this.group.id && this.group.owner
+      },
+      showActionTab() {
+        return this.$route.name === 'GroupActions'
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
     },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          console.log('watch group view', this.$route.name, this.$route.path, data)
+          if (data.groupId) {
+            this.selectedGroupId = parseInt(data.groupId, 10)
+          }
+          // await this.$nextTick()
+        },
+      },
+    },
     methods: {
+      handleNavigate(path) {
+        console.log('navigate group view', this.$route, this.$route.path, path)
+
+        if (path) {
+          this.$router.push(`${this.$route.path}/${path}`)
+        } else {
+          this.$router.push(`${this.$route.path}`)
+        }
+      },
+      handleSwitchActionPage(action) {
+        this.currentNav = action
+      },
+      onToggleForm(target) {
+        if (this.shownForm === '' || (this.shownForm !== '' && this.shownForm !== target)) {
+          this.shownForm = target
+        } else {
+          this.shownForm = ''
+        }
+      },
       // Klasse aus dem Archiv holen
       async reactivateGroup() {
         const res = await ajax({
@@ -145,3 +215,4 @@
     },
   }
 </script>
+./group-view-actions/move-student-dialog.vue./group-view-actions/share-form.vue./group-view-list/student-list.vue

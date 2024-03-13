@@ -11,11 +11,12 @@
         <b-form-input v-model="name" type="text" class="form-control" size="sm" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
-      <div v-else>
+      <div v-else class="d-inline">
         <!-- Anlegen Button anzeigen -->
-        <b-btn variant="outline-secondary" size="sm" @click="editMode = true"
-          ><i class="fas fa-user-plus"></i> Anlegen</b-btn
-        >
+        <b-btn variant="outline-secondary" size="sm" @click="editMode = true">
+          <i class="fas fa-user-plus"></i>
+          Anlegen
+        </b-btn>
       </div>
     </td>
 
@@ -30,8 +31,11 @@
 
     <td>
       <div v-if="editMode">
-        <b-form-select v-model="gender" size="sm" :options="options_gender" name="gender">
-        </b-form-select>
+        <b-form-select
+          v-model="gender"
+          size="sm"
+          :options="options_gender"
+          name="gender"></b-form-select>
       </div>
       <div v-else>
         <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
@@ -53,8 +57,7 @@
           v-if="month && year"
           class="btn btn-block btn-sm mt-2"
           variant="outline-danger"
-          @click="clearDateInputs"
-        >
+          @click="clearDateInputs">
           Datum löschen
         </b-btn>
       </div>
@@ -67,9 +70,9 @@
     <td>
       <div v-if="editMode">
         <b-form-select v-model="sen" :options="options_sen" size="sm" />
-        <small class="form-text text-muted"
-          >Diagnostizierter sonderpädagogischer Förderbedarf?</small
-        >
+        <small class="form-text text-muted">
+          Diagnostizierter sonderpädagogischer Förderbedarf?
+        </small>
       </div>
       <div v-else>
         <span v-if="student.sen != undefined">{{ options_sen[student.sen].text }}</span>
@@ -79,14 +82,17 @@
 
     <td>
       <div v-if="editMode">
-        <b-form-checkbox-group v-model="tags" :options="options_tags" name="tags" stacked>
-        </b-form-checkbox-group>
+        <b-form-checkbox-group
+          v-model="tags"
+          :options="options_tags"
+          name="tags"
+          stacked></b-form-checkbox-group>
         <small class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
       </div>
       <div v-else>
-        <span v-for="(tag, i) in student.tags" :key="`${tag}/${i}`"
-          >{{ i > 0 ? ', ' : '' }}{{ tag }}</span
-        >
+        <span v-for="(tag, i) in student.tags" :key="`${tag}/${i}`">
+          {{ i > 0 ? ', ' : '' }}{{ tag }}
+        </span>
         <span v-if="student.tags?.length == 0 && !empty" class="text-muted">nichts erfasst</span>
       </div>
     </td>
@@ -100,8 +106,7 @@
             class="mr-1"
             variant="outline-secondary"
             size="sm"
-            @click="handleClickAction(student, 'font-settings')"
-          >
+            @click="handleClickAction(student, 'font-settings')">
             <i class="fas fa-text-height"></i>
           </b-btn>
           <b-btn
@@ -109,8 +114,7 @@
             variant="outline-secondary"
             class="mr-1"
             size="sm"
-            @click="editMode = true"
-          >
+            @click="editMode = true">
             <i class="fas fa-user-edit"></i>
           </b-btn>
           <b-btn
@@ -118,8 +122,7 @@
             variant="outline-secondary"
             class="mr-1"
             size="sm"
-            @click="handleClickAction(student, 'qr-code')"
-          >
+            @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
           </b-btn>
           <b-btn
@@ -128,8 +131,7 @@
             variant="outline-secondary"
             class="mr-1"
             size="sm"
-            @click="handleClickAction(student, 'test-info')"
-          >
+            @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
           </b-btn>
         </b-button-group>
@@ -143,8 +145,7 @@
               variant="outline-success"
               title="Speichern"
               :disabled="name.length == 0"
-              @click="createStudent"
-            >
+              @click="createStudent">
               <i class="fas fa-check"></i>
             </b-button>
           </b-button-group>
@@ -153,18 +154,18 @@
               class="btn btn-sm mr-1"
               variant="outline-secondary"
               title="Abbrechen"
-              @click="editMode = false"
-              ><i class="fas fa-times"></i
-            ></b-btn>
+              @click="editMode = false">
+              <i class="fas fa-times"></i>
+            </b-btn>
           </b-button-group>
           <b-button-group>
             <b-btn
               v-if="!empty"
               class="btn btn-block btn-sm"
               variant="outline-danger"
-              @click="requestDelete"
-            >
-              <i class="fas fa-trash"></i> Löschen
+              @click="requestDelete">
+              <i class="fas fa-trash"></i>
+              Löschen
             </b-btn>
           </b-button-group>
         </b-button-toolbar>
@@ -176,10 +177,10 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { encryptWithMasterKeyAndGroup } from '../../utils/encryption'
+  import { ajax } from '../../../utils/ajax'
+  import { encryptWithMasterKeyAndGroup } from '../../../utils/encryption'
 
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import ConfirmDialog from '../../shared/confirm-dialog.vue'
 
   export default {
     name: 'StudentRow',
@@ -366,3 +367,4 @@
     },
   }
 </script>
+../../../utils/ajax../../../utils/encryption

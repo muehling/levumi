@@ -12,7 +12,13 @@
           <div v-else>
             <!-- reguläre Darstellung mit Klassenliste -->
             <b-tabs pills>
-              <b-tab active lazy>
+              <b-tab
+                lazy
+                :active="
+                  currentRoute.startsWith('/klassenbuch') ||
+                  currentRoute.startsWith('/klassenbuch/eigene')
+                "
+                @click="handleNavigate('eigene_klassen')">
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
@@ -20,7 +26,7 @@
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
                     <!-- Neue Klasse anlegen -->
-                    <b-tab key="new_group" :active="false" lazy>
+                    <b-tab key="new_group" :active="false" lazy @click="handleNavigate('neu')">
                       <template slot="title">
                         <i
                           id="intro_cb_2"
@@ -29,13 +35,12 @@
                       </template>
                       <group-form :group="{}"></group-form>
                     </b-tab>
-                    <!-- Alle Klassen als Tabs anzeigen, index bei 1 beginnen und Archiv ausklammern -->
                     <b-tab
-                      v-for="(group, index) in ownActiveGroups"
+                      v-for="group in ownActiveGroups"
                       :key="`${group.id}/${group.label}`"
-                      :active="index === firstOwnIndex"
-                      class=""
-                      lazy>
+                      :active="group.id === selectedGroupId"
+                      lazy
+                      @click="handleNavigate('eigene_klassen/' + group.id)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
@@ -52,16 +57,26 @@
               </b-tab>
 
               <!-- Geteilte Klassen -->
-              <b-tab :disabled="sharedGroups.length === 0" lazy>
+              <b-tab
+                :disabled="sharedGroups.length === 0"
+                lazy
+                :active="currentRoute.startsWith('/klassenbuch/geteilte')"
+                @click="handleNavigate('geteilte_klassen')">
                 <template slot="title">
                   Mit mir geteilte Klassen
-                  <span v-if="new_shares" class="badge badge-info">Neu!</span>
+                  <span v-if="newShares" class="badge badge-info">Neu!</span>
                   <span v-else>({{ sharedGroups.length }})</span>
                 </template>
 
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
-                    <b-tab v-for="(group, index) in sharedGroups" :key="group.id" class="m-3" lazy>
+                    <b-tab
+                      v-for="group in sharedGroups"
+                      :key="group.id"
+                      :active="group.id === selectedGroupId"
+                      class="m-3"
+                      lazy
+                      @click="handleNavigate('geteilte_klassen/' + group.id)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
@@ -75,7 +90,11 @@
               </b-tab>
 
               <!-- Klassenarchiv -->
-              <b-tab :disabled="archivedGroups.length === 0" lazy>
+              <b-tab
+                :disabled="archivedGroups.length === 0"
+                lazy
+                :active="currentRoute === 'ClassbookArchive'"
+                @click="handleNavigate('archiv')">
                 <template slot="title">Archivierte Klassen ({{ archivedGroups.length }})</template>
 
                 <b-card no-body class="mt-3">
@@ -109,7 +128,7 @@
 <script>
   import { ajax } from '../../utils/ajax'
   import { useGlobalStore } from '../../store/store'
-  import GroupForm from './group-form.vue'
+  import GroupForm from './group-view-actions/group-form.vue'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import routes from '../routes/api-routes'
@@ -128,6 +147,9 @@
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
+    },
+    data() {
+      return { selectedGroupId: undefined, currentRoute: '/klassenbuch' }
     },
     computed: {
       isLoading() {
@@ -171,16 +193,23 @@
         }
         return a
       },
-      new_shares: function () {
-        for (let i = 1; i < this.groups.length; ++i) {
-          if (this.groups[i].key == null) {
-            return true
-          }
-        }
-        return false
+      newShares: function () {
+        return this.groups.reduce((acc, group) => acc && group.key === null, false)
       },
       showIntro: function () {
         return this.globalStore.login.intro_state < 5
+      },
+    },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          this.currentRoute = this.$route.path
+          this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
+          console.log('watch classbook', this.$route.name, data.groupId)
+
+          //   await this.$nextTick()
+        },
       },
     },
     mounted() {
@@ -215,6 +244,11 @@
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
         Vue.set(this.globalStore.login, 'intro_state', 5)
+      },
+      handleNavigate(path) {
+        console.log('navigate classbook', path)
+
+        this.$router.push(`/klassenbuch/${path}`)
       },
     },
   }
