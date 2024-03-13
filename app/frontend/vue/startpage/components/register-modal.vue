@@ -48,7 +48,7 @@
           </a>
           einverstanden
         </b-form-checkbox>
-        <div class="d-flex justify-content-right">
+        <div class="d-flex justify-content-right mt-3">
           <b-button id="main-cancel" variant="outline-secondary" class="mr-2" @click="handleClose">
             Abbrechen
           </b-button>

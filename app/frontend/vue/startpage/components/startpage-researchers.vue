@@ -1,15 +1,19 @@
 <template>
   <div>
-    <div class="mb-4">
-      <div class="my-4">
+    <div class="position-relative">
+      <div class="img_container alphabet-img position-absolute"></div>
+    </div>
+    <div class="spacer" />
+    <div class="mb-4 container info-text position-relative">
+      <div class="mb-4 info-header shadow rounded">
         <h3>Forschungsmöglichkeiten auf unserer Plattform</h3>
       </div>
-      <div class="mb-4 d-flex flex-row">
+      <div class="mb-4">
         <b-row>
           <b-col>
             <b-card class="shadow">
               <b-img
-                class="bg-1 mr-4 mb-4 float-left"
+                class="img-bg mr-4 mb-4 float-left"
                 :src="require('../../../../assets/images/frontpage/frontpage_1.webp')"
                 fluid
                 alt="Generic stock image" />
@@ -32,32 +36,27 @@
         </b-row>
       </div>
       <div class="mb-4">
-        <b-row>
-          <b-col>
-            <b-card class="shadow">
-              <b-img
-                class="bg-2 ml-4 mb-4 float-right"
-                :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
-                fluid
-                alt="Generic stock image" />
-              <p>
-                Auf unserer Plattform haben Sie Zugang zu einer Vielzahl von Tools und Ressourcen,
-                die es Ihnen ermöglichen, Daten über den individuellen Lernfortschritt zu sammeln,
-                zu analysieren und zu interpretieren. Von einfachen Dashboards zur Visualisierung
-                von Lernverläufen bis hin zu fortschrittlichen Analysewerkzeugen bieten wir Ihnen
-                alles, was Sie benötigen, um Ihre Forschung auf dem Gebiet der
-                Lernverlaufsdiagnostik voranzutreiben.
-              </p>
-              <p>
-                Darüber hinaus bieten wir Ihnen die Möglichkeit, sich mit anderen Forschenden
-                auszutauschen, um Ideen zu teilen, Best Practices zu diskutieren und gemeinsam an
-                der Weiterentwicklung der Bildungsforschung zu arbeiten. Wir glauben an die Kraft
-                der Zusammenarbeit und sind davon überzeugt, dass wir gemeinsam mehr erreichen
-                können.
-              </p>
-            </b-card>
-          </b-col>
-        </b-row>
+        <b-card class="shadow">
+          <b-img
+            class="img-bg ml-4 mb-4 float-right"
+            :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
+            fluid
+            alt="Generic stock image" />
+          <p>
+            Auf unserer Plattform haben Sie Zugang zu einer Vielzahl von Tools und Ressourcen, die
+            es Ihnen ermöglichen, Daten über den individuellen Lernfortschritt zu sammeln, zu
+            analysieren und zu interpretieren. Von einfachen Dashboards zur Visualisierung von
+            Lernverläufen bis hin zu fortschrittlichen Analysewerkzeugen bieten wir Ihnen alles, was
+            Sie benötigen, um Ihre Forschung auf dem Gebiet der Lernverlaufsdiagnostik
+            voranzutreiben.
+          </p>
+          <p>
+            Darüber hinaus bieten wir Ihnen die Möglichkeit, sich mit anderen Forschenden
+            auszutauschen, um Ideen zu teilen, Best Practices zu diskutieren und gemeinsam an der
+            Weiterentwicklung der Bildungsforschung zu arbeiten. Wir glauben an die Kraft der
+            Zusammenarbeit und sind davon überzeugt, dass wir gemeinsam mehr erreichen können.
+          </p>
+        </b-card>
       </div>
       <div class="mb-4">
         <b-card class="shadow">
@@ -71,10 +70,10 @@
         </b-card>
       </div>
     </div>
-    <div class="my-4">
+    <div class="my-4 container">
       <h3>Ausgewählte Literatur</h3>
     </div>
-    <div>
+    <div class="container">
       <b-card class="shadow">
         <h4>Einführung und Artikel für die pädagogische Praxis</h4>
         <ul>
@@ -287,11 +286,3 @@
     name: 'StartpageResearchers',
   }
 </script>
-<style>
-  .bg-1 {
-    width: 30%;
-  }
-  .bg-2 {
-    width: 30%;
-  }
-</style>

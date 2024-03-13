@@ -1,74 +1,79 @@
 <template>
-  <div class="mb-4">
-    <div class="my-4">
-      <h3>
-        Individualisiertes Lernen ermöglichen: Entdecken Sie die Möglichkeiten unserer Plattform für
-        Lernverlaufsdiagnostik
-      </h3>
+  <div>
+    <div class="position-relative">
+      <div class="img_container grownups-img position-absolute"></div>
+      <div class="fadeout" />
     </div>
-    <div class="mb-4 d-flex flex-row">
-      <b-row>
-        <b-col>
-          <b-card class="shadow">
-            <b-img
-              class="bg-1 mr-4 mb-4 float-left"
-              :src="require('../../../../assets/images/frontpage/frontpage_3.webp')"
-              fluid
-              alt="Generic stock image" />
+    <div class="spacer" />
+    <div class="mb-4 container info-text position-relative">
+      <div class="mb-4 info-header shadow rounded">
+        <h3 class="">
+          Individualisiertes Lernen ermöglichen: Entdecken Sie die Möglichkeiten unserer Plattform
+          für Lernverlaufsdiagnostik
+        </h3>
+      </div>
+      <div class="mb-4">
+        <b-row>
+          <b-col>
+            <b-card class="shadow" body-class="info-card">
+              <b-img
+                class="img-bg mr-4 mb-4 float-left"
+                :src="require('../../../../assets/images/frontpage/frontpage_3.webp')"
+                fluid
+                alt="Generic stock image" />
+              <p>
+                Willkommen auf unserer Plattform, die transparenten Einblick in den Lernfortschritt
+                Ihrer Schülerinnen und Schüler bietet - und das kostenfrei! Unsere Plattform
+                ermöglicht es Ihnen, den Lernfortschritt jeder Klasse und jedes einzelnen Schülers
+                transparent zu verfolgen, ohne dabei in finanzielle Hürden zu stoßen. Mit
+                unbegrenzter Klassen- und Schülerzahl sowie der Möglichkeit, Klassen mit Kolleginnen
+                und Kollegen zu teilen, bieten wir Ihnen die Flexibilität und Zusammenarbeit, die
+                Sie benötigen, um erfolgreich zu sein.
+              </p>
+            </b-card>
+          </b-col>
+        </b-row>
+      </div>
 
-            <p>
-              Als Lehrkräfte stehen Sie täglich vor der Herausforderung, den Lernbedürfnissen Ihrer
-              Schülerinnen und Schüler gerecht zu werden. Unsere Plattform bietet Ihnen wertvolle
-              Werkzeuge und Einblicke, um den Lernfortschritt Ihrer Schülerinnen und Schüler besser
-              zu verstehen und effektive Lehrstrategien zu entwickeln. Von der Analyse von
-              Lernkurven bis hin zur Identifizierung individueller Stärken und Schwächen - wir
-              unterstützen Sie dabei, Ihren Unterricht gezielt anzupassen und Ihre Schülerinnen und
-              Schüler auf ihrem Weg zum Erfolg zu begleiten. Willkommen in einer Community, die sich
-              dem Erfolg Ihrer Schülerinnen und Schüler verschrieben hat.
-            </p>
-          </b-card>
-        </b-col>
-      </b-row>
-    </div>
-    <div class="mb-4">
-      <b-row>
-        <b-col>
-          <b-card class="shadow">
-            <b-img
-              class="bg-2 ml-4 mb-4 float-right"
-              :src="require('../../../../assets/images/frontpage/frontpage_4.webp')"
-              fluid
-              alt="Generic stock image" />
-            <p>
-              Auf unserer Plattform haben Sie Zugang zu einer Vielzahl von Tools und Ressourcen, die
-              es Ihnen ermöglichen, Daten über den individuellen Lernfortschritt zu sammeln, zu
-              analysieren und zu interpretieren. Von einfachen Dashboards zur Visualisierung von
-              Lernverläufen bis hin zu fortschrittlichen Analysewerkzeugen bieten wir Ihnen alles,
-              was Sie benötigen, um Ihre Forschung auf dem Gebiet der Lernverlaufsdiagnostik
-              voranzutreiben.
-            </p>
-            <p>
-              Darüber hinaus bieten wir Ihnen die Möglichkeit, sich mit anderen Forschenden
-              auszutauschen, um Ideen zu teilen, Best Practices zu diskutieren und gemeinsam an der
-              Weiterentwicklung der Bildungsforschung zu arbeiten. Wir glauben an die Kraft der
-              Zusammenarbeit und sind davon überzeugt, dass wir gemeinsam mehr erreichen können.
-            </p>
-          </b-card>
-        </b-col>
-      </b-row>
-    </div>
-    <div class="mb-4">
-      <b-card class="shadow">
-        <div>
-          Unsere Plattform stellt Ihnen eine Vielzahl von Tools und Ressourcen zur Verfügung, die es
-          Ihnen ermöglichen, den Unterricht maßzuschneidern und gezielt auf die Bedürfnisse jedes
-          einzelnen Schülers einzugehen. Von der Analyse von Lernkurven bis hin zur Identifizierung
-          von Lücken im Verständnis - unsere Tools unterstützen Sie dabei, den Unterricht so zu
-          gestalten, dass jeder Schüler sein volles Potenzial entfalten kann. Wir laden Sie ein,
-          unsere Plattform zu erkunden und zu erfahren, wie Sie den Lernfortschritt Ihrer
-          Schülerinnen und Schüler nachhaltig verbessern können.
-        </div>
-      </b-card>
+      <div class="mb-4">
+        <b-row>
+          <b-col>
+            <b-card class="shadow" body-class="info-card">
+              <b-img
+                class="img-bg ml-4 mb-4 float-right"
+                :src="require('../../../../assets/images/frontpage/frontpage_4.webp')"
+                fluid
+                alt="Generic stock image" />
+              <p>
+                Die einfache Handhabung für Schülerinnen und Schüler ist ein weiteres Highlight
+                unserer Plattform: Durch die Nutzung eines QR-Codes wird der Zugang zu den Tests und
+                Materialien spielend einfach. Darüber hinaus bieten wir umfassendes Fördermaterial,
+                das es Ihnen ermöglicht, individuell auf die Bedürfnisse Ihrer Schülerinnen und
+                Schüler einzugehen und ihren Lernprozess gezielt zu unterstützen.
+              </p>
+              <p>
+                Ein wichtiger Aspekt, dem wir besondere Aufmerksamkeit widmen, ist der Datenschutz:
+                Die Verschlüsselung der Schülernamen gewährleistet höchste Sicherheit und
+                Vertraulichkeit. Sie können sich darauf verlassen, dass die Daten Ihrer Schülerinnen
+                und Schüler bei uns in sicheren Händen sind.
+              </p>
+            </b-card>
+          </b-col>
+        </b-row>
+      </div>
+      <div class="mb-4">
+        <b-card class="shadow" body-class="info-card">
+          <div>
+            Unsere Plattform stellt Ihnen eine Vielzahl von Tools und Ressourcen zur Verfügung, die
+            es Ihnen ermöglichen, den Unterricht maßzuschneidern und gezielt auf die Bedürfnisse
+            jedes einzelnen Schülers einzugehen. Von der Analyse von Lernkurven bis hin zur
+            Identifizierung von Lücken im Verständnis - unsere Tools unterstützen Sie dabei, den
+            Unterricht so zu gestalten, dass jeder Schüler sein volles Potenzial entfalten kann. Wir
+            laden Sie ein, unsere Plattform zu erkunden und zu erfahren, wie Sie den Lernfortschritt
+            Ihrer Schülerinnen und Schüler nachhaltig verbessern können.
+          </div>
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
@@ -77,3 +82,9 @@
     name: 'StartageTeachers',
   }
 </script>
+<style>
+  .img-bg {
+    width: 40%;
+    border-radius: 5px;
+  }
+</style>

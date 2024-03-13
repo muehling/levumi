@@ -67,9 +67,9 @@
       </div>
     </nav>
     <startpage-nav />
-    <b-container class="main-container">
+    <div class="main-container">
       <router-view />
-    </b-container>
+    </div>
     <footer-bar />
   </div>
 </template>
@@ -110,14 +110,3 @@
     },
   }
 </script>
-<style>
-  .login-dropdown {
-    width: 26em;
-  }
-  .register-dropdown {
-    width: 36em;
-  }
-  .main-container {
-    margin-bottom: 4em;
-  }
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="mb-4">
+  <div class="mb-4 container">
     <div class="my-4">
       <h3>Das Levumi-Test-Inventar</h3>
     </div>

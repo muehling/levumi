@@ -1,23 +1,34 @@
 .img_container {
   display: flex;
   width: 100%;
-  min-height: 730px;
+  min-height: 450px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 0.5em;
   &.grownups-img {
+    min-height: 50vh;
     background-image: url('/images/erwachsene.jpg');
   }
   &.alphabet-img {
+    min-height: 50vh;
     background-image: url('/images/alphabet.jpg');
   }
   &.children-img {
+    min-height: 600px;
     background-image: url('/images/kinder.jpg');
   }
-  @media (min-width: 576px) {
-    min-height: 667px;
-  }
+}
+
+.img_container:not(.children-img)::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1));
+  pointer-events: none; /* Ensures the gradient overlay doesn't interfere with content */
 }
 
 .lead {
@@ -36,7 +47,9 @@
 .dsgvo-hint {
   cursor: pointer;
 }
-
+.spacer {
+  height: 1.5em;
+}
 .student-login-footer {
   background-color: white;
   left: 50%;
@@ -45,4 +58,46 @@
 
 #registration_comment {
   visibility: hidden;
+}
+
+.login-dropdown {
+  width: 26em;
+}
+.register-dropdown {
+  width: 36em;
+}
+.main-container {
+  margin-bottom: 4em;
+}
+.img-bg {
+  width: 30%;
+  border-radius: 5px;
+}
+.info-header {
+  background-color: #f0f8ffcc;
+  padding: 1em;
+}
+.info-text {
+  font-size: 1.2em;
+}
+.info-card {
+  background: linear-gradient(to bottom, #f0f8ffdd, transparent);
+}
+h1.display-2 {
+  font-size: 4em;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.hero-text {
+  position: absolute;
+  bottom: 0.5em;
+  right: 0.5em;
+}
+.hero-header {
+  position: absolute;
+  top: 0.5em;
+  left: 4em;
+  margin-left: 4em;
+  padding: 0.5em;
+  color: white;
 }
