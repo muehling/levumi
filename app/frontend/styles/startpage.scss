@@ -1,26 +1,23 @@
 .img_container {
   display: flex;
   width: 100%;
-  min-height: 450px;
+  min-height: 50vh;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   padding: 0.5em;
   &.grownups-img {
-    min-height: 50vh;
     background-image: url('/images/erwachsene.jpg');
   }
   &.alphabet-img {
-    min-height: 50vh;
     background-image: url('/images/alphabet.jpg');
   }
   &.children-img {
-    min-height: 600px;
     background-image: url('/images/kinder.jpg');
   }
 }
 
-.img_container:not(.children-img)::after {
+.img_container::after {
   content: '';
   position: absolute;
   bottom: 0;
@@ -31,17 +28,9 @@
   pointer-events: none; /* Ensures the gradient overlay doesn't interfere with content */
 }
 
-.lead {
-  height: fit-content;
-  padding: 15px;
-  color: black;
-  background-color: #f0f8ffdd;
-  font-size: 1.2em;
-}
-
 .video-container {
   max-width: 600px;
-  margin: auto;
+  margin-left: 2em;
 }
 
 .dsgvo-hint {
@@ -87,17 +76,4 @@ h1.display-2 {
   font-size: 4em;
   font-weight: bold;
   white-space: nowrap;
-}
-.hero-text {
-  position: absolute;
-  bottom: 0.5em;
-  right: 0.5em;
-}
-.hero-header {
-  position: absolute;
-  top: 0.5em;
-  left: 4em;
-  margin-left: 4em;
-  padding: 0.5em;
-  color: white;
 }

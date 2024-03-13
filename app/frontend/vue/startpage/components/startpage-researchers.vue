@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="position-relative">
-      <div class="img_container alphabet-img position-absolute"></div>
+      <div class="img_container children-img position-absolute"></div>
     </div>
     <div class="spacer" />
     <div class="mb-4 container info-text position-relative">
@@ -9,34 +9,29 @@
         <h3>Forschungsmöglichkeiten auf unserer Plattform</h3>
       </div>
       <div class="mb-4">
-        <b-row>
-          <b-col>
-            <b-card class="shadow">
-              <b-img
-                class="img-bg mr-4 mb-4 float-left"
-                :src="require('../../../../assets/images/frontpage/frontpage_1.webp')"
-                fluid
-                alt="Generic stock image" />
-
-              <p>
-                Als Forschende spielen Sie eine entscheidende Rolle bei der Gestaltung und
-                Weiterentwicklung von Bildungspraktiken. Ihre Arbeit trägt dazu bei, neue
-                Erkenntnisse zu generieren, bewährte Methoden zu validieren und innovative Ansätze
-                zu entwickeln, um das Lernen für Schülerinnen und Schüler weltweit zu verbessern.
-              </p>
-              <p>
-                Unsere Plattform wurde speziell für Forschende wie Sie entwickelt, um Ihnen eine
-                umfassende und effektive Möglichkeit zu bieten, tiefe Einblicke in den Lernverlauf
-                von Schülerinnen und Schülern zu gewinnen. Wir verstehen die Bedeutung von präzisen
-                Daten und aussagekräftigen Analysen, um fundierte Bildungsentscheidungen zu treffen
-                und den individuellen Lernprozess zu unterstützen.
-              </p>
-            </b-card>
-          </b-col>
-        </b-row>
+        <b-card class="shadow" body-class="info-card">
+          <b-img
+            class="img-bg mr-4 mb-4 float-left"
+            :src="require('../../../../assets/images/frontpage/frontpage_1.webp')"
+            fluid
+            alt="Generic stock image" />
+          <p>
+            Als Forschende spielen Sie eine entscheidende Rolle bei der Gestaltung und
+            Weiterentwicklung von Bildungspraktiken. Ihre Arbeit trägt dazu bei, neue Erkenntnisse
+            zu generieren, bewährte Methoden zu validieren und innovative Ansätze zu entwickeln, um
+            das Lernen für Schülerinnen und Schüler weltweit zu verbessern.
+          </p>
+          <p>
+            Unsere Plattform wurde speziell für Forschende wie Sie entwickelt, um Ihnen eine
+            umfassende und effektive Möglichkeit zu bieten, tiefe Einblicke in den Lernverlauf von
+            Schülerinnen und Schülern zu gewinnen. Wir verstehen die Bedeutung von präzisen Daten
+            und aussagekräftigen Analysen, um fundierte Bildungsentscheidungen zu treffen und den
+            individuellen Lernprozess zu unterstützen.
+          </p>
+        </b-card>
       </div>
       <div class="mb-4">
-        <b-card class="shadow">
+        <b-card class="shadow" body-class="info-card">
           <b-img
             class="img-bg ml-4 mb-4 float-right"
             :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
@@ -59,7 +54,7 @@
         </b-card>
       </div>
       <div class="mb-4">
-        <b-card class="shadow">
+        <b-card class="shadow" body-class="info-card">
           <div>
             Durch die Nutzung unserer Plattform können Sie nicht nur Ihre Forschungsmethoden
             verfeinern, sondern auch dazu beitragen, innovative Lehr- und Lernstrategien zu
@@ -74,7 +69,7 @@
       <h3>Ausgewählte Literatur</h3>
     </div>
     <div class="container">
-      <b-card class="shadow">
+      <b-card class="shadow" body-class="info-card">
         <h4>Einführung und Artikel für die pädagogische Praxis</h4>
         <ul>
           <li>

@@ -6,7 +6,6 @@
         <b-nav-item to="/lehrkraefte">Für Lehrkräfte</b-nav-item>
         <b-nav-item to="/forschung">Für Forschende</b-nav-item>
         <b-nav-item to="/testinventar">Testinventar</b-nav-item>
-        <b-nav-item to="/faq">FAQ</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
   </b-navbar>
