@@ -109,27 +109,38 @@
         </b-card>
       </div>
       <div class="mb-4">
-        <b-card class="shadow" body-class="info-card">
-          <p v-b-modal.register-modal class="text-bold text-center">
-            Interessiert? Dann einfach einen
-            <strong>kostenfreien Zugang anlegen!</strong>
-          </p>
-          <p id="levumi-newsletter" class="text-bold text-center">
-            Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden!
-            <a
-              href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
-              target="_blank"
-              aria-describedby="levumi-newsletter">
-              Jetzt abonnieren
-            </a>
-          </p>
-        </b-card>
+        <b-row>
+          <b-col>
+            <b-card class="shadow" body-class="info-card">
+              <p class="text-bold text-center">
+                Interessiert? Dann einfach einen
+                <strong>kostenfreien Zugang anlegen!</strong>
+              </p>
+              <register-form />
+            </b-card>
+          </b-col>
+          <b-col>
+            <b-card class="shadow" body-class="info-card">
+              <p id="levumi-newsletter" class="text-bold text-center">
+                Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden!
+                <a
+                  href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
+                  target="_blank"
+                  aria-describedby="levumi-newsletter">
+                  Jetzt abonnieren
+                </a>
+              </p>
+            </b-card>
+          </b-col>
+        </b-row>
       </div>
     </div>
   </div>
 </template>
 <script>
+  import RegisterForm from './register-form.vue'
   export default {
     name: 'StartpageStart',
+    components: { RegisterForm },
   }
 </script>

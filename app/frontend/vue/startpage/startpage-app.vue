@@ -15,7 +15,7 @@
           <a class="btn btn-outline-secondary" href="/diagnostik">{{ user }}</a>
         </div>
         <div v-else>
-          <register-modal :timestamp="initialTimeStamp" />
+          <register-modal />
 
           <b-dropdown
             id="login"
@@ -102,7 +102,9 @@
       },
     },
     watch: {},
-    mounted() {},
+    mounted() {
+      sessionStorage.setItem('ts', this.initialTimeStamp)
+    },
     methods: {
       login() {
         sessionStorage.setItem('login', this.password)
