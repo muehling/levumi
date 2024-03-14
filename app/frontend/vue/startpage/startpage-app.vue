@@ -1,14 +1,14 @@
 <template>
   <div class="h-100 main-container">
     <nav class="navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex">
-      <a class="navbar-brand d-block d-xs-inline" href="/">
+      <b-nav-item class="navbar-brand d-block d-xs-inline" to="/">
         <img
           src="/images/shared/Levumi-normal_small.png"
           alt="Levumi - Startseite"
           width="48"
           height="48" />
         Levumi
-      </a>
+      </b-nav-item>
       <a href="/testen" class="btn btn-outline-secondary">Zugang für Schülerinnen und Schüler</a>
       <div class="mt-2 mt-md-0">
         <div v-if="isLoggedIn">

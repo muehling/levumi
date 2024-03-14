@@ -4,9 +4,36 @@
       <div class="img_container alphabet-img position-absolute"></div>
     </div>
     <div class="spacer" />
-    <div class="mb-4 container info-text position-relative">
+    <div class="mb-4 container position-relative">
       <div class="mb-4 info-header shadow rounded">
-        <h1>Herzlich Willkommen bei Levumi!</h1>
+        <h1 class="main-header my-4 text-center">Herzlich Willkommen bei Levumi!</h1>
+      </div>
+      <div class="mb-4">
+        <div class="mb-1">
+          <b-row>
+            <b-col>
+              <router-link class="info-link shadow" to="/lehrkraefte">
+                <b-card class="text-center" body-class="info-card primary rounded">
+                  <h4 class="card-title font-weight-bold">Für Lehrkräfte</h4>
+                </b-card>
+              </router-link>
+            </b-col>
+            <b-col>
+              <router-link class="info-link" to="/forschung">
+                <b-card class="shadow text-center" body-class="info-card primary rounded">
+                  <h4 class="card-title font-weight-bold">Für Forschende</h4>
+                </b-card>
+              </router-link>
+            </b-col>
+            <b-col>
+              <router-link class="info-link" to="/testinventar">
+                <b-card class="shadow text-center" body-class="info-card primary rounded">
+                  <h4 class="card-title font-weight-bold">Testinventar</h4>
+                </b-card>
+              </router-link>
+            </b-col>
+          </b-row>
+        </div>
       </div>
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
@@ -34,6 +61,7 @@
           </p>
         </b-card>
       </div>
+
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <div class="embed-responsive embed-responsive-16by9 video-container float-right mb-4">
