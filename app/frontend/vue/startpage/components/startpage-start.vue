@@ -4,7 +4,7 @@
       <div class="img_container alphabet-img position-absolute"></div>
     </div>
     <div class="spacer" />
-    <div class="mb-4 container position-relative">
+    <div class="mb-4 container position-relative info-text">
       <div class="mb-4 info-header shadow rounded">
         <h1 class="main-header my-4 text-center">Herzlich Willkommen bei Levumi!</h1>
       </div>
@@ -63,30 +63,29 @@
       </div>
 
       <div class="mb-4">
-        <b-card class="shadow" body-class="info-card">
-          <div class="embed-responsive embed-responsive-16by9 video-container float-right mb-4">
-            <iframe
-              title="Dieses Video stellt Ihnen die kostenfreie Online-Plattform Levumi vor und gibt Ihnen einen Einblick, inwiefern Sie durch die Arbeit mit Levumi profitieren können."
-              class="embed-responsive-item"
-              width="560"
-              height="315"
-              src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA"
-              allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-              allowfullscreen></iframe>
-          </div>
-          <p id="blog-description" class="">
-            Der
-            <a
-              href="https://www.levumi-blog.uni-kiel.de"
-              aria-describedby="blog-description"
-              target="_blank">
-              Levumi Blog
-            </a>
-            unterstützt Sie bei allen Fragen rund um die Plattform und informiert über
-            praxisrelevante Forschungsergebnisse.
-          </p>
-          <p>Das Video rechts stellt Ihnen die Plattform kurz vor.</p>
-        </b-card>
+        <b-row>
+          <b-col v-if="!isLoggedIn" lg="6">
+            <b-card class="shadow" body-class="info-card">
+              <p class="text-bold text-center">
+                Interessiert? Dann einfach einen
+                <strong>kostenfreien Zugang anlegen!</strong>
+              </p>
+              <register-form />
+            </b-card>
+          </b-col>
+          <b-col :class="!isLoggedIn ? 'col-lg-6' : 'col'">
+            <b-card class="shadow" body-class="info-card">
+              <div class="embed-responsive embed-responsive-16by9 video-container mb-4">
+                <iframe
+                  title="Dieses Video stellt Ihnen die kostenfreie Online-Plattform Levumi vor und gibt Ihnen einen Einblick, inwiefern Sie durch die Arbeit mit Levumi profitieren können."
+                  class="embed-responsive-item"
+                  src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA"
+                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen></iframe>
+              </div>
+            </b-card>
+          </b-col>
+        </b-row>
       </div>
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
@@ -112,27 +111,46 @@
         <b-row>
           <b-col>
             <b-card class="shadow" body-class="info-card">
-              <p class="text-bold text-center">
-                Interessiert? Dann einfach einen
-                <strong>kostenfreien Zugang anlegen!</strong>
+              <h4>Levumi-Blog</h4>
+              <p id="blog-description" class="">
+                Der
+                <a
+                  href="https://www.levumi-blog.uni-kiel.de"
+                  aria-describedby="blog-description"
+                  target="_blank">
+                  Levumi Blog
+                </a>
+                unterstützt Sie bei allen Fragen rund um die Plattform und informiert über
+                praxisrelevante Forschungsergebnisse.
               </p>
-              <register-form />
+              <p>
+                Hier veröffentlichen wir regelmäßig Neuigkeiten zu Tests, Fördermaterialien, Tipps
+                zur Bedienung und andere relevante Informationen.
+              </p>
             </b-card>
           </b-col>
           <b-col>
             <b-card class="shadow" body-class="info-card">
-              <p id="levumi-newsletter" class="text-bold text-center">
-                Neu: Der Levumi-Newsletter hält Sie auf dem Laufenden!
+              <h4>Levumi-Newsletter</h4>
+              <p id="levumi-newsletter" class="">
+                Bleiben Sie immer auf dem Laufenden mit unserem Newsletter! Erhalten Sie regelmäßig
+                exklusive Updates, Tipps und Neuigkeiten rund um Levumi. Profitieren Sie von
+                wertvollen Einblicken, und informativen Ressourcen, die speziell auf Ihre
+                Bedürfnisse zugeschnitten sind.
+              </p>
+              <div class="text-center">
                 <a
+                  class="btn btn-success"
                   href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
                   target="_blank"
                   aria-describedby="levumi-newsletter">
                   Jetzt abonnieren
                 </a>
-              </p>
+              </div>
             </b-card>
           </b-col>
         </b-row>
+        <div class="spacer"></div>
       </div>
     </div>
   </div>
@@ -142,5 +160,11 @@
   export default {
     name: 'StartpageStart',
     components: { RegisterForm },
+    props: { user: String },
+    computed: {
+      isLoggedIn() {
+        return this.user !== 'none'
+      },
+    },
   }
 </script>

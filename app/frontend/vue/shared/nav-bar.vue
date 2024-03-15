@@ -13,8 +13,7 @@
         data-target="#navbarContent"
         aria-controls="navbarContent"
         aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
+        aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
@@ -23,13 +22,13 @@
           <li id="intro1" class="nav-item">
             <router-link
               class="nav-link"
-              :to="{ name: 'Diagnostik', params: { forceUpdate: true } }"
-              >Diagnostik</router-link
-            >
+              :to="{ name: 'Diagnostik', params: { forceUpdate: true } }">
+              Diagnostik
+            </router-link>
           </li>
           <li id="intro2" class="nav-item">
-            <router-link class="nav-link" to="/klassenbuch"
-              >Klassenbuch
+            <router-link class="nav-link" to="/klassenbuch">
+              Klassenbuch
               <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
             </router-link>
           </li>
@@ -47,57 +46,56 @@
               role="button"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               Weiteres
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarHelp">
               <a
                 class="dropdown-item"
                 href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
-                target="_blank"
-                >Levumi Newsletter</a
-              >
+                target="_blank">
+                Levumi Newsletter
+              </a>
               <a
                 class="dropdown-item"
                 href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
-                target="_blank"
-                >Videos</a
-              >
-              <a class="dropdown-item" href="https://www.levumi-blog.uni-kiel.de/" target="_blank"
-                >Blog</a
-              >
+                target="_blank">
+                Videos
+              </a>
+              <a class="dropdown-item" href="https://www.levumi-blog.uni-kiel.de/" target="_blank">
+                Blog
+              </a>
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header">Handbücher</h6>
-              <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf"
-                >Handbuch Lernbereich Empfinden & Verhalten</a
-              >
-              <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf"
-                >Handbuch Lernbereich Deutsch</a
-              >
-              <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf"
-                >Handbuch Fördermaterial Deutsch</a
-              >
+              <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf">
+                Handbuch Lernbereich Empfinden & Verhalten
+              </a>
+              <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf">
+                Handbuch Lernbereich Deutsch
+              </a>
+              <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf">
+                Handbuch Fördermaterial Deutsch
+              </a>
               <div class="dropdown-divider"></div>
               <h6 class="dropdown-header">Druckvorlagen</h6>
-              <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank"
-                >A4 Levumi normal</a
-              >
-              <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank"
-                >A4 Levumi jubelt</a
-              >
-              <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank"
-                >A4 Levumi liest</a
-              >
-              <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank"
-                >A3 Levumi normal</a
-              >
-              <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank"
-                >A3 Levumi jubelt</a
-              >
-              <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank"
-                >A3 Levumi liest</a
-              >
+              <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank">
+                A4 Levumi normal
+              </a>
+              <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank">
+                A4 Levumi jubelt
+              </a>
+              <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank">
+                A4 Levumi liest
+              </a>
+              <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank">
+                A3 Levumi normal
+              </a>
+              <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank">
+                A3 Levumi jubelt
+              </a>
+              <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank">
+                A3 Levumi liest
+              </a>
             </div>
           </li>
         </ul>
@@ -107,9 +105,9 @@
 
         <ul class="navbar-nav ml-auto">
           <li v-if="masquerade" class="nav-item">
-            <a href="#" class="nav-link btn btn-outline-secondary" @click="endMasquerade"
-              >Sitzung als {{ login?.email }} beenden</a
-            >
+            <a href="#" class="nav-link btn btn-outline-secondary" @click="endMasquerade">
+              Sitzung als {{ login?.email }} beenden
+            </a>
           </li>
           <li v-if="!masquerade" class="nav-item dropdown">
             <a
@@ -119,15 +117,13 @@
               role="button"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               Support
             </a>
             <div
               class="dropdown-menu shadow p-2"
               style="width: 20em"
-              aria-labelledby="navbarSupport"
-            >
+              aria-labelledby="navbarSupport">
               <contact-form />
             </div>
           </li>
@@ -139,33 +135,29 @@
               role="button"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               System
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarSystem">
-              <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item"
-                >Statistik</router-link
-              >
+              <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item">
+                Statistik
+              </router-link>
               <router-link
                 v-if="checkCapability('user')"
                 to="/nutzerverwaltung"
-                class="dropdown-item"
-              >
+                class="dropdown-item">
                 Benutzerverwaltung
               </router-link>
               <router-link
                 v-if="checkCapability('test')"
                 to="/testverwaltung"
-                class="dropdown-item"
-              >
+                class="dropdown-item">
                 Testverwaltung
               </router-link>
               <router-link
                 v-if="checkCapability('material')"
                 to="/materialverwaltung"
-                class="dropdown-item"
-              >
+                class="dropdown-item">
                 Materialverwaltung
               </router-link>
               <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
@@ -174,8 +166,7 @@
               <router-link
                 v-if="checkCapability('admin')"
                 to="/administration"
-                class="dropdown-item"
-              >
+                class="dropdown-item">
                 Allgemeine Einstellungen
               </router-link>
             </div>
@@ -188,8 +179,7 @@
               role="button"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               Meine Daten {{ $root.mode === 'production' ? '' : '(' + login?.email + ')' }}
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarMyData">
@@ -198,8 +188,7 @@
               <b-link
                 :href="`/users/${login.id}.text`"
                 class="dropdown-item"
-                :disabled="!hasTestedStudents"
-              >
+                :disabled="!hasTestedStudents">
                 Testungen exportieren
               </b-link>
             </div>
@@ -212,41 +201,35 @@
               role="button"
               data-toggle="dropdown"
               aria-haspopup="true"
-              aria-expanded="false"
-            >
+              aria-expanded="false">
               Rechtliches
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarLegal">
-              <a class="dropdown-item" href="/files/Vorlage_Elternbrief.doc"
-                >Vorlage Einwilligungserklärung</a
-              >
+              <a class="dropdown-item" href="/files/Vorlage_Elternbrief.doc">
+                Vorlage Einwilligungserklärung
+              </a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" onclick="$('#imprint').modal('show')">Impressum</a>
-              <a class="dropdown-item" href="#" onclick="$('#privacy').modal('show')"
-                >Datenschutzerklärung</a
-              >
-              <a class="dropdown-item" href="#" onclick="$('#tc').modal('show')"
-                >Nutzungsbedingungen</a
-              >
+              <a class="dropdown-item" href="#" onclick="$('#privacy').modal('show')">
+                Datenschutzerklärung
+              </a>
+              <a class="dropdown-item" href="#" onclick="$('#tc').modal('show')">
+                Nutzungsbedingungen
+              </a>
               <a
                 v-b-popover.hover.left="
                   'Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt.'
                 "
                 class="dropdown-item"
-                href="#"
-                >Cookie-Hinweis</a
-              >
+                href="#">
+                Cookie-Hinweis
+              </a>
             </div>
           </li>
           <li v-if="!masquerade" class="nav-item">
-            <form action="/logout" method="post">
+            <form action="/logout" method="post" onsubmit="sessionStorage.removeItem('login')">
               <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
-              <button
-                type="submit"
-                class="nav-link border-0 bg-transparent"
-                href="/logout"
-                @click="sessionStorage.removeItem('login')"
-              >
+              <button type="submit" class="nav-link border-0 bg-transparent" href="/logout">
                 Ausloggen
               </button>
             </form>

@@ -47,14 +47,19 @@
       einverstanden
     </b-form-checkbox>
     <div class="d-flex justify-content-right mt-3">
-      <b-button id="main-cancel" variant="outline-secondary" class="mr-2" @click="handleClose">
+      <b-button
+        v-if="showCancel"
+        id="main-cancel"
+        variant="outline-secondary"
+        class="mr-2"
+        @click="handleClose">
         Abbrechen
       </b-button>
       <b-button
         id="main-register"
         type="submit"
-        :disabled="!acceptTerms || acceptTerms !== 'accepted'"
-        variant="outline-success"
+        :disabled="isSubmitDisabled"
+        variant="success"
         @click="handleRegister">
         Registrieren
       </b-button>
@@ -65,7 +70,7 @@
   import { ajax } from '../../../utils/ajax'
   export default {
     name: 'RegisterForm',
-
+    props: { showCancel: Boolean },
     data() {
       return {
         acceptTerms: false,
@@ -77,6 +82,15 @@
       }
     },
     computed: {
+      isSubmitDisabled() {
+        return (
+          !this.acceptTerms ||
+          this.acceptTerms !== 'accepted' ||
+          this.email === '' ||
+          this.state === undefined ||
+          this.accountType === undefined
+        )
+      },
       csrfToken() {
         return document.getElementsByName('csrf-token')[0].getAttribute('content')
       },
@@ -112,8 +126,6 @@
         this.$root.$emit('bv::hide::modal', 'register-modal')
       },
       async handleRegister(e) {
-        console.log('meh', this.timestamp)
-
         e.preventDefault()
         e.stopPropagation()
         const data = {

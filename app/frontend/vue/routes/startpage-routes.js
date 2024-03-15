@@ -9,10 +9,11 @@ import VueRouter from 'vue-router'
 
 const routes = [
   { path: '/', component: StartpageStart },
-  { path: '/faq', component: StartpageFaq },
+  { path: '/login', component: StartpageStart },
   { path: '/testinventar', component: StartpageTests },
   { path: '/lehrkraefte', component: StartpageTeachers },
   { path: '/forschung', component: StartpageResearchers },
+  // { path: '/faq', component: StartpageFaq },
   // {path: "/testimonial", component: Startpage},
 ]
 

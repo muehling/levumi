@@ -5,7 +5,7 @@
     </b-button>
 
     <b-modal id="register-modal" title="Registrierung" hide-footer no-close-on-backdrop>
-      <register-form />
+      <register-form show-cancel="true" />
     </b-modal>
   </div>
 </template>

@@ -68,7 +68,7 @@
     </nav>
     <startpage-nav />
     <div class="main-container">
-      <router-view />
+      <router-view :user="user" />
     </div>
     <footer-bar />
   </div>
