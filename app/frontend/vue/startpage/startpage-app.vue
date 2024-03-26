@@ -1,7 +1,16 @@
 <template>
   <div class="h-100 main-container">
-    <nav class="navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex">
-      <b-nav-item class="navbar-brand d-block d-xs-inline" to="/">
+    <nav
+      class="startpage-navbar navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex">
+      <a v-if="isLoggedIn" href="/diagnostik">
+        <img
+          src="/images/shared/Levumi-normal_small.png"
+          alt="Levumi - Startseite"
+          width="48"
+          height="48" />
+        Levumi
+      </a>
+      <b-nav-item v-else class="navbar-brand d-block d-xs-inline" to="/">
         <img
           src="/images/shared/Levumi-normal_small.png"
           alt="Levumi - Startseite"
@@ -15,8 +24,6 @@
           <a class="btn btn-outline-secondary" href="/diagnostik">{{ user }}</a>
         </div>
         <div v-else>
-          <register-modal />
-
           <b-dropdown
             id="login"
             :menu-class="`login-dropdown${passwordMismatch ? ' show' : ''}`"
@@ -66,9 +73,8 @@
         </div>
       </div>
     </nav>
-    <startpage-nav />
-    <div class="main-container">
-      <router-view :user="user" />
+    <div class="main-container startpage-container">
+      <router-view :is-logged-in="isLoggedIn" />
     </div>
     <footer-bar />
   </div>
@@ -78,10 +84,9 @@
   import { RouterView } from 'vue-router'
   import RegisterModal from './components/register-modal.vue'
   import FooterBar from '../shared/footer-bar.vue'
-  import StartpageNav from './components/startpage-nav.vue'
   export default {
     name: 'StartpageApp',
-    components: { RegisterModal, FooterBar, StartpageNav, RouterView },
+    components: { RegisterModal, FooterBar, RouterView },
     props: { user: String, retry: String, initialTimeStamp: String },
 
     data() {

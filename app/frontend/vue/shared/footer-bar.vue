@@ -33,11 +33,3 @@
     name: 'FooterBar',
   }
 </script>
-
-<style>
-  .footer {
-    background-color: white;
-    position: absolute;
-    bottom: 0;
-  }
-</style>

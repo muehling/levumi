@@ -1,17 +1,20 @@
 <template>
   <b-form @submit="handleRegister">
-    <input type="hidden" name="authenticity_token" :value="csrfToken" autocomplete="off" />
-    <b-form-group label-cols="4" label="Email-Adresse" label-for="register-email">
+    <input type="hidden" name="authentictity_token" :value="csrfToken" autocomplete="off" />
+    <b-form-group label-class="text-small mb-0" label="Email-Adresse" label-for="register-email">
       <b-form-input
         id="register-email"
         v-model="email"
+        placeholder="E-Mail-Adresse"
         name="user[email]"
         @focus="errorMessage = ''" />
       <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
     </b-form-group>
-    <b-form-group v-slot="{ ariaDescribedby }" label-cols="4" label="Ich bin...">
+    <hr class="mt-0 d-none" />
+    <b-form-group v-slot="{ ariaDescribedby }" label-class="text-small mb-0" label="Ich bin...">
       <b-form-radio
         v-model="accountType"
+        inline
         :aria-describedby="ariaDescribedby"
         name="user[account_type]"
         value="0">
@@ -19,6 +22,7 @@
       </b-form-radio>
       <b-form-radio
         v-model="accountType"
+        inline
         :aria-describedby="ariaDescribedby"
         name="user[account_type]"
         value="1">
@@ -26,17 +30,21 @@
       </b-form-radio>
       <b-form-radio
         v-model="accountType"
+        inline
         :aria-describedby="ariaDescribedby"
         name="user[account_type]"
         value="2">
         Privatperson
       </b-form-radio>
     </b-form-group>
-    <b-form-group label-cols="4" label="Aus...">
+    <hr class="mt-0 d-none" />
+    <b-form-group label-class="text-small mb-0" label="Aus...">
       <b-form-select v-model="state" variant="outline-secondary" :options="states" />
     </b-form-group>
+    <hr class="m-0 d-none" />
     <b-form-checkbox
       v-model="acceptTerms"
+      class="mt-3"
       name="accept-terms"
       value="accepted"
       unchecked-value="not_accepted">
@@ -46,6 +54,7 @@
       </a>
       einverstanden
     </b-form-checkbox>
+    <hr />
     <div class="d-flex justify-content-right mt-3">
       <b-button
         v-if="showCancel"
@@ -75,7 +84,7 @@
       return {
         acceptTerms: false,
         email: '',
-        state: undefined,
+        state: null,
         accountType: undefined,
         comment: '',
         errorMessage: '',
@@ -87,7 +96,7 @@
           !this.acceptTerms ||
           this.acceptTerms !== 'accepted' ||
           this.email === '' ||
-          this.state === undefined ||
+          !this.state ||
           this.accountType === undefined
         )
       },
@@ -99,6 +108,7 @@
       },
       states() {
         return [
+          { text: 'Bundesland...', value: null, disabled: true },
           { text: 'Baden-Württemberg', value: 1 },
           { text: 'Bayern', value: 2 },
           { text: 'Berlin', value: 3 },

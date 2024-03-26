@@ -6,39 +6,24 @@
     <div class="spacer" />
     <div class="mb-4 container position-relative info-text">
       <div class="mb-4 info-header shadow rounded">
-        <h1 class="main-header my-4 text-center">Herzlich Willkommen bei Levumi!</h1>
+        <h1 class="main-header my-4 text-center">
+          Herzlich Willkommen bei
+          <span class="text-nowrap">
+            Levumi!
+            <img
+              src="/images/shared/Levumi-normal_small.png"
+              class="mb-3 ml-3"
+              alt="Levumi"
+              width="48"
+              height="48" />
+          </span>
+        </h1>
       </div>
-      <div class="mb-4">
-        <div class="mb-1">
-          <b-row>
-            <b-col>
-              <router-link class="info-link shadow" to="/lehrkraefte">
-                <b-card class="text-center" body-class="info-card primary rounded">
-                  <h4 class="card-title font-weight-bold">Für Lehrkräfte</h4>
-                </b-card>
-              </router-link>
-            </b-col>
-            <b-col>
-              <router-link class="info-link" to="/forschung">
-                <b-card class="shadow text-center" body-class="info-card primary rounded">
-                  <h4 class="card-title font-weight-bold">Für Forschende</h4>
-                </b-card>
-              </router-link>
-            </b-col>
-            <b-col>
-              <router-link class="info-link" to="/testinventar">
-                <b-card class="shadow text-center" body-class="info-card primary rounded">
-                  <h4 class="card-title font-weight-bold">Testinventar</h4>
-                </b-card>
-              </router-link>
-            </b-col>
-          </b-row>
-        </div>
-      </div>
+      <startpage-nav />
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg ml-4 mb-4 float-right"
+            class="img-bg ml-4 mb-4 float-right shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
             fluid
             alt="Generic stock image" />
@@ -61,15 +46,15 @@
           </p>
         </b-card>
       </div>
-
       <div class="mb-4">
         <b-row>
           <b-col v-if="!isLoggedIn" lg="6">
             <b-card class="shadow" body-class="info-card">
-              <p class="text-bold text-center">
+              <p class="text-bold text-left">
                 Interessiert? Dann einfach einen
                 <strong>kostenfreien Zugang anlegen!</strong>
               </p>
+              <hr />
               <register-form />
             </b-card>
           </b-col>
@@ -90,7 +75,7 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg mr-4 mb-4 float-left"
+            class="img-bg mr-4 mb-4 float-left shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_5.webp')"
             fluid
             alt="Generic stock image" />
@@ -157,14 +142,10 @@
 </template>
 <script>
   import RegisterForm from './register-form.vue'
+  import StartpageNav from './startpage-nav.vue'
   export default {
     name: 'StartpageStart',
-    components: { RegisterForm },
-    props: { user: String },
-    computed: {
-      isLoggedIn() {
-        return this.user !== 'none'
-      },
-    },
+    components: { RegisterForm, StartpageNav },
+    props: { isLoggedIn: Boolean },
   }
 </script>

@@ -4,6 +4,7 @@
       <div class="img_container children-img position-absolute"></div>
     </div>
     <div class="spacer" />
+    <startpage-nav class-name="container" />
     <div class="mb-4 container info-text position-relative">
       <div class="mb-4 info-header shadow rounded">
         <h3>Forschungsmöglichkeiten auf unserer Plattform</h3>
@@ -11,8 +12,8 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg mr-4 mb-4 float-left"
-            :src="require('../../../../assets/images/frontpage/frontpage_1.webp')"
+            class="img-bg mr-4 mb-4 float-left shadow"
+            :src="require('../../../../assets/images/frontpage/frontpage_7.webp')"
             fluid
             alt="Generic stock image" />
           <p>
@@ -33,8 +34,8 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg ml-4 mb-4 float-right"
-            :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
+            class="img-bg ml-4 mb-4 float-right shadow"
+            :src="require('../../../../assets/images/frontpage/frontpage_8.webp')"
             fluid
             alt="Generic stock image" />
           <p>
@@ -55,6 +56,17 @@
         </b-card>
       </div>
     </div>
+    <div v-if="!isLoggedIn" class="mb-4 container">
+      <b-card class="shadow" body-class="info-card">
+        <p class="text-bold text-left">
+          Interessiert? Dann einfach einen
+          <strong>kostenfreien Zugang anlegen!</strong>
+        </p>
+        <hr />
+        <register-form />
+      </b-card>
+    </div>
+
     <div class="my-4 container">
       <h3>Ausgewählte Literatur</h3>
     </div>
@@ -267,7 +279,11 @@
   </div>
 </template>
 <script>
+  import StartpageNav from './startpage-nav.vue'
+  import RegisterForm from './register-form.vue'
   export default {
     name: 'StartpageResearchers',
+    components: { StartpageNav, RegisterForm },
+    props: { isLoggedIn: Boolean },
   }
 </script>

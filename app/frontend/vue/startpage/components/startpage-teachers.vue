@@ -5,6 +5,7 @@
       <div class="fadeout" />
     </div>
     <div class="spacer" />
+    <startpage-nav class-name="container" />
     <div class="mb-4 container info-text position-relative">
       <div class="mb-4 info-header shadow rounded">
         <h3 class="">
@@ -17,7 +18,7 @@
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg mr-4 mb-4 float-left"
+                class="img-bg mr-4 mb-4 float-left shadow"
                 :src="require('../../../../assets/images/frontpage/frontpage_3.webp')"
                 fluid
                 alt="Generic stock image" />
@@ -34,13 +35,12 @@
           </b-col>
         </b-row>
       </div>
-
       <div class="mb-4">
         <b-row>
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg ml-4 mb-4 float-right"
+                class="img-bg ml-4 mb-4 float-right shadow"
                 :src="require('../../../../assets/images/frontpage/frontpage_4.webp')"
                 fluid
                 alt="Generic stock image" />
@@ -74,17 +74,25 @@
           </div>
         </b-card>
       </div>
+      <div v-if="!isLoggedIn" class="mb-4">
+        <b-card class="shadow" body-class="info-card">
+          <p class="text-bold text-left">
+            Interessiert? Dann einfach einen
+            <strong>kostenfreien Zugang anlegen!</strong>
+          </p>
+          <hr />
+          <register-form />
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
 <script>
+  import StartpageNav from './startpage-nav.vue'
+  import RegisterForm from './register-form.vue'
   export default {
     name: 'StartageTeachers',
+    components: { StartpageNav, RegisterForm },
+    props: { isLoggedIn: Boolean },
   }
 </script>
-<style>
-  .img-bg {
-    width: 40%;
-    border-radius: 5px;
-  }
-</style>

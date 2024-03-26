@@ -4,6 +4,7 @@
       <div class="img_container alphabet-img position-absolute"></div>
     </div>
     <div class="spacer" />
+    <startpage-nav class-name="container" />
     <div class="mb-4 container position-relative">
       <div class="mb-4 info-header shadow rounded">
         <h3>Das Levumi-Testinventar</h3>
@@ -30,13 +31,26 @@
           <tests-app />
         </b-card>
       </div>
+      <div v-if="!isLoggedIn" class="my-4">
+        <b-card class="shadow" body-class="info-card">
+          <p class="text-bold text-left">
+            Interessiert? Dann einfach einen
+            <strong>kostenfreien Zugang anlegen!</strong>
+          </p>
+          <hr />
+          <register-form />
+        </b-card>
+      </div>
     </div>
   </div>
 </template>
 <script>
+  import RegisterForm from './register-form.vue'
+  import StartpageNav from './startpage-nav.vue'
   import TestsApp from '../../tests/tests-app.vue'
   export default {
     name: 'StartpageTests',
-    components: { TestsApp },
+    components: { TestsApp, StartpageNav, RegisterForm },
+    props: { isLoggedIn: Boolean },
   }
 </script>

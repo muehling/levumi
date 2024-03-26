@@ -28,7 +28,7 @@
   pointer-events: none; /* Ensures the gradient overlay doesn't interfere with content */
 }
 
-.card {
+.startpage-container .card {
   height: 100%;
 }
 
@@ -102,4 +102,17 @@ h1.main-header {
   font-size: 3em;
   font-weight: bold;
   color: #5a598c;
+}
+
+.footer {
+  background-color: white;
+  @media (max-width: 576px) {
+    position: relative;
+  }
+}
+
+.startpage-navbar {
+  @media (max-width: 576px) {
+    position: relative;
+  }
 }
