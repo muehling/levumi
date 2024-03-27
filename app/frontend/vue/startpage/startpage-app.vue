@@ -26,54 +26,17 @@
         <div v-else>
           <b-dropdown
             id="login"
-            :menu-class="`login-dropdown${passwordMismatch ? ' show' : ''}`"
+            :menu-class="`login-dropdown${passwordMismatch || isLoginOpen ? ' show' : ''}`"
             :class="passwordMismatch ? 'show' : ''"
             variant="outline-secondary"
             text="Einloggen"
             right>
-            <div>
-              <b-form
-                class="px-4 py-3 mx-3 mx-md-0 mw-100"
-                action="/login"
-                method="POST"
-                @submit="login">
-                <div class="form-group">
-                  <input
-                    type="hidden"
-                    name="authenticity_token"
-                    :value="csrfToken"
-                    autocomplete="off" />
-                  <b-input
-                    id="login-email"
-                    type="email"
-                    name="email"
-                    aria-label="Email-Adresse eingeben"
-                    placeholder="E-Mail Adresse"
-                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
-                </div>
-                <div class="form-group">
-                  <b-input
-                    id="password"
-                    v-model="password"
-                    type="password"
-                    name="password"
-                    aria-label="Passwort eingeben"
-                    placeholder="Passwort"
-                    :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
-                  <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
-                </div>
-                <b-button type="submit" @click="login">Einloggen</b-button>
-                <div v-if="passwordMismatch" class="mt-3">
-                  <div class="dropdown-divider"></div>
-                  <a href="/passwort">Passwort vergessen? Hier klicken!</a>
-                </div>
-              </b-form>
-            </div>
+            <login-form />
           </b-dropdown>
         </div>
       </div>
     </nav>
-    <div class="main-container startpage-container">
+    <div class="main-container startpage-container" @click="handleCloseLogin">
       <router-view :is-logged-in="isLoggedIn" />
     </div>
     <footer-bar />
@@ -83,35 +46,38 @@
 <script>
   import { RouterView } from 'vue-router'
   import FooterBar from '../shared/footer-bar.vue'
+  import LoginForm from './components/login-form.vue'
+  import { useGlobalStore } from '../../store/store'
   export default {
     name: 'StartpageApp',
-    components: { FooterBar, RouterView },
-    props: { user: String, retry: String, initialTimeStamp: String },
-
-    data() {
+    components: { FooterBar, RouterView, LoginForm },
+    provide() {
       return {
-        password: '',
-        userName: '',
+        passwordMismatch: this.passwordMismatch,
       }
     },
+    props: { user: String, retry: String, initialTimeStamp: String },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     computed: {
-      csrfToken() {
-        return document.getElementsByName('csrf-token')[0].getAttribute('content')
-      },
       isLoggedIn() {
         return this.user !== 'none'
       },
       passwordMismatch() {
         return this.retry === 'true'
       },
+      isLoginOpen() {
+        return this.globalStore.isLoginOpen
+      },
     },
-    watch: {},
     mounted() {
       sessionStorage.setItem('ts', this.initialTimeStamp)
     },
     methods: {
-      login() {
-        sessionStorage.setItem('login', this.password)
+      handleCloseLogin() {
+        this.globalStore.isLoginOpen = false
       },
     },
   }

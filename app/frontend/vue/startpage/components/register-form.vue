@@ -2,7 +2,9 @@
   <b-card class="shadow" body-class="info-card">
     <div v-if="registrationSuccessful">
       <h4>Vielen Dank für Ihre Registrierung!</h4>
-      <p>Bitte überprüfen Sie Ihren Posteingang.</p>
+      <hr />
+      <p>Wir haben Ihnen Ihre Zugangsdaten per E-Mail geschickt.</p>
+      <p>Bitte loggen Sie sich ein, um die Registrierung abzuschließen.</p>
     </div>
     <div v-else>
       <p class="text-bold text-left">
@@ -92,9 +94,15 @@
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
+  import { useGlobalStore } from '../../../store/store'
   export default {
     name: 'RegisterForm',
+
     props: { showCancel: Boolean },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
+    },
     data() {
       return {
         acceptTerms: false,
@@ -171,6 +179,7 @@
             this.state = null
             this.accountType = undefined
             this.acceptTerms = false
+            this.globalStore.isLoginOpen = true
             break
           default:
             this.errorMessage = res.data.errors.join('\n\n')
