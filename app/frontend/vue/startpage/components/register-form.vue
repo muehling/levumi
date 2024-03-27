@@ -1,79 +1,94 @@
 <template>
-  <b-form @submit="handleRegister">
-    <input type="hidden" name="authentictity_token" :value="csrfToken" autocomplete="off" />
-    <b-form-group label-class="text-small mb-0" label="Email-Adresse" label-for="register-email">
-      <b-form-input
-        id="register-email"
-        v-model="email"
-        placeholder="E-Mail-Adresse"
-        name="user[email]"
-        @focus="errorMessage = ''" />
-      <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
-    </b-form-group>
-    <hr class="mt-0 d-none" />
-    <b-form-group v-slot="{ ariaDescribedby }" label-class="text-small mb-0" label="Ich bin...">
-      <b-form-radio
-        v-model="accountType"
-        inline
-        :aria-describedby="ariaDescribedby"
-        name="user[account_type]"
-        value="0">
-        Lehrkraft
-      </b-form-radio>
-      <b-form-radio
-        v-model="accountType"
-        inline
-        :aria-describedby="ariaDescribedby"
-        name="user[account_type]"
-        value="1">
-        Forscher:in
-      </b-form-radio>
-      <b-form-radio
-        v-model="accountType"
-        inline
-        :aria-describedby="ariaDescribedby"
-        name="user[account_type]"
-        value="2">
-        Privatperson
-      </b-form-radio>
-    </b-form-group>
-    <hr class="mt-0 d-none" />
-    <b-form-group label-class="text-small mb-0" label="Aus...">
-      <b-form-select v-model="state" variant="outline-secondary" :options="states" />
-    </b-form-group>
-    <hr class="m-0 d-none" />
-    <b-form-checkbox
-      v-model="acceptTerms"
-      class="mt-3"
-      name="accept-terms"
-      value="accepted"
-      unchecked-value="not_accepted">
-      Ich bin mit den
-      <a href="#" data-toggle="modal" data-focus="false" data-target="#t_and_c">
-        Nutzungsbedingungen
-      </a>
-      einverstanden
-    </b-form-checkbox>
-    <hr />
-    <div class="d-flex justify-content-right mt-3">
-      <b-button
-        v-if="showCancel"
-        id="main-cancel"
-        variant="outline-secondary"
-        class="mr-2"
-        @click="handleClose">
-        Abbrechen
-      </b-button>
-      <b-button
-        id="main-register"
-        type="submit"
-        :disabled="isSubmitDisabled"
-        variant="success"
-        @click="handleRegister">
-        Registrieren
-      </b-button>
+  <b-card class="shadow" body-class="info-card">
+    <div v-if="registrationSuccessful">
+      <h4>Vielen Dank für Ihre Registrierung!</h4>
+      <p>Bitte überprüfen Sie Ihren Posteingang.</p>
     </div>
-  </b-form>
+    <div v-else>
+      <p class="text-bold text-left">
+        Interessiert? Dann einfach einen
+        <strong>kostenfreien Zugang anlegen!</strong>
+      </p>
+      <hr />
+      <b-form @submit="handleRegister">
+        <b-form-group
+          label-class="text-small mb-0"
+          label="Email-Adresse"
+          label-for="register-email">
+          <b-form-input
+            id="register-email"
+            v-model="email"
+            placeholder="E-Mail-Adresse"
+            name="user[email]"
+            @focus="errorMessage = ''" />
+          <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
+        </b-form-group>
+        <hr class="mt-0 d-none" />
+        <b-form-group v-slot="{ ariaDescribedby }" label-class="text-small mb-0" label="Ich bin...">
+          <b-form-radio
+            v-model="accountType"
+            inline
+            :aria-describedby="ariaDescribedby"
+            name="user[account_type]"
+            value="0">
+            Lehrkraft
+          </b-form-radio>
+          <b-form-radio
+            v-model="accountType"
+            inline
+            :aria-describedby="ariaDescribedby"
+            name="user[account_type]"
+            value="1">
+            Forscher:in
+          </b-form-radio>
+          <b-form-radio
+            v-model="accountType"
+            inline
+            :aria-describedby="ariaDescribedby"
+            name="user[account_type]"
+            value="2">
+            Privatperson
+          </b-form-radio>
+        </b-form-group>
+        <hr class="mt-0 d-none" />
+        <b-form-group label-class="text-small mb-0" label="Aus...">
+          <b-form-select v-model="state" variant="outline-secondary" :options="states" />
+        </b-form-group>
+        <hr class="m-0 d-none" />
+        <b-form-checkbox
+          v-model="acceptTerms"
+          class="mt-3"
+          name="accept-terms"
+          value="accepted"
+          unchecked-value="not_accepted">
+          Ich bin mit den
+          <a href="#" data-toggle="modal" data-focus="false" data-target="#t_and_c">
+            Nutzungsbedingungen
+          </a>
+          einverstanden
+        </b-form-checkbox>
+        <hr />
+        <div class="d-flex justify-content-right mt-3">
+          <b-button
+            v-if="showCancel"
+            id="main-cancel"
+            variant="outline-secondary"
+            class="mr-2"
+            @click="handleClose">
+            Abbrechen
+          </b-button>
+          <b-button
+            id="main-register"
+            type="submit"
+            :disabled="isSubmitDisabled"
+            variant="success"
+            @click="handleRegister">
+            Registrieren
+          </b-button>
+        </div>
+      </b-form>
+    </div>
+  </b-card>
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
@@ -88,6 +103,7 @@
         accountType: undefined,
         comment: '',
         errorMessage: '',
+        registrationSuccessful: undefined,
       }
     },
     computed: {
@@ -99,9 +115,6 @@
           !this.state ||
           this.accountType === undefined
         )
-      },
-      csrfToken() {
-        return document.getElementsByName('csrf-token')[0].getAttribute('content')
       },
       timestamp() {
         return sessionStorage.getItem('ts')
@@ -150,10 +163,14 @@
         }
 
         const res = await ajax({ url: '/users', method: 'POST', data: data })
-        console.log('maiu', res)
 
         switch (res.status) {
           case 200:
+            this.registrationSuccessful = true
+            this.email = ''
+            this.state = null
+            this.accountType = undefined
+            this.acceptTerms = false
             break
           default:
             this.errorMessage = res.data.errors.join('\n\n')

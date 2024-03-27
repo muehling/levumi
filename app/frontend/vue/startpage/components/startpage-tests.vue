@@ -32,14 +32,7 @@
         </b-card>
       </div>
       <div v-if="!isLoggedIn" class="my-4">
-        <b-card class="shadow" body-class="info-card">
-          <p class="text-bold text-left">
-            Interessiert? Dann einfach einen
-            <strong>kostenfreien Zugang anlegen!</strong>
-          </p>
-          <hr />
-          <register-form />
-        </b-card>
+        <register-form />
       </div>
     </div>
   </div>

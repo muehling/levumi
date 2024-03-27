@@ -82,11 +82,10 @@
 
 <script>
   import { RouterView } from 'vue-router'
-  import RegisterModal from './components/register-modal.vue'
   import FooterBar from '../shared/footer-bar.vue'
   export default {
     name: 'StartpageApp',
-    components: { RegisterModal, FooterBar, RouterView },
+    components: { FooterBar, RouterView },
     props: { user: String, retry: String, initialTimeStamp: String },
 
     data() {

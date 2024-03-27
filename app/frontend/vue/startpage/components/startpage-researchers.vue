@@ -15,7 +15,7 @@
             class="img-bg mr-4 mb-4 float-left shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_7.webp')"
             fluid
-            alt="Generic stock image" />
+            alt="Forschende diskutieren an einem Tisch" />
           <p>
             Als Forschende spielen Sie eine entscheidende Rolle bei der Gestaltung und
             Weiterentwicklung von Bildungspraktiken. Ihre Arbeit trägt dazu bei, neue Erkenntnisse
@@ -37,7 +37,8 @@
             class="img-bg ml-4 mb-4 float-right shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_8.webp')"
             fluid
-            alt="Generic stock image" />
+            alt="Forschende diskutieren vor einem Whiteboard" />
+          <h4><u>Lernverlaufsdiagnostik: Datenanalyse und Testdesign</u></h4>
           <p>
             Auf unserer Plattform haben Sie Zugang zu einer Vielzahl von Tools und Ressourcen, die
             es Ihnen ermöglichen, Daten über den individuellen Lernfortschritt zu sammeln, zu
@@ -57,14 +58,7 @@
       </div>
     </div>
     <div v-if="!isLoggedIn" class="mb-4 container">
-      <b-card class="shadow" body-class="info-card">
-        <p class="text-bold text-left">
-          Interessiert? Dann einfach einen
-          <strong>kostenfreien Zugang anlegen!</strong>
-        </p>
-        <hr />
-        <register-form />
-      </b-card>
+      <register-form />
     </div>
 
     <div class="my-4 container">

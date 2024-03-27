@@ -26,7 +26,7 @@
             class="img-bg ml-4 mb-4 float-right shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
             fluid
-            alt="Generic stock image" />
+            alt="Schüler und Lehrerin im Klassenzimmer" />
           <p></p>
           <p>
             Levumi unterstützt Regelschullehrkräfte und sonderpädagogische Lehrkräfte bei der
@@ -49,14 +49,7 @@
       <div class="mb-4">
         <b-row>
           <b-col v-if="!isLoggedIn" lg="6">
-            <b-card class="shadow" body-class="info-card">
-              <p class="text-bold text-left">
-                Interessiert? Dann einfach einen
-                <strong>kostenfreien Zugang anlegen!</strong>
-              </p>
-              <hr />
-              <register-form />
-            </b-card>
+            <register-form />
           </b-col>
           <b-col :class="!isLoggedIn ? 'col-lg-6' : 'col'">
             <b-card class="shadow" body-class="info-card">
@@ -78,7 +71,7 @@
             class="img-bg mr-4 mb-4 float-left shadow"
             :src="require('../../../../assets/images/frontpage/frontpage_5.webp')"
             fluid
-            alt="Generic stock image" />
+            alt="Eine Lehrerin demonstriert ihren Schüler:innen etwas an einer Landkarte" />
           <p>Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar.</p>
           <p>
             Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik
@@ -123,7 +116,7 @@
                 wertvollen Einblicken, und informativen Ressourcen, die speziell auf Ihre
                 Bedürfnisse zugeschnitten sind.
               </p>
-              <div class="text-center">
+              <div class="text-left">
                 <a
                   class="btn btn-success"
                   href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"

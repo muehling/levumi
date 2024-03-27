@@ -21,7 +21,7 @@
                 class="img-bg mr-4 mb-4 float-left shadow"
                 :src="require('../../../../assets/images/frontpage/frontpage_3.webp')"
                 fluid
-                alt="Generic stock image" />
+                alt="Schüler und Lehrerin vor einem Monitor" />
               <p>
                 Willkommen auf unserer Plattform, die transparenten Einblick in den Lernfortschritt
                 Ihrer Schülerinnen und Schüler bietet - und das kostenfrei! Unsere Plattform
@@ -43,7 +43,8 @@
                 class="img-bg ml-4 mb-4 float-right shadow"
                 :src="require('../../../../assets/images/frontpage/frontpage_4.webp')"
                 fluid
-                alt="Generic stock image" />
+                alt="Schüler:innen arbeiten an Laptops" />
+              <h4><u>Leichter Zugang und Datenschutz</u></h4>
               <p>
                 Die einfache Handhabung für Schülerinnen und Schüler ist ein weiteres Highlight
                 unserer Plattform: Durch die Nutzung eines QR-Codes wird der Zugang zu den Tests und
@@ -64,6 +65,7 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <div>
+            <h4><u>Tools für maßgeschneidertes Lernen</u></h4>
             Unsere Plattform stellt Ihnen eine Vielzahl von Tools und Ressourcen zur Verfügung, die
             es Ihnen ermöglichen, den Unterricht maßzuschneidern und gezielt auf die Bedürfnisse
             jedes einzelnen Schülers einzugehen. Von der Analyse von Lernkurven bis hin zur
@@ -75,14 +77,7 @@
         </b-card>
       </div>
       <div v-if="!isLoggedIn" class="mb-4">
-        <b-card class="shadow" body-class="info-card">
-          <p class="text-bold text-left">
-            Interessiert? Dann einfach einen
-            <strong>kostenfreien Zugang anlegen!</strong>
-          </p>
-          <hr />
-          <register-form />
-        </b-card>
+        <register-form />
       </div>
     </div>
   </div>
