@@ -137,14 +137,19 @@ class User < ApplicationRecord
   end
 
   #Alle Testungen eines Users als Zip-Archiv, eine Datei pro verwendetem Test
-  def as_zip
+  def as_zip(shorthands = nil)
     groups =
       Group
         .where(id: GroupShare.where(user_id: self.id).select('group_id'))
         .where.not(demo: true)
         .pluck(:id) #Keine Beispielklassen exportieren
     students = Student.where(group_id: groups).select('id').pluck(:id)
-    tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
+
+    if shorthands.kind_of?(Array)
+      tests = Test.where(shorthand: shorthands)
+    else
+      tests = Test.find(Assessment.where(group_id: groups).select('test_id').pluck(:test_id))
+    end
     temp = Tempfile.new('Levumi')
     Zip::OutputStream.open(temp.path) do |zip|
       tests.each do |t|
