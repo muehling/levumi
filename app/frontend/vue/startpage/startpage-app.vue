@@ -26,8 +26,8 @@
         <div v-else>
           <b-dropdown
             id="login"
-            :menu-class="`login-dropdown${passwordMismatch || isLoginOpen ? ' show' : ''}`"
-            :class="passwordMismatch ? 'show' : ''"
+            ref="loginDropdown"
+            menu-class="login-dropdown"
             variant="outline-secondary"
             text="Einloggen"
             right>
@@ -72,8 +72,18 @@
         return this.globalStore.isLoginOpen
       },
     },
+    watch: {
+      isLoginOpen() {
+        if (this.$refs.loginDropdown && this.isLoginOpen === true) {
+          this.$refs.loginDropdown.show()
+        }
+      },
+    },
     mounted() {
       sessionStorage.setItem('ts', this.initialTimeStamp)
+      if (this.$refs.loginDropdown && this.passwordMismatch === true) {
+        this.$refs.loginDropdown.show()
+      }
     },
     methods: {
       handleCloseLogin() {

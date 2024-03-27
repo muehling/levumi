@@ -21,22 +21,22 @@
         <ul class="navbar-nav ml-3">
           <li id="intro1" class="nav-item">
             <router-link
-              class="nav-link"
+              class="nav-link rounded"
               :to="{ name: 'Diagnostik', params: { forceUpdate: true } }">
               Diagnostik
             </router-link>
           </li>
           <li id="intro2" class="nav-item">
-            <router-link class="nav-link" to="/klassenbuch">
+            <router-link class="nav-link rounded" to="/klassenbuch">
               Klassenbuch
               <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
             </router-link>
           </li>
           <li id="intro3" class="nav-item">
-            <router-link class="nav-link" to="/materialien">Fördermaterialien</router-link>
+            <router-link class="nav-link rounded" to="/materialien">Fördermaterialien</router-link>
           </li>
           <li id="intro4" class="nav-item">
-            <router-link to="/testuebersicht" class="nav-link">Testübersicht</router-link>
+            <router-link to="/testuebersicht" class="nav-link rounded">Testübersicht</router-link>
           </li>
           <li id="intro5" class="nav-item dropdown">
             <a
