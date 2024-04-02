@@ -18,7 +18,6 @@ export const useGlobalStore = defineStore('global', {
     shareKeys: {},
     staticData: {},
     studentsInGroups: {},
-    isLoginOpen: false,
   }),
 
   actions: {

@@ -1,12 +1,13 @@
 <template>
   <div>
-    <b-form class="px-4 py-3 mx-3 mx-md-0 mw-100" action="/login" method="POST" @submit="login">
+    <b-form class="mx-md-0 mw-100" @submit="login">
       <div class="form-group">
-        <input type="hidden" name="authenticity_token" :value="csrfToken" autocomplete="off" />
         <b-input
           id="login-email"
+          v-model="email"
           type="email"
           name="email"
+          :disabled="!!registeredEmail"
           aria-label="Email-Adresse eingeben"
           placeholder="E-Mail Adresse"
           :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
@@ -23,7 +24,7 @@
         <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
       </div>
       <b-button type="submit" variant="success" @click="login">Einloggen</b-button>
-      <div v-if="passwordMismatch" class="mt-3">
+      <div v-if="passwordMismatch && !registeredEmail" class="mt-3">
         <div class="dropdown-divider"></div>
         <a href="/passwort">Passwort vergessen? Hier klicken!</a>
       </div>
@@ -31,23 +32,41 @@
   </div>
 </template>
 <script>
+  import { ajax } from '../../../utils/ajax'
+  import apiRoutes from '../../routes/api-routes'
+
   export default {
     name: 'LoginForm',
-    inject: ['passwordMismatch'],
+    props: { registeredEmail: String },
     data() {
       return {
         password: '',
-        userName: '',
+        email: '',
+        passwordMismatch: false,
       }
     },
-    computed: {
-      csrfToken() {
-        return document.getElementsByName('csrf-token')[0].getAttribute('content')
-      },
+    mounted() {
+      if (this.registeredEmail) {
+        this.email = this.registeredEmail
+      }
     },
     methods: {
-      login() {
-        sessionStorage.setItem('login', this.password)
+      async login(e) {
+        e.preventDefault()
+        e.stopPropagation()
+        const res = await ajax({
+          ...apiRoutes.users.login,
+          data: { email: this.email, password: this.password },
+        })
+        switch (res.status) {
+          case 403:
+            this.passwordMismatch = true
+            break
+          default:
+            sessionStorage.setItem('login', this.password)
+            this.$router.push('/diagnostik')
+            window.location.reload() // necessary to load the full Levumi app
+        }
       },
     },
   }

@@ -45,16 +45,16 @@ class ApplicationController < ActionController::Base
       session[:user] = u.id
       u.last_login = Time.now
       u.save
-      @retry = false
-      redirect_to '/diagnostik'
+      head :ok
     else
       if ENV['MAINTENANCE'] == 'true'
         @retry = true
         render :maintenance
       else
-        @retry = true
-        @no_script = true
-        render :start, layout: 'startpage'
+        render json: {
+                 message: 'Benutzername und Passwort stimmen nicht überein!'
+               },
+               status: :forbidden
       end
     end
   end

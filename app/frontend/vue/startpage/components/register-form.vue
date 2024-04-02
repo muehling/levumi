@@ -5,6 +5,9 @@
       <hr />
       <p>Wir haben Ihnen Ihre Zugangsdaten per E-Mail geschickt.</p>
       <p>Bitte loggen Sie sich ein, um die Registrierung abzuschließen.</p>
+      <div class="p-0 m-0">
+        <login-form :registered-email="email" />
+      </div>
     </div>
     <div v-else>
       <p class="text-bold text-left">
@@ -72,14 +75,6 @@
         <hr />
         <div class="d-flex justify-content-right mt-3">
           <b-button
-            v-if="showCancel"
-            id="main-cancel"
-            variant="outline-secondary"
-            class="mr-2"
-            @click="handleClose">
-            Abbrechen
-          </b-button>
-          <b-button
             id="main-register"
             type="submit"
             :disabled="isSubmitDisabled"
@@ -94,15 +89,11 @@
 </template>
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { useGlobalStore } from '../../../store/store'
+  import LoginForm from './login-form.vue'
   export default {
     name: 'RegisterForm',
-
-    props: { showCancel: Boolean },
-    setup() {
-      const globalStore = useGlobalStore()
-      return { globalStore }
-    },
+    components: { LoginForm },
+    props: { openModal: Boolean },
     data() {
       return {
         acceptTerms: false,
@@ -175,16 +166,13 @@
         switch (res.status) {
           case 200:
             this.registrationSuccessful = true
-            this.email = ''
             this.state = null
             this.accountType = undefined
             this.acceptTerms = false
-            this.globalStore.isLoginOpen = true
             break
           default:
             this.errorMessage = res.data.errors.join('\n\n')
         }
-        //todo res auswerten und Feedback anzeigen
       },
     },
   }

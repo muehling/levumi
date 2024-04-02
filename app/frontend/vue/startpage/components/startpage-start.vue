@@ -89,7 +89,7 @@
         <b-row>
           <b-col>
             <b-card class="shadow" body-class="info-card">
-              <h4>Levumi-Blog</h4>
+              <h4><u>Levumi-Blog</u></h4>
               <p id="blog-description" class="">
                 Der
                 <a
@@ -109,7 +109,7 @@
           </b-col>
           <b-col>
             <b-card class="shadow" body-class="info-card">
-              <h4>Levumi-Newsletter</h4>
+              <h4><u>Levumi-Newsletter</u></h4>
               <p id="levumi-newsletter" class="">
                 Bleiben Sie immer auf dem Laufenden mit unserem Newsletter! Erhalten Sie regelmäßig
                 exklusive Updates, Tipps und Neuigkeiten rund um Levumi. Profitieren Sie von

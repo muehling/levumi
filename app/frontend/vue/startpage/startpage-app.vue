@@ -26,17 +26,18 @@
         <div v-else>
           <b-dropdown
             id="login"
-            ref="loginDropdown"
             menu-class="login-dropdown"
             variant="outline-secondary"
             text="Einloggen"
             right>
-            <login-form />
+            <div class="px-4 py-3 mx-3">
+              <login-form />
+            </div>
           </b-dropdown>
         </div>
       </div>
     </nav>
-    <div class="main-container startpage-container" @click="handleCloseLogin">
+    <div class="main-container startpage-container">
       <router-view :is-logged-in="isLoggedIn" />
     </div>
     <footer-bar />
@@ -47,7 +48,6 @@
   import { RouterView } from 'vue-router'
   import FooterBar from '../shared/footer-bar.vue'
   import LoginForm from './components/login-form.vue'
-  import { useGlobalStore } from '../../store/store'
   export default {
     name: 'StartpageApp',
     components: { FooterBar, RouterView, LoginForm },
@@ -57,10 +57,6 @@
       }
     },
     props: { user: String, retry: String, initialTimeStamp: String },
-    setup() {
-      const globalStore = useGlobalStore()
-      return { globalStore }
-    },
     computed: {
       isLoggedIn() {
         return this.user !== 'none'
@@ -68,27 +64,9 @@
       passwordMismatch() {
         return this.retry === 'true'
       },
-      isLoginOpen() {
-        return this.globalStore.isLoginOpen
-      },
-    },
-    watch: {
-      isLoginOpen() {
-        if (this.$refs.loginDropdown && this.isLoginOpen === true) {
-          this.$refs.loginDropdown.show()
-        }
-      },
     },
     mounted() {
       sessionStorage.setItem('ts', this.initialTimeStamp)
-      if (this.$refs.loginDropdown && this.passwordMismatch === true) {
-        this.$refs.loginDropdown.show()
-      }
-    },
-    methods: {
-      handleCloseLogin() {
-        this.globalStore.isLoginOpen = false
-      },
     },
   }
 </script>
