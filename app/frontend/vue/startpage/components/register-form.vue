@@ -24,6 +24,7 @@
             id="register-email"
             v-model="email"
             placeholder="E-Mail-Adresse"
+            type="email"
             name="user[email]"
             @focus="errorMessage = ''" />
           <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
