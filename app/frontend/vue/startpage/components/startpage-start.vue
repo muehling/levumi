@@ -113,8 +113,8 @@
               <p id="levumi-newsletter" class="">
                 Bleiben Sie immer auf dem Laufenden mit unserem Newsletter! Erhalten Sie regelmäßig
                 exklusive Updates, Tipps und Neuigkeiten rund um Levumi. Profitieren Sie von
-                wertvollen Einblicken, und informativen Ressourcen, die speziell auf Ihre
-                Bedürfnisse zugeschnitten sind.
+                wertvollen Einblicken und informativen Ressourcen, die speziell auf Ihre Bedürfnisse
+                zugeschnitten sind.
               </p>
               <div class="text-left">
                 <a
