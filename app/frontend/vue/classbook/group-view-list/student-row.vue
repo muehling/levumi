@@ -87,11 +87,26 @@
           :options="options_tags"
           name="tags"
           stacked></b-form-checkbox-group>
-        <small class="form-text text-muted">Bitte wählen Sie alle zutreffenden Merkmale</small>
+        <div class="d-flex">
+          <b-form-input
+            v-model="newTag"
+            placeholder="Weiteres Merkmal"
+            class="d-inline new-tag-input text-small py-0"></b-form-input>
+          <b-button
+            size="sm"
+            variant="outline-secondary"
+            class="py-0 ml-2 new-tag-submit"
+            @click="addTag">
+            <i class="fas fa-plus"></i>
+          </b-button>
+        </div>
+        <small class="form-text text-muted">
+          Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein.
+        </small>
       </div>
       <div v-else>
-        <span v-for="(tag, i) in student.tags" :key="`${tag}/${i}`">
-          {{ i > 0 ? ', ' : '' }}{{ tag }}
+        <span>
+          {{ student.tags.join(', ') }}
         </span>
         <span v-if="student.tags?.length == 0 && !empty" class="text-muted">nichts erfasst</span>
       </div>
@@ -194,11 +209,26 @@
       student: Object,
     },
     data: function () {
+      let allTags = [
+        'AD(H)S',
+        'Deutsch als Zweitsprache',
+        'Dyskalkulie',
+        'Fluchtgeschichte',
+        'Hochbegabung',
+        'Integrationskraft',
+        'LRS',
+        'Migrationshintergrund',
+      ]
+      if (this.student) {
+        allTags = allTags.concat(this.student.tags)
+      }
+
       return {
         editMode: this.empty && this.open,
         isLoadingAssessments: false,
         name: this.student.name,
         activeAssessments: undefined,
+        newTag: '',
 
         //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
 
@@ -213,6 +243,8 @@
           this.student.birthmonth !== undefined
             ? new Date(this.student.birthmonth).getFullYear()
             : null,
+
+        options_tags: [...new Set(allTags)].map(tag => ({ text: tag, value: tag })),
       }
     },
     computed: {
@@ -255,20 +287,14 @@
         { text: 'Hören', value: 7 },
         { text: 'Autismus', value: 8 },
       ]
-
-      this.options_tags = [
-        { text: 'AD(H)S', value: 'AD(H)S' },
-        { text: 'Deutsch als Zweitsprache', value: 'Deutsch als Zweitsprache' },
-        { text: 'Dyskalkulie', value: 'Dyskalkulie' },
-        { text: 'Fluchtgeschichte', value: 'Fluchtgeschichte' },
-        { text: 'Hochbegabung', value: 'Hochbegabung' },
-        { text: 'Integrationskraft', value: 'Integrationskraft' },
-        { text: 'LRS', value: 'LRS' },
-        { text: 'Migrationshintergrund', value: 'Migrationshintergrund' },
-      ]
     },
 
     methods: {
+      addTag() {
+        this.options_tags.push({ text: this.newTag, value: this.newTag })
+        this.tags.push(this.newTag)
+        this.newTag = ''
+      },
       handleClickAction(student, action) {
         this.$emit('click-student-action', student, action)
       },
@@ -367,4 +393,12 @@
     },
   }
 </script>
-../../../utils/ajax../../../utils/encryption
+<style>
+  .new-tag-input {
+    max-width: 70%;
+    height: 2em !important;
+  }
+  .new-tag-submit {
+    height: 2em;
+  }
+</style>
