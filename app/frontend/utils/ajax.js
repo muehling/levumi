@@ -8,7 +8,7 @@ axiosInstance.interceptors.response.use(
     return response
   },
   error => {
-    if (error.config.url === '/login' || error.config.url === '/renew_login') {
+    if (error.config.status !== 500) {
       return error.response
     }
 
