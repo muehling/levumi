@@ -30,6 +30,7 @@
         help-text="Mit dieser Aktion wird die Klasse archiviert. Ist die Klasse mit anderen Personen geteilt, wird das Teilen automatisch beendet. Wird die Klasse wieder aus dem Archiv geholt, muss sie ggf. erneut mit der Person geteilt werden."
         class-name="mt-2 ml-2" />
     </div>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 <script>
@@ -38,10 +39,11 @@
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import Vue from 'vue'
   export default {
     name: 'ClassbookActions',
-    components: { ContextHelp },
+    components: { ContextHelp, ConfirmDialog },
     props: { group: Object },
     setup() {
       const globalStore = useGlobalStore()
@@ -63,14 +65,24 @@
 
     methods: {
       async moveToArchive() {
+        const answer = await this.$refs.confirmDialog.open({
+          message: `Mit dieser Aktion wird diese Klasse ins Archiv verschoben. Sie kann jederzeit reaktiviert werden, erteilte Freigaben müssen dann jedoch ggf. erneut erteilt werden.`,
+          cancelText: 'Abbrechen',
+          okIntent: 'danger',
+          title: 'Klasse archivieren',
+        })
+        if (!answer) {
+          return
+        }
         const res = await ajax({
           url: '/groups/' + this.group.id + '?group[archive]=1',
           method: 'put',
         })
         const data = res.data
         if (data && res.status === 200) {
-          //this.globalStore.fetch()
           Vue.set(this.globalStore, 'groups', res.data)
+          this.$router.push('/klassenbuch/eigene_klassen')
+          this.$emit('group-archived')
         }
       },
       async exportQrCodes() {

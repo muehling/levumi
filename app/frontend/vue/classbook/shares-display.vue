@@ -82,7 +82,6 @@
         })
         if (res.status === 200) {
           console.log(
-            'miau',
             res.data,
             this.globalStore.groups.find(g => g.id === res.data.id)
           )

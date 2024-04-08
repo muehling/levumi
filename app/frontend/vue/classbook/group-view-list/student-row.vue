@@ -95,7 +95,7 @@
           <b-button
             size="sm"
             variant="outline-secondary"
-            class="py-0 ml-2 new-tag-submit"
+            class="pb-0 pt-1 ml-2 new-tag-submit"
             @click="addTag">
             <i class="fas fa-plus"></i>
           </b-button>

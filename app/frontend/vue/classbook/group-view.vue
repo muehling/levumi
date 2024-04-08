@@ -1,14 +1,22 @@
 <template>
   <div>
-    <b-tabs v-if="group.archive === false" pills>
-      <b-tab title="Schüler:innen" :active="!showActionTab" @click="handleNavigate('')">
+    <div v-if="group.archive === false" pills>
+      <div v-if="!showActionTab" title="Schüler:innen">
+        <b-button size="sm" variant="outline-secondary" @click="handleNavigate('aktionen')">
+          <i class="fas fa-gear"></i>
+          Aktionen und Einstellungen
+        </b-button>
         <student-list
           v-if="group.key != null"
           class="mt-4"
           :group-id="group.id"
           :read-only="readOnly" />
-      </b-tab>
-      <b-tab title="Aktionen" :active="showActionTab" @click="handleNavigate('aktionen')">
+      </div>
+      <div v-else-if="showActionTab" title="Aktionen">
+        <b-button size="sm" variant="outline-secondary" @click="handleNavigate('liste')">
+          <i class="fas fa-backward-step"></i>
+          Zurück zur Liste
+        </b-button>
         <b-row class="mt-4">
           <b-col sm="4" md="3">
             <group-view-actions-nav
@@ -23,7 +31,7 @@
                 <classbook-actions
                   v-if="displayActions"
                   :group="group"
-                  @toggle-form="onToggleForm" />
+                  @group-archived="selectedGroupId = undefined" />
               </div>
               <div v-if="currentNav === 'share'">
                 <share-form :group="group" @update:groups="updateGroup($event)" />
@@ -36,8 +44,8 @@
             </b-card>
           </b-col>
         </b-row>
-      </b-tab>
-    </b-tabs>
+      </div>
+    </div>
 
     <div v-else>
       <p class="text-small">
@@ -125,7 +133,7 @@
         return !isMasquerading() && this.group.id && this.group.owner
       },
       showActionTab() {
-        return this.$route.name === 'GroupActions'
+        return this.$route.path.endsWith('aktionen')
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
@@ -138,31 +146,28 @@
           console.log('watch group view', this.$route.name, this.$route.path, data)
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
+          } else {
+            this.selectedGroupId = this.group.id
           }
-          // await this.$nextTick()
         },
       },
     },
     methods: {
       handleNavigate(path) {
+        if (this.$route.path.endsWith(path)) {
+          return
+        }
         console.log('navigate group view', this.$route, this.$route.path, path)
 
-        if (path) {
-          this.$router.push(`${this.$route.path}/${path}`)
-        } else {
-          this.$router.push(`${this.$route.path}`)
-        }
+        const classBookRoot = this.$route.path.split('/' + this.selectedGroupId)[0]
+        console.log('wtf', classBookRoot, `${classBookRoot}/${path}`)
+
+        this.$router.push(`${classBookRoot}/${this.selectedGroupId}/${path}`)
       },
       handleSwitchActionPage(action) {
         this.currentNav = action
       },
-      onToggleForm(target) {
-        if (this.shownForm === '' || (this.shownForm !== '' && this.shownForm !== target)) {
-          this.shownForm = target
-        } else {
-          this.shownForm = ''
-        }
-      },
+
       // Klasse aus dem Archiv holen
       async reactivateGroup() {
         const res = await ajax({
@@ -172,10 +177,7 @@
         const data = res.data
         if (data && res.status === 200) {
           Vue.set(this.globalStore, 'groups', res.data)
-          //  this.updateGroup({
-          //    object: data,
-
-          //  })
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}/liste`)
         }
       },
       /*****************************
@@ -215,4 +217,3 @@
     },
   }
 </script>
-./group-view-actions/move-student-dialog.vue./group-view-actions/share-form.vue./group-view-list/student-list.vue

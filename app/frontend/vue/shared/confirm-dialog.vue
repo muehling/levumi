@@ -4,8 +4,7 @@
     ref="genericConfirmDialog"
     hide-footer
     :no-close-on-backdrop="disableCloseOnBackdrop"
-    @hidden="_close"
-  >
+    @hidden="_close">
     <template #modal-title>
       {{ title }}
     </template>
@@ -49,7 +48,7 @@
         this.hideCancelButton = data.hideCancelButton || false
         this.message = data.message
         this.okIntent = data.okIntent || 'outline-danger'
-        this.okText = data.okText
+        this.okText = data.okText || 'Ok'
         this.title = data.title || ''
         return new Promise(resolve => {
           this.resolvePromise = resolve

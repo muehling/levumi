@@ -12,13 +12,7 @@
           <div v-else>
             <!-- reguläre Darstellung mit Klassenliste -->
             <b-tabs pills>
-              <b-tab
-                lazy
-                :active="
-                  currentRoute.startsWith('/klassenbuch') ||
-                  currentRoute.startsWith('/klassenbuch/eigene')
-                "
-                @click="handleNavigate('eigene_klassen')">
+              <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
@@ -26,7 +20,11 @@
                 <b-card no-body class="mt-3">
                   <b-tabs pills card>
                     <!-- Neue Klasse anlegen -->
-                    <b-tab key="new_group" :active="false" lazy @click="handleNavigate('neu')">
+                    <b-tab
+                      key="new_group"
+                      :active="activeGroupTab === 1"
+                      lazy
+                      @click="handleNavigate('neu')">
                       <template slot="title">
                         <i
                           id="intro_cb_2"
@@ -36,11 +34,13 @@
                       <group-form :group="{}"></group-form>
                     </b-tab>
                     <b-tab
-                      v-for="group in ownActiveGroups"
+                      v-for="(group, index) in ownActiveGroups"
                       :key="`${group.id}/${group.label}`"
-                      :active="group.id === selectedGroupId"
+                      :active="
+                        group.id === selectedGroupId || (index === 0 && activeGroupTab === 2)
+                      "
                       lazy
-                      @click="handleNavigate('eigene_klassen/' + group.id)">
+                      @click="handleNavigate(`eigene_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
@@ -60,7 +60,7 @@
               <b-tab
                 :disabled="sharedGroups.length === 0"
                 lazy
-                :active="currentRoute.startsWith('/klassenbuch/geteilte')"
+                :active="activeTab === 2"
                 @click="handleNavigate('geteilte_klassen')">
                 <template slot="title">
                   Mit mir geteilte Klassen
@@ -76,7 +76,7 @@
                       :active="group.id === selectedGroupId"
                       class="m-3"
                       lazy
-                      @click="handleNavigate('geteilte_klassen/' + group.id)">
+                      @click="handleNavigate(`geteilte_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
@@ -93,7 +93,7 @@
               <b-tab
                 :disabled="archivedGroups.length === 0"
                 lazy
-                :active="currentRoute === 'ClassbookArchive'"
+                :active="activeTab === 3"
                 @click="handleNavigate('archiv')">
                 <template slot="title">Archivierte Klassen ({{ archivedGroups.length }})</template>
 
@@ -149,9 +149,27 @@
       return { globalStore }
     },
     data() {
-      return { selectedGroupId: undefined, currentRoute: '/klassenbuch' }
+      return { selectedGroupId: undefined }
     },
     computed: {
+      activeTab() {
+        if (this.$route.path.startsWith('/klassenbuch/archiv')) {
+          return 3
+        } else if (this.$route.path.startsWith('/klassenbuch/geteilt')) {
+          return 2
+        } else {
+          return 1
+        }
+      },
+      activeGroupTab() {
+        if (!this.selectedGroupId && this.$route.path.endsWith('neu')) {
+          return 1
+        } else if (!this.selectedGroupId) {
+          return 2
+        } else {
+          return 3
+        }
+      },
       isLoading() {
         return this.globalStore.isLoading
       },
@@ -204,11 +222,8 @@
       '$route.params': {
         immediate: true,
         async handler(data) {
-          this.currentRoute = this.$route.path
           this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
-          console.log('watch classbook', this.$route.name, data.groupId)
-
-          //   await this.$nextTick()
+          console.log('watch classbook', this.$route.name, this.$route.path, data.groupId)
         },
       },
     },

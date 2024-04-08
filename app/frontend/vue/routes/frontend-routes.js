@@ -34,6 +34,7 @@ const routes = [
         component: ClassBookApp,
         name: 'ClassBookOwnGroup',
         children: [
+          { path: 'liste', component: ClassBookApp },
           { path: 'aktionen', component: ClassBookApp },
           { path: 'aktionen/allgemein', component: ClassBookApp },
           { path: 'aktionen/teilen', component: ClassBookApp },
@@ -52,6 +53,7 @@ const routes = [
         component: ClassBookApp,
         name: 'ClassbookSharedGroup',
         children: [
+          { path: 'liste', component: ClassBookApp },
           { path: 'aktionen', component: ClassBookApp },
           { path: 'aktionen/allgemein', component: ClassBookApp },
           { path: 'aktionen/teilen', component: ClassBookApp },
