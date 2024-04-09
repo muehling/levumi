@@ -270,6 +270,7 @@
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
         testData: computed(() => this.testData),
+        weeks: computed(() => this.weeks),
       }
     },
     props: {
@@ -715,6 +716,7 @@
         })
       },
       XYFromResult(result, seriesKey, formatDate, week) {
+        //todo this method is rather error-prone, depending on the input data
         if (result === null || result === undefined) {
           return undefined
         }
