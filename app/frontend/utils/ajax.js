@@ -8,10 +8,17 @@ axiosInstance.interceptors.response.use(
     return response
   },
   error => {
-    if (error.config.status !== 500) {
+    // these can result from invalid credentials
+    if (error.config.url === '/login' || error.config.url === '/renew_login') {
       return error.response
     }
 
+    // any error that returns a message is not unexpected and should be handled by the frontend
+    if (error.response.data?.message) {
+      return error.response
+    }
+
+    // display everything else with the possibility to send a report
     const store = useGlobalStore()
     store.serverError = {
       status: error.response.status,

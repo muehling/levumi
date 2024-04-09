@@ -35,7 +35,7 @@ class ResultsController < ApplicationController
       @test = Test.find(params[:test_id])
       render 'edit', layout: 'testing'
     else
-      head 404 # todo error page
+      render json: { message: 'results_controller::start_demo: test not found' }, status: :not_found
     end
   end
 
@@ -60,10 +60,16 @@ class ResultsController < ApplicationController
         @result.destroy
         head :ok
       else
-        head 403
+        render json: {
+                 message: "results_controller::destroy: result couldn't be found"
+               },
+               status: :forbidden
       end
     else
-      head 403
+      render json: {
+               message: 'results_controller::destroy: insufficient permissions'
+             },
+             status: :forbidden
     end
   end
 
@@ -88,6 +94,9 @@ class ResultsController < ApplicationController
     if session.has_key?(:student)
       return true if session[:student] == @student.id
     end
-    head 403
+    render json: {
+             message: 'results_controller::check_login: insufficient permissions'
+           },
+           status: :forbidden
   end
 end

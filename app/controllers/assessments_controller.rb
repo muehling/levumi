@@ -5,7 +5,10 @@ class AssessmentsController < ApplicationController
   #GET /groups/:group_id/assessments/:id
   def show #Anzeige in Vue-Component, daher entweder JSON oder 404 als Rückmeldung
     if @assessment.nil?
-      head 404
+      render json: {
+               message: 'assessments_controller::show: assessment not found'
+             },
+             status: :not_found
     else
       respond_to do |format|
         format.html { render 'users/show' }
@@ -19,9 +22,12 @@ class AssessmentsController < ApplicationController
     t = Test.find(params[:test_id])
     unless t.nil? || @group.read_only(@login)
       @group.assessments.create(test: t) if @group.assessments.find_by_test_id(t.id).nil?
-      head 200
+      head :ok
     else
-      head 403
+      render json: {
+               message: 'assessments_controller::create: test not found or group read_only'
+             },
+             status: :forbidden
     end
   end
 
@@ -29,12 +35,12 @@ class AssessmentsController < ApplicationController
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     if params.require(:assessment).has_key?(:exclude) &&
          @assessment.exclude(params.require(:assessment)[:exclude])
-      head 200
+      head :ok
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
-      head 200
+      head :ok
     elsif @assessment.update(params.require(:assessment).permit(:active))
-      head 200
+      head :ok
     else
       head 304
     end
@@ -46,7 +52,10 @@ class AssessmentsController < ApplicationController
     if @assessment.destroy
       head :ok
     else
-      head :not_found
+      render json: {
+               message: 'assessments_controller::destroy: assessment not found'
+             },
+             status: :not_found
     end
   end
 
@@ -61,7 +70,6 @@ class AssessmentsController < ApplicationController
             id: a.id,
             active: a.active,
             archive: a.test.archive,
-            # test: a.test.id, # TODO replace usage with test_id (see below)
             shorthand: a.test.shorthand,
             name: a.test.full_name,
             student_test: a.test.student_test,

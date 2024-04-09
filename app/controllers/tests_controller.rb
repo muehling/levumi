@@ -43,7 +43,10 @@ class TestsController < ApplicationController
           Test.import(f.tempfile, !params.has_key?(:update_test), params.has_key?(:update_material))
             .nil?
       if @import_failure
-        head :unprocessable_entity
+        render json: {
+                 message: 'tests_controller::create: test could not be imported from zip'
+               },
+               status: :unprocessable_entity
       else
         head :ok
       end
@@ -55,7 +58,10 @@ class TestsController < ApplicationController
     if @test.update(test_attributes)
       head :ok
     else
-      head :unprocessable_entity
+      render json: {
+               message: 'tests_controller::update: test could not be updated'
+             },
+             status: :unprocessable_entity
     end
   end
 

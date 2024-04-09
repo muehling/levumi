@@ -5,7 +5,10 @@ class CompetencesController < ApplicationController
       competence.destroy
       head :ok
     else
-      head 403
+      render json: {
+               message: 'competences_controller::destroy_safe: competence not found'
+             },
+             status: :not_found
     end
   end
 
