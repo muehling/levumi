@@ -143,7 +143,6 @@
       '$route.params': {
         immediate: true,
         async handler(data) {
-          console.log('watch group view', this.$route.name, this.$route.path, data)
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
           } else {
@@ -157,10 +156,12 @@
         if (this.$route.path.endsWith(path)) {
           return
         }
-        console.log('navigate group view', this.$route, this.$route.path, path)
-
-        const classBookRoot = this.$route.path.split('/' + this.selectedGroupId)[0]
-        console.log('wtf', classBookRoot, `${classBookRoot}/${path}`)
+        let classBookRoot
+        if (this.$route.path.includes(this.selectedGroupId + '')) {
+          classBookRoot = this.$route.path.split('/' + this.selectedGroupId)[0]
+        } else {
+          classBookRoot = '/klassenbuch/eigene_klassen'
+        }
 
         this.$router.push(`${classBookRoot}/${this.selectedGroupId}/${path}`)
       },

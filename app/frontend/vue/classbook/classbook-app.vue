@@ -223,7 +223,6 @@
         immediate: true,
         async handler(data) {
           this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
-          console.log('watch classbook', this.$route.name, this.$route.path, data.groupId)
         },
       },
     },
@@ -261,8 +260,6 @@
         Vue.set(this.globalStore.login, 'intro_state', 5)
       },
       handleNavigate(path) {
-        console.log('navigate classbook', path)
-
         this.$router.push(`/klassenbuch/${path}`)
       },
     },
