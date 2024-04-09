@@ -32,14 +32,14 @@
     </b-collapse>
     <b-form-select v-model="targetGroupId" :options="groupOptions" />
     <hr />
-    Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.
+    <p>Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.</p>
     <b-row>
       <b-col>
         <b-card>
           <div
             v-for="(student, index) in sourceGroupStudents"
             :key="student.id"
-            :class="`p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
+            :class="`move-student p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
             @mouseover="setActionArrow(1)"
             @mouseleave="setActionArrow(0)"
             @click="handleMoveStudent(student)">
@@ -47,30 +47,39 @@
           </div>
         </b-card>
       </b-col>
-      <b-col cols="1" class="mt-4">
-        <div class="action-arrow">{{ actionArrow }}</div>
+      <b-col cols="1" class="mt-4 text-center">
+        <div class="action-arrow"><i :class="`fas fa-${actionArrow}`"></i></div>
       </b-col>
       <b-col>
-        <b-card>
-          <div
-            v-for="(student, index) in targetGroupStudents"
-            :key="student.id"
-            :class="`p-1${index % 2 ? ' bg-light' : ''}`"
-            @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
-            @mouseleave="setActionArrow(0)"
-            @click="handleMoveStudent(student)">
-            <span
-              :class="`${
-                hasStudentMoved(student.id, targetGroupId)
-                  ? 'text-dark cursor-pointer'
-                  : 'text-muted not-allowed'
-              }`">
-              {{ student.name }}
-            </span>
-          </div>
-        </b-card>
+        <div v-if="!!targetGroupId">
+          <b-card>
+            <div
+              v-for="(student, index) in targetGroupStudents"
+              :key="student.id"
+              :class="`move-student p-1${index % 2 ? ' bg-light' : ''}`"
+              @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
+              @mouseleave="setActionArrow(0)"
+              @click="handleMoveStudent(student)">
+              <span
+                :class="`${
+                  hasStudentMoved(student.id, targetGroupId)
+                    ? 'text-dark cursor-pointer'
+                    : 'text-muted not-allowed'
+                }`">
+                {{ student.name }}
+              </span>
+            </div>
+          </b-card>
+          <b-button class="mt-3" variant="outline-secondary mr-2" @click="reset">
+            Abbrechen
+          </b-button>
+          <b-button class="mt-3" variant="outline-success" @click="handleMove">
+            Schüler verschieben
+          </b-button>
+        </div>
       </b-col>
     </b-row>
+    <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
 <script>
@@ -78,8 +87,10 @@
   import { ajax } from 'src/utils/ajax'
   import { decryptStudentNames, encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
   import apiRoutes from 'src/vue/routes/api-routes'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   export default {
     name: 'MoveStudentDialog',
+    components: { ConfirmDialog },
     props: { group: Object },
     setup() {
       const globalStore = useGlobalStore()
@@ -131,13 +142,13 @@
         }
         switch (arrow) {
           case 1:
-            this.actionArrow = '>>'
+            this.actionArrow = 'arrow-right'
             break
           case 0:
             this.actionArrow = ''
             break
           case -1:
-            this.actionArrow = '<<'
+            this.actionArrow = 'arrow-left'
             break
         }
       },
@@ -163,6 +174,7 @@
           this.sourceGroupStudents.push(student)
           this.movedStudents = this.movedStudents.filter(s => s.id !== student.id)
         }
+        this.setActionArrow(0)
       },
       reset() {
         this.sourceGroupStudents = this.globalStore.studentsInGroups[this.group.id]
@@ -170,7 +182,17 @@
         this.targetGroupStudents = []
         this.targetGroupId = undefined
       },
-      async handleConfirmMove() {
+      async handleMove() {
+        const ok = await this.$refs.confirmDialog.open({
+          message:
+            'Die ausgewählten Schüler werden mit allen erfassten Messergebnissen in die ausgewählte Klasse verschoben.',
+          okText: 'Ja, verschieben',
+          cancelText: 'Abbrechen',
+          title: 'Schüler verschieben',
+        })
+        if (!ok) {
+          return
+        }
         const data = {
           students: this.movedStudents.map(s => ({
             id: s.id,
@@ -204,8 +226,14 @@
     cursor: pointer;
   }
   .action-arrow {
-    width: 3em;
+    width: 2em;
     height: 2em;
+    font-size: 2em;
+  }
+  .move-student:hover {
+    background-color: rgba(0, 0, 0, 0.075);
+  }
+  .move-student.bg-light:hover {
+    background-color: rgba(0, 0, 0, 0.075) !important;
   }
 </style>
-../../../store/store../../../utils/ajax../../../utils/encryption../../routes/api-routes
