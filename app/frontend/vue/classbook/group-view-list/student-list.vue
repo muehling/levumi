@@ -9,7 +9,7 @@
           <th>Geburtsdatum</th>
           <th>Förderbedarf</th>
           <th>Weitere Merkmale</th>
-          <th>Aktionen</th>
+          <th v-if="!readOnly">Aktionen</th>
         </tr>
       </thead>
       <tbody>
@@ -18,10 +18,9 @@
           v-for="(student, index) in students"
           :key="student.id"
           :student="student"
-          :group-id="groupId"
+          :group="group"
           :index="index"
           :empty="false"
-          :read-only="readOnly"
           @click-student-action="handleClickStudent"
           @update:students="update($event)"></student-row>
         <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
@@ -29,7 +28,7 @@
           v-if="!readOnly"
           :key="0"
           :student="{ name: '', login: '', tags: [] }"
-          :group-id="groupId"
+          :group="group"
           :index="-1"
           :empty="true"
           :open="students.length === 0"
@@ -64,7 +63,7 @@
     name: 'StudentList',
     components: { StudentRow, TestInfoModal, QrCodeModal, FontSettingsModal },
     props: {
-      groupId: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
+      group: Object,
       readOnly: Boolean,
     },
     setup() {
@@ -77,7 +76,7 @@
     computed: {
       students() {
         const allStudents = this.globalStore.studentsInGroups
-        return allStudents[this.groupId] || []
+        return allStudents[this.group.id] || []
       },
     },
 
@@ -96,7 +95,7 @@
           val.object.name = decryptStudentName(
             val.object.name,
             'Kind_' + val.object.id,
-            this.groupId
+            this.group.id
           ) //Namen für weitere Verwendung entschlüsseln
           if (val.index > -1) {
             // update
@@ -110,7 +109,7 @@
           this.students.splice(val.index, 1)
         }
 
-        this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
+        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: this.students })
       },
     },
   }

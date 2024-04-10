@@ -192,20 +192,21 @@
 </template>
 
 <script>
+  import { access } from 'src/utils/access'
   import { ajax } from '../../../utils/ajax'
   import { encryptWithMasterKeyAndGroup } from '../../../utils/encryption'
-
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'StudentRow',
     components: { ConfirmDialog },
     props: {
       empty: Boolean,
-      groupId: Number,
+      group: Object,
       index: Number,
       open: Boolean,
-      readOnly: Boolean,
+
       student: Object,
     },
     data: function () {
@@ -251,6 +252,12 @@
       years() {
         const today = new Date().getFullYear() - 3
         return Array.from({ length: 30 }, (_, k) => today - k)
+      },
+      readOnly() {
+        return isEmpty(this.permissions)
+      },
+      permissions() {
+        return access(null, this.group).classbook
       },
     },
     beforeCreate() {
@@ -333,9 +340,9 @@
       collectData() {
         //Daten aus den Inputs codieren für AJAX Request
         const encodedName = encodeURIComponent(
-          encryptWithMasterKeyAndGroup(this.name, this.groupId)
+          encryptWithMasterKeyAndGroup(this.name, this.group.id)
         ) //Namen vor dem Senden verschlüsseln
-        let res = `group=${this.groupId}&student[name]=${encodedName}`
+        let res = `group=${this.group.id}&student[name]=${encodedName}`
 
         //Restliche Attribute anfügen, falls vorhanden
         if (this.gender != null) {
