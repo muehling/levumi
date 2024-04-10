@@ -169,7 +169,7 @@
               class="btn btn-sm mr-1"
               variant="outline-secondary"
               title="Abbrechen"
-              @click="editMode = false">
+              @click="handleCancel">
               <i class="fas fa-times"></i>
             </b-btn>
           </b-button-group>
@@ -238,7 +238,7 @@
             ? new Date(this.student.birthmonth).getMonth()
             : null,
         sen: this.student.sen !== undefined ? this.student.sen : null,
-        tags: this.student.tags !== undefined ? this.student.tags : [],
+        tags: this.student.tags !== undefined ? [...this.student.tags] : [],
         year:
           this.student.birthmonth !== undefined
             ? new Date(this.student.birthmonth).getFullYear()
@@ -367,6 +367,10 @@
         if (data && res.status === 200) {
           this.update(data)
         }
+      },
+      handleCancel() {
+        this.editMode = false
+        this.tags = this.student.tags
       },
 
       update(data) {
