@@ -7,14 +7,6 @@
     <div class="spacer" />
     <div class="mb-4 container info-text position-relative">
       <div class="mb-4 info-header shadow rounded">
-        <marquee behavior="alternate">
-          <img
-            src="/images/shared/Levumi-normal_small.png"
-            class="mb-3 ml-3"
-            alt="Levumi"
-            width="48"
-            height="48" />
-        </marquee>
         <h1 class="main-header my-4 text-center">
           Herzlich Willkommen bei
           <span class="text-nowrap">

@@ -124,6 +124,7 @@
             </b-card>
           </b-col>
         </b-row>
+        <startpage-unis />
         <div class="spacer"></div>
       </div>
     </div>
@@ -132,9 +133,10 @@
 <script>
   import RegisterForm from './register-form.vue'
   import StartpageNav from './startpage-nav.vue'
+  import StartpageUnis from './startpage-unis.vue'
   export default {
     name: 'StartpageStart',
-    components: { RegisterForm, StartpageNav },
+    components: { RegisterForm, StartpageNav, StartpageUnis },
     props: { isLoggedIn: Boolean },
   }
 </script>
