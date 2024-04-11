@@ -19,7 +19,7 @@ export const hasCapability = (capability, capabilities) => {
   return capabilitiesArray?.includes(capability) || capabilitiesArray?.includes('admin')
 }
 
-export const isRegistered = user => user.intro_state > 2
+export const isRegistrationComplete = user => user.intro_state > 2
 
 export const isMasquerading = () => {
   const gs = useGlobalStore()
