@@ -4,8 +4,22 @@
       <div class="img_container alphabet-img position-absolute"></div>
     </div>
     <div class="spacer" />
-    <startpage-nav class-name="container" />
-    <div class="mb-4 container position-relative">
+    <div class="mb-4 container position-relative info-text">
+      <div class="mb-4 info-header shadow rounded">
+        <h1 class="main-header my-4 text-center">
+          Herzlich Willkommen bei
+          <span class="text-nowrap">
+            Levumi!
+            <img
+              src="/images/shared/Levumi-normal_small.png"
+              class="mb-3 ml-3"
+              alt="Levumi"
+              width="48"
+              height="48" />
+          </span>
+        </h1>
+      </div>
+      <startpage-nav />
       <div class="mb-4 info-header shadow rounded">
         <h3>Das Levumi-Testinventar</h3>
       </div>

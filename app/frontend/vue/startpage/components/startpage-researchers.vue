@@ -4,8 +4,22 @@
       <div class="img_container children-img position-absolute"></div>
     </div>
     <div class="spacer" />
-    <startpage-nav class-name="container" />
     <div class="mb-4 container info-text position-relative">
+      <div class="mb-4 info-header shadow rounded">
+        <h1 class="main-header my-4 text-center">
+          Herzlich Willkommen bei
+          <span class="text-nowrap">
+            Levumi!
+            <img
+              src="/images/shared/Levumi-normal_small.png"
+              class="mb-3 ml-3"
+              alt="Levumi"
+              width="48"
+              height="48" />
+          </span>
+        </h1>
+      </div>
+      <startpage-nav />
       <div class="mb-4 info-header shadow rounded">
         <h3>Forschungsmöglichkeiten auf unserer Plattform</h3>
       </div>
@@ -22,13 +36,6 @@
             zu generieren, bewährte Methoden zu validieren und innovative Ansätze zu entwickeln, um
             das Lernen für Schülerinnen und Schüler weltweit zu verbessern.
           </p>
-          <p>
-            Unsere Plattform wurde speziell für Forschende wie Sie entwickelt, um Ihnen eine
-            umfassende und effektive Möglichkeit zu bieten, tiefe Einblicke in den Lernverlauf von
-            Schülerinnen und Schülern zu gewinnen. Wir verstehen die Bedeutung von präzisen Daten
-            und aussagekräftigen Analysen, um fundierte Bildungsentscheidungen zu treffen und den
-            individuellen Lernprozess zu unterstützen.
-          </p>
         </b-card>
       </div>
       <div class="mb-4">
@@ -40,19 +47,17 @@
             alt="Forschende diskutieren vor einem Whiteboard" />
           <h4><u>Lernverlaufsdiagnostik: Datenanalyse und Testdesign</u></h4>
           <p>
-            Auf unserer Plattform haben Sie Zugang zu einer Vielzahl von Tools und Ressourcen, die
-            es Ihnen ermöglichen, Daten über den individuellen Lernfortschritt zu sammeln, zu
-            analysieren und zu interpretieren. Von einfachen Dashboards zur Visualisierung von
-            Lernverläufen bis hin zu fortschrittlichen Analysewerkzeugen bieten wir Ihnen alles, was
-            Sie benötigen, um Ihre Forschung auf dem Gebiet der Lernverlaufsdiagnostik
-            voranzutreiben.
+            Für Forschende bietet Levumi die Möglichkeit, Studien durchzuführen und die erhobenen
+            Rohdaten, Schüler:innen Merkmale und weitere Daten er Testungen für die eigenen Analysen
+            zu exportieren. Auch hier ist der Datenschutz zentral, die Daten sind anonymisiert und
+            können gemeinsam mit Lehrkräften erhoben werden, sofern diese auch einen Zugang zu
+            Levumi besitzen.
           </p>
           <p>
-            Zudem haben Sie die Freiheit, eigene Testdesigns zu erstellen und individuelle
-            Forschungsfragen zu untersuchen. Für die Testerstellung werden lediglich grundlegende
-            Kenntnisse in HTML, Javascript und CSS benötigt. Und dank unseres einfachen Datenexports
-            im CSV-Format können Sie die Ergebnisse Ihrer Forschung mühelos analysieren und
-            weiterverarbeiten.
+            Zudem haben Sie durch die offene Struktur die Möglichkeit, eigene Testdesigns zu
+            erstellen. Für die Testerstellung werden lediglich grundlegende Kenntnisse in HTML,
+            Javascript und CSS benötigt. Für einfache Designs existiert auch ein Editor der keine
+            Programmierkenntnisse erfordert.
           </p>
         </b-card>
       </div>

@@ -5,8 +5,30 @@
       <div class="fadeout" />
     </div>
     <div class="spacer" />
-    <startpage-nav class-name="container" />
     <div class="mb-4 container info-text position-relative">
+      <div class="mb-4 info-header shadow rounded">
+        <marquee behavior="alternate">
+          <img
+            src="/images/shared/Levumi-normal_small.png"
+            class="mb-3 ml-3"
+            alt="Levumi"
+            width="48"
+            height="48" />
+        </marquee>
+        <h1 class="main-header my-4 text-center">
+          Herzlich Willkommen bei
+          <span class="text-nowrap">
+            Levumi!
+            <img
+              src="/images/shared/Levumi-normal_small.png"
+              class="mb-3 ml-3"
+              alt="Levumi"
+              width="48"
+              height="48" />
+          </span>
+        </h1>
+      </div>
+      <startpage-nav />
       <div class="mb-4 info-header shadow rounded">
         <h3 class="">
           Individualisiertes Lernen ermöglichen: Entdecken Sie die Möglichkeiten unserer Plattform
@@ -23,13 +45,11 @@
                 fluid
                 alt="Schüler und Lehrerin vor einem Monitor" />
               <p>
-                Willkommen auf unserer Plattform, die transparenten Einblick in den Lernfortschritt
-                Ihrer Schülerinnen und Schüler bietet - und das kostenfrei! Unsere Plattform
-                ermöglicht es Ihnen, den Lernfortschritt jeder Klasse und jedes einzelnen Schülers
-                transparent zu verfolgen, ohne dabei in finanzielle Hürden zu stoßen. Mit
-                unbegrenzter Klassen- und Schülerzahl sowie der Möglichkeit, Klassen mit Kolleginnen
-                und Kollegen zu teilen, bieten wir Ihnen die Flexibilität und Zusammenarbeit, die
-                Sie benötigen, um erfolgreich zu sein.
+                Unsere Plattform ermöglicht es Ihnen, kostenfrei den Lernfortschritt jeder Klasse
+                und jedes einzelnen Schülers transparent zu verfolgen. Mit unbegrenzter Klassen- und
+                Schülerzahl sowie der Möglichkeit, Klassen mit Kolleginnen und Kollegen zu teilen,
+                bieten wir Ihnen die Möglichkeit, effizient mir Ihren Kolleg:innen
+                zusammenzuarbeiten.
               </p>
             </b-card>
           </b-col>
@@ -46,11 +66,11 @@
                 alt="Schüler:innen arbeiten an Laptops" />
               <h4><u>Leichter Zugang und Datenschutz</u></h4>
               <p>
-                Die einfache Handhabung für Schülerinnen und Schüler ist ein weiteres Highlight
-                unserer Plattform: Durch die Nutzung eines QR-Codes wird der Zugang zu den Tests und
-                Materialien spielend einfach. Darüber hinaus bieten wir umfassendes Fördermaterial,
-                das es Ihnen ermöglicht, individuell auf die Bedürfnisse Ihrer Schülerinnen und
-                Schüler einzugehen und ihren Lernprozess gezielt zu unterstützen.
+                Für Schülerinnen und Schüler ist die Nutzung unserer Plattform denkbar einfach: sie
+                können sich per QR-Codes einloggen und haben dann Zugriff auf die für sie
+                freigeschalteten Tests. Darüber hinaus bieten wir umfassendes Fördermaterial, das es
+                Ihnen ermöglicht, individuell auf die Bedürfnisse Ihrer Schülerinnen und Schüler
+                einzugehen und ihren Lernprozess gezielt zu unterstützen.
               </p>
               <p>
                 Ein wichtiger Aspekt, dem wir besondere Aufmerksamkeit widmen, ist der Datenschutz:
@@ -62,20 +82,7 @@
           </b-col>
         </b-row>
       </div>
-      <div class="mb-4">
-        <b-card class="shadow" body-class="info-card">
-          <div>
-            <h4><u>Tools für maßgeschneidertes Lernen</u></h4>
-            Unsere Plattform stellt Ihnen eine Vielzahl von Tools und Ressourcen zur Verfügung, die
-            es Ihnen ermöglichen, den Unterricht maßzuschneidern und gezielt auf die Bedürfnisse
-            jedes einzelnen Schülers einzugehen. Von der Analyse von Lernkurven bis hin zur
-            Identifizierung von Lücken im Verständnis - unsere Tools unterstützen Sie dabei, den
-            Unterricht so zu gestalten, dass jeder Schüler sein volles Potenzial entfalten kann. Wir
-            laden Sie ein, unsere Plattform zu erkunden und zu erfahren, wie Sie den Lernfortschritt
-            Ihrer Schülerinnen und Schüler nachhaltig verbessern können.
-          </div>
-        </b-card>
-      </div>
+
       <div v-if="!isLoggedIn" class="mb-4">
         <register-form />
       </div>

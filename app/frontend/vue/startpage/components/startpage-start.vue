@@ -29,15 +29,15 @@
             alt="Schüler und Lehrerin im Klassenzimmer" />
           <p></p>
           <p>
-            Levumi unterstützt Regelschullehrkräfte und sonderpädagogische Lehrkräfte bei der
-            Diagnose und Förderung einzelner Schüler:innen sowie der gesamten Schulklasse.
+            Levumi unterstützt Regelschullehrkräfte und speziell sonderpädagogische Lehrkräfte bei
+            der Diagnose und Förderung sowohl auf individueller Basis wie auch für gesamte Klassen.
           </p>
           <p>
-            Durch eine regelmäßige Testung können Sie den Lernverlauf Ihrer Schüler:innen sichtbar
-            machen und Schwierigkeiten im Lernen frühzeitig erkennen.
+            Durch regelmäßige, meist kurze Testungen können Sie den Lernverlauf Ihrer Schülerinnen
+            und Schüler sichtbar machen und problematische Entwicklungen frühzeitig erkennen.
           </p>
           <p>
-            Die Teilnahme ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von
+            Die Verwendung ist kostenfrei und der Schutz der Daten ist ein zentrales Anliegen von
             Levumi!
           </p>
           <p>
@@ -54,12 +54,10 @@
           <b-col :class="!isLoggedIn ? 'col-lg-6' : 'col'">
             <b-card class="shadow" body-class="info-card">
               <div class="embed-responsive embed-responsive-16by9 video-container mb-4">
-                <iframe
-                  title="Dieses Video stellt Ihnen die kostenfreie Online-Plattform Levumi vor und gibt Ihnen einen Einblick, inwiefern Sie durch die Arbeit mit Levumi profitieren können."
-                  class="embed-responsive-item"
-                  src="https://www.youtube-nocookie.com/embed/-F5cPsnC9IA"
-                  allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-                  allowfullscreen></iframe>
+                <video controls>
+                  <source :src="require('../../../../assets/levumi_intro.mp4')" type="video/mp4" />
+                  Your browser does not support the video tag.
+                </video>
               </div>
             </b-card>
           </b-col>
@@ -72,16 +70,14 @@
             :src="require('../../../../assets/images/frontpage/frontpage_5.webp')"
             fluid
             alt="Eine Lehrerin demonstriert ihren Schüler:innen etwas an einer Landkarte" />
-          <p>Durch regelmäßige, kurze Testungen werden Lernzuwächse und Problemfelder sichtbar.</p>
           <p>
             Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik
-            an. Wenn es Fördermaterial gibt, so wird Ihnen dieses spezifisch für Ihre Schüler:innen
-            empfohlen.
+            an. Vorhandenes Fördermaterial wird spezifisch anhand der Testergebnisse empfohlen.
           </p>
-          <p>Sie können sich auch Notizen zu den Lernverläufen direkt in Levumi machen!</p>
+          <p>Sie können sich Notizen zu den Lernverläufen direkt in Levumi machen!</p>
           <p>
-            Zusammenarbeit im Team wird effektiv unterstützt: Teilen Sie die Ergebnisse mit
-            Kolleg:innen oder arbeiten Sie zusammen an Ihren Klassen!
+            Zusammenarbeit im Team wird effektiv unterstützt: Teilen Sie die Ergebnisse mit anderen
+            Lehrkräften oder arbeiten Sie zusammen an Ihren Klassen!
           </p>
         </b-card>
       </div>
