@@ -8,32 +8,29 @@
             Sie eine Klasse aus dem Archiv.
           </b-card>
           <div v-else>
-            <b-nav pills>
-              <b-nav-item
-                v-for="(group, index) in ownActiveGroups"
-                :key="group.id"
-                :active="selectedGroupId === group.id"
-                lazy
-                @click="getTestsForGroup(group.id)"
-              >
-                <i v-if="group.demo && group.owner">{{ group.label }}</i>
-                <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
-                  {{ group.label }}
-                  <span class="small"> &nbsp;<i class="fas fa-share-nodes"></i> </span>
-                  <b-tooltip
-                    :target="`tooltip-target-${index}`"
-                    triggers="hover"
-                    offset="20"
-                    variant="secondary"
-                    delay="300"
-                  >
-                    Geteilt von {{ group.belongs_to }}
-                  </b-tooltip>
-                </span>
-                <span v-else>{{ group.label }}</span>
-              </b-nav-item>
-            </b-nav>
-
+            <div class="mb-3">
+              <b-nav pills>
+                <b-nav-item
+                  v-for="(group, index) in ownActiveGroups"
+                  :key="group.id"
+                  :active="selectedGroupId === group.id"
+                  lazy
+                  @click="getTestsForGroup(group.id)">
+                  <i v-if="group.demo && group.owner">{{ group.label }}</i>
+                  <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
+                    {{ group.label }}
+                    <span class="small">
+                      &nbsp;
+                      <i class="fas fa-share-nodes"></i>
+                    </span>
+                  </span>
+                  <span v-else>{{ group.label }}</span>
+                </b-nav-item>
+              </b-nav>
+            </div>
+            <p v-if="!currentGroup?.owner">
+              Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
+            </p>
             <div v-if="!currentGroup?.key">
               <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
                 <p>
@@ -78,7 +75,7 @@
     computed: {
       ownActiveGroups() {
         return this.globalStore.groups
-          .filter((group, index) => index > 0 && !group.archive)
+          .filter(group => !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       groups() {

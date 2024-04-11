@@ -212,9 +212,6 @@
 
         this.reset()
       },
-      handleCancel() {
-        this.reset()
-      },
     },
   }
 </script>

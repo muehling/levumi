@@ -1,25 +1,28 @@
 <template>
   <div classname="group-view my-3">
-    <div v-if="readOnly">
-      <p class="mt-3">
-        Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
-        durchführen oder Einstellungen ändern.
-      </p>
+    <div class="mb-3">
+      <div v-if="readOnly">
+        <p>
+          Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
+          durchführen oder Einstellungen ändern.
+        </p>
+      </div>
+      <div v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen">
+        <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
+          <i class="fas fa-gear mr-1"></i>
+          Test hinzufügen / löschen
+        </b-btn>
+      </div>
+      <b-button
+        v-if="isTestDetailsOpen || isTestAdminOpen"
+        class="my-3"
+        size="sm"
+        variant="outline-secondary"
+        @click="backToOverview">
+        <i class="fas fa-backward-step mr-1"></i>
+        Zurück zur Testübersicht
+      </b-button>
     </div>
-    <div v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen" class="my-3">
-      <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
-        <i class="fas fa-gear mr-1"></i>Test hinzufügen / löschen
-      </b-btn>
-    </div>
-    <b-button
-      v-if="isTestDetailsOpen || isTestAdminOpen"
-      class="my-3"
-      size="sm"
-      variant="outline-secondary"
-      @click="backToOverview"
-    >
-      <i class="fas fa-backward-step mr-1"></i> Zurück zur Testübersicht
-    </b-button>
     <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
     <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
     <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
@@ -27,10 +30,10 @@
 </template>
 
 <script>
-  import { isAdmin } from '../../utils/user'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import { useTestsStore } from '../../store/testsStore'
+  import { access } from 'src/utils/access'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { useTestsStore } from 'src/store/testsStore'
   import AssessmentDetails from './assessment-details.vue'
   import AssessmentView from './assessment-view.vue'
   import GroupTestAdmin from './group-test-admin.vue'
@@ -74,7 +77,8 @@
         return this.groups.find(group => group.id === this.selectedGroupId)
       },
       isAllowed() {
-        return !this.group?.read_only || isAdmin(this.globalStore.login.capabilities)
+        const permissions = access(this.group).diagnostics
+        return permissions?.createAssessments
       },
       readOnly() {
         return !!this.group?.read_only

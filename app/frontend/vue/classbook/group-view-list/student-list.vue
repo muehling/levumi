@@ -9,7 +9,7 @@
           <th>Geburtsdatum</th>
           <th>Förderbedarf</th>
           <th>Weitere Merkmale</th>
-          <th v-if="!readOnly">Aktionen</th>
+          <th>Aktionen</th>
         </tr>
       </thead>
       <tbody>

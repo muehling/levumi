@@ -12,43 +12,49 @@
     <tbody>
       <tr v-for="share in group.shares" :key="share.id + '/' + share.read_only">
         <td>
-          {{ share.user + '/' + share.read_only }}
+          <p class="my-1">
+            {{ share.user }}
+          </p>
         </td>
         <td>
-          <div v-if="share.is_anonymous" class="d-inline">
-            <span class="mr-4">Klasse ist anonym geteilt.</span>
+          <div class="text-nowrap">
+            <div v-if="share.is_anonymous" class="d-inline">
+              <span class="mr-4">Klasse ist anonym geteilt.</span>
+            </div>
+            <b-button
+              v-if="!share.is_anonymous"
+              class="btn btn-sm mr-1"
+              :variant="share.read_only ? 'primary' : 'outline-primary'"
+              @click="changeAccessLevel(share.id, 1)">
+              <i class="fas fa-glasses"></i>
+              Nur Ansicht
+            </b-button>
+            <b-button
+              v-if="!share.is_anonymous"
+              class="btn btn-sm mr-1"
+              :variant="!share.read_only ? 'primary' : 'outline-primary'"
+              @click="changeAccessLevel(share.id, 0)">
+              <i class="fas fa-edit"></i>
+              Ansicht und verwenden
+            </b-button>
+            <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
+              <i class="fas fa-trash"></i>
+              Nicht mehr teilen
+            </b-button>
           </div>
-          <b-button
-            v-if="!share.is_anonymous"
-            class="btn btn-sm mr-1"
-            :variant="share.read_only ? 'primary' : 'outline-primary'"
-            @click="changeAccessLevel(share.id, 1)">
-            <i class="fas fa-glasses"></i>
-            Nur Ansicht
-          </b-button>
-          <b-button
-            v-if="!share.is_anonymous"
-            class="btn btn-sm mr-1"
-            :variant="!share.read_only ? 'primary' : 'outline-primary'"
-            @click="changeAccessLevel(share.id, 0)">
-            <i class="fas fa-edit"></i>
-            Ansicht und verwenden
-          </b-button>
-          <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
-            <i class="fas fa-trash"></i>
-            Nicht mehr teilen
-          </b-button>
         </td>
         <td>
-          <span v-if="!share.accepted && !share.is_anonymous">
+          <p v-if="!share.accepted && !share.is_anonymous" class="my-1">
             Der Zugangsschlüssel lautet
             <b>{{ shareKey }}</b>
             und wurde per Mail an {{ share.user }} gesendet.
-          </span>
-          <span v-else-if="!share.accepted && share.is_anonymous">
+          </p>
+          <p v-else-if="!share.accepted && share.is_anonymous" class="my-1">
             {{ share.user }} wurde per Mail benachrichtigt.
-          </span>
-          <span v-else-if="share.accepted">{{ share.user }} hat die Anfrage angenommen.</span>
+          </p>
+          <p v-else-if="share.accepted" class="my-1">
+            {{ share.user }} hat die Anfrage angenommen.
+          </p>
         </td>
       </tr>
     </tbody>

@@ -1,7 +1,9 @@
 import isArray from 'lodash/isArray'
 import { useGlobalStore } from '../store/store'
 
-export const isAdmin = capabilities => {
+export const isAdmin = () => {
+  const gs = useGlobalStore()
+  const capabilities = gs.login.capabilities
   return hasCapability('admin', capabilities)
 }
 

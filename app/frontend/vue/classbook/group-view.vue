@@ -2,15 +2,17 @@
   <div>
     <div v-if="group.archive === false" pills>
       <div v-if="!showActionTab" title="Schüler:innen">
-        <b-button size="sm" variant="outline-secondary" @click="handleNavigate('aktionen')">
+        <share-status v-if="!group.owner" :group="group" />
+        <b-button
+          v-if="displayActionButton"
+          size="sm"
+          variant="outline-secondary"
+          @click="handleNavigate('aktionen')">
           <i class="fas fa-gear"></i>
           Aktionen und Einstellungen
         </b-button>
-        <student-list
-          v-if="group.key != null"
-          class="mt-4"
-          :group-id="group.id"
-          :read-only="readOnly" />
+
+        <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
       </div>
       <div v-else-if="showActionTab" title="Aktionen">
         <b-button size="sm" variant="outline-secondary" @click="handleNavigate('liste')">
@@ -21,25 +23,28 @@
           <b-col sm="4" md="3">
             <group-view-actions-nav
               :current="currentNav"
+              :group="group"
               @groupview::action="handleSwitchActionPage" />
           </b-col>
           <b-col>
             <b-card :title="actionCardTitle">
               <div v-if="currentNav === 'general'">
-                <group-form :group="group" @update:groups="updateGroup($event)" />
+                <group-form
+                  v-if="permissions.updateGroup"
+                  :group="group"
+                  @update:groups="updateGroup($event)" />
                 <hr />
                 <classbook-actions
-                  v-if="displayActions"
+                  v-if="permissions.updateGroup"
                   :group="group"
                   @group-archived="selectedGroupId = undefined" />
               </div>
-              <div v-if="currentNav === 'share'">
+              <div v-if="currentNav === 'share' && permissions.createShare">
                 <share-form :group="group" @update:groups="updateGroup($event)" />
                 <shares-display v-if="group.owner" :group="group" />
-                <share-status v-if="!group.owner" :group="group" />
               </div>
-              <div v-if="currentNav === 'movestudents'">
-                <move-student-dialog v-if="displayActions" :group="group" />
+              <div v-if="currentNav === 'movestudents' && permissions.moveStudents">
+                <move-student-dialog :group="group" />
               </div>
             </b-card>
           </b-col>
@@ -67,19 +72,21 @@
 </template>
 
 <script>
+  import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
   import { isMasquerading } from 'src/utils/user'
   import { useGlobalStore } from 'src/store/store'
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupForm from './group-view-actions/group-form.vue'
+  import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
+  import isEmpty from 'lodash/isEmpty'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
   import ShareForm from './group-view-actions/share-form.vue'
-  import StudentList from './group-view-list/student-list.vue'
-  import Vue from 'vue'
   import SharesDisplay from './shares-display.vue'
   import ShareStatus from './share-status.vue'
-  import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
+  import StudentList from './group-view-list/student-list.vue'
+  import Vue from 'vue'
 
   export default {
     name: 'GroupView',
@@ -129,11 +136,17 @@
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
         return this.group.read_only || this.globalStore.masquerade
       },
+      displayActionButton() {
+        return !isEmpty(this.permissions)
+      },
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
       },
       showActionTab() {
         return this.$route.path.endsWith('aktionen')
+      },
+      permissions() {
+        return access(this.group).classbook
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []

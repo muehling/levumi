@@ -64,7 +64,7 @@
                 @click="handleNavigate('geteilte_klassen')">
                 <template slot="title">
                   Mit mir geteilte Klassen
-                  <span v-if="newShares" class="badge badge-info">Neu!</span>
+                  <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
                   <span v-else>({{ sharedGroups.length }})</span>
                 </template>
 
@@ -211,8 +211,9 @@
         }
         return a
       },
-      newShares: function () {
-        return this.groups.reduce((acc, group) => acc && group.key === null, false)
+
+      hasNewShares() {
+        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
       },
       showIntro: function () {
         return this.globalStore.login.intro_state < 5

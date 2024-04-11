@@ -29,7 +29,7 @@
           variant="outline-success"
           class="mr-2"
           size="sm"
-          :disabled="label.trim().length === 0">
+          :disabled="isGroupLabelSaveDisabled">
           <span>
             <i class="fas fa-check" />
             <span class="d-none d-lg-inline ml-2">Speichern</span>
@@ -69,6 +69,9 @@
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
+      isGroupLabelSaveDisabled() {
+        return this.label.trim().length === 0 || (this.group.id && this.label === this.group.label)
+      },
     },
     methods: {
       async handleSubmit(e) {
@@ -95,7 +98,9 @@
 
         if (res.status === 200) {
           Vue.set(this.globalStore, 'groups', res.data)
-          this.label = ''
+          if (!this.group.id) {
+            this.label = ''
+          }
         }
       },
 

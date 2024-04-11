@@ -17,7 +17,7 @@
         </b-button>
       </b-form>
     </div>
-    <div v-else>
+    <div v-else class="mb-3">
       <p>
         <span v-if="group.is_anonymous">Die Klasse wurde anonym geteilt;</span>
         Sie können die Klasse

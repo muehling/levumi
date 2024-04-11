@@ -13,7 +13,7 @@
       </div>
       <div v-else class="d-inline">
         <!-- Anlegen Button anzeigen -->
-        <b-btn variant="outline-secondary" size="sm" @click="editMode = true">
+        <b-btn variant="outline-secondary" class="text-nowrap" size="sm" @click="editMode = true">
           <i class="fas fa-user-plus"></i>
           Anlegen
         </b-btn>
@@ -114,8 +114,9 @@
 
     <td>
       <span>
-        <b-button-group :class="!readOnly && !empty && !editMode ? '' : 'd-none'">
+        <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-btn
+            v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
             v-b-popover.hover.topright="'Schrifteinstellungen'"
             class="mr-1"
@@ -125,6 +126,7 @@
             <i class="fas fa-text-height"></i>
           </b-btn>
           <b-btn
+            v-if="!readOnly"
             v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
             class="mr-1"
@@ -133,6 +135,7 @@
             <i class="fas fa-user-edit"></i>
           </b-btn>
           <b-btn
+            v-if="!readOnly"
             v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
             class="mr-1"
@@ -257,7 +260,7 @@
         return isEmpty(this.permissions)
       },
       permissions() {
-        return access(null, this.group).classbook
+        return access(this.group).classbook
       },
     },
     beforeCreate() {
