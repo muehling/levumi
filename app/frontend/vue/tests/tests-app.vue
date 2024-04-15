@@ -10,14 +10,14 @@
     <div v-else>
       <b-row v-cloak class="mt-3">
         <b-col md="12">
-          <b-tabs pills>
+          <b-tabs pills lazy>
             <!--% Area.order(:name).all.each do |a| %-->
             <!-- Oberste Ebene Lernbereiche -->
             <b-tab v-for="area in testData" :key="area.id">
               <template slot="title">
                 {{ area.name }}
               </template>
-              <b-tabs pills class="mt-3">
+              <b-tabs pills lazy class="mt-3">
                 <!-- Hinweistext falls keine Tests vorhanden -->
                 <div slot="empty">
                   <div class="text-center text-muted">Keine Kompetenzbereiche vorhanden.</div>
@@ -34,7 +34,7 @@
                     <span class="text-small">{{ competence.description }}</span>
                   </b-alert>
 
-                  <b-tabs pills class="mt-3">
+                  <b-tabs pills lazy class="mt-3">
                     <!-- Hinweistext falls keine Tests vorhanden -->
                     <div slot="empty">
                       <div class="text-center text-muted">Keine Tests vorhanden.</div>
@@ -52,21 +52,19 @@
                       </b-alert>
 
                       <b-card no-body class="mt-3">
-                        <b-tabs pills card vertical>
+                        <b-tabs pills lazy card vertical>
                           <!--% f.tests.where(archive: false).order(:level).all.each do |t|  %-->
                           <!-- Vierte Ebene Niveaustufen -->
                           <b-tab
                             v-for="test in testFamily.tests"
                             :key="test.id"
-                            :title="test.level"
-                          >
+                            :title="test.level">
                             <!-- Testinfo rendern -->
                             <div id="info_<%= t.id %>">
                               <div id="info_<%= t.id %>_inner">
                                 <div class="container-fluid">
                                   <table
-                                    class="table table-sm table-striped table-borderless text-small mt-1"
-                                  >
+                                    class="table table-sm table-striped table-borderless text-small mt-1">
                                     <tr>
                                       <td>Anzahl an Items</td>
                                       <td>{{ test.items_count }}</td>
@@ -74,11 +72,13 @@
                                     <tr>
                                       <td>Durchführung</td>
                                       <td>
-                                        <span>{{
-                                          test.is_student_test
-                                            ? 'Selbstständig durch die Schüler:innen'
-                                            : 'Durch die Lehrkraft'
-                                        }}</span>
+                                        <span>
+                                          {{
+                                            test.is_student_test
+                                              ? 'Selbstständig durch die Schüler:innen'
+                                              : 'Durch die Lehrkraft'
+                                          }}
+                                        </span>
                                       </td>
                                     </tr>
                                     <tr>
@@ -95,8 +95,8 @@
                                       <td>Items</td>
                                       <td>
                                         <p>
-                                          <span v-for="(item, key, i) in test.items" :key="key"
-                                            >{{
+                                          <span v-for="(item, key, i) in test.items" :key="key">
+                                            {{
                                               `${item}${
                                                 i < parseInt(test.items_count, 10) ? ', ' : ''
                                               }`
@@ -112,8 +112,7 @@
                                   <p class="text-light bg-secondary pl-4">Beschreibung</p>
                                   <div
                                     class="full-description text-small"
-                                    v-html="test.description"
-                                  ></div>
+                                    v-html="test.description"></div>
                                 </div>
                                 <div v-if="hasAttachments(test)" class="container-fluid">
                                   <p class="text-light bg-secondary pl-4">Anhänge</p>
@@ -121,8 +120,7 @@
                                     v-for="attachment in getAttachedImages(test)"
                                     :key="attachment.filename"
                                     class="attached-image"
-                                    :src="attachment.filepath"
-                                  />
+                                    :src="attachment.filepath" />
                                 </div>
                                 <ul>
                                   <li v-for="file in getAttachedOther(test)" :key="file.filename">

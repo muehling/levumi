@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>Levumi</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= vite_javascript_tag 'startpage' %>
+    <%= vite_stylesheet_tag 'application' %>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8"/>
+
+    <%= yield :head if content_for? :head %>
+    <%= vite_client_tag %>
+  </head>
+
+  <body>
+  
+
+  <!-- Hauptinhalt der Seite -->
+  <%= content_for?(:body) ? yield(:body) : yield %>
+
+  <%= render 'application/imprint' %>
+  <%= render 'application/privacy' %>
+  <%= render 'application/about' %>
+
+  <div id='t_and_c' class='modal fade' tabindex='-1'>
+    <div class='modal-dialog modal-dialog-scrollable modal-lg'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h5 class='modal-title'>Nutzungsbedingungen</h5>
+          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+            <span aria-hidden='true'>&times;</span>
+          </button>
+        </div>
+        <div class='modal-body'>
+          <%= render 'application/terms_and_conditions' %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </body>
+  <script>  
+    if (window.location.search === '?logout=true'){
+      sessionStorage.removeItem('login')
+    }
+  </script>
+</html>
