@@ -23,7 +23,16 @@
           :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
         <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
       </div>
-      <b-button type="submit" variant="success" @click="login">Einloggen</b-button>
+      <div class="d-flex submit-section">
+        <b-button type="submit" variant="success" :disabled="isLoading" @click="login">
+          Einloggen
+        </b-button>
+        <div v-if="isLoading" class="spinner ml-3 mt-2">
+          <div class="bounce1 pt-2"></div>
+          <div class="bounce2 pt-2"></div>
+          <div class="bounce3 pt-2"></div>
+        </div>
+      </div>
       <div v-if="passwordMismatch && !registeredEmail" class="mt-3">
         <div class="dropdown-divider"></div>
         <a href="/passwort">Passwort vergessen? Hier klicken!</a>
@@ -43,6 +52,7 @@
         password: '',
         email: '',
         passwordMismatch: false,
+        isLoading: false,
       }
     },
     mounted() {
@@ -54,10 +64,14 @@
       async login(e) {
         e.preventDefault()
         e.stopPropagation()
+        this.isLoading = true
+
         const res = await ajax({
           ...apiRoutes.users.login,
           data: { email: this.email, password: this.password },
         })
+        this.isLoading = false
+
         switch (res.status) {
           case 403:
             this.passwordMismatch = true
@@ -71,3 +85,9 @@
     },
   }
 </script>
+<style>
+  .submit-section .spinner > div {
+    background-color: #fff;
+    border: 2px solid #5a598c;
+  }
+</style>
