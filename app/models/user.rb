@@ -7,15 +7,21 @@ class User < ApplicationRecord
   #TODO: Ggf. Kommentar entfernen und Fehler-Validierung in _password anpassen, falls gewünscht.
   #validates :password, length: { minimum: 5 }
 
-  validates_presence_of :email, message: 'E-Mail darf nicht leer sein!'
+  validates_presence_of :email, message: 'Die E-Mail-Adresse darf nicht leer sein!'
   validates_uniqueness_of :email,
                           case_sensitive: false,
-                          message: 'E-Mail Adresse ist bereits registriert!'
+                          message: 'Diese E-Mail-Adresse ist bereits registriert!'
 
   #validates :email, format: { with: URI::MailTo::EMAIL_REGEXP }, message: 'Bitte eine gültige E-Mail Adresse eingeben'
 
-  validates_numericality_of :account_type, greater_than_or_equal_to: 0, less_than_or_equal_to: 2
-  validates_numericality_of :state, greater_than: 0, less_than_or_equal_to: 19
+  validates_numericality_of :account_type,
+                            greater_than_or_equal_to: 0,
+                            less_than_or_equal_to: 2,
+                            message: 'Bitte wählen Sie einen Account-Typen aus!'
+  validates_numericality_of :state,
+                            greater_than: 0,
+                            less_than_or_equal_to: 19,
+                            message: 'Bitte wählen Sie ein Bundesland aus!'
 
   # Eigene Gruppen und Shares löschen
   before_destroy do |user|

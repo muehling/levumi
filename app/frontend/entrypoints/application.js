@@ -6,15 +6,15 @@ import * as bootstrap from 'bootstrap'
 import * as sjcl from 'sjcl'
 
 import BootstrapVue from 'bootstrap-vue'
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import RootApp from '../vue/root-app.vue'
 import ClassBookApp from '../vue/classbook/classbook-app.vue'
 import HomeApp from '../vue/home/home-app.vue'
 import MaterialsApp from '../vue/materials/materials-app.vue'
+import RootApp from '../vue/root-app.vue'
 import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
+import Vue from 'vue'
 import VueApexCharts from 'vue-apexcharts'
+import VueRouter from 'vue-router'
 
 import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
 
@@ -32,9 +32,7 @@ const element = document.getElementById('levumi')
 const init = async () => {
   // TODO remove once all data is fetched from API
   const data = JSON.parse(element.getAttribute('data')) || {}
-
   Vue.use(BootstrapVue)
-
   Vue.use(VueApexCharts)
   Vue.component('apexchart', VueApexCharts)
 

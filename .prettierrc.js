@@ -1,8 +1,10 @@
 module.exports = {
-  "singleQuote": true,
-  "tabWidth": 2,
-  "printWidth": 100,
-  "semi": false,
-  "arrowParens": "avoid",
-  "vueIndentScriptAndStyle": true
+  singleQuote: true,
+  tabWidth: 2,
+  printWidth: 100,
+  semi: false,
+  arrowParens: 'avoid',
+  vueIndentScriptAndStyle: true,
+  htmlWhitespaceSensitivity: 'ignore',
+  bracketSameLine: true,
 }

@@ -9,6 +9,7 @@ export default {
     usersMail: id => ({ url: `/users/${id}/mail`, method: 'PUT' }),
     coreData: '/users/core_data',
     logout: '/logout',
+    login: { url: '/login', method: 'POST' },
     renewLogin: ({ email, password }) => ({
       url: '/renew_login',
       method: 'POST',
