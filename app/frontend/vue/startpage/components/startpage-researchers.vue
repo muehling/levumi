@@ -31,10 +31,11 @@
             fluid
             alt="Forschende diskutieren an einem Tisch" />
           <p>
-            Als Forschende spielen Sie eine entscheidende Rolle bei der Gestaltung und
-            Weiterentwicklung von Bildungspraktiken. Ihre Arbeit trägt dazu bei, neue Erkenntnisse
-            zu generieren, bewährte Methoden zu validieren und innovative Ansätze zu entwickeln, um
-            das Lernen für Schülerinnen und Schüler weltweit zu verbessern.
+            Levumi basiert auf der Idee Forschungsergebnisse in Form von (digitalen) Diagnostiken
+            und Fördermaterialien schnell und unkompliziert der Schulpraxis zur Verfügung zu
+            stellen. Umgekehrt möchten wir damit auch Forschenden die Möglichkeit geben, mit der
+            Plattform und den Daten zu arbeiten um evidenzbasierte Verbesserungen von
+            Bildungspraktiken zu ermöglichen.
           </p>
         </b-card>
       </div>
@@ -48,10 +49,10 @@
           <h4><u>Lernverlaufsdiagnostik: Datenanalyse und Testdesign</u></h4>
           <p>
             Für Forschende bietet Levumi die Möglichkeit, Studien durchzuführen und die erhobenen
-            Rohdaten, Schüler:innen Merkmale und weitere Daten er Testungen für die eigenen Analysen
-            zu exportieren. Auch hier ist der Datenschutz zentral, die Daten sind anonymisiert und
-            können gemeinsam mit Lehrkräften erhoben werden, sofern diese auch einen Zugang zu
-            Levumi besitzen.
+            Rohdaten, Schüler:innen Merkmale und weitere Daten der Testungen für die eigenen
+            Analysen zu exportieren. Auch hier ist der Datenschutz zentral, die Daten sind
+            anonymisiert und können gemeinsam mit Lehrkräften erhoben werden, sofern diese auch
+            einen Zugang zu Levumi besitzen.
           </p>
           <p>
             Zudem haben Sie durch die offene Struktur die Möglichkeit, eigene Testdesigns zu
