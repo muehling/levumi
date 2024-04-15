@@ -1,8 +1,11 @@
 <template>
   <div class="group-actions">
-    <div class="d-inline">
+    <div v-if="permissions?.updateGroup">
+      <group-form :group="group" @update:groups="updateGroup($event)" />
+    </div>
+    <div v-if="permissions?.createQRCodes" class="d-inline">
+      <hr />
       <b-button
-        v-if="canCreateQrCodes"
         variant="success"
         class="my-2 d-inline"
         size="sm"
@@ -15,8 +18,8 @@
         help-text="Mit dieser Aktion wird ein PDF mit QR-Codes zum Einloggen in die Testoberfläche erstellt. Die QR-Codes können ausgedruckt und an die Schüler:innen ausgeteilt werden."
         class-name="mt-2 ml-2" />
     </div>
-    <hr />
-    <div class="d-inline">
+    <div v-if="permissions?.archiveGroup" class="d-inline">
+      <hr />
       <b-button
         id="intro_cb_3"
         class="my-2 d-inline"
@@ -36,14 +39,16 @@
 <script>
   import { ajax } from 'src/utils/ajax'
   import { useGlobalStore } from 'src/store/store'
+  import { access } from 'src/utils/access'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
-  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import Vue from 'vue'
+  import GroupForm from './group-form.vue'
   export default {
     name: 'ClassbookActions',
-    components: { ContextHelp, ConfirmDialog },
+    components: { ContextHelp, ConfirmDialog, GroupForm },
     props: { group: Object },
     setup() {
       const globalStore = useGlobalStore()
@@ -55,8 +60,8 @@
       }
     },
     computed: {
-      canCreateQrCodes() {
-        return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
+      permissions() {
+        return access(this.group).classbook
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []

@@ -11,6 +11,8 @@ export const access = groupShare => {
 
   let createGroup = false
   let updateGroup = !groupShare.read_only
+  let archiveGroup = groupShare.owner
+  let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only
 
   let createStudents = !groupShare.read_only
   let updateStudents = !groupShare.read_only
@@ -18,7 +20,15 @@ export const access = groupShare => {
   let moveStudents = groupShare.owner
   let createShare = groupShare.owner
   let canAccessClassbook =
-    createStudents || updateStudents || deleteStudents || moveStudents || createShare
+    createGroup ||
+    updateGroup ||
+    archiveGroup ||
+    createQRCodes ||
+    createStudents ||
+    updateStudents ||
+    deleteStudents ||
+    moveStudents ||
+    createShare
 
   let createResults = !groupShare.read_only
   let deleteResults = !groupShare.read_only
@@ -35,6 +45,8 @@ export const access = groupShare => {
       classbook: {
         createGroup,
         updateGroup,
+        archiveGroup,
+        createQRCodes,
         createStudents,
         updateStudents,
         deleteStudents,

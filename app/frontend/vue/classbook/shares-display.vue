@@ -92,19 +92,12 @@
             this.globalStore.groups.find(g => g.id === res.data.id)
           )
           const groups = [...this.globalStore.groups]
-          const group = this.globalStore.groups.find(g => g.id === res.data.id)
-          group.read_only = res.data.read_only
+          const index = groups.findIndex(g => g.id === res.data.id)
+          groups[index] = res.data
+
           Vue.set(this.globalStore, 'groups', groups)
-          //TODO bestimmt irgendwas updaten
-          // const data = res.data
-          // this.$emit('update:groups', { index: this.index, object: data })
-          // this.isShown = false
-          // return data
         } else {
-          // TODO global error setzen
-          //const error = res.data
-          //this.errorMessage = error.message
-          //return null
+          this.errorMessage = res.data.message
         }
       },
 

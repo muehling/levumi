@@ -36,13 +36,7 @@
   import { ajax } from '../../utils/ajax'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import { useGlobalStore } from '../../store/store'
-  import {
-    encryptKey,
-    decryptKey,
-    decryptWithKey,
-    decryptStudentNames,
-    encryptWithKey,
-  } from '../../utils/encryption'
+  import { encryptKey, decryptWithKey, decryptStudentNames } from '../../utils/encryption'
   export default {
     name: 'ShareStatus',
     components: { ConfirmDialog },
@@ -54,6 +48,7 @@
     data() {
       return { keyInput: '' }
     },
+
     methods: {
       async requestUnshare() {
         const ok = await this.$refs.confirmDialog.open({
@@ -86,8 +81,6 @@
         }
       },
       async acceptShare() {
-        //  e.preventDefault()
-        //  e.stopPropagation()
         const data = {
           group_share: { key: this.prepareKey() },
         }

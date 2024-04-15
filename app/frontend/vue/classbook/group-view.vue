@@ -29,21 +29,16 @@
           <b-col>
             <b-card :title="actionCardTitle">
               <div v-if="currentNav === 'general'">
-                <group-form
-                  v-if="permissions.updateGroup"
-                  :group="group"
-                  @update:groups="updateGroup($event)" />
-                <hr />
                 <classbook-actions
-                  v-if="permissions.updateGroup"
+                  v-if="permissions?.updateGroup"
                   :group="group"
                   @group-archived="selectedGroupId = undefined" />
               </div>
-              <div v-if="currentNav === 'share' && permissions.createShare">
+              <div v-if="currentNav === 'share' && permissions?.createShare">
                 <share-form :group="group" @update:groups="updateGroup($event)" />
                 <shares-display v-if="group.owner" :group="group" />
               </div>
-              <div v-if="currentNav === 'movestudents' && permissions.moveStudents">
+              <div v-if="currentNav === 'movestudents' && permissions?.moveStudents">
                 <move-student-dialog :group="group" />
               </div>
             </b-card>
@@ -78,7 +73,6 @@
   import { useGlobalStore } from 'src/store/store'
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import GroupForm from './group-view-actions/group-form.vue'
   import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
   import isEmpty from 'lodash/isEmpty'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
@@ -93,7 +87,6 @@
     components: {
       ClassbookActions,
       ConfirmDialog,
-      GroupForm,
       GroupViewActionsNav,
       MoveStudentDialog,
       ShareForm,
@@ -137,7 +130,9 @@
         return this.group.read_only || this.globalStore.masquerade
       },
       displayActionButton() {
-        return !isEmpty(this.permissions)
+        console.log('displayActionButton', this.permissions)
+
+        return !isEmpty(this.permissions) && this.group.key // shares without key are not accepted yet
       },
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
@@ -169,9 +164,13 @@
         if (this.$route.path.endsWith(path)) {
           return
         }
+        console.log('meh', this.$route)
+
         let classBookRoot
         if (this.$route.path.includes(this.selectedGroupId + '')) {
           classBookRoot = this.$route.path.split('/' + this.selectedGroupId)[0]
+        } else if (this.$route.name === 'ClassbookShared') {
+          classBookRoot = '/klassenbuch/geteilte_klassen'
         } else {
           classBookRoot = '/klassenbuch/eigene_klassen'
         }
