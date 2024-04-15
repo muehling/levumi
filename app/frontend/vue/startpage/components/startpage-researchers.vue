@@ -34,7 +34,7 @@
             Levumi basiert auf der Idee Forschungsergebnisse in Form von (digitalen) Diagnostiken
             und Fördermaterialien schnell und unkompliziert der Schulpraxis zur Verfügung zu
             stellen. Umgekehrt möchten wir damit auch Forschenden die Möglichkeit geben, mit der
-            Plattform und den Daten zu arbeiten um evidenzbasierte Verbesserungen von
+            Plattform und den Daten zu arbeiten, um evidenzbasierte Verbesserungen von
             Bildungspraktiken zu ermöglichen.
           </p>
         </b-card>
