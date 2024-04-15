@@ -56,7 +56,7 @@
               <div class="embed-responsive embed-responsive-16by9 video-container mb-4">
                 <video controls>
                   <source :src="require('../../../../assets/levumi_intro.mp4')" type="video/mp4" />
-                  Your browser does not support the video tag.
+                  Ihr Browser unterstützt leider kein Abspielen von Videos.
                 </video>
               </div>
             </b-card>
