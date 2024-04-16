@@ -19,6 +19,7 @@ class UsersController < ApplicationController
   #GET /start
   #GET /users/:id
   def show
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     respond_to do |format|
       format.text do
         send_file @login.as_zip,
@@ -199,7 +200,7 @@ class UsersController < ApplicationController
       time1 = Time.parse(params[:user][:timestamp])
       time2 = Time.parse(params[:user][:render_timestamp])
       diff = (time1 - time2).abs
-      if diff < 5
+      if diff < 3
         render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
       end
     end

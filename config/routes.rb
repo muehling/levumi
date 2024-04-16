@@ -51,6 +51,10 @@ Rails.application.routes.draw do
   get '/diagnostik/:group_id', to: 'users#show'
   get '/diagnostik/:group_id/testdetails/:test_id', to: 'users#show'
   get '/diagnostik/:group_id/testverwaltung', to: 'users#show'
+  get '/testinventar', to: 'application#start'
+  get '/lehrkraefte', to: 'application#start'
+  get '/forschung', to: 'application#start'
+  get '/faq', to: 'application#start'
 
   # API endpoints
   delete '/delete_area/:id', to: 'areas#destroy_safe'

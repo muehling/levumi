@@ -261,9 +261,9 @@
           okIntent: 'danger',
           cancelText: 'Abbrechen',
         })
-        this.isUpdating.push(assessment.test_id)
 
         if (ok) {
+          this.isUpdating.push(assessment.test_id)
           const res = await ajax(apiRoutes.assessments.delete(this.group.id, assessment.test_id))
           if (res.status === 200) {
             await this.updateList()

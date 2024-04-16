@@ -5,8 +5,7 @@
         <b-alert
           :show="selectedStudentId !== -1 && storedIsNull"
           variant="info"
-          class="d-inline-block"
-        >
+          class="d-inline-block">
           Hinweis: Die gezeigten Werte wurden aus der Klassenansicht übernommen. Wenn Sie hier
           andere Werte eintragen und speichern, so gelten sie ausschließlich für diese Schüler*in.
         </b-alert>
@@ -27,17 +26,16 @@
               step="0.01"
               lang="de"
               size="sm"
-              @update="setTarget($event, dateUntilVal, deviationVal, true)"
-            ></b-form-input>
+              @update="setTarget($event, dateUntilVal, deviationVal, true)"></b-form-input>
           </div>
           <span
             v-b-popover.hover="
               `Der Zielwert wird wahlweise als horizontale oder an-/absteigende Gerade dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. `
             "
             style="font-size: 1rem"
-            class="mt-1"
-            ><i class="fas fa-circle-question"></i
-          ></span>
+            class="mt-1">
+            <i class="fas fa-circle-question"></i>
+          </span>
         </div>
         <div v-if="dateUntilIsEnabled" class="text-small row mt-2">
           <div class="col-12 col-md-3 col-xl-2">
@@ -53,8 +51,7 @@
               type="date"
               lang="de"
               size="sm"
-              @update="setTarget(targetVal, $event, deviationVal, true)"
-            ></b-form-input>
+              @update="setTarget(targetVal, $event, deviationVal, true)"></b-form-input>
           </div>
           <span
             v-b-popover.hover="
@@ -62,9 +59,9 @@
                Trendlinien können bis zu diesem Datum extrapoliert werden.`
             "
             style="font-size: 1rem"
-            class="mt-1"
-            ><i class="fas fa-circle-question"></i
-          ></span>
+            class="mt-1">
+            <i class="fas fa-circle-question"></i>
+          </span>
         </div>
         <div v-if="deviationIsEnabled && targetIsEnabled" class="text-small row mt-2 mb-2">
           <div class="col-12 col-md-3 col-xl-2">
@@ -85,8 +82,7 @@
                 step="1"
                 lang="de"
                 size="sm"
-                @update="setTarget(targetVal, dateUntilVal, $event, true)"
-              ></b-form-input>
+                @update="setTarget(targetVal, dateUntilVal, $event, true)"></b-form-input>
             </b-input-group>
           </div>
           <span
@@ -94,18 +90,18 @@
               `Dieser Wert bestimmt, wie weit die Ergebnisse vom vorgegebenen Zielwert abweichen dürfen.`
             "
             style="font-size: 1rem"
-            class="mt-1"
-            ><i class="fas fa-circle-question"></i
-          ></span>
+            class="mt-1">
+            <i class="fas fa-circle-question"></i>
+          </span>
         </div>
         <div class="mt-3">
           <b-button
             variant="outline-success"
             size="sm"
             :disabled="!targetOrTimeValid"
-            @click="changeStoredTarget(false)"
-          >
-            <i class="fas fa-check"></i> Wert{{ multipleValues ? 'e' : '' }} speichern
+            @click="changeStoredTarget(false)">
+            <i class="fas fa-check"></i>
+            Wert{{ multipleValues ? 'e' : '' }} speichern
           </b-button>
           <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
           <b-button
@@ -113,9 +109,9 @@
             class="ml-2"
             variant="outline-danger"
             size="sm"
-            @click="storedIsNull ? restoreTarget() : changeStoredTarget(true)"
-          >
-            <i class="fas fa-check"></i> Wert{{ multipleValues ? 'e' : '' }} löschen
+            @click="storedIsNull ? restoreTarget() : changeStoredTarget(true)">
+            <i class="fas fa-check"></i>
+            Wert{{ multipleValues ? 'e' : '' }} löschen
           </b-button>
           <b-button
             :hidden="
@@ -127,9 +123,9 @@
             class="ml-2"
             variant="outline-warning"
             size="sm"
-            @click="restoreTarget"
-          >
-            <i class="fas fa-check"></i> Wert{{ multipleValues ? 'e' : '' }} zurücksetzen
+            @click="restoreTarget">
+            <i class="fas fa-check"></i>
+            Wert{{ multipleValues ? 'e' : '' }} zurücksetzen
           </b-button>
         </div>
       </b-form>
@@ -193,7 +189,7 @@
           return this.targetControlVisible
         },
         set(value) {
-          this.$emit('update:targetControlVisible', value)
+          this.$emit('update:targetControlVisible', value) // FIXME doesn't seem to get caught anywhere
         },
       },
     },
