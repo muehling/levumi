@@ -30,6 +30,8 @@ class GroupSharesController < ApplicationController
            )
           UserMailer
             .with(
+              sender: @login.email,
+              group_label: @group.label,
               recipient: @recipient,
               share_key: params[:share_key],
               is_anonymous: params.require(:group_share)[:is_anonymous]
