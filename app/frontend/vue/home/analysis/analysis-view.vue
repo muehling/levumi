@@ -71,7 +71,7 @@
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
-        <div v-else class="m-4 p-4" style="height: 500px">
+        <div v-else-if="displaySupportFilterHint" class="m-4 p-4" style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
           </b-alert>
@@ -297,6 +297,9 @@
       }
     },
     computed: {
+      displaySupportFilterHint() {
+        return !this.graphData.length && this.selectedSupportNeedFilter
+      },
       weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
