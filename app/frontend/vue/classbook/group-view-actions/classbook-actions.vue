@@ -127,7 +127,7 @@
             }
           }
         }
-        pdf.save(`QR-Codes ${this.group.label}.pdf`)
+        pdf.save(`QR-Codes_${this.group.label.split(' ').join('_')}.pdf`)
         this.isGeneratingQrCodes = false
       },
       blobToBase64(blob) {
