@@ -14,7 +14,7 @@
 
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
       </div>
-      <div v-else-if="showActionTab" title="Aktionen">
+      <div v-else-if="showActionTab">
         <b-button size="sm" variant="outline-secondary" @click="handleNavigate('liste')">
           <i class="fas fa-backward-step"></i>
           Zurück zur Liste

@@ -10,7 +10,7 @@
     </div>
 
     <b-collapse id="move-explanation">
-      <b-card>
+      <b-card class="mb-3">
         <ul>
           <li>
             Schüler:innen werden mit allen bisherigen Messergebnissen in die gewählte Klasse
@@ -19,7 +19,7 @@
           <li>Nur Schüler:innen der aktuellen Klasse können verschoben werden.</li>
           <li>
             Wenn Messergebnisse für einen Test vorhanden sind, der der Zielklasse bisher nicht
-            zugeordnet ist, wird der Test für die Klasse aktiviert. Die bereits vorhandenen
+            zugeordnet ist, wird der Test für die Zielklasse aktiviert. Die bereits vorhandenen
             Schüler:innen werden jedoch erst einmal ausgeschlossen; wenn gewünscht, müssen die
             vorhandenen Schüler:innen manuell für die Teilnahme aktiviert werden.
           </li>
@@ -31,54 +31,56 @@
       </b-card>
     </b-collapse>
     <b-form-select v-model="targetGroupId" :options="groupOptions" />
-    <hr />
-    <p>Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.</p>
-    <b-row>
-      <b-col>
-        <b-card>
-          <div
-            v-for="(student, index) in sourceGroupStudents"
-            :key="student.id"
-            :class="`move-student p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
-            @mouseover="setActionArrow(1)"
-            @mouseleave="setActionArrow(0)"
-            @click="handleMoveStudent(student)">
-            <span class="text-dark">{{ student.name }}</span>
-          </div>
-        </b-card>
-      </b-col>
-      <b-col cols="1" class="mt-4 text-center">
-        <div class="action-arrow"><i :class="`fas fa-${actionArrow}`"></i></div>
-      </b-col>
-      <b-col>
-        <div v-if="!!targetGroupId">
+    <div v-if="targetGroupId">
+      <hr />
+      <p>Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.</p>
+      <b-row>
+        <b-col>
           <b-card>
             <div
-              v-for="(student, index) in targetGroupStudents"
+              v-for="(student, index) in sourceGroupStudents"
               :key="student.id"
-              :class="`move-student p-1${index % 2 ? ' bg-light' : ''}`"
-              @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
+              :class="`move-student p-1 cursor-pointer${index % 2 ? ' bg-light' : ''}`"
+              @mouseover="setActionArrow(1)"
               @mouseleave="setActionArrow(0)"
               @click="handleMoveStudent(student)">
-              <span
-                :class="`${
-                  hasStudentMoved(student.id, targetGroupId)
-                    ? 'text-dark cursor-pointer'
-                    : 'text-muted not-allowed'
-                }`">
-                {{ student.name }}
-              </span>
+              <span class="text-dark">{{ student.name }}</span>
             </div>
           </b-card>
-          <b-button class="mt-3" variant="outline-secondary mr-2" @click="reset">
-            Abbrechen
-          </b-button>
-          <b-button class="mt-3" variant="outline-success" @click="handleMove">
-            Schüler verschieben
-          </b-button>
-        </div>
-      </b-col>
-    </b-row>
+        </b-col>
+        <b-col cols="1" class="mt-4 text-center">
+          <div class="action-arrow"><i :class="`fas fa-${actionArrow}`"></i></div>
+        </b-col>
+        <b-col>
+          <div v-if="!!targetGroupId">
+            <b-card>
+              <div
+                v-for="(student, index) in targetGroupStudents"
+                :key="student.id"
+                :class="`move-student p-1${index % 2 ? ' bg-light' : ''}`"
+                @mouseover="setActionArrow(hasStudentMoved(student.id, targetGroupId) ? -1 : 0)"
+                @mouseleave="setActionArrow(0)"
+                @click="handleMoveStudent(student)">
+                <span
+                  :class="`${
+                    hasStudentMoved(student.id, targetGroupId)
+                      ? 'text-dark cursor-pointer'
+                      : 'text-muted not-allowed'
+                  }`">
+                  {{ student.name }}
+                </span>
+              </div>
+            </b-card>
+            <b-button class="mt-3" variant="outline-secondary mr-2" @click="reset">
+              Abbrechen
+            </b-button>
+            <b-button class="mt-3" variant="outline-success" @click="handleMove">
+              Schüler verschieben
+            </b-button>
+          </div>
+        </b-col>
+      </b-row>
+    </div>
     <confirm-dialog ref="confirmDialog" />
   </div>
 </template>
@@ -180,7 +182,7 @@
         this.sourceGroupStudents = this.globalStore.studentsInGroups[this.group.id]
         this.movedStudents = []
         this.targetGroupStudents = []
-        this.targetGroupId = undefined
+        this.targetGroupId = null
       },
       async handleMove() {
         const ok = await this.$refs.confirmDialog.open({
