@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="group.archive === false" pills>
-      <div v-if="!showActionTab" title="Schüler:innen">
+      <div v-if="!showActionTab">
         <share-status v-if="!group.owner" :group="group" />
         <b-button
           v-if="displayActionButton"

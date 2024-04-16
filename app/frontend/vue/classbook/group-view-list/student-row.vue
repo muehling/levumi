@@ -88,21 +88,24 @@
           name="tags"
           stacked></b-form-checkbox-group>
         <div class="d-flex">
-          <b-form-input
-            v-model="newTag"
-            placeholder="Weiteres Merkmal"
-            class="d-inline new-tag-input text-small py-0"></b-form-input>
-          <b-button
-            size="sm"
-            variant="outline-secondary"
-            class="pb-0 pt-1 ml-2 new-tag-submit"
-            @click="addTag">
-            <i class="fas fa-plus"></i>
-          </b-button>
+          <b-form @submit.prevent.stop="addTag">
+            <b-form-input
+              v-model="newTag"
+              placeholder="Weiteres Merkmal"
+              class="d-inline new-tag-input text-small py-0"></b-form-input>
+            <b-button
+              size="sm"
+              variant="outline-success"
+              class="pb-0 pt-1 ml-2 new-tag-submit"
+              @click="addTag">
+              <i class="fas fa-check"></i>
+            </b-button>
+
+            <context-help
+              help-text="Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein. Bitte beachten: der eingegebene Text wird unverschlüsselt gespeichert!"
+              class-name="mt-3 ml-2" />
+          </b-form>
         </div>
-        <small class="form-text text-muted">
-          Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein.
-        </small>
       </div>
       <div v-else>
         <span>
@@ -196,14 +199,15 @@
 
 <script>
   import { access } from 'src/utils/access'
-  import { ajax } from '../../../utils/ajax'
-  import { encryptWithMasterKeyAndGroup } from '../../../utils/encryption'
-  import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
+  import ContextHelp from 'src/vue/shared/context-help.vue'
   import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'StudentRow',
-    components: { ConfirmDialog },
+    components: { ConfirmDialog, ContextHelp },
     props: {
       empty: Boolean,
       group: Object,
