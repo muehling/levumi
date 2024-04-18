@@ -97,9 +97,19 @@
         }
 
         if (res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data)
+          const newIds = res.data.groups
+            .filter(group => !this.globalStore.groups.find(g => g.id === group.id))
+            .map(a => a.id)
+
+          Vue.set(this.globalStore, 'groups', res.data.groups)
+          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+
           if (!this.group.id) {
             this.label = ''
+            if (newIds[0]) {
+              await this.$nextTick()
+              this.$router.push(`/klassenbuch/eigene_klassen/${newIds[0]}`)
+            }
           }
         }
       },

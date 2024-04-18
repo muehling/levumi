@@ -130,8 +130,6 @@
         return this.group.read_only || this.globalStore.masquerade
       },
       displayActionButton() {
-        console.log('displayActionButton', this.permissions)
-
         return !isEmpty(this.permissions) && this.group.key // shares without key are not accepted yet
       },
       displayActions() {
@@ -164,7 +162,6 @@
         if (this.$route.path.endsWith(path)) {
           return
         }
-        console.log('meh', this.$route)
 
         let classBookRoot
         if (this.$route.path.includes(this.selectedGroupId + '')) {

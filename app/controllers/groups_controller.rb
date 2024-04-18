@@ -1,13 +1,17 @@
 class GroupsController < ApplicationController
   before_action :set_group, only: %i[update destroy get_test_data]
 
-  #GET /klassenbuch
+  #GET /groups
   def index
+    shares_object = {}
+    @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
     @data = {
-      'groups': [Group.new] + @login.get_classbook_info,
+      'groups': @login.get_classbook_info,
       'single': @login.account_type == 2,
-      'login': @login
+      'login': @login,
+      'share_keys': shares_object
     }
+    render json: @data
   end
 
   #POST /groups
@@ -24,7 +28,9 @@ class GroupsController < ApplicationController
       )
 
       #render json: g.as_hash(@login)
-      render json: @login.get_classbook_info
+      shares_object = {}
+      @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
+      render json: { groups: @login.get_classbook_info, share_keys: shares_object }
     else
       head 304
     end

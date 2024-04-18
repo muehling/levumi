@@ -8,7 +8,7 @@
       </div>
       <div v-else-if="editMode">
         <!-- Form anzeigen -->
-        <b-form-input v-model="name" type="text" class="form-control" size="sm" />
+        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
       <div v-else class="d-inline">
@@ -213,7 +213,6 @@
       group: Object,
       index: Number,
       open: Boolean,
-
       student: Object,
     },
     data: function () {
@@ -405,8 +404,6 @@
           this.sen = null
           this.tags = []
         }
-        //Falls Update aus Settings: Modal schließen
-        //    this.$bvModal.hide('modal_settings_' + this.student.id)
       },
     },
   }

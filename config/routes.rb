@@ -25,7 +25,7 @@ Rails.application.routes.draw do
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
 
-  # Vue Router routes TBD
+  # Vue Router routes
   get '/testverwaltung', to: 'users#show'
   get '/testuebersicht', to: 'users#show'
   get '/testexport', to: 'users#show'

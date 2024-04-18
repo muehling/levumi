@@ -7,7 +7,7 @@
           durchführen oder Einstellungen ändern.
         </p>
       </div>
-      <div v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen">
+      <div v-if="displayTestAdminButton">
         <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
           <i class="fas fa-gear mr-1"></i>
           Test hinzufügen / löschen
@@ -82,6 +82,15 @@
       },
       readOnly() {
         return !!this.group?.read_only
+      },
+      displayTestAdminButton() {
+        return (
+          !!this.selectedGroupId &&
+          !this.assessmentData &&
+          this.isAllowed &&
+          !this.isTestAdminOpen &&
+          this.group.students.length > 0
+        )
       },
     },
     watch: {

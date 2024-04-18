@@ -106,7 +106,8 @@
         },
       },
     },
-    mounted() {
+    async mounted() {
+      await this.globalStore.fetchGroups()
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [

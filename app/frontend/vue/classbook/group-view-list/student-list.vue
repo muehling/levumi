@@ -90,28 +90,25 @@
         this.selectedModal = action
       },
       update(val) {
-        //Student einfügen, updaten oder löschen und View aktualisieren
-        if (val.object !== null) {
+        const students = [...this.students]
+        if (val.object === null) {
+          students.splice((val.index, 1))
+        } else {
           val.object.name = decryptStudentName(
             val.object.name,
             'Kind_' + val.object.id,
             this.group.id
-          ) //Namen für weitere Verwendung entschlüsseln
-          if (val.index > -1) {
-            // update
-            this.$set(this.students, val.index, val.object)
+          )
+          let student = students.find(s => s.index === val.index)
+          if (student) {
+            const index = students.findIndex(s => s.index === val.index)
+            students[index] = val.object
           } else {
-            // create
-            this.students.push(val.object)
+            students.push(val.object)
           }
-        } // delete
-        else {
-          this.students.splice(val.index, 1)
+          this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
         }
-
-        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: this.students })
       },
     },
   }
 </script>
-../../../utils/encryption../../../store/store
