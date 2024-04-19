@@ -1,4 +1,5 @@
 import { useGlobalStore } from 'src/store/store'
+import { isSingleUser } from './user'
 
 export const access = groupShare => {
   const gs = useGlobalStore()
@@ -11,14 +12,14 @@ export const access = groupShare => {
 
   let createGroup = false
   let updateGroup = !groupShare.read_only
-  let archiveGroup = groupShare.owner
+  let archiveGroup = groupShare.owner && !isSingleUser()
   let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only
 
   let createStudents = !groupShare.read_only
   let updateStudents = !groupShare.read_only
   let deleteStudents = !groupShare.read_only
-  let moveStudents = groupShare.owner
-  let createShare = groupShare.owner
+  let moveStudents = groupShare.owner && !isSingleUser()
+  let createShare = groupShare.owner && !isSingleUser()
   let canAccessClassbook =
     createGroup ||
     updateGroup ||

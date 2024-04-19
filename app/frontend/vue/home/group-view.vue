@@ -12,6 +12,10 @@
           <i class="fas fa-gear mr-1"></i>
           Test hinzufügen / löschen
         </b-btn>
+        <b-button variant="outline-secondary" size="sm" class="ml-2" @click="gotoClassbook">
+          <i class="fas fa-book-open"></i>
+          Zum Klassenbuch
+        </b-button>
       </div>
       <b-button
         v-if="isTestDetailsOpen || isTestAdminOpen"
@@ -124,6 +128,13 @@
       this.update()
     },
     methods: {
+      gotoClassbook() {
+        if (this.group.owner) {
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}`)
+        } else {
+          this.$router.push(`/klassenbuch/geteilte_klassen/${this.group.id}`)
+        }
+      },
       async update() {
         const groupId = this.$route.params.groupId
         if (!groupId) {

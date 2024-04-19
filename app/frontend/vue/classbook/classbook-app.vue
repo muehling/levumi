@@ -4,12 +4,7 @@
     <div v-else>
       <b-row class="mt-3">
         <b-col md="12">
-          <div v-if="single">
-            <!-- nur eine Gruppe darstellen -->
-            <group-view :groups="groups" :group="groups[1]" :single="true"></group-view>
-          </div>
-
-          <div v-else>
+          <div>
             <!-- reguläre Darstellung mit Klassenliste -->
             <b-tabs pills>
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
@@ -18,11 +13,12 @@
                 </template>
 
                 <b-card no-body class="mt-3">
-                  <b-tabs pills card>
+                  <b-tabs :key="ownActiveGroups.length" pills card>
                     <!-- Neue Klasse anlegen -->
                     <b-tab
+                      v-if="!isSingleUser"
                       key="new_group"
-                      :active="activeGroupTab === 1"
+                      :active="activeGroupTab === -2"
                       lazy
                       @click="handleNavigate('neu')">
                       <template slot="title">
@@ -35,21 +31,22 @@
                     </b-tab>
                     <b-tab
                       v-for="(group, index) in ownActiveGroups"
-                      :key="`${group.id}/${group.label}`"
+                      :key="`${group.id}/${group.label}/${index}`"
                       :active="
-                        group.id === selectedGroupId || (index === 0 && activeGroupTab === 2)
+                        group.id === activeGroupTab || (index === 0 && activeGroupTab === -1)
                       "
                       lazy
                       @click="handleNavigate(`eigene_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label + '/' + group.id }}</span>
+                        <span v-else>
+                          {{ group.label + '/' + group.id }}
+                        </span>
                       </template>
                       <group-view
-                        :groups="groups"
+                        :groups="globalStore.groups"
                         :group="group"
-                        :single="false"
                         @update:groups="updateGroups"></group-view>
                     </b-tab>
                   </b-tabs>
@@ -58,6 +55,7 @@
 
               <!-- Geteilte Klassen -->
               <b-tab
+                v-if="displaySharesTab"
                 :disabled="sharedGroups.length === 0"
                 lazy
                 :active="activeTab === 2"
@@ -80,7 +78,7 @@
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label }}</span>
+                        <span v-else>{{ group.label + '/' + group.id }}</span>
                         <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
                       </template>
                       <group-view :groups="sharedGroups" :group="group"></group-view>
@@ -91,6 +89,7 @@
 
               <!-- Klassenarchiv -->
               <b-tab
+                v-if="displayArchiveTab"
                 :disabled="archivedGroups.length === 0"
                 lazy
                 :active="activeTab === 3"
@@ -135,6 +134,7 @@
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
   import Vue from 'vue'
+  import { isSingleUser } from 'src/utils/user'
 
   export default {
     name: 'ClassBookApp',
@@ -163,18 +163,24 @@
       },
       activeGroupTab() {
         if (!this.selectedGroupId && this.$route.path.endsWith('neu')) {
-          return 1
+          return -2
         } else if (!this.selectedGroupId) {
-          return 2
+          return -1
         } else {
-          return 3
+          return this.selectedGroupId
         }
+      },
+      displaySharesTab() {
+        return (isSingleUser() && this.sharedGroups.length) || !isSingleUser()
+      },
+      displayArchiveTab() {
+        return !isSingleUser()
       },
       isLoading() {
         return this.globalStore.isLoading
       },
-      single() {
-        return this.globalStore.login.account_type === 2
+      isSingleUser() {
+        return isSingleUser()
       },
       groups() {
         if (isEmpty(this.globalStore.groups)) {
@@ -185,19 +191,13 @@
       },
 
       ownActiveGroups() {
-        return this.groups
-          .filter(group => group.owner && !group.archive)
-          .sort((a, b) => (a.label < b.label ? -1 : 1))
+        return this.getTabGroups(true, false)
       },
       sharedGroups() {
-        return this.groups
-          .filter(group => !group.owner && !group.archive)
-          .sort((a, b) => (a.label < b.label ? -1 : 1))
+        return this.getTabGroups(false, false)
       },
       archivedGroups() {
-        return this.groups
-          .filter(group => group.archive && group.owner)
-          .sort((a, b) => (a.label < b.label ? -1 : 1))
+        return this.getTabGroups(true, true)
       },
 
       firstOwnIndex: function () {
@@ -227,7 +227,10 @@
         },
       },
     },
-    mounted() {
+
+    async mounted() {
+      await this.globalStore.fetchGroups()
+
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
@@ -253,6 +256,15 @@
       }
     },
     methods: {
+      getTabGroups(isOwner, isArchive) {
+        if (isEmpty(this.globalStore.groups)) {
+          return []
+        }
+
+        return this.globalStore.groups
+          .filter(group => group.owner === isOwner && group.archive === isArchive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
+      },
       updateGroups(newGroups) {
         this.globalStore.setGroups(newGroups)
       },

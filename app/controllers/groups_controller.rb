@@ -40,7 +40,9 @@ class GroupsController < ApplicationController
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     unless @group.read_only(@login) ||
              !@group.update(params.require(:group).permit(:label, :archive))
-      render json: @login.get_classbook_info
+      shares_object = {}
+      @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
+      render json: { groups: @login.get_classbook_info, share_keys: shares_object }
     else
       head 304
     end

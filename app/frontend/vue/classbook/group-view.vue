@@ -3,15 +3,20 @@
     <div v-if="group.archive === false" pills>
       <div v-if="!showActionTab">
         <share-status v-if="!group.owner" :group="group" />
-        <b-button
-          v-if="displayActionButton"
-          size="sm"
-          variant="outline-secondary"
-          @click="handleNavigate('aktionen')">
-          <i class="fas fa-gear"></i>
-          Aktionen und Einstellungen
-        </b-button>
-
+        <div>
+          <b-button
+            v-if="displayActionButton"
+            size="sm"
+            variant="outline-secondary"
+            @click="handleNavigate('aktionen')">
+            <i class="fas fa-gear"></i>
+            Aktionen und Einstellungen
+          </b-button>
+          <b-button variant="outline-secondary" size="sm" class="ml-2" @click="gotoClassbook">
+            <i class="fas fa-chalkboard-user"></i>
+            Zur Diagnostik
+          </b-button>
+        </div>
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
       </div>
       <div v-else-if="showActionTab">
@@ -97,7 +102,6 @@
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
       group: Object,
-      single: Boolean,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -158,6 +162,9 @@
       },
     },
     methods: {
+      gotoClassbook() {
+        this.$router.push(`/diagnostik/${this.group.id}`)
+      },
       handleNavigate(path) {
         if (this.$route.path.endsWith(path)) {
           return
