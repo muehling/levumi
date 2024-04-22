@@ -46,7 +46,7 @@
     <td>
       <div v-if="editMode">
         <b-form-select v-model="month" size="sm" @change="changeMonth">
-          <option v-for="(m, i) in months" :key="`${m}/$${i}`" :value="i">
+          <option v-for="(m, i) in months" :key="`${m}/$${i}/${student.id}`" :value="i">
             {{ m }}
           </option>
         </b-form-select>
@@ -121,7 +121,7 @@
           <b-btn
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="'Schrifteinstellungen'"
+            v-b-popover.hover.topright="fontSettings"
             class="mr-1"
             variant="outline-secondary"
             size="sm"
@@ -264,6 +264,26 @@
       },
       permissions() {
         return access(this.group).classbook
+      },
+      fontSettings() {
+        let settingsText = 'Standard'
+        if (this.student.settings) {
+          switch (this.student.settings.font_size) {
+            case '1':
+              settingsText = `${this.student.settings.font_family}, normale Größe`
+              break
+            case '2':
+              settingsText = `${this.student.settings.font_family}, vergrößert`
+              break
+            case '3':
+              settingsText = `${this.student.settings.font_family}, stark vergrößert`
+              break
+          }
+        }
+        return {
+          html: true,
+          content: `<strong>Schrifteinstellungen</strong><br/>${settingsText}`,
+        }
       },
     },
     beforeCreate() {

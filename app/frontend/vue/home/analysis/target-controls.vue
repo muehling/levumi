@@ -138,6 +138,7 @@
   import apiRoutes from '../../routes/api-routes'
   import { ajax } from '@/utils/ajax'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import { useGlobalStore } from 'src/store/store'
 
   export default {
     name: 'TargetControls',
@@ -166,6 +167,10 @@
       targetValid: Boolean,
       test: Object,
       group: Object,
+    },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
     },
     computed: {
       multipleValues() {
@@ -236,6 +241,7 @@
           res = await this.saveStudentTarget()
         }
         if (res?.status === 200) {
+          this.globalStore.setGenericMessage({ message: 'Die Änderungen wurden gespeichert!' })
           await this.loadStudentTargets() // this function only loads the detail information for the current assessment
         }
       },

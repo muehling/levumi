@@ -12,7 +12,12 @@
             <i class="fas fa-gear"></i>
             Aktionen und Einstellungen
           </b-button>
-          <b-button variant="outline-secondary" size="sm" class="ml-2" @click="gotoClassbook">
+          <b-button
+            v-if="group.key"
+            variant="outline-secondary"
+            size="sm"
+            class="ml-2"
+            @click="gotoClassbook">
             <i class="fas fa-chalkboard-user"></i>
             Zur Diagnostik
           </b-button>
