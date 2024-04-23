@@ -113,7 +113,7 @@
         return (
           this.globalStore.groups
             //.filter((group, index) => index > 0 && !group.read_only && !group.archive) // can be used for shares
-            .filter((group, index) => index > 0 && group.owner && !group.archive)
+            .filter(group => group.owner && !group.archive)
             .sort((a, b) => (a.label < b.label ? -1 : 1))
         )
       },

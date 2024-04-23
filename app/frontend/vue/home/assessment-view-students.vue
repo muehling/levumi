@@ -3,9 +3,10 @@
     <b-button
       v-b-toggle.assessmentViewStudentsExplanation
       variant="outline-secondary"
-      class="mb-3 btn-sm"
-      >Erläuterungen<i class="fas fa-caret-down ml-2"></i
-    ></b-button>
+      class="mb-3 btn-sm">
+      Erläuterungen
+      <i class="fas fa-caret-down ml-2"></i>
+    </b-button>
     <b-collapse id="assessmentViewStudentsExplanation">
       <b-card class="mb-4">
         <p class="text-light bg-secondary">&nbsp;Lehrkräfte-Übung</p>
@@ -18,7 +19,8 @@
         <p class="text-light bg-secondary">&nbsp;Hinweise</p>
         <p>
           Klicken Sie auf einen Namen um den Test sofort zu starten. Am Ende des Tests werden Sie
-          auf diese Seite zurückgeleitet.<br />
+          auf diese Seite zurückgeleitet.
+          <br />
           Grün hinterlegte Namen wurden in dieser Woche bereits getestet. Wenn Sie erneut testen
           möchten, löschen Sie bitte zuerst die vorherige Messung unten aus der Liste!
         </p>
@@ -37,8 +39,7 @@
         :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
         :disabled="getResult(student.id) > 0 || !isAllowed"
         :title="getResult(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
-        :href="'/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name"
-      >
+        :href="'/students/' + student.id + '/results/new?test_id=' + test.id + '#' + student.name">
         {{ student.name }}
       </b-button>
     </div>
@@ -50,23 +51,22 @@
         class="btn btn-sm"
         :variant="isactive ? ' btn-danger' : ' btn-success'"
         :disabled="isUpdating"
-        @click="toggleAssessment()"
-      >
+        @click="toggleAssessment()">
         <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
         <i v-else class="fas fa-spinner fa-spin"></i>
         {{ isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
       </b-button>
 
-      <b-dropdown v-if="isAllowed" size="sm" class="ml-1" variant="outline-secondary" no-caret
-        ><template #button-content>
-          Schüler:innen ein-/ausschließen<i class="fas fa-caret-down ml-2"></i
-        ></template>
+      <b-dropdown v-if="isAllowed" size="sm" class="ml-1" variant="outline-secondary" no-caret>
+        <template #button-content>
+          Schüler:innen ein-/ausschließen
+          <i class="fas fa-caret-down ml-2"></i>
+        </template>
         <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
           <b-dropdown-item
             v-for="student in includedStudents"
             :key="student.id"
-            @click="exclude(student.id)"
-          >
+            @click="exclude(student.id)">
             {{ student.name }}
           </b-dropdown-item>
         </b-dropdown-group>
@@ -74,20 +74,21 @@
           <b-dropdown-item
             v-for="student in excludedStudents"
             :key="student.id"
-            @click="include(student.id)"
-          >
+            @click="include(student.id)">
             {{ student.name }}
           </b-dropdown-item>
         </b-dropdown-group>
       </b-dropdown>
-      <b-button variant="outline-secondary" class="ml-1 btn btn-sm" @click="refetch"
-        ><i class="fas fa-refresh mr-2"></i>Aktualisieren
+      <b-button variant="outline-secondary" class="ml-1 btn btn-sm" @click="refetch">
+        <i class="fas fa-refresh mr-2"></i>
+        Aktualisieren
       </b-button>
       <b-button
         v-b-toggle.assessmentViewStudentsExplanation
         variant="outline-secondary"
-        class="ml-1 btn btn-sm"
-        >Erläuterungen<i class="fas fa-caret-down ml-2"></i>
+        class="ml-1 btn btn-sm">
+        Erläuterungen
+        <i class="fas fa-caret-down ml-2"></i>
       </b-button>
     </div>
 
@@ -98,9 +99,11 @@
         <p class="text-light bg-secondary">&nbsp;Hinweise</p>
         <p>
           Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem
-          <a href="/testen" target="_blank">eigenen Zugang</a> durchführen! Ein Klick auf den Namen
-          öffnet den Zugang dieser Schüler:in. Wenn Sie für eine Schüler:in einen Test durchführen,
-          können Sie die Ergebnisse mit dem Button <strong>Aktualisieren</strong> erneut abrufen.
+          <a href="/testen" target="_blank">eigenen Zugang</a>
+          durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler:in. Wenn Sie für
+          eine Schüler:in einen Test durchführen, können Sie die Ergebnisse mit dem Button
+          <strong>Aktualisieren</strong>
+          erneut abrufen.
         </p>
         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
         <p>
@@ -134,16 +137,16 @@
                 method="post"
                 class="mr-2 mb-2"
                 target="_blank"
-                :action="'/testen_login?login=' + student.login"
-              >
+                :action="'/testen_login?login=' + student.login">
                 <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
                 <b-button
                   :key="student.id"
                   :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
                   :disabled="!isactive || !isAllowed"
-                  type="submit"
-                >
-                  {{ student.name }}<br />{{ student.login }}
+                  type="submit">
+                  {{ student.name }}
+                  <br />
+                  {{ student.login }}
                 </b-button>
               </form>
             </div>
@@ -155,9 +158,11 @@
                 :key="student.id"
                 :disabled="true"
                 :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
-                class="mr-2 mb-2"
-                >{{ student.name }}<br />{{ student.login }}</b-button
-              >
+                class="mr-2 mb-2">
+                {{ student.name }}
+                <br />
+                {{ student.login }}
+              </b-button>
             </div>
           </td>
         </tr>
@@ -172,7 +177,6 @@
   import { useGlobalStore } from '../../store/store'
   import { ajax } from '../../utils/ajax'
   import apiRoutes from '../routes/api-routes'
-  import { isAdmin } from '../../utils/user'
   export default {
     name: 'AssessmentViewStudents',
     props: {
@@ -211,10 +215,7 @@
         return assessments?.find(a => a.test_id === this.test.id)?.active
       },
       isAllowed() {
-        return (
-          (this.globalStore.login.is_masquerading === null && !this.group.read_only) ||
-          isAdmin(this.globalStore.login.capabilities)
-        )
+        return this.globalStore.login.is_masquerading === null && !this.group.read_only
       },
     },
     methods: {

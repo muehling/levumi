@@ -95,6 +95,7 @@
               class="d-inline new-tag-input text-small py-0"></b-form-input>
             <b-button
               size="sm"
+              :disabled="newTag === ''"
               variant="outline-success"
               class="pb-0 pt-1 ml-2 new-tag-submit"
               @click="addTag">
@@ -166,7 +167,7 @@
               variant="outline-success"
               title="Speichern"
               :disabled="name.length == 0"
-              @click="createStudent">
+              @click="handleSubmit">
               <i class="fas fa-check"></i>
             </b-button>
           </b-button-group>
@@ -358,7 +359,7 @@
             method: 'delete',
           })
           if (res.status === 200) {
-            this.remove()
+            this.$emit('delete-student', { id: this.student.id })
           }
         }
       },
@@ -387,14 +388,10 @@
         return res
       },
 
-      remove() {
-        this.$emit('update:students', { index: this.index, object: null })
-      },
-
-      async createStudent() {
+      async handleSubmit() {
         const res = await ajax({
           url: `/students${!this.empty ? '/' + this.student.id : ''}?${this.collectData()}`,
-          method: this.empty ? 'post' : 'put',
+          method: this.empty ? 'POST' : 'PUT',
         })
         const data = res.data
         if (data && res.status === 200) {
@@ -409,10 +406,7 @@
       update(data) {
         //Wird bei erfolgreichem Create/Update aufgerufen
         //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
-        this.$emit('update:students', {
-          index: this.index,
-          object: data,
-        })
+        this.$emit('update-student', data)
         if (this.index >= 0) {
           this.editMode = false
         } else {

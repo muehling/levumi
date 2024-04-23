@@ -9,7 +9,10 @@
           Aktuell sind noch keine Schüler:innen für die Klasse angelegt. Bitte legen Sie diese
           zuerst im Klassenbuch an, damit Sie testen können!
         </p>
-        <b-button variant="outline-success" @click="navigateToClassbook">Zum Klassenbuch</b-button>
+        <b-button variant="outline-secondary" @click="navigateToClassbook">
+          <i class="fas fa-book-open mr-1"></i>
+          Zum Klassenbuch
+        </b-button>
       </b-card>
       <b-card
         v-else-if="assessmentsStore.assessments[selectedGroupId]?.length == 0"

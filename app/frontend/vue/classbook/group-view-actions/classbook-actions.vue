@@ -85,7 +85,8 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data)
+          Vue.set(this.globalStore, 'groups', res.data.groups)
+          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
           this.$router.push('/klassenbuch/eigene_klassen')
           this.$emit('group-archived')
         }

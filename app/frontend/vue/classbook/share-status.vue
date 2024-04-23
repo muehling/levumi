@@ -91,15 +91,7 @@
         })
 
         if (result) {
-          const newGroups = this.globalStore.groups.filter(group => group.id !== result.id)
-          newGroups.push(result)
-          this.globalStore.setGroups(newGroups)
-          const decryptedGroup = decryptStudentNames(result)
-          this.globalStore.setStudentsInGroup({
-            groupId: result.id,
-            students: decryptedGroup,
-          })
-          this.globalStore.fetch()
+          this.globalStore.fetchGroups()
         }
       },
       prepareKey() {

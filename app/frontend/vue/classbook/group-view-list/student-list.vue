@@ -22,17 +22,18 @@
           :index="index"
           :empty="false"
           @click-student-action="handleClickStudent"
-          @update:students="update($event)"></student-row>
+          @delete-student="deleteStudent"
+          @update-student="updateStudent"></student-row>
         <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
         <student-row
           v-if="!readOnly"
-          :key="0"
+          :key="-1"
           :student="{ name: '', login: '', tags: [] }"
           :group="group"
           :index="-1"
           :empty="true"
           :open="students.length === 0"
-          @update:students="update($event)"></student-row>
+          @update-student="updateStudent"></student-row>
       </tbody>
     </table>
     <test-info-modal
@@ -47,7 +48,7 @@
       v-if="selectedStudent && selectedModal === 'font-settings'"
       :student="selectedStudent"
       @hide-student-row-modal="resetSelectedStudent"
-      @update="update" />
+      @update="updateStudent" />
   </div>
 </template>
 
@@ -75,8 +76,8 @@
     },
     computed: {
       students() {
-        const allStudents = this.globalStore.studentsInGroups
-        return allStudents[this.group.id] || []
+        const allStudents = this.globalStore.studentsInGroups[this.group.id]
+        return allStudents || []
       },
     },
 
@@ -89,25 +90,24 @@
         this.selectedStudent = student
         this.selectedModal = action
       },
-      update(val) {
+      deleteStudent(data) {
+        const students = this.students.filter(s => s.id !== data.id)
+        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
+      },
+
+      updateStudent(data) {
         const students = [...this.students]
-        if (val.object === null) {
-          students.splice((val.index, 1))
+
+        data.name = decryptStudentName(data.name, 'Kind_' + data.id, this.group.id)
+        let student = students.find(s => s.id === data.id)
+        if (student) {
+          const index = students.findIndex(s => s.id === data.id)
+          students[index] = data
         } else {
-          val.object.name = decryptStudentName(
-            val.object.name,
-            'Kind_' + val.object.id,
-            this.group.id
-          )
-          let student = students.find(s => s.index === val.index)
-          if (student) {
-            const index = students.findIndex(s => s.index === val.index)
-            students[index] = val.object
-          } else {
-            students.push(val.object)
-          }
-          this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
+          students.push(data)
         }
+
+        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
       },
     },
   }

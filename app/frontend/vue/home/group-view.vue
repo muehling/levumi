@@ -13,7 +13,7 @@
           Test hinzufügen / löschen
         </b-btn>
         <b-button variant="outline-secondary" size="sm" class="ml-2" @click="gotoClassbook">
-          <i class="fas fa-book-open"></i>
+          <i class="fas fa-book-open mr-1"></i>
           Zum Klassenbuch
         </b-button>
       </div>
