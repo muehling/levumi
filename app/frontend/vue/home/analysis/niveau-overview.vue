@@ -168,7 +168,7 @@
           // first break the text into lines
           const lines = text.split('\n')
           // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
-          const fracRegex = /([A-Za-z0-9]+⌹[A-Za-z0-9]+)/
+          const fracRegex = /([A-Za-z0-9□]+⌹[A-Za-z0-9□]+)/
           const htmlRegex = /(<\S+>.*<\/\S+>)/
           for (let j = 0; j < lines.length; ++j) {
             let k = -1
