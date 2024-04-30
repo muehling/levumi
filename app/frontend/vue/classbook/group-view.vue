@@ -7,17 +7,13 @@
           <b-button
             v-if="displayActionButton"
             size="sm"
+            class="mr-2"
             variant="outline-secondary"
             @click="handleNavigate('aktionen')">
             <i class="fas fa-gear"></i>
             Aktionen und Einstellungen
           </b-button>
-          <b-button
-            v-if="group.key"
-            variant="outline-secondary"
-            size="sm"
-            class="ml-2"
-            @click="gotoClassbook">
+          <b-button v-if="group.key" variant="outline-secondary" size="sm" @click="gotoClassbook">
             <i class="fas fa-chalkboard-user"></i>
             Zur Diagnostik
           </b-button>
