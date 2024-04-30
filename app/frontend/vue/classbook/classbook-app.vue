@@ -6,7 +6,7 @@
         <b-col md="12">
           <div>
             <!-- reguläre Darstellung mit Klassenliste -->
-            <b-tabs pills>
+            <b-tabs :key="forceUpdate" pills>
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
@@ -126,15 +126,15 @@
 
 <script>
   import { ajax } from '../../utils/ajax'
+  import { isSingleUser } from 'src/utils/user'
   import { useGlobalStore } from '../../store/store'
   import GroupForm from './group-view-actions/group-form.vue'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
-  import routes from '../routes/api-routes'
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
+  import routes from '../routes/api-routes'
   import Vue from 'vue'
-  import { isSingleUser } from 'src/utils/user'
 
   export default {
     name: 'ClassBookApp',
@@ -149,20 +149,23 @@
       return { globalStore }
     },
     data() {
-      return { selectedGroupId: undefined }
+      return { selectedGroupId: undefined, forceUpdate: undefined }
     },
     computed: {
+      currentRoute() {
+        return this.$route.path
+      },
       activeTab() {
-        if (this.$route.path.startsWith('/klassenbuch/archiv')) {
+        if (this.currentRoute.startsWith('/klassenbuch/archiv')) {
           return 3
-        } else if (this.$route.path.startsWith('/klassenbuch/geteilt')) {
+        } else if (this.currentRoute.startsWith('/klassenbuch/geteilt')) {
           return 2
         } else {
           return 1
         }
       },
       activeGroupTab() {
-        if (!this.selectedGroupId && this.$route.path.endsWith('neu')) {
+        if (!this.selectedGroupId && this.currentRoute.endsWith('neu')) {
           return -2
         } else if (!this.selectedGroupId) {
           return -1
@@ -224,12 +227,14 @@
         immediate: true,
         async handler(data) {
           this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
+          this.forceUpdate = Symbol()
         },
       },
     },
 
     async mounted() {
       await this.globalStore.fetchGroups()
+      this.forceUpdate = Symbol()
 
       if (this.showIntro) {
         this.$refs.introPopover.show({
