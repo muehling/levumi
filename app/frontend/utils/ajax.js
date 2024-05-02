@@ -47,6 +47,8 @@ export const ajax = async ({
   }
   if (data) {
     request.data = contentType === 'application/json' ? JSON.stringify(data) : data
+  } else {
+    request.data = {}
   }
 
   return await axiosInstance(request)
