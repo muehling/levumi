@@ -26,7 +26,7 @@
         </p>
       </b-card>
       <div v-else>
-        <p v-if="assessmentsStore.assessments[selectedGroupId]?.length > 1" class="text-left">
+        <p v-if="assessmentsStore.assessments[selectedGroupId]?.length >= 1" class="text-left">
           Bitte wählen Sie einen Test aus der Liste aus. Um später zu einem anderen Test zu
           wechseln, können Sie den Button
           <strong>Zurück zur Testübersicht</strong>

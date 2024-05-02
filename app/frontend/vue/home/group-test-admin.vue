@@ -12,25 +12,23 @@
                 class="test-admin-button"
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
-                @click.stop.prevent="expandArea(area.id)"
-                ><span :class="`${assessmentExists('area', area.id) ? 'font-weight-bold' : ''}`">{{
-                  area.name
-                }}</span></b-button
-              >
+                @click.stop.prevent="expandArea(area.id)">
+                <span :class="`${assessmentExists('area', area.id) ? 'font-weight-bold' : ''}`">
+                  {{ area.name }}
+                </span>
+              </b-button>
             </b-card-header>
             <b-collapse
               :id="`area-select-accordion${area.id}`"
               :visible="selectedAreaId === area.id"
-              role="tabpanel"
-            >
+              role="tabpanel">
               <b-card-body class="pr-0 py-0">
                 <div class="accordion" role="tablist">
                   <b-card
                     v-for="testTypeId in area.test_type_ids"
                     :key="'testtype' + testTypeId + '/' + area.id"
                     no-body
-                    class="mb-0 border-0"
-                  >
+                    class="mb-0 border-0">
                     <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                       <b-button
                         :aria-expanded="selectedTestTypeId === testTypeId ? 'true' : 'false'"
@@ -40,33 +38,30 @@
                         :variant="`${
                           selectedTestTypeId === testTypeId ? 'primary' : 'outline-primary'
                         }`"
-                        @click.stop.prevent="expandTestType(testTypeId)"
-                        ><span
+                        @click.stop.prevent="expandTestType(testTypeId)">
+                        <span
                           :class="`${
                             assessmentExists('testType', testTypeId) ? 'font-weight-bold' : ''
-                          }`"
-                          >{{ testTypes.find(testType => testType.id === testTypeId).name }}</span
-                        ></b-button
-                      >
+                          }`">
+                          {{ testTypes.find(testType => testType.id === testTypeId).name }}
+                        </span>
+                      </b-button>
                     </b-card-header>
                     <b-collapse
                       :id="`testType-select-accordion${testTypeId + '/' + area.id}`"
                       :visible="selectedTestTypeId === testTypeId && selectedAreaId === area.id"
-                      role="tabpanel"
-                    >
+                      role="tabpanel">
                       <b-card-body class="pr-0 py-0">
                         <div class="accordion" role="tablist">
                           <b-card
                             v-for="competence in competencesForTestType(area.id, testTypeId)"
                             :key="competence.id"
                             no-body
-                            class="mb-0 border-0"
-                          >
+                            class="mb-0 border-0">
                             <b-card-header
                               header-tag="header"
                               class="px-1 pb-1 pt-0 border-0"
-                              role="tab"
-                            >
+                              role="tab">
                               <b-button
                                 :aria-expanded="
                                   selectedCompetenceId === competence.id ? 'true' : 'false'
@@ -81,22 +76,21 @@
                                     ? 'primary'
                                     : 'outline-primary'
                                 }`"
-                                @click.stop.prevent="expandCompetence(competence.id)"
-                                ><span
+                                @click.stop.prevent="expandCompetence(competence.id)">
+                                <span
                                   :class="`${
                                     assessmentExists('competence', competence.id)
                                       ? 'font-weight-bold'
                                       : ''
-                                  }`"
-                                  >{{ competence.name }}</span
-                                ></b-button
-                              >
+                                  }`">
+                                  {{ competence.name }}
+                                </span>
+                              </b-button>
                             </b-card-header>
                             <b-collapse
                               :id="`competence-select-accordion${testTypeId + '/' + competence.id}`"
                               :visible="selectedCompetenceId === competence.id"
-                              role="tabpanel"
-                            >
+                              role="tabpanel">
                               <b-card-body class="pr-0 py-0">
                                 <div class="accordion" role="tablist">
                                   <b-card
@@ -106,13 +100,11 @@
                                     )"
                                     :key="testFamily.id"
                                     no-body
-                                    class="mb-0 border-0"
-                                  >
+                                    class="mb-0 border-0">
                                     <b-card-header
                                       header-tag="header"
                                       class="px-1 pb-1 pt-0 border-0"
-                                      role="tab"
-                                    >
+                                      role="tab">
                                       <b-button
                                         :aria-expanded="
                                           selectedTestFamilyId === testFamily.id ? 'true' : 'false'
@@ -127,24 +119,23 @@
                                             ? 'primary'
                                             : 'outline-primary'
                                         }`"
-                                        @click.stop.prevent="expandTestFamily(testFamily.id)"
-                                        ><span
+                                        @click.stop.prevent="expandTestFamily(testFamily.id)">
+                                        <span
                                           :class="`${
                                             assessmentExists('testFamily', testFamily.id)
                                               ? 'font-weight-bold'
                                               : ''
-                                          }`"
-                                          >{{ testFamily.name }}</span
-                                        ></b-button
-                                      >
+                                          }`">
+                                          {{ testFamily.name }}
+                                        </span>
+                                      </b-button>
                                     </b-card-header>
                                     <b-collapse
                                       :id="`testFamily-select-accordion${
                                         testTypeId + '/' + testFamily.id
                                       }`"
                                       :visible="testFamily.id === selectedTestFamilyId"
-                                      role="tabpanel"
-                                    >
+                                      role="tabpanel">
                                       <b-card-body class="pr-0 py-0">
                                         <div class="accordion" role="tablist">
                                           <b-card
@@ -154,28 +145,25 @@
                                             )"
                                             :key="test.id"
                                             no-body
-                                            class="mb-0 border-0"
-                                            ><b-card-header
+                                            class="mb-0 border-0">
+                                            <b-card-header
                                               header-tag="header"
                                               class="px-1 pb-1 pt-0 border-0"
-                                              role="tab"
-                                            >
+                                              role="tab">
                                               <b-button
                                                 class="test-admin-button"
                                                 block
                                                 :variant="`${getTestButtonVariant(test.id)}`"
-                                                @click.stop.prevent="displayTestDetail(test.id)"
-                                                ><span
+                                                @click.stop.prevent="displayTestDetail(test.id)">
+                                                <span
                                                   :class="`${
                                                     assessmentExists('test', test.id)
                                                       ? 'font-weight-bold'
                                                       : ''
-                                                  }`"
-                                                  >{{
-                                                    test.level + getTestButtonSuffix(test.id)
-                                                  }}</span
-                                                ></b-button
-                                              >
+                                                  }`">
+                                                  {{ test.level + getTestButtonSuffix(test.id) }}
+                                                </span>
+                                              </b-button>
                                             </b-card-header>
                                           </b-card>
                                         </div>
@@ -197,7 +185,7 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest" class="col-lg-6">
+        <div v-if="!selectedTest" class="col-lg-6 ml-0 pl-0">
           <p>
             Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
             eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests
@@ -212,7 +200,8 @@
         <div v-else class="d-flex flex-column">
           <div class="test-details overflow-auto">
             <p>
-              Kürzel: <strong>{{ selectedTest?.shorthand }}</strong>
+              Kürzel:
+              <strong>{{ selectedTest?.shorthand }}</strong>
             </p>
             <p v-if="assessmentForSelectedTest?.result_count">
               {{ assessmentForSelectedTest?.result_count }} Messungen für diese Klasse vorhanden
@@ -253,12 +242,12 @@
                   </tr>
                   <tr>
                     <td colspan="2">
-                      <b-button v-b-toggle="'test-items'" variant="outline-secondary"
-                        >Items</b-button
-                      >
-                      <b-collapse id="test-items">{{
-                        Object.values(selectedTest.items).join(', ')
-                      }}</b-collapse>
+                      <b-button v-b-toggle="'test-items'" variant="outline-secondary">
+                        Items
+                      </b-button>
+                      <b-collapse id="test-items">
+                        {{ Object.values(selectedTest.items).join(', ') }}
+                      </b-collapse>
                     </td>
                   </tr>
                 </tbody>
@@ -269,35 +258,36 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             :href="`/results/start_demo/${selectedTestId}`"
             target="_blank"
-            variant="outline-secondary"
-            >Ausprobieren</b-button
-          >
+            variant="outline-secondary">
+            Ausprobieren
+          </b-button>
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             variant="success"
-            @click="createAssessment"
-            >Test für die Klasse aktivieren</b-button
-          >
-          <b-button
-            v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
-            variant="outline-success"
-            @click="jumpToAssessment()"
-            ><i class="fas fa-check mr-2"></i>Zur Diagnostik</b-button
-          >
-          <b-button
-            v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
-            :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
-            @click="deleteAssessment"
-          >
-            <i class="fas fa-trash mr-2"></i>Test löschen
+            @click="createAssessment">
+            Test für die Klasse aktivieren
           </b-button>
-          <b-btn class="ml-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-button
+            v-if="assessmentForSelectedTest"
+            class="mr-2 mt-3"
+            variant="outline-success"
+            @click="jumpToAssessment()">
+            <i class="fas fa-check mr-2"></i>
+            Zur Diagnostik
+          </b-button>
+          <b-button
+            v-if="assessmentForSelectedTest"
+            class="mr-2 mt-3"
+            :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
+            @click="deleteAssessment">
+            <i class="fas fa-trash mr-2"></i>
+            Test löschen
+          </b-button>
+          <b-btn class="mr-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
         </div>
       </div>
     </div>

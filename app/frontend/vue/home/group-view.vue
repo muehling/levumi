@@ -7,16 +7,24 @@
           durchführen oder Einstellungen ändern.
         </p>
       </div>
-      <div v-if="displayTestAdminButton">
-        <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
-          <i class="fas fa-gear mr-1"></i>
-          Test hinzufügen / löschen
-        </b-btn>
-        <b-button variant="outline-secondary" size="sm" class="ml-2" @click="gotoClassbook">
-          <i class="fas fa-book-open mr-1"></i>
-          Zum Klassenbuch
-        </b-button>
-      </div>
+      <b-btn
+        v-if="displayTestAdminButton"
+        variant="outline-secondary"
+        size="sm"
+        class="mr-2 my-3"
+        @click="openTestAdmin">
+        <i class="fas fa-gear mr-2"></i>
+        Test hinzufügen / löschen
+      </b-btn>
+      <b-button
+        v-if="!isTestAdminOpen"
+        variant="outline-secondary"
+        size="sm"
+        class="my-3"
+        @click="gotoClassbook">
+        <i class="fas fa-book-open"></i>
+        Zum Klassenbuch
+      </b-button>
       <b-button
         v-if="isTestDetailsOpen || isTestAdminOpen"
         class="my-3"
