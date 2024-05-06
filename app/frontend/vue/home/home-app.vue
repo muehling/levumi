@@ -102,9 +102,6 @@
           }
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
-            this.assessmentsStore.fetch(data.groupId)
-          } else {
-            this.assessmentsStore.fetch(this.ownActiveGroups[0]?.id)
           }
           await this.$nextTick()
         },
