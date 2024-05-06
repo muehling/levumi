@@ -17,7 +17,7 @@
         Test hinzufügen / löschen
       </b-btn>
       <b-button
-        v-if="!isTestAdminOpen"
+        v-if="displayClassBookButton"
         variant="outline-secondary"
         size="sm"
         class="my-3"
@@ -81,8 +81,12 @@
       annotations: function () {
         return this.assessmentData?.annotations
       },
+      displayClassBookButton() {
+        return !this.isTestAdminOpen && !this.isTestDetailsOpen && this.group.students.length > 0
+      },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
+        // TODO check if still necessary, globalStore.groups shouldn't contain a placeholder anymore
         return this.globalStore.groups.filter(group => group.id)
       },
       group() {

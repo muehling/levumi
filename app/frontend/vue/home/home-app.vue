@@ -116,7 +116,7 @@
             'Hier finden Sie Fördermaterial passend zu den Tests.',
             'Informieren Sie sich über die Tests, die zur Verfügung stehen.',
             'Unter diesem Punkt finden Sie weiteres Material, Hilfestellungen und den Blog mit Neuigkeiten.',
-            'Hier können Sie Ihre Profildaten bearbeiten.',
+            'Hier können Sie Ihre Profildaten und Einstellungen bearbeiten.',
           ],
           targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'],
           onFinish: this.finishIntro,
