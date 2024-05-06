@@ -239,7 +239,6 @@
       if (this.isSingleUser) {
         messages = [
           'Hier sehen Sie Ihre Beispielklasse, die dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen dient. Hier können Sie alle Funktionen von Levumi testen.',
-
           'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
           'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
           'Hier können Sie die Schüler:in speichern.',
@@ -249,8 +248,7 @@
         messages = [
           'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können. Diese Beispielklasse dient dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen. Daher werden keine Daten gespeichert. Für Testungen von realen Schüler*innen legen Sie bitte eine neue Klasse an. ',
           'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
-          'Wenn Sie mit Klassen nicht mehr länger aktiv arbeiten, können Sie sie in ihr Archiv verschieben. Die Klasse wird nicht mehr unter Diagnostik angezeigt. Sie können Klassen auch wieder aus dem Archiv zurückholen. Probieren Sie das gerne mit Ihrer Beispielklasse aus!',
-          'Sie können Ihre Klasse mit anderen Nutzer*innen von Levumi teilen. Sie können dabei festlegen, ob die andere Person auch mit der Klasse arbeiten oder diese nur anschauen darf.',
+          'Hier finden Sie klassenspezifische Einstellungen und Aktionen, wie das Umbennen der Klasse, das Generieren von QR-Codes, das Teilen der Klasse mit Kollegen, oder das Verschieben von Schüler:innen in eine andere Klasse.',
           'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
           'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
           'Hier können Sie die Schüler:in speichern.',
@@ -259,8 +257,6 @@
           '#intro_cb_1',
           '#intro_cb_2',
           '#intro_cb_3',
-          '#intro_cb_4',
-
           '#intro_cb_5',
           '#intro_cb_6',
           '#intro_cb_7',

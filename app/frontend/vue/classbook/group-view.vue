@@ -6,6 +6,7 @@
         <div>
           <b-button
             v-if="displayActionButton"
+            id="intro_cb_3"
             size="sm"
             class="mr-2"
             variant="outline-secondary"

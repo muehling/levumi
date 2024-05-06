@@ -20,12 +20,7 @@
     </div>
     <div v-if="permissions?.archiveGroup" class="d-inline">
       <hr />
-      <b-button
-        id="intro_cb_3"
-        class="my-2 d-inline"
-        size="sm"
-        variant="outline-secondary"
-        @click="moveToArchive">
+      <b-button class="my-2 d-inline" size="sm" variant="outline-secondary" @click="moveToArchive">
         <i class="fas fa-file-export"></i>
         Klasse in Archiv verschieben
       </b-button>
