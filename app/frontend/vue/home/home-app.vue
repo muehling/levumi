@@ -1,6 +1,7 @@
 <template>
   <b-container fluid>
-    <div>
+    <loading-dots v-if="isLoading" :is-loading="true" />
+    <div v-else>
       <b-row>
         <b-col md="12" class="mt-3">
           <b-card v-if="groups.length === 0" bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
@@ -55,13 +56,14 @@
   import { useGlobalStore } from '../../store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
+  import isEmpty from 'lodash/isEmpty'
+  import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
   import Vue from 'vue'
-  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'HomeApp',
-    components: { GroupView, IntroPopover },
+    components: { GroupView, IntroPopover, LoadingDots },
     setup() {
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
@@ -70,6 +72,7 @@
     data() {
       return {
         selectedGroupId: undefined,
+        isLoading: false,
       }
     },
     computed: {
@@ -80,6 +83,7 @@
       },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
+        // TODO check if still necessary, globalStore.groups shouldn't contain a placeholder anymore
         return this.globalStore.groups.filter(group => group.id)
       },
       showIntro() {
@@ -107,7 +111,9 @@
       },
     },
     async mounted() {
+      this.isLoading = true
       await this.globalStore.fetchGroups()
+      this.isLoading = false
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
@@ -127,7 +133,7 @@
         selectedGroupId = parseInt(this.$route.params.groupId, 10)
       } else {
         const firstActiveGroup = this.ownActiveGroups[0]
-        selectedGroupId = firstActiveGroup.id
+        selectedGroupId = firstActiveGroup?.id
       }
       this.selectedGroupId = selectedGroupId
       if (isEmpty(this.assessmentsStore.assessments) && this.currentGroup.key) {
