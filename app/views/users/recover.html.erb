@@ -1,11 +1,9 @@
-<div class='row'>
-  <div class='col-3'>
-  </div>
-  <div class='col-6'>
-    <div class='card card-header mt-5 ml-5 mr-5'>
+<div class="container">
+  <div class='card mt-4'>  
+    <div class='card-header'>
       Passwort wiederherstellen
     </div>
-    <div class='card card-body ml-5 mr-5'>
+    <div class='card card-body'>
       <form id="password-reset">
         <div class='form-group'>
           <input type='email' name='email' class='form-control' id='email-input' placeholder='E-Mail Adresse'>
@@ -17,12 +15,11 @@
         <%= submit_tag 'Überprüfen', class: 'btn btn-primary'%>
       </form>
     </div>
-    <div id='res' class='card-footer ml-5 mr-5'>
+    <div id='res' class='card-footer'>
       Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
     </div>
   </div>
-  <div class='col-3'>
-  </div>
+ 
 </div>
 <script type="module">
 

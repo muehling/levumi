@@ -1,4 +1,5 @@
 class TestsController < ApplicationController
+  skip_before_action :set_login, only: [:get_tests_data]
   before_action :set_test,
                 except: %i[index create get_tests_data get_tests_meta check_upload_version]
   before_action :is_allowed, only: %i[create edit update destroy]

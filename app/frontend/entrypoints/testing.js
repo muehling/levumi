@@ -38,8 +38,8 @@ const init = async () => {
     },
     data: data,
   })
-  $('[data-toggle="popover"]').popover()
 }
+$('[data-toggle="popover"]').popover()
 
 if (element) {
   init()

@@ -26,21 +26,21 @@
     </b-row>
   </div>
   <div id='tc' class='modal fade' tabindex='-1'>
-  <div class='modal-dialog modal-dialog-scrollable modal-lg'>
-    <div class='modal-content'>
-      <div class='modal-header'>
-        <h5 class='modal-title'>Nutzungsbedingungen</h5>
-        <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-          <span aria-hidden='true'>&times;</span>
-        </button>
-      </div>
-      <div class='modal-body'>
-        <%= render 'application/terms_and_conditions' %>
-        <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
+    <div class='modal-dialog modal-dialog-scrollable modal-lg'>
+      <div class='modal-content'>
+        <div class='modal-header'>
+          <h5 class='modal-title'>Nutzungsbedingungen</h5>
+          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+            <span aria-hidden='true'>&times;</span>
+          </button>
+        </div>
+        <div class='modal-body'>
+          <%= render 'application/terms_and_conditions' %>
+          <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
   <!-- Vue-component -->
   <root-app></root-app>

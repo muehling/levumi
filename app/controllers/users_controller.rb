@@ -198,7 +198,7 @@ class UsersController < ApplicationController
       time1 = Time.parse(params[:user][:timestamp])
       time2 = Time.parse(params[:user][:render_timestamp])
       diff = (time1 - time2).abs
-      if diff < 5
+      if diff < 3
         render json: { message: 'Bot detected', error: '3' }, status: :forbidden and return
       end
     end

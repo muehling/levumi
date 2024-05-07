@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     respond_to do |format|
       format.html do
         @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
-        render :start
+        render :start, layout: 'startpage'
       end
     end
   end
@@ -45,15 +45,16 @@ class ApplicationController < ActionController::Base
       session[:user] = u.id
       u.last_login = Time.now
       u.save
-      redirect_to '/diagnostik'
+      head :ok
     else
       if ENV['MAINTENANCE'] == 'true'
         @retry = true
         render :maintenance
       else
-        @retry = true
-        @no_script = true
-        render :start
+        render json: {
+                 message: 'Benutzername und Passwort stimmen nicht überein!'
+               },
+               status: :forbidden
       end
     end
   end
@@ -80,7 +81,7 @@ class ApplicationController < ActionController::Base
   #POST '/logout'
   def logout
     reset_session #Session löschen
-    redirect_to '/?logout=true' # Query param tells the frontend to delete the sessionStorage entry
+    redirect_to '/'
   end
 
   #Zugang für Schülerinnen und Schüler

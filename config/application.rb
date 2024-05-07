@@ -36,6 +36,8 @@ module Levumi2
 
     config.session_store :cookie_store, key: '_levumi2.1_session'
 
+    config.active_model.i18n_customize_full_message = true
+
     config.action_mailer.logger =
       CustomActionMailerLogger.new(Rails.root.join("log/#{Rails.env}.log"))
     config.active_job.log_arguments = false
