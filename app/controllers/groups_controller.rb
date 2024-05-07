@@ -8,7 +8,6 @@ class GroupsController < ApplicationController
     @data = {
       'groups': @login.get_classbook_info,
       'single': @login.account_type == 2,
-      'login': @login,
       'share_keys': shares_object
     }
     render json: @data

@@ -35,7 +35,11 @@
             <span class="d-none d-lg-inline ml-2">Speichern</span>
           </span>
         </b-button>
-        <b-button variant="outline-secondary" size="sm">
+        <b-button
+          variant="outline-secondary"
+          size="sm"
+          :disabled="label === group.label"
+          @click="handleCancel">
           <i class="fas fa-times" />
           <span class="d-none d-lg-inline ml-2">Abbrechen</span>
         </b-button>
@@ -74,6 +78,9 @@
       },
     },
     methods: {
+      handleCancel() {
+        this.label = this.group.label
+      },
       async handleSubmit(e) {
         e.preventDefault()
         e.stopPropagation()
@@ -87,11 +94,11 @@
               auth_token: this.generate_token(),
             },
           }
-          res = await ajax({ url: '/groups', method: 'post', data: data })
+          res = await ajax({ url: '/groups', method: 'POST', data: data })
         } else {
           res = await ajax({
             url: '/groups/' + this.group.id,
-            method: 'put',
+            method: 'PUT',
             data: { group: { label: this.label } },
           })
         }
