@@ -7,56 +7,55 @@
     hide-footer
     lazy
     :visible="!!student"
-    @hidden="hideModal"
-  >
+    @hidden="hideModal">
     <p
       class="mt-5 mb-5 text-center"
-      :style="'font-size:' + fontSize * 3 + 'em;font-family:\'' + fontFamily + '\''"
-    >
+      :style="'font-size:' + fontSize * 3 + 'em;font-family:\'' + fontFamily + '\''">
       Das ist ein Beispieltext!
     </p>
     <b-button-toolbar justify>
       <b-button-group size="sm">
-        <b-btn variant="outline-primary" :pressed="fontSize == 1" @click="fontSize = 1"
-          >Normal
+        <b-btn variant="outline-primary" :pressed="fontSize == 1" @click="fontSize = 1">
+          Normal
         </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize == 2" @click="fontSize = 2"
-          >Vergrößert
+        <b-btn variant="outline-primary" :pressed="fontSize == 2" @click="fontSize = 2">
+          Vergrößert
         </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize == 3" @click="fontSize = 3"
-          >Stark vergrößert</b-btn
-        >
+        <b-btn variant="outline-primary" :pressed="fontSize == 3" @click="fontSize = 3">
+          Stark vergrößert
+        </b-btn>
       </b-button-group>
       <b-button-group size="sm">
         <b-btn
           variant="outline-primary"
           :pressed="fontFamily == 'serif'"
-          @click="fontFamily = 'serif'"
-          >Rechnerschrift</b-btn
-        >
+          @click="fontFamily = 'serif'">
+          Rechnerschrift
+        </b-btn>
         <b-btn
           variant="outline-primary"
           :pressed="fontFamily == 'Fibel Nord'"
-          @click="fontFamily = 'Fibel Nord'"
-          >Fibel Nord</b-btn
-        >
+          @click="fontFamily = 'Fibel Nord'">
+          Fibel Nord
+        </b-btn>
         <b-btn
           variant="outline-primary"
           :pressed="fontFamily == 'Grundschrift'"
-          @click="fontFamily = 'Grundschrift'"
-          >Grundschulschrift</b-btn
-        >
+          @click="fontFamily = 'Grundschrift'">
+          Grundschulschrift
+        </b-btn>
         <b-btn
           variant="outline-primary"
           :pressed="fontFamily == 'Grundschrift Grundlinie'"
-          @click="fontFamily = 'Grundschrift Grundlinie'"
-          >Grundschulschrift Grundlinie</b-btn
-        >
+          @click="fontFamily = 'Grundschrift Grundlinie'">
+          Grundschulschrift Grundlinie
+        </b-btn>
       </b-button-group>
     </b-button-toolbar>
 
     <b-btn class="mt-3" variant="outline-success" @click="changeFontSettings">
-      <i class="fas fa-check"></i> Speichern
+      <i class="fas fa-check"></i>
+      Speichern
     </b-btn>
   </b-modal>
 </template>
@@ -104,11 +103,13 @@
           data,
         })
         if (res.status === 200) {
-          const data = res.data
-          let index = this.globalStore.studentsInGroups[this.student.group_id].findIndex(
-            s => s.id === this.student.id
-          )
-          this.$emit('update', { object: data, index })
+          // const data = res.data
+          //  let index = this.globalStore.studentsInGroups[this.student.group_id].findIndex(
+          //    s => s.id === this.student.id
+          //  )
+          //  console.log('wtf', data, index)
+
+          this.$emit('update', { ...res.data })
           this.hideModal()
         }
       },

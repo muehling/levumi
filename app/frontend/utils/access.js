@@ -1,7 +1,7 @@
 import { useGlobalStore } from 'src/store/store'
 import { isSingleUser } from './user'
 
-export const access = groupShare => {
+export const access = (groupShare = {}) => {
   const gs = useGlobalStore()
 
   if (gs.login.is_masquerading) {
@@ -10,7 +10,7 @@ export const access = groupShare => {
 
   let decryptNames = true
 
-  let createGroup = false
+  let createGroup = !isSingleUser()
   let updateGroup = !groupShare.read_only
   let archiveGroup = groupShare.owner && !isSingleUser()
   let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only

@@ -56,7 +56,6 @@
   import { useGlobalStore } from '../../store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
-  import isEmpty from 'lodash/isEmpty'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
   import Vue from 'vue'

@@ -1,18 +1,14 @@
 <template>
-  <!-- Eine Zeile der Schülerübersicht -->
   <tr id="intro_cb_5">
     <td>
-      <!-- In-Place Editing durch "editMode", "empty" zeigt letzte Zeile an, die für neu anlegen verwendet wird -->
       <div v-if="!empty && !editMode">
         {{ student.name }}
       </div>
       <div v-else-if="editMode">
-        <!-- Form anzeigen -->
         <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
       <div v-else class="d-inline">
-        <!-- Anlegen Button anzeigen -->
         <b-btn variant="outline-secondary" class="text-nowrap" size="sm" @click="editMode = true">
           <i class="fas fa-user-plus"></i>
           Anlegen
@@ -110,19 +106,19 @@
       </div>
       <div v-else>
         <span>
-          {{ student.tags.join(', ') }}
+          {{ studentTags }}
         </span>
         <span v-if="student.tags?.length == 0 && !empty" class="text-muted">nichts erfasst</span>
       </div>
     </td>
-
+    <td>{{ empty ? '' : fontSettingsText }}</td>
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-btn
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="fontSettings"
+            v-b-popover.hover.topright="fontSettingsContextHelp"
             class="mr-1"
             variant="outline-secondary"
             size="sm"
@@ -204,6 +200,7 @@
   import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
+  import isArray from 'lodash/isArray'
   import isEmpty from 'lodash/isEmpty'
 
   export default {
@@ -266,25 +263,35 @@
       permissions() {
         return access(this.group).classbook
       },
-      fontSettings() {
+      fontSettingsText() {
         let settingsText = 'Standard'
         if (this.student.settings) {
           switch (this.student.settings.font_size) {
             case '1':
-              settingsText = `${this.student.settings.font_family}, normale Größe`
+              settingsText = `${decodeURIComponent(
+                this.student.settings.font_family
+              )}, normale Größe`
               break
             case '2':
-              settingsText = `${this.student.settings.font_family}, vergrößert`
+              settingsText = `${decodeURIComponent(this.student.settings.font_family)}, vergrößert`
               break
             case '3':
-              settingsText = `${this.student.settings.font_family}, stark vergrößert`
+              settingsText = `${decodeURIComponent(
+                this.student.settings.font_family
+              )}, stark vergrößert`
               break
           }
         }
+        return settingsText
+      },
+      fontSettingsContextHelp() {
         return {
           html: true,
-          content: `<strong>Schrifteinstellungen</strong><br/>${settingsText}`,
+          content: `<strong>Schrifteinstellungen</strong><br/>${this.fontSettingsText}`,
         }
+      },
+      studentTags() {
+        return isArray(this.student.tags) ? this.student.tags.join(', ') : ''
       },
     },
     beforeCreate() {

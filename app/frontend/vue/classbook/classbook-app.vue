@@ -16,7 +16,7 @@
                   <b-tabs :key="ownActiveGroups.length" pills card>
                     <!-- Neue Klasse anlegen -->
                     <b-tab
-                      v-if="!isSingleUser"
+                      v-if="permissions.createGroup"
                       key="new_group"
                       :active="activeGroupTab === -2"
                       lazy
@@ -125,6 +125,7 @@
 </template>
 
 <script>
+  import { access } from 'src/utils/access'
   import { ajax } from '../../utils/ajax'
   import { isSingleUser } from 'src/utils/user'
   import { useGlobalStore } from '../../store/store'
@@ -216,6 +217,9 @@
 
       hasNewShares() {
         return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+      },
+      permissions() {
+        return access().classbook
       },
       showIntro: function () {
         return this.globalStore.login.intro_state < 5

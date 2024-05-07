@@ -1,6 +1,12 @@
 <template>
   <div class="mt-3">
-    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
+    <b-card
+      v-if="students.length === 0 && group.read_only"
+      bg-variant="white"
+      class="col-lg-8 col-xl-6 mt-3">
+      Keine Schüler:innen vorhanden!
+    </b-card>
+    <table v-else class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
           <th>Name</th>
@@ -9,6 +15,7 @@
           <th>Geburtsdatum</th>
           <th>Förderbedarf</th>
           <th>Weitere Merkmale</th>
+          <th>Schriftart</th>
           <th>Aktionen</th>
         </tr>
       </thead>
