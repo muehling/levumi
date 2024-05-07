@@ -150,7 +150,10 @@ class UsersController < ApplicationController
   #DEL /users/:id
   def destroy
     if !@login.has_capability?('user')
-      head :forbidden
+      render json: {
+               message: 'users_controller::destroy: insufficient permissions'
+             },
+             status: :forbidden
       return
     end
 

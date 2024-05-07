@@ -7,13 +7,24 @@ class AnnotationsController < ApplicationController
         a.annotations.create(
           params
             .require(:annotation)
-            .permit(:start, :end, :annotation_category_id, :trend_threshold, :group_id, :student_id, :view)
+            .permit(
+              :start,
+              :end,
+              :annotation_category_id,
+              :trend_threshold,
+              :group_id,
+              :student_id,
+              :view
+            )
         )
 
       #user_id und group_id werden nicht auf "Stimmigkeit" geprüft, ist aber wg. Bindung an Assessment unkritisch. Annotation wird ggf. nur nicht angezeigt werden.
       render json: annotation
     else
-      head 403
+      render json: {
+               message: "annotations_controller::create: annotation couldn't be created"
+             },
+             status: :forbidden
     end
   end
 
@@ -26,7 +37,10 @@ class AnnotationsController < ApplicationController
       a.destroy
       head :ok
     else
-      head 403
+      render json: {
+               message: "annotations_controller::destroy: annotation couldn't be deleted"
+             },
+             status: :forbidden
     end
   end
 end

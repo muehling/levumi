@@ -5,7 +5,10 @@ class TestFamiliesController < ApplicationController
       test_family.destroy
       head :ok
     else
-      head 403
+      render json: {
+               message: 'test_families_controller::destroy_safe: test_family not found'
+             },
+             status: :not_found
     end
   end
 
