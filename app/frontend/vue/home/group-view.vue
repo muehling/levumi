@@ -137,7 +137,13 @@
     },
 
     async mounted() {
-      this.update()
+      const groupId = this.group.id
+
+      this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
+      this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
+
+      await this.assessmentsStore.fetch(groupId)
+      await this.testsStore.fetchUsedTestsForGroup(groupId)
     },
     methods: {
       gotoClassbook() {
@@ -146,18 +152,6 @@
         } else {
           this.$router.push(`/klassenbuch/geteilte_klassen/${this.group.id}`)
         }
-      },
-      async update() {
-        const groupId = this.$route.params.groupId
-        if (!groupId) {
-          return
-        }
-
-        this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
-        this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
-
-        await this.assessmentsStore.fetch(groupId)
-        await this.testsStore.fetchUsedTestsForGroup(groupId)
       },
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
