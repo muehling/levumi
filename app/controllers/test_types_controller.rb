@@ -9,7 +9,10 @@ class TestTypesController < ApplicationController
     if @type.save
       render json: @type, only: %i[id name description]
     else
-      head :unprocessable_entity
+      render json: {
+               message: 'test_types_controller::create: test_type could not be created'
+             },
+             status: :unprocessable_entity
     end
   end
 
@@ -19,7 +22,10 @@ class TestTypesController < ApplicationController
       TestType.destroy(params[:id])
       head :ok
     else
-      head :unprocessable_entity
+      render json: {
+               message: 'test_types_controller::destroy: test_type could not be found'
+             },
+             status: :not_found
     end
   end
 

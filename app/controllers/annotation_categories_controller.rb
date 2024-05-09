@@ -9,7 +9,11 @@ class AnnotationCategoriesController < ApplicationController
     if @annotation_category.save
       render json: @annotation_category, only: %i[id name]
     else
-      head :unprocessable_entity
+      render json: {
+               message:
+                 "annotation_categories_controller::create: annotation_categorie couldn't be created"
+             },
+             status: :unprocessable_entity
     end
   end
 
@@ -19,7 +23,11 @@ class AnnotationCategoriesController < ApplicationController
       AnnotationCategory.destroy(params[:id])
       head :ok
     else
-      head :unprocessable_entity
+      render json: {
+               message:
+                 "annotation_categories_controller::destroy: annotation_category couldn't be found"
+             },
+             status: :not_found
     end
   end
 

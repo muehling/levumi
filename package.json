@@ -21,7 +21,6 @@
     "jszip": "^3.10.1",
     "lodash": "^4.17.21",
     "mobile-device-detect": "^0.4.3",
-    "module": "^1.2.5",
     "pinia": "^2.0.22",
     "popper.js": "^1.15.0",
     "qr-code-styling": "^1.6.0-rc.1",
@@ -48,10 +47,6 @@
     "vite-plugin-vue2": "^2.0.2"
   },
   "resolutions": {
-    "concat-stream": "^1.5.2",
-    "glob-parent": "^5.1.2",
-    "yargs-parser": "^5.0.1",
-    "braces": "^2.3.1",
     "postcss": "^8.4.31"
   }
 }
