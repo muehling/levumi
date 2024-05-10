@@ -697,15 +697,13 @@
         const results = this.results.filter(result => result?.student_id === studentId)
 
         return this.weeks.map(week => {
-          const currentResult = results.find(r => r?.test_week === week)?.views?.[
-            this.viewConfig.uses_data_from ? this.viewConfig.uses_data_from : this.viewConfig.key
-          ]
+          const currentResult = results.find(r => r?.test_week === week)
 
           // if a week has no results add a point with an empty y value for this week
           if (currentResult === null || currentResult === undefined) {
             return { x: formatDate ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate, week)
+          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
           point.y = point.y?.toFixed(2)
           if (point.y === undefined) {
             point.y = null
@@ -715,22 +713,21 @@
           return point
         })
       },
-      XYFromResult(result, seriesKey, formatDate, week) {
-        //todo this method is rather error-prone, depending on the input data
+      XYFromResult(result, seriesKey, formatDate) {
         if (result === null || result === undefined) {
           return undefined
         }
         let yVal
+        // if `uses_data_from` is set use that as the key to retrieve the data series
+        const viewKey = this.viewConfig.uses_data_from ? this.viewConfig.uses_data_from : this.viewConfig.key
         if (seriesKey) {
-          yVal = result?.[seriesKey]
+          yVal = result?.views[viewKey][seriesKey]
         } else {
-          yVal = result
+          yVal = result?.views[viewKey]
         }
-        if (yVal === undefined) {
-          yVal = null
-        }
+        const w = result.test_week
         return {
-          x: formatDate ? printDate(week) : week ?? null,
+          x: formatDate ? printDate(w) : w ?? null,
           y: yVal,
         }
       },
@@ -928,7 +925,7 @@
           // if no student is selected then calculate the average over the results of the first week
           startY =
             startWeekResults.reduce((acc, res) => {
-              return acc + this.XYFromResult(res, null)?.y || 0
+              return acc + this.XYFromResult(res, null, false)?.y || 0
             }, 0) / startWeekResults.length
         } else {
           // if a student IS selected take their first result as the starting point
@@ -944,7 +941,7 @@
             { test_week: new Date(Date.UTC(90000, 12, 24)) }
           )
           startWeek = firstResult.test_week
-          startY = this.XYFromResult(firstResult, null)?.y
+          startY = this.XYFromResult(firstResult, null, false)?.y
         }
         const deviate = this.deviationIsEnabled
 
