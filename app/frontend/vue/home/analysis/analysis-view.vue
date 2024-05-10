@@ -8,9 +8,9 @@
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
           :disabled="!has_group_views"
-          @click="setStudentAndUpdate(-1)"
-          >Ganze Klasse</b-button
-        >
+          @click="setStudentAndUpdate(-1)">
+          Ganze Klasse
+        </b-button>
         <b-dropdown
           right
           :text="
@@ -18,34 +18,31 @@
           "
           :variant="selectedStudentId !== -1 ? 'primary' : 'outline-primary'"
           :disabled="!has_student_views"
-          size="sm"
-        >
+          size="sm">
           <b-dropdown-item
             v-for="s in studentsWithResults"
             :key="s.id"
             class="text-small"
-            @click="setStudentAndUpdate(s.id)"
-          >
+            @click="setStudentAndUpdate(s.id)">
             {{ s.name }}
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
       <div v-if="isSupportFilterVisible">
-        <label class="text-small">Filtern nach Förderbedarf: </label>
+        <label class="text-small">Filtern nach Förderbedarf:</label>
         <b-dropdown
           :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
           variant="primary"
           class="ml-2 text-right"
           right
-          size="sm"
-        >
+          size="sm">
           <b-dropdown-item
             v-for="need in supportNeeds"
             :key="need.id"
             class="text-small"
-            @click="selectedSupportNeedFilter = need.id"
-            >{{ need.name }}</b-dropdown-item
-          >
+            @click="selectedSupportNeedFilter = need.id">
+            {{ need.name }}
+          </b-dropdown-item>
         </b-dropdown>
       </div>
     </b-row>
@@ -58,8 +55,7 @@
           size="sm"
           variant="outline-secondary"
           :pressed="selectedView === view.key"
-          @click="setSelectedView(view.key)"
-        >
+          @click="setSelectedView(view.key)">
           {{ view.label }}
         </b-button>
       </b-button-group>
@@ -74,12 +70,11 @@
           height="500px"
           width="100%"
           :options="chartOptions"
-          :series="chartSeries"
-        />
+          :series="chartSeries" />
         <div v-else class="m-4 p-4" style="height: 500px">
-          <b-alert class="m-4 p-4" variant="danger" show
-            >Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!</b-alert
-          >
+          <b-alert class="m-4 p-4" variant="danger" show>
+            Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
+          </b-alert>
         </div>
       </b-col>
     </b-row>
@@ -94,14 +89,12 @@
               aria-controls="annotation_collapse"
               size="sm"
               :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
-              @click="toggleCollapse('annotation_collapse')"
-            >
+              @click="toggleCollapse('annotation_collapse')">
               Anmerkungen
               <i
                 :class="`when-closed fas ${
                   annotationControlVisible ? 'fa-caret-down' : 'fa-caret-up'
-                }`"
-              ></i>
+                }`"></i>
             </b-button>
             <b-button
               v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
@@ -111,12 +104,12 @@
               aria-controls="target_collapse"
               size="sm"
               :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
-              @click="toggleCollapse('target_collapse')"
-            >
+              @click="toggleCollapse('target_collapse')">
               Ziele und Trends
               <i
-                :class="`when-closed fas ${targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'}`"
-              ></i>
+                :class="`when-closed fas ${
+                  targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'
+                }`"></i>
             </b-button>
             <b-button class="ml-2" size="sm" variant="outline-primary" @click="exportGraph">
               <i class="fas fa-file-pdf"></i>
@@ -134,8 +127,7 @@
               :selected-view-key="selectedView"
               :annotation-control-visible.sync="annotationControlVisible"
               :trend-is-enabled="trendIsEnabled"
-              @annotation-removed="removeAnnotation"
-            />
+              @annotation-removed="removeAnnotation" />
             <TargetControls
               :target-val="targetVal"
               :deviation-val="deviationVal"
@@ -151,8 +143,7 @@
               :target-control-visible.sync="targetControlVisible"
               :target-valid="targetValid"
               :test="test"
-              :group="group"
-            ></TargetControls>
+              :group="group"></TargetControls>
           </b-col>
         </b-row>
       </b-col>
@@ -163,15 +154,13 @@
         <b-tab
           v-if="isGroupSupportOverviewVisible"
           title="Übersicht Förderbedarf ganze Klasse"
-          lazy
-        >
+          lazy>
           <support-group-overview :group="group" :test="test.id" />
         </b-tab>
         <b-tab
           v-if="hasItemDictionary && isGroupQualitativeOverviewVisible"
           title="Qualitative Auswertung Förderbedarf ganze Klasse"
-          lazy
-        >
+          lazy>
           <support-group-qualitative :group="group" :test="test.id" />
         </b-tab>
       </b-tabs>
@@ -205,8 +194,7 @@
             small
             striped
             hover
-            :items="simpleTableData"
-          ></b-table-lite>
+            :items="simpleTableData"></b-table-lite>
         </b-tab>
       </b-tabs>
     </b-row>
@@ -719,7 +707,9 @@
         }
         let yVal
         // if `uses_data_from` is set use that as the key to retrieve the data series
-        const viewKey = this.viewConfig.uses_data_from ? this.viewConfig.uses_data_from : this.viewConfig.key
+        const viewKey = this.viewConfig.uses_data_from
+          ? this.viewConfig.uses_data_from
+          : this.viewConfig.key
         if (seriesKey) {
           yVal = result?.views[viewKey][seriesKey]
         } else {
