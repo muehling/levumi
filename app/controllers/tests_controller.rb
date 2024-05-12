@@ -79,6 +79,11 @@ class TestsController < ApplicationController
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
   end
 
+  #Spezialfall: für nur einen Test
+  def get_test_info_attachments
+    @data = @test
+  end
+
   def get_items
     if @test
       render json: @test.items

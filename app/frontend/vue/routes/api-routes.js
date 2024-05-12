@@ -36,6 +36,7 @@ export default {
     testMetaData: { url: '/tests_meta' },
     checkUploadVersion: { url: 'check_upload_version', method: 'POST' },
     items: id => ({ url: `/tests/items/${id}` }),
+    info_attachments: id => ({ url: `/tests/info_attachments/${id}` }),
   },
   assessments: {
     excludeStudent: (groupId, testId, studentId) => ({

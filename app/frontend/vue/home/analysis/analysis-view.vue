@@ -257,7 +257,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
-        testData: computed(() => this.testData),
+        info_attachments: computed(() => this.info_attachments),
         weeks: computed(() => this.weeks),
       }
     },
@@ -293,6 +293,7 @@
         targetAdded: false,
         targetControlVisible: false,
         targetVal: null,
+        info_attachments: undefined,
       }
     },
     computed: {
@@ -357,11 +358,7 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        if (this.selectedView) {
-          return this.configuration.views.find(view => view.key === this.selectedView)
-        } else {
-          return this.configuration.views[0]
-        }
+        return this.currentViewConfig()
       },
       nivConfig() {
         return this.viewConfig.niv_config
@@ -519,21 +516,6 @@
         const val = this.targetStoredInclGroup?.value
         return val === undefined ? null : val
       },
-      testData() {
-        //TODO this is the only used for the attachedLevelImages. Might be better
-        //TODO to include the information in this.test to save an api call.
-        return this.testsStore.tests
-          .find(area => area.id === this.test.area_id)
-          .competences?.find(competence => competence.id === this.test.competence_id)
-          .test_families?.find(family => family.id === this.test.test_family_id)
-          .tests?.find(test => test.id === this.test.id)
-      },
-      attachedLevelImages() {
-        return this.testData?.info_attachments.filter(
-          attachment =>
-            attachment.content_type.startsWith('image') && attachment.filename.startsWith('Niveau')
-        )
-      },
       maxYValue() {
         return Math.max(this.maxY, this.targetVal)
       },
@@ -558,25 +540,33 @@
         this.updateView(false)
       },
     },
-    async created() {
-      //TODO testsStore.fetch is quite expensive and only used once for some very particular information, see computed testData
-      //TODO should be replaced with a different api endpoint
-      if (!this.testsStore.tests.length) {
-        await this.testsStore.fetch()
-      }
-    },
-    mounted() {
-      this.loadStudentTargets()
-      this.setStudentAndUpdate(
-        this.has_group_views
-          ? -1
-          : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
-          ? this.studentsWithResults[0]?.id || -1
-          : -1
+    async mounted() {
+      await this.loadStudentTargets()
+      await this.setStudentAndUpdate(
+          this.has_group_views
+              ? -1
+              : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
+                  ? this.studentsWithResults[0]?.id || -1
+                  : -1
       )
     },
     methods: {
-      setSelectedView(key) {
+      currentViewConfig(key = this.selectedView) {
+        if (key) {
+          return this.configuration.views.find(view => view.key === key)
+        } else {
+          return this.configuration.views[0]
+        }
+      },
+
+      async setSelectedView(key) {
+        // if the new view is a niveau overview view make sure the info_attachments are loaded
+        if (this.currentViewConfig(key).niv_config && this.info_attachments === undefined) {
+          // load info_attachments for use in the niveau overview view
+          const data = await ajax({ ...apiRoutes.tests.info_attachments(this.test.id) })
+          const attachments = data.data.info_attachments
+          this.info_attachments = attachments
+        }
         this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
@@ -721,20 +711,20 @@
           y: yVal,
         }
       },
-      setStudentAndUpdate(studentId) {
+      async setStudentAndUpdate(studentId) {
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
         // some combinations of views/selectedStudent/presence of results yield no views
         if (this.viewsWithGroupAndStudent.length) {
-          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+          await this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
         }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
           animateChange = true
         }
-        this.updateView(animateChange)
+        await this.updateView(animateChange)
       },
 
       async updateView(animate) {
