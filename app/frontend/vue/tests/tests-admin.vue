@@ -1,10 +1,10 @@
 <template>
   <b-container v-cloak fluid>
-    <b-row class="mt-3"> </b-row>
+    <b-row class="mt-3"></b-row>
     <b-tabs card pills>
       <b-tab title="Testübersicht"></b-tab>
       <template #tabs-end>
-        <b-nav-item role="presentation" @click="createTest"> Neuer Test </b-nav-item>
+        <b-nav-item role="presentation" @click="createTest">Neuer Test</b-nav-item>
       </template>
     </b-tabs>
     <tests-list :fetch-trigger="fetchTrigger" />
