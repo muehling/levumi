@@ -22,6 +22,9 @@
       <template #cell(test_type_id)="data">
         <div class="">{{ getTestTypeLabel(data.item.test_type_id) }}</div>
       </template>
+      <template #cell(updated_by)="data">
+        <span>{{ data.item.updated_by || '--' }}</span>
+      </template>
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
@@ -106,6 +109,7 @@
           !this.showExport && { key: 'version', label: 'Version' },
           !this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'updated_at', label: 'Letzes Update' },
+          { key: 'updated_by', label: 'Update durch' },
           { key: 'actions', label: 'Aktionen' },
         ]
       },

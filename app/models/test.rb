@@ -161,7 +161,7 @@ class Test < ApplicationRecord
   end
 
   #Test Objekt als Import aus ZIP-Datei erzeugen
-  def self.import(file, archive, update_material)
+  def self.import(file, archive, update_material, login)
     #Infos aus ZIP lesen
     begin
       zip = Zip::File.open(file)
@@ -195,6 +195,10 @@ class Test < ApplicationRecord
       family = competence.test_families.find_by_name(vals['family'])
       family = competence.test_families.build(name: vals['family']) if family.nil?
 
+      test_type = TestType.find_by_name(vals['test_type']) if (vals['test_type'])
+      test_type = TestType.first if test_type.nil?
+      vals['test_type_id'] = test_type.id
+
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
         #TODO: Parameter von configuration einschränken? Ggf. auch als setter?
@@ -206,7 +210,8 @@ class Test < ApplicationRecord
               'level',
               'shorthand',
               'student_test',
-              'configuration'
+              'configuration',
+              'test_type_id'
             )
           )
       else
@@ -218,11 +223,14 @@ class Test < ApplicationRecord
             'level',
             'shorthand',
             'student_test',
-            'configuration'
+            'configuration',
+            'test_type_id'
           )
         )
       end
       test.items = vals['items']
+
+      test.updated_by = login.email
 
       if !test.nil? && test.save
         # create new assessments in case an old test was archived
@@ -303,6 +311,10 @@ class Test < ApplicationRecord
             )
           end
 
+        pattern = /test(?=_upload\b)/
+        if (!!(login.capabilities =~ pattern))
+          UserMailer.with(shorthand: test.shorthand, updater: login.email).test_update.deliver_later
+        end
         return test
       end
     end

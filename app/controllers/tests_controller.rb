@@ -41,8 +41,12 @@ class TestsController < ApplicationController
       f = params[:test][:file]
       @import_failure =
         !f.present? ||
-          Test.import(f.tempfile, !params.has_key?(:update_test), params.has_key?(:update_material))
-            .nil?
+          Test.import(
+            f.tempfile,
+            !params.has_key?(:update_test),
+            params.has_key?(:update_material),
+            @login
+          ).nil?
       if @import_failure
         render json: {
                  message: 'tests_controller::create: test could not be imported from zip'
