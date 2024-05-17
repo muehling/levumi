@@ -235,6 +235,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_091309) do
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "test_type_id"
     t.string "updated_by"
+    t.string "responsible"
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end

@@ -166,10 +166,13 @@ class Test < ApplicationRecord
     begin
       zip = Zip::File.open(file)
     rescue StandardError
-      return nil
+      return 'Datei konnte nicht geöffnet werden!'
     end
     f = zip.glob('test.json').first
-    unless f.nil?
+
+    if f.nil?
+      return 'Keine Datei hochgeladen!'
+    else
       #Benötigte Strukturen finden / erzeugen
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
 
@@ -183,7 +186,7 @@ class Test < ApplicationRecord
           assessments_for_old_test = Assessment.where(test_id: old_test.id)
         elsif old_test.version > vals['version']
           #Ältere Version darf neuere nicht ersetzen.
-          return nil
+          return 'Die hochgeladene Version ist älter als die vorhandene!'
         end
       end
 
@@ -211,7 +214,8 @@ class Test < ApplicationRecord
               'shorthand',
               'student_test',
               'configuration',
-              'test_type_id'
+              'test_type_id',
+              'responsible'
             )
           )
       else
@@ -224,7 +228,8 @@ class Test < ApplicationRecord
             'shorthand',
             'student_test',
             'configuration',
-            'test_type_id'
+            'test_type_id',
+            'responsible'
           )
         )
       end
@@ -315,10 +320,9 @@ class Test < ApplicationRecord
         if (!!(login.capabilities =~ pattern))
           UserMailer.with(shorthand: test.shorthand, updater: login.email).test_update.deliver_later
         end
-        return test
+        return '' # no error message -> everything cool
       end
     end
-    return nil
   end
 
   #Gibt es (exportierbare) Ergebnisse?

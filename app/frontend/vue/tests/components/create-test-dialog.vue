@@ -17,11 +17,11 @@
           accept=".zip"
           :state="Boolean(file)"
           placeholder="Datei wählen oder hier ablegen..."
-          drop-placeholder="Datei hier ablegen..."
-        ></b-form-file>
-        <b-btn class="mt-3" variant="outline-primary" @click="checkUploadVersion"
-          ><i class="fas fa-file-upload mr-2"></i>Datei überprüfen</b-btn
-        >
+          drop-placeholder="Datei hier ablegen..."></b-form-file>
+        <b-btn class="mt-3" variant="outline-primary" @click="checkUploadVersion">
+          <i class="fas fa-file-upload mr-2"></i>
+          Datei überprüfen
+        </b-btn>
       </div>
       <div v-else-if="uploadStep === 2" class="card card-body">
         <p><strong>Folgende Informationen wurden in der hochgeladenen Datei gefunden:</strong></p>
@@ -50,6 +50,10 @@
           <div class="col-4 p-0"><strong>Version:</strong></div>
           <div class="col-8">{{ testInfo.version }}</div>
         </div>
+        <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Verantwortlich:</strong></div>
+          <div class="col-8">{{ testInfo.responsible }}</div>
+        </div>
         <div class="row pl-3 pt-2">
           <div class="col p-0">
             <i>{{ versionHint }}</i>
@@ -57,15 +61,21 @@
         </div>
 
         <b-form-checkbox v-if="testInfo.isNewVersion" v-model="keepMaterials">
-          Existierendes Fördermaterial beibehalten</b-form-checkbox
-        >
+          Existierendes Fördermaterial beibehalten
+        </b-form-checkbox>
         <div class="d-flex justify-content-end">
-          <b-btn class="mt-3" variant="outline-danger" @click="_close"
-            ><i class="fas fa-cancel mr-2"></i>Abbrechen</b-btn
-          >
-          <b-btn class="mt-3 ml-3" variant="outline-primary" @click="importTest"
-            ><i class="fas fa-file-upload mr-2"></i>Test hochladen</b-btn
-          >
+          <b-btn class="mt-3" variant="outline-danger" @click="_close">
+            <i class="fas fa-cancel mr-2"></i>
+            Abbrechen
+          </b-btn>
+          <b-btn
+            class="mt-3 ml-3"
+            variant="outline-primary"
+            :disabled="testInfo.isDisallowedVersion"
+            @click="importTest">
+            <i class="fas fa-file-upload mr-2"></i>
+            Test hochladen
+          </b-btn>
         </div>
       </div>
     </b-modal>
@@ -141,6 +151,10 @@
           return
         }
 
+        if (!contentObj.responsible) {
+          this.globalStore.setErrorMessage('Keine Kontakt-Emailadresse in test.json enthalten!')
+          return
+        }
         if (!contentObj.version || !contentObj.shorthand) {
           this.globalStore.setErrorMessage(
             'Version oder Kurzbezeichnung sind nicht in test.json enthalten!'
@@ -161,6 +175,12 @@
             this.globalStore.setErrorMessage('Ein unbekannter Fehler ist aufgetreten!')
             return
         }
+        if (res.data.is_disallowed_version) {
+          this.globalStore.setErrorMessage(
+            'Die hochzuladende Version ist älter die vorhandene Version!'
+          )
+          return
+        }
 
         const data = res.data
         this.testInfo = {
@@ -172,6 +192,7 @@
           shorthand: contentObj.shorthand,
           testFamily: contentObj.family,
           version: contentObj.version,
+          responsible: contentObj.responsible,
         }
 
         this.uploadStep = 2
@@ -201,6 +222,9 @@
             break
           case 406:
             this.globalStore.setErrorMessage('Beim Import ist ein Fehler aufgetreten!')
+            break
+          case 422:
+            this.globalStore.setErrorMessage(res.data.message)
             break
           default:
             this.globalStore.setErrorMessage('Ein unbekannter Fehler ist aufgetreten!')

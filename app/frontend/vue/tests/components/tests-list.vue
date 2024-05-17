@@ -110,6 +110,7 @@
           !this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'updated_at', label: 'Letzes Update' },
           { key: 'updated_by', label: 'Update durch' },
+          { key: 'responsible', label: 'Kontakt' },
           { key: 'actions', label: 'Aktionen' },
         ]
       },

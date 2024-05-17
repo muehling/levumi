@@ -101,10 +101,12 @@ Außerdem kann neben den oben beschriebenen Javascript Funktionen auf die folgen
 In der test.json werden die Metadaten des Tests definiert. Folgende Felder müssen enthalten sein:
 
 - `area`: Text, Bereich des Tests, z. B. "Mathematik Grundlagen"
+- `test_type`: Text, Typ des Tests. Aktuell werden "Lernverlaufsdianose", "Screening", "Fördermaterial" und "Direct Behaviour Rating" unterstützt.
 - `competence`: Text, Testkompetenz, z. B. "Zahlenverständnis"
 - `family`: Text, Testfamilie, z. B. "Zahlen lesen"
 - `level`: Text, Niveaustufe
 - `shorthand`: Text, Kurzbezeichnung, wird u. A. für die Benennung von Exporten verwendet
+- `responsible`: Text, Kontakt-Emailadresse der für den Test verantwortlichen Person/Instituts
 - `description`: Objekt, Beschreibung des Tests mit folgenden Attributen:
   - `full`: Text, Vollständige Beschreibung. Darf HTML-Tags enthalten.
   - `short`: Text, Kurzbeschreibung

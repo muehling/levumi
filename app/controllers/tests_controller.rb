@@ -39,19 +39,19 @@ class TestsController < ApplicationController
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
       f = params[:test][:file]
-      @import_failure =
-        !f.present? ||
+      if !f.present?
+        import_result = 'Keine Datei hochgeladen!'
+      else
+        import_result =
           Test.import(
             f.tempfile,
             !params.has_key?(:update_test),
             params.has_key?(:update_material),
             @login
-          ).nil?
-      if @import_failure
-        render json: {
-                 message: 'tests_controller::create: test could not be imported from zip'
-               },
-               status: :unprocessable_entity
+          )
+      end
+      if import_result != ''
+        render json: { message: import_result }, status: :unprocessable_entity
       else
         head :ok
       end
@@ -100,11 +100,17 @@ class TestsController < ApplicationController
     old_test = Test.where(shorthand: params[:shorthand]).where.not(archive: true).first
     if old_test.nil?
       is_new_version = false
+    elsif old_test.version > params[:version]
+      is_disallowed_version = true
     else
       is_new_version = old_test.version < params[:version]
     end
 
-    render json: { is_new_version: is_new_version, is_new_test: old_test.nil? }
+    render json: {
+             is_new_version: is_new_version,
+             is_disallowed_version: is_disallowed_version,
+             is_new_test: old_test.nil?
+           }
   end
 
   def get_tests_meta
