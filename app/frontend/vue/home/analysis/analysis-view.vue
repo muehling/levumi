@@ -63,7 +63,7 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <apexchart
-          v-if="graphData.length"
+          v-if="hasChartData"
           ref="levumiChart"
           :key="forceUpdate"
           :type="currentChartType"
@@ -71,7 +71,18 @@
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
-        <div v-else class="m-4 p-4" style="height: 500px">
+        <div v-else-if="!isInitialized" style="height: 500px">
+          <b-alert class="m-4 p-4" variant="secondary" show>
+            <span class="preparing">
+              Daten werden vorbereitet
+              <loading-dots
+                :is-loading="true"
+                class-name="m-0 d-inline"
+                wrapper-class-name="d-inline" />
+            </span>
+          </b-alert>
+        </div>
+        <div v-else style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
           </b-alert>
@@ -218,14 +229,16 @@
   import AnnotationsSection from './annotations-section.vue'
   import apiRoutes from '@/vue/routes/api-routes'
   import autoTable from 'jspdf-autotable'
+  import compact from 'lodash/compact'
+  import isEmpty from 'lodash/isEmpty'
   import jsPDF from 'jspdf'
+  import LoadingDots from '../../shared/loading-dots.vue'
   import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
   import takeRight from 'lodash/takeRight'
   import TargetControls from './target-controls.vue'
   import uniq from 'lodash/uniq'
-  import compact from 'lodash/compact'
   import {
     addTargetToChartData,
     addTrendToChartData,
@@ -247,6 +260,7 @@
       TargetControls,
       SupportGroupOverview,
       SupportGroupQualitative,
+      LoadingDots,
     },
 
     inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
@@ -297,6 +311,9 @@
       }
     },
     computed: {
+      hasChartData() {
+        return !isEmpty(this.graphData) && this.isInitialized
+      },
       weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
       },
@@ -543,11 +560,11 @@
     async mounted() {
       await this.loadStudentTargets()
       await this.setStudentAndUpdate(
-          this.has_group_views
-              ? -1
-              : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
-                  ? this.studentsWithResults[0]?.id || -1
-                  : -1
+        this.has_group_views
+          ? -1
+          : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
+          ? this.studentsWithResults[0]?.id || -1
+          : -1
       )
     },
     methods: {
@@ -674,7 +691,7 @@
       createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
-        return this.weeks.map(week => {
+        const res = this.weeks.map(week => {
           const currentResult = results.find(r => r?.test_week === week)
 
           // if a week has no results add a point with an empty y value for this week
@@ -690,6 +707,7 @@
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
+        return res
       },
       XYFromResult(result, seriesKey, formatDate) {
         if (result === null || result === undefined) {
@@ -820,7 +838,7 @@
             (trendlineData && this.extrapolationIsEnabled) ||
             (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
           ) {
-            this.expandXAxis(gData)
+            gData = this.expandXAxis(gData)
           }
         }
 
@@ -1032,17 +1050,19 @@
         // SIDE-FACT: technically expanding the x-axis isn't necessary when there's a slope target or an extrapolated trend
         //            as these automatically lead to this effect themselves, but I don't think we should check for that here
         if (!this.dateUntilIsEnabled || !this.dateUntilVal) {
-          return
+          return graphData
         }
         // only use the date if it lies after the last test result
+        // TODO might be necessary to extract the maxDate from all results (see below)
         const maxDate = graphData[0]?.data.reduce((acc, d) => {
           return d.x > acc ? d.x : acc
         }, this.dateUntilVal)
-        // to trick ApexCharts into drawing until there add an empty data point to the first series
+        // to trick ApexCharts into drawing until there add an empty data point to all series
         // TODO: it would be nice if this could be achieved without polluting the data
-        if (maxDate === this.dateUntilVal) {
-          graphData[0]?.data.push({ x: this.dateUntilVal, y: null })
+        if (maxDate === this.dateUntilVal && graphData.length) {
+          graphData.forEach(gd => gd.data.push({ x: this.dateUntilVal, y: null }))
         }
+        return graphData
       },
 
       async loadStudentTargets() {
@@ -1072,3 +1092,12 @@
     },
   }
 </script>
+<style>
+  .preparing .spinner {
+    padding-left: 1em;
+  }
+  .preparing .spinner > div {
+    height: 12px !important;
+    width: 12px !important;
+  }
+</style>
