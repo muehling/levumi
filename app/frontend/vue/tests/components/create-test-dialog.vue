@@ -35,6 +35,10 @@
           <div class="col-8">{{ testInfo.area }}</div>
         </div>
         <div class="row pl-3">
+          <div class="col-4 p-0"><strong>Testtyp:</strong></div>
+          <div class="col-8">{{ testInfo.testType }}</div>
+        </div>
+        <div class="row pl-3">
           <div class="col-4 p-0"><strong>Kompetenz:</strong></div>
           <div class="col-8">{{ testInfo.competence }}</div>
         </div>
@@ -185,6 +189,7 @@
         const data = res.data
         this.testInfo = {
           area: contentObj.area,
+          testType: contentObj.test_type,
           competence: contentObj.competence,
           isNewVersion: data.is_new_version,
           isNewTest: data.is_new_test,
