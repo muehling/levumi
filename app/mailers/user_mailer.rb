@@ -46,12 +46,7 @@ class UserMailer < ApplicationMailer
   def test_update
     @updater = params[:updater]
     @shorthand = params[:shorthand]
-    recipients =
-      if Rails.env.production?
-        %w[mba@informatik.uni-kiel.de beckmann@leibniz-ipn.de]
-      else
-        'beckmann@leibniz-ipn.de'
-      end
+    recipients = Rails.env.production? ? %w[beckmann@leibniz-ipn.de] : 'beckmann@leibniz-ipn.de'
     mail(to: recipients, subject: "#{@updater} hat #{@shorthand} hochgeladen!")
   end
 end
