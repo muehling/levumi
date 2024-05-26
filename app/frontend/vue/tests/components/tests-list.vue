@@ -12,8 +12,7 @@
       striped
       hover
       :fields="fields"
-      :items="tests"
-    >
+      :items="tests">
       <template #cell(updated_at)="data">
         <span>{{ formatDate(data.item.updated_at) }}</span>
       </template>
@@ -23,32 +22,32 @@
       <template #cell(test_type_id)="data">
         <div class="">{{ getTestTypeLabel(data.item.test_type_id) }}</div>
       </template>
+      <template #cell(updated_by)="data">
+        <span>{{ data.item.updated_by || '--' }}</span>
+      </template>
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
           class="btn-sm mr-1"
           variant="outline-primary"
-          @click="showTestDetails(data.item.id)"
-        >
+          @click="showTestDetails(data.item.id)">
           <i class="fas fa-glasses"></i>
           <span class="text-small d-none d-xl-inline pl-2">Details</span>
         </b-btn>
         <b-btn
-          v-if="!showExport"
+          v-if="!showExport && isEditAndDeleteAllowed"
           class="btn-sm mr-1"
           variant="outline-success"
           :disabled="data.item.archive === 'Ja'"
-          @click="editTest(data.item.id)"
-        >
+          @click="editTest(data.item.id)">
           <i class="fas fa-edit"></i>
           <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
         </b-btn>
         <b-btn
-          v-if="!showExport"
+          v-if="!showExport && isEditAndDeleteAllowed"
           class="btn-sm mr-1"
           variant="outline-danger"
-          @click="deleteTest(data.item.id)"
-        >
+          @click="deleteTest(data.item.id)">
           <i class="fas fa-trash"></i>
           <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
         </b-btn>
@@ -57,8 +56,7 @@
           class="btn btn-sm btn-outline-primary"
           variant="outline-secondary"
           :disabled="!data.item.has_results"
-          :href="`/tests/${data.item.id}`"
-        >
+          :href="`/tests/${data.item.id}`">
           <i class="fas fa-save"></i>
           <span class="text-small d-none d-xl-inline pl-2">Export</span>
         </b-link>
@@ -77,6 +75,7 @@
   import TestDetailsDialog from './test-details-dialog.vue'
   import format from 'date-fns/format'
   import { useGlobalStore } from '../../../store/store'
+  import { hasCapability } from '../../../utils/user'
 
   export default {
     name: 'TestsList',
@@ -110,8 +109,13 @@
           !this.showExport && { key: 'version', label: 'Version' },
           !this.showExport && { key: 'archive', label: 'Archiv' },
           { key: 'updated_at', label: 'Letzes Update' },
+          { key: 'updated_by', label: 'Update durch' },
+          { key: 'responsible', label: 'Kontakt' },
           { key: 'actions', label: 'Aktionen' },
         ]
+      },
+      isEditAndDeleteAllowed() {
+        return this.checkCapability('test') || this.checkCapability('test_admin')
       },
     },
     watch: {
@@ -124,6 +128,9 @@
     },
 
     methods: {
+      checkCapability(capability) {
+        return hasCapability(capability, this.store.login.capabilities)
+      },
       getTestTypeLabel(testTypeId) {
         const testType = this.store.staticData.testTypes.find(
           testType => testType.id === (testTypeId || 1)

@@ -5,6 +5,8 @@
   "level": "Schüler:innen",
   "shorthand": "Ex_S_1",
   "version": 1,
+  "responsible": "user@example.com",
+  "test_type": "Screening",
   "description": {
     "full": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
     "short": "Beispiel für einen Test in Levumi für <b>Schüler:innen</b>",
@@ -14,9 +16,10 @@
   "time_limit": "Keine",
   "student_test": true,
   "configuration": {
-    "views": [{
-      "key": "V1",
-      "label": "Übersicht",
+    "views": [
+      {
+        "key": "V1",
+        "label": "Übersicht",
         "student": true,
         "group": false,
         "type": "graph",
@@ -32,8 +35,14 @@
         "student": true,
         "group": false,
         "type": "table",
-        "columns": ["Katzen", "Vögel"],
-        "column_keys": ["K", "V"]
+        "columns": [
+          "Katzen",
+          "Vögel"
+        ],
+        "column_keys": [
+          "K",
+          "V"
+        ]
       }
     ]
   },

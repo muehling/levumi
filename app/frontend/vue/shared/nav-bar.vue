@@ -149,7 +149,11 @@
                 Benutzerverwaltung
               </router-link>
               <router-link
-                v-if="checkCapability('test')"
+                v-if="
+                  checkCapability('test') ||
+                  checkCapability('test_admin') ||
+                  checkCapability('test_upload')
+                "
                 to="/testverwaltung"
                 class="dropdown-item">
                 Testverwaltung
@@ -205,7 +209,7 @@
               Rechtliches
             </a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarLegal">
-              <a class="dropdown-item" href="/files/Vorlage_Elternbrief.doc">
+              <a class="dropdown-item" href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
               </a>
               <div class="dropdown-divider"></div>
