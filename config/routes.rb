@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   get '/results/start_demo/:test_id', to: 'results#start_demo'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   get '/tests/info', to: 'tests#get_tests_data'
+  get '/tests/info_attachments/:id', to: 'tests#get_test_info_attachments' # special case: only used by a certain view in analysis-view.vue
   get '/tests/items/:id', to: 'tests#get_items'
   get '/users/core_data', to: 'users#get_core_data'
   get '/users/page/:page_number', to: 'users#index_paginated'
