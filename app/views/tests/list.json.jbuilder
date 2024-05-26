@@ -14,5 +14,7 @@ json.tests @all_tests.map do |test|
   json.student_test test.student_test
   json.items test.items
   json.updated_at test.updated_at
+  json.updated_by test.updated_by
   json.test_type_id test.test_type_id
+  json.responsible test.responsible
 end
