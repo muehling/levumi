@@ -1,3 +1,4 @@
+import { isObject } from 'lodash'
 import { useGlobalStore } from '../store/store'
 
 // Returns the student object for the passed group and student id
@@ -56,4 +57,24 @@ export const getTrendFromResults = data => {
   } else if (x1 < x3 && x1 <= x2 && x2 <= x3) {
     return 'NO_SUPPORT'
   }
+}
+
+export const getFontSettingsDescription = (settings, isDefault) => {
+  let settingsText = 'Standard'
+  if (isObject(settings)) {
+    const raw = decodeURIComponent(settings.font_family)
+    const fontFamily = raw.charAt(0).toUpperCase() + raw.slice(1)
+    switch (settings.font_size) {
+      case '1':
+        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, normale Größe`
+        break
+      case '2':
+        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, vergrößert`
+        break
+      case '3':
+        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, stark vergrößert`
+        break
+    }
+  }
+  return settingsText
 }

@@ -198,6 +198,7 @@
   import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
   import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
+  import { getFontSettingsDescription } from 'src/utils/helpers'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import isArray from 'lodash/isArray'
@@ -264,25 +265,11 @@
         return access(this.group).classbook
       },
       fontSettingsText() {
-        let settingsText = 'Standard'
         if (this.student.settings) {
-          switch (this.student.settings.font_size) {
-            case '1':
-              settingsText = `${decodeURIComponent(
-                this.student.settings.font_family
-              )}, normale Größe`
-              break
-            case '2':
-              settingsText = `${decodeURIComponent(this.student.settings.font_family)}, vergrößert`
-              break
-            case '3':
-              settingsText = `${decodeURIComponent(
-                this.student.settings.font_family
-              )}, stark vergrößert`
-              break
-          }
+          return getFontSettingsDescription(this.student.settings, false)
+        } else {
+          return getFontSettingsDescription(this.group.settings, true)
         }
-        return settingsText
       },
       fontSettingsContextHelp() {
         return {

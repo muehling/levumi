@@ -14,6 +14,7 @@ export const access = (groupShare = {}) => {
   let updateGroup = !groupShare.read_only
   let archiveGroup = groupShare.owner && !isSingleUser()
   let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only
+  let setGroupFontSettings = !groupShare.read_only
 
   let createStudents = !groupShare.read_only
   let updateStudents = !groupShare.read_only
@@ -25,6 +26,7 @@ export const access = (groupShare = {}) => {
     updateGroup ||
     archiveGroup ||
     createQRCodes ||
+    setGroupFontSettings ||
     createStudents ||
     updateStudents ||
     deleteStudents ||
@@ -48,6 +50,7 @@ export const access = (groupShare = {}) => {
         updateGroup,
         archiveGroup,
         createQRCodes,
+        setGroupFontSettings,
         createStudents,
         updateStudents,
         deleteStudents,

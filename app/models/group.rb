@@ -26,7 +26,8 @@ class Group < ApplicationRecord
       updated_at: updated_at,
       key: group_share.key,
       owner: group_share.owner,
-      share_id: group_share.id
+      share_id: group_share.id,
+      settings: settings || {}
     }
     data['belongs_to'] = group_share.group.owner.email
     if group_share.owner

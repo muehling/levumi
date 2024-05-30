@@ -3,6 +3,26 @@
     <div v-if="permissions?.updateGroup">
       <group-form :group="group" @update:groups="updateGroup($event)" />
     </div>
+    <hr />
+    <div v-if="permissions?.setGroupFontSettings" class="row">
+      <div class="col-3">
+        <b-button
+          variant="outline-secondary"
+          class="my-2 d-inline"
+          size="sm"
+          @click="openFontsModal">
+          <i class="fas fa-font"></i>
+          Schrifteinstellungen
+        </b-button>
+        <context-help
+          help-text="Hier können Sie die in den Tests verwendete Schriftart einstellen.
+      Diese kann auch in der Liste individuell pro Schüler:in eingestellt werden. Individuelle Einstellungen haben Vorrang vor den Klasseneinstellungen."
+          class-name="mt-2 ml-2" />
+      </div>
+      <div class="col-9 d-flex align-items-center">
+        <span>Aktuelle Standard-Einstellung: {{ fontSettingsText }}</span>
+      </div>
+    </div>
     <div v-if="permissions?.createQRCodes" class="d-inline">
       <hr />
       <b-button
@@ -29,21 +49,30 @@
         class-name="mt-2 ml-2" />
     </div>
     <confirm-dialog ref="confirmDialog" />
+    <font-settings-modal
+      v-if="isFontsModalOpen"
+      :student-or-group="group"
+      path="group"
+      @hide-fonts-modal="closeFontsModal"
+      @update="updateGroup" />
   </div>
 </template>
 <script>
-  import { ajax } from 'src/utils/ajax'
-  import { useGlobalStore } from 'src/store/store'
   import { access } from 'src/utils/access'
+  import { ajax } from 'src/utils/ajax'
+  import { getFontSettingsDescription } from 'src/utils/helpers'
+  import { useGlobalStore } from 'src/store/store'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
+  import FontSettingsModal from 'src/vue/classbook/modals/font-settings-modal.vue'
+  import GroupForm from './group-form.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
   import Vue from 'vue'
-  import GroupForm from './group-form.vue'
+
   export default {
     name: 'ClassbookActions',
-    components: { ContextHelp, ConfirmDialog, GroupForm },
+    components: { ContextHelp, ConfirmDialog, GroupForm, FontSettingsModal },
     props: { group: Object },
     setup() {
       const globalStore = useGlobalStore()
@@ -52,6 +81,7 @@
     data() {
       return {
         isGeneratingQrCodes: false,
+        isFontsModalOpen: false,
       }
     },
     computed: {
@@ -61,9 +91,21 @@
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
+      fontSettingsText() {
+        return getFontSettingsDescription(this.group.settings)
+      },
     },
 
     methods: {
+      updateGroup(data) {
+        this.globalStore.setGroups(data.groups)
+      },
+      openFontsModal() {
+        this.isFontsModalOpen = true
+      },
+      closeFontsModal() {
+        this.isFontsModalOpen = false
+      },
       async moveToArchive() {
         const answer = await this.$refs.confirmDialog.open({
           message: `Mit dieser Aktion wird diese Klasse ins Archiv verschoben. Sie kann jederzeit reaktiviert werden, erteilte Freigaben müssen dann jedoch ggf. erneut erteilt werden.`,

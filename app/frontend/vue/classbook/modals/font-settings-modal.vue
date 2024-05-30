@@ -1,12 +1,14 @@
 <template>
   <b-modal
     id="'font-settings-modal'"
-    :title="'Schrifteinstellungen für ' + student.name"
+    :title="`Schrifteinstellungen für ${
+      studentOrGroup.name ? studentOrGroup.name : studentOrGroup.label
+    }`"
     size="xl"
     scrollable
     hide-footer
     lazy
-    :visible="!!student"
+    :visible="!!studentOrGroup"
     @hidden="hideModal">
     <p
       class="mt-5 mb-5 text-center"
@@ -57,6 +59,7 @@
       <i class="fas fa-check"></i>
       Speichern
     </b-btn>
+    <b-button variant="outline-secondary" @click="clearSettings">Zurücksetzen</b-button>
   </b-modal>
 </template>
 <script>
@@ -66,7 +69,8 @@
   export default {
     name: 'FontSettingsModal',
     props: {
-      student: Object,
+      studentOrGroup: Object,
+      path: String,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -75,40 +79,42 @@
     data: function () {
       return {
         fontFamily:
-          this.student.settings === undefined || this.student.settings['font_family'] === undefined
+          this.studentOrGroup.settings === undefined ||
+          this.studentOrGroup.settings['font_family'] === undefined
             ? 'Fibel Nord'
-            : decodeURIComponent(this.student.settings['font_family']),
+            : decodeURIComponent(this.studentOrGroup.settings['font_family']),
         fontSize:
-          this.student.settings === undefined || this.student.settings['font_size'] === undefined
+          this.studentOrGroup.settings === undefined ||
+          this.studentOrGroup.settings['font_size'] === undefined
             ? '1'
-            : this.student.settings['font_size'],
+            : this.studentOrGroup.settings['font_size'],
       }
     },
     methods: {
+      clearSettings() {
+        this.fontFamily = undefined
+        this.fontSize = undefined
+        this.changeFontSettings()
+      },
       hideModal() {
         this.$emit('hide-student-row-modal')
+        this.$emit('hide-fonts-modal')
       },
       async changeFontSettings() {
         const data = {
-          student: {
+          [this.path]: {
             settings: {
-              font_family: encodeURIComponent(this.fontFamily),
-              font_size: encodeURIComponent(this.fontSize),
+              ...(this.fontFamily && { font_family: encodeURIComponent(this.fontFamily) }),
+              ...(this.fontSize && { font_size: encodeURIComponent(this.fontSize) }),
             },
           },
         }
         const res = await ajax({
-          url: `/students/${this.student.id}`,
+          url: `/${this.path + 's'}/${this.studentOrGroup.id}`, //TODO für die Klasse hauts hier noch nicht hin
           method: 'put',
           data,
         })
         if (res.status === 200) {
-          // const data = res.data
-          //  let index = this.globalStore.studentsInGroups[this.student.group_id].findIndex(
-          //    s => s.id === this.student.id
-          //  )
-          //  console.log('wtf', data, index)
-
           this.$emit('update', { ...res.data })
           this.hideModal()
         }

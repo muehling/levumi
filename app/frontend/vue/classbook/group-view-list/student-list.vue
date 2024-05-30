@@ -53,7 +53,8 @@
       @hide-student-row-modal="resetSelectedStudent" />
     <font-settings-modal
       v-if="selectedStudent && selectedModal === 'font-settings'"
-      :student="selectedStudent"
+      :student-or-group="selectedStudent"
+      path="student"
       @hide-student-row-modal="resetSelectedStudent"
       @update="updateStudent" />
   </div>

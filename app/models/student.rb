@@ -94,12 +94,16 @@ class Student < ApplicationRecord
     if !settings.nil? && settings.has_key?(key)
       return settings[key]
     else
-      defs = {
-        #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
-        'font_family' => 'Fibel Nord',
-        'font_size' => 1
-      }
-      return defs[key]
+      if !group.settings.nil? && group.settings.has_key?(key)
+        return group.settings[key]
+      else
+        defs = {
+          #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
+          'font_family' => 'Fibel Nord',
+          'font_size' => 1
+        }
+        return defs[key]
+      end
     end
   end
 end
