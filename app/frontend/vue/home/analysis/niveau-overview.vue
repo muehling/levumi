@@ -3,15 +3,15 @@
     <b-container id="niv-container" :style="containerStyle" class="mb-3" fluid>
       <b-row v-for="n in niveauArray" :key="n" cols="3" class="niveau" :style="styleForLevel(n)">
         <b-col cols="2" class="l-niv">
-          <span class="niv-name" style="display: flex; align-items: end; white-space: nowrap">{{
-            'Niveau ' + n
-          }}</span>
+          <span class="niv-name" style="display: flex; align-items: end; white-space: nowrap">
+            {{ 'Niveau ' + n }}
+          </span>
           <div id="normal-container" style="width: 100%; height: 100%">
             <svg
               v-if="n === niveauArray[0]"
               class="normal-dist"
               width="100%"
-              :height="overviewHeight + 'px'"
+              :height="desiredHeight + 'px'"
               :viewBox="
                 '0 ' +
                 (normalPlotMean * (1 / normalPlotStdDeviation) * 119.85765 -
@@ -19,8 +19,7 @@
                 ' 21.41 ' +
                 (1 / normalPlotStdDeviation) * 119.85765
               "
-              preserveAspectRatio="none"
-            >
+              preserveAspectRatio="none">
               <defs id="defs73643">
                 <linearGradient id="linearGradient7580">
                   <stop id="stop7576" style="stop-color: #e5e5e5; stop-opacity: 0.6" offset="0" />
@@ -33,8 +32,7 @@
                   y1="59.928831"
                   x2="21.959299"
                   y2="59.928831"
-                  gradientUnits="userSpaceOnUse"
-                />
+                  gradientUnits="userSpaceOnUse" />
               </defs>
               <path
                 id="polyline21800"
@@ -48,8 +46,7 @@
                   stroke-dasharray: none;
                   stroke-opacity: 1;
                 "
-                d="m 21.6308,119.85684 -0.003,-1.1994 -0.004,-1.19649 -0.004,-1.19941 -0.007,-1.19941 -0.009,-1.1965 -0.0101,-1.19939 -0.0144,-1.19941 -0.018,-1.1994 -0.0232,-1.1965 -0.0291,-1.1994 -0.0366,-1.1994 -0.0455,-1.19651 -0.0567,-1.19941 -0.0701,-1.19939 -0.0858,-1.1965 -0.10456,-1.19939 -0.12616,-1.199403 -0.15088,-1.1994 -0.18001,-1.19651 -0.21212,-1.1994 -0.24797,-1.199405 -0.28907,-1.196503 -0.33386,-1.199402 -0.38242,-1.199394 -0.43396,-1.199401 -0.48998,-1.196504 -0.54748,-1.199401 -0.60722,-1.199402 -0.66775,-1.196502 -0.72825,-1.199401 -0.78723,-1.199401 -0.84402,-1.196502 -0.89554,-1.199401 -0.94112,-1.199399 -0.9792,-1.199402 -1.00907,-1.196503 -1.0270101,-1.199401 -1.03299,-1.199399 -1.027,-1.196504 -1.00534,-1.1994 -0.97022,-1.1994 -0.9187,-1.199401 -0.85372,-1.196503 -0.7738,-1.199399 -0.68044,-1.199401 -0.57513,-1.196504 -0.45860995,-1.199399 -0.33387,-1.199401 -0.2024,-1.196504 -0.0687,-1.1994 0.0687,-1.1994 0.2024,-1.199402 0.33387,-1.196502 0.45860995,-1.199399 0.57513,-1.199401 0.68044,-1.196503 0.7738,-1.199401 0.85372,-1.1994 0.9187,-1.199401 0.97022,-1.196503 1.00534,-1.1994 1.027,-1.1994 1.03299,-1.196505 1.0270101,-1.199399 1.00907,-1.1994 0.9792,-1.1994 0.94112,-1.196503 0.89554,-1.199401 0.84402,-1.1994 0.78723,-1.196504 0.72825,-1.199399 0.66775,-1.199401 0.60722,-1.196504 0.54748,-1.1994 0.48998,-1.1994 0.43396,-1.1994 0.38242,-1.196503 0.33386,-1.199401 0.28907,-1.1994 0.24797,-1.196503 0.21212,-1.199401 0.18001,-1.1994 0.15088,-1.1994 0.12616,-1.196504 0.10456,-1.199401 0.0858,-1.199398 0.0701,-1.196504 0.0567,-1.199401 0.0455,-1.1994 0.0366,-1.196503 0.0291,-1.199401 0.0232,-1.1994002 0.018,-1.1994 0.0144,-1.196503 0.0101,-1.199401 0.009,-1.1993999 0.007,-1.1965033 0.004,-1.1994003 0.004,-1.1994003 0.003,-1.19940034194"
-              />
+                d="m 21.6308,119.85684 -0.003,-1.1994 -0.004,-1.19649 -0.004,-1.19941 -0.007,-1.19941 -0.009,-1.1965 -0.0101,-1.19939 -0.0144,-1.19941 -0.018,-1.1994 -0.0232,-1.1965 -0.0291,-1.1994 -0.0366,-1.1994 -0.0455,-1.19651 -0.0567,-1.19941 -0.0701,-1.19939 -0.0858,-1.1965 -0.10456,-1.19939 -0.12616,-1.199403 -0.15088,-1.1994 -0.18001,-1.19651 -0.21212,-1.1994 -0.24797,-1.199405 -0.28907,-1.196503 -0.33386,-1.199402 -0.38242,-1.199394 -0.43396,-1.199401 -0.48998,-1.196504 -0.54748,-1.199401 -0.60722,-1.199402 -0.66775,-1.196502 -0.72825,-1.199401 -0.78723,-1.199401 -0.84402,-1.196502 -0.89554,-1.199401 -0.94112,-1.199399 -0.9792,-1.199402 -1.00907,-1.196503 -1.0270101,-1.199401 -1.03299,-1.199399 -1.027,-1.196504 -1.00534,-1.1994 -0.97022,-1.1994 -0.9187,-1.199401 -0.85372,-1.196503 -0.7738,-1.199399 -0.68044,-1.199401 -0.57513,-1.196504 -0.45860995,-1.199399 -0.33387,-1.199401 -0.2024,-1.196504 -0.0687,-1.1994 0.0687,-1.1994 0.2024,-1.199402 0.33387,-1.196502 0.45860995,-1.199399 0.57513,-1.199401 0.68044,-1.196503 0.7738,-1.199401 0.85372,-1.1994 0.9187,-1.199401 0.97022,-1.196503 1.00534,-1.1994 1.027,-1.1994 1.03299,-1.196505 1.0270101,-1.199399 1.00907,-1.1994 0.9792,-1.1994 0.94112,-1.196503 0.89554,-1.199401 0.84402,-1.1994 0.78723,-1.196504 0.72825,-1.199399 0.66775,-1.199401 0.60722,-1.196504 0.54748,-1.1994 0.48998,-1.1994 0.43396,-1.1994 0.38242,-1.196503 0.33386,-1.199401 0.28907,-1.1994 0.24797,-1.196503 0.21212,-1.199401 0.18001,-1.1994 0.15088,-1.1994 0.12616,-1.196504 0.10456,-1.199401 0.0858,-1.199398 0.0701,-1.196504 0.0567,-1.199401 0.0455,-1.1994 0.0366,-1.196503 0.0291,-1.199401 0.0232,-1.1994002 0.018,-1.1994 0.0144,-1.196503 0.0101,-1.199401 0.009,-1.1993999 0.007,-1.1965033 0.004,-1.1994003 0.004,-1.1994003 0.003,-1.19940034194" />
             </svg>
           </div>
         </b-col>
@@ -59,8 +56,7 @@
               <span
                 v-for="(part, partKey) in line"
                 :key="partKey"
-                style="display: inline; vertical-align: middle"
-              >
+                style="display: inline; vertical-align: middle">
                 <span v-if="part.type === 'text-fraction'" class="fraction">
                   <p class="numerator">{{ part.numerator }}</p>
                   <p class="denominator">{{ part.denominator }}</p>
@@ -72,8 +68,7 @@
               v-if="example.image !== undefined"
               class="example-img"
               :src="example.image.filepath"
-              :alt="'eine Beispielaufgabe für das Niveau' + n"
-            />
+              :alt="'eine Beispielaufgabe für das Niveau' + n" />
           </div>
         </b-col>
         <b-col cols="4" lg="3" class="headline-col">
@@ -91,7 +86,7 @@
 
   export default {
     name: 'NiveauOverview',
-    inject: ['testData'],
+    inject: ['info_attachments'],
     props: {
       nivConfig: Object,
     },
@@ -116,7 +111,7 @@
     },
     computed: {
       exampleImages() {
-        return this.testData?.info_attachments.filter(
+        return this.info_attachments?.filter(
           attachment =>
             attachment.content_type.startsWith('image') && attachment.filename.startsWith(A + E)
         )
@@ -130,12 +125,6 @@
         let s = {}
         s['max-height'] = this.desiredHeight + 'px'
         return s
-      },
-      overviewHeight() {
-        if (this.loaded) {
-          return document.getElementById('niv-container')?.clientHeight
-        }
-        return this.desiredHeight
       },
       /** The desired height of the overview in pixels */
       desiredHeight() {
@@ -157,18 +146,18 @@
     methods: {
       examplesForLevel(level) {
         const example_texts = this.nivConfig.example_texts[level - 1]
-        const example_images = this.exampleImages.filter(img =>
+        const example_images = this.exampleImages?.filter(img =>
           img.filename.startsWith(A + E + level)
         )
         // build examples from texts, adding images where appropriate
         let i = 1
         return example_texts.map(text => {
           // search for a corresponding image
-          const image = example_images.find(img => img.filename.startsWith(A + E + level + '_' + i))
+          const image = example_images?.find(img => img.filename.startsWith(A + E + level + '_' + i))
           // first break the text into lines
           const lines = text.split('\n')
           // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
-          const fracRegex = /([A-Za-z0-9]+⌹[A-Za-z0-9]+)/
+          const fracRegex = /([A-Za-z0-9□]+⌹[A-Za-z0-9□]+)/
           const htmlRegex = /(<\S+>.*<\/\S+>)/
           for (let j = 0; j < lines.length; ++j) {
             let k = -1
@@ -245,6 +234,8 @@
   #niv-container {
     height: 100%;
     max-width: 1800px;
+    /* for the normal distribution */
+    overflow: clip;
   }
   .niveau {
     border: 0 solid #b9b9b9;

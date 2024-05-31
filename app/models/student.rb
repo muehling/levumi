@@ -39,7 +39,7 @@ class Student < ApplicationRecord
       .nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['tags'] = self.tags.nil? ? [] : self.tags
-    json['settings'] = self.settings unless self.settings.nil?
+    json['settings'] = self.settings || {}
     json
   end
 

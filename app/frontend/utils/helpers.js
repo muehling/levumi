@@ -59,22 +59,19 @@ export const getTrendFromResults = data => {
   }
 }
 
-export const getFontSettingsDescription = (settings, isDefault) => {
-  let settingsText = 'Standard'
-  if (isObject(settings)) {
-    const raw = decodeURIComponent(settings.font_family)
+export const getFontSettingsDescription = (settings, defaultSettings) => {
+  const s = settings.font_size && settings.font_family ? settings : defaultSettings
+
+  if (s.font_size && s.font_family) {
+    const raw = decodeURIComponent(s.font_family)
     const fontFamily = raw.charAt(0).toUpperCase() + raw.slice(1)
-    switch (settings.font_size) {
+    switch (s.font_size) {
       case '1':
-        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, normale Größe`
-        break
+        return `${fontFamily}, normale Größe`
       case '2':
-        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, vergrößert`
-        break
+        return `${fontFamily}, vergrößert`
       case '3':
-        settingsText = `${isDefault ? 'Standard: ' : ''}${fontFamily}, stark vergrößert`
-        break
+        return `${fontFamily}, stark vergrößert`
     }
   }
-  return settingsText
 }

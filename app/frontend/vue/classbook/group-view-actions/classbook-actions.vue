@@ -92,7 +92,7 @@
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
       fontSettingsText() {
-        return getFontSettingsDescription(this.group.settings)
+        return getFontSettingsDescription(this.group.settings, this.group.settings)
       },
     },
 

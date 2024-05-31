@@ -67,7 +67,10 @@ class ApplicationController < ActionController::Base
       u.save
       head :ok
     else
-      head :not_found
+      render json: {
+               message: 'application_controller::renew_login: user not found or invalid credentials'
+             },
+             status: :forbidden
     end
   end
 
@@ -98,8 +101,12 @@ class ApplicationController < ActionController::Base
   #POST '/testen_login'
   def login_frontend
     headers['Cache-Control'] = 'no-store, must-revalidate'
-    head 403 and return if !params[:login].present?
-    head 403 and return if params[:login].empty?
+    if !params[:login].present?
+      render json: { message: 'login_frontend: no object sent' }, status: :forbidden and return
+    end
+    if params[:login].empty?
+      render json: { message: 'login_frontend: object empty' }, status: :forbidden and return
+    end
 
     s = Student.find_by_login(params[:login].upcase)
     unless s.nil?
@@ -112,7 +119,7 @@ class ApplicationController < ActionController::Base
         format.json { render json: { student: s, tests: s.get_assessments }, status: :ok }
       end
     else
-      head 403
+      render json: { message: 'login_frontend: code not found' }, status: :forbidden
     end
   end
 
@@ -153,7 +160,12 @@ class ApplicationController < ActionController::Base
   def handle_invalid_token
     respond_to do |format|
       format.html { redirect_to root_url }
-      format.json { head :unauthorized }
+      format.json do
+        render json: {
+                 message: 'application_controller::handle_invalid_token: invalid token'
+               },
+               status: :unauthorized
+      end
     end
   end
 

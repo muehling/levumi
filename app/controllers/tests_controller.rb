@@ -39,12 +39,19 @@ class TestsController < ApplicationController
   def create
     if params.has_key?(:test) && !params[:test][:file].nil?
       f = params[:test][:file]
-      @import_failure =
-        !f.present? ||
-          Test.import(f.tempfile, !params.has_key?(:update_test), params.has_key?(:update_material))
-            .nil?
-      if @import_failure
-        head :unprocessable_entity
+      if !f.present?
+        import_result = 'Keine Datei hochgeladen!'
+      else
+        import_result =
+          Test.import(
+            f.tempfile,
+            !params.has_key?(:update_test),
+            params.has_key?(:update_material),
+            @login
+          )
+      end
+      if import_result != ''
+        render json: { message: import_result }, status: :unprocessable_entity
       else
         head :ok
       end
@@ -56,12 +63,20 @@ class TestsController < ApplicationController
     if @test.update(test_attributes)
       head :ok
     else
-      head :unprocessable_entity
+      render json: {
+               message: 'tests_controller::update: test could not be updated'
+             },
+             status: :unprocessable_entity
     end
   end
 
   #DEL /tests/:id
   def destroy
+    if !@login.has_capability('test') || !@login.has_capability('test_admin')
+      render json: { message: 'tests_controller::delete: not permitted' }, status: :forbidden and
+        return
+    end
+
     id = @test.test_family.id
     @test.destroy
     family = TestFamily.find(id)
@@ -71,6 +86,11 @@ class TestsController < ApplicationController
 
   def get_tests_data
     @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+  end
+
+  #Spezialfall: für nur einen Test
+  def get_test_info_attachments
+    @data = @test
   end
 
   def get_items
@@ -85,11 +105,17 @@ class TestsController < ApplicationController
     old_test = Test.where(shorthand: params[:shorthand]).where.not(archive: true).first
     if old_test.nil?
       is_new_version = false
+    elsif old_test.version > params[:version]
+      is_disallowed_version = true
     else
       is_new_version = old_test.version < params[:version]
     end
 
-    render json: { is_new_version: is_new_version, is_new_test: old_test.nil? }
+    render json: {
+             is_new_version: is_new_version,
+             is_disallowed_version: is_disallowed_version,
+             is_new_test: old_test.nil?
+           }
   end
 
   def get_tests_meta

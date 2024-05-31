@@ -2,7 +2,7 @@
   <info-dialog ref="testDetails">
     <div class="text-left text-small">
       <p class="text-light bg-secondary pl-1">Kurzbeschreibung</p>
-      <p v-html="test.short"></p>
+      <p v-html="test.description.short"></p>
       <p class="text-light bg-secondary pl-1">Ausführliche Beschreibung</p>
       <table class="table table-striped table-sm text-left">
         <tbody>
@@ -20,11 +20,11 @@
           </tr>
           <tr>
             <td>Zeitbeschränkung</td>
-            <td>{{ test.time_limit }}</td>
+            <td>{{ test.description.time_limit || '--' }}</td>
           </tr>
           <tr>
             <td>Durchführung</td>
-            <td>{{ test.usage }}</td>
+            <td>{{ test.description.usage }}</td>
           </tr>
           <tr>
             <td>Items</td>
@@ -33,7 +33,7 @@
         </tbody>
       </table>
       <p class="text-light bg-secondary pl-1">Beschreibung</p>
-      <p v-html="test.description"></p>
+      <p v-html="test.description.full"></p>
     </div>
   </info-dialog>
 </template>

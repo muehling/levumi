@@ -149,6 +149,7 @@
       test: Object,
       annotationControlVisible: Boolean,
       trendIsEnabled: Boolean,
+      weeks: Array,
     },
     data: function () {
       return {

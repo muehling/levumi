@@ -44,4 +44,11 @@ class UserMailer < ApplicationMailer
     @is_anonymous = params[:is_anonymous]
     mail(to: @recipient.email, subject: MailSubjects::NON_LOGGABLE[:NEW_SHARE])
   end
+
+  def test_update
+    @updater = params[:updater]
+    @shorthand = params[:shorthand]
+    recipients = Rails.env.production? ? %w[beckmann@leibniz-ipn.de] : 'beckmann@leibniz-ipn.de'
+    mail(to: recipients, subject: "#{@updater} hat #{@shorthand} hochgeladen!")
+  end
 end

@@ -161,15 +161,18 @@ class Test < ApplicationRecord
   end
 
   #Test Objekt als Import aus ZIP-Datei erzeugen
-  def self.import(file, archive, update_material)
+  def self.import(file, archive, update_material, login)
     #Infos aus ZIP lesen
     begin
       zip = Zip::File.open(file)
     rescue StandardError
-      return nil
+      return 'Datei konnte nicht geöffnet werden!'
     end
     f = zip.glob('test.json').first
-    unless f.nil?
+
+    if f.nil?
+      return 'Keine Datei hochgeladen!'
+    else
       #Benötigte Strukturen finden / erzeugen
       vals = ActiveSupport::JSON.decode(f.get_input_stream.read)
 
@@ -183,7 +186,7 @@ class Test < ApplicationRecord
           assessments_for_old_test = Assessment.where(test_id: old_test.id)
         elsif old_test.version > vals['version']
           #Ältere Version darf neuere nicht ersetzen.
-          return nil
+          return 'Die hochgeladene Version ist älter als die vorhandene!'
         end
       end
 
@@ -194,6 +197,10 @@ class Test < ApplicationRecord
       competence = area.competences.build(name: vals['competence']) if competence.nil?
       family = competence.test_families.find_by_name(vals['family'])
       family = competence.test_families.build(name: vals['family']) if family.nil?
+
+      test_type = TestType.find_by_name(vals['test_type']) if (vals['test_type'])
+      test_type = TestType.first if test_type.nil?
+      vals['test_type_id'] = test_type.id
 
       #Test anlegen oder updaten
       if old_test.nil? || old_test.archive
@@ -206,7 +213,9 @@ class Test < ApplicationRecord
               'level',
               'shorthand',
               'student_test',
-              'configuration'
+              'configuration',
+              'test_type_id',
+              'responsible'
             )
           )
       else
@@ -218,11 +227,15 @@ class Test < ApplicationRecord
             'level',
             'shorthand',
             'student_test',
-            'configuration'
+            'configuration',
+            'test_type_id',
+            'responsible'
           )
         )
       end
       test.items = vals['items']
+
+      test.updated_by = login.email
 
       if !test.nil? && test.save
         # create new assessments in case an old test was archived
@@ -303,10 +316,13 @@ class Test < ApplicationRecord
             )
           end
 
-        return test
+        pattern = /test(?=_upload\b)/
+        if (!!(login.capabilities =~ pattern))
+          UserMailer.with(shorthand: test.shorthand, updater: login.email).test_update.deliver_later
+        end
+        return '' # no error message -> everything cool
       end
     end
-    return nil
   end
 
   #Gibt es (exportierbare) Ergebnisse?

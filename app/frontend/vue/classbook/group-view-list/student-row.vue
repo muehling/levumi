@@ -111,7 +111,18 @@
         <span v-if="student.tags?.length == 0 && !empty" class="text-muted">nichts erfasst</span>
       </div>
     </td>
-    <td>{{ empty ? '' : fontSettingsText }}</td>
+    <td>
+      <span v-if="!hasFontSettings && !empty">Standard</span>
+      <span v-if="!hasFontSettings && hasGroupFontSettings && !empty">:</span>
+      <span :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
+        {{ empty ? '' : fontSettingsText }}
+      </span>
+      <context-help
+        v-if="!hasFontSettings && !hasGroupFontSettings && !empty"
+        help-text="Weder für die Klasse
+      noch für diese Schüler:in sind Schrifteinstellungen festgelegt."
+        class="mt-3 ml-2" />
+    </td>
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
@@ -264,11 +275,21 @@
       permissions() {
         return access(this.group).classbook
       },
+      hasFontSettings() {
+        if (this.empty) {
+          return false
+        } else {
+          return !!(this.student.settings.font_family && this.student.settings.font_size)
+        }
+      },
+      hasGroupFontSettings() {
+        return !!(this.group.settings.font_family && this.group.settings.font_size)
+      },
       fontSettingsText() {
         if (this.student.settings) {
-          return getFontSettingsDescription(this.student.settings, false)
+          return getFontSettingsDescription(this.student.settings, this.group.settings, false)
         } else {
-          return getFontSettingsDescription(this.group.settings, true)
+          return getFontSettingsDescription(this.group.settings, this.group.settings, true)
         }
       },
       fontSettingsContextHelp() {

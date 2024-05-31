@@ -17,13 +17,13 @@
     </p>
     <b-button-toolbar justify>
       <b-button-group size="sm">
-        <b-btn variant="outline-primary" :pressed="fontSize == 1" @click="fontSize = 1">
+        <b-btn variant="outline-primary" :pressed="fontSize === '1'" @click="fontSize = '1'">
           Normal
         </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize == 2" @click="fontSize = 2">
+        <b-btn variant="outline-primary" :pressed="fontSize === '2'" @click="fontSize = '2'">
           Vergrößert
         </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize == 3" @click="fontSize = 3">
+        <b-btn variant="outline-primary" :pressed="fontSize === '3'" @click="fontSize = '3'">
           Stark vergrößert
         </b-btn>
       </b-button-group>
@@ -59,7 +59,10 @@
       <i class="fas fa-check"></i>
       Speichern
     </b-btn>
-    <b-button variant="outline-secondary" @click="clearSettings">Zurücksetzen</b-button>
+    <b-button class="mt-3 ml-2" variant="outline-secondary" @click="clearSettings">
+      Zurücksetzen
+    </b-button>
+    <b-button class="mt-3 ml-2" variant="outline-danger" @click="hideModal">Abbrechen</b-button>
   </b-modal>
 </template>
 <script>
@@ -70,6 +73,7 @@
     name: 'FontSettingsModal',
     props: {
       studentOrGroup: Object,
+      defaultSettings: Object,
       path: String,
     },
     setup() {
@@ -77,17 +81,13 @@
       return { globalStore }
     },
     data: function () {
+      const s = this.studentOrGroup.settings ? this.studentOrGroup.settings : this.defaultSettings
       return {
         fontFamily:
-          this.studentOrGroup.settings === undefined ||
-          this.studentOrGroup.settings['font_family'] === undefined
+          s === undefined || s['font_family'] === undefined
             ? 'Fibel Nord'
-            : decodeURIComponent(this.studentOrGroup.settings['font_family']),
-        fontSize:
-          this.studentOrGroup.settings === undefined ||
-          this.studentOrGroup.settings['font_size'] === undefined
-            ? '1'
-            : this.studentOrGroup.settings['font_size'],
+            : decodeURIComponent(s['font_family']),
+        fontSize: s === undefined || s['font_size'] === undefined ? '1' : s['font_size'],
       }
     },
     methods: {

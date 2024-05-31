@@ -5,7 +5,10 @@ class AreasController < ApplicationController
       area.destroy
       head :ok
     else
-      head 403
+      render json: {
+               message: "areas_controller:destroy_safe: area couldn't be deleted"
+             },
+             status: :forbidden
     end
   end
 

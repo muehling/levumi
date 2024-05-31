@@ -24,7 +24,10 @@ class MaterialsController < ApplicationController
       @import_failure = !f.present? || Material.import(f.tempfile, params.has_key?(:replace)).nil?
 
       if @import_failure
-        head :unprocessable_entity
+        render json: {
+                 message: 'materials_controller::create: material could not be imported from zip'
+               },
+               status: :unprocessable_entity
       else
         head :ok
       end

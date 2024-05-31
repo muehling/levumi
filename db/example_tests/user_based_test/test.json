@@ -11,10 +11,13 @@
     "time_limit": "Keine",
     "usage": "Die Schüler:innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Die Schüler:innen sagen, was sie erkennen, die Lehrkraft bewertet die Antwort als richtig oder falsch."
   },
+  "test_type": "Lernverlaufsdiagnose",
+  "responsible": "admin@example.com",
   "time_limit": "Keine",
   "student_test": false,
   "configuration": {
-    "views": [{
+    "views": [
+      {
         "key": "V1",
         "label": "Übersicht",
         "student": true,
@@ -32,10 +35,22 @@
         "student": true,
         "group": false,
         "type": "graph_table",
-        "column_keys": ["KT", "VT"],
-        "columns": ["Katzen", "Vögel"],
-        "series_keys": ["VG", "KG"],
-        "series": ["Vögel", "Katzen"],
+        "column_keys": [
+          "KT",
+          "VT"
+        ],
+        "columns": [
+          "Katzen",
+          "Vögel"
+        ],
+        "series_keys": [
+          "VG",
+          "KG"
+        ],
+        "series": [
+          "Vögel",
+          "Katzen"
+        ],
         "options": {
           "chart": {
             "type": "bar"

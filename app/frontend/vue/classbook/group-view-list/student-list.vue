@@ -54,6 +54,7 @@
     <font-settings-modal
       v-if="selectedStudent && selectedModal === 'font-settings'"
       :student-or-group="selectedStudent"
+      :default-settings="group.settings"
       path="student"
       @hide-student-row-modal="resetSelectedStudent"
       @update="updateStudent" />

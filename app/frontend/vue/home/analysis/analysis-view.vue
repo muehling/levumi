@@ -63,7 +63,7 @@
     <b-row :hidden="!graph_visible">
       <b-col>
         <apexchart
-          v-if="graphData.length"
+          v-if="hasChartData"
           ref="levumiChart"
           :key="forceUpdate"
           :type="currentChartType"
@@ -71,7 +71,18 @@
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
-        <div v-else-if="displaySupportFilterHint" class="m-4 p-4" style="height: 500px">
+        <div v-else-if="!isInitialized" style="height: 500px">
+          <b-alert class="m-4 p-4" variant="secondary" show>
+            <span class="preparing">
+              Daten werden vorbereitet
+              <loading-dots
+                :is-loading="true"
+                class-name="m-0 d-inline"
+                wrapper-class-name="d-inline" />
+            </span>
+          </b-alert>
+        </div>
+        <div v-else style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
           </b-alert>
@@ -88,7 +99,7 @@
               :aria-expanded="annotationControlVisible ? 'true' : 'false'"
               aria-controls="annotation_collapse"
               size="sm"
-              :variant="`${annotationControlVisible ? 'primary' : 'outline-primary'}`"
+              :variant="`${annotationControlVisible ? 'outline-success' : 'outline-primary'}`"
               @click="toggleCollapse('annotation_collapse')">
               Anmerkungen
               <i
@@ -103,7 +114,7 @@
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
               size="sm"
-              :variant="`${targetControlVisible ? 'primary' : 'outline-primary'}`"
+              :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
               @click="toggleCollapse('target_collapse')">
               Ziele und Trends
               <i
@@ -219,8 +230,9 @@
   import apiRoutes from '@/vue/routes/api-routes'
   import autoTable from 'jspdf-autotable'
   import compact from 'lodash/compact'
-  import isObject from 'lodash/isObject'
+  import isEmpty from 'lodash/isEmpty'
   import jsPDF from 'jspdf'
+  import LoadingDots from '../../shared/loading-dots.vue'
   import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
@@ -248,6 +260,7 @@
       TargetControls,
       SupportGroupOverview,
       SupportGroupQualitative,
+      LoadingDots,
     },
 
     inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
@@ -258,7 +271,7 @@
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
-        testData: computed(() => this.testData),
+        info_attachments: computed(() => this.info_attachments),
         weeks: computed(() => this.weeks),
       }
     },
@@ -294,11 +307,15 @@
         targetAdded: false,
         targetControlVisible: false,
         targetVal: null,
+        info_attachments: undefined,
       }
     },
     computed: {
       displaySupportFilterHint() {
         return !this.graphData.length && this.selectedSupportNeedFilter
+      },
+      hasChartData() {
+        return !isEmpty(this.graphData) && this.isInitialized
       },
       weeks() {
         return compact(uniq(this.results?.map(w => w.test_week)))
@@ -361,11 +378,7 @@
         return this.chartOptions.chart.type || 'line'
       },
       viewConfig() {
-        if (this.selectedView) {
-          return this.configuration.views.find(view => view.key === this.selectedView)
-        } else {
-          return this.configuration.views[0]
-        }
+        return this.currentViewConfig()
       },
       nivConfig() {
         return this.viewConfig.niv_config
@@ -524,21 +537,6 @@
         const val = this.targetStoredInclGroup?.value
         return val === undefined ? null : val
       },
-      testData() {
-        //TODO this is the only used for the attachedLevelImages. Might be better
-        //TODO to include the information in this.test to save an api call.
-        return this.testsStore.tests
-          .find(area => area.id === this.test.area_id)
-          .competences?.find(competence => competence.id === this.test.competence_id)
-          .test_families?.find(family => family.id === this.test.test_family_id)
-          .tests?.find(test => test.id === this.test.id)
-      },
-      attachedLevelImages() {
-        return this.testData?.info_attachments.filter(
-          attachment =>
-            attachment.content_type.startsWith('image') && attachment.filename.startsWith('Niveau')
-        )
-      },
       maxYValue() {
         return Math.max(this.maxY, this.targetVal)
       },
@@ -563,16 +561,9 @@
         this.updateView(false)
       },
     },
-    async created() {
-      //TODO testsStore.fetch is quite expensive and only used once for some very particular information, see computed testData
-      //TODO should be replaced with a different api endpoint
-      if (!this.testsStore.tests.length) {
-        await this.testsStore.fetch()
-      }
-    },
     async mounted() {
       await this.loadStudentTargets()
-      this.setStudentAndUpdate(
+      await this.setStudentAndUpdate(
         this.has_group_views
           ? -1
           : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
@@ -581,7 +572,22 @@
       )
     },
     methods: {
-      setSelectedView(key) {
+      currentViewConfig(key = this.selectedView) {
+        if (key) {
+          return this.configuration.views.find(view => view.key === key)
+        } else {
+          return this.configuration.views[0]
+        }
+      },
+
+      async setSelectedView(key) {
+        // if the new view is a niveau overview view make sure the info_attachments are loaded
+        if (this.currentViewConfig(key).niv_config && this.info_attachments === undefined) {
+          // load info_attachments for use in the niveau overview view
+          const data = await ajax({ ...apiRoutes.tests.info_attachments(this.test.id) })
+          const attachments = data.data.info_attachments
+          this.info_attachments = attachments
+        }
         this.selectedView = key
         this.restoreTarget(false)
         this.updateView(true)
@@ -689,16 +695,14 @@
       createSeries(studentId, seriesKey, formatDate) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
-        return this.weeks.map(week => {
-          const currentResult = results.find(r => r?.test_week === week)?.views?.[
-            this.viewConfig.uses_data_from ? this.viewConfig.uses_data_from : this.viewConfig.key
-          ]
+        const res = this.weeks.map(week => {
+          const currentResult = results.find(r => r?.test_week === week)
 
           // if a week has no results add a point with an empty y value for this week
           if (currentResult === null || currentResult === undefined) {
             return { x: formatDate ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate, week)
+          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
           point.y = point.y?.toFixed(2)
           if (point.y === undefined) {
             point.y = null
@@ -707,47 +711,42 @@
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
+        return res
       },
-      XYFromResult(result, seriesKey, formatDate, week) {
+      XYFromResult(result, seriesKey, formatDate) {
         if (result === null || result === undefined) {
           return undefined
         }
         let yVal
-
-        const view = this.viewConfig
-
+        // if `uses_data_from` is set use that as the key to retrieve the data series
+        const viewKey = this.viewConfig.uses_data_from
+          ? this.viewConfig.uses_data_from
+          : this.viewConfig.key
         if (seriesKey) {
-          yVal = result?.[seriesKey]
+          yVal = result?.views[viewKey][seriesKey]
         } else {
-          // fixme result shouldn't be either object or number
-          if (!isObject(result)) {
-            yVal = result
-          } else {
-            yVal = result?.views[view.key]
-          }
+          yVal = result?.views[viewKey]
         }
-        if (yVal === undefined) {
-          yVal = null
-        }
+        const w = result.test_week
         return {
-          x: formatDate ? printDate(week) : week ?? null,
+          x: formatDate ? printDate(w) : w ?? null,
           y: yVal,
         }
       },
-      setStudentAndUpdate(studentId) {
+      async setStudentAndUpdate(studentId) {
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
         let animateChange = false
         // some combinations of views/selectedStudent/presence of results yield no views
         if (this.viewsWithGroupAndStudent.length) {
-          this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
+          await this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
         }
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
           animateChange = true
         }
-        this.updateView(animateChange)
+        await this.updateView(animateChange)
       },
 
       async updateView(animate) {
@@ -843,7 +842,7 @@
             (trendlineData && this.extrapolationIsEnabled) ||
             (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
           ) {
-            this.expandXAxis(gData)
+            gData = this.expandXAxis(gData)
           }
         }
 
@@ -928,7 +927,7 @@
           // if no student is selected then calculate the average over the results of the first week
           startY =
             startWeekResults.reduce((acc, res) => {
-              return acc + this.XYFromResult(res, null)?.y || 0
+              return acc + this.XYFromResult(res, null, false)?.y || 0
             }, 0) / startWeekResults.length
         } else {
           // if a student IS selected take their first result as the starting point
@@ -944,7 +943,7 @@
             { test_week: new Date(Date.UTC(90000, 12, 24)) }
           )
           startWeek = firstResult.test_week
-          startY = this.XYFromResult(firstResult, null)?.y
+          startY = this.XYFromResult(firstResult, null, false)?.y
         }
         const deviate = this.deviationIsEnabled
 
@@ -1055,17 +1054,19 @@
         // SIDE-FACT: technically expanding the x-axis isn't necessary when there's a slope target or an extrapolated trend
         //            as these automatically lead to this effect themselves, but I don't think we should check for that here
         if (!this.dateUntilIsEnabled || !this.dateUntilVal) {
-          return
+          return graphData
         }
         // only use the date if it lies after the last test result
+        // TODO might be necessary to extract the maxDate from all results (see below)
         const maxDate = graphData[0]?.data.reduce((acc, d) => {
           return d.x > acc ? d.x : acc
         }, this.dateUntilVal)
-        // to trick ApexCharts into drawing until there add an empty data point to the first series
+        // to trick ApexCharts into drawing until there add an empty data point to all series
         // TODO: it would be nice if this could be achieved without polluting the data
-        if (maxDate === this.dateUntilVal) {
-          graphData[0]?.data.push({ x: this.dateUntilVal, y: null })
+        if (maxDate === this.dateUntilVal && graphData.length) {
+          graphData.forEach(gd => gd.data.push({ x: this.dateUntilVal, y: null }))
         }
+        return graphData
       },
 
       async loadStudentTargets() {
@@ -1095,3 +1096,12 @@
     },
   }
 </script>
+<style>
+  .preparing .spinner {
+    padding-left: 1em;
+  }
+  .preparing .spinner > div {
+    height: 12px !important;
+    width: 12px !important;
+  }
+</style>

@@ -342,7 +342,8 @@
         return this.assessmentsStore.getAssessments(this.group.id)
       },
       areas() {
-        return this.testMetaData.areas
+        const areas = [...this.testMetaData.areas]
+        return areas.sort((a, b) => (a.name > b.name ? 1 : -1))
       },
       testTypes() {
         return this.testMetaData.test_types
@@ -445,28 +446,34 @@
         this.$router.push(`/diagnostik/${this.group.id}`)
       },
       competencesForTestType(areaId, testTypeId) {
-        const competences = this.competences.filter(
-          competence =>
-            competence.test_type_ids.includes(testTypeId) && competence.area_id === areaId
-        )
+        const competences = this.competences
+          .filter(
+            competence =>
+              competence.test_type_ids.includes(testTypeId) && competence.area_id === areaId
+          )
+          .sort((a, b) => (a.name > b.name ? 1 : -1))
         return competences
       },
       testFamiliesForCompetence(competenceId, testTypeId) {
-        const testFamilies = this.testFamilies.filter(
-          testFamily =>
-            testFamily.test_type_ids.includes(testTypeId) &&
-            testFamily.competence_id === competenceId
-        )
+        const testFamilies = this.testFamilies
+          .filter(
+            testFamily =>
+              testFamily.test_type_ids.includes(testTypeId) &&
+              testFamily.competence_id === competenceId
+          )
+          .sort((a, b) => (a.name > b.name ? 1 : -1))
         return testFamilies
       },
       testsForTestFamily(testFamilyId, testTypeId) {
-        const tests = this.tests.filter(
-          test =>
-            test.test_family_id === testFamilyId &&
-            !test.archive &&
-            (test.test_type_id === testTypeId ||
-              (!test.test_type_id && testTypeId === this.defaultTestType.id))
-        )
+        const tests = this.tests
+          .filter(
+            test =>
+              test.test_family_id === testFamilyId &&
+              !test.archive &&
+              (test.test_type_id === testTypeId ||
+                (!test.test_type_id && testTypeId === this.defaultTestType.id))
+          )
+          .sort((a, b) => (a.level > b.level ? 1 : -1))
         return tests
       },
       assessmentExists(type, id) {

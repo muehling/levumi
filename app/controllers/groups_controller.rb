@@ -59,7 +59,10 @@ class GroupsController < ApplicationController
       @group.destroy
       head :ok #200 als Rückmeldung an Vue-Component
     else
-      head :not_acceptable
+      render json: {
+               message: "groups_controller::destroy: group couldn't be destroyed"
+             },
+             status: :not_acceptable
     end
   end
 
@@ -67,7 +70,10 @@ class GroupsController < ApplicationController
     if !@group.nil?
       render json: @group.test_data
     else
-      head :not_found
+      render json: {
+               message: "groups_controller::get_test_data: group couldn't be found"
+             },
+             status: :not_found
     end
   end
 
