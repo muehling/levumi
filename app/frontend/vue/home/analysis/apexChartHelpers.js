@@ -124,11 +124,11 @@ export const apexChartOptions = weekLabels => ({
           fontSize: '13px',
         },
         formatter: val => {
-          return val > 1.0 ? '' : val.toFixed(1)
+          return val >= 1.05 ? '' : val.toFixed(1)
         },
       },
       min: 0.0,
-      max: 1.0,
+      max: 1.03,
       //decimalsInFloat: 1,
     },
     colors: [
@@ -153,6 +153,15 @@ export const apexChartOptions = weekLabels => ({
       'rgba(255,255,255,0)',
       'rgba(255,36,74,0.1)',
       '#ff244a',
+      'rgba(255,127,36,0.1)',
+      '#ff6a00',
+      'rgba(255,127,35,0.1)',
+      '#02d32c',
+      'rgba(10,255,86,0.1)',
+
+      'rgba(255,255,255,0)',
+      'rgba(255,36,74,0.1)',
+      '#ff244a',
       'rgba(30,220,220,0.1)',
       '#1edcdc',
       'rgba(30,220,220,0.1)',
@@ -171,12 +180,11 @@ export const apexChartOptions = weekLabels => ({
       'rgba(255,255,255,0)',
       'rgba(255,36,74,0.1)',
       '#ff244a',
-      'rgba(255,127,36,0.1)',
-      '#ff6a00',
-      'rgba(255,127,35,0.1)',
+      'rgba(154,154,154,0.1)',
+      '#151515',
+      'rgba(154,154,154,0.1)',
       '#02d32c',
       'rgba(10,255,86,0.1)',
-      'rgba(255,255,255,0)',
     ],
     tooltip: {
       ...commonTooltip(),
