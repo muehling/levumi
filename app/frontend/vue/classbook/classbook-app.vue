@@ -293,7 +293,10 @@
         Vue.set(this.globalStore.login, 'intro_state', 5)
       },
       handleNavigate(path) {
-        this.$router.push(`/klassenbuch/${path}`)
+        // avoid duplicated navigation
+        if (window.location.pathname !== `/klassenbuch/${path}`) {
+          this.$router.push(`/klassenbuch/${path}`)
+        }
       },
     },
   }
