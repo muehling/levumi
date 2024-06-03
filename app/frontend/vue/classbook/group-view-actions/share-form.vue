@@ -114,8 +114,6 @@
           return data
         } else {
           const error = res
-          console.log('data', error)
-
           this.errorMessage = error.data.message
           return null
         }

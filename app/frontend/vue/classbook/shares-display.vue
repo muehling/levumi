@@ -87,10 +87,6 @@
           data: { group_share: { read_only: accessLevel } },
         })
         if (res.status === 200) {
-          console.log(
-            res.data,
-            this.globalStore.groups.find(g => g.id === res.data.id)
-          )
           const groups = [...this.globalStore.groups]
           const index = groups.findIndex(g => g.id === res.data.id)
           groups[index] = res.data
