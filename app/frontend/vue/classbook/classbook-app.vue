@@ -41,7 +41,7 @@
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>
-                          {{ group.label + '/' + group.id }}
+                          {{ group.label }}
                         </span>
                       </template>
                       <group-view
@@ -78,7 +78,7 @@
                       <!-- Beispielklasse kursiv darstellen -->
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label + '/' + group.id }}</span>
+                        <span v-else>{{ group.label }}</span>
                         <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
                       </template>
                       <group-view :groups="sharedGroups" :group="group"></group-view>

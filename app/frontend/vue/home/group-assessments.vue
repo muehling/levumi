@@ -9,7 +9,8 @@
         {{ toggleButtonText }}
       </b-btn>
     </div>
-    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
+    <table
+      class="table table-sm table-striped table-hover table-responsive-md text-small group-assessments">
       <thead>
         <tr>
           <th>Zum Test</th>
@@ -288,5 +289,8 @@
   }
   .button-10 {
     width: 10em;
+  }
+  .group-assessments td {
+    vertical-align: middle !important;
   }
 </style>

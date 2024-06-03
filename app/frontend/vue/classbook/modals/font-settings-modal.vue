@@ -66,8 +66,9 @@
   </b-modal>
 </template>
 <script>
-  import { ajax } from '../../../utils/ajax'
-  import { useGlobalStore } from '../../../store/store'
+  import { ajax } from 'src/utils/ajax'
+  import { useGlobalStore } from 'src/store/store'
+  import { defaultFont } from 'src/utils/constants'
 
   export default {
     name: 'FontSettingsModal',
@@ -85,9 +86,10 @@
       return {
         fontFamily:
           s === undefined || s['font_family'] === undefined
-            ? 'Fibel Nord'
+            ? defaultFont.fontFamily
             : decodeURIComponent(s['font_family']),
-        fontSize: s === undefined || s['font_size'] === undefined ? '1' : s['font_size'],
+        fontSize:
+          s === undefined || s['font_size'] === undefined ? defaultFont.fontSize : s['font_size'],
       }
     },
     methods: {

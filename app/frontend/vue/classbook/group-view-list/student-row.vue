@@ -1,15 +1,19 @@
 <template>
-  <tr id="intro_cb_5">
-    <td>
-      <div v-if="!empty && !editMode">
+  <tr id="intro_cb_5" class="student-row">
+    <td class="pl-0">
+      <div v-if="!empty && !editMode" class="pl-1">
         {{ student.name }}
       </div>
-      <div v-else-if="editMode">
+      <div v-else-if="editMode" class="pl-1">
         <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
       <div v-else class="d-inline">
-        <b-btn variant="outline-secondary" class="text-nowrap" size="sm" @click="editMode = true">
+        <b-btn
+          variant="outline-secondary"
+          class="text-nowrap mt-2"
+          size="sm"
+          @click="editMode = true">
           <i class="fas fa-user-plus"></i>
           Anlegen
         </b-btn>
@@ -119,8 +123,8 @@
       </span>
       <context-help
         v-if="!hasFontSettings && !hasGroupFontSettings && !empty"
-        help-text="Weder für die Klasse
-      noch für diese Schüler:in sind Schrifteinstellungen festgelegt."
+        :help-text="`Weder für die Klasse
+      noch für diese Schüler:in sind Schrifteinstellungen festgelegt. Als Standard wird ${defaultFontSettings} verwendet.`"
         class="mt-3 ml-2" />
     </td>
     <td>
@@ -129,7 +133,7 @@
           <b-btn
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="fontSettingsContextHelp"
+            v-b-popover.hover.topright="'Schrifteinstellungen'"
             class="mr-1"
             variant="outline-secondary"
             size="sm"
@@ -214,6 +218,7 @@
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import isArray from 'lodash/isArray'
   import isEmpty from 'lodash/isEmpty'
+  import { defaultFont } from 'src/utils/constants'
 
   export default {
     name: 'StudentRow',
@@ -292,11 +297,11 @@
           return getFontSettingsDescription(this.group.settings, this.group.settings, true)
         }
       },
-      fontSettingsContextHelp() {
-        return {
-          html: true,
-          content: `<strong>Schrifteinstellungen</strong><br/>${this.fontSettingsText}`,
-        }
+      defaultFontSettings() {
+        return getFontSettingsDescription(
+          { font_family: defaultFont.fontFamily, font_size: defaultFont.fontSize },
+          null
+        )
       },
       studentTags() {
         return isArray(this.student.tags) ? this.student.tags.join(', ') : ''
@@ -444,5 +449,8 @@
   }
   .new-tag-submit {
     height: 2em;
+  }
+  .student-row td {
+    vertical-align: middle !important;
   }
 </style>
