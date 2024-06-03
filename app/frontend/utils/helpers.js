@@ -1,5 +1,5 @@
-import { isObject } from 'lodash'
 import { useGlobalStore } from '../store/store'
+import { defaultFont } from './constants'
 
 // Returns the student object for the passed group and student id
 export const getStudent = (groupId, studentId) => {
@@ -59,13 +59,18 @@ export const getTrendFromResults = data => {
   }
 }
 
-export const getFontSettingsDescription = (settings, defaultSettings) => {
-  const s = settings.font_size && settings.font_family ? settings : defaultSettings
+export const getFontSettingsDescription = (studentSettings, groupSettings) => {
+  let usedSettings =
+    studentSettings.font_size && studentSettings.font_family ? studentSettings : groupSettings
 
-  if (s.font_size && s.font_family) {
-    const raw = decodeURIComponent(s.font_family)
+  if (!usedSettings.font_size && !usedSettings.font_family) {
+    usedSettings = { font_size: defaultFont.fontSize, font_family: defaultFont.fontFamily }
+  }
+
+  if (usedSettings.font_size && usedSettings.font_family) {
+    const raw = decodeURIComponent(usedSettings.font_family)
     const fontFamily = raw.charAt(0).toUpperCase() + raw.slice(1)
-    switch (s.font_size) {
+    switch (usedSettings.font_size) {
       case '1':
         return `${fontFamily}, normale Größe`
       case '2':

@@ -1,7 +1,7 @@
 <template>
   <tr v-if="!editMode" id="intro_cb_5" class="student-row student-row-display">
     <td class="pl-0">
-      <div v-if="!empty && !editMode" class="pl-1">
+      <div v-if="!empty" class="pl-1">
         {{ student.name }}
       </div>
       <div v-else class="d-inline">
@@ -51,16 +51,9 @@
       </div>
     </td>
     <td>
-      <span v-if="!hasFontSettings && !empty">Standard</span>
-      <span v-if="!hasFontSettings && hasGroupFontSettings && !empty">:</span>
-      <span :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
-        {{ empty ? '' : fontSettingsText }}
+      <span v-if="!empty" :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
+        {{ fontSettingsText }}
       </span>
-      <context-help
-        v-if="!hasFontSettings && !hasGroupFontSettings && !empty"
-        :help-text="`Weder für die Klasse
-      noch für diese Schüler:in sind Schrifteinstellungen festgelegt. Als Standard wird ${defaultFontSettings} verwendet.`"
-        class="mt-3 ml-2" />
     </td>
     <td>
       <span>
@@ -360,14 +353,13 @@
           return !!(this.student.settings.font_family && this.student.settings.font_size)
         }
       },
-      hasGroupFontSettings() {
-        return !!(this.group.settings.font_family && this.group.settings.font_size)
-      },
       fontSettingsText() {
-        if (this.student.settings) {
-          return getFontSettingsDescription(this.student.settings, this.group.settings, false)
+        if (this.student.settings.font_size && this.student.settings.font_family) {
+          return getFontSettingsDescription(this.student.settings, this.group.settings)
+        } else if (this.group.settings.font_size && this.group.settings.font_family) {
+          return getFontSettingsDescription(this.group.settings, null)
         } else {
-          return getFontSettingsDescription(this.group.settings, this.group.settings, true)
+          return getFontSettingsDescription(this.group.settings, this.group.settings)
         }
       },
       defaultFontSettings() {
