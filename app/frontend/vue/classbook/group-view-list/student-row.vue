@@ -1,12 +1,8 @@
 <template>
-  <tr id="intro_cb_5" class="student-row">
+  <tr v-if="!editMode" id="intro_cb_5" class="student-row student-row-display">
     <td class="pl-0">
       <div v-if="!empty && !editMode" class="pl-1">
         {{ student.name }}
-      </div>
-      <div v-else-if="editMode" class="pl-1">
-        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
-        <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
       <div v-else class="d-inline">
         <b-btn
@@ -21,94 +17,33 @@
     </td>
 
     <td id="intro_cb_6">
-      <div v-if="editMode">
-        <small class="form-text text-muted">nicht änderbar</small>
-      </div>
-      <div v-else>
+      <div>
         {{ student.login }}
       </div>
     </td>
 
     <td>
-      <div v-if="editMode">
-        <b-form-select
-          v-model="gender"
-          size="sm"
-          :options="options_gender"
-          name="gender"></b-form-select>
-      </div>
-      <div v-else>
+      <div>
         <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
 
     <td>
-      <div v-if="editMode">
-        <b-form-select v-model="month" size="sm" @change="changeMonth">
-          <option v-for="(m, i) in months" :key="`${m}/$${i}/${student.id}`" :value="i">
-            {{ m }}
-          </option>
-        </b-form-select>
-        <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
-          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-        </b-form-select>
-        <b-btn
-          v-if="month && year"
-          class="btn btn-block btn-sm mt-2"
-          variant="outline-danger"
-          @click="clearDateInputs">
-          Datum löschen
-        </b-btn>
-      </div>
-      <div v-else>
+      <div>
         <span v-if="student.birthmonth != undefined">{{ months[month] }} {{ year }}</span>
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
-
     <td>
-      <div v-if="editMode">
-        <b-form-select v-model="sen" :options="options_sen" size="sm" />
-        <small class="form-text text-muted">
-          Diagnostizierter sonderpädagogischer Förderbedarf?
-        </small>
-      </div>
-      <div v-else>
+      <div>
         <span v-if="student.sen != undefined">{{ options_sen[student.sen].text }}</span>
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
 
     <td>
-      <div v-if="editMode">
-        <b-form-checkbox-group
-          v-model="tags"
-          :options="options_tags"
-          name="tags"
-          stacked></b-form-checkbox-group>
-        <div class="d-flex">
-          <b-form @submit.prevent.stop="addTag">
-            <b-form-input
-              v-model="newTag"
-              placeholder="Weiteres Merkmal"
-              class="d-inline new-tag-input text-small py-0"></b-form-input>
-            <b-button
-              size="sm"
-              :disabled="newTag === ''"
-              variant="outline-success"
-              class="pb-0 pt-1 ml-2 new-tag-submit"
-              @click="addTag">
-              <i class="fas fa-check"></i>
-            </b-button>
-
-            <context-help
-              help-text="Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein. Bitte beachten: der eingegebene Text wird unverschlüsselt gespeichert!"
-              class-name="mt-3 ml-2" />
-          </b-form>
-        </div>
-      </div>
-      <div v-else>
+      <div>
         <span>
           {{ studentTags }}
         </span>
@@ -169,7 +104,145 @@
           </b-btn>
         </b-button-group>
       </span>
-      <span :class="!readOnly && editMode ? '' : 'd-none'">
+    </td>
+  </tr>
+  <tr v-else id="intro_cb_5" class="student-row student-row-edit">
+    <td class="pl-0">
+      <div class="pl-1">
+        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
+        <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
+      </div>
+    </td>
+
+    <td id="intro_cb_6">
+      <div>
+        <small class="form-text text-muted">nicht änderbar</small>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <b-form-select
+          v-model="gender"
+          size="sm"
+          :options="options_gender"
+          name="gender"></b-form-select>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <b-form-select v-model="month" size="sm" @change="changeMonth">
+          <option v-for="(m, i) in months" :key="`${m}/$${i}/${student.id}`" :value="i">
+            {{ m }}
+          </option>
+        </b-form-select>
+        <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
+          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+        </b-form-select>
+        <b-btn
+          v-if="month && year"
+          class="btn btn-block btn-sm mt-2"
+          variant="outline-danger"
+          @click="clearDateInputs">
+          Datum löschen
+        </b-btn>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <b-form-select v-model="sen" :options="options_sen" size="sm" />
+        <small class="form-text text-muted">
+          Diagnostizierter sonderpädagogischer Förderbedarf?
+        </small>
+      </div>
+    </td>
+
+    <td>
+      <div>
+        <b-form-checkbox-group
+          v-model="tags"
+          :options="options_tags"
+          name="tags"
+          stacked></b-form-checkbox-group>
+        <div class="d-flex">
+          <b-form @submit.prevent.stop="addTag">
+            <b-form-input
+              v-model="newTag"
+              placeholder="Weiteres Merkmal"
+              class="d-inline new-tag-input text-small py-0"></b-form-input>
+            <b-button
+              size="sm"
+              :disabled="newTag === ''"
+              variant="outline-success"
+              class="pb-0 pt-1 ml-2 new-tag-submit"
+              @click="addTag">
+              <i class="fas fa-check"></i>
+            </b-button>
+
+            <context-help
+              help-text="Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein. Bitte beachten: der eingegebene Text wird unverschlüsselt gespeichert!"
+              class-name="mt-3 ml-2" />
+          </b-form>
+        </div>
+      </div>
+    </td>
+    <td>
+      <span v-if="!hasFontSettings && !empty">Standard</span>
+      <span v-if="!hasFontSettings && hasGroupFontSettings && !empty">:</span>
+      <span :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
+        {{ empty ? '' : fontSettingsText }}
+      </span>
+      <context-help
+        v-if="!hasFontSettings && !hasGroupFontSettings && !empty"
+        :help-text="`Weder für die Klasse
+      noch für diese Schüler:in sind Schrifteinstellungen festgelegt. Als Standard wird ${defaultFontSettings} verwendet.`"
+        class="mt-3 ml-2" />
+    </td>
+    <td>
+      <span>
+        <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
+          <b-btn
+            v-if="!readOnly"
+            v-b-modal="'modal_settings_' + student.id"
+            v-b-popover.hover.topright="'Schrifteinstellungen'"
+            class="mr-1"
+            variant="outline-secondary"
+            size="sm"
+            @click="handleClickAction(student, 'font-settings')">
+            <i class="fas fa-text-height"></i>
+          </b-btn>
+          <b-btn
+            v-if="!readOnly"
+            v-b-popover.hover.topright="'Bearbeiten'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="editMode = true">
+            <i class="fas fa-user-edit"></i>
+          </b-btn>
+          <b-btn
+            v-if="!readOnly"
+            v-b-popover.hover.topright="'QR-Code'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="handleClickAction(student, 'qr-code')">
+            <i class="fas fa-qrcode"></i>
+          </b-btn>
+          <b-btn
+            v-if="!!student.id"
+            v-b-popover.hover.topright="'Test-Info'"
+            variant="outline-secondary"
+            class="mr-1"
+            size="sm"
+            @click="handleClickAction(student, 'test-info')">
+            <i class="fas fa-circle-info"></i>
+          </b-btn>
+        </b-button-group>
+      </span>
+      <span>
         <b-button-toolbar class="flex-nowrap">
           <b-button-group>
             <b-button
@@ -450,7 +523,7 @@
   .new-tag-submit {
     height: 2em;
   }
-  .student-row td {
+  .student-row.student-row-display td {
     vertical-align: middle !important;
   }
 </style>
