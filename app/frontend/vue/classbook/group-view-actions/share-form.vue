@@ -91,7 +91,8 @@
             text: 'Ansicht und verwenden',
             value: 0,
             disabled: 0,
-            helpText: 'Die Person darf die Klasse bearbeiten und Messungen durchführen.',
+            helpText:
+              'Die Person darf die Klasse bearbeiten und Messungen durchführen. Einige Aktionen, wie das Verschieben von Schülern oder das Archivieren der Klasse sind nicht verfügbar.',
           },
           {
             text: 'Anonym teilen',

@@ -61,6 +61,9 @@ class StudentsController < ApplicationController
     head :no_content and return if old_group.nil? || new_group.nil? || students.empty?
 
     params[:students].each do |student_data|
+      student = students.where(id: student_data[:id]).first
+      student.update(group_id: params[:target_group_id], name: student_data[:name])
+
       source_assessments = Assessment.where(group_id: params[:source_group_id])
 
       source_assessments.each do |source_assessment|
@@ -77,8 +80,6 @@ class StudentsController < ApplicationController
             target_assessment.update(excludes: new_group_student_ids)
           end
         end
-        student = students.where(id: student_data[:id]).first
-        student.update(group_id: params[:target_group_id], name: student_data[:name])
         if (!target_assessment.nil?)
           Result
             .where(student_id: student[:id], assessment_id: source_assessment[:id])
