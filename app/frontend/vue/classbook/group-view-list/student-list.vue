@@ -1,6 +1,12 @@
 <template>
   <div class="mt-3">
-    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
+    <b-card
+      v-if="students.length === 0 && group.read_only"
+      bg-variant="white"
+      class="col-lg-8 col-xl-6 mt-3">
+      Keine Schüler:innen vorhanden!
+    </b-card>
+    <table v-else class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
         <tr>
           <th>Name</th>
@@ -9,6 +15,7 @@
           <th>Geburtsdatum</th>
           <th>Förderbedarf</th>
           <th>Weitere Merkmale</th>
+          <th>Schriftart</th>
           <th>Aktionen</th>
         </tr>
       </thead>
@@ -18,59 +25,55 @@
           v-for="(student, index) in students"
           :key="student.id"
           :student="student"
-          :group-id="groupId"
+          :group="group"
           :index="index"
           :empty="false"
-          :read-only="readOnly"
           @click-student-action="handleClickStudent"
-          @update:students="update($event)"
-        >
-        </student-row>
+          @delete-student="deleteStudent"
+          @update-student="updateStudent"></student-row>
         <!-- Zusätzliche Reihe mit "leerem" Objekt zum Anlegen -->
         <student-row
           v-if="!readOnly"
-          :key="0"
+          :key="-1"
           :student="{ name: '', login: '', tags: [] }"
-          :group-id="groupId"
+          :group="group"
           :index="-1"
           :empty="true"
           :open="students.length === 0"
-          @update:students="update($event)"
-        ></student-row>
+          @update-student="updateStudent"></student-row>
       </tbody>
     </table>
     <test-info-modal
       v-if="selectedStudent && selectedModal === 'test-info'"
       :student="selectedStudent"
-      @hide-student-row-modal="resetSelectedStudent"
-    />
+      @hide-student-row-modal="resetSelectedStudent" />
     <qr-code-modal
       v-if="selectedStudent && selectedModal === 'qr-code'"
       :student="selectedStudent"
-      @hide-student-row-modal="resetSelectedStudent"
-    />
+      @hide-student-row-modal="resetSelectedStudent" />
     <font-settings-modal
       v-if="selectedStudent && selectedModal === 'font-settings'"
-      :student="selectedStudent"
+      :student-or-group="selectedStudent"
+      :default-settings="group.settings"
+      path="student"
       @hide-student-row-modal="resetSelectedStudent"
-      @update="update"
-    />
+      @update="updateStudent" />
   </div>
 </template>
 
 <script>
-  import { decryptStudentName } from '../../utils/encryption'
-  import { useGlobalStore } from '../../store/store'
+  import { decryptStudentName } from 'src/utils/encryption'
+  import { useGlobalStore } from 'src/store/store'
   import StudentRow from './student-row.vue'
-  import TestInfoModal from './modals/test-info-modal.vue'
-  import QrCodeModal from './modals/qr-code-modal.vue'
-  import FontSettingsModal from './modals/font-settings-modal.vue'
+  import TestInfoModal from 'src/vue/classbook/modals/test-info-modal.vue'
+  import QrCodeModal from 'src/vue/classbook/modals/qr-code-modal.vue'
+  import FontSettingsModal from 'src/vue/classbook/modals/font-settings-modal.vue'
 
   export default {
     name: 'StudentList',
     components: { StudentRow, TestInfoModal, QrCodeModal, FontSettingsModal },
     props: {
-      groupId: Number, //Benötigt um neue Schüler der Gruppe zuordnen zu können.
+      group: Object,
       readOnly: Boolean,
     },
     setup() {
@@ -82,8 +85,8 @@
     },
     computed: {
       students() {
-        const allStudents = this.globalStore.studentsInGroups
-        return allStudents[this.groupId] || []
+        const allStudents = this.globalStore.studentsInGroups[this.group.id]
+        return allStudents || []
       },
     },
 
@@ -96,27 +99,24 @@
         this.selectedStudent = student
         this.selectedModal = action
       },
-      update(val) {
-        //Student einfügen, updaten oder löschen und View aktualisieren
-        if (val.object !== null) {
-          val.object.name = decryptStudentName(
-            val.object.name,
-            'Kind_' + val.object.id,
-            this.groupId
-          ) //Namen für weitere Verwendung entschlüsseln
-          if (val.index > -1) {
-            // update
-            this.$set(this.students, val.index, val.object)
-          } else {
-            // create
-            this.students.push(val.object)
-          }
-        } // delete
-        else {
-          this.students.splice(val.index, 1)
+      deleteStudent(data) {
+        const students = this.students.filter(s => s.id !== data.id)
+        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
+      },
+
+      updateStudent(data) {
+        const students = [...this.students]
+
+        data.name = decryptStudentName(data.name, 'Kind_' + data.id, this.group.id)
+        let student = students.find(s => s.id === data.id)
+        if (student) {
+          const index = students.findIndex(s => s.id === data.id)
+          students[index] = data
+        } else {
+          students.push(data)
         }
 
-        this.globalStore.setStudentsInGroup({ groupId: this.groupId, students: this.students })
+        this.globalStore.setStudentsInGroup({ groupId: this.group.id, students: students })
       },
     },
   }

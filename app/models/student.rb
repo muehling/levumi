@@ -39,7 +39,7 @@ class Student < ApplicationRecord
       .nil?
     json['sen'] = self.sen unless self.sen.nil?
     json['tags'] = self.tags.nil? ? [] : self.tags
-    json['settings'] = self.settings unless self.settings.nil?
+    json['settings'] = self.settings || {}
     json
   end
 
@@ -74,7 +74,7 @@ class Student < ApplicationRecord
     all_assessments = Assessment.where(group_id: self.group_id, test_id: tests, active: true)
     week = Date.commercial(Date.today.year, Date.today.cweek)
     result = []
- 
+
     all_assessments.each do |a|
       unless a.excludes.include?(self.id)
         result += [
@@ -94,12 +94,16 @@ class Student < ApplicationRecord
     if !settings.nil? && settings.has_key?(key)
       return settings[key]
     else
-      defs = {
-        #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
-        'font_family' => 'Fibel Nord',
-        'font_size' => 1
-      }
-      return defs[key]
+      if !group.settings.nil? && group.settings.has_key?(key)
+        return group.settings[key]
+      else
+        defs = {
+          #Achtung: Evtl. nicht der einzige Ort an dem dieser Werte definiert werden! TODO: Lässt sich das lösen?
+          'font_family' => 'Fibel Nord',
+          'font_size' => 1
+        }
+        return defs[key]
+      end
     end
   end
 end

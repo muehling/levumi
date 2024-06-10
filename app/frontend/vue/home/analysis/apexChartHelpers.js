@@ -51,7 +51,7 @@ export const prepareOptions = (
 
   // check the y-axis needs to be adjusted to display a trend or target
   if (yMax) {
-    options.yaxis.max = yMax
+    options.yaxis.max = yMax * 1.1
   } else if (options.yaxis.max === undefined) {
     options.yaxis.max = function (max) {
       return max * 1.1

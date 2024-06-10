@@ -29,9 +29,9 @@ export const decryptStudentNames = group => {
 }
 
 //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
-export const encryptWithMasterKeyAndGroup = (text, group) => {
+export const encryptWithMasterKeyAndGroup = (text, groupId) => {
   const store = useGlobalStore()
-  let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
+  let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[groupId])
   return sjcl.encrypt(tempkey, text)
 }
 

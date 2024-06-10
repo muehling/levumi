@@ -1,104 +1,204 @@
 <template>
-  <!-- Darstellung für reguläre Klasse: Buttons für Edit/Archive, Share, dann Schülertabelle  -->
-  <div v-if="group.archive == false">
-    <div v-if="!single" class="mb-1">
-      <!-- Form zur Umbenennung -->
-      <group-form
-        v-if="group.owner"
-        :group="group"
-        @update:groups="updateGroup($event)"
-      ></group-form>
-    </div>
-    <div v-if="!single" class="mb-2">
-      <!-- Info/Form für Klassen teilen -->
-      <share-form v-if="displayShareForm" :group="group" @update:groups="updateGroup($event)">
-      </share-form>
-    </div>
-    <b-button
-      v-if="canCreateQrCodes"
-      variant="success"
-      class="mb-1 btn-sm"
-      :disabled="isGeneratingQrCodes"
-      @click="exportQrCodes"
-    >
-      <i :class="isGeneratingQrCodes ? 'fas fa-spinner fa-spin' : 'fas fa-print'"></i> QR-Code PDF
-    </b-button>
-    <student-list v-if="group.key != null" :group-id="group.id" :read-only="read_only">
-    </student-list>
-  </div>
+  <div>
+    <div v-if="group.archive === false" pills>
+      <div v-if="!showActionTab">
+        <share-status v-if="!group.owner" :group="group" />
+        <transfer-status v-if="group.owner" :group="group" />
 
-  <!-- Darstellung für archivierte Klasse -->
-  <div v-else>
-    <p class="text-small">
-      <em>Ins Archiv verschoben am {{ date }}</em
-      ><br />
-      <span>Schüler:innen: {{ group.size }}</span>
-    </p>
-    <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
-      <i class="fas fa-file-import"></i> Klasse aus dem Archiv holen
-    </b-button>
-    <b-btn variant="outline-danger" @click="requestDeleteGroup">
-      <i class="fas fa-trash"></i> Klasse löschen
-    </b-btn>
-    <confirm-dialog ref="confirmDialog" />
+        <div>
+          <b-button
+            v-if="displayActionButton"
+            id="intro_cb_3"
+            size="sm"
+            class="mr-2"
+            variant="outline-secondary"
+            @click="handleNavigate('aktionen')">
+            <i class="fas fa-gear"></i>
+            Aktionen und Einstellungen
+          </b-button>
+          <b-button v-if="group.key" variant="outline-secondary" size="sm" @click="gotoClassbook">
+            <i class="fas fa-chalkboard-user"></i>
+            Zur Diagnostik
+          </b-button>
+        </div>
+        <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
+      </div>
+      <div v-else-if="showActionTab">
+        <b-button size="sm" variant="outline-secondary" @click="handleNavigate('liste')">
+          <i class="fas fa-backward-step"></i>
+          Zurück zur Liste
+        </b-button>
+        <b-row class="mt-4">
+          <b-col sm="4" md="3">
+            <group-view-actions-nav
+              :current="currentNav"
+              :group="group"
+              @groupview::action="handleSwitchActionPage" />
+          </b-col>
+          <b-col>
+            <b-card :title="actionCardTitle">
+              <div v-if="currentNav === 'general'">
+                <classbook-actions
+                  v-if="permissions?.updateGroup"
+                  :group="group"
+                  @group-archived="selectedGroupId = undefined" />
+              </div>
+              <div v-if="currentNav === 'share' && permissions?.createShare">
+                <share-form :group="group" @update:groups="updateGroup($event)" />
+                <shares-display v-if="group.owner" :group="group" />
+                <hr />
+                <transfer-group :group="group" />
+              </div>
+              <div v-if="currentNav === 'movestudents' && permissions?.moveStudents">
+                <move-student-dialog :group="group" />
+              </div>
+            </b-card>
+          </b-col>
+        </b-row>
+      </div>
+    </div>
+
+    <div v-else>
+      <p class="text-small">
+        <em>Ins Archiv verschoben am {{ date }}</em>
+        <br />
+        <span>Schüler:innen: {{ group.size }}</span>
+      </p>
+      <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
+        <i class="fas fa-file-import"></i>
+        Klasse aus dem Archiv holen
+      </b-button>
+      <b-btn variant="outline-danger" @click="requestDeleteGroup">
+        <i class="fas fa-trash"></i>
+        Klasse löschen
+      </b-btn>
+      <confirm-dialog ref="confirmDialog" />
+    </div>
   </div>
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { isMasquerading } from '../../utils/user'
-  import { useGlobalStore } from '../../store/store'
+  import { access } from 'src/utils/access'
+  import { ajax } from 'src/utils/ajax'
+  import { isMasquerading } from 'src/utils/user'
+  import { useGlobalStore } from 'src/store/store'
+  import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import GroupForm from './group-form.vue'
-  import jsPDF from 'jspdf'
-  import QRCodeStyling from 'qr-code-styling'
-  import ShareForm from './share-form.vue'
-  import StudentList from './student-list.vue'
+  import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
+  import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
+  import ShareForm from './group-view-actions/share-form.vue'
+  import SharesDisplay from './shares-display.vue'
+  import ShareStatus from './share-status.vue'
+  import StudentList from './group-view-list/student-list.vue'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
+  import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
+  import Vue from 'vue'
 
   export default {
     name: 'GroupView',
     components: {
-      StudentList,
-      GroupForm,
-      ShareForm,
+      ClassbookActions,
       ConfirmDialog,
+      GroupViewActionsNav,
+      MoveStudentDialog,
+      ShareForm,
+      SharesDisplay,
+      ShareStatus,
+      StudentList,
+      TransferStatus,
+      TransferGroup,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
       group: Object,
-      single: Boolean,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
     },
     data() {
-      return {
-        isGeneratingQrCodes: false,
-      }
+      return { currentNav: 'general' }
     },
     computed: {
+      actionCardTitle() {
+        switch (this.currentNav) {
+          case 'general':
+            return 'Allgemein'
+          case 'share':
+            return 'Klasse teilen'
+          case 'movestudents':
+            return 'Schüler:innen verschieben'
+        }
+        return 'Unbekannte Aktion'
+      },
       canCreateQrCodes() {
-        //TODO restore once DDM is done
-        //return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
-        return true
+        return this.group.owner || (!this.group.read_only && !this.group.is_anonymous)
       },
       date: function () {
         let date = new Date(this.group?.updated_at)
         return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear()
       },
-      read_only: function () {
+      readOnly: function () {
         //Klassen nicht veränderbar, falls nur zur Ansicht geteilt, oder gerade ein Masquerading aktiv ist.
         return this.group.read_only || this.globalStore.masquerade
       },
-      displayShareForm() {
-        return !isMasquerading(this.globalStore.login) && this.group.id
+      displayActionButton() {
+        return this.permissions.updateGroup && this.group.key // shares without key are not accepted yet
+      },
+      displayActions() {
+        return !isMasquerading() && this.group.id && this.group.owner
+      },
+      transferRequests() {
+        return this.group.shares?.filter(share => share.owner)
+      },
+      showActionTab() {
+        console.log('scheiß die wand an', this.group.shares, this.group)
+
+        return this.$route.path.endsWith('aktionen')
+      },
+      permissions() {
+        return access(this.group).classbook
       },
       students() {
         return this.globalStore.studentsInGroups[this.group.id] || []
       },
     },
+    watch: {
+      '$route.params': {
+        immediate: true,
+        async handler(data) {
+          if (data.groupId) {
+            this.selectedGroupId = parseInt(data.groupId, 10)
+          } else {
+            this.selectedGroupId = this.group.id
+          }
+        },
+      },
+    },
     methods: {
+      gotoClassbook() {
+        this.$router.push(`/diagnostik/${this.group.id}`)
+      },
+      handleNavigate(path) {
+        if (this.$route.path.endsWith(path)) {
+          return
+        }
+
+        let classBookRoot
+        if (this.$route.path.includes(this.selectedGroupId + '')) {
+          classBookRoot = this.$route.path.split('/' + this.selectedGroupId)[0]
+        } else if (this.$route.name === 'ClassbookShared') {
+          classBookRoot = '/klassenbuch/geteilte_klassen'
+        } else {
+          classBookRoot = '/klassenbuch/eigene_klassen'
+        }
+
+        this.$router.push(`${classBookRoot}/${this.selectedGroupId}/${path}`)
+      },
+      handleSwitchActionPage(action) {
+        this.currentNav = action
+      },
+
       // Klasse aus dem Archiv holen
       async reactivateGroup() {
         const res = await ajax({
@@ -107,9 +207,9 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          this.updateGroup({
-            object: data,
-          })
+          Vue.set(this.globalStore, 'groups', res.data.groups)
+          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}/liste`)
         }
       },
       /*****************************
@@ -145,53 +245,6 @@
             this.$emit('update:groups', remainingGroups)
           }
         }
-      },
-      blobToBase64(blob) {
-        return new Promise((resolve, _) => {
-          const reader = new FileReader()
-          reader.onloadend = () => resolve(reader.result)
-          reader.readAsDataURL(blob)
-        })
-      },
-
-      async exportQrCodes() {
-        this.isGeneratingQrCodes = true
-        const pdf = new jsPDF()
-        let height = 10
-        for (let i = 0; i < this.students.length; i++) {
-          const qrCode = new QRCodeStyling({
-            width: 400,
-            height: 400,
-            type: 'canvas',
-            data: `${window.location.origin}/testen_login?login=${this.students[i].login}`,
-            dotsOptions: {
-              color: '#000000',
-            },
-          })
-          const qrData = await qrCode.getRawData('jpeg')
-
-          if (qrCode) {
-            const base64Image = await this.blobToBase64(qrData)
-            const levumiImg = new Image()
-            levumiImg.src = '/images/shared/Levumi-normal.jpg'
-            const studentName = this.students[i].name.startsWith('Kind_')
-              ? '______________'
-              : this.students[i].name
-
-            pdf.addImage(base64Image, 'png', 10, height, 40, 40)
-            pdf.addImage(levumiImg, 'png', 60, height, 40, 40)
-            pdf.text('Name: ' + studentName, 110, height + 10)
-            pdf.text('Code: ' + this.students[i].login, 110, height + 30)
-            pdf.line(0, height + 43, 210, height + 45)
-            height = height + 46
-            if (height >= 250) {
-              height = 10
-              pdf.addPage()
-            }
-          }
-        }
-        pdf.save(`QR-Codes ${this.group.label}.pdf`)
-        this.isGeneratingQrCodes = false
       },
     },
   }

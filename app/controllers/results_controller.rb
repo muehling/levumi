@@ -1,5 +1,6 @@
 class ResultsController < ApplicationController
   before_action :set_student, except: %i[start_demo]
+  before_action :set_group, only: %i[new]
 
   before_action :check_login, only: %i[create new]
   skip_before_action :set_login, only: %i[create new]
@@ -78,6 +79,10 @@ class ResultsController < ApplicationController
   #Kind id aus Parametern holen und laden
   def set_student
     @student = Student.find(params[:student_id])
+  end
+
+  def set_group
+    @group = @student.group
   end
 
   def check_login

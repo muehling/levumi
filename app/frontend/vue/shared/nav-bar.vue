@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/diagnostik">
+      <a class="navbar-brand" href="/">
         <img src="/images/shared/Levumi-normal_small.png" alt="Levumi" height="48" />
         Levumi
       </a>
@@ -289,7 +289,12 @@
         return this.globalStore.masquerade
       },
       hasNewShares() {
-        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+        console.log('navbar', this.globalStore)
+
+        return this.globalStore.groups.reduce(
+          (acc, g) => acc || (g.key === null && !g.owner),
+          false
+        )
       },
       hasTestedStudents() {
         return this.globalStore.login.has_tested_students

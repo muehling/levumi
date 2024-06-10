@@ -1,4 +1,5 @@
 import { useGlobalStore } from '../store/store'
+import { defaultFont } from './constants'
 
 // Returns the student object for the passed group and student id
 export const getStudent = (groupId, studentId) => {
@@ -55,5 +56,27 @@ export const getTrendFromResults = data => {
     return 'MEDIUM_SUPPORT'
   } else if (x1 < x3 && x1 <= x2 && x2 <= x3) {
     return 'NO_SUPPORT'
+  }
+}
+
+export const getFontSettingsDescription = (studentSettings, groupSettings) => {
+  let usedSettings =
+    studentSettings.font_size && studentSettings.font_family ? studentSettings : groupSettings
+
+  if (!usedSettings.font_size && !usedSettings.font_family) {
+    usedSettings = { font_size: defaultFont.fontSize, font_family: defaultFont.fontFamily }
+  }
+
+  if (usedSettings.font_size && usedSettings.font_family) {
+    const raw = decodeURIComponent(usedSettings.font_family)
+    const fontFamily = raw.charAt(0).toUpperCase() + raw.slice(1)
+    switch (usedSettings.font_size) {
+      case '1':
+        return `${fontFamily}, normale Größe`
+      case '2':
+        return `${fontFamily}, vergrößert`
+      case '3':
+        return `${fontFamily}, stark vergrößert`
+    }
   }
 }

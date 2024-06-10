@@ -4,15 +4,14 @@
     ref="genericConfirmDialog"
     hide-footer
     :no-close-on-backdrop="disableCloseOnBackdrop"
-    @hidden="_close"
-  >
+    @hidden="_close">
     <template #modal-title>
       {{ title }}
     </template>
-    <div v-if="!containsHtml" class="d-block text-center mb-4">
+    <div v-if="!containsHtml" class="d-block text-center mb-4 text-break">
       {{ message }}
     </div>
-    <div v-else v-html="message"></div>
+    <div v-else class="text-break" v-html="message"></div>
 
     <div class="d-flex justify-content-end">
       <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close">
@@ -49,7 +48,7 @@
         this.hideCancelButton = data.hideCancelButton || false
         this.message = data.message
         this.okIntent = data.okIntent || 'outline-danger'
-        this.okText = data.okText
+        this.okText = data.okText || 'Ok'
         this.title = data.title || ''
         return new Promise(resolve => {
           this.resolvePromise = resolve

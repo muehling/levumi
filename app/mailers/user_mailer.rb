@@ -37,6 +37,8 @@ class UserMailer < ApplicationMailer
   end
 
   def new_share
+    @sender = params[:sender]
+    @group_label = params[:group_label]
     @recipient = params[:recipient]
     @share_key = params[:share_key]
     @is_anonymous = params[:is_anonymous]
@@ -48,5 +50,14 @@ class UserMailer < ApplicationMailer
     @shorthand = params[:shorthand]
     recipients = Rails.env.production? ? %w[beckmann@leibniz-ipn.de] : 'beckmann@leibniz-ipn.de'
     mail(to: recipients, subject: "#{@updater} hat #{@shorthand} hochgeladen!")
+  end
+
+  def transfer_group #noch nicht fertig. im prinzip muss hier das gleiche gehampel gemacht werden wie beim teilen, mit annehmen und allem.
+    @sender = params[:sender]
+    @group_label = params[:group_label]
+    @recipient = params[:recipient]
+    @share_key = params[:share_key]
+    @is_new_share = params[:is_new_share]
+    mail(to: @recipient.email, subject: "#{@sender} möchte Ihnen eine Klasse übertragen")
   end
 end
