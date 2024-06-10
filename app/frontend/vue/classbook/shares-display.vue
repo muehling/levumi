@@ -1,6 +1,6 @@
 <template>
   <table
-    v-if="group.shares.length > 0"
+    v-if="groupShares.length > 0"
     class="mt-4 table table-sm table-striped table-responsive-md text-small">
     <thead>
       <tr>
@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="share in group.shares" :key="share.id + '/' + share.read_only">
+      <tr v-for="share in groupShares" :key="share.id + '/' + share.read_only">
         <td>
           <p class="my-1">
             {{ share.user }}
@@ -77,6 +77,9 @@
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
           : null
+      },
+      groupShares() {
+        return this.group.shares.filter(share => !share.owner)
       },
     },
     methods: {

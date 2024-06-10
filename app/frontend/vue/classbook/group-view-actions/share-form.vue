@@ -47,6 +47,7 @@
 </template>
 
 <script>
+  import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
   import { decryptKey } from 'src/utils/encryption'
   import { useGlobalStore } from 'src/store/store'
@@ -70,9 +71,13 @@
         email: '',
         isShown: false,
         errorMessage: '',
+        transferEmail: '',
       }
     },
     computed: {
+      permissions() {
+        return access(this.group).classbook
+      },
       shareKey() {
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
@@ -129,8 +134,11 @@
         const isAnonymous = this.rightsSelected === 2 ? true : false
         const data = {
           email: this.email,
-          group_share: { read_only: isReadOnly, is_anonymous: isAnonymous },
-          share_key: this.shareKey,
+          group_share: {
+            read_only: isReadOnly,
+            is_anonymous: isAnonymous,
+            share_key: this.shareKey,
+          },
         }
         const result = this.submitData({
           url: `/groups/${this.group.id}/group_shares/`,

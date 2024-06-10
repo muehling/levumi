@@ -37,7 +37,9 @@ class GroupsController < ApplicationController
 
   #PUT /groups/:id
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    head :forbidden if @group.read_only(@login)
+    if @group.read_only(@login)
+      render json: { message: 'groups_controller::update: no edit permission', status: :forbidden }
+    end
     if @group.update(
          params.require(:group).permit(:label, :archive, settings: %i[font_family font_size])
        )
@@ -51,6 +53,7 @@ class GroupsController < ApplicationController
 
   #DEL /groups/:id
   def destroy
+    head :forbidden if !@group.owned_by_login(@login)
     if !@group.demo
       # delete students and groupshares here, as the shadow data needs info from the group and groupshare
       # which can't be accessed if the deletion is cascaded

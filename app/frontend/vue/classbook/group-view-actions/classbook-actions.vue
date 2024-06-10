@@ -45,7 +45,7 @@
         Klasse in Archiv verschieben
       </b-button>
       <context-help
-        help-text="Mit dieser Aktion wird die Klasse archiviert. Ist die Klasse mit anderen Personen geteilt, wird das Teilen automatisch beendet. Wird die Klasse wieder aus dem Archiv geholt, muss sie ggf. erneut mit der Person geteilt werden."
+        help-text="Mit dieser Aktion wird die Klasse archiviert. Ist die Klasse mit anderen Personen geteilt, wird das Teilen automatisch beendet. Wird die Klasse wieder aus dem Archiv geholt, muss sie ggf. erneut mit den Personen geteilt werden."
         class-name="mt-2 ml-2" />
     </div>
     <confirm-dialog ref="confirmDialog" />

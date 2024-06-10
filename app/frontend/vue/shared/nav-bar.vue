@@ -289,7 +289,12 @@
         return this.globalStore.masquerade
       },
       hasNewShares() {
-        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+        console.log('navbar', this.globalStore)
+
+        return this.globalStore.groups.reduce(
+          (acc, g) => acc || (g.key === null && !g.owner),
+          false
+        )
       },
       hasTestedStudents() {
         return this.globalStore.login.has_tested_students

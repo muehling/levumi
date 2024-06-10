@@ -183,15 +183,9 @@
     </td>
     <td>
       <span v-if="!hasFontSettings && !empty">Standard</span>
-      <span v-if="!hasFontSettings && hasGroupFontSettings && !empty">:</span>
       <span :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
         {{ empty ? '' : fontSettingsText }}
       </span>
-      <context-help
-        v-if="!hasFontSettings && !hasGroupFontSettings && !empty"
-        :help-text="`Weder für die Klasse
-      noch für diese Schüler:in sind Schrifteinstellungen festgelegt. Als Standard wird ${defaultFontSettings} verwendet.`"
-        class="mt-3 ml-2" />
     </td>
     <td>
       <span>

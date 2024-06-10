@@ -129,4 +129,7 @@ export default {
     groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),
   },
+  groupShares: {
+    transferGroup: id => ({ url: `/groups_shares/${id}/transfer_group` }),
+  },
 }

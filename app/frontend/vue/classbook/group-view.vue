@@ -3,6 +3,8 @@
     <div v-if="group.archive === false" pills>
       <div v-if="!showActionTab">
         <share-status v-if="!group.owner" :group="group" />
+        <transfer-status v-if="group.owner" :group="group" />
+
         <div>
           <b-button
             v-if="displayActionButton"
@@ -44,6 +46,8 @@
               <div v-if="currentNav === 'share' && permissions?.createShare">
                 <share-form :group="group" @update:groups="updateGroup($event)" />
                 <shares-display v-if="group.owner" :group="group" />
+                <hr />
+                <transfer-group :group="group" />
               </div>
               <div v-if="currentNav === 'movestudents' && permissions?.moveStudents">
                 <move-student-dialog :group="group" />
@@ -81,12 +85,13 @@
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
-  import isEmpty from 'lodash/isEmpty'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
   import ShareForm from './group-view-actions/share-form.vue'
   import SharesDisplay from './shares-display.vue'
   import ShareStatus from './share-status.vue'
   import StudentList from './group-view-list/student-list.vue'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
+  import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
   import Vue from 'vue'
 
   export default {
@@ -100,6 +105,8 @@
       SharesDisplay,
       ShareStatus,
       StudentList,
+      TransferStatus,
+      TransferGroup,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
@@ -141,7 +148,12 @@
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
       },
+      transferRequests() {
+        return this.group.shares?.filter(share => share.owner)
+      },
       showActionTab() {
+        console.log('scheiß die wand an', this.group.shares, this.group)
+
         return this.$route.path.endsWith('aktionen')
       },
       permissions() {

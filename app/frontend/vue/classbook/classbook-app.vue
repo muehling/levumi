@@ -10,6 +10,7 @@
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
+                  <span v-if="transferRequests.length" class="badge badge-info ml-2">Neu!</span>
                 </template>
 
                 <b-card no-body class="mt-3">
@@ -48,6 +49,18 @@
                         :groups="globalStore.groups"
                         :group="group"
                         @update:groups="updateGroups"></group-view>
+                    </b-tab>
+                    <b-tab
+                      v-for="transferRequest in transferRequests"
+                      :key="transferRequest.id"
+                      :active="transferRequest.id === activeGroupTab"
+                      lazy
+                      @click="handleNavigate(`eigene_klassen/${transferRequest.id}`)">
+                      <template slot="title">
+                        {{ transferRequest.label }}
+                        <span class="badge badge-info">Neu!</span>
+                      </template>
+                      <transfer-status :group="transferRequest" />
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -135,15 +148,17 @@
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
   import routes from '../routes/api-routes'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
   import Vue from 'vue'
 
   export default {
     name: 'ClassBookApp',
     components: {
-      GroupView,
       GroupForm,
+      GroupView,
       IntroPopover,
       LoadingDots,
+      TransferStatus,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -194,13 +209,32 @@
         }
       },
       ownActiveGroups() {
-        return this.getTabGroups(true, false)
+        return this.globalStore.groups
+          .filter(
+            group => (group.owner && !group.archive && group.key) || (group.owner && !group.key)
+          )
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       sharedGroups() {
-        return this.getTabGroups(false, false)
+        console.log(
+          'meh',
+          this.globalStore.groups.map(g => ({
+            label: g.label,
+            owner: g.owner,
+            req: g.has_transfer_request_to,
+            key: !!g.key,
+            share: g.share_id,
+          }))
+        )
+
+        return this.globalStore.groups
+          .filter(group => !group.owner && !group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
-        return this.getTabGroups(true, true)
+        return this.globalStore.groups
+          .filter(group => group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
 
       firstOwnIndex: function () {
@@ -216,7 +250,13 @@
       },
 
       hasNewShares() {
-        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+        return this.globalStore.groups.reduce(
+          (acc, g) => acc || (g.key === null && !g.owner),
+          false
+        )
+      },
+      transferRequests() {
+        return this.globalStore.groups.filter(g => g.owner && !g.key)
       },
       permissions() {
         return access().classbook
@@ -276,15 +316,6 @@
       }
     },
     methods: {
-      getTabGroups(isOwner, isArchive) {
-        if (isEmpty(this.globalStore.groups)) {
-          return []
-        }
-
-        return this.globalStore.groups
-          .filter(group => group.owner === isOwner && group.archive === isArchive)
-          .sort((a, b) => (a.label < b.label ? -1 : 1))
-      },
       updateGroups(newGroups) {
         this.globalStore.setGroups(newGroups)
       },
