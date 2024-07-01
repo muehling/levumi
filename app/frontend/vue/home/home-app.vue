@@ -58,7 +58,7 @@
   import IntroPopover from '../shared/intro-popover.vue'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  import Vue from 'vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'HomeApp',
@@ -136,7 +136,8 @@
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
-        Vue.set(this.globalStore.login, 'intro_state', 4)
+        //Vue.set(this.globalStore.login, 'intro_state', 4)
+        this.globalStore.login.intro_state = 4
       },
       getTestsForGroup(groupId) {
         this.selectedGroupId = groupId

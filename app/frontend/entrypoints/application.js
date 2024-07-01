@@ -5,16 +5,17 @@ import './add_jquery'
 import * as bootstrap from 'bootstrap'
 import * as sjcl from 'sjcl'
 
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue-next'
 import ClassBookApp from '../vue/classbook/classbook-app.vue'
 import HomeApp from '../vue/home/home-app.vue'
 import MaterialsApp from '../vue/materials/materials-app.vue'
 import RootApp from '../vue/root-app.vue'
 import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
-import Vue from 'vue'
+
+import { createApp } from 'vue'
 import VueApexCharts from 'vue-apexcharts'
-import VueRouter from 'vue-router'
+//import VueRouter from 'vue-router'
 
 import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
 
@@ -31,26 +32,10 @@ const element = document.getElementById('levumi')
 
 const init = async () => {
   const data = JSON.parse(element.getAttribute('data')) || {}
-  Vue.use(BootstrapVue)
-  Vue.use(VueApexCharts)
-  Vue.component('apexchart', VueApexCharts)
-
-  Vue.mixin({
-    data: function () {
-      return {
-        get jQuery() {
-          return window.$
-        },
-      }
-    },
-  })
-
   const pinia = createPinia()
 
-  Vue.use(VueRouter)
-  Vue.use(PiniaVuePlugin)
-
-  new Vue({
+  //new Vue({
+  const app = createApp({
     router,
     pinia,
     el: '#levumi',
@@ -62,8 +47,26 @@ const init = async () => {
       StudentView,
       UsersApp,
     },
-    data,
+    data() {
+      return data
+    },
   })
+
+  app.use(BootstrapVue)
+  app.use(VueApexCharts)
+  app.component('apexchart', VueApexCharts)
+  app.mixin({
+    data: function () {
+      return {
+        get jQuery() {
+          return window.$
+        },
+      }
+    },
+  })
+
+  //app.use(VueRouter)
+  app.use(PiniaVuePlugin)
 }
 
 if (element) {

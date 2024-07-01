@@ -52,7 +52,7 @@
   import { ajax } from 'src/utils/ajax'
   import { encryptKey, encryptWithKey } from 'src/utils/encryption'
   import { useGlobalStore } from 'src/store/store'
-  import Vue from 'vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'GroupForm',
@@ -108,8 +108,10 @@
             .filter(group => !this.globalStore.groups.find(g => g.id === group.id))
             .map(a => a.id)
 
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          //Vue.set(this.globalStore, 'groups', res.data.groups)
+          //Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
 
           if (!this.group.id) {
             this.label = ''

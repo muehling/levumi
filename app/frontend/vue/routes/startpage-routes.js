@@ -1,11 +1,12 @@
-import StartpageFaq from '../startpage/components/startpage-faq.vue'
+//import StartpageFaq from '../startpage/components/startpage-faq.vue'
 import StartpageResearchers from '../startpage/components/startpage-researchers.vue'
 import StartpageTeachers from '../startpage/components/startpage-teachers.vue'
 //import StartpageTestimonials from '../startpage/components/startpage-testimonials.vue'
 import StartpageTests from '../startpage/components/startpage-tests.vue'
 import StartpageStart from '../startpage/components/startpage-start.vue'
 
-import VueRouter from 'vue-router'
+//import VueRouter from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 
 const routes = [
   { path: '/', component: StartpageStart },
@@ -17,4 +18,4 @@ const routes = [
   // {path: "/testimonial", component: Startpage},
 ]
 
-export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })
+export default createRouter({ routes, linkActiveClass: 'active', history: createMemoryHistory() })

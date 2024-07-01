@@ -11,55 +11,40 @@
       <b-row v-cloak class="mt-3">
         <b-col md="12">
           <b-tabs pills lazy>
-            <!--% Area.order(:name).all.each do |a| %-->
-            <!-- Oberste Ebene Lernbereiche -->
-            <b-tab v-for="area in testData" :key="area.id">
-              <template slot="title">
-                {{ area.name }}
-              </template>
+            <b-tab v-for="area in testData" :key="area.id" :title="area.name">
+              <hr />
               <b-tabs pills lazy class="mt-3">
-                <!-- Hinweistext falls keine Tests vorhanden -->
-                <div slot="empty">
-                  <div class="text-center text-muted">Keine Kompetenzbereiche vorhanden.</div>
-                </div>
-
-                <!--% a.competences.order(:name).each do |c| %-->
-                <!-- Zweite Ebene Kompetenzen -->
-                <b-tab v-for="competence in area.competences" :key="competence.id">
-                  <template slot="title">
-                    {{ competence.name }}
-                  </template>
-
-                  <b-alert show variant="secondary" class="mt-2">
+                <b-tab
+                  v-for="competence in area.competences"
+                  :key="competence.id"
+                  :title="competence.name">
+                  <b-alert
+                    v-if="competence.description"
+                    :model-value="true"
+                    variant="secondary"
+                    class="mt-2">
                     <span class="text-small">{{ competence.description }}</span>
                   </b-alert>
-
+                  <hr />
                   <b-tabs pills lazy class="mt-3">
-                    <!-- Hinweistext falls keine Tests vorhanden -->
-                    <div slot="empty">
-                      <div class="text-center text-muted">Keine Tests vorhanden.</div>
-                    </div>
-
-                    <!--% c.test_families.order(:name).each do |f| %-->
-                    <!-- Dritte Ebene Tests -->
-                    <b-tab v-for="testFamily in competence.test_families" :key="testFamily.id">
-                      <template slot="title">
-                        {{ testFamily.name }}
-                      </template>
-
-                      <b-alert show variant="secondary" class="mt-2">
+                    <b-tab
+                      v-for="testFamily in competence.test_families"
+                      :key="testFamily.id"
+                      :title="testFamily.name">
+                      <b-alert
+                        v-if="testFamily.description"
+                        :model-value="true"
+                        variant="secondary"
+                        class="mt-2">
                         <span class="text-small">{{ testFamily.description }}</span>
                       </b-alert>
 
                       <b-card no-body class="mt-3">
                         <b-tabs pills lazy card vertical>
-                          <!--% f.tests.where(archive: false).order(:level).all.each do |t|  %-->
-                          <!-- Vierte Ebene Niveaustufen -->
                           <b-tab
                             v-for="test in testFamily.tests"
                             :key="test.id"
                             :title="test.level">
-                            <!-- Testinfo rendern -->
                             <div id="info_<%= t.id %>">
                               <div id="info_<%= t.id %>_inner">
                                 <div class="container-fluid">
@@ -152,14 +137,18 @@
       const testsStore = useTestsStore()
       return { testsStore }
     },
+
     computed: {
       testData() {
+        console.log('miau', JSON.parse(JSON.stringify(this.testsStore.getTests)))
         return this.testsStore.tests
+        //return this.testsStore.getTests
       },
       isLoading() {
         return this.testsStore.isLoading
       },
     },
+
     async created() {
       await this.testsStore.fetch()
     },

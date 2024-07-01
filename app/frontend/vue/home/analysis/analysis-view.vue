@@ -131,15 +131,16 @@
         <b-row class="ml-1">
           <b-col class="mr-4">
             <annotations-section
+              v-model:annotationControlVisible="annotationControlVisible"
               :annotations="annotations"
               :group="group"
               :test="test"
               :selected-student="selectedStudent"
               :selected-view-key="selectedView"
-              :annotation-control-visible.sync="annotationControlVisible"
               :trend-is-enabled="trendIsEnabled"
               @annotation-removed="removeAnnotation" />
             <TargetControls
+              v-model:targetControlVisible="targetControlVisible"
               :target-val="targetVal"
               :deviation-val="deviationVal"
               :date-until-val="dateUntilVal"
@@ -151,7 +152,6 @@
               :deviation-stored="deviationStored"
               :student-targets="studentTargets"
               :selected-student-id="selectedStudentId"
-              :target-control-visible.sync="targetControlVisible"
               :target-valid="targetValid"
               :test="test"
               :group="group"></TargetControls>

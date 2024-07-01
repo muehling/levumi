@@ -2,7 +2,7 @@ import { ajax } from '../utils/ajax'
 import { defineStore } from 'pinia'
 import apiRoutes from '../vue/routes/api-routes'
 import groupBy from 'lodash/groupBy'
-import Vue from 'vue'
+//import Vue from 'vue'
 
 export const useAssessmentsStore = defineStore('assessments', {
   state: () => ({
@@ -12,7 +12,8 @@ export const useAssessmentsStore = defineStore('assessments', {
   }),
   actions: {
     setAssessments(groupId, assessments) {
-      Vue.set(this.assessments, groupId, assessments) // need to set this way to preserve reactivity
+      //Vue.set(this.assessments, groupId, assessments) // need to set this way to preserve reactivity
+      this.assessments[groupId] = assessments
     },
     getAssessments(groupId) {
       return this.assessments[groupId] || []

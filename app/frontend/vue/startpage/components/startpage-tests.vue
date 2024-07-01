@@ -10,12 +10,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img
-              src="/images/shared/Levumi-normal_small.png"
-              class="mb-3 ml-3"
-              alt="Levumi"
-              width="48"
-              height="48" />
+            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -55,9 +50,15 @@
   import RegisterForm from './register-form.vue'
   import StartpageNav from './startpage-nav.vue'
   import TestsApp from '../../tests/tests-app.vue'
+  import levumiSmallSrc from '../../../../assets/images/shared/Levumi-normal_small.png'
   export default {
     name: 'StartpageTests',
     components: { TestsApp, StartpageNav, RegisterForm },
     props: { isLoggedIn: Boolean },
+    computed: {
+      levumiSmall() {
+        return levumiSmallSrc
+      },
+    },
   }
 </script>

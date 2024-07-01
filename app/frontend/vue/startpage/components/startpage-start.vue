@@ -10,12 +10,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img
-              src="/images/shared/Levumi-normal_small.png"
-              class="mb-3 ml-3"
-              alt="Levumi"
-              width="48"
-              height="48" />
+            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -24,7 +19,7 @@
         <b-card class="shadow" body-class="info-card">
           <b-img
             class="img-bg ml-4 mb-4 float-right shadow"
-            :src="require('../../../../assets/images/frontpage/frontpage_2.webp')"
+            :src="frontpage2"
             fluid
             alt="Schüler und Lehrerin im Klassenzimmer" />
           <p></p>
@@ -55,7 +50,7 @@
             <b-card class="shadow" body-class="info-card">
               <div class="embed-responsive embed-responsive-16by9 video-container mb-4">
                 <video controls>
-                  <source :src="require('../../../../assets/levumi_intro.mp4')" type="video/mp4" />
+                  <source :src="levumiVid" />
                   Ihr Browser unterstützt leider kein Abspielen von Videos.
                 </video>
               </div>
@@ -67,7 +62,7 @@
         <b-card class="shadow" body-class="info-card">
           <b-img
             class="img-bg mr-4 mb-4 float-left shadow"
-            :src="require('../../../../assets/images/frontpage/frontpage_5.webp')"
+            :src="frontpage5"
             fluid
             alt="Eine Lehrerin demonstriert ihren Schüler:innen etwas an einer Landkarte" />
           <p>
@@ -134,9 +129,27 @@
   import RegisterForm from './register-form.vue'
   import StartpageNav from './startpage-nav.vue'
   import StartpageUnis from './startpage-unis.vue'
+  import levumiSmallSrc from '../../../../assets/images/shared/Levumi-normal_small.png'
+  import frontpage2Src from '../../../../assets/images/frontpage/frontpage_2.webp'
+  import frontpage5Src from '../../../../assets/images/frontpage/frontpage_5.webp'
+  import levumiVidSrc from '../../../../assets/levumi_intro.mp4'
   export default {
     name: 'StartpageStart',
     components: { RegisterForm, StartpageNav, StartpageUnis },
     props: { isLoggedIn: Boolean },
+    computed: {
+      levumiSmall() {
+        return levumiSmallSrc
+      },
+      frontpage2() {
+        return frontpage2Src
+      },
+      frontpage5() {
+        return frontpage5Src
+      },
+      levumiVid() {
+        return levumiVidSrc
+      },
+    },
   }
 </script>

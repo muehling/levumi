@@ -5,7 +5,7 @@ import './add_jquery'
 import * as bootstrap from 'bootstrap'
 
 import { createPinia, PiniaVuePlugin } from 'pinia'
-import BootstrapVue from 'bootstrap-vue'
+import BootstrapVue from 'bootstrap-vue-next'
 import router from '../vue/routes/startpage-routes'
 import StartpageApp from '../vue/startpage/startpage-app.vue'
 import StartpageFaq from '../vue/startpage/components/startpage-faq.vue'
@@ -13,8 +13,9 @@ import StartpageResearchers from '../vue/startpage/components/startpage-research
 import StartpageTeachers from '../vue/startpage/components/startpage-teachers.vue'
 import StartpageTestimonials from '../vue/startpage/components/startpage-testimonials.vue'
 import StartpageTests from '../vue/startpage/components/startpage-tests.vue'
-import Vue from 'vue'
-import VueRouter from 'vue-router'
+import { createApp } from 'vue'
+//import VueRouter from 'vue-router'
+import { createBootstrap } from 'bootstrap-vue-next'
 
 import '../styles/application.scss'
 
@@ -24,26 +25,13 @@ const element = document.getElementById('levumi')
 
 const init = async () => {
   const data = JSON.parse(element.getAttribute('data')) || {}
-  Vue.use(BootstrapVue)
-
-  Vue.mixin({
-    data: function () {
-      return {
-        get jQuery() {
-          return window.$
-        },
-      }
-    },
-  })
 
   const pinia = createPinia()
 
-  Vue.use(VueRouter)
-  Vue.use(PiniaVuePlugin)
-
-  new Vue({
-    router,
-    pinia,
+  //new Vue({
+  const app = createApp({
+    //router,
+    //pinia,
     el: '#levumi',
     components: {
       StartpageApp,
@@ -53,8 +41,25 @@ const init = async () => {
       StartpageTestimonials,
       StartpageTests,
     },
-    data,
+    data() {
+      return data
+    },
   })
+  console.log('meh, app', app)
+
+  app.use(router)
+  app.use(pinia)
+  app.use(createBootstrap())
+  app.mixin({
+    data: function () {
+      return {
+        get jQuery() {
+          return window.$
+        },
+      }
+    },
+  })
+  app.mount('#levumi')
 }
 
 if (element) {

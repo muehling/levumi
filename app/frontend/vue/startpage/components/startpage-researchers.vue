@@ -10,12 +10,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img
-              src="/images/shared/Levumi-normal_small.png"
-              class="mb-3 ml-3"
-              alt="Levumi"
-              width="48"
-              height="48" />
+            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -27,7 +22,7 @@
         <b-card class="shadow" body-class="info-card">
           <b-img
             class="img-bg mr-4 mb-4 float-left shadow"
-            :src="require('../../../../assets/images/frontpage/frontpage_7.webp')"
+            :src="frontpage7"
             fluid
             alt="Forschende diskutieren an einem Tisch" />
           <p>
@@ -43,7 +38,7 @@
         <b-card class="shadow" body-class="info-card">
           <b-img
             class="img-bg ml-4 mb-4 float-right shadow"
-            :src="require('../../../../assets/images/frontpage/frontpage_8.webp')"
+            :src="frontpage8"
             fluid
             alt="Forschende diskutieren vor einem Whiteboard" />
           <h4><u>Lernverlaufsdiagnostik: Datenanalyse und Testdesign</u></h4>
@@ -281,9 +276,23 @@
 <script>
   import StartpageNav from './startpage-nav.vue'
   import RegisterForm from './register-form.vue'
+  import levumiSmallSrc from '../../../../assets/images/shared/Levumi-normal_small.png'
+  import frontpage7Src from '../../../../assets/images/frontpage/frontpage_7.webp'
+  import frontpage8Src from '../../../../assets/images/frontpage/frontpage_8.webp'
   export default {
     name: 'StartpageResearchers',
     components: { StartpageNav, RegisterForm },
     props: { isLoggedIn: Boolean },
+    computed: {
+      levumiSmall() {
+        return levumiSmallSrc
+      },
+      frontpage7() {
+        return frontpage7Src
+      },
+      frontpage8() {
+        return frontpage8Src
+      },
+    },
   }
 </script>

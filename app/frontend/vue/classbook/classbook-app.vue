@@ -149,7 +149,7 @@
   import LoadingDots from '../shared/loading-dots.vue'
   import routes from '../routes/api-routes'
   import TransferStatus from 'src/vue/classbook/transfer-status.vue'
-  import Vue from 'vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'ClassBookApp',
@@ -321,7 +321,8 @@
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
-        Vue.set(this.globalStore.login, 'intro_state', 5)
+        //Vue.set(this.globalStore.login, 'intro_state', 5)
+        this.globalStore.login.intro_state = 5
       },
       handleNavigate(path) {
         // avoid duplicated navigation

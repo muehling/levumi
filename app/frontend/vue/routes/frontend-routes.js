@@ -9,7 +9,7 @@ import MaterialsAdmin from '../materials/materials-admin.vue'
 import StatisticsApp from '../statistics/statistics-app.vue'
 import AdministrationApp from '../administration/administration-app.vue'
 
-import VueRouter from 'vue-router'
+import { createMemoryHistory, createRouter } from 'vue-router'
 
 const routes = [
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
@@ -81,4 +81,4 @@ const routes = [
   { path: '/groups/:groupId/assessments/:testId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /diagnostik if the data can be kept
 ]
 
-export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })
+export default createRouter({ routes, linkActiveClass: 'active', history: createMemoryHistory() })

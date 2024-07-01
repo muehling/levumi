@@ -68,7 +68,7 @@
   import GroupForm from './group-form.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
-  import Vue from 'vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'ClassbookActions',
@@ -122,8 +122,10 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          //Vue.set(this.globalStore, 'groups', res.data.groups)
+          //Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
           this.$router.push('/klassenbuch/eigene_klassen')
           this.$emit('group-archived')
         }

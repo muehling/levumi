@@ -3,22 +3,20 @@
   <b-card
     class="mt-5"
     style="font-size: 1.2em"
-    header="Gleich geht es los! Halte den QR-Code vor die Kamera."
-  >
+    header="Gleich geht es los! Halte den QR-Code vor die Kamera.">
     <div>
       <video id="video" muted></video>
       <div id="error-msg"></div>
     </div>
-    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4"
-      >Ungültiger QR-Code. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
+    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4">
+      Ungültiger QR-Code. Bitte überprüfe ihn nochmal oder wende dich an deine Lehrkraft.
     </b-alert>
     <b-button
       class="switch-qr-button"
       style=""
       type="button"
       variant="primary"
-      @click="toggleInputMethod"
-    >
+      @click="toggleInputMethod">
       Zugangscode eintippen
     </b-button>
 
@@ -41,6 +39,7 @@
         loginCode: '',
         isCodeInvalid: false,
         scannedString: '',
+        scannerError: '',
       }
     },
     mounted() {
@@ -49,7 +48,8 @@
       this.qrScanner.start().then(
         () => {},
         () => {
-          this.jQuery('#error-msg').text('Kann QR-Code nicht scannen. Ist die Kamera freigegeben?')
+          //this.jQuery('#error-msg').text('Kann QR-Code nicht scannen. Ist die Kamera freigegeben?')
+          this.scannerError = 'Der QR-Code kann nicht gescannt werden. Ist die Kamera freigegeben?'
         }
       )
     },

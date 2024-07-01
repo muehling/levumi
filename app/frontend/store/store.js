@@ -3,7 +3,7 @@ import { decryptStudentNames } from '../utils/encryption'
 import apiRoutes from '../vue/routes/api-routes'
 
 import { defineStore } from 'pinia'
-import Vue from 'vue'
+//import Vue from 'vue'
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
@@ -31,7 +31,8 @@ export const useGlobalStore = defineStore('global', {
       this.shareKeys = { ...this.shareKeys, [key]: value }
     },
     setStudentsInGroup({ groupId, students }) {
-      Vue.set(this.studentsInGroups, groupId, [...students])
+      //Vue.set(this.studentsInGroups, groupId, [...students])
+      this.studentsInGroup[groupId] = [...students]
     },
     setErrorMessage(msg) {
       this.errorMessage = msg
@@ -92,7 +93,8 @@ export const useGlobalStore = defineStore('global', {
         const data = await ajax({ ...apiRoutes.tests.items(testId) })
         const items = data.data
         test.items = items
-        Vue.set(this.staticData.testMetaData, 'tests', [...this.staticData.testMetaData.tests])
+        //Vue.set(this.staticData.testMetaData, 'tests', [...this.staticData.testMetaData.tests])
+        this.staticData.testMetaData['tests'] = [...this.staticData.testMetaData.tests]
       }
     },
 

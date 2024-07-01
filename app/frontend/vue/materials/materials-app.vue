@@ -1,5 +1,5 @@
 <template>
-  <b-container v-cloak fluid>
+  <b-container fluid>
     <div v-if="isLoading">
       <div class="spinner">
         <div class="bounce1"></div>
@@ -18,13 +18,7 @@
               class="mr-1"
               variant="outline-primary"
               :pressed="selected_area == area.id"
-              @click="
-                selected_area = area.id
-                selected_competence = -1
-                selected_family = -1
-                selected_test = -1
-              "
-            >
+              @click="setSelectedArea(area.id)">
               {{ area.name }}
             </b-button>
           </b-button-group>
@@ -40,12 +34,7 @@
               class="mr-1"
               variant="outline-primary"
               :pressed="selected_competence == competence.id"
-              @click="
-                selected_competence = competence.id
-                selected_family = -1
-                selected_test = -1
-              "
-            >
+              @click="setSelectedCompetence(competence.id)">
               {{ competence.name }}
             </b-button>
           </b-button-group>
@@ -61,11 +50,7 @@
               class="mr-1"
               variant="outline-primary"
               :pressed="selected_family == family.id"
-              @click="
-                selected_family = family.id
-                selected_test = -1
-              "
-            >
+              @click="setSelectedFamily(family.id)">
               {{ family.name }}
             </b-button>
           </b-button-group>
@@ -81,8 +66,7 @@
               class="mr-1"
               variant="outline-primary"
               :pressed="selected_test == test.id"
-              @click="selected_test = test.id"
-            >
+              @click="selected_test = test.id">
               {{ test.level }}
             </b-button>
           </b-button-group>
@@ -96,8 +80,7 @@
               <b-tab
                 v-for="material in filteredMaterials"
                 :key="material.id"
-                :title="material.name"
-              >
+                :title="material.name">
                 <material-view :material="material" :full="true"></material-view>
               </b-tab>
             </b-tabs>
@@ -105,9 +88,11 @@
           <b-card v-else>
             <div class="text-center text-muted">
               Wählen Sie aus, wofür sie Fördermaterial suchen. Es werden Ihnen immer alle passenden
-              Materialen für Ihre aktuelle Auswahl angezeigt.<br />
+              Materialen für Ihre aktuelle Auswahl angezeigt.
+              <br />
               Manche Materialien sind für spezifische Niveaustufen eines Tests geeignet und werden
-              erst angezeigt wenn diese ausgewählt ist.<br />
+              erst angezeigt wenn diese ausgewählt ist.
+              <br />
               Andere sind für ganze Testarten oder Kompetenzen geeignet und werden im Auswahlprozess
               schon vorab angezeigt.
             </div>
@@ -210,6 +195,23 @@
     },
     async created() {
       await this.materialsStore.fetch()
+    },
+    methods: {
+      setSelectedArea(id) {
+        this.selected_area = id
+        this.selected_competence = -1
+        this.selected_family = -1
+        this.selected_test = -1
+      },
+      setSelectedCompetence(id) {
+        this.selected_competence = id
+        this.selected_family = -1
+        this.selected_test = -1
+      },
+      setSelectedFamily(id) {
+        this.selected_family = id
+        this.selected_test = -1
+      },
     },
   }
 </script>

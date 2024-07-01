@@ -64,7 +64,7 @@
   import { ajax } from '../../utils/ajax'
   import { decryptKey } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
-  import Vue from 'vue'
+  //import Vue from 'vue'
   export default {
     name: 'SharesDisplay',
     props: { group: Object },
@@ -94,7 +94,8 @@
           const index = groups.findIndex(g => g.id === res.data.id)
           groups[index] = res.data
 
-          Vue.set(this.globalStore, 'groups', groups)
+          //Vue.set(this.globalStore, 'groups', groups)
+          this.globalStore.groups = groups
         } else {
           this.errorMessage = res.data.message
         }
@@ -106,7 +107,8 @@
           method: 'delete',
         })
         if (res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data)
+          //Vue.set(this.globalStore, 'groups', res.data)
+          this.globalStore.groups = res.data
         }
       },
     },
