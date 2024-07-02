@@ -20,7 +20,7 @@
           name="password"
           aria-label="Passwort eingeben"
           placeholder="Passwort"
-          :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
+          :class="`my-3 form-control${passwordMismatch ? ' is-invalid' : ''}`" />
         <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
       </div>
       <div class="d-flex submit-section">

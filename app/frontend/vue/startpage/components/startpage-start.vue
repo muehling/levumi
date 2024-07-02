@@ -48,7 +48,7 @@
           </b-col>
           <b-col :class="!isLoggedIn ? 'col-lg-6' : 'col'">
             <b-card class="shadow" body-class="info-card">
-              <div class="embed-responsive embed-responsive-16by9 video-container mb-4">
+              <div class="ratio ratio-16x9 video-container mb-4">
                 <video controls>
                   <source :src="levumiVid" />
                   Ihr Browser unterstützt leider kein Abspielen von Videos.

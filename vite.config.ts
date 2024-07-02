@@ -9,38 +9,8 @@ import { resolve } from 'path'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 
 import Components from 'unplugin-vue-components/vite'
-import { BootstrapVueNextResolver } from 'unplugin-vue-components/resolvers'
+import { BootstrapVueNextResolver } from 'bootstrap-vue-next'
 
-//import commonjsExternals from 'vite-plugin-commonjs-externals'
-//import { builtinModules } from 'module'
-
-//export default defineConfig({
-//  optimizeDeps: {
-//    exclude: builtinModules,
-//  },
-//  plugins: [
-//    RubyPlugin(),
-//    vue(),
-//    FullReload(['config/routes.rb', 'app/views/**/*'], { delay: 200 }),
-//    commonjsExternals({
-//      externals: builtinModules,
-//    }),
-//  ],
-//  server: {
-//    host: '0.0.0.0',
-//    port: 3036,
-//    hmr: {
-//      host: '0.0.0.0',
-//    },
-//  },
-//  resolve: {
-//    alias: {
-//      '~bootstrap': 'bootstrap',
-//      vue: 'vue/dist/vue.esm.js',
-//      src: resolve(__dirname, 'app/frontend'),
-//    },
-//  },
-//})
 export default defineConfig({
   define: {
     __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: 'true',
@@ -50,16 +20,15 @@ export default defineConfig({
   resolve: {
     alias: {
       '~bootstrap': 'bootstrap',
-      //vue: 'vue/dist/vue.esm-bundler.js',
-
-      vue: '@vue/compat',
+      vue: 'vue/dist/vue.esm-bundler.js',
+      //vue: '@vue/compat',
       src: resolve(__dirname, 'app/frontend'),
     },
   },
   plugins: [
     RubyPlugin(),
     nodePolyfills(),
-
+    FullReload(['app/controllers/*', 'app/models/*', 'app/views/**/*'], { delay: 200 }),
     vue({
       template: {
         compilerOptions: {

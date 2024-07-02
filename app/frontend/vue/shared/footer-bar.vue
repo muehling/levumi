@@ -10,7 +10,7 @@
       <li class="list-inline-item">
         <a
           id="dsgvo-hint"
-          class="link-primary dsgvo-hint"
+          class="dsgvo-hint"
           href="#dsgvo-hint"
           tabindex="0"
           data-trigger="focus"
