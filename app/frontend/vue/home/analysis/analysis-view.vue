@@ -1,9 +1,9 @@
 <template>
   <div>
     <b-row class="d-flex justify-content-between">
-      <b-button-group class="ml-3" size="sm">
+      <b-button-group class="ms-3" size="sm">
         <b-button
-          class="mr-2"
+          class="me-2"
           size="sm"
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
@@ -33,7 +33,7 @@
         <b-dropdown
           :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
           variant="primary"
-          class="ml-2 text-right"
+          class="ms-2 text-right"
           right
           size="sm">
           <b-dropdown-item
@@ -47,11 +47,11 @@
       </div>
     </b-row>
     <b-row class="mt-2">
-      <b-button-group class="ml-3">
+      <b-button-group class="ms-3">
         <b-button
           v-for="(view, index) in viewsWithGroupAndStudent"
           :key="index"
-          class="mr-2 shadow-none"
+          class="me-2 shadow-none"
           size="sm"
           variant="outline-secondary"
           :pressed="selectedView === view.key"
@@ -91,7 +91,7 @@
     </b-row>
     <b-row :hidden="!annotationAndTargetRowVisible">
       <b-col>
-        <b-row class="ml-1">
+        <b-row class="ms-1">
           <b-col>
             <b-button
               v-if="!readOnly"
@@ -110,7 +110,7 @@
             <b-button
               v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
               id="target_btn"
-              class="ml-2"
+              class="ms-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
               size="sm"
@@ -122,14 +122,14 @@
                   targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'
                 }`"></i>
             </b-button>
-            <b-button class="ml-2" size="sm" variant="outline-primary" @click="exportGraph">
+            <b-button class="ms-2" size="sm" variant="outline-primary" @click="exportGraph">
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
           </b-col>
         </b-row>
-        <b-row class="ml-1">
-          <b-col class="mr-4">
+        <b-row class="ms-1">
+          <b-col class="me-4">
             <annotations-section
               v-model:annotationControlVisible="annotationControlVisible"
               :annotations="annotations"

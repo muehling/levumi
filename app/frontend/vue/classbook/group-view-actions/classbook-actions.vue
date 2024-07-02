@@ -17,7 +17,7 @@
         <context-help
           help-text="Hier können Sie die in den Tests verwendete Schriftart einstellen.
       Diese kann auch in der Liste individuell pro Schüler:in eingestellt werden. Individuelle Einstellungen haben Vorrang vor den Klasseneinstellungen."
-          class-name="mt-2 ml-2" />
+          class-name="mt-2 ms-2" />
       </div>
       <div class="col-9 d-flex align-items-center">
         <span>Aktuelle Standard-Einstellung: {{ fontSettingsText }}</span>
@@ -36,7 +36,7 @@
       </b-button>
       <context-help
         help-text="Mit dieser Aktion wird ein PDF mit QR-Codes zum Einloggen in die Testoberfläche erstellt. Die QR-Codes können ausgedruckt und an die Schüler:innen ausgeteilt werden."
-        class-name="mt-2 ml-2" />
+        class-name="mt-2 ms-2" />
     </div>
     <div v-if="permissions?.archiveGroup" class="d-inline">
       <hr />
@@ -46,7 +46,7 @@
       </b-button>
       <context-help
         help-text="Mit dieser Aktion wird die Klasse archiviert. Ist die Klasse mit anderen Personen geteilt, wird das Teilen automatisch beendet. Wird die Klasse wieder aus dem Archiv geholt, muss sie ggf. erneut mit den Personen geteilt werden."
-        class-name="mt-2 ml-2" />
+        class-name="mt-2 ms-2" />
     </div>
     <confirm-dialog ref="confirmDialog" />
     <font-settings-modal

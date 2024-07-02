@@ -1,7 +1,7 @@
 <template>
   <tr v-if="!editMode" id="intro_cb_5" class="student-row student-row-display">
     <td class="pl-0">
-      <div v-if="!empty" class="pl-1">
+      <div v-if="!empty" class="ps-1">
         {{ student.name }}
       </div>
       <div v-else class="d-inline">
@@ -62,7 +62,7 @@
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
             v-b-popover.hover.topright="'Schrifteinstellungen'"
-            class="mr-1"
+            class="me-1"
             variant="outline-secondary"
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
@@ -72,7 +72,7 @@
             v-if="!readOnly"
             v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="editMode = true">
             <i class="fas fa-user-edit"></i>
@@ -81,7 +81,7 @@
             v-if="!readOnly"
             v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
@@ -90,7 +90,7 @@
             v-if="!!student.id"
             v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
@@ -101,7 +101,7 @@
   </tr>
   <tr v-else id="intro_cb_5" class="student-row student-row-edit">
     <td class="pl-0">
-      <div class="pl-1">
+      <div class="ps-1">
         <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
@@ -169,14 +169,14 @@
               size="sm"
               :disabled="newTag === ''"
               variant="outline-success"
-              class="pb-0 pt-1 ml-2 new-tag-submit"
+              class="pb-0 pt-1 ms-2 new-tag-submit"
               @click="addTag">
               <i class="fas fa-check"></i>
             </b-button>
 
             <context-help
               help-text="Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein. Bitte beachten: der eingegebene Text wird unverschlüsselt gespeichert!"
-              class-name="mt-3 ml-2" />
+              class-name="mt-3 ms-2" />
           </b-form>
         </div>
       </div>
@@ -194,7 +194,7 @@
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
             v-b-popover.hover.topright="'Schrifteinstellungen'"
-            class="mr-1"
+            class="me-1"
             variant="outline-secondary"
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
@@ -204,7 +204,7 @@
             v-if="!readOnly"
             v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="editMode = true">
             <i class="fas fa-user-edit"></i>
@@ -213,7 +213,7 @@
             v-if="!readOnly"
             v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
@@ -222,7 +222,7 @@
             v-if="!!student.id"
             v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
@@ -234,7 +234,7 @@
           <b-button-group>
             <b-button
               id="intro_cb_7"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               variant="outline-success"
               title="Speichern"
               :disabled="name.length == 0"
@@ -244,7 +244,7 @@
           </b-button-group>
           <b-button-group>
             <b-btn
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               variant="outline-secondary"
               title="Abbrechen"
               @click="handleCancel">

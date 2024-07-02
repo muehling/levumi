@@ -207,15 +207,15 @@
               {{ assessmentForSelectedTest?.result_count }} Messungen für diese Klasse vorhanden
             </p>
             <div class="text-left text-small">
-              <p v-if="selectedTest.description.short" class="text-light bg-secondary pl-1">
+              <p v-if="selectedTest.description.short" class="text-light bg-secondary ps-1">
                 Kurzbeschreibung
               </p>
               <p v-if="selectedTest.description.short" v-html="selectedTest.description.short"></p>
-              <p v-if="selectedTest.description.full" class="text-light bg-secondary pl-1">
+              <p v-if="selectedTest.description.full" class="text-light bg-secondary ps-1">
                 Beschreibung
               </p>
               <p v-if="selectedTest.description" v-html="selectedTest.description.full"></p>
-              <p class="text-light bg-secondary pl-1">Ausführliche Beschreibung</p>
+              <p class="text-light bg-secondary ps-1">Ausführliche Beschreibung</p>
               <table class="table table-striped table-sm text-left">
                 <tbody>
                   <tr>
@@ -258,7 +258,7 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             :href="`/results/start_demo/${selectedTestId}`"
             target="_blank"
             variant="outline-secondary">
@@ -266,28 +266,28 @@
           </b-button>
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             variant="success"
             @click="createAssessment">
             Test für die Klasse aktivieren
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             variant="outline-success"
             @click="jumpToAssessment()">
-            <i class="fas fa-check mr-2"></i>
+            <i class="fas fa-check me-2"></i>
             Zur Diagnostik
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
             @click="deleteAssessment">
-            <i class="fas fa-trash mr-2"></i>
+            <i class="fas fa-trash me-2"></i>
             Test löschen
           </b-button>
-          <b-btn class="mr-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-btn class="me-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
         </div>
       </div>
     </div>

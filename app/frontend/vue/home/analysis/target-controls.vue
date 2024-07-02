@@ -106,7 +106,7 @@
           <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
           <b-button
             :hidden="!(targetVal || dateUntilVal || deviationVal) && storedIsNull"
-            class="ml-2"
+            class="ms-2"
             variant="outline-danger"
             size="sm"
             @click="storedIsNull ? restoreTarget() : changeStoredTarget(true)">
@@ -120,7 +120,7 @@
                 deviationVal === deviationStored) ||
               storedIsNull
             "
-            class="ml-2"
+            class="ms-2"
             variant="outline-warning"
             size="sm"
             @click="restoreTarget">

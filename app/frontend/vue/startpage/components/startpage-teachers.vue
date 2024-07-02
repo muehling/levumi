@@ -11,7 +11,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
+            <img :src="levumiSmall" class="mb-3 ms-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -27,7 +27,7 @@
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg mr-4 mb-4 float-left shadow"
+                class="img-bg me-4 mb-4 float-start shadow"
                 :src="frontpage3"
                 fluid
                 alt="Schüler und Lehrerin vor einem Monitor" />
@@ -47,7 +47,7 @@
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg ml-4 mb-4 float-right shadow"
+                class="img-bg ms-4 mb-4 float-end shadow"
                 :src="frontpage4"
                 fluid
                 alt="Schüler:innen arbeiten an Laptops" />

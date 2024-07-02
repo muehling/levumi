@@ -1,23 +1,21 @@
 <template>
   <div class="d-flex justify-content-end">
-    <b-form-input v-if="isEdited" v-model="newName" class="mr-2"> </b-form-input>
+    <b-form-input v-if="isEdited" v-model="newName" class="me-2"></b-form-input>
     <b-btn
-      class="btn-sm mr-1 text-nowrap"
+      class="btn-sm me-1 text-nowrap"
       variant="outline-primary"
-      @click="rename(type, data.item.id)"
-    >
+      @click="rename(type, data.item.id)">
       <i class="fas fa-edit"></i>
-      <span class="text-small d-none d-xl-inline pl-2">{{ editButtonText }}</span></b-btn
-    >
+      <span class="text-small d-none d-xl-inline ps-2">{{ editButtonText }}</span>
+    </b-btn>
     <b-btn
-      class="btn-sm mr-1 text-nowrap"
+      class="btn-sm me-1 text-nowrap"
       variant="outline-danger"
       :disabled="data.item.testCount > 0"
-      @click="deleteItem(type, data.item.id)"
-    >
+      @click="deleteItem(type, data.item.id)">
       <i class="fas fa-trash"></i>
-      <span class="text-small d-none d-xl-inline pl-2">Löschen</span></b-btn
-    >
+      <span class="text-small d-none d-xl-inline ps-2">Löschen</span>
+    </b-btn>
   </div>
 </template>
 <script>

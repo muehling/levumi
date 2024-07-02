@@ -30,7 +30,7 @@
           <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
         </b-form-group>
         <hr class="mt-0 d-none" />
-        <b-form-group v-slot="{ ariaDescribedby }" label-class="text-small mb-0" label="Ich bin...">
+        <b-form-group label-class="text-small mb-0" label="Ich bin...">
           <b-form-radio
             v-model="accountType"
             inline

@@ -28,28 +28,28 @@
       <template #cell(actions)="data">
         <b-btn
           v-if="!showExport"
-          class="btn-sm mr-1"
+          class="btn-sm me-1"
           variant="outline-primary"
           @click="showTestDetails(data.item.id)">
           <i class="fas fa-glasses"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Details</span>
+          <span class="text-small d-none d-xl-inline ps-2">Details</span>
         </b-btn>
         <b-btn
           v-if="!showExport && isEditAndDeleteAllowed"
-          class="btn-sm mr-1"
+          class="btn-sm me-1"
           variant="outline-success"
           :disabled="data.item.archive === 'Ja'"
           @click="editTest(data.item.id)">
           <i class="fas fa-edit"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
+          <span class="text-small d-none d-xl-inline ps-2">Bearbeiten</span>
         </b-btn>
         <b-btn
           v-if="!showExport && isEditAndDeleteAllowed"
-          class="btn-sm mr-1"
+          class="btn-sm me-1"
           variant="outline-danger"
           @click="deleteTest(data.item.id)">
           <i class="fas fa-trash"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
+          <span class="text-small d-none d-xl-inline ps-2">Löschen</span>
         </b-btn>
         <b-link
           v-if="showExport"
@@ -58,7 +58,7 @@
           :disabled="!data.item.has_results"
           :href="`/tests/${data.item.id}`">
           <i class="fas fa-save"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Export</span>
+          <span class="text-small d-none d-xl-inline ps-2">Export</span>
         </b-link>
       </template>
     </b-table>

@@ -5,8 +5,7 @@
         v-if="!readOnly"
         class="border p-3"
         accept-charset="UTF-8"
-        @submit="submitAnnotation()"
-      >
+        @submit="submitAnnotation()">
         <div class="text-small row">
           <div class="col-12 col-md-3 col-lg-2">
             <label class="mt-1">Datumsbereich</label>
@@ -16,16 +15,14 @@
               v-model="annotationStart"
               name="annotation[start]"
               :options="weekLabels(true)"
-              size="sm"
-            ></b-form-select>
+              size="sm"></b-form-select>
           </div>
           <div class="col-6 col-md-2">
             <b-form-select
               v-model="annotationEnd"
               name="annotation[end]"
               :options="weekLabels(false)"
-              size="sm"
-            ></b-form-select>
+              size="sm"></b-form-select>
           </div>
         </div>
         <div class="mt-3 text-small row">
@@ -40,14 +37,12 @@
                 </template>
                 <b-dropdown-group
                   v-for="(categoryGroup, index) in groupedAnnotationOptions"
-                  :key="index"
-                >
+                  :key="index">
                   <b-dropdown-item
                     v-for="option in categoryGroup"
                     :key="option.name"
                     class="text-small"
-                    @click="annotationCategoryId = option.id"
-                  >
+                    @click="annotationCategoryId = option.id">
                     {{ option.name }}
                   </b-dropdown-item>
                   <b-dropdown-divider />
@@ -58,9 +53,9 @@
                   'Fehlt ein Anmerkungstyp? Bitte wenden Sie sich an das Support-Team.'
                 "
                 style="font-size: 1rem"
-                class="ml-2 mt-1"
-                ><i class="fas fa-circle-question"></i
-              ></span>
+                class="ms-2 mt-1">
+                <i class="fas fa-circle-question"></i>
+              </span>
             </div>
           </div>
         </div>
@@ -73,17 +68,16 @@
               <b-form-checkbox
                 v-model="annotationIsTrendThreshold"
                 :disabled="annotationStart !== annotationEnd"
-                size="sm"
-              ></b-form-checkbox>
+                size="sm"></b-form-checkbox>
               <span
                 v-b-popover.hover="
                   'Umfasst eine Anmerkung nur ein einziges Datum, so können Trends für die Bereiche ' +
                   'vor und nach der Anmerkung erstellt werden.'
                 "
                 style="font-size: 1rem"
-                class="ml-2 mt-1"
-                ><i class="fas fa-circle-question"></i
-              ></span>
+                class="ms-2 mt-1">
+                <i class="fas fa-circle-question"></i>
+              </span>
             </div>
           </div>
         </div>
@@ -92,9 +86,9 @@
             variant="outline-success"
             size="sm"
             :disabled="annotationEnd == null || annotationStart == null"
-            @click="submitAnnotation"
-          >
-            <i class="fas fa-check"></i> Anmerkung speichern
+            @click="submitAnnotation">
+            <i class="fas fa-check"></i>
+            Anmerkung speichern
           </b-button>
         </div>
       </b-form>
@@ -118,7 +112,8 @@
             </td>
             <td v-if="!readOnly" class="annotation-action-button">
               <b-button variant="outline-danger" class="btn-sm" @click="deleteAnnotation(a.id)">
-                <i class="fas fa-trash"></i> Löschen
+                <i class="fas fa-trash"></i>
+                Löschen
               </b-button>
             </td>
           </tr>

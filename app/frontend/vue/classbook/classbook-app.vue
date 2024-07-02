@@ -10,7 +10,7 @@
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template slot="title">
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
-                  <span v-if="transferRequests.length" class="badge badge-info ml-2">Neu!</span>
+                  <span v-if="transferRequests.length" class="badge badge-info ms-2">Neu!</span>
                 </template>
 
                 <b-card no-body class="mt-3">
@@ -92,7 +92,7 @@
                       <template slot="title">
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
-                        <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
+                        <span v-if="group.key == null" class="badge badge-info ms-2">Neu!</span>
                       </template>
                       <group-view :groups="sharedGroups" :group="group"></group-view>
                     </b-tab>

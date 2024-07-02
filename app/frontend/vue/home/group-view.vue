@@ -11,9 +11,9 @@
         v-if="displayTestAdminButton"
         variant="outline-secondary"
         size="sm"
-        class="mr-2 my-3"
+        class="me-2 my-3"
         @click="openTestAdmin">
-        <i class="fas fa-gear mr-2"></i>
+        <i class="fas fa-gear me-2"></i>
         Test hinzufügen / löschen
       </b-btn>
       <b-button
@@ -31,7 +31,7 @@
         size="sm"
         variant="outline-secondary"
         @click="backToOverview">
-        <i class="fas fa-backward-step mr-1"></i>
+        <i class="fas fa-backward-step me-1"></i>
         Zurück zur Testübersicht
       </b-button>
     </div>

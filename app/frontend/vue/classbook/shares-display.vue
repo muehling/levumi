@@ -19,11 +19,11 @@
         <td>
           <div class="text-nowrap">
             <div v-if="share.is_anonymous" class="d-inline">
-              <span class="mr-4">Klasse ist anonym geteilt.</span>
+              <span class="me-4">Klasse ist anonym geteilt.</span>
             </div>
             <b-button
               v-if="!share.is_anonymous"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               :variant="share.read_only ? 'primary' : 'outline-primary'"
               @click="changeAccessLevel(share.id, 1)">
               <i class="fas fa-glasses"></i>
@@ -31,13 +31,13 @@
             </b-button>
             <b-button
               v-if="!share.is_anonymous"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               :variant="!share.read_only ? 'primary' : 'outline-primary'"
               @click="changeAccessLevel(share.id, 0)">
               <i class="fas fa-edit"></i>
               Ansicht und verwenden
             </b-button>
-            <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
+            <b-button class="btn btn-sm me-1" variant="outline-danger" @click="unshare(share.id)">
               <i class="fas fa-trash"></i>
               Nicht mehr teilen
             </b-button>

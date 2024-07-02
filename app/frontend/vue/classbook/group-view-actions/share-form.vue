@@ -8,7 +8,7 @@
           <b-input
             id="share-email"
             v-model="email"
-            class="mr-2 position-relative"
+            class="me-2 position-relative"
             name="email"
             placeholder="E-Mail Adresse"
             size="sm"
@@ -26,13 +26,13 @@
             beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet."
             class-name="mt-2" />
         </div>
-        <b-form-radio-group v-model="rightsSelected" class="ml-4" name="group_share[read_only]">
+        <b-form-radio-group v-model="rightsSelected" class="ms-4" name="group_share[read_only]">
           <b-form-radio
             v-for="option in permissionOptions"
             :key="option.text"
             :value="option.value">
             <span>{{ option.text }}</span>
-            <context-help :help-text="option.helpText" class-name="ml-1 mr-3" />
+            <context-help :help-text="option.helpText" class-name="ms-1 me-3" />
           </b-form-radio>
         </b-form-radio-group>
         <b-button type="submit" variant="outline-success" size="sm" :disabled="email.trim() === ''">

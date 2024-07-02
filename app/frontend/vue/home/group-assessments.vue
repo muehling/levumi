@@ -30,8 +30,8 @@
           <td class="assessment-link" @click="setPreselect(assessment)">
             <i
               v-if="loadingAssessmentId === assessment.test_id"
-              class="ml-4 fas fa-spinner fa-spin"></i>
-            <i v-else class="ml-4 fas fa-magnifying-glass"></i>
+              class="ms-4 fas fa-spinner fa-spin"></i>
+            <i v-else class="ms-4 fas fa-magnifying-glass"></i>
           </td>
           <td class="assessment-link" @click="setPreselect(assessment)">
             {{ assessment.shorthand }}
@@ -63,7 +63,7 @@
             </b-btn>
             <b-button
               v-if="showDeleteAssessmentButton"
-              class="btn-sm ml-1"
+              class="btn-sm ms-1"
               :variant="assessment?.result_count ? 'danger' : 'outline-danger'"
               @click="deleteAssessment(assessment)">
               <i class="fas fa-trash"></i>

@@ -15,7 +15,7 @@
             <b-button
               v-for="area in filteredAreas"
               :key="area.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_area == area.id"
               @click="setSelectedArea(area.id)">
@@ -31,7 +31,7 @@
             <b-button
               v-for="competence in filteredCompetences"
               :key="competence.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_competence == competence.id"
               @click="setSelectedCompetence(competence.id)">
@@ -47,7 +47,7 @@
             <b-button
               v-for="family in filteredTestFamilies"
               :key="family.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_family == family.id"
               @click="setSelectedFamily(family.id)">
@@ -63,7 +63,7 @@
             <b-button
               v-for="test in filteredTests"
               :key="test.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_test == test.id"
               @click="selected_test = test.id">

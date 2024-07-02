@@ -10,7 +10,7 @@
             v-if="displayActionButton"
             id="intro_cb_3"
             size="sm"
-            class="mr-2"
+            class="me-2"
             variant="outline-secondary"
             @click="handleNavigate('aktionen')">
             <i class="fas fa-gear"></i>
@@ -64,7 +64,7 @@
         <br />
         <span>Schüler:innen: {{ group.size }}</span>
       </p>
-      <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
+      <b-button class="me-1" variant="outline-primary" @click="reactivateGroup">
         <i class="fas fa-file-import"></i>
         Klasse aus dem Archiv holen
       </b-button>

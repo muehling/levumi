@@ -14,7 +14,7 @@
             zuerst im Klassenbuch an, damit Sie testen können!
           </p>
           <b-button variant="outline-secondary" @click="navigateToClassbook">
-            <i class="fas fa-book-open mr-1"></i>
+            <i class="fas fa-book-open me-1"></i>
             Zum Klassenbuch
           </b-button>
         </div>

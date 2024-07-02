@@ -94,13 +94,13 @@
                                 </div>
 
                                 <div v-if="test.description" class="container-fluid mb-4">
-                                  <p class="text-light bg-secondary pl-4">Beschreibung</p>
+                                  <p class="text-light bg-secondary ps-4">Beschreibung</p>
                                   <div
                                     class="full-description text-small"
                                     v-html="test.description"></div>
                                 </div>
                                 <div v-if="hasAttachments(test)" class="container-fluid">
-                                  <p class="text-light bg-secondary pl-4">Anhänge</p>
+                                  <p class="text-light bg-secondary ps-4">Anhänge</p>
                                   <img
                                     v-for="attachment in getAttachedImages(test)"
                                     :key="attachment.filename"

@@ -1,13 +1,13 @@
 <template>
   <div>
     <b-form inline accept-charset="UTF-8" class="mt-3 text-nowrap" @submit="handleSubmit">
-      <label for="label-input" class="mr-4">
+      <label for="label-input" class="me-4">
         Klassenbezeichnung {{ group.id ? 'ändern:' : 'eingeben:' }}
       </label>
       <b-form-input
         id="label-input"
         v-model="label"
-        class="mr-2"
+        class="me-2"
         name="group[label]"
         placeholder="Klassenbezeichnung"
         size="sm" />
@@ -27,12 +27,12 @@
         <b-button
           type="submit"
           variant="outline-success"
-          class="mr-2"
+          class="me-2"
           size="sm"
           :disabled="isGroupLabelSaveDisabled">
           <span>
             <i class="fas fa-check" />
-            <span class="d-none d-lg-inline ml-2">Speichern</span>
+            <span class="d-none d-lg-inline ms-2">Speichern</span>
           </span>
         </b-button>
         <b-button
@@ -41,7 +41,7 @@
           :disabled="label === group.label"
           @click="handleCancel">
           <i class="fas fa-times" />
-          <span class="d-none d-lg-inline ml-2">Abbrechen</span>
+          <span class="d-none d-lg-inline ms-2">Abbrechen</span>
         </b-button>
       </div>
     </b-form>

@@ -18,7 +18,7 @@
       </button>
 
       <div id="navbarContent" class="collapse navbar-collapse">
-        <ul class="navbar-nav ml-3">
+        <ul class="navbar-nav ms-3">
           <li id="intro1" class="nav-item">
             <router-link
               class="nav-link rounded"

@@ -59,10 +59,10 @@
       <i class="fas fa-check"></i>
       Speichern
     </b-btn>
-    <b-button class="mt-3 ml-2" variant="outline-secondary" @click="clearSettings">
+    <b-button class="mt-3 ms-2" variant="outline-secondary" @click="clearSettings">
       Zurücksetzen
     </b-button>
-    <b-button class="mt-3 ml-2" variant="outline-danger" @click="hideModal">Abbrechen</b-button>
+    <b-button class="mt-3 ms-2" variant="outline-danger" @click="hideModal">Abbrechen</b-button>
   </b-modal>
 </template>
 <script>

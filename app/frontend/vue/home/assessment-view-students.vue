@@ -5,7 +5,7 @@
       variant="outline-secondary"
       class="mb-3 btn-sm">
       Erläuterungen
-      <i class="fas fa-caret-down ml-2"></i>
+      <i class="fas fa-caret-down ms-2"></i>
     </b-button>
     <b-collapse id="assessmentViewStudentsExplanation">
       <b-card class="mb-4">
@@ -35,7 +35,7 @@
       <b-button
         v-for="student in students"
         :key="student.id"
-        class="mr-2 mb-2"
+        class="me-2 mb-2"
         :variant="getResult(student.id) > 0 ? 'success' : 'outline-success'"
         :disabled="getResult(student.id) > 0 || !isAllowed"
         :title="getResult(student.id) > 0 ? 'Bereits getestet' : 'Jetzt testen'"
@@ -57,10 +57,10 @@
         {{ isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
       </b-button>
 
-      <b-dropdown v-if="isAllowed" size="sm" class="ml-1" variant="outline-secondary" no-caret>
+      <b-dropdown v-if="isAllowed" size="sm" class="ms-1" variant="outline-secondary" no-caret>
         <template #button-content>
           Schüler:innen ein-/ausschließen
-          <i class="fas fa-caret-down ml-2"></i>
+          <i class="fas fa-caret-down ms-2"></i>
         </template>
         <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
           <b-dropdown-item
@@ -79,16 +79,16 @@
           </b-dropdown-item>
         </b-dropdown-group>
       </b-dropdown>
-      <b-button variant="outline-secondary" class="ml-1 btn btn-sm" @click="refetch">
-        <i class="fas fa-refresh mr-2"></i>
+      <b-button variant="outline-secondary" class="ms-1 btn btn-sm" @click="refetch">
+        <i class="fas fa-refresh me-2"></i>
         Aktualisieren
       </b-button>
       <b-button
         v-b-toggle.assessmentViewStudentsExplanation
         variant="outline-secondary"
-        class="ml-1 btn btn-sm">
+        class="ms-1 btn btn-sm">
         Erläuterungen
-        <i class="fas fa-caret-down ml-2"></i>
+        <i class="fas fa-caret-down ms-2"></i>
       </b-button>
     </div>
 
@@ -120,7 +120,7 @@
     <table>
       <thead>
         <tr>
-          <th v-if="includedStudents.length" scope="col" class="pr-4">
+          <th v-if="includedStudents.length" scope="col" class="pe-4">
             Teilnehmende Schüler:innen
           </th>
           <th v-if="excludedStudents.length" scope="col">Ausgeschlossene Schüler:innen</th>
@@ -128,14 +128,14 @@
       </thead>
       <tbody>
         <tr>
-          <td v-if="includedStudents.length" class="pr-4">
+          <td v-if="includedStudents.length" class="pe-4">
             <div size="sm" class="flex-wrap d-flex h-100">
               <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
               <form
                 v-for="student in includedStudents"
                 :key="student.id"
                 method="post"
-                class="mr-2 mb-2"
+                class="me-2 mb-2"
                 target="_blank"
                 :action="'/testen_login?login=' + student.login">
                 <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
@@ -158,7 +158,7 @@
                 :key="student.id"
                 :disabled="true"
                 :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
-                class="mr-2 mb-2">
+                class="me-2 mb-2">
                 {{ student.name }}
                 <br />
                 {{ student.login }}

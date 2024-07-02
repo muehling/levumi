@@ -10,7 +10,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
+            <img :src="levumiSmall" class="mb-3 me-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -18,7 +18,7 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg ml-4 mb-4 float-right shadow"
+            class="img-bg ms-4 me-4 float-end shadow"
             :src="frontpage2"
             fluid
             alt="Schüler und Lehrerin im Klassenzimmer" />
@@ -61,7 +61,7 @@
       <div class="mb-4">
         <b-card class="shadow" body-class="info-card">
           <b-img
-            class="img-bg mr-4 mb-4 float-left shadow"
+            class="img-bg me-4 mb-4 float-start shadow"
             :src="frontpage5"
             fluid
             alt="Eine Lehrerin demonstriert ihren Schüler:innen etwas an einer Landkarte" />

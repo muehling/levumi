@@ -4,26 +4,26 @@
       Sie haben
       <b>{{ transferTargetUser }}</b>
       eine Anfrage zur Übertragung dieser Klasse gesendet.
-      <b-button variant="outline-danger" size="sm" class="ml-3" @click="cancelTransfer">
+      <b-button variant="outline-danger" size="sm" class="ms-3" @click="cancelTransfer">
         <i class="fas fa-cancel"></i>
         Anfrage beenden
       </b-button>
     </div>
     <div v-else-if="group.key === null">
-      <span class="mr-4">{{ group.belongs_to }} möchte Ihnen diese Klasse übertragen.</span>
+      <span class="me-4">{{ group.belongs_to }} möchte Ihnen diese Klasse übertragen.</span>
 
       <b-form class="mt-3" inline :validated="checkKey()" @submit.prevent.stop="acceptShare">
         <b-input
           v-if="!group.is_anonymous"
           v-model="keyInput"
-          class="mr-2"
+          class="me-2"
           placeholder="Code"
           size="sm" />
         <b-button type="submit" variant="outline-success" size="sm">
           <i class="fas fa-check"></i>
           Jetzt übertragen
         </b-button>
-        <b-button variant="outline-danger" size="sm" class="ml-3" @click="requestUnshare">
+        <b-button variant="outline-danger" size="sm" class="ms-3" @click="requestUnshare">
           <i class="fas fa-cancel"></i>
           Klasse entfernen
         </b-button>

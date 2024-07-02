@@ -7,7 +7,7 @@
         <b>{{ transferRequests }}</b>
         übertragen.
       </span>
-      <b-button variant="outline-danger" size="sm" class="ml-2" @click="handleCancelTransfer">
+      <b-button variant="outline-danger" size="sm" class="ms-2" @click="handleCancelTransfer">
         Anfrage abbrechen
       </b-button>
     </div>
@@ -17,7 +17,7 @@
         <b-input
           id="email-email"
           v-model="transferEmail"
-          class="mr-2 position-relative"
+          class="me-2 position-relative"
           name="transferEmail"
           placeholder="E-Mail Adresse"
           size="sm"
@@ -32,7 +32,7 @@
       <b-button
         type="submit"
         variant="outline-success"
-        class="mr-2"
+        class="me-2"
         size="sm"
         :disabled="isTransferDisabled">
         <span>
@@ -42,7 +42,7 @@
       </b-button>
       <context-help
         help-text="Mit dieser Aktion wird die Klasse an eine andere Person übertragen. Sie behalten dadurch Lese- und Schreibzugriff auf die Klasse, diese erscheint jedoch dann unter 'Mit mir geteilte Klassen'. Bis die neue Eigentümer:in die Anfrage angenommen hat, können Sie diese abbrechen."
-        class-name="mt-2 ml-2" />
+        class-name="mt-2 ms-2" />
     </b-form>
     <confirm-dialog ref="confirmDialog" />
   </div>

@@ -9,21 +9,21 @@
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
         <b-nav-item
           :id="group.id + '_test_type_' + currentTestType?.id"
-          class="ml-3 cursor-default">
+          class="ms-3 cursor-default">
           <span class="font-weight-bold">{{ currentTestType?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
         <b-nav-item
           :id="group.id + '_competence_' + currentCompetence?.id"
-          class="ml-3 cursor-default">
+          class="ms-3 cursor-default">
           <span class="font-weight-bold">{{ currentCompetence?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
-        <b-nav-item :id="group.id + '_family_' + currentFamily?.id" class="ml-3 cursor-default">
+        <b-nav-item :id="group.id + '_family_' + currentFamily?.id" class="ms-3 cursor-default">
           <span class="font-weight-bold">{{ currentFamily?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
-        <b-nav-item :id="group.id + '_test_' + currentTest?.id" active class="ml-3 cursor-default">
+        <b-nav-item :id="group.id + '_test_' + currentTest?.id" active class="ms-3 cursor-default">
           <span class="font-weight-bold">{{ currentTest?.level || '' }}</span>
         </b-nav-item>
       </b-nav>

@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal id="edit-user-dialog" ref="editDialog" hide-footer>
-      <template #modal-title> Einstellungen </template>
+      <template #modal-title>Einstellungen</template>
       <div class="user-settings">
         <b-card>
           <b class="mb-2 d-inline-block">Grafische Auswertung</b>
@@ -12,8 +12,7 @@
                 `Ziele werden als gestrichelte Linien im Diagramm dargestellt und lassen sich im Abschnitt 'Ziele und Trends' einstellen. Sie können sowohl auf Klassen- als auch auf individueller Ebene vergeben werden.`
               "
               style="font-size: 1rem"
-              class="mt-1 ml-2"
-            >
+              class="mt-1 ms-2">
               <i class="fas fa-circle-question"></i>
             </span>
           </b-form-checkbox>
@@ -24,8 +23,7 @@
                 `Trendlinien dienen zur besseren Visualisierung des Lernverlaufs. Sie stehen nur für die Individualgraphen der Schüler:innen zur Verfügung.`
               "
               style="font-size: 1rem"
-              class="mt-1 ml-2"
-            >
+              class="mt-1 ms-2">
               <i class="fas fa-circle-question"></i>
             </span>
           </b-form-checkbox>
@@ -34,14 +32,12 @@
             class="mt-2"
             variant="outline-primary"
             :disabled="!targets.enabled && !trends.enabled"
-            @click="extendedGraphSettingsVisible = !extendedGraphSettingsVisible"
-          >
+            @click="extendedGraphSettingsVisible = !extendedGraphSettingsVisible">
             Erweiterte Einstellungen
             <i
               :class="`when-closed fas ${
                 extendedGraphSettingsVisible ? 'fa-caret-down' : 'fa-caret-up'
-              }`"
-            ></i>
+              }`"></i>
           </b-button>
           <b-collapse id="extended-graph-settings" class="mt-2">
             <b-card>
@@ -50,16 +46,14 @@
                 v-model="targets.deviation"
                 :disabled="!targets.enabled"
                 name="deviations-enabled"
-                switch
-              >
+                switch>
                 Abweichungen anzeigen
                 <span
                   v-b-popover.hover="
                     `Abweichungen werden als Bereich unterhalb der gestrichelten Ziel-Linie dargestellt. Sie visualisieren den Bereich, in dem ein Ergebnis, dass das vorgegebene Ziel nicht erreicht hat, noch akzeptable ist.`
                   "
                   style="font-size: 1rem"
-                  class="mt-1 ml-2"
-                >
+                  class="mt-1 ms-2">
                   <i class="fas fa-circle-question"></i>
                 </span>
               </b-form-checkbox>
@@ -67,16 +61,14 @@
                 v-model="targets.slope"
                 :disabled="!targets.enabled"
                 name="sloped-targetes"
-                switch
-              >
+                switch>
                 An-/Absteigende Ziele
                 <span
                   v-b-popover.hover="
                     `Ist diese Option aktiviert, wird die Ziellinie als Gerade, ausgehend vom Durchschnitt der ersten Messpunkte, hin zum Zielwert dargestellt.`
                   "
                   style="font-size: 1rem"
-                  class="mt-1 ml-2"
-                >
+                  class="mt-1 ms-2">
                   <i class="fas fa-circle-question"></i>
                 </span>
               </b-form-checkbox>
@@ -86,16 +78,14 @@
                 v-model="trends.extrapolate"
                 :disabled="!trends.enabled"
                 name="extrapolation-enabled"
-                switch
-              >
+                switch>
                 Trendlinien extrapolieren
                 <span
                   v-b-popover.hover="
                     `Mit dieser Option kann die Trendlinie bis zum Ende des eingestellten verfügbaren Zeitraums verlängert werden.`
                   "
                   style="font-size: 1rem"
-                  class="mt-1 ml-2"
-                >
+                  class="mt-1 ms-2">
                   <i class="fas fa-circle-question"></i>
                 </span>
               </b-form-checkbox>

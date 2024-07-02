@@ -27,7 +27,7 @@
         <b-button type="submit" variant="success" :disabled="isLoading" @click="login">
           Einloggen
         </b-button>
-        <div v-if="isLoading" class="spinner ml-3 mt-2">
+        <div v-if="isLoading" class="spinner ms-3 mt-2">
           <div class="bounce1 pt-2"></div>
           <div class="bounce2 pt-2"></div>
           <div class="bounce3 pt-2"></div>

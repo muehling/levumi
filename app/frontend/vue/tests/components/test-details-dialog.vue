@@ -1,9 +1,9 @@
 <template>
   <info-dialog ref="testDetails">
     <div class="text-left text-small">
-      <p class="text-light bg-secondary pl-1">Kurzbeschreibung</p>
+      <p class="text-light bg-secondary ps-1">Kurzbeschreibung</p>
       <p v-html="test.description.short"></p>
-      <p class="text-light bg-secondary pl-1">Ausführliche Beschreibung</p>
+      <p class="text-light bg-secondary ps-1">Ausführliche Beschreibung</p>
       <table class="table table-striped table-sm text-left">
         <tbody>
           <tr>
@@ -32,7 +32,7 @@
           </tr>
         </tbody>
       </table>
-      <p class="text-light bg-secondary pl-1">Beschreibung</p>
+      <p class="text-light bg-secondary ps-1">Beschreibung</p>
       <p v-html="test.description.full"></p>
     </div>
   </info-dialog>

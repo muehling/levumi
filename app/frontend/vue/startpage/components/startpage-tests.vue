@@ -10,7 +10,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img :src="levumiSmall" class="mb-3 ml-3" alt="Levumi" width="48" height="48" />
+            <img :src="levumiSmall" class="mb-3 ms-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
