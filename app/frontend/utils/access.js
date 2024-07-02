@@ -13,6 +13,7 @@ export const access = (groupShare = {}) => {
   let createGroup = !isSingleUser()
   let updateGroup = !groupShare.read_only
   let archiveGroup = groupShare.owner && !isSingleUser()
+  let transferGroup = groupShare.owner && !isSingleUser()
   let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only
   let setGroupFontSettings = !groupShare.read_only
 
@@ -21,10 +22,12 @@ export const access = (groupShare = {}) => {
   let deleteStudents = !groupShare.read_only
   let moveStudents = groupShare.owner && !isSingleUser()
   let createShare = groupShare.owner && !isSingleUser()
+
   let canAccessClassbook =
     createGroup ||
     updateGroup ||
     archiveGroup ||
+    transferGroup ||
     createQRCodes ||
     setGroupFontSettings ||
     createStudents ||
@@ -49,6 +52,7 @@ export const access = (groupShare = {}) => {
         createGroup,
         updateGroup,
         archiveGroup,
+        transferGroup,
         createQRCodes,
         setGroupFontSettings,
         createStudents,

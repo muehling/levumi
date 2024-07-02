@@ -7,7 +7,7 @@
       v-if="permissions?.createShare"
       :active="current === 'share'"
       @click="handleClick('share')">
-      Klasse teilen
+      Klasse teilen / übertragen
     </b-nav-item>
     <b-nav-item
       v-if="permissions?.moveStudents"
