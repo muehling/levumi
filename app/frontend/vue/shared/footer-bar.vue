@@ -1,35 +1,52 @@
 <template>
   <footer class="footer w-100 text-center fixed-bottom pt-4">
     <ul class="list-inline text-center">
-      <li class="list-inline-item">
-        <a href="#" data-toggle="modal" data-target="#imprint">Impressum</a>
+      <li class="mx-4 list-inline-item">
+        <a href="#" @click.stop.prevent="openImprint">Impressum</a>
       </li>
-      <li class="list-inline-item">
-        <a href="#" data-toggle="modal" data-target="#t_and_c">Datenschutzerklärung</a>
+      <li class="mx-4 list-inline-item">
+        <a href="#" @click.stop.prevent="openPrivacy">AGB / Datenschutzerklärung</a>
       </li>
-      <li class="list-inline-item">
-        <a
-          id="dsgvo-hint"
-          class="dsgvo-hint"
-          href="#dsgvo-hint"
-          tabindex="0"
-          data-trigger="focus"
-          data-toggle="popover"
-          data-placement="top"
-          data-content="Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt."
-          data-original-title=""
-          title="Cookie-Hinweis">
-          Cookie-Hinweis
-        </a>
+      <li class="mx-4 list-inline-item">
+        <a href="#" @click.stop.prevent="openCookieHint">Cookie-Hinweis</a>
       </li>
-      <li class="list-inline-item">
-        <a href="#" data-toggle="modal" data-target="#projects">Über das Projekt</a>
+      <li class="mx-4 list-inline-item">
+        <a href="#" @click.stop.prevent="openAbout">Über das Projekt</a>
       </li>
     </ul>
+    <ImprintModal />
+    <AboutModal />
+    <PrivacyModal />
+    <CookieInfo />
   </footer>
 </template>
 <script>
+  import { useGlobalStore } from 'src/store/store'
+  import ImprintModal from 'src/vue/shared/modals/imprint-modal.vue'
+  import AboutModal from 'src/vue/shared/modals/about-modal.vue'
+
+  import PrivacyModal from 'src/vue/shared/modals/privacy-modal.vue'
+  import CookieInfo from 'src/vue/shared/modals/cookie-info.vue'
   export default {
     name: 'FooterBar',
+    components: { ImprintModal, CookieInfo, AboutModal, PrivacyModal },
+    setup() {
+      const store = useGlobalStore()
+      return { store }
+    },
+    methods: {
+      openImprint() {
+        this.store.generalModals.isImprintOpen = true
+      },
+      openPrivacy() {
+        this.store.generalModals.isPrivacyOpen = true
+      },
+      openAbout() {
+        this.store.generalModals.isAboutOpen = true
+      },
+      openCookieHint() {
+        this.store.generalModals.isCookieHintOpen = true
+      },
+    },
   }
 </script>

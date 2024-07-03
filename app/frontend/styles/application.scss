@@ -292,9 +292,11 @@ textarea:focus {
 a {
   color: $primary-color-dark;
   text-decoration: none;
+  cursor: pointer;
 }
 
 a:hover {
   color: $primary-color-dark;
-  text-decoration: underline;
+  text-decoration: none;
+  cursor: pointer;
 }

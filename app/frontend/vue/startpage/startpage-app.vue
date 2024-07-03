@@ -22,6 +22,7 @@
           <div v-else>
             <b-dropdown
               id="login"
+              auto-close="false"
               menu-class="login-dropdown"
               variant="outline-secondary"
               text="Einloggen"
@@ -56,6 +57,9 @@
       }
     },
     props: { user: String, retry: String, initialTimeStamp: String },
+    data() {
+      return { showLogin: false }
+    },
     computed: {
       isLoggedIn() {
         return this.user !== 'none'

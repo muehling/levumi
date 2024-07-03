@@ -1,8 +1,3 @@
-// jQuery needs to be in a separate file, and must be imported before bootstrap
-// Otherwise, JS's hoisting mechanism will import bootstrap before window.$ is set,
-// which is needed by bootstrap.
-import './add_jquery'
-import * as bootstrap from 'bootstrap'
 import * as sjcl from 'sjcl'
 
 import BootstrapVue from 'bootstrap-vue-next'
@@ -22,8 +17,6 @@ import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
 import router from '../vue/routes/frontend-routes'
 
 import '../styles/application.scss'
-
-window.bootstrap = bootstrap
 
 // TODO only needed for recover.html.erb
 window.sjcl = sjcl
@@ -54,7 +47,7 @@ const init = async () => {
 
   app.use(BootstrapVue)
   app.use(VueApexCharts)
-  app.component('apexchart', VueApexCharts)
+  //app.component('apexchart', VueApexCharts)
   app.mixin({
     data: function () {
       return {
@@ -72,5 +65,3 @@ const init = async () => {
 if (element) {
   init()
 }
-
-$('[data-toggle="popover"]').popover()

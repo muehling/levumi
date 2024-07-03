@@ -76,7 +76,7 @@
             <h5>Datenlöschung</h5>
             <p class="text-justify">
               Sie können Ihren Zugang zu Levumi jederzeit löschen, dazu kontaktieren Sie uns bitte
-              per E-Mail (info@levumi.de). Mit der Löschung entfernen wir Ihre persönlichen Daten
+              per E-Mail (support@levumi.de). Mit der Löschung entfernen wir Ihre persönlichen Daten
               aus unserer Datenbank. Die von Ihnen erhobenen Testdaten werden zu diesem Zeitpunkt
               durch Entfernung des Namens vollständig anonymisiert. Sie können auch jederzeit direkt
               in Levumi die von Ihnen angelegten Testpersonen, Klassen oder einzelne Testdaten
@@ -93,7 +93,7 @@
             <b-form-checkbox v-model="areTermsAccepted" name="accept-box">
               Ich bin mit diesen Nutzungsbedingungen einverstanden.
             </b-form-checkbox>
-            <b-btn class="mt-3" :disabled="!areTermsAccepted" @click="submit"> Weiter </b-btn>
+            <b-btn class="mt-3" :disabled="!areTermsAccepted" @click="submit">Weiter</b-btn>
             <p v-if="login.tc_accepted">Akzeptiert am: {{ login.tc_accepted }}</p>
           </div>
         </b-card>
