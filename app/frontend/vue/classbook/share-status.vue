@@ -23,10 +23,10 @@
         Sie können die Klasse
         {{ group.read_only ? ' nur ansehen.' : ' ansehen und verwenden.' }}
       </p>
-      <b-btn class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
+      <b-button class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
         <i class="fas fa-cancel"></i>
         Teilen beenden
-      </b-btn>
+      </b-button>
     </div>
     <confirm-dialog ref="confirmDialog" />
   </div>

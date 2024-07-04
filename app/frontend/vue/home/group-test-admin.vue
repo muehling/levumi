@@ -287,7 +287,7 @@
             <i class="fas fa-trash me-2"></i>
             Test löschen
           </b-button>
-          <b-btn class="me-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-button class="me-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-button>
         </div>
       </div>
     </div>

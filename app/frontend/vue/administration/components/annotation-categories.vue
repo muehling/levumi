@@ -7,12 +7,12 @@
         :key="annotationCategory.id"
         class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2">
         <span>{{ parseDisplayName(annotationCategory.name) }}</span>
-        <b-btn
+        <b-button
           class="btn btn-sm"
           variant="outline-danger"
           @click="deleteCategory(annotationCategory.id)">
           <i class="fas fa-trash"></i>
-        </b-btn>
+        </b-button>
       </div>
       <div class="mt-4 flex-row d-flex">
         <label class="pt-2 me-4" for="category">Typ:</label>

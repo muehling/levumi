@@ -4,10 +4,14 @@
       <b-form-checkbox-group
         v-model="selectedFilters"
         :options="availableFilters"></b-form-checkbox-group>
-      <b-btn v-if="isAllowed" size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
+      <b-button
+        v-if="isAllowed"
+        size="sm"
+        :variant="toggleButtonVariant"
+        @click="handleToggleActive">
         <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
         {{ toggleButtonText }}
-      </b-btn>
+      </b-button>
     </div>
     <table
       class="table table-sm table-striped table-hover table-responsive-md text-small group-assessments">
@@ -43,7 +47,7 @@
           <td>{{ formatLastDate(assessment.last_test) }}</td>
           <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
           <td v-if="isAllowed" class="text-nowrap text-right">
-            <b-btn
+            <b-button
               v-if="assessment.student_test && !assessment.archive"
               class="btn-sm button-10"
               :variant="assessment.active ? 'outline-danger' : 'outline-success'"
@@ -53,14 +57,14 @@
                 :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"></i>
               <i v-else class="fas fa-spinner fa-spin"></i>
               {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
-            </b-btn>
-            <b-btn
+            </b-button>
+            <b-button
               v-else-if="!assessment.archive"
               class="btn-sm button-10"
               variant="outline-secondary"
               disabled>
               (Lehrkräfte-Übung)
-            </b-btn>
+            </b-button>
             <b-button
               v-if="showDeleteAssessmentButton"
               class="btn-sm ms-1"

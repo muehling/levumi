@@ -7,7 +7,7 @@ import { defineStore } from 'pinia'
 export const useGlobalStore = defineStore('global', {
   state: () => ({
     errorMessage: '',
-    genericMessages: { title: '', message: '' },
+    genericMessage: { title: '', message: '' },
     generalModals: {
       isImprintOpen: false,
       isPrivacyOpen: false,

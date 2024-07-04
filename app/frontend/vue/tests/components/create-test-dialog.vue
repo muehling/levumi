@@ -18,10 +18,10 @@
           :state="Boolean(file)"
           placeholder="Datei wählen oder hier ablegen..."
           drop-placeholder="Datei hier ablegen..."></b-form-file>
-        <b-btn class="mt-3" variant="outline-primary" @click="checkUploadVersion">
+        <b-button class="mt-3" variant="outline-primary" @click="checkUploadVersion">
           <i class="fas fa-file-upload me-2"></i>
           Datei überprüfen
-        </b-btn>
+        </b-button>
       </div>
       <div v-else-if="uploadStep === 2" class="card card-body">
         <p><strong>Folgende Informationen wurden in der hochgeladenen Datei gefunden:</strong></p>
@@ -68,18 +68,18 @@
           Existierendes Fördermaterial beibehalten
         </b-form-checkbox>
         <div class="d-flex justify-content-end">
-          <b-btn class="mt-3" variant="outline-danger" @click="_close">
+          <b-button class="mt-3" variant="outline-danger" @click="_close">
             <i class="fas fa-cancel me-2"></i>
             Abbrechen
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             class="mt-3 ms-3"
             variant="outline-primary"
             :disabled="testInfo.isDisallowedVersion"
             @click="importTest">
             <i class="fas fa-file-upload me-2"></i>
             Test hochladen
-          </b-btn>
+          </b-button>
         </div>
       </div>
     </b-modal>

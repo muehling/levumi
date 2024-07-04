@@ -9,9 +9,9 @@
         class="input-field my-1"
         placeholder="Nach Email-Adresse suchen..."
         debounce="500" />
-      <b-btn class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
+      <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label
@@ -43,12 +43,12 @@
           month: 'numeric',
           day: 'numeric',
         }"></b-form-datepicker>
-      <b-btn
+      <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
         @click="startDateRegistration = endDateRegistration = undefined">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label for="start-date-login" class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
@@ -78,12 +78,12 @@
           month: 'numeric',
           day: 'numeric',
         }"></b-form-datepicker>
-      <b-btn
+      <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
         @click="startDateLogin = endDateLogin = undefined">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
 
     <div class="input-container d-inline"></div>
@@ -106,29 +106,29 @@
       </template>
       <template #cell(actions)="data">
         <div class="text-nowrap">
-          <b-btn
+          <b-button
             variant="outline-success"
             class="edit-user btn btn-sm me-1"
             @click="editUser(data.item.id)">
             <i class="fas fa-edit"></i>
             <span class="d-none d-lg-inline">Bearbeiten</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="canDeleteUser(data.item)"
             variant="outline-danger"
             class="delete-user btn btn-sm me-1"
             @click="requestDeleteUser(data.item.id)">
             <i class="fas fa-trash"></i>
             <span class="d-none d-lg-inline">Löschen</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="isLoginAsAllowed(data.item)"
             variant="outline-secondary"
             class="delete-user btn btn-sm me-1"
             @click="loginAs(data.item.id)">
             <i class="fas fa-user-md"></i>
             <span class="d-none d-lg-inline">Einloggen als</span>
-          </b-btn>
+          </b-button>
         </div>
       </template>
     </b-table>

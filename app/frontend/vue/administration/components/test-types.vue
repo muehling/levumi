@@ -8,9 +8,9 @@
         class="test-type w-100 justify-content-between align-items-center d-flex my-1 p-2">
         <span>{{ testType.name }}</span>
         <span>{{ testType.description }}</span>
-        <b-btn class="btn btn-sm" variant="outline-danger" @click="deleteTestType(testType.id)">
+        <b-button class="btn btn-sm" variant="outline-danger" @click="deleteTestType(testType.id)">
           <i class="fas fa-trash"></i>
-        </b-btn>
+        </b-button>
       </div>
       <div class="mt-4 flex-row d-flex">
         <b-form-input

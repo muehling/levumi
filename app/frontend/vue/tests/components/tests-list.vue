@@ -26,15 +26,15 @@
         <span>{{ data.item.updated_by || '--' }}</span>
       </template>
       <template #cell(actions)="data">
-        <b-btn
+        <b-button
           v-if="!showExport"
           class="btn-sm me-1"
           variant="outline-primary"
           @click="showTestDetails(data.item.id)">
           <i class="fas fa-glasses"></i>
           <span class="text-small d-none d-xl-inline ps-2">Details</span>
-        </b-btn>
-        <b-btn
+        </b-button>
+        <b-button
           v-if="!showExport && isEditAndDeleteAllowed"
           class="btn-sm me-1"
           variant="outline-success"
@@ -42,15 +42,15 @@
           @click="editTest(data.item.id)">
           <i class="fas fa-edit"></i>
           <span class="text-small d-none d-xl-inline ps-2">Bearbeiten</span>
-        </b-btn>
-        <b-btn
+        </b-button>
+        <b-button
           v-if="!showExport && isEditAndDeleteAllowed"
           class="btn-sm me-1"
           variant="outline-danger"
           @click="deleteTest(data.item.id)">
           <i class="fas fa-trash"></i>
           <span class="text-small d-none d-xl-inline ps-2">Löschen</span>
-        </b-btn>
+        </b-button>
         <b-link
           v-if="showExport"
           class="btn btn-sm btn-outline-primary"

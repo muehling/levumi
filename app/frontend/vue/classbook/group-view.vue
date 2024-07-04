@@ -68,10 +68,10 @@
         <i class="fas fa-file-import"></i>
         Klasse aus dem Archiv holen
       </b-button>
-      <b-btn variant="outline-danger" @click="requestDeleteGroup">
+      <b-button variant="outline-danger" @click="requestDeleteGroup">
         <i class="fas fa-trash"></i>
         Klasse löschen
-      </b-btn>
+      </b-button>
       <confirm-dialog ref="confirmDialog" />
     </div>
   </div>

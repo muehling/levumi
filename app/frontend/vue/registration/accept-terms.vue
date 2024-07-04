@@ -93,7 +93,7 @@
             <b-form-checkbox v-model="areTermsAccepted" name="accept-box">
               Ich bin mit diesen Nutzungsbedingungen einverstanden.
             </b-form-checkbox>
-            <b-btn class="mt-3" :disabled="!areTermsAccepted" @click="submit">Weiter</b-btn>
+            <b-button class="mt-3" :disabled="!areTermsAccepted" @click="submit">Weiter</b-button>
             <p v-if="login.tc_accepted">Akzeptiert am: {{ login.tc_accepted }}</p>
           </div>
         </b-card>

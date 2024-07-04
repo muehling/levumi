@@ -17,48 +17,48 @@
     </p>
     <b-button-toolbar justify>
       <b-button-group size="sm">
-        <b-btn variant="outline-primary" :pressed="fontSize === '1'" @click="fontSize = '1'">
+        <b-button variant="outline-primary" :pressed="fontSize === '1'" @click="fontSize = '1'">
           Normal
-        </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize === '2'" @click="fontSize = '2'">
+        </b-button>
+        <b-button variant="outline-primary" :pressed="fontSize === '2'" @click="fontSize = '2'">
           Vergrößert
-        </b-btn>
-        <b-btn variant="outline-primary" :pressed="fontSize === '3'" @click="fontSize = '3'">
+        </b-button>
+        <b-button variant="outline-primary" :pressed="fontSize === '3'" @click="fontSize = '3'">
           Stark vergrößert
-        </b-btn>
+        </b-button>
       </b-button-group>
       <b-button-group size="sm">
-        <b-btn
+        <b-button
           variant="outline-primary"
           :pressed="fontFamily == 'serif'"
           @click="fontFamily = 'serif'">
           Rechnerschrift
-        </b-btn>
-        <b-btn
+        </b-button>
+        <b-button
           variant="outline-primary"
           :pressed="fontFamily == 'Fibel Nord'"
           @click="fontFamily = 'Fibel Nord'">
           Fibel Nord
-        </b-btn>
-        <b-btn
+        </b-button>
+        <b-button
           variant="outline-primary"
           :pressed="fontFamily == 'Grundschrift'"
           @click="fontFamily = 'Grundschrift'">
           Grundschulschrift
-        </b-btn>
-        <b-btn
+        </b-button>
+        <b-button
           variant="outline-primary"
           :pressed="fontFamily == 'Grundschrift Grundlinie'"
           @click="fontFamily = 'Grundschrift Grundlinie'">
           Grundschulschrift Grundlinie
-        </b-btn>
+        </b-button>
       </b-button-group>
     </b-button-toolbar>
 
-    <b-btn class="mt-3" variant="outline-success" @click="changeFontSettings">
+    <b-button class="mt-3" variant="outline-success" @click="changeFontSettings">
       <i class="fas fa-check"></i>
       Speichern
-    </b-btn>
+    </b-button>
     <b-button class="mt-3 ms-2" variant="outline-secondary" @click="clearSettings">
       Zurücksetzen
     </b-button>

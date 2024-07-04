@@ -10,7 +10,7 @@
     <input-dialog ref="renewLoginDialog">
       <div slot="extraContent" class="d-flex justify-content-between mb-4">
         <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
-        <b-btn variant="outline-secondary" @click="logout">Logout</b-btn>
+        <b-button variant="outline-secondary" @click="logout">Logout</b-button>
       </div>
     </input-dialog>
     <generic-message />

@@ -5,14 +5,14 @@
         {{ student.name }}
       </div>
       <div v-else class="d-inline">
-        <b-btn
+        <b-button
           variant="outline-secondary"
           class="text-nowrap mt-2"
           size="sm"
           @click="editMode = true">
           <i class="fas fa-user-plus"></i>
           Anlegen
-        </b-btn>
+        </b-button>
       </div>
     </td>
 
@@ -58,7 +58,7 @@
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
-          <b-btn
+          <b-button
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
             v-b-popover.hover.topright="'Schrifteinstellungen'"
@@ -67,8 +67,8 @@
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
             <i class="fas fa-text-height"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
             v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
@@ -76,8 +76,8 @@
             size="sm"
             @click="editMode = true">
             <i class="fas fa-user-edit"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
             v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
@@ -85,8 +85,8 @@
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!!student.id"
             v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
@@ -94,7 +94,7 @@
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
-          </b-btn>
+          </b-button>
         </b-button-group>
       </span>
     </td>
@@ -133,13 +133,13 @@
         <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
           <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
         </b-form-select>
-        <b-btn
+        <b-button
           v-if="month && year"
           class="btn btn-block btn-sm mt-2"
           variant="outline-danger"
           @click="clearDateInputs">
           Datum löschen
-        </b-btn>
+        </b-button>
       </div>
     </td>
 
@@ -190,7 +190,7 @@
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
-          <b-btn
+          <b-button
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
             v-b-popover.hover.topright="'Schrifteinstellungen'"
@@ -199,8 +199,8 @@
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
             <i class="fas fa-text-height"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
             v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
@@ -208,8 +208,8 @@
             size="sm"
             @click="editMode = true">
             <i class="fas fa-user-edit"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
             v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
@@ -217,8 +217,8 @@
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!!student.id"
             v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
@@ -226,7 +226,7 @@
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
-          </b-btn>
+          </b-button>
         </b-button-group>
       </span>
       <span>
@@ -243,23 +243,23 @@
             </b-button>
           </b-button-group>
           <b-button-group>
-            <b-btn
+            <b-button
               class="btn btn-sm me-1"
               variant="outline-secondary"
               title="Abbrechen"
               @click="handleCancel">
               <i class="fas fa-times"></i>
-            </b-btn>
+            </b-button>
           </b-button-group>
           <b-button-group>
-            <b-btn
+            <b-button
               v-if="!empty"
               class="btn btn-block btn-sm"
               variant="outline-danger"
               @click="requestDelete">
               <i class="fas fa-trash"></i>
               Löschen
-            </b-btn>
+            </b-button>
           </b-button-group>
         </b-button-toolbar>
       </span>

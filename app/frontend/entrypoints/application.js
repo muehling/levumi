@@ -1,6 +1,6 @@
 import * as sjcl from 'sjcl'
 
-import BootstrapVue from 'bootstrap-vue-next'
+import { createBootstrap } from 'bootstrap-vue-next'
 import ClassBookApp from '../vue/classbook/classbook-app.vue'
 import HomeApp from '../vue/home/home-app.vue'
 import MaterialsApp from '../vue/materials/materials-app.vue'
@@ -9,7 +9,7 @@ import StudentView from '../vue/testing/student-view.vue'
 import UsersApp from '../vue/users/users-app.vue'
 
 import { createApp } from 'vue'
-import VueApexCharts from 'vue-apexcharts'
+import VueApexCharts from 'vue3-apexcharts'
 //import VueRouter from 'vue-router'
 
 import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
@@ -44,22 +44,11 @@ const init = async () => {
       return data
     },
   })
-
-  app.use(BootstrapVue)
+  app.use(createBootstrap())
+  app.use(router)
   app.use(VueApexCharts)
-  //app.component('apexchart', VueApexCharts)
-  app.mixin({
-    data: function () {
-      return {
-        get jQuery() {
-          return window.$
-        },
-      }
-    },
-  })
-
-  //app.use(VueRouter)
   app.use(PiniaVuePlugin)
+  app.mount('#levumi')
 }
 
 if (element) {

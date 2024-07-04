@@ -7,7 +7,7 @@
           durchführen oder Einstellungen ändern.
         </p>
       </div>
-      <b-btn
+      <b-button
         v-if="displayTestAdminButton"
         variant="outline-secondary"
         size="sm"
@@ -15,7 +15,7 @@
         @click="openTestAdmin">
         <i class="fas fa-gear me-2"></i>
         Test hinzufügen / löschen
-      </b-btn>
+      </b-button>
       <b-button
         v-if="displayClassBookButton"
         variant="outline-secondary"

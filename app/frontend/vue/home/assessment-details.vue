@@ -92,10 +92,10 @@
               <b-col>{{ formatDate(date) }}</b-col>
               <b-col>{{ groupedResults[date].length }}</b-col>
               <b-col>
-                <b-btn v-b-toggle="'collapse_' + index" size="sm" variant="outline-secondary">
+                <b-button v-b-toggle="'collapse_' + index" size="sm" variant="outline-secondary">
                   <i class="when-closed fas fa-caret-down"></i>
                   <i class="when-opened fas fa-caret-up"></i>
-                </b-btn>
+                </b-button>
               </b-col>
             </b-row>
             <!-- Aufklappbare Details -->
@@ -142,13 +142,13 @@
                         <i v-else class="fas fa-arrow-down" style="color: var(--danger-color)"></i>
                       </td>
                       <td v-if="!readOnly">
-                        <b-btn
+                        <b-button
                           small
                           variant="outline-danger"
                           title="Diese Messung löschen"
                           @click="deleteResult(result, resultIndex)">
                           <i class="fas fa-trash"></i>
-                        </b-btn>
+                        </b-button>
                       </td>
                     </tr>
                   </tbody>
