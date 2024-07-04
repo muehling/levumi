@@ -1,14 +1,18 @@
 <template>
   <div>
-    <b-modal id="edit-user-dialog" ref="editDialog" hide-footer>
-      <template #modal-title> Benutzerdaten ändern </template>
+    <b-modal
+      id="edit-user-dialog"
+      ref="editDialog"
+      title="Benutzerdaten ändern"
+      v-if="isOpen"
+      @hidden="isOpen = false"
+      hide-footer>
       <user-form
         :is-new="isNew"
         :user="user"
         :show-delete-button="!isNew"
         @submitSuccessful="handleSuccess"
-        @cancelEdit="cancelEdit"
-      />
+        @cancelEdit="cancelEdit" />
     </b-modal>
     <info-dialog ref="infoDialog" />
   </div>
@@ -35,11 +39,13 @@
         password: '',
         passwordConfirm: '',
         securityAnswer: '',
+        isOpen: false,
       }
     },
     methods: {
       open(data = {}) {
-        this.$refs.editDialog.show()
+        // this.$refs.editDialog.show()
+        this.isOpen = true
         this.user = data.user
         this.isNew = data.isNew || false
       },
@@ -59,7 +65,8 @@
         this._close()
       },
       _close() {
-        this.$refs.editDialog.hide()
+        //  this.$refs.editDialog.hide()
+        this.isOpen = false
         this.user = {}
       },
     },

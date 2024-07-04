@@ -1,7 +1,5 @@
 <template>
-  <b-modal id="error-dialog" ref="errorDialog" v-model="isOpen" hide-footer>
-    <template #modal-title> Fehler </template>
-
+  <b-modal id="error-dialog" ref="errorDialog" v-if="isOpen" title="Fehler" hide-footer>
     <div class="d-block text-center mb-4">
       {{ globalStore.errorMessage }}
       <slot></slot>

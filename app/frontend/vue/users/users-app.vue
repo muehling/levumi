@@ -1,17 +1,8 @@
 <template>
-  <b-container v-cloak fluid>
-    <b-row class="mt-3"></b-row>
-    <b-tabs card pills>
-      <b-tab title="Nutzerliste">
-        <users-list :users="users" :total-rows="totalUsers" @refetch="refetch"></users-list>
-      </b-tab>
-      <template #tabs-end>
-        <b-nav-item role="presentation" @click="createUser">Neuen Nutzer anlegen</b-nav-item>
-        <b-nav-item role="presentation" @click="openMailDialog">Nachricht an Nutzer</b-nav-item>
-      </template>
-    </b-tabs>
+  <b-container fluid>
     <users-mail-dialog ref="usersMailDialog" />
     <edit-user-dialog ref="editUserDialog" @refetch="refetch" />
+    <users-list :users="users" :total-rows="totalUsers" @refetch="refetch"></users-list>
   </b-container>
 </template>
 

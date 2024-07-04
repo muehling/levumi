@@ -127,108 +127,62 @@
               <contact-form />
             </div>
           </li>
-          <li v-if="!isRegularUser && !masquerade" class="nav-item dropdown">
-            <a
-              id="navbarSystem"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              System
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarSystem">
-              <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item">
+          <li v-if="!isRegularUser && !masquerade" class="nav-item">
+            <BDropdown v-model="showAdminMenu" text="System">
+              <BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
                 Statistik
-              </router-link>
-              <router-link
-                v-if="checkCapability('user')"
-                to="/nutzerverwaltung"
-                class="dropdown-item">
+              </BDropdownItem>
+              <BDropdownItem v-if="checkCapability('user')" to="/nutzerverwaltung">
                 Benutzerverwaltung
-              </router-link>
-              <router-link
-                v-if="
-                  checkCapability('test') ||
-                  checkCapability('test_admin') ||
-                  checkCapability('test_upload')
-                "
-                to="/testverwaltung"
-                class="dropdown-item">
-                Testverwaltung
-              </router-link>
-              <router-link
-                v-if="checkCapability('material')"
-                to="/materialverwaltung"
-                class="dropdown-item">
-                Materialverwaltung
-              </router-link>
-              <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
-                Export
-              </router-link>
-              <router-link
-                v-if="checkCapability('admin')"
-                to="/administration"
-                class="dropdown-item">
-                Allgemeine Einstellungen
-              </router-link>
-            </div>
+              </BDropdownItem>
+            </BDropdown>
           </li>
-          <li v-if="!masquerade" id="intro6" class="nav-item dropdown">
-            <a
-              id="navbarMyData"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              Meine Daten {{ $root.mode === 'production' ? '' : '(' + login?.email + ')' }}
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarMyData">
-              <a href="#" class="dropdown-item" @click="editOwnProfile">Profildaten ändern</a>
-              <a href="#" class="dropdown-item" @click="editUserSettings">Einstellungen ändern</a>
-              <b-link
-                :href="`/users/${login.id}.text`"
-                class="dropdown-item"
-                :disabled="!hasTestedStudents">
+          <div class="d-none">
+            <router-link
+              v-if="
+                checkCapability('test') ||
+                checkCapability('test_admin') ||
+                checkCapability('test_upload')
+              "
+              to="/testverwaltung"
+              class="dropdown-item">
+              Testverwaltung
+            </router-link>
+            <router-link
+              v-if="checkCapability('material')"
+              to="/materialverwaltung"
+              class="dropdown-item">
+              Materialverwaltung
+            </router-link>
+            <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
+              Export
+            </router-link>
+            <router-link v-if="checkCapability('admin')" to="/administration" class="dropdown-item">
+              Allgemeine Einstellungen
+            </router-link>
+          </div>
+          <li v-if="!masquerade" id="intro6" class="nav-item">
+            <BDropdown
+              v-model="showProfile"
+              :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`">
+              <BDropdownItem @click="editOwnProfile">Profildaten ändern</BDropdownItem>
+              <BDropdownItem @click="editUserSettings">Einstellungen ändern ändern</BDropdownItem>
+              <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
                 Testungen exportieren
-              </b-link>
-            </div>
+              </BDropdownItem>
+            </BDropdown>
           </li>
-          <li v-if="!masquerade" class="nav-item dropdown">
-            <a
-              id="navbarLegal"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              Rechtliches
-            </a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarLegal">
-              <a class="dropdown-item" href="/files/Vorlage_Elternbrief.pdf" target="_blank">
+          <li v-if="!masquerade" class="nav-item">
+            <BDropdown v-model="showLegal" text="Rechtliches">
+              <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
-              </a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" onclick="$('#imprint').modal('show')">Impressum</a>
-              <a class="dropdown-item" href="#" onclick="$('#privacy').modal('show')">
-                Datenschutzerklärung
-              </a>
-              <a class="dropdown-item" href="#" onclick="$('#tc').modal('show')">
-                Nutzungsbedingungen
-              </a>
-              <a
-                v-b-popover.hover.left="
-                  'Levumi nutzt ein sog. Session-Cookie, das für den Betrieb der Plattform technisch notwendig ist. Weitere Cookies werden nicht gesetzt.'
-                "
-                class="dropdown-item"
-                href="#">
-                Cookie-Hinweis
-              </a>
-            </div>
+              </BDropdownItem>
+              <BDropdownDivider />
+              <BDropdownItem href="#" @click="openImprint">Impressum</BDropdownItem>
+              <BDropdownItem href="#" @click="openPrivacy">Datenschutzerklärung</BDropdownItem>
+              <BDropdownItem href="#" @click="openTerms">Nutzungsbedingungen</BDropdownItem>
+              <BDropdownItem href="#" @click="openCookieHint">Cookie-Hinweis</BDropdownItem>
+            </BDropdown>
           </li>
           <li v-if="!masquerade" class="nav-item">
             <form action="/logout" method="post" onsubmit="sessionStorage.removeItem('login')">
@@ -243,17 +197,27 @@
     </nav>
     <edit-user-dialog ref="editUserDialog" @refetch="updateUser" />
     <user-settings-dialog ref="userSettingsDialog" @refetch="updateUser" />
+    <ImprintModal />
+    <AboutModal />
+    <PrivacyModal />
+    <CookieInfo />
+    <TermsModal />
   </div>
 </template>
 <script>
   import { ajax, getCSRFToken } from '../../utils/ajax'
   import { isRegularUser, hasCapability } from '../../utils/user'
   import { RouterLink } from 'vue-router'
-  import { useGlobalStore } from '../../store/store'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
+  import { useGlobalStore } from '../../store/store'
+  import AboutModal from 'src/vue/shared/modals/about-modal.vue'
   import apiRoutes from '../routes/api-routes'
   import ContactForm from './forms/contact-form.vue'
+  import CookieInfo from 'src/vue/shared/modals/cookie-info.vue'
   import EditUserDialog from '../users/components/edit-user-dialog.vue'
+  import ImprintModal from 'src/vue/shared/modals/imprint-modal.vue'
+  import TermsModal from 'src/vue/shared/modals/terms-modal.vue'
+  import PrivacyModal from 'src/vue/shared/modals/privacy-modal.vue'
   import router from '../routes/frontend-routes'
   import UserSettingsDialog from '../users/components/user-settings-dialog.vue'
 
@@ -264,13 +228,20 @@
       EditUserDialog,
       RouterLink,
       UserSettingsDialog,
+      AboutModal,
+      CookieInfo,
+      ImprintModal,
+      PrivacyModal,
+      TermsModal,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
       const globalStore = useGlobalStore()
       return { globalStore, assessmentsStore }
     },
-
+    data() {
+      return { showLegal: false, showProfile: false, showAdminMenu: false }
+    },
     computed: {
       systemMessage() {
         switch (this.$root.mode) {
@@ -282,6 +253,7 @@
             return ''
         }
       },
+
       login() {
         return this.globalStore.login
       },
@@ -289,8 +261,6 @@
         return this.globalStore.masquerade
       },
       hasNewShares() {
-        console.log('navbar', this.globalStore)
-
         return this.globalStore.groups.reduce(
           (acc, g) => acc || (g.key === null && !g.owner),
           false
@@ -305,6 +275,18 @@
     },
 
     methods: {
+      openImprint() {
+        this.globalStore.generalModals.isImprintOpen = true
+      },
+      openPrivacy() {
+        this.globalStore.generalModals.isPrivacyOpen = true
+      },
+      openTerms() {
+        this.globalStore.generalModals.isTermsOpen = true
+      },
+      openCookieHint() {
+        this.globalStore.generalModals.isCookieHintOpen = true
+      },
       async updateUser(res) {
         const data = res.data
         this.globalStore.setLogin({ ...this.globalStore.login, ...data })

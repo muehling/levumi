@@ -1,7 +1,6 @@
 <template>
   <div>
-    <b-modal id="edit-user-dialog" ref="editDialog" hide-footer>
-      <template #modal-title>Einstellungen</template>
+    <b-modal id="edit-user-dialog" ref="editDialog" title="Einstellungen" v-if="isOpen" hide-footer>
       <div class="user-settings">
         <b-card>
           <b class="mb-2 d-inline-block">Grafische Auswertung</b>
@@ -114,13 +113,14 @@
         targets: { enabled: false, deviation: true, slope: true },
         trends: { enabled: false, extrapolate: true },
         user: undefined,
-
+        isOpen: false,
         extendedGraphSettingsVisible: false,
       }
     },
     methods: {
       open(data = {}) {
-        this.$refs.editDialog.show()
+        //this.$refs.editDialog.show()
+        this.isOpen = true
         this.targets = data.user.settings?.targets || this.targets
         this.trends = data.user.settings?.trends || this.trends
         this.user = data.user
@@ -162,7 +162,8 @@
         this._close()
       },
       _close() {
-        this.$refs.editDialog.hide()
+        //this.$refs.editDialog.hide()
+        this.isOpen = false
         this.user = {}
       },
     },

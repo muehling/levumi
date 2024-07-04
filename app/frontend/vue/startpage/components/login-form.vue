@@ -78,8 +78,7 @@
             break
           default:
             sessionStorage.setItem('login', this.password)
-            this.$router.push('/diagnostik')
-            window.location.reload() // necessary to load the full Levumi app
+            window.location.replace('/diagnostik')
         }
       },
     },
