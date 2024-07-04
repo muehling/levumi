@@ -39,7 +39,7 @@
             <router-link to="/testuebersicht" class="nav-link rounded">Testübersicht</router-link>
           </li>
           <li id="intro5" class="nav-item dropdown">
-            <a
+            <!-- <a
               id="navbarHelp"
               class="nav-link dropdown-toggle"
               href="#"
@@ -48,56 +48,86 @@
               aria-haspopup="true"
               aria-expanded="false">
               Weiteres
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarHelp">
-              <a
-                class="dropdown-item"
-                href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
-                target="_blank">
-                Levumi Newsletter
-              </a>
-              <a
-                class="dropdown-item"
-                href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
-                target="_blank">
-                Videos
-              </a>
-              <a class="dropdown-item" href="https://www.levumi-blog.uni-kiel.de/" target="_blank">
-                Blog
-              </a>
-              <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">Handbücher</h6>
-              <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf">
-                Handbuch Lernbereich Empfinden & Verhalten
-              </a>
-              <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf">
-                Handbuch Lernbereich Deutsch
-              </a>
-              <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf">
-                Handbuch Fördermaterial Deutsch
-              </a>
-              <div class="dropdown-divider"></div>
-              <h6 class="dropdown-header">Druckvorlagen</h6>
-              <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank">
-                A4 Levumi normal
-              </a>
-              <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank">
-                A4 Levumi jubelt
-              </a>
-              <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank">
-                A4 Levumi liest
-              </a>
-              <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank">
-                A3 Levumi normal
-              </a>
-              <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank">
-                A3 Levumi jubelt
-              </a>
-              <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank">
-                A3 Levumi liest
-              </a>
-            </div>
+            </a> -->
+            <!--Weiteres Button-->
+            <!--######################################################################-->
+            <BDropdown :text="'Weiteres'" variant="navbar-light">
+              <BDropdownItem>
+                <a
+                  class="dropdown-item"
+                  href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
+                  target="_blank">
+                  Levumi Newsletter
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a
+                  class="dropdown-item"
+                  href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
+                  target="_blank">
+                  Videos
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a
+                  class="dropdown-item"
+                  href="https://www.levumi-blog.uni-kiel.de/"
+                  target="_blank">
+                  Blog
+                </a>
+              </BDropdownItem>
+              <BDropdownDivider />
+              <BDropdownItem>
+                <h6 class="dropdown-header">Handbücher</h6>
+                <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf">
+                  Handbuch Lernbereich Empfinden & Verhalten
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf">
+                  Handbuch Lernbereich Deutsch
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf">
+                  Handbuch Fördermaterial Deutsch
+                </a>
+              </BDropdownItem>
+              <BDropdownDivider />
+              <BDropdownItem>
+                <h6 class="dropdown-header">Druckvorlagen</h6>
+                <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank">
+                  A4 Levumi normal
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank">
+                  A4 Levumi jubelt
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank">
+                  A4 Levumi liest
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank">
+                  A3 Levumi normal
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank">
+                  A3 Levumi jubelt
+                </a>
+              </BDropdownItem>
+              <BDropdownItem>
+                <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank">
+                  A3 Levumi liest
+                </a>
+              </BDropdownItem>
+            </BDropdown>
           </li>
+          <!--######################################################################-->
         </ul>
         <b-alert v-if="!!systemMessage" class="ml-auto mb-0" show variant="danger">
           {{ systemMessage }}
@@ -109,34 +139,32 @@
               Sitzung als {{ login?.email }} beenden
             </a>
           </li>
+
+          <!--######################################################################-->
+          <!--Support Button-->
           <li v-if="!masquerade" class="nav-item dropdown">
-            <a
-              id="navbarSupport"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              Support
-            </a>
-            <div
-              class="dropdown-menu shadow p-2"
-              style="width: 20em"
-              aria-labelledby="navbarSupport">
-              <contact-form />
-            </div>
+            <BDropdown :text="'Support'" variant="">
+              <BDropdownItem><contact-form /></BDropdownItem>
+            </BDropdown>
           </li>
+          <!--######################################################################-->
+
+          <!--######################################################################-->
+          <!--System Button-->
           <li v-if="!isRegularUser && !masquerade" class="nav-item">
-            <BDropdown v-model="showAdminMenu" text="System">
+            <BDropdown v-model="showAdminMenu" text="System" variant="">
               <BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
                 Statistik
               </BDropdownItem>
               <BDropdownItem v-if="checkCapability('user')" to="/nutzerverwaltung">
-                Benutzerverwaltung
+                Benutzendenverwaltung
               </BDropdownItem>
             </BDropdown>
           </li>
+          <!--######################################################################-->
+
+          <!--######################################################################-->
+          <!--Start Meine daten Button-->
           <div class="d-none">
             <router-link
               v-if="
@@ -162,9 +190,11 @@
             </router-link>
           </div>
           <li v-if="!masquerade" id="intro6" class="nav-item">
+            <!--Meine Daten Button-->
             <BDropdown
               v-model="showProfile"
-              :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`">
+              :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
+              variant="">
               <BDropdownItem @click="editOwnProfile">Profildaten ändern</BDropdownItem>
               <BDropdownItem @click="editUserSettings">Einstellungen ändern ändern</BDropdownItem>
               <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
@@ -172,8 +202,13 @@
               </BDropdownItem>
             </BDropdown>
           </li>
+          <!--######################################################################-->
+
+          <!--######################################################################-->
+          <!--Rechtliches Button-->
           <li v-if="!masquerade" class="nav-item">
-            <BDropdown v-model="showLegal" text="Rechtliches">
+            <BDropdown v-model="showLegal" text="Rechtliches"
+            variant="">
               <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
               </BDropdownItem>
@@ -184,6 +219,9 @@
               <BDropdownItem href="#" @click="openCookieHint">Cookie-Hinweis</BDropdownItem>
             </BDropdown>
           </li>
+          <!--######################################################################-->
+          <!--######################################################################-->
+          <!--Logout Button-->
           <li v-if="!masquerade" class="nav-item">
             <form action="/logout" method="post" onsubmit="sessionStorage.removeItem('login')">
               <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
@@ -192,6 +230,7 @@
               </button>
             </form>
           </li>
+          <!--######################################################################-->
         </ul>
       </div>
     </nav>
