@@ -44,8 +44,8 @@
       </b-nav>
     </div>
     <b-tabs v-if="!isLoading" pills card>
-      <b-tab :active="!hasResults" class="m-3">
-        <div slot="title">
+      <b-tab :active="!hasResults" class="m-3" :title="`Messungen (${test.shorthand})`">
+        <!--<div slot="title">
           Messungen ({{ test.shorthand }})
           <span v-if="!isActive && test.student_test" class="badge badge-danger">
             <i class="fas fa-pause"></i>
@@ -53,7 +53,7 @@
           <span v-if="isActive && test.student_test" class="badge badge-success">
             <i class="fas fa-play"></i>
           </span>
-        </div>
+        </div>-->
         <!-- Neue Messungen -->
         <div class="mb-3">
           <div v-if="test.archive">

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-row class="d-flex justify-content-between">
+    <div class="d-flex justify-content-between">
       <b-button-group class="ms-3" size="sm">
         <b-button
           class="me-2"
@@ -28,8 +28,8 @@
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
-      <div v-if="isSupportFilterVisible">
-        <label class="text-small">Filtern nach Förderbedarf:</label>
+      <div v-if="isSupportFilterVisible" class="d-flex">
+        <label class="text-small mt-1">Filtern nach Förderbedarf:</label>
         <b-dropdown
           :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
           variant="primary"
@@ -45,20 +45,22 @@
           </b-dropdown-item>
         </b-dropdown>
       </div>
-    </b-row>
+    </div>
     <b-row class="mt-2">
-      <b-button-group class="ms-3">
-        <b-button
-          v-for="(view, index) in viewsWithGroupAndStudent"
-          :key="index"
-          class="me-2 shadow-none"
-          size="sm"
-          variant="outline-secondary"
-          :pressed="selectedView === view.key"
-          @click="setSelectedView(view.key)">
-          {{ view.label }}
-        </b-button>
-      </b-button-group>
+      <b-col>
+        <b-button-group class="ms-3">
+          <b-button
+            v-for="(view, index) in viewsWithGroupAndStudent"
+            :key="index"
+            class="me-2 shadow-none"
+            size="sm"
+            variant="outline-secondary"
+            :pressed="selectedView === view.key"
+            @click="setSelectedView(view.key)">
+            {{ view.label }}
+          </b-button>
+        </b-button-group>
+      </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
       <b-col>
@@ -131,7 +133,7 @@
         <b-row class="ms-1">
           <b-col class="me-4">
             <annotations-section
-              v-model:annotationControlVisible="annotationControlVisible"
+              v-model="annotationControlVisible"
               :annotations="annotations"
               :group="group"
               :test="test"
@@ -140,7 +142,7 @@
               :trend-is-enabled="trendIsEnabled"
               @annotation-removed="removeAnnotation" />
             <TargetControls
-              v-model:targetControlVisible="targetControlVisible"
+              v-model="targetControlVisible"
               :target-val="targetVal"
               :deviation-val="deviationVal"
               :date-until-val="dateUntilVal"
@@ -218,7 +220,7 @@
 <script>
   import { ajax } from '@/utils/ajax'
   import { checkUserSettings } from '@/utils/user'
-  import { computed } from 'vue'
+  import { computed, toRaw } from 'vue'
   import { createSimpleTableData, createHtmlTableFromViewConfig } from './data/createTableData'
   import { createTrendline } from './linearRegressionHelpers'
   import { getTrendFromResults } from '@/utils/helpers'
@@ -457,7 +459,7 @@
           : null
       },
       chartSeries() {
-        return [...this.graphData]
+        return toRaw(this.graphData)
       },
       targetIsSlopeVariant() {
         return this.settings.targets?.slope
@@ -905,12 +907,12 @@
             )
           })
         // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
-        this.annotations.forEach(annotation => {
-          this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
-        })
+        //   this.annotations.forEach(annotation => {
+        //     this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
+        //   })
 
-        xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
-        points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
+        //xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
+        //points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
@@ -989,7 +991,8 @@
       // updates only the horizontal target lines as this is implemented through dynamic annotations
       // should only be called after the chart has been rendered or before the chart has been created
       updateNonSlopeTarget() {
-        if (this.targetAdded) {
+        return
+        /*   if (this.targetAdded) {
           // first, if there already is a target line remove it
           this.$refs.levumiChart?.removeAnnotation('target-annotation') // line for target itself
           this.$refs.levumiChart?.removeAnnotation('target-range-annotation') // range for allowed deviation
@@ -1009,7 +1012,7 @@
 
           this.$refs.levumiChart?.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
           this.targetAdded = true // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
-        }
+        }*/
       },
 
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
@@ -1024,7 +1027,7 @@
       },
 
       removeAnnotation(id) {
-        this.$refs.levumiChart?.removeAnnotation('a' + id)
+        //    this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {

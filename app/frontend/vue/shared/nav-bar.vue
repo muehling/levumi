@@ -22,7 +22,7 @@
           <li id="intro1" class="nav-item">
             <router-link
               class="nav-link rounded"
-              :to="{ name: 'Diagnostik', params: { forceUpdate: true } }">
+              :to="{ name: 'Diagnostik', state: { forceUpdate: true } }">
               Diagnostik
             </router-link>
           </li>
@@ -39,18 +39,6 @@
             <router-link to="/testuebersicht" class="nav-link rounded">Testübersicht</router-link>
           </li>
           <li id="intro5" class="nav-item dropdown">
-            <!-- <a
-              id="navbarHelp"
-              class="nav-link dropdown-toggle"
-              href="#"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false">
-              Weiteres
-            </a> -->
-            <!--Weiteres Button-->
-            <!--######################################################################-->
             <BDropdown :text="'Weiteres'" variant="navbar-light">
               <BDropdownItem>
                 <a
@@ -202,13 +190,8 @@
               </BDropdownItem>
             </BDropdown>
           </li>
-          <!--######################################################################-->
-
-          <!--######################################################################-->
-          <!--Rechtliches Button-->
           <li v-if="!masquerade" class="nav-item">
-            <BDropdown v-model="showLegal" text="Rechtliches"
-            variant="">
+            <BDropdown v-model="showLegal" text="Rechtliches" variant="">
               <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
               </BDropdownItem>
@@ -219,9 +202,6 @@
               <BDropdownItem href="#" @click="openCookieHint">Cookie-Hinweis</BDropdownItem>
             </BDropdown>
           </li>
-          <!--######################################################################-->
-          <!--######################################################################-->
-          <!--Logout Button-->
           <li v-if="!masquerade" class="nav-item">
             <form action="/logout" method="post" onsubmit="sessionStorage.removeItem('login')">
               <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
@@ -230,7 +210,6 @@
               </button>
             </form>
           </li>
-          <!--######################################################################-->
         </ul>
       </div>
     </nav>

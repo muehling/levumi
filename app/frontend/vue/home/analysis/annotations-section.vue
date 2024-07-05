@@ -1,11 +1,7 @@
 <template>
   <div id="annotations-section">
     <b-collapse id="annotation_collapse" v-model="visible">
-      <b-form
-        v-if="!readOnly"
-        class="border p-3"
-        accept-charset="UTF-8"
-        @submit="submitAnnotation()">
+      <!--<div v-if="!readOnly" class="border p-3" accept-charset="UTF-8">
         <div class="text-small row">
           <div class="col-12 col-md-3 col-lg-2">
             <label class="mt-1">Datumsbereich</label>
@@ -15,14 +11,14 @@
               v-model="annotationStart"
               name="annotation[start]"
               :options="weekLabels(true)"
-              size="sm"></b-form-select>
+              size="sm" />
           </div>
           <div class="col-6 col-md-2">
             <b-form-select
               v-model="annotationEnd"
               name="annotation[end]"
               :options="weekLabels(false)"
-              size="sm"></b-form-select>
+              size="sm" />
           </div>
         </div>
         <div class="mt-3 text-small row">
@@ -31,10 +27,10 @@
           </div>
           <div class="col-12 col-md-4">
             <div class="d-flex flex-row">
-              <b-dropdown v-model="annotationCategoryId" variant="outline-secondary">
-                <template #button-content>
-                  <span class="text-small">{{ getAnnotationLabel(annotationCategoryId) }}</span>
-                </template>
+              <b-dropdown
+                v-model="annotationCategoryId"
+                :text="getAnnotationLabel(annotationCategoryId)"
+                variant="outline-secondary">
                 <b-dropdown-group
                   v-for="(categoryGroup, index) in groupedAnnotationOptions"
                   :key="index">
@@ -91,7 +87,7 @@
             Anmerkung speichern
           </b-button>
         </div>
-      </b-form>
+      </div>
       <table class="table table-sm table-striped table-borderless mt-1 text-small">
         <thead>
           <tr>
@@ -118,7 +114,7 @@
             </td>
           </tr>
         </tbody>
-      </table>
+      </table>-->
     </b-collapse>
     <confirm-dialog ref="confirmDialog" />
   </div>
@@ -135,7 +131,7 @@
     components: {
       ConfirmDialog,
     },
-    inject: ['printDate', 'readOnly', 'studentName', 'weeks'],
+    inject: ['printDate', 'readOnly', 'studentName'],
     props: {
       annotations: Array,
       group: Object,
@@ -152,17 +148,18 @@
         annotationStart: null,
         annotationCategoryId: 1,
         annotationIsTrendThreshold: false,
+        visible: true,
       }
     },
     computed: {
-      visible: {
+      /*visible: {
         get() {
           return this.annotationControlVisible
         },
         set(value) {
           this.$emit('update:annotationControlVisible', value)
         },
-      },
+      },*/
       currentAnnotations() {
         return this.annotations.filter(annotation => {
           return (

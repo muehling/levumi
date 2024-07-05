@@ -45,7 +45,7 @@
     </div>
   </div>
   <div v-else>
-    <div class="">
+    <div class="d-flex">
       <b-button
         v-if="isAllowed"
         class="btn btn-sm"

@@ -66,6 +66,13 @@
               (Lehrkräfte-Übung)
             </b-button>
             <b-button
+              v-else-if="assessment.archive"
+              class="btn-sm button-10"
+              variant="outline-secondary"
+              disabled>
+              (varaltet)
+            </b-button>
+            <b-button
               v-if="showDeleteAssessmentButton"
               class="btn-sm ms-1"
               :variant="assessment?.result_count ? 'danger' : 'outline-danger'"
@@ -236,6 +243,7 @@
           this.group.id,
           assessment.test_id
         )
+
         this.loadingAssessmentId = undefined
         this.$router.push(`/diagnostik/${this.group.id}/testdetails/${assessment.test_id}`)
       },

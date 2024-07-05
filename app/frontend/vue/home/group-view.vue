@@ -139,8 +139,8 @@
     async mounted() {
       const groupId = this.group.id
 
-      this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
-      this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
+      //this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
+      //this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
 
       await this.assessmentsStore.fetch(groupId)
       await this.testsStore.fetchUsedTestsForGroup(groupId)
