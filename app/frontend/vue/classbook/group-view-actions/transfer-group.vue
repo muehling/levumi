@@ -85,8 +85,6 @@
         return this.group.has_transfer_request_to !== ''
       },
       transferRequests() {
-        console.log(':-(', this.group)
-
         return this.group.has_transfer_request_to
       },
     },

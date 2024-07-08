@@ -152,8 +152,6 @@
         return this.group.shares?.filter(share => share.owner)
       },
       showActionTab() {
-        console.log('scheiß die wand an', this.group.shares, this.group)
-
         return this.$route.path.endsWith('aktionen')
       },
       permissions() {

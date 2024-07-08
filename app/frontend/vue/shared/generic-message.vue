@@ -27,13 +27,9 @@
     computed: {
       isOpen: {
         get: function () {
-          console.log('genericMessage get', !!this.globalStore.genericMessage.message)
-
           return !!this.globalStore.genericMessage.message
         },
         set: function () {
-          console.log('genericMessage set', this.globalStore.genericMessage.message)
-
           this.globalStore.resetGenericMessage()
         },
       },

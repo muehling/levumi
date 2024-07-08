@@ -369,9 +369,9 @@
     beforeCreate() {
       // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
       this.options_gender = [
-        { text: 'weiblich', value: '0', disabled: 0 },
-        { text: 'männlich', value: '1', disabled: 0 },
-        { text: 'divers', value: '2', disabled: 0 },
+        { text: 'weiblich', value: '0' },
+        { text: 'männlich', value: '1' },
+        { text: 'divers', value: '2' },
       ]
 
       this.months = [
