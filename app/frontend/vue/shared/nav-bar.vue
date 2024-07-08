@@ -208,7 +208,7 @@
           <!--Rechtliches Button-->
           <li v-if="!masquerade" class="nav-item">
             <BDropdown v-model="showLegal" text="Rechtliches"
-            variant="">
+            variant="outline-primary">
               <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
               </BDropdownItem>
