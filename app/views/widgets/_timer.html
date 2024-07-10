@@ -1,0 +1,111 @@
+<div id="timer-widget"><p id="counter"></p></div>
+<button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1">Pause</button>
+<script type="module">
+  let isCounterDisplayed = false
+  let handleTimedOut = undefined
+  let handlePause = undefined
+  let testDuration = undefined
+  let remainingTime = undefined
+  let startTime = undefined
+  let counterInterval
+  let testTimeout
+  let isPauseButtonDisplayed = false
+
+  const startCounter = () => {
+    if (isPauseButtonDisplayed) {
+      $('#pause-button').removeClass('d-none')
+    }
+    remainingTime = testDuration
+    startTime = Date.now()
+    updateCounter()
+    testTimeout = setTimeout(timeElapsedHandler, testDuration)
+
+    counterInterval = setInterval(() => {
+      remainingTime -= 1000
+      updateCounter()
+    }, 1000)
+  }
+
+  const stopCounter = () => {
+    clearTimeout(testTimeout)
+    testTimeout = undefined
+    clearInterval(counterInterval)
+  }
+
+  const timeElapsedHandler = () => {
+    clearInterval(counterInterval)
+    handleTimedOut()
+    remainingTime = 0
+    updateCounter()
+  }
+
+  const resume = () => {}
+
+  const handlePauseButton = () => {
+    if (testTimeout !== undefined) {
+      $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
+      stopCounter()
+      handlePause(true)
+    } else {
+      handlePause(false)
+      $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
+      testTimeout = setTimeout(timeElapsedHandler, remainingTime)
+      counterInterval = setInterval(() => {
+        remainingTime -= 1000
+        updateCounter()
+      }, 1000)
+    }
+  }
+
+  const hasElapsed = () => {
+    return Date.now() - startTime >= testDuration ? true : false
+  }
+
+  const getTotalDuration = () => {
+    return (Date.now() - startTime) / 60000
+  }
+
+  const updateCounter = () => {
+    const totalSeconds = Math.floor(remainingTime / 1000)
+    const minutes = Math.floor(totalSeconds / 60)
+    const seconds = totalSeconds % 60
+
+    $('#counter').html(`${minutes}:${seconds < 10 ? '0' + seconds : seconds}`)
+  }
+
+  const getElement = () => {
+    return $('#timer-widget')
+  }
+
+  const getPauseButton = () => {
+    return $('#pause-button')
+  }
+
+  window.useTimerWidget = ({
+    displayCounter = false,
+    displayPauseButton = true,
+    pauseHandler,
+    duration = 300000,
+    timedOutHandler = () => {},
+  }) => {
+    isCounterDisplayed = displayCounter
+    isPauseButtonDisplayed = displayPauseButton
+    testDuration = duration
+    handlePause = pauseHandler
+    handleTimedOut = timedOutHandler
+
+    if (displayPauseButton) {
+      $('#pause-button').on('click', handlePauseButton)
+    }
+
+    return {
+      getElement,
+      getPauseButton,
+      startCounter,
+      stopCounter,
+      handlePauseButton,
+      hasElapsed,
+      getTotalDuration,
+    }
+  }
+</script>

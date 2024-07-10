@@ -1,3 +1,8 @@
+<% unless @test.required_services&.empty? %>
+    <%= content_for :head do %>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% end%>
+<% end%>
 <script>
     //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
     document.title = decodeURI(window.location.hash.replace('#',''))
@@ -6,6 +11,17 @@
 <div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em; display: none">
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
+
+
+<% if @test.required_services&.include? "truefalse" %>
+<%=    render partial: 'widgets/truefalse' %>
+<% end %>
+<% if @test.required_services&.include? "calculator" %>
+<%=    render partial: 'widgets/calculator' %>
+<% end %>
+<% if @test.required_services&.include? "timer" %>
+<%=    render partial: 'widgets/timer' %>
+<% end %>
 
 <!-- Test-Styles einbinden -->
 <style>
@@ -23,6 +39,7 @@
     // all variables and functions declared here that are part of the interface of the tests
     // need to be exposed in the global namespace. Otherwise, not all tests work, depending
     // on implementation.
+
 
     <% if @assessment.nil? && @student.nil? %>
         window["$"]('#end-preview').on('click', exit)

@@ -1,0 +1,113 @@
+{
+  "area": "Beispieltests",
+  "competence": "Test",
+  "family": "Widgets",
+  "level": "Taschenrechner",
+  "shorthand": "Calc",
+  "version": 1,
+  "description": {
+    "full": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
+    "short": "Beispiel für einen Test in Levumi für <b>Lehrkräfte</b>",
+    "time_limit": "Keine",
+    "usage": "Die Schüler:innen bekommen sechs Bilder präsentiert, die eine Katze oder einen Vogel zeigen. Die Schüler:innen sagen, was sie erkennen, die Lehrkraft bewertet die Antwort als richtig oder falsch."
+  },
+  "required_services": [
+    "calculator",
+    "timer"
+  ],
+  "time_limit": "Keine",
+  "student_test": false,
+  "configuration": {
+    "views": [
+      {
+        "key": "V1",
+        "label": "Übersicht",
+        "student": true,
+        "group": true,
+        "type": "graph",
+        "options": {
+          "chart": {
+            "type": "line"
+          },
+          "yaxis": {
+            "title": {
+              "text": "Anzahl richtig gelöster Items"
+            },
+            "min": 0
+          }
+        }
+      },
+      {
+        "key": "V2",
+        "label": "Qualitative Auswertung",
+        "student": true,
+        "group": false,
+        "type": "table",
+        "column_keys": [
+          "RGI",
+          "FGI",
+          "LG",
+          "LGM"
+        ],
+        "columns": [
+          "Richtig gelöste Items",
+          "Falsch gelöste Items",
+          "Bearbeitungsgenauigkeit (in %)",
+          "Bearbeitungsgeschwindigkeit pro Minute"
+        ]
+      },
+      {
+        "key": "V3",
+        "label": "Gesamtauswertung",
+        "student": true,
+        "group": false,
+        "type": "graph_table",
+        "column_keys": [
+          "RGI",
+          "FGI",
+          "LG",
+          "LGM"
+        ],
+        "columns": [
+          "Richtig gelöste Items",
+          "Falsch gelöste Items",
+          "Bearbeitungsgenauigkeit (in %)",
+          "Bearbeitungsgeschwindigkeit pro Minute"
+        ],
+        "series": [
+          "Anzahl"
+        ],
+        "series_keys": [
+          "SUM"
+        ],
+        "options": {
+          "chart": {
+            "type": "line"
+          },
+          "yaxis": {
+            "title": {
+              "text": "Anzahl richtig gelöster Items"
+            },
+            "min": 0
+          }
+        }
+      }
+    ]
+  },
+  "items": {
+    "I001": "(3 + 5 = 8)",
+    "I002": "(10 + 10 = 20)",
+    "I003": "(20 - 8 = 12)",
+    "I004": "(19 - 15 = 4)",
+    "I005": "(2 + 18 = 20)",
+    "I006": "(6 + 8 = 14)",
+    "I007": "(6 + 1 = 7)",
+    "I008": "(7 + 5 = 12)",
+    "I009": "(9 + 9 = 18)",
+    "I010": "(19 + 1 = 20)",
+    "I011": "(11 - 2 = 9)",
+    "I012": "(3 + 17 = 20)",
+    "I013": "(7 + 9 = 16)",
+    "I014": "(18 - 8 = 10)"
+  }
+}

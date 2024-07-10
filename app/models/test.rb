@@ -234,6 +234,7 @@ class Test < ApplicationRecord
         )
       end
       test.items = vals['items']
+      test.required_services = vals['required_services']
 
       test.updated_by = login.email
 
