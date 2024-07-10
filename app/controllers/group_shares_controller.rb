@@ -30,6 +30,8 @@ class GroupSharesController < ApplicationController
            )
           UserMailer
             .with(
+              sender: @login.email,
+              group_label: @group.label,
               recipient: @recipient,
               share_key: params[:share_key],
               is_anonymous: params.require(:group_share)[:is_anonymous]
@@ -53,11 +55,13 @@ class GroupSharesController < ApplicationController
 
   #DEL /groups/:id
   def destroy
-    # @share.destroy can't be done in the if, because @group.owner needs the groupshare to determine ownership
+    # @share.destroy can't be done outside the if, because @group.owner needs the groupshare to determine ownership
     if (@group.owner == @login)
       #Share wurde vom Besitzer beendet => Klasse rendern
       @share.destroy
-      render json: @group.as_hash(@login)
+
+      #render json: @group.as_hash(@login)
+      render json: @login.get_classbook_info
     else
       #Share wurde vom Benutzer beendet => Nur OK senden für View
       @share.destroy

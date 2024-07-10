@@ -113,6 +113,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_091309) do
     t.string 'auth_token'
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
+    t.json 'settings'
   end
 
   create_table 'material_supports', charset: 'utf8mb3', force: :cascade do |t|

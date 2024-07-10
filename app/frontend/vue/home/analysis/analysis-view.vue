@@ -311,6 +311,9 @@
       }
     },
     computed: {
+      displaySupportFilterHint() {
+        return !this.graphData.length && this.selectedSupportNeedFilter
+      },
       hasChartData() {
         return !isEmpty(this.graphData) && this.isInitialized
       },
@@ -500,8 +503,9 @@
       targetStored() {
         // when no target is defined return null (nothing stored)
         const sId = this.selectedStudentId === -1 ? null : this.selectedStudentId // group targets are stored under a null student
-        const res = this.studentTargets // find the target belonging to this student in the current view
-          .find(target => target.student_id === sId && target.view === this.viewConfig?.key)
+        const res = this.studentTargets.find(
+          target => target.student_id === sId && target.view === this.viewConfig?.key
+        )
         return res === undefined ? null : res
       },
       /** Returns the stored target INCLUDING THE GROUP TARGET.

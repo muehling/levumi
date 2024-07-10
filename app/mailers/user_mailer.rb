@@ -37,6 +37,8 @@ class UserMailer < ApplicationMailer
   end
 
   def new_share
+    @sender = params[:sender]
+    @group_label = params[:group_label]
     @recipient = params[:recipient]
     @share_key = params[:share_key]
     @is_anonymous = params[:is_anonymous]

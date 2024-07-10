@@ -185,7 +185,7 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest" class="col-lg-6">
+        <div v-if="!selectedTest" class="col-lg-6 ml-0 pl-0">
           <p>
             Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
             eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests
@@ -258,7 +258,7 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             :href="`/results/start_demo/${selectedTestId}`"
             target="_blank"
             variant="outline-secondary">
@@ -266,14 +266,14 @@
           </b-button>
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             variant="success"
             @click="createAssessment">
             Test für die Klasse aktivieren
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             variant="outline-success"
             @click="jumpToAssessment()">
             <i class="fas fa-check mr-2"></i>
@@ -281,13 +281,13 @@
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
             @click="deleteAssessment">
             <i class="fas fa-trash mr-2"></i>
             Test löschen
           </b-button>
-          <b-btn class="ml-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-btn class="mr-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
         </div>
       </div>
     </div>
