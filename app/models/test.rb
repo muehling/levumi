@@ -327,23 +327,9 @@ class Test < ApplicationRecord
 
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
-    duration = Rails.env.production? ? 24.hours : 2.seconds
-    student_ids =
-      Rails
-        .cache
-        .fetch('all_not_demo_students', expires_in: duration) do
-          Student.where(group_id: Group.where.not(demo: true)).pluck(:id)
-        end
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
-    Rails
-      .cache
-      .fetch("has_results_#{cache_key_with_version}", expires_in: duration) do
-        Result.where(
-          student_id: student_ids,
-          assessment_id: assessment_ids,
-          test_date: '2019-09-09'..
-        ).exists?
-      end
+
+    Result.where(assessment_id: assessment_ids, test_date: '2019-09-09'..).exists?
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
@@ -365,7 +351,7 @@ class Test < ApplicationRecord
     #Keine alten Messungen exportieren
     res =
       Result
-        #.where("test_date > '2019-09-09'")
+        .where("test_date > '2019-09-09'")
         .where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
         .all
     csv = ''
@@ -402,5 +388,11 @@ class Test < ApplicationRecord
       }
     end
     return res
+  end
+
+  def as_csv_file
+    csv_file_path = Rails.root.join('tmp', "#{self.shorthand}.csv")
+    csv_data = self.as_csv
+    File.open(csv_file_path, 'w') { |file| file.write(csv_data) }
   end
 end
