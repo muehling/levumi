@@ -97,6 +97,12 @@ class Student < ApplicationRecord
       if !group.settings.nil? && group.settings.has_key?(key)
         return group.settings[key]
       else
+        default_settings = {
+          'font_family' => 'Fibel Nord',
+          'font_size' => 1,
+          'display_timer' => false
+        }
+
         return default_settings[key]
       end
     end
