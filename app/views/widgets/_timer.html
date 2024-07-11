@@ -1,4 +1,4 @@
-<div id="timer-widget"><p id="counter"></p></div>
+<div id="timer-widget" class="d-none"><p id="counter"></p></div>
 <button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1">Pause</button>
 <script type="module">
   let isCounterDisplayed = false
@@ -15,6 +15,10 @@
     if (isPauseButtonDisplayed) {
       $('#pause-button').removeClass('d-none')
     }
+    if (isCounterDisplayed) {
+      $('#timer-widget').removeClass('d-none')
+    }
+
     remainingTime = testDuration
     startTime = Date.now()
     updateCounter()
@@ -83,13 +87,13 @@
 
   window.useTimerWidget = ({
     displayCounter = false,
-    displayPauseButton = true,
+    displayPauseButton = false,
     pauseHandler,
     duration = 300000,
     timedOutHandler = () => {},
   }) => {
-    isCounterDisplayed = displayCounter
-    isPauseButtonDisplayed = displayPauseButton
+    isCounterDisplayed = displayCounter && window.displayTimer
+    isPauseButtonDisplayed = displayPauseButton && window.displayTimer
     testDuration = duration
     handlePause = pauseHandler
     handleTimedOut = timedOutHandler

@@ -67,15 +67,18 @@
 
     let font_family
     let font_size
+    let display_timer
     //Präferenzen des Kindes setzen
     <% unless @student.nil? %>
         font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
         font_size = <%= @student.get_setting("font_size") %>
+        display_timer =  <%= @student.get_setting("display_timer") %>
     <% else %>
 
     <% end %>
     window.font_family = font_family
     window.font_size = font_size
+    window.displayTimer = display_timer
 
      function preventNavigation(navEvent) {
         navEvent.preventDefault();

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_16_091309) do
+ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
   create_table 'active_storage_attachments', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name', null: false
     t.string 'record_type', null: false
@@ -172,8 +172,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_091309) do
   create_table 'shadow_students', charset: 'utf8mb3', force: :cascade do |t|
     t.integer 'original_id'
     t.integer 'group'
-    t.integer 'account_type'
-    t.integer 'state'
+    t.integer 'account_type', null: false
+    t.integer 'state', null: false
     t.integer 'gender'
     t.date 'birthmonth'
     t.integer 'sen'
@@ -241,7 +241,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_16_091309) do
     t.bigint 'test_type_id'
     t.string 'updated_by'
     t.string 'responsible'
-    t.boolean 'is_support'
     t.json 'required_services'
     t.index ['test_family_id'], name: 'index_tests_on_test_family_id'
     t.index ['test_type_id'], name: 'index_tests_on_test_type_id'
