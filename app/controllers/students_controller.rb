@@ -84,6 +84,12 @@ class StudentsController < ApplicationController
           Result
             .where(student_id: student[:id], assessment_id: source_assessment[:id])
             .update(assessment_id: target_assessment[:id].to_i)
+          Annotation
+            .where(student_id: student[:id], assessment_id: source_assessment[:id])
+            .update(assessment_id: target_assessment[:id].to_i)
+          Target
+            .where(student_id: student[:id], assessment_id: source_assessment[:id])
+            .update(assessment_id: target_assessment[:id].to_i)
         end
       end
     end
