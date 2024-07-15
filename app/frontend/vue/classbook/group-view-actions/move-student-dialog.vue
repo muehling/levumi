@@ -33,7 +33,13 @@
     <b-form-select v-model="targetGroupId" :options="groupOptions" />
     <div v-if="targetGroupId">
       <hr />
-      <p>Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.</p>
+      <p>
+        Mit Klick auf eine Schüler:in wird diese aus der Klasse
+        <b>{{ group.label }}</b>
+        in die ausgewählte Klasse
+        <b>{{ targetGroup.label }}</b>
+        verschoben.
+      </p>
       <b-row>
         <b-col>
           <b-card>
@@ -126,6 +132,9 @@
           }))
         options.unshift({ text: 'Bitte wählen Sie eine Klasse aus.', value: null })
         return options
+      },
+      targetGroup() {
+        return this.allGroups.find(g => g.id === this.targetGroupId)
       },
     },
     watch: {
