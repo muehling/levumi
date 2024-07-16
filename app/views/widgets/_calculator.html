@@ -128,6 +128,8 @@
 
     // keyboard input
     document.addEventListener('keydown', e => {
+      e.preventDefault()
+      e.stopPropagation()
       if (e.key >= '0' && e.key <= '9') {
         addNumber(e.key)
       } else if (e.key === 'Backspace') {
@@ -145,9 +147,9 @@
     if (currentInputVal === '') {
       $('#empty-error').text('Bitte gib eine Zahl ein!')
       return
-    } else {
-      $('#empty-error').text('')
     }
+    $('#empty-error').text('')
+
     handleSubmit(currentInputVal)
     currentInputVal = ''
     $('#answer').val('')
