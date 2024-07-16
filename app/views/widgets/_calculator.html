@@ -16,6 +16,7 @@
   }
   #answer {
     max-width: 4em;
+    text-align: center;
   }
   .button {
     padding: 10px;
@@ -28,9 +29,9 @@
 <div id="calculator-widget" class="d-flex justify-content-center flex-column">
   <div class="text-center">
     <p id="task-description">
-      <span id="current-task"></span>
-      &nbsp;=&nbsp;
+      <span id="pre-input"></span>
       <input type="input" id="answer" class="" readonly />
+      <span id="post-input"></span>
     </p>
   </div>
   <div class="container">
@@ -64,20 +65,56 @@
     setFontSizes()
     attachHandlers()
 
-    return { update, setNextTask: setCurrentTask, getElement }
+    return { update, getElement }
   }
 
-  const update = args => {
-    const { continueText, currentTask } = args
-
+  const update = ({
+    continueText,
+    currentTask,
+    firstNumber,
+    secondNumber,
+    operation,
+    inputPosition,
+  }) => {
     if (continueText !== undefined) {
       $('#continue button').text(continueText)
     }
     if (currentTask !== undefined) {
-      setCurrentTask(currentTask)
+      $('#pre-input').text(`${currentTask} = `)
+    }
+    if (
+      firstNumber !== undefined &&
+      secondNumber !== undefined &&
+      operation !== undefined &&
+      inputPosition !== undefined
+    ) {
+      switch (inputPosition) {
+        case 0:
+          $('#pre-input').text('')
+          $('#post-input').text(`${getOperatorSymbol(operation)} ${firstNumber} = ${secondNumber}`)
+          break
+        case 1:
+          $('#pre-input').text(`${firstNumber} ${getOperatorSymbol(operation)} `)
+          $('#post-input').text(` = ${secondNumber}`)
+          break
+        default:
+          $('#pre-input').text(`${firstNumber} ${getOperatorSymbol(operation)} ${secondNumber} =`)
+          $('#post-input').text('')
+      }
     }
   }
-
+  const getOperatorSymbol = operatorId => {
+    switch (operatorId) {
+      case 0:
+        return '-'
+      case 1:
+        return '+'
+      case 2:
+        return '·'
+      case 3:
+        return ':'
+    }
+  }
   const getElement = () => {
     return $('#calculator-widget')
   }
@@ -114,10 +151,6 @@
     handleSubmit(currentInputVal)
     currentInputVal = ''
     $('#answer').val('')
-  }
-
-  const setCurrentTask = task => {
-    $('#current-task').text(task)
   }
 
   const addNumber = num => {
