@@ -100,7 +100,8 @@ class Student < ApplicationRecord
         default_settings = {
           'font_family' => 'Fibel Nord',
           'font_size' => 1,
-          'display_timer' => false
+          'display_timer' => false,
+          'calculator_layout' => 'numpad'
         }
 
         return default_settings[key]

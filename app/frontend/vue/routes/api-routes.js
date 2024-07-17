@@ -125,6 +125,7 @@ export default {
     moveStudents: { url: '/students/move_students', method: 'POST' },
   },
   groups: {
+    update: id => ({ url: `/groups/${id}`, method: 'PUT' }),
     group: id => ({ url: `/groups/${id}` }),
     groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),

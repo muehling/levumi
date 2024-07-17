@@ -1,5 +1,5 @@
 import { useGlobalStore } from '../store/store'
-import { defaultFont } from './constants'
+import { defaultCalcLayout, defaultFont } from './constants'
 
 // Returns the student object for the passed group and student id
 export const getStudent = (groupId, studentId) => {
@@ -78,5 +78,21 @@ export const getFontSettingsDescription = (studentSettings, groupSettings) => {
       case '3':
         return `${fontFamily}, stark vergrößert`
     }
+  }
+}
+
+export const getCalcSettingsDescription = (studentSettings, groupSettings) => {
+  let usedSetting = studentSettings.calculator_layout
+    ? studentSettings.calculator_layout
+    : groupSettings.calculator_layout
+  if (!usedSetting) {
+    usedSetting = defaultCalcLayout
+  }
+
+  switch (usedSetting) {
+    case 'phone':
+      return { id: 1, text: 'Telefontastatur' }
+    case 'numpad':
+      return { id: 2, text: 'Nummernblock' }
   }
 }

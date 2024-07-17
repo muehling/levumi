@@ -23,6 +23,96 @@
         <span>Aktuelle Standard-Einstellung: {{ fontSettingsText }}</span>
       </div>
     </div>
+    <hr />
+    <div v-if="permissions.setGroupFontSettings" class="row">
+      <div class="col-3 d-flex align-items-center">
+        <b-button
+          variant="outline-secondary"
+          class="my-2 d-inline"
+          size="sm"
+          @click="toggleCalcSettings">
+          <i class="fas fa-calculator"></i>
+          Zahleneingabe
+        </b-button>
+        <context-help
+          help-text="Hier können Sie das in Mathematik-Tests verwendete Layout des Eingabeelementes festlegen. Sie können zwischen dem Nummernblock-Layout und dem Telefonlayout wählen. Diese Einstellung gilt für die gesamte Klasse."
+          class-name=" ml-2" />
+      </div>
+      <div v-if="!isCalcSettingsOpen" class="col-6 d-flex align-items-center">
+        <div class="mr-3">
+          <span>Aktuelle Standard-Einstellung: {{ calcSettings?.text }}</span>
+        </div>
+      </div>
+      <div v-else class="mt-2 col-6 d-flex align-items-center">
+        <b-form-radio-group
+          v-slot="{ ariaDescribedby }"
+          v-model="selectedCalcLayout"
+          class="d-inline">
+          <b-form-radio
+            v-model="selectedCalcLayout"
+            :aria-describedby="ariaDescribedby"
+            name="calc-select-radios"
+            value="numpad">
+            Nummernblock
+          </b-form-radio>
+          <b-form-radio
+            v-model="selectedCalcLayout"
+            :aria-describedby="ariaDescribedby"
+            name="calc-select-radios"
+            value="phone">
+            Telefontastatur
+          </b-form-radio>
+          <b-button
+            variant="outline-success"
+            class="my-2 d-inline"
+            size="sm"
+            :disabled="isCalcLayoutSaveDisabled"
+            @click="saveSettings">
+            <i class="fas fa-check"></i>
+            Speichern
+          </b-button>
+        </b-form-radio-group>
+      </div>
+      <div class="col pl-3 border mx-3">
+        <div class="row">
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '1' : '7' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '2' : '8' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '3' : '9' }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '4' : '4' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '5' : '5' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '6' : '6' }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '7' : '1' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '8' : '2' }}
+          </div>
+          <div class="col border text-center text-small">
+            {{ selectedCalcLayout === 'phone' ? '9' : '3' }}
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4 border text-small text-center">0</div>
+          <div class="col-8 border text-small text-center">Löschen</div>
+        </div>
+      </div>
+    </div>
     <div v-if="permissions?.createQRCodes" class="d-inline">
       <hr />
       <b-button
@@ -60,8 +150,10 @@
 <script>
   import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
-  import { getFontSettingsDescription } from 'src/utils/helpers'
+  import { defaultCalcLayout } from 'src/utils/constants'
+  import { getFontSettingsDescription, getCalcSettingsDescription } from 'src/utils/helpers'
   import { useGlobalStore } from 'src/store/store'
+  import apiRoutes from 'src/vue/routes/api-routes'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import FontSettingsModal from 'src/vue/classbook/modals/font-settings-modal.vue'
@@ -82,9 +174,14 @@
       return {
         isGeneratingQrCodes: false,
         isFontsModalOpen: false,
+        isCalcSettingsOpen: false,
+        selectedCalcLayout: this.group.settings?.calculator_layout || defaultCalcLayout,
       }
     },
     computed: {
+      isCalcLayoutSaveDisabled() {
+        return this.group.settings.calculator_layout === this.selectedCalcLayout
+      },
       permissions() {
         return access(this.group).classbook
       },
@@ -94,17 +191,36 @@
       fontSettingsText() {
         return getFontSettingsDescription(this.group.settings, this.group.settings)
       },
+      calcSettings() {
+        return getCalcSettingsDescription(this.group.settings, this.group.settings)
+      },
     },
 
     methods: {
       updateGroup(data) {
         this.globalStore.setGroups(data.groups)
       },
+      toggleCalcSettings() {
+        this.isCalcSettingsOpen = !this.isCalcSettingsOpen
+      },
+
       openFontsModal() {
         this.isFontsModalOpen = true
       },
       closeFontsModal() {
         this.isFontsModalOpen = false
+      },
+      async saveSettings() {
+        const settings = { calculator_layout: this.selectedCalcLayout }
+        const res = await ajax({
+          ...apiRoutes.groups.update(this.group.id),
+          data: { group: { settings } },
+        })
+        if (res.status === 200) {
+          this.toggleCalcSettings()
+          Vue.set(this.globalStore, 'groups', res.data.groups)
+          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+        }
       },
       async moveToArchive() {
         const answer = await this.$refs.confirmDialog.open({

@@ -112,7 +112,7 @@
           },
         }
         const res = await ajax({
-          url: `/${this.path + 's'}/${this.studentOrGroup.id}`, //TODO für die Klasse hauts hier noch nicht hin
+          url: `/${this.path + 's'}/${this.studentOrGroup.id}`,
           method: 'put',
           data,
         })

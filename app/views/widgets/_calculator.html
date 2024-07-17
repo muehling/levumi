@@ -10,9 +10,11 @@
 
   .delete {
     grid-column: span 2;
+    order: 11;
   }
   #continue {
     grid-column: span 3;
+    order: 12;
   }
   #answer {
     max-width: 4em;
@@ -23,6 +25,36 @@
     text-align: center;
     border: 1px solid #ccc;
     cursor: pointer;
+  }
+  .order-1 {
+    order: 1;
+  }
+  .order-2 {
+    order: 2;
+  }
+  .order-3 {
+    order: 3;
+  }
+  .order-4 {
+    order: 4;
+  }
+  .order-5 {
+    order: 5;
+  }
+  .order-6 {
+    order: 6;
+  }
+  .order-7 {
+    order: 7;
+  }
+  .order-8 {
+    order: 8;
+  }
+  .order-9 {
+    order: 9;
+  }
+  .xorder-10 {
+    order: 10;
   }
 </style>
 
@@ -35,18 +67,18 @@
     </p>
   </div>
   <div class="container">
-    <div class="mx-auto mt-3 col col-md-10 col-lg-6s">
+    <div class="mx-auto mt-3 col col-md-10 col-lg-6">
       <div class="numpad">
-        <div id="btn-7" class="calc-btn btn btn-primary">7</div>
-        <div id="btn-8" class="calc-btn btn btn-primary">8</div>
-        <div id="btn-9" class="calc-btn btn btn-primary">9</div>
-        <div id="btn-4" class="calc-btn btn btn-primary">4</div>
-        <div id="btn-5" class="calc-btn btn btn-primary">5</div>
-        <div id="btn-6" class="calc-btn btn btn-primary">6</div>
-        <div id="btn-1" class="calc-btn btn btn-primary">1</div>
-        <div id="btn-2" class="calc-btn btn btn-primary">2</div>
-        <div id="btn-3" class="calc-btn btn btn-primary">3</div>
-        <div id="btn-0" class="calc-btn btn btn-primary">0</div>
+        <div id="btn-7" class="calc-btn btn btn-primary orderable order-1">7</div>
+        <div id="btn-8" class="calc-btn btn btn-primary orderable order-2">8</div>
+        <div id="btn-9" class="calc-btn btn btn-primary orderable order-3">9</div>
+        <div id="btn-4" class="calc-btn btn btn-primary orderable order-4">4</div>
+        <div id="btn-5" class="calc-btn btn btn-primary orderable order-5">5</div>
+        <div id="btn-6" class="calc-btn btn btn-primary orderable order-6">6</div>
+        <div id="btn-1" class="calc-btn btn btn-primary orderable order-7">1</div>
+        <div id="btn-2" class="calc-btn btn btn-primary orderable order-8">2</div>
+        <div id="btn-3" class="calc-btn btn btn-primary orderable order-9">3</div>
+        <div id="btn-0" class="calc-btn btn btn-primary xorder-10">0</div>
         <div class="calc-btn btn btn-warning delete">Löschen</div>
         <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
       </div>
@@ -64,6 +96,18 @@
     handleSubmit = submitHandler
     setFontSizes()
     attachHandlers()
+
+    if (window.calculatorLayout === 'phone') {
+      $('#btn-1').removeClass('order-7').addClass('order-1')
+      $('#btn-2').removeClass('order-8').addClass('order-2')
+      $('#btn-3').removeClass('order-9').addClass('order-3')
+      $('#btn-4').removeClass('order-4').addClass('order-4')
+      $('#btn-5').removeClass('order-5').addClass('order-5')
+      $('#btn-6').removeClass('order-6').addClass('order-6')
+      $('#btn-7').removeClass('order-1').addClass('order-7')
+      $('#btn-8').removeClass('order-2').addClass('order-8')
+      $('#btn-9').removeClass('order-3').addClass('order-9')
+    }
 
     return { update, getElement }
   }
