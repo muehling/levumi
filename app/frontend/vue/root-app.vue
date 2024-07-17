@@ -156,7 +156,7 @@
           const login = sessionStorage.getItem('login')
           if (!login) {
             if (!this.globalStore.masquerade) {
-              this.sendLogin('')
+              await this.sendLogin('')
             } else {
               // if a masqueraded session was active, tell the user and terminate the session.
               // TBD really tell the user?
@@ -242,6 +242,7 @@
         if (res.status === 200) {
           sessionStorage.setItem('login', pw)
           await this.globalStore.fetch()
+          await this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
         }
