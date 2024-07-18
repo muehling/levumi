@@ -38,12 +38,12 @@
           help-text="Hier können Sie das in Mathematik-Tests verwendete Layout des Eingabeelementes festlegen. Sie können zwischen dem Nummernblock-Layout und dem Telefonlayout wählen. Diese Einstellung gilt für die gesamte Klasse."
           class-name=" ml-2" />
       </div>
-      <div v-if="!isCalcSettingsOpen" class="col-6 d-flex align-items-center">
+      <div v-if="!isCalcSettingsOpen" class="col-auto d-flex align-items-center">
         <div class="mr-3">
           <span>Aktuelle Standard-Einstellung: {{ calcSettings?.text }}</span>
         </div>
       </div>
-      <div v-else class="mt-2 col-6 d-flex align-items-center">
+      <div v-else class="mt-2 col-auto d-flex align-items-center">
         <b-form-radio-group
           v-slot="{ ariaDescribedby }"
           v-model="selectedCalcLayout"
@@ -73,8 +73,8 @@
           </b-button>
         </b-form-radio-group>
       </div>
-      <div class="col pl-3 border mx-3">
-        <div class="row">
+      <div :key="selectedCalcLayout" class="col pl-3 mx-3 calc-preview">
+        <div class="row flex-nowrap">
           <div class="col border text-center text-small">
             {{ selectedCalcLayout === 'phone' ? '1' : '7' }}
           </div>
@@ -85,7 +85,7 @@
             {{ selectedCalcLayout === 'phone' ? '3' : '9' }}
           </div>
         </div>
-        <div class="row">
+        <div class="row flex-nowrap">
           <div class="col border text-center text-small">
             {{ selectedCalcLayout === 'phone' ? '4' : '4' }}
           </div>
@@ -96,7 +96,7 @@
             {{ selectedCalcLayout === 'phone' ? '6' : '6' }}
           </div>
         </div>
-        <div class="row">
+        <div class="row flex-nowrap">
           <div class="col border text-center text-small">
             {{ selectedCalcLayout === 'phone' ? '7' : '1' }}
           </div>
@@ -107,7 +107,7 @@
             {{ selectedCalcLayout === 'phone' ? '9' : '3' }}
           </div>
         </div>
-        <div class="row">
+        <div class="row flex-nowrap">
           <div class="col-4 border text-small text-center">0</div>
           <div class="col-8 border text-small text-center">Löschen</div>
         </div>
@@ -294,3 +294,22 @@
     },
   }
 </script>
+<style>
+  .calc-preview {
+    max-width: 9em !important;
+    border: 1px solid lightgray;
+    animation: blink 1s ease-in-out 1;
+  }
+
+  @keyframes blink {
+    0% {
+      border-color: lightgray;
+    }
+    50% {
+      border-color: red;
+    }
+    100% {
+      border-color: lightgray;
+    }
+  }
+</style>
