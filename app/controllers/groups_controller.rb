@@ -43,7 +43,7 @@ class GroupsController < ApplicationController
 
     # group settings can be changed from various places - with this, you only need to pass
     # the changed settings from the frontend.
-    if !@group.settings.nil?
+    if !@group.settings.nil? && !params[:group][:settings].nil?
       params[:group][:settings] = @group.settings.merge group_params[:settings]
     end
 

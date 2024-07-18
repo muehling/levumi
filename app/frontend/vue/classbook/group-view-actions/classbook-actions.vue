@@ -73,7 +73,7 @@
           </b-button>
         </b-form-radio-group>
       </div>
-      <div :key="selectedCalcLayout" class="col pl-3 mx-3 calc-preview">
+      <div class="col pl-3 mx-3 calc-preview">
         <div class="row flex-nowrap">
           <div class="col border text-center text-small">
             {{ selectedCalcLayout === 'phone' ? '1' : '7' }}
@@ -298,18 +298,5 @@
   .calc-preview {
     max-width: 9em !important;
     border: 1px solid lightgray;
-    animation: blink 1s ease-in-out 1;
-  }
-
-  @keyframes blink {
-    0% {
-      border-color: lightgray;
-    }
-    50% {
-      border-color: red;
-    }
-    100% {
-      border-color: lightgray;
-    }
   }
 </style>
