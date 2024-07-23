@@ -3,7 +3,30 @@
   <b-card v-else class="mt-3">
     <div class="row">
       <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
-        <div class="accordion" role="tablist">
+        <div class="d-flex mb-1 mx-1">
+          <b-form-input v-model="searchString" placeholder="Nach Kürzel suchen"></b-form-input>
+          <b-button
+            v-if="searchString !== ''"
+            class="d-inline border-0"
+            variant="outline-secondary"
+            @click="searchString = ''">
+            <i class="fa-regular fa-circle-xmark"></i>
+          </b-button>
+        </div>
+        <div :class="searchString !== '' && searchString.length >= 2 ? 'd-block' : 'd-none'">
+          <div v-for="test in filteredTests" :key="test.id">
+            <b-button
+              class="test-admin-button"
+              block
+              :variant="`${getTestButtonVariant(test.id)}`"
+              @click.stop.prevent="displayTestDetail(test.id)">
+              <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
+                {{ `${test.shorthand} / ${test.level} ${getTestButtonSuffix(test.id)}` }}
+              </span>
+            </b-button>
+          </div>
+        </div>
+        <div :class="`accordion${searchString.length < 2 ? ' d-block' : ' d-none'}`" role="tablist">
           <b-card v-for="area in areas" :key="'area' + area.id" no-body class="mb-0 border-0">
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
@@ -323,9 +346,19 @@
         selectedTestFamilyId: undefined,
         selectedTestId: undefined,
         accordionData: {},
+        searchString: '',
       }
     },
     computed: {
+      filteredTests: function () {
+        return this.testMetaData.tests
+          .filter(
+            test =>
+              test.shorthand.toLowerCase().includes(this.searchString.toLowerCase()) &&
+              !test.archive
+          )
+          .sort((a, b) => (a.level > b.level ? 1 : -1))
+      },
       defaultTestType: function () {
         return this.globalStore.staticData.testMetaData.test_types[0]
       },
