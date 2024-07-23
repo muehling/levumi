@@ -49,8 +49,13 @@ class ResultsController < ApplicationController
       @result.report = JSON.parse(params[:report])
       @result.data = JSON.parse(params[:data])
       @result.test_date = DateTime.now
-      @result.save
-      head :ok
+
+      if @result.save
+        head :ok
+        return
+      else
+        render json: @result.errors, status: :unprocessable_entity
+      end
     end
   end
 

@@ -1,6 +1,7 @@
 class Result < ApplicationRecord
   belongs_to :student
   belongs_to :assessment
+  validate :similar_within_last_ten_seconds # block posting of results for 10 seconds (some tests still do that)
 
   #Wochennummer-Format des Testungsdatum zur Zusammenfassung von Ergebnissen einer Woche generieren und speichern
   before_save do |result|
@@ -81,5 +82,16 @@ class Result < ApplicationRecord
     else
       report['negative'].kind_of?(Array) ? report['negative'] : [report['negative']]
     end
+  end
+end
+
+private
+
+def similar_within_last_ten_seconds
+  if Result
+       .where(student_id: self.student_id, assessment_id: self.assessment_id)
+       .where('created_at >= ?', 10.seconds.ago)
+       .exists?
+    errors.add(:base, 'A result for this test/student has been posted in the last 10 seconds.')
   end
 end
