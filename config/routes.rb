@@ -103,4 +103,5 @@ Rails.application.routes.draw do
   resources :areas
   resources :competences
   resources :test_families
+  resources :news
 end
