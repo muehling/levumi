@@ -1,11 +1,11 @@
-class AnnotationCategoriesController < ApplicationController
+class NewsController < ApplicationController
   def index
-    @annotation_categories = News.all
-    render json: @annotation_categories
+    @news = News.all
+    render json: @news
   end
 
   def create
-    @news = News.new(annotation_categories_attributes)
+    @news = News.new(news_attributes)
     if @news.save
       render json: @news
     else
@@ -23,7 +23,7 @@ class AnnotationCategoriesController < ApplicationController
 
   private
 
-  def annotation_categories_attributes
+  def news_attributes
     params.permit(:id, :date, :title, :message)
   end
 end
