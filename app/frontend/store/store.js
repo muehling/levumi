@@ -111,6 +111,7 @@ export const useGlobalStore = defineStore('global', {
         annotationCategories: coreData.annotationCategories,
         testTypes: coreData.testTypes,
         testMetaData: coreData.testMetaData,
+        news: coreData.news,
       }
       this.isLoading = false
     },
