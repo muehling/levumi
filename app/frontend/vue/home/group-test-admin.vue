@@ -4,7 +4,9 @@
     <div class="row">
       <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
         <div class="d-flex mb-1 mx-1">
-          <b-form-input v-model="searchString" placeholder="Nach Kürzel suchen"></b-form-input>
+          <b-form-input
+            v-model="searchString"
+            placeholder="Test nach Kürzel oder Name suchen"></b-form-input>
           <b-button
             v-if="searchString !== ''"
             class="d-inline border-0"
@@ -21,7 +23,7 @@
               :variant="`${getTestButtonVariant(test.id)}`"
               @click.stop.prevent="displayTestDetail(test.id)">
               <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
-                {{ `${test.shorthand} / ${test.level} ${getTestButtonSuffix(test.id)}` }}
+                {{ `${test.full_name} ${getTestButtonSuffix(test.id)}` }}
               </span>
             </b-button>
           </div>
@@ -332,7 +334,7 @@
       isOpen: Boolean,
     },
     setup() {
-      const globalStore = useGlobalStore() // evtl raus
+      const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
 
@@ -354,7 +356,8 @@
         return this.testMetaData.tests
           .filter(
             test =>
-              test.shorthand.toLowerCase().includes(this.searchString.toLowerCase()) &&
+              (test.full_name.toLowerCase().includes(this.searchString.toLowerCase()) ||
+                test.shorthand.toLowerCase().includes(this.searchString.toLowerCase())) &&
               !test.archive
           )
           .sort((a, b) => (a.level > b.level ? 1 : -1))
