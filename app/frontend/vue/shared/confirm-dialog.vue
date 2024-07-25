@@ -3,6 +3,7 @@
     id="confirm-dialog"
     ref="genericConfirmDialog"
     hide-footer
+    :size="size"
     :no-close-on-backdrop="disableCloseOnBackdrop"
     @hidden="_close">
     <template #modal-title>
@@ -36,6 +37,7 @@
         okIntent: '',
         okText: '',
         resolvePromise: undefined,
+        size: '',
         title: '',
       }
     },
@@ -50,6 +52,7 @@
         this.okIntent = data.okIntent || 'outline-danger'
         this.okText = data.okText || 'Ok'
         this.title = data.title || ''
+        this.size = data.size || ''
         return new Promise(resolve => {
           this.resolvePromise = resolve
         })
