@@ -139,6 +139,9 @@
               System
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarSystem">
+              <router-link v-if="checkCapability('support')" to="/support" class="dropdown-item">
+                Support
+              </router-link>
               <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item">
                 Statistik
               </router-link>

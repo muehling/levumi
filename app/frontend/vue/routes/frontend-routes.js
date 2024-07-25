@@ -10,6 +10,7 @@ import StatisticsApp from '../statistics/statistics-app.vue'
 import AdministrationApp from '../administration/administration-app.vue'
 
 import VueRouter from 'vue-router'
+import SupportApp from '../support/support-app.vue'
 
 const routes = [
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
@@ -79,6 +80,7 @@ const routes = [
   { path: '/statistiken', component: StatisticsApp, name: 'Statistics' }, // Statistiken
   { path: '/administration', component: AdministrationApp, name: 'Administration' }, // Administration
   { path: '/groups/:groupId/assessments/:testId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /diagnostik if the data can be kept
+  { path: '/support', component: SupportApp },
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

@@ -130,4 +130,9 @@ export default {
     groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),
   },
+  supportMessages: {
+    create: data => ({ url: 'support_messages', method: 'POST', data }),
+    index: { url: '/support_messages' },
+    update: (id, data) => ({ url: `support_messages/${id}`, method: 'PATCH', data }),
+  },
 }
