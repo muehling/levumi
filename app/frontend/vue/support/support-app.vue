@@ -22,14 +22,14 @@
               <i class="fas fa-edit"></i>
               <span class="d-none d-lg-inline">Anzeigen</span>
             </b-btn>
-            <b-btn
+            <!-- <b-btn
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="changeStatus(data.item.id)">
               <i class="fas fa-trash"></i>
               <span class="d-none d-lg-inline">Status ändern</span>
             </b-btn>
-            <!-- <b-btn
+             <b-btn
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="assignUser(data.item.id)">
@@ -105,8 +105,10 @@
       mailto() {
         const cc = this.supportUsers.filter(email => email !== this.store.login.email).join(',')
         return `mailto:${this.selectedMessage?.sender}?subject=${
-          this.selectedMessage?.subject
-        }&cc=${cc}&body=${encodeURIComponent(this.selectedMessage?.message)}`
+          'Re: Ihre Anfrage bei Levumi - ' + this.selectedMessage?.subject
+        }&cc=${cc}&body=${encodeURIComponent(
+          '\n\n-----Ursprüngliche Nachricht-----\n\n' + this.selectedMessage?.message
+        )}`
       },
     },
     async created() {
