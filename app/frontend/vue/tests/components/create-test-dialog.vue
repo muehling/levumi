@@ -155,10 +155,10 @@
           return
         }
 
-        if (!contentObj.responsible) {
-          this.globalStore.setErrorMessage('Keine Kontakt-Emailadresse in test.json enthalten!')
-          return
-        }
+        // if (!contentObj.responsible) {
+        //   this.globalStore.setErrorMessage('Keine Kontakt-Emailadresse in test.json enthalten!')
+        //   return
+        // }
         if (!contentObj.version || !contentObj.shorthand) {
           this.globalStore.setErrorMessage(
             'Version oder Kurzbezeichnung sind nicht in test.json enthalten!'
