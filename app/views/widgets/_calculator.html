@@ -69,15 +69,15 @@
   <div class="container">
     <div class="mx-auto mt-3 col col-md-10 col-lg-6">
       <div class="numpad">
-        <div id="btn-7" class="calc-btn btn btn-primary orderable order-1">7</div>
-        <div id="btn-8" class="calc-btn btn btn-primary orderable order-2">8</div>
-        <div id="btn-9" class="calc-btn btn btn-primary orderable order-3">9</div>
-        <div id="btn-4" class="calc-btn btn btn-primary orderable order-4">4</div>
-        <div id="btn-5" class="calc-btn btn btn-primary orderable order-5">5</div>
-        <div id="btn-6" class="calc-btn btn btn-primary orderable order-6">6</div>
-        <div id="btn-1" class="calc-btn btn btn-primary orderable order-7">1</div>
-        <div id="btn-2" class="calc-btn btn btn-primary orderable order-8">2</div>
-        <div id="btn-3" class="calc-btn btn btn-primary orderable order-9">3</div>
+        <div id="btn-7" class="calc-btn btn btn-primary order-1">7</div>
+        <div id="btn-8" class="calc-btn btn btn-primary order-2">8</div>
+        <div id="btn-9" class="calc-btn btn btn-primary order-3">9</div>
+        <div id="btn-4" class="calc-btn btn btn-primary order-4">4</div>
+        <div id="btn-5" class="calc-btn btn btn-primary order-5">5</div>
+        <div id="btn-6" class="calc-btn btn btn-primary order-6">6</div>
+        <div id="btn-1" class="calc-btn btn btn-primary order-7">1</div>
+        <div id="btn-2" class="calc-btn btn btn-primary order-8">2</div>
+        <div id="btn-3" class="calc-btn btn btn-primary order-9">3</div>
         <div id="btn-0" class="calc-btn btn btn-primary xorder-10">0</div>
         <div class="calc-btn btn btn-warning delete">Löschen</div>
         <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
@@ -127,7 +127,7 @@
       $('#pre-input').text(`${currentTask} = `)
     }
     if (firstNumber !== undefined && secondNumber !== undefined && inputPosition !== undefined) {
-      if (operation) {
+      if (operation !== undefined) {
         switch (inputPosition) {
           case 0:
             $('#pre-input').text('')
