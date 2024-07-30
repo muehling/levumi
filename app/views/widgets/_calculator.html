@@ -6,6 +6,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1em;
+    touch-action: manipulation;
   }
 
   .delete {
@@ -53,8 +54,17 @@
   .order-9 {
     order: 9;
   }
-  .xorder-10 {
+  .order-10 {
     order: 10;
+  }
+  .fontsize-md {
+    font-size: 3em;
+  }
+  .fontsize-lg {
+    font-size: 4em;
+  }
+  .fontsize-xl {
+    font-size: 4.5em;
   }
 </style>
 
@@ -78,7 +88,7 @@
         <div id="btn-1" class="calc-btn btn btn-primary order-7">1</div>
         <div id="btn-2" class="calc-btn btn btn-primary order-8">2</div>
         <div id="btn-3" class="calc-btn btn btn-primary order-9">3</div>
-        <div id="btn-0" class="calc-btn btn btn-primary xorder-10">0</div>
+        <div id="btn-0" class="calc-btn btn btn-primary order-10">0</div>
         <div class="calc-btn btn btn-warning delete">Löschen</div>
         <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
       </div>
@@ -109,7 +119,7 @@
       $('#btn-9').removeClass('order-3').addClass('order-9')
     }
 
-    return { update, getElement, setFontSizes }
+    return { update, getElement }
   }
 
   const update = ({
@@ -225,16 +235,16 @@
   }
 
   const setFontSizes = () => {
-    let fontSize = '3rem'
+    let fontSizeClass = 'fontsize-md'
     switch (font_size) {
       case 2:
-        fontSize = '4rem'
+        fontSizeClass = 'fontsize-lg'
         break
       case 3:
-        fontSize = '4.5rem'
+        fontSizeClass = 'fontsize-xl'
         break
     }
-    $('#task-description, #empty-error').css({ fontSize, fontFamily: font_family })
+    $('#task-description, #empty-error').css({ fontFamily: font_family }).addClass(fontSizeClass)
     $('.calc-btn').css({ fontSize: '3rem', fontFamily: font_family })
   }
 </script>
