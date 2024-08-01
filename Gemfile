@@ -45,7 +45,7 @@ gem 'sshkit-sudo'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'bootstrap-sass', '~> 3.3.5'
+gem 'bootstrap-sass', '~> 3.4.1'
 
 gem 'magic_encoding'
 
