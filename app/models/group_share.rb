@@ -9,6 +9,7 @@ class GroupShare < ApplicationRecord
       user: user.email,
       read_only: read_only,
       is_anonymous: is_anonymous,
+      owner: owner,
       accepted: !key.nil?
     }
   end

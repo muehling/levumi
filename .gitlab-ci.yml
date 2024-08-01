@@ -15,14 +15,14 @@ deploy_staging:
     - staging
   script:
     - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_STAGING
-
-deploy_production:
-  image: ilyasemenov/gitlab-ci-git-push
-  stage: deploy
-  environment:
-    name: production
-    url: https://levumi.de/
-  only:
-    - master
-  script:
-    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_PROD
+# TODO adapt to deployment on ddi machine
+#deploy_production:
+#  image: ilyasemenov/gitlab-ci-git-push
+#  stage: deploy
+#  environment:
+#    name: production
+#    url: https://levumi.de/
+#  only:
+#    - master
+#  script:
+#    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_PROD

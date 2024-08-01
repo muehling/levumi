@@ -1,3 +1,8 @@
+<% unless @test.required_services&.empty? %>
+    <%= content_for :head do %>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <% end%>
+<% end%>
 <script>
     //Relevant für Lehrkraft-Ansicht - dort erscheint Name im Testfenster
     document.title = decodeURI(window.location.hash.replace('#',''))
@@ -6,6 +11,17 @@
 <div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em; display: none">
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
+
+
+<% if @test.required_services&.include? "truefalse" %>
+<%=    render partial: 'widgets/truefalse' %>
+<% end %>
+<% if @test.required_services&.include? "calculator" %>
+<%=    render partial: 'widgets/calculator' %>
+<% end %>
+<% if @test.required_services&.include? "timer" %>
+<%=    render partial: 'widgets/timer' %>
+<% end %>
 
 <!-- Test-Styles einbinden -->
 <style>
@@ -23,6 +39,7 @@
     // all variables and functions declared here that are part of the interface of the tests
     // need to be exposed in the global namespace. Otherwise, not all tests work, depending
     // on implementation.
+
 
     <% if @assessment.nil? && @student.nil? %>
         window["$"]('#end-preview').on('click', exit)
@@ -48,17 +65,24 @@
     <% end %>
     window.lastResult = lastResult
 
+    // settings
     let font_family
     let font_size
+    let display_timer
+    let calculator_layout
     //Präferenzen des Kindes setzen
     <% unless @student.nil? %>
         font_family = '<%= @student.get_setting("font_family") %>'.replace('%20', ' ')
         font_size = <%= @student.get_setting("font_size") %>
+        display_timer =  <%= @student.get_setting("display_timer") %>
+        calculator_layout =  '<%= @student.get_setting("calculator_layout") %>'
     <% else %>
 
     <% end %>
     window.font_family = font_family
     window.font_size = font_size
+    window.displayTimer = display_timer
+    window.calculatorLayout = calculator_layout
 
      function preventNavigation(navEvent) {
         navEvent.preventDefault();
@@ -98,14 +122,13 @@
     }
 
     //Funktionen für Testumgebung bereitstellen
-    async function saveResults(views, report, data, callback) {
+    async function saveResults(views, report, data, callback) {     
         const d = {views, report, data}               
         const res = await sendResult(d, "POST", callback)
       
         switch (res.status){
             case 200: callback(); break;
-            case 401: 
-                // todo find a way to repost a student's result in case the csrf token became invalid
+            case 422: return; // result has been posted in the previous 10 seconds (some tests might do this)          
             default: 
                 window["$"]('#error_message').show()
         }

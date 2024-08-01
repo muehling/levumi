@@ -23,6 +23,7 @@ window.bootstrap = bootstrap
 const element = document.getElementById('levumi')
 
 const init = async () => {
+  const data = JSON.parse(element.getAttribute('data')) || {}
   Vue.use(BootstrapVue)
 
   Vue.mixin({
@@ -52,6 +53,7 @@ const init = async () => {
       StartpageTestimonials,
       StartpageTests,
     },
+    data,
   })
 }
 

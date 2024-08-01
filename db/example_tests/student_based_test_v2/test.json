@@ -13,6 +13,8 @@
   },
   "time_limit": "Keine",
   "student_test": true,
+  "test_type": "Lernverlaufsdiagnose",
+  "responsible": "admin@example.com",
   "configuration": {
     "views": [
       {
@@ -33,8 +35,14 @@
         "student": true,
         "group": false,
         "type": "table",
-        "columns": ["Katzen", "Vögel"],
-        "column_keys": ["K", "V"]
+        "columns": [
+          "Katzen",
+          "Vögel"
+        ],
+        "column_keys": [
+          "K",
+          "V"
+        ]
       }
     ]
   },

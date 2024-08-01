@@ -1,0 +1,24 @@
+<script type="module">
+  window.useTrueFalseService = ({
+    trueHandler,
+    falseHandler,
+    trueText = 'Johoo',
+    falseText = 'Nay',
+  }) => {
+    const trueButton = $(
+      `<button id="correct" class="btn btn-outline-success mr-4">${trueText}</button>`
+    ).on('click', trueHandler)
+    const falseButton = $(
+      `<button id="wrong" class="btn btn-outline-danger">${falseText}</button>`
+    ).on('click', falseHandler)
+    $('#truefalse').append(trueButton).append(falseButton)
+  }
+</script>
+<style>
+<% unless @student.nil? %>
+    body {
+        font-family: '<%= @student.get_setting("font_family") %>',
+        font-size: <%= @student.get_setting("font_size") %>
+    }
+<% end %>
+</style>

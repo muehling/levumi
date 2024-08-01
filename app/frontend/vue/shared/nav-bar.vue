@@ -1,7 +1,7 @@
 <template>
   <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/diagnostik">
+      <a class="navbar-brand" href="/">
         <img src="/images/shared/Levumi-normal_small.png" alt="Levumi" height="48" />
         Levumi
       </a>
@@ -139,9 +139,18 @@
               System
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarSystem">
-              <router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item">
+              <router-link v-if="checkCapability('support')" to="/support" class="dropdown-item">
+                Support
+              </router-link>
+              <!--router-link v-if="checkCapability('stats')" to="/statistiken" class="dropdown-item">
                 Statistik
               </router-link>
+              -->
+              <span
+                class="dropdown-item"
+                style="opacity: 0.5; pointer-events: none; white-space: nowrap">
+                Statistiken (aktuell außer Betrieb)
+              </span>
               <router-link
                 v-if="checkCapability('user')"
                 to="/nutzerverwaltung"

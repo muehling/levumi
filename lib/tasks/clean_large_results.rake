@@ -1,34 +1,26 @@
-desc 'Remove users that registered but never became active in the platform.'
+desc 'Clean "NA" answers from results data'
 task 'clean_large_results' => :environment do
-  shorthands = %w[ZL4 ADD3 SUB3 ARTH]
+  tests = Test.all.select(:id, :shorthand)
+  test_count = Test.all.count
 
-  test_ids = Test.where(shorthand: shorthands).pluck(:id) #Feld answer
-  puts 'Tests:'
-  puts test_ids.count
+  tests.each_with_index do |test, index|
+    assessment_ids = Assessment.where(test_id: test.id).pluck(:id)
+    results = Result.where(assessment_id: assessment_ids)
+    puts "Processing #{test.shorthand} (#{index}/#{test_count}), with #{results.count} results..."
 
-  assessment_ids = Assessment.where(test_id: test_ids).pluck(:id)
+    results.each_with_index do |result, index|
+      data = result['data']
 
-  puts 'Assessments:'
-  puts assessment_ids.count
-
-  results = Result.where(assessment_id: assessment_ids)
-  puts 'Results: '
-  puts results.count
-  counter = 0
-
-  results.each do |result|
-    data = result['data']
-
-    if !result['data'].is_a? Array
-      false
-    else
-      filtered = data.reject { |d| d['answer'] == 'NA' }
-      if filtered.length < data.length
-        #puts "#{result['id']} / #{data.length} / #{filtered.length}"
-        if !result.update(data: filtered)
-          puts "Result mit ID #{result.id} konnte nicht geändert werden"
+      print '.' if index % 100 == 0
+      if !result['data'].is_a? Array
+        false
+      else
+        filtered = data.reject { |d| d['answer'] == 'NA' }
+        if filtered.length < data.length
+          puts "Error updating result #{result.id}" if !result.update(data: filtered)
         end
       end
     end
+    puts '.'
   end
 end

@@ -3,33 +3,34 @@
   <b-card v-else no-body class="mt-3 pb-0 mb-1">
     <div class="card-header">
       <b-nav pills>
-        <b-nav-item class="cursor-default"
-          ><span class="font-weight-bold">{{ currentArea?.name || '' }}</span></b-nav-item
-        >
+        <b-nav-item class="cursor-default">
+          <span class="font-weight-bold">{{ currentArea?.name || '' }}</span>
+        </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
-        <b-nav-item :id="group.id + '_test_type_' + currentTestType?.id" class="ml-3 cursor-default"
-          ><span class="font-weight-bold">{{ currentTestType?.name || '' }}</span>
+        <b-nav-item
+          :id="group.id + '_test_type_' + currentTestType?.id"
+          class="ml-3 cursor-default">
+          <span class="font-weight-bold">{{ currentTestType?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
         <b-nav-item
           :id="group.id + '_competence_' + currentCompetence?.id"
-          class="ml-3 cursor-default"
-          ><span class="font-weight-bold">{{ currentCompetence?.name || '' }}</span>
+          class="ml-3 cursor-default">
+          <span class="font-weight-bold">{{ currentCompetence?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
-        <b-nav-item :id="group.id + '_family_' + currentFamily?.id" class="ml-3 cursor-default"
-          ><span class="font-weight-bold">{{ currentFamily?.name || '' }}</span>
+        <b-nav-item :id="group.id + '_family_' + currentFamily?.id" class="ml-3 cursor-default">
+          <span class="font-weight-bold">{{ currentFamily?.name || '' }}</span>
         </b-nav-item>
         <i class="fas fa-arrow-right mt-2 text-primary"></i>
-        <b-nav-item :id="group.id + '_test_' + currentTest?.id" active class="ml-3 cursor-default"
-          ><span class="font-weight-bold">{{ currentTest?.level || '' }}</span>
+        <b-nav-item :id="group.id + '_test_' + currentTest?.id" active class="ml-3 cursor-default">
+          <span class="font-weight-bold">{{ currentTest?.level || '' }}</span>
         </b-nav-item>
       </b-nav>
       <b-nav
         v-if="versions.length > 1 || (versions.length === 1 && versions[0].info.archive === true)"
         pills
-        class="mt-1"
-      >
+        class="mt-1">
         <!-- Alle Versionen der gewählten Niveaustufe, falls vorhanden -->
         <b-nav-item
           v-for="version in versions"
@@ -37,8 +38,7 @@
           :key="version.info.id"
           :active="version.info.id === versionSelected"
           lazy
-          @click="handleClickVersion(version)"
-        >
+          @click="handleClickVersion(version)">
           <span :class="version.used ? 'font-weight-bold' : ''">{{ version.info.label }}</span>
         </b-nav-item>
       </b-nav>
@@ -47,12 +47,12 @@
       <b-tab :active="!hasResults" class="m-3">
         <div slot="title">
           Messungen ({{ test.shorthand }})
-          <span v-if="!isActive && test.student_test" class="badge badge-danger"
-            ><i class="fas fa-pause"></i
-          ></span>
-          <span v-if="isActive && test.student_test" class="badge badge-success"
-            ><i class="fas fa-play"></i
-          ></span>
+          <span v-if="!isActive && test.student_test" class="badge badge-danger">
+            <i class="fas fa-pause"></i>
+          </span>
+          <span v-if="isActive && test.student_test" class="badge badge-success">
+            <i class="fas fa-play"></i>
+          </span>
         </div>
         <!-- Neue Messungen -->
         <div class="mb-3">
@@ -74,8 +74,7 @@
               :excludes="assessment.excludes"
               :group="group"
               :results="results"
-              :test="test"
-            />
+              :test="test" />
           </div>
         </div>
         <!-- Liste der alten Messungen -->
@@ -114,35 +113,32 @@
                   <tbody>
                     <tr
                       v-for="(result, resultIndex) in groupedResults[date]"
-                      :key="`${result.id}/${resultIndex}`"
-                    >
+                      :key="`${result.id}/${resultIndex}`">
                       <td>{{ formatDate(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
                         <span
                           v-for="(item, n) in result.data.report.positive"
-                          :key="item + '/' + n"
-                          >{{ (n > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}</span
-                        >
+                          :key="item + '/' + n">
+                          {{ (n > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
+                        </span>
                       </td>
                       <td>
                         <span
                           v-for="(item, m) in result.data.report.negative"
-                          :key="item + '/' + m"
-                          >{{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}</span
-                        >
+                          :key="item + '/' + m">
+                          {{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
+                        </span>
                       </td>
                       <td>
                         <i
                           v-if="result.data.report.trend > 0"
                           class="fas fa-arrow-up"
-                          style="color: var(--success-color)"
-                        ></i>
+                          style="color: var(--success-color)"></i>
                         <i
                           v-else-if="result.data.report.trend == 0"
                           class="fas fa-arrow-right"
-                          style="color: var(--secondary-color)"
-                        ></i>
+                          style="color: var(--secondary-color)"></i>
                         <i v-else class="fas fa-arrow-down" style="color: var(--danger-color)"></i>
                       </td>
                       <td v-if="!readOnly">
@@ -150,8 +146,7 @@
                           small
                           variant="outline-danger"
                           title="Diese Messung löschen"
-                          @click="deleteResult(result, resultIndex)"
-                        >
+                          @click="deleteResult(result, resultIndex)">
                           <i class="fas fa-trash"></i>
                         </b-btn>
                       </td>
@@ -171,8 +166,7 @@
         title="Auswertung"
         :active="hasResults"
         class="m-3"
-        :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0"
-      >
+        :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0">
         <analysis-view
           :key="test.id"
           :annotations="assessmentData.annotations"
@@ -181,13 +175,12 @@
           :results="assessmentData.series"
           :students="students"
           :test="test"
-          :is-loading-update="isLoading"
-        ></analysis-view>
+          :is-loading-update="isLoading"></analysis-view>
       </b-tab>
 
       <!-- Vorschläge für Fördermaterial -->
       <b-tab title="Fördern">
-        <support-view :group="group" :test-id="test.id"> </support-view>
+        <support-view :group="group" :test-id="test.id"></support-view>
       </b-tab>
 
       <!-- Testinfos darstellen -->
@@ -334,7 +327,7 @@
         return (
           this.globalStore.login.is_masquerading === null ||
           (!!this.globalStore.login.is_masquerading && !this.group.read_only) ||
-          isAdmin(this.globalStore.login.capabilities)
+          isAdmin()
         )
       },
       versions() {

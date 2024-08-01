@@ -3,7 +3,32 @@
   <b-card v-else class="mt-3">
     <div class="row">
       <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
-        <div class="accordion" role="tablist">
+        <div class="d-flex mb-1 mx-1">
+          <b-form-input
+            v-model="searchString"
+            placeholder="Test nach Kürzel oder Name suchen"></b-form-input>
+          <b-button
+            v-if="searchString !== ''"
+            class="d-inline border-0"
+            variant="outline-secondary"
+            @click="searchString = ''">
+            <i class="fa-regular fa-circle-xmark"></i>
+          </b-button>
+        </div>
+        <div :class="searchString !== '' && searchString.length >= 2 ? 'd-block' : 'd-none'">
+          <div v-for="test in filteredTests" :key="test.id">
+            <b-button
+              class="test-admin-button"
+              block
+              :variant="`${getTestButtonVariant(test.id)}`"
+              @click.stop.prevent="displayTestDetail(test.id)">
+              <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
+                {{ `${test.full_name} ${getTestButtonSuffix(test.id)}` }}
+              </span>
+            </b-button>
+          </div>
+        </div>
+        <div :class="`accordion${searchString.length < 2 ? ' d-block' : ' d-none'}`" role="tablist">
           <b-card v-for="area in areas" :key="'area' + area.id" no-body class="mb-0 border-0">
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
@@ -185,7 +210,7 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest" class="col-lg-6">
+        <div v-if="!selectedTest" class="col-lg-6 ml-0 pl-0">
           <p>
             Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
             eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests
@@ -258,7 +283,7 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             :href="`/results/start_demo/${selectedTestId}`"
             target="_blank"
             variant="outline-secondary">
@@ -266,14 +291,14 @@
           </b-button>
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             variant="success"
             @click="createAssessment">
             Test für die Klasse aktivieren
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             variant="outline-success"
             @click="jumpToAssessment()">
             <i class="fas fa-check mr-2"></i>
@@ -281,13 +306,13 @@
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="ml-2 mt-3"
+            class="mr-2 mt-3"
             :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
             @click="deleteAssessment">
             <i class="fas fa-trash mr-2"></i>
             Test löschen
           </b-button>
-          <b-btn class="ml-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-btn class="mr-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
         </div>
       </div>
     </div>
@@ -309,7 +334,7 @@
       isOpen: Boolean,
     },
     setup() {
-      const globalStore = useGlobalStore() // evtl raus
+      const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
 
@@ -323,9 +348,20 @@
         selectedTestFamilyId: undefined,
         selectedTestId: undefined,
         accordionData: {},
+        searchString: '',
       }
     },
     computed: {
+      filteredTests: function () {
+        return this.testMetaData.tests
+          .filter(
+            test =>
+              (test.full_name.toLowerCase().includes(this.searchString.toLowerCase()) ||
+                test.shorthand.toLowerCase().includes(this.searchString.toLowerCase())) &&
+              !test.archive
+          )
+          .sort((a, b) => (a.level > b.level ? 1 : -1))
+      },
       defaultTestType: function () {
         return this.globalStore.staticData.testMetaData.test_types[0]
       },

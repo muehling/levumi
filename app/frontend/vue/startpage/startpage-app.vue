@@ -17,6 +17,9 @@
           width="48"
           height="48" />
         Levumi
+        <b-alert v-if="!!systemMessage" class="ml-auto mb-0 d-inline" show variant="danger">
+          {{ systemMessage }}
+        </b-alert>
       </b-nav-item>
       <a href="/testen" class="btn btn-outline-secondary">Zugang für Schülerinnen und Schüler</a>
       <div class="mt-2 mt-md-0">
@@ -63,6 +66,16 @@
       },
       passwordMismatch() {
         return this.retry === 'true'
+      },
+      systemMessage() {
+        switch (this.$root.mode) {
+          case 'staging':
+            return 'TEST-SYSTEM'
+          case 'development':
+            return 'DEV'
+          default:
+            return ''
+        }
       },
     },
     mounted() {

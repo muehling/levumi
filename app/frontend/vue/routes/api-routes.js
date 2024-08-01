@@ -18,6 +18,7 @@ export default {
     statistics: '/users/statistics',
     delete: () => ({ url: `/delete_self`, method: 'DELETE', accept: 'text/html' }),
     index: pageNumber => ({ url: `/users/page/${pageNumber}` }),
+    classbookInfo: { url: '/users/get_classbook_info' },
   },
   home: {
     finishIntro: '/willkommen',
@@ -121,9 +122,17 @@ export default {
   },
   students: {
     activeAssessments: id => ({ url: `/students/${id}` }),
+    moveStudents: { url: '/students/move_students', method: 'POST' },
   },
   groups: {
+    update: id => ({ url: `/groups/${id}`, method: 'PUT' }),
     group: id => ({ url: `/groups/${id}` }),
+    groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),
+  },
+  supportMessages: {
+    create: data => ({ url: 'support_messages', method: 'POST', data }),
+    index: { url: '/support_messages' },
+    update: (id, data) => ({ url: `support_messages/${id}`, method: 'PATCH', data }),
   },
 }

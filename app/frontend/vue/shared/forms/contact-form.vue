@@ -7,8 +7,7 @@
         :options="supportOptions"
         :aria-describedby="ariaDescribedby"
         name="support-options"
-        stacked
-      ></b-form-radio-group>
+        stacked></b-form-radio-group>
     </b-form-group>
     <b-form-group label-for="contact-message">
       <b-form-textarea
@@ -17,12 +16,10 @@
         placeholder="Bitte geben Sie Ihre Nachricht ein."
         rows="3"
         max-rows="6"
-        required
-      >
-      </b-form-textarea>
-      <b-button class="mt-4 mx-auto" type="submit" variant="outline-success"
-        ><span>Absenden</span></b-button
-      >
+        required></b-form-textarea>
+      <b-button class="mt-4 mx-auto" type="submit" variant="outline-success">
+        <span>Absenden</span>
+      </b-button>
     </b-form-group>
   </b-form>
 </template>
@@ -59,12 +56,13 @@
         e.preventDefault()
         e.stopPropagation()
         const data = {
-          support: true,
-          text: this.contactMessage,
+          sender: this.globalStore.login.email,
+          message: this.contactMessage,
           subject: this.selectedTopic,
+          status: 1,
         }
-        // TODO figure out to raise errors with the ActionMailer, then catch them here and display some other message.
-        await ajax({ ...apiRoutes.users.usersMail(this.globalStore.login.id), data })
+
+        await ajax(apiRoutes.supportMessages.create(data))
 
         this.globalStore.setGenericMessage({
           title: 'Email gesendet',

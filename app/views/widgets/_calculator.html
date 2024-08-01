@@ -1,0 +1,250 @@
+<style>
+  #delete {
+    white-space: nowrap;
+  }
+  .numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1em;
+    touch-action: manipulation;
+  }
+
+  .delete {
+    grid-column: span 2;
+    order: 11;
+  }
+  #continue {
+    grid-column: span 3;
+    order: 12;
+  }
+  #answer {
+    max-width: 4em;
+    text-align: center;
+  }
+  .button {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  .order-1 {
+    order: 1;
+  }
+  .order-2 {
+    order: 2;
+  }
+  .order-3 {
+    order: 3;
+  }
+  .order-4 {
+    order: 4;
+  }
+  .order-5 {
+    order: 5;
+  }
+  .order-6 {
+    order: 6;
+  }
+  .order-7 {
+    order: 7;
+  }
+  .order-8 {
+    order: 8;
+  }
+  .order-9 {
+    order: 9;
+  }
+  .order-10 {
+    order: 10;
+  }
+  .fontsize-md {
+    font-size: 3em;
+  }
+  .fontsize-lg {
+    font-size: 4em;
+  }
+  .fontsize-xl {
+    font-size: 4.5em;
+  }
+</style>
+
+<div id="calculator-widget" class="d-flex justify-content-center flex-column">
+  <div class="text-center">
+    <p id="task-description">
+      <span id="pre-input"></span>
+      <input type="input" id="answer" class="" readonly />
+      <span id="post-input"></span>
+    </p>
+  </div>
+  <div class="container">
+    <div class="mx-auto mt-3 col col-md-10 col-lg-6">
+      <div class="numpad">
+        <div id="btn-7" class="calc-btn btn btn-primary order-1">7</div>
+        <div id="btn-8" class="calc-btn btn btn-primary order-2">8</div>
+        <div id="btn-9" class="calc-btn btn btn-primary order-3">9</div>
+        <div id="btn-4" class="calc-btn btn btn-primary order-4">4</div>
+        <div id="btn-5" class="calc-btn btn btn-primary order-5">5</div>
+        <div id="btn-6" class="calc-btn btn btn-primary order-6">6</div>
+        <div id="btn-1" class="calc-btn btn btn-primary order-7">1</div>
+        <div id="btn-2" class="calc-btn btn btn-primary order-8">2</div>
+        <div id="btn-3" class="calc-btn btn btn-primary order-9">3</div>
+        <div id="btn-0" class="calc-btn btn btn-primary order-10">0</div>
+        <div class="calc-btn btn btn-warning delete">Löschen</div>
+        <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
+      </div>
+      <div id="empty-error" class="text-danger"></div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  let currentInputVal = ''
+  let handleInput
+  let handleSubmit
+  window.useCalculatorWidget = ({ submitHandler, inputHandler }) => {
+    handleInput = inputHandler
+    handleSubmit = submitHandler
+    setFontSizes()
+    attachHandlers()
+
+    if (window.calculatorLayout === 'phone') {
+      $('#btn-1').removeClass('order-7').addClass('order-1')
+      $('#btn-2').removeClass('order-8').addClass('order-2')
+      $('#btn-3').removeClass('order-9').addClass('order-3')
+      $('#btn-4').removeClass('order-4').addClass('order-4')
+      $('#btn-5').removeClass('order-5').addClass('order-5')
+      $('#btn-6').removeClass('order-6').addClass('order-6')
+      $('#btn-7').removeClass('order-1').addClass('order-7')
+      $('#btn-8').removeClass('order-2').addClass('order-8')
+      $('#btn-9').removeClass('order-3').addClass('order-9')
+    }
+
+    return { update, getElement }
+  }
+
+  const update = ({
+    continueText,
+    currentTask,
+    firstNumber,
+    secondNumber,
+    operation,
+    inputPosition,
+  }) => {
+    if (continueText !== undefined) {
+      $('#continue button').text(continueText)
+    }
+    if (currentTask !== undefined) {
+      $('#pre-input').text(`${currentTask} = `)
+    }
+    if (firstNumber !== undefined && secondNumber !== undefined && inputPosition !== undefined) {
+      if (operation !== undefined) {
+        switch (inputPosition) {
+          case 0:
+            $('#pre-input').text('')
+            $('#post-input').text(
+              `${getOperatorSymbol(operation)} ${firstNumber} = ${secondNumber}`
+            )
+            break
+          case 1:
+            $('#pre-input').text(`${firstNumber} ${getOperatorSymbol(operation)} `)
+            $('#post-input').text(` = ${secondNumber}`)
+            break
+          default:
+            $('#pre-input').text(`${firstNumber} ${getOperatorSymbol(operation)} ${secondNumber} =`)
+            $('#post-input').text('')
+        }
+      } else {
+        $('#pre-input').html(firstNumber)
+        $('#post-input').html(secondNumber)
+      }
+    }
+  }
+  const getOperatorSymbol = operatorId => {
+    switch (operatorId) {
+      case 0:
+        return '-'
+      case 1:
+        return '+'
+      case 2:
+        return '·'
+      case 3:
+        return ':'
+      default:
+        ''
+    }
+  }
+  const getElement = () => {
+    return $('#calculator-widget')
+  }
+
+  const attachHandlers = () => {
+    // screen input
+    $('.delete').on('click', removeNumber)
+    for (let i = 0; i < 10; i++) {
+      $(`#btn-${i}`).on('click', () => addNumber(i))
+    }
+
+    // keyboard input
+    document.addEventListener('keydown', e => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.key >= '0' && e.key <= '9') {
+        addNumber(e.key)
+      } else if (e.key === 'Backspace') {
+        removeNumber()
+      } else if (e.key === 'Enter') {
+        submit()
+      }
+    })
+
+    // submit
+    $('#continue').on('click', submit)
+  }
+
+  const submit = () => {
+    if (currentInputVal === '') {
+      $('#empty-error').text('Bitte gib eine Zahl ein!')
+      return
+    }
+    $('#empty-error').text('')
+
+    handleSubmit(currentInputVal)
+    currentInputVal = ''
+    $('#answer').val('')
+  }
+
+  const addNumber = num => {
+    currentInputVal += num
+    updateDom()
+  }
+
+  const removeNumber = () => {
+    currentInputVal = currentInputVal.slice(0, -1)
+    updateDom()
+  }
+
+  const updateDom = () => {
+    currentInputVal = currentInputVal.replace(/[^\d ]+/g, '')
+    currentInputVal = currentInputVal.replace(/ /g, '')
+
+    // Add spaces as thousands separators every three digits
+    currentInputVal = currentInputVal.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
+    handleInput(currentInputVal)
+    $('#answer').val(currentInputVal)
+  }
+
+  const setFontSizes = () => {
+    let fontSizeClass = 'fontsize-md'
+    switch (font_size) {
+      case 2:
+        fontSizeClass = 'fontsize-lg'
+        break
+      case 3:
+        fontSizeClass = 'fontsize-xl'
+        break
+    }
+    $('#task-description, #empty-error').css({ fontFamily: font_family }).addClass(fontSizeClass)
+    $('.calc-btn').css({ fontSize: '3rem', fontFamily: font_family })
+  }
+</script>

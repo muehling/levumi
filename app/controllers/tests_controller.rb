@@ -72,7 +72,7 @@ class TestsController < ApplicationController
 
   #DEL /tests/:id
   def destroy
-    if !@login.has_capability('test') || !@login.has_capability('test_admin')
+    if !@login.has_capability?('test') || !@login.has_capability?('test_admin')
       render json: { message: 'tests_controller::delete: not permitted' }, status: :forbidden and
         return
     end
