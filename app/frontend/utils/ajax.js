@@ -12,6 +12,9 @@ axiosInstance.interceptors.response.use(
     if (error.config.url === '/login' || error.config.url === '/renew_login') {
       return error.response
     }
+    if (error.response.status === 403) {
+      return error.response
+    }
 
     // any error that returns a message is not unexpected and should be handled by the frontend
     if (error.response.data?.message) {
@@ -34,7 +37,7 @@ axiosInstance.interceptors.response.use(
 export const ajax = async ({
   url,
   method = 'GET',
-  data,
+  data = {},
   contentType = 'application/json',
   accept = 'application/json',
 }) => {

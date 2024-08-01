@@ -12,7 +12,7 @@ class UserMailer < ApplicationMailer
   end
 
   def support
-    @user = params[:user]
+    @email = params[:email]
     @body = params[:body]
     subject =
       if params[:subject].nil?
@@ -27,16 +27,17 @@ class UserMailer < ApplicationMailer
       if Rails.env.development? || Rails.env.staging? || !params[:server_error].nil?
         'beckmann@leibniz-ipn.de'
       else
-        %w[jana.jungjohann@tu-dortmund.de beckmann@leibniz-ipn.de]
+        params[:support_addresses]
       end
 
     complete_subject = "#{subject_prefix.to_s}#{subject}"
-    sender = params[:server_error].nil? ? @user.email : 'noreply@levumi.de'
 
-    mail(bcc: recipients, from: sender, subject: complete_subject)
+    mail(bcc: recipients, from: 'noreply@levumi.de', subject: complete_subject)
   end
 
   def new_share
+    @sender = params[:sender]
+    @group_label = params[:group_label]
     @recipient = params[:recipient]
     @share_key = params[:share_key]
     @is_anonymous = params[:is_anonymous]

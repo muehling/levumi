@@ -57,7 +57,7 @@
           <p>
             Zudem haben Sie durch die offene Struktur die Möglichkeit, eigene Testdesigns zu
             erstellen. Für die Testerstellung werden lediglich grundlegende Kenntnisse in HTML,
-            Javascript und CSS benötigt. Für einfache Designs existiert auch ein Editor der keine
+            Javascript und CSS benötigt. Für einfache Designs existiert auch ein Editor, der keine
             Programmierkenntnisse erfordert.
           </p>
         </b-card>

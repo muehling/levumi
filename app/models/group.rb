@@ -26,7 +26,8 @@ class Group < ApplicationRecord
       updated_at: updated_at,
       key: group_share.key,
       owner: group_share.owner,
-      share_id: group_share.id
+      share_id: group_share.id,
+      settings: settings || {}
     }
     data['belongs_to'] = group_share.group.owner.email
     if group_share.owner
@@ -46,6 +47,15 @@ class Group < ApplicationRecord
   end
 
   def test_data
-    return { used_test_ids: Assessment.where(group_id: id).pluck(:test_id) }
+    return(
+      {
+        used_test_ids:
+          Assessment
+            .joins(:test)
+            .where(group_id: id)
+            .where.not(tests: { archive: true })
+            .pluck(:test_id)
+      }
+    )
   end
 end

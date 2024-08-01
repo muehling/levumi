@@ -1,5 +1,3 @@
-json.share_keys @shares_object
-json.groups @groups_object
 json.groupInfo @login.get_home_info
 json.partial! partial: 'users/login', login: @login
 json.masquerade @masquerade
@@ -10,3 +8,4 @@ json.accountTypes accounttypes_to_array
 json.annotationCategories annotation_categories
 json.testTypes TestType.all
 json.testMetaData Test.tests_meta
+json.news News.all

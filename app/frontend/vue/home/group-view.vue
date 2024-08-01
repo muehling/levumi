@@ -1,25 +1,40 @@
 <template>
   <div classname="group-view my-3">
-    <div v-if="readOnly">
-      <p class="mt-3">
-        Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
-        durchführen oder Einstellungen ändern.
-      </p>
-    </div>
-    <div v-if="!!selectedGroupId && !assessmentData && isAllowed && !isTestAdminOpen" class="my-3">
-      <b-btn variant="outline-secondary" size="sm" @click="openTestAdmin">
-        <i class="fas fa-gear mr-1"></i>Test hinzufügen / löschen
+    <div class="mb-3">
+      <div v-if="readOnly">
+        <p>
+          Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
+          durchführen oder Einstellungen ändern.
+        </p>
+      </div>
+      <b-btn
+        v-if="displayTestAdminButton"
+        variant="outline-secondary"
+        size="sm"
+        class="mr-2 my-3"
+        @click="openTestAdmin">
+        <i class="fas fa-gear mr-1"></i>
+        Test hinzufügen / löschen
       </b-btn>
+      <b-button
+        v-if="displayClassBookButton"
+        variant="outline-secondary"
+        size="sm"
+        class="my-3"
+        @click="gotoClassbook">
+        <i class="fas fa-book-open mr-1"></i>
+        Zum Klassenbuch
+      </b-button>
+      <b-button
+        v-if="isTestDetailsOpen || isTestAdminOpen"
+        class="my-3"
+        size="sm"
+        variant="outline-secondary"
+        @click="backToOverview">
+        <i class="fas fa-arrow-left mr-1"></i>
+        Zurück zur Testübersicht
+      </b-button>
     </div>
-    <b-button
-      v-if="isTestDetailsOpen || isTestAdminOpen"
-      class="my-3"
-      size="sm"
-      variant="outline-secondary"
-      @click="backToOverview"
-    >
-      <i class="fas fa-backward-step mr-1"></i> Zurück zur Testübersicht
-    </b-button>
     <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
     <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
     <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
@@ -27,10 +42,10 @@
 </template>
 
 <script>
-  import { isAdmin } from '../../utils/user'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import { useTestsStore } from '../../store/testsStore'
+  import { access } from 'src/utils/access'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { useTestsStore } from 'src/store/testsStore'
   import AssessmentDetails from './assessment-details.vue'
   import AssessmentView from './assessment-view.vue'
   import GroupTestAdmin from './group-test-admin.vue'
@@ -66,18 +81,32 @@
       annotations: function () {
         return this.assessmentData?.annotations
       },
+      displayClassBookButton() {
+        return !this.isTestAdminOpen && !this.isTestDetailsOpen && this.group.students.length > 0
+      },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
+        // TODO check if still necessary, globalStore.groups shouldn't contain a placeholder anymore
         return this.globalStore.groups.filter(group => group.id)
       },
       group() {
         return this.groups.find(group => group.id === this.selectedGroupId)
       },
       isAllowed() {
-        return !this.group?.read_only || isAdmin(this.globalStore.login.capabilities)
+        const permissions = access(this.group).diagnostics
+        return permissions?.createAssessments
       },
       readOnly() {
         return !!this.group?.read_only
+      },
+      displayTestAdminButton() {
+        return (
+          !!this.selectedGroupId &&
+          !this.assessmentData &&
+          this.isAllowed &&
+          !this.isTestAdminOpen &&
+          this.group.students.length > 0
+        )
       },
     },
     watch: {
@@ -108,20 +137,21 @@
     },
 
     async mounted() {
-      this.update()
+      const groupId = this.group.id
+
+      this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
+      this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
+
+      await this.assessmentsStore.fetch(groupId)
+      await this.testsStore.fetchUsedTestsForGroup(groupId)
     },
     methods: {
-      async update() {
-        const groupId = this.$route.params.groupId
-        if (!groupId) {
-          return
+      gotoClassbook() {
+        if (this.group.owner) {
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}`)
+        } else {
+          this.$router.push(`/klassenbuch/geteilte_klassen/${this.group.id}`)
         }
-
-        this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
-        this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
-
-        await this.assessmentsStore.fetch(groupId)
-        await this.testsStore.fetchUsedTestsForGroup(groupId)
       },
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)

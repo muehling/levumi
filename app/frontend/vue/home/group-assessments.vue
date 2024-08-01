@@ -3,14 +3,14 @@
     <div class="assessment-filter mb-4">
       <b-form-checkbox-group
         v-model="selectedFilters"
-        :options="availableFilters"
-      ></b-form-checkbox-group>
+        :options="availableFilters"></b-form-checkbox-group>
       <b-btn v-if="isAllowed" size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
         <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
-        {{ toggleButtonText }}</b-btn
-      >
+        {{ toggleButtonText }}
+      </b-btn>
     </div>
-    <table class="table table-sm table-striped table-hover table-responsive-md text-small">
+    <table
+      class="table table-sm table-striped table-hover table-responsive-md text-small group-assessments">
       <thead>
         <tr>
           <th>Zum Test</th>
@@ -26,13 +26,11 @@
         <tr
           v-for="assessment in sortedList"
           :key="`${assessment.test_id}/${assessment.name}`"
-          class="assessment-line"
-        >
+          :class="`assessment-line${assessment.archive ? ' text-muted' : ''}`">
           <td class="assessment-link" @click="setPreselect(assessment)">
             <i
               v-if="loadingAssessmentId === assessment.test_id"
-              class="ml-4 fas fa-spinner fa-spin"
-            ></i>
+              class="ml-4 fas fa-spinner fa-spin"></i>
             <i v-else class="ml-4 fas fa-magnifying-glass"></i>
           </td>
           <td class="assessment-link" @click="setPreselect(assessment)">
@@ -41,32 +39,33 @@
           <td class="assessment-link" @click="setPreselect(assessment)">
             {{ assessment.name }}
           </td>
-
           <td>{{ assessment.result_count }}</td>
           <td>{{ formatLastDate(assessment.last_test) }}</td>
           <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
-          <td v-if="isAllowed">
+          <td v-if="isAllowed" class="text-nowrap text-right">
             <b-btn
-              v-if="assessment.student_test"
-              class="btn-sm"
+              v-if="assessment.student_test && !assessment.archive"
+              class="btn-sm button-10"
               :variant="assessment.active ? 'outline-danger' : 'outline-success'"
-              @click="toggleAssessment(assessment)"
-            >
+              @click="toggleAssessment(assessment)">
               <i
                 v-if="!checkIsUpdating(assessment.test_id)"
-                :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"
-              ></i>
+                :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"></i>
               <i v-else class="fas fa-spinner fa-spin"></i>
               {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
             </b-btn>
-            <b-btn v-else class="btn-sm" variant="outline-secondary" disabled
-              >(Lehrkräfte-Übung)</b-btn
-            >
+            <b-btn
+              v-else-if="!assessment.archive"
+              class="btn-sm button-10"
+              variant="outline-secondary"
+              disabled>
+              (Lehrkräfte-Übung)
+            </b-btn>
             <b-button
+              v-if="showDeleteAssessmentButton"
               class="btn-sm ml-1"
               :variant="assessment?.result_count ? 'danger' : 'outline-danger'"
-              @click="deleteAssessment(assessment)"
-            >
+              @click="deleteAssessment(assessment)">
               <i class="fas fa-trash"></i>
             </b-button>
           </td>
@@ -77,14 +76,14 @@
   </div>
 </template>
 <script>
-  import { ajax } from '../../utils/ajax'
+  import { ajax } from 'src/utils/ajax'
   import { format } from 'date-fns'
-  import { isAdmin } from '../../utils/user'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useTestsStore } from '../../store/testsStore'
-  import { useGlobalStore } from '../../store/store'
-  import apiRoutes from '../routes/api-routes'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { isAdmin } from 'src/utils/user'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { useTestsStore } from 'src/store/testsStore'
+  import apiRoutes from 'src/vue/routes/api-routes'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import intersection from 'lodash/intersection'
   import isEmpty from 'lodash/isEmpty'
 
@@ -132,8 +131,11 @@
       }
     },
     computed: {
+      showDeleteAssessmentButton() {
+        return isAdmin()
+      },
       isAllowed() {
-        return !this.group.read_only || isAdmin(this.globalStore.login.capabilities)
+        return !this.group.read_only
       },
       defaultTestType() {
         return this.globalStore.staticData.testMetaData.test_types[0]
@@ -284,5 +286,11 @@
   .assessment-filter {
     display: flex;
     justify-content: space-between;
+  }
+  .button-10 {
+    width: 10em;
+  }
+  .group-assessments td {
+    vertical-align: middle !important;
   }
 </style>

@@ -45,7 +45,9 @@ class ApplicationController < ActionController::Base
       session[:user] = u.id
       u.last_login = Time.now
       u.save
-      head :ok
+
+      #head :ok
+      redirect_to :diagnostik
     else
       if ENV['MAINTENANCE'] == 'true'
         @retry = true

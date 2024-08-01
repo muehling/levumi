@@ -2,13 +2,12 @@ import { defineConfig } from 'vite'
 import RubyPlugin from 'vite-plugin-ruby'
 import { createVuePlugin } from 'vite-plugin-vue2'
 import FullReload from 'vite-plugin-full-reload'
+import { resolve } from 'path'
 
-import commonjsExternals from "vite-plugin-commonjs-externals"
+import commonjsExternals from 'vite-plugin-commonjs-externals'
 import { builtinModules } from 'module'
 
-
 export default defineConfig({
-
   optimizeDeps: {
     exclude: builtinModules,
   },
@@ -25,12 +24,13 @@ export default defineConfig({
     port: 3036,
     hmr: {
       host: '0.0.0.0',
-    }
+    },
   },
   resolve: {
     alias: {
       '~bootstrap': 'bootstrap',
-      'vue': 'vue/dist/vue.esm.js',
-    }
-  }
+      vue: 'vue/dist/vue.esm.js',
+      src: resolve(__dirname, 'app/frontend'),
+    },
+  },
 })

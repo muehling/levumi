@@ -8,8 +8,7 @@
         v-model="searchTerm"
         class="input-field my-1"
         placeholder="Nach Email-Adresse suchen..."
-        debounce="500"
-      />
+        debounce="500" />
       <b-btn class="btn-sm ml-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
         <i class="fas fa-trash"></i>
       </b-btn>
@@ -17,9 +16,9 @@
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label
         for="start-date-registration"
-        class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4"
-        >Registriert zwischen</label
-      >
+        class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+        Registriert zwischen
+      </label>
       <b-form-datepicker
         id="start-date-registration"
         v-model="startDateRegistration"
@@ -27,8 +26,11 @@
         placeholder="Startdatum"
         locale="de-DE"
         size="sm"
-        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-      ></b-form-datepicker>
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }"></b-form-datepicker>
       <b-form-datepicker
         id="end-date-registration"
         v-model="endDateRegistration"
@@ -36,20 +38,22 @@
         placeholder="Enddatum"
         locale="de-DE"
         size="sm"
-        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-      ></b-form-datepicker>
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }"></b-form-datepicker>
       <b-btn
         class="btn-sm ml-2 my-1"
         variant="outline-secondary"
-        @click="startDateRegistration = endDateRegistration = undefined"
-      >
+        @click="startDateRegistration = endDateRegistration = undefined">
         <i class="fas fa-trash"></i>
       </b-btn>
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
-      <label for="start-date-login" class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4"
-        >Zuletzt angemeldet zwischen</label
-      >
+      <label for="start-date-login" class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+        Zuletzt angemeldet zwischen
+      </label>
       <b-form-datepicker
         id="start-date-login"
         v-model="startDateLogin"
@@ -57,8 +61,11 @@
         placeholder="Startdatum"
         locale="de-DE"
         size="sm"
-        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-      ></b-form-datepicker>
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }"></b-form-datepicker>
       <b-form-datepicker
         id="end-date-login"
         v-model="endDateLogin"
@@ -66,13 +73,15 @@
         placeholder="Enddatum"
         locale="de-DE"
         size="sm"
-        :date-format-options="{ year: 'numeric', month: 'numeric', day: 'numeric' }"
-      ></b-form-datepicker>
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }"></b-form-datepicker>
       <b-btn
         class="btn-sm ml-2 my-1"
         variant="outline-secondary"
-        @click="startDateLogin = endDateLogin = undefined"
-      >
+        @click="startDateLogin = endDateLogin = undefined">
         <i class="fas fa-trash"></i>
       </b-btn>
     </div>
@@ -80,9 +89,9 @@
     <div class="input-container d-inline"></div>
     <b-table small striped hover class="text-small" :items="users" :fields="fields">
       <template #cell(accountType)="d">
-        <span>{{
-          accountTypes.find(accountType => d.item.account_type === accountType.id).label
-        }}</span>
+        <span>
+          {{ accountTypes.find(accountType => d.item.account_type === accountType.id).label }}
+        </span>
       </template>
       <template #cell(capabilities)="d">
         <span class="text-capitalize">{{ d.item.capabilities }}</span>
@@ -91,33 +100,35 @@
         <span>{{ new Date(d.item.created_at).toLocaleString('de-DE') }}</span>
       </template>
       <template #cell(last_login)="d">
-        <span>{{
-          d.item.last_login ? new Date(d.item.last_login).toLocaleString('de-DE') : '-'
-        }}</span>
+        <span>
+          {{ d.item.last_login ? new Date(d.item.last_login).toLocaleString('de-DE') : '-' }}
+        </span>
       </template>
       <template #cell(actions)="data">
         <div class="text-nowrap">
           <b-btn
             variant="outline-success"
             class="edit-user btn btn-sm mr-1"
-            @click="editUser(data.item.id)"
-            ><i class="fas fa-edit"></i><span class="d-none d-lg-inline"> Bearbeiten</span></b-btn
-          >
+            @click="editUser(data.item.id)">
+            <i class="fas fa-edit"></i>
+            <span class="d-none d-lg-inline">Bearbeiten</span>
+          </b-btn>
           <b-btn
             v-if="canDeleteUser(data.item)"
             variant="outline-danger"
             class="delete-user btn btn-sm mr-1"
-            @click="requestDeleteUser(data.item.id)"
-            ><i class="fas fa-trash"></i><span class="d-none d-lg-inline"> Löschen</span></b-btn
-          >
+            @click="requestDeleteUser(data.item.id)">
+            <i class="fas fa-trash"></i>
+            <span class="d-none d-lg-inline">Löschen</span>
+          </b-btn>
           <b-btn
             v-if="isLoginAsAllowed(data.item)"
             variant="outline-secondary"
             class="delete-user btn btn-sm mr-1"
-            @click="loginAs(data.item.id)"
-            ><i class="fas fa-user-md"></i
-            ><span class="d-none d-lg-inline"> Einloggen als</span></b-btn
-          >
+            @click="loginAs(data.item.id)">
+            <i class="fas fa-user-md"></i>
+            <span class="d-none d-lg-inline">Einloggen als</span>
+          </b-btn>
         </div>
       </template>
     </b-table>
@@ -129,8 +140,7 @@
         first-number
         last-number
         active-class="bg-primary"
-        aria-controls="usersTable"
-      >
+        aria-controls="usersTable">
         <template #page="{ page, active }">
           <b v-if="active" class="bg-primary">{{ page }}</b>
           <span v-else>{{ page }}</span>
@@ -138,11 +148,11 @@
       </b-pagination>
       <div class="ml-3 p-1">
         <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
-          <b-dropdown-item @click="perPage = 10"> 10 Einträge </b-dropdown-item>
-          <b-dropdown-item @click="perPage = 20"> 20 Einträge </b-dropdown-item>
-          <b-dropdown-item @click="perPage = 40"> 40 Einträge </b-dropdown-item>
-          <b-dropdown-item @click="perPage = 100"> 100 Einträge </b-dropdown-item>
-          <b-dropdown-item @click="perPage = 200"> 200 Einträge </b-dropdown-item>
+          <b-dropdown-item @click="perPage = 10">10 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 20">20 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 40">40 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 100">100 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 200">200 Einträge</b-dropdown-item>
         </b-dropdown>
       </div>
     </div>
@@ -152,11 +162,11 @@
 </template>
 
 <script>
-  import { ajax } from '../../../utils/ajax'
-  import { hasCapability, isAdmin } from '../../../utils/user'
-  import { isRegistered } from '../../../utils/user'
-  import { useGlobalStore } from '../../../store/store'
-  import ConfirmDialog from '../../shared/confirm-dialog.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { hasCapability } from 'src/utils/user'
+  import { isRegistrationComplete } from 'src/utils/user'
+  import { useGlobalStore } from 'src/store/store'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import differenceInDays from 'date-fns/differenceInDays'
   import EditUserDialog from './edit-user-dialog.vue'
   import debounce from 'lodash/debounce'
@@ -267,7 +277,7 @@
         window.location.replace(`/login?user=${id}`)
       },
       checkRegistration(user) {
-        return isRegistered(user)
+        return isRegistrationComplete(user)
       },
       getUserBackgroundColor(user) {
         if (!user.last_login && differenceInDays(new Date(), new Date(user.created_at)) > 30) {
@@ -279,13 +289,14 @@
         return (
           this.globalStore.login.id !== user.id &&
           user.tc_accepted &&
-          isRegistered(user) &&
-          !isAdmin(user.capabilities)
+          isRegistrationComplete(user) &&
+          !user.capabilities?.includes('admin')
         )
       },
       canDeleteUser(user) {
         return (
-          hasCapability('user', this.globalStore.login.capabilities) && !isAdmin(user.capabilities)
+          hasCapability('user', this.globalStore.login.capabilities) &&
+          !user.capabilities?.includes('admin')
         )
       },
     },

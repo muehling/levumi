@@ -47,6 +47,7 @@
     "vite-plugin-vue2": "^2.0.2"
   },
   "resolutions": {
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.31",
+    "braces": "^3.0.3"
   }
 }

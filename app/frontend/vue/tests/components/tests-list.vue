@@ -5,66 +5,68 @@
       <div class="bounce2"></div>
       <div class="bounce3"></div>
     </div>
-    <b-table
-      v-else
-      class="tests-list text-small"
-      small
-      striped
-      hover
-      :fields="fields"
-      :items="tests">
-      <template #cell(updated_at)="data">
-        <span>{{ formatDate(data.item.updated_at) }}</span>
-      </template>
-      <template #cell(student_test)="data">
-        <div class="text-center">{{ data.item.student_test ? 'x' : '-' }}</div>
-      </template>
-      <template #cell(test_type_id)="data">
-        <div class="">{{ getTestTypeLabel(data.item.test_type_id) }}</div>
-      </template>
-      <template #cell(updated_by)="data">
-        <span>{{ data.item.updated_by || '--' }}</span>
-      </template>
-      <template #cell(actions)="data">
-        <b-btn
-          v-if="!showExport"
-          class="btn-sm mr-1"
-          variant="outline-primary"
-          @click="showTestDetails(data.item.id)">
-          <i class="fas fa-glasses"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Details</span>
-        </b-btn>
-        <b-btn
-          v-if="!showExport && isEditAndDeleteAllowed"
-          class="btn-sm mr-1"
-          variant="outline-success"
-          :disabled="data.item.archive === 'Ja'"
-          @click="editTest(data.item.id)">
-          <i class="fas fa-edit"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
-        </b-btn>
-        <b-btn
-          v-if="!showExport && isEditAndDeleteAllowed"
-          class="btn-sm mr-1"
-          variant="outline-danger"
-          @click="deleteTest(data.item.id)">
-          <i class="fas fa-trash"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
-        </b-btn>
-        <b-link
-          v-if="showExport"
-          class="btn btn-sm btn-outline-primary"
-          variant="outline-secondary"
-          :disabled="!data.item.has_results"
-          :href="`/tests/${data.item.id}`">
-          <i class="fas fa-save"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Export</span>
-        </b-link>
-      </template>
-    </b-table>
-    <test-details-dialog ref="detailsDialog" />
-    <edit-test-dialog ref="editTestDialog" @update:test_success="refetch()" />
-    <confirm-dialog ref="confirmDialog" />
+    <div v-else>
+      <b-checkbox v-model="showArchive">Archivierte Tests anzeigen</b-checkbox>
+      <b-table
+        class="tests-list text-small"
+        small
+        striped
+        hover
+        :fields="fields"
+        :items="filteredTests">
+        <template #cell(updated_at)="data">
+          <span>{{ formatDate(data.item.updated_at) }}</span>
+        </template>
+        <template #cell(student_test)="data">
+          <div class="text-center">{{ data.item.student_test ? 'x' : '-' }}</div>
+        </template>
+        <template #cell(test_type_id)="data">
+          <div class="">{{ getTestTypeLabel(data.item.test_type_id) }}</div>
+        </template>
+        <template #cell(updated_by)="data">
+          <span>{{ data.item.updated_by || '--' }}</span>
+        </template>
+        <template #cell(actions)="data">
+          <b-btn
+            v-if="!showExport"
+            class="btn-sm mr-1"
+            variant="outline-primary"
+            @click="showTestDetails(data.item.id)">
+            <i class="fas fa-glasses"></i>
+            <span class="text-small d-none d-xl-inline pl-2">Details</span>
+          </b-btn>
+          <b-btn
+            v-if="!showExport && isEditAndDeleteAllowed"
+            class="btn-sm mr-1"
+            variant="outline-success"
+            :disabled="data.item.archive === 'Ja'"
+            @click="editTest(data.item.id)">
+            <i class="fas fa-edit"></i>
+            <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
+          </b-btn>
+          <b-btn
+            v-if="!showExport && isEditAndDeleteAllowed"
+            class="btn-sm mr-1"
+            variant="outline-danger"
+            @click="deleteTest(data.item.id)">
+            <i class="fas fa-trash"></i>
+            <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
+          </b-btn>
+          <b-link
+            v-if="showExport"
+            class="btn btn-sm btn-outline-primary"
+            variant="outline-secondary"
+            :disabled="!data.item.has_results"
+            :href="`/tests/${data.item.id}`">
+            <i class="fas fa-save"></i>
+            <span class="text-small d-none d-xl-inline pl-2">Export</span>
+          </b-link>
+        </template>
+      </b-table>
+      <test-details-dialog ref="detailsDialog" />
+      <edit-test-dialog ref="editTestDialog" @update:test_success="refetch()" />
+      <confirm-dialog ref="confirmDialog" />
+    </div>
   </div>
 </template>
 <script>
@@ -93,9 +95,17 @@
       return {
         tests: [],
         isLoading: false,
+        showArchive: false,
       }
     },
     computed: {
+      filteredTests() {
+        if (!this.showArchive) {
+          return this.tests.filter(t => !t.archive)
+        } else {
+          return this.tests
+        }
+      },
       fields() {
         return [
           { key: 'student_test', label: 'Schülertest' },

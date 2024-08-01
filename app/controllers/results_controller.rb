@@ -1,11 +1,13 @@
 class ResultsController < ApplicationController
   before_action :set_student, except: %i[start_demo]
+  before_action :set_group, only: %i[new]
 
   before_action :check_login, only: %i[create new]
   skip_before_action :set_login, only: %i[create new]
 
   #GET /students/:student_id/results/new
   def new
+    headers['Cache-Control'] = 'no-store, must-revalidate'
     if params.has_key?(:test_id)
       #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
       @test = Test.find(params[:test_id])
@@ -47,8 +49,13 @@ class ResultsController < ApplicationController
       @result.report = JSON.parse(params[:report])
       @result.data = JSON.parse(params[:data])
       @result.test_date = DateTime.now
-      @result.save
-      head :ok
+
+      if @result.save
+        head :ok
+        return
+      else
+        render json: @result.errors, status: :unprocessable_entity
+      end
     end
   end
 
@@ -78,6 +85,10 @@ class ResultsController < ApplicationController
   #Kind id aus Parametern holen und laden
   def set_student
     @student = Student.find(params[:student_id])
+  end
+
+  def set_group
+    @group = @student.group
   end
 
   def check_login

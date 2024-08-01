@@ -1,13 +1,16 @@
 class GroupsController < ApplicationController
   before_action :set_group, only: %i[update destroy get_test_data]
 
-  #GET /klassenbuch
+  #GET /groups
   def index
+    shares_object = {}
+    @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
     @data = {
-      'groups': [Group.new] + @login.get_classbook_info,
+      'groups': @login.get_classbook_info,
       'single': @login.account_type == 2,
-      'login': @login
+      'share_keys': shares_object
     }
+    render json: @data
   end
 
   #POST /groups
@@ -22,7 +25,11 @@ class GroupsController < ApplicationController
         read_only: false,
         key: params.require(:group)[:key]
       )
-      render json: g.as_hash(@login)
+
+      #render json: g.as_hash(@login)
+      shares_object = {}
+      @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
+      render json: { groups: @login.get_classbook_info, share_keys: shares_object }
     else
       head 304
     end
@@ -30,9 +37,20 @@ class GroupsController < ApplicationController
 
   #PUT /groups/:id
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
-    unless @group.read_only(@login) ||
-             !@group.update(params.require(:group).permit(:label, :archive))
-      render json: @group.as_hash(@login)
+    if @group.read_only(@login)
+      render json: { message: 'groups_controller::update: no edit permission', status: :forbidden }
+    end
+
+    # group settings can be changed from various places - with this, you only need to pass
+    # the changed settings from the frontend.
+    if !@group.settings.nil? && !params[:group][:settings].nil?
+      params[:group][:settings] = @group.settings.merge group_params[:settings]
+    end
+
+    if @group.update(group_params)
+      shares_object = {}
+      @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
+      render json: { groups: @login.get_classbook_info, share_keys: shares_object }
     else
       head 304
     end
@@ -40,6 +58,7 @@ class GroupsController < ApplicationController
 
   #DEL /groups/:id
   def destroy
+    head :forbidden if !@group.owned_by_login(@login)
     if !@group.demo
       # delete students and groupshares here, as the shadow data needs info from the group and groupshare
       # which can't be accessed if the deletion is cascaded
@@ -72,5 +91,11 @@ class GroupsController < ApplicationController
   def set_group
     @group = @login.groups.find(params[:id]) #Nur aus den Gruppen des eingeloggten Users wählen.
     redirect_to '/' if @group.nil?
+  end
+
+  def group_params
+    params
+      .require(:group)
+      .permit(:label, :archive, settings: %i[font_family font_size calculator_layout])
   end
 end

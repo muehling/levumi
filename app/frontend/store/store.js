@@ -31,7 +31,7 @@ export const useGlobalStore = defineStore('global', {
       this.shareKeys = { ...this.shareKeys, [key]: value }
     },
     setStudentsInGroup({ groupId, students }) {
-      this.studentsInGroups[groupId] = students
+      Vue.set(this.studentsInGroups, groupId, [...students])
     },
     setErrorMessage(msg) {
       this.errorMessage = msg
@@ -69,7 +69,18 @@ export const useGlobalStore = defineStore('global', {
       const data = res.data
       this.staticData.testMetaData = data
     },
+    async fetchGroups() {
+      const res = await ajax(apiRoutes.groups.groups)
 
+      this.groups = res.data.groups
+      this.shareKeys = res.data.share_keys
+      const studentsInGroups = res.data.groups.reduce((acc, group) => {
+        acc[group.id] = decryptStudentNames(group)
+
+        return acc
+      }, {})
+      this.studentsInGroups = studentsInGroups
+    },
     async getItemsForTest(testId) {
       const test = this.staticData.testMetaData.tests.find(test => test.id === testId)
       if (!test) {
@@ -89,8 +100,6 @@ export const useGlobalStore = defineStore('global', {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
       const coreData = res.data
-      this.shareKeys = coreData.share_keys
-      this.groups = coreData.groups
       this.groupInfo = coreData.groupInfo
       this.masquerade = coreData.masquerade
       this.login = coreData.login
@@ -102,16 +111,7 @@ export const useGlobalStore = defineStore('global', {
         annotationCategories: coreData.annotationCategories,
         testTypes: coreData.testTypes,
         testMetaData: coreData.testMetaData,
-      }
-
-      // decrypt student names
-      if (coreData.groups) {
-        const studentsInGroups = coreData.groups.reduce((acc, group) => {
-          acc[group.id] = decryptStudentNames(group)
-
-          return acc
-        }, {})
-        this.studentsInGroups = studentsInGroups
+        news: coreData.news,
       }
       this.isLoading = false
     },

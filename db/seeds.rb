@@ -235,9 +235,11 @@ if Rails.env.development?
     area.save
   end
 
+  TestType.create(name: 'LVD')
+
   #Spieltest anlegen (später per Upload)
-  Test.import('db/example_tests/user_based_test/test.zip', false, false)
-  Test.import('db/example_tests/student_based_test/test.zip', false, false)
+  Test.import('db/example_tests/user_based_test/test.zip', false, false, User.first)
+  Test.import('db/example_tests/student_based_test/test.zip', false, false, User.first)
 
   #Spielergebnisse anlegen
   a1 = Assessment.create(group_id: 1, test_id: Test.find_by_shorthand('Ex_U_1').id)
@@ -295,8 +297,6 @@ if Rails.env.development?
     i = i + 1
   end
 
-  TestType.create(name: 'LVD')
-
   AnnotationCategory.create(name: 'Test')
 
   Annotation.create(
@@ -320,7 +320,7 @@ if Rails.env.development?
   Material.import('db/example_material/cats_and_birds/training.zip', false)
 
   #Test durch neue Version ersetzen
-  Test.import('db/example_tests/student_based_test/test.zip', true, true)
+  Test.import('db/example_tests/student_based_test/test.zip', true, true, User.first)
 elsif Rails.env.production?
   #Admin Account erzeugen
   STDOUT.puts 'Enter e-mail for admin:'
