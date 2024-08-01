@@ -22,6 +22,7 @@ services:
       VITE_RUBY_HOST: vite
       MAIL_HOST: mailhog
       MAIL_PORT: 1025
+      #MAINTENANCE: "true" # uncomment to test maintenance mode
   vite:
     build: .
     command: bash -c "vite dev"
