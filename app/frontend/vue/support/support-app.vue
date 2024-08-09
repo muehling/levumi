@@ -104,9 +104,9 @@
       },
       mailto() {
         const cc = this.supportUsers.filter(email => email !== this.store.login.email).join(',')
-        return `mailto:${this.selectedMessage?.sender}?subject=${
-          'Re: Ihre Anfrage bei Levumi - ' + this.selectedMessage?.subject
-        }&cc=${cc}&body=${encodeURIComponent(
+        return `mailto:${this.selectedMessage?.sender}?subject=${`Re: Ihre Anfrage bei Levumi ${
+          this.selectedMessage?.subject ? ' - ' + this.selectedMessage.subject : ''
+        }`}&cc=${cc}&body=${encodeURIComponent(
           '\n\n-----Ursprüngliche Nachricht-----\n\n' + this.selectedMessage?.message
         )}`
       },
