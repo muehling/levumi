@@ -51,17 +51,8 @@ class SupportMessagesController < ApplicationController
   private
 
   def support_message_attributes
-    params.permit(
-      :support_message,
-      :id,
-      :date,
-      :subject,
-      :message,
-      :comment,
-      :sender,
-      :status,
-      :updated_by,
-      :user_id
-    )
+    params
+      .require(:support_message)
+      .permit(:id, :date, :subject, :message, :comment, :sender, :status, :updated_by, :user_id)
   end
 end
