@@ -130,9 +130,11 @@
       },
       async updateMessage() {
         const data = {
-          status: this.selectedStatus,
-          updated_by: this.store.login.email,
-          comment: this.comment,
+          support_message: {
+            status: this.selectedStatus,
+            updated_by: this.store.login.email,
+            comment: this.comment,
+          },
         }
         const res = await ajax(apiRoutes.supportMessages.update(this.selectedMessage.id, data))
         if (res.status === 200) {
