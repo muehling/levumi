@@ -56,10 +56,12 @@
         e.preventDefault()
         e.stopPropagation()
         const data = {
-          sender: this.globalStore.login.email,
-          message: this.contactMessage,
-          subject: this.selectedTopic,
-          status: 1,
+          support_message: {
+            sender: this.globalStore.login.email,
+            message: this.contactMessage,
+            subject: this.selectedTopic,
+            status: 1,
+          },
         }
 
         await ajax(apiRoutes.supportMessages.create(data))
