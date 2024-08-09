@@ -168,6 +168,12 @@
                 Testverwaltung
               </router-link>
               <router-link
+                v-if="checkCapability('test_editor')"
+                to="/test-editor"
+                class="dropdown-item">
+                Test-Editor
+              </router-link>
+              <router-link
                 v-if="checkCapability('material')"
                 to="/materialverwaltung"
                 class="dropdown-item">

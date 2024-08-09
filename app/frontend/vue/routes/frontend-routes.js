@@ -11,6 +11,7 @@ import AdministrationApp from '../administration/administration-app.vue'
 
 import VueRouter from 'vue-router'
 import SupportApp from '../support/support-app.vue'
+import TestEditorApp from '../test-editor/test-editor-app.vue'
 
 const routes = [
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
@@ -81,6 +82,7 @@ const routes = [
   { path: '/administration', component: AdministrationApp, name: 'Administration' }, // Administration
   { path: '/groups/:groupId/assessments/:testId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /diagnostik if the data can be kept
   { path: '/support', component: SupportApp },
+  { path: '/test-editor', component: TestEditorApp },
 ]
 
 export default new VueRouter({ routes, linkActiveClass: 'active', mode: 'history' })

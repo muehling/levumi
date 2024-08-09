@@ -1,0 +1,91 @@
+.body{
+    font-family: "Fibel Nord";
+}
+#questionContainer{
+display: none;
+margin-top: 10%;
+margin-bottom: 4%;
+font-size: 3rem;
+}
+
+.sentence{
+font-size: 2rem;
+font-weight: bold;
+}
+
+#welcomeEndPageContainer{
+margin-top: 6%;
+display: none;
+}
+
+#buttonContainer{
+margin-left: 3%;
+margin-right: 3%;
+}
+
+.btn{
+    font-size: 1.5rem;
+}
+
+#continueContainer{
+display: none;  
+margin-top: 3%;
+}
+
+#continueButton{
+width: 50%;
+margin: auto;
+height: 4rem;
+font-size: 2rem;
+}
+
+#instructions{
+margin-top: 5%;
+margin-bottom: 5%;
+}
+
+.element{
+margin: 0% 10% 0% 10%
+}
+
+.answerButton{
+font-weight: bold;
+font-size: 2.5em;
+margin-bottom: 4%;
+}
+
+.answerButton:hover{
+background-color: rgb(228, 228, 228);
+}
+
+.answerButton:focus{
+background-color: rgb(217, 216, 216);
+}
+
+.btn-default{
+border: 1px solid lightgrey;
+} 
+
+.btn-block{
+display: block;
+width: 100%;
+}
+
+.image{
+margin-bottom: 4%;
+max-width: 20%;
+max-height: 20%;
+}
+
+.levumi{
+width: 20%;
+margin: auto;
+margin-bottom: 2%;
+}
+
+@media (min-width: 992px){
+.col-lg-3 {
+    flex: 0 0 25%;
+    max-width: 25%;
+}
+}

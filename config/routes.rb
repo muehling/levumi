@@ -56,6 +56,7 @@ Rails.application.routes.draw do
   get '/testuebersicht', to: 'users#show'
   get '/testverwaltung', to: 'users#show'
   get '/uebungen', to: 'users#show'
+  get '/test-editor', to: 'users#show'
 
   # API endpoints
   delete '/delete_area/:id', to: 'areas#destroy_safe'

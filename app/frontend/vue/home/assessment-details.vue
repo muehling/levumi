@@ -401,7 +401,7 @@
 
       getItemName(item, fallback) {
         if (isObject(this.test.items[0])) {
-          return this.test.items.find(n => n.id === item).label
+          return this.test.items.find(n => n.id === item)?.label || item
         } else {
           return fallback
         }

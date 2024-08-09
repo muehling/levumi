@@ -43,6 +43,10 @@ module Levumi2
 
     config.active_model.i18n_customize_full_message = true
 
+    # allow svgs to served as svgs instead of octet-streams
+    # see https://github.com/rails/rails/issues/34665#issuecomment-446628563
+    config.active_storage.content_types_to_serve_as_binary -= ['image/svg+xml']
+
     config.action_mailer.logger =
       CustomActionMailerLogger.new(Rails.root.join("log/#{Rails.env}.log"))
     config.active_job.log_arguments = false

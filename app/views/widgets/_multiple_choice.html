@@ -1,0 +1,54 @@
+<style>
+  .multiple-choice-image-element {
+    max-width: 70vw;
+    min-width: 50vw;
+    max-height: 50vh;
+    min-height: 30vh;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .multiple-choice-answer-button {
+    font-size: 1em;
+    margin: 0.25em;
+    padding: 0.25em 0.5em;
+  }
+  .multiple-choice-question {
+    text-align: center;
+    font-size: 1em;
+  }
+</style>
+<script type="module">
+  window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
+    const el = $(
+      `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
+    ).css(styles)
+    let image
+    if (item.image) {
+      image = `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${
+        window.media_paths[item.image]
+      });'></div`
+    }
+    if (item.imageTextOrder === '0') {
+      el.append(image)
+      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+    } else {
+      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+      el.append(image)
+    }
+    const answers = [...item.wrongAnswers, item.correctAnswer]
+    window.shuffleArray(answers)
+
+    const buttonContainer = $(`<div id='#button-container'>`)
+    answers.forEach(function (answer, index) {
+      const button = $(
+        `<button id='button${index}' class='multiple-choice-answer-button btn btn-primary'>${answer}</button>`
+      ).on('click', () => {
+        resultHandler(answer)
+      })
+      buttonContainer.append(button)
+    })
+    el.append(buttonContainer)
+    return el
+  }
+</script>

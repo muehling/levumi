@@ -5,7 +5,8 @@ import './add_jquery'
 import * as bootstrap from 'bootstrap'
 import * as sjcl from 'sjcl'
 
-import BootstrapVue from 'bootstrap-vue'
+//import BootstrapVue, { BIcon } from 'bootstrap-vue'
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue'
 import ClassBookApp from '../vue/classbook/classbook-app.vue'
 import HomeApp from '../vue/home/home-app.vue'
 import MaterialsApp from '../vue/materials/materials-app.vue'
@@ -49,6 +50,7 @@ const init = async () => {
 
   Vue.use(VueRouter)
   Vue.use(PiniaVuePlugin)
+  Vue.use(BootstrapVueIcons)
 
   new Vue({
     router,

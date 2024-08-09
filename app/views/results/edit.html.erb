@@ -22,6 +22,12 @@
 <% if @test.required_services&.include? "timer" %>
 <%=    render partial: 'widgets/timer' %>
 <% end %>
+<% if @test.required_services&.include? "content_page" %>
+<%=    render partial: 'widgets/content_page' %>
+<% end %>
+<% if @test.required_services&.include? "multiple_choice" %>
+<%=    render partial: 'widgets/multiple_choice' %>
+<% end %>
 
 <!-- Test-Styles einbinden -->
 <style>
@@ -76,15 +82,33 @@
         font_size = <%= @student.get_setting("font_size") %>
         display_timer =  <%= @student.get_setting("display_timer") %>
         calculator_layout =  '<%= @student.get_setting("calculator_layout") %>'
-    <% else %>
-
     <% end %>
     window.font_family = font_family
     window.font_size = font_size
     window.displayTimer = display_timer
     window.calculatorLayout = calculator_layout
 
-     function preventNavigation(navEvent) {
+    <% if !@test[:configuration].nil? %>
+        const itemText = '<%= raw @test[:items].to_json %>'
+        const configText = '<%= raw @test[:configuration].to_json %>'
+
+        let it = []
+        let conf = {}
+        try {
+            conf = JSON.parse(configText)
+            it = JSON.parse(itemText)        
+        } catch (e) {
+            console.error ("Config oder Items fehlerhaft", e)
+        }
+
+        window.config = window.config || {}
+        window.config.items = it
+        window.config.startPage = conf.start_page
+        window.config.endPage = conf.end_page
+        window.config.timeLimit = conf.time_limit
+    <% end %>
+
+    function preventNavigation(navEvent) {
         navEvent.preventDefault();
         navEvent.returnValue = '';
     }
@@ -137,7 +161,7 @@
     window.saveResults = saveResults
 
     //Testfenster schließen
-    function exit() {
+    function exit() {       
         window.removeEventListener('beforeunload', preventNavigation, true);
         <% if @assessment.nil? && @student.nil? %>
             window.close()
@@ -163,13 +187,14 @@
     window.stopTimer = stopTimer
 
     //zufälliges Umsortieren
-    function shuffleArray(array) {
+    const shuffleArray = (array)=> {
        let j = undefined
         for (let i = array.length - 1; i > 0; --i) {
             j = Math.floor(Math.random() * (i + 1)); //Hier nötig, da ansonsten [ in der nächsten Zeile als Array-Zugriff interpretiert wird...
             [array[i], array[j]] = [array[j], array[i]]
         }
     }
+    window.shuffleArray = shuffleArray
 
 
     //Test-Skripte einbinden
