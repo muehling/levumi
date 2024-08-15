@@ -24,6 +24,7 @@ Rails.application.routes.draw do
   patch '/willkommen', to: 'users#register'
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
+  post '/recovery_notification', to: 'users#recovery_notification'
 
   # Vue Router routes
   get '/administration', to: 'users#show'

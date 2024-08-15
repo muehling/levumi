@@ -51,7 +51,17 @@ const submit = async e => {
     }
   } 
   if (pw) {
-    $('#res').html(
+    const mail = await fetch('/recovery_notification', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      },
+      body: JSON.stringify({user : {email}}),
+    })
+      $('#res').html(
         `<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
         Überprüfung erfolgreich<br>
         Hier klicken, um das Passwort anzeigen
@@ -61,7 +71,6 @@ const submit = async e => {
         </div>
         `
       )
-      
   } else {
     $('#res').html(
       "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"

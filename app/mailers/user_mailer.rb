@@ -50,4 +50,10 @@ class UserMailer < ApplicationMailer
     recipients = Rails.env.production? ? %w[beckmann@leibniz-ipn.de] : 'beckmann@leibniz-ipn.de'
     mail(to: recipients, subject: "#{@updater} hat #{@shorthand} hochgeladen!")
   end
+
+  def password_reset
+    puts 'ich war hier ##############################################################'
+    @user = params[:user]
+    mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:PASSWORD_RESET])
+  end
 end

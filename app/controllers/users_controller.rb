@@ -12,9 +12,10 @@ class UsersController < ApplicationController
                   show
                   statistics
                   get_classbook_info
+                  recovery_notification
                 ]
 
-  skip_before_action :set_login, only: %i[create register recover]
+  skip_before_action :set_login, only: %i[create register recover recovery_notification]
 
   #GET /start
   #GET /users/:id
@@ -315,6 +316,12 @@ class UsersController < ApplicationController
     else
       render 'recover', layout: 'minimal'
     end
+  end
+
+  def recovery_notification
+
+    @user = User.find_by_email(user_attributes[:email])
+    UserMailer.with(sender: 'noreply@levumi.de',user: @user).password_reset.deliver_later
   end
 
   private
