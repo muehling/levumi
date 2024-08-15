@@ -13,20 +13,8 @@
 </div>
 
 
-<% if @test.required_services&.include? "truefalse" %>
-<%=    render partial: 'widgets/truefalse' %>
-<% end %>
-<% if @test.required_services&.include? "calculator" %>
-<%=    render partial: 'widgets/calculator' %>
-<% end %>
-<% if @test.required_services&.include? "timer" %>
-<%=    render partial: 'widgets/timer' %>
-<% end %>
-<% if @test.required_services&.include? "content_page" %>
-<%=    render partial: 'widgets/content_page' %>
-<% end %>
-<% if @test.required_services&.include? "multiple_choice" %>
-<%=    render partial: 'widgets/multiple_choice' %>
+<% @test.required_services&.each do |partial| %>
+  <%= render partial: "services/#{partial}" %>
 <% end %>
 
 <!-- Test-Styles einbinden -->
@@ -100,12 +88,12 @@
         } catch (e) {
             console.error ("Config oder Items fehlerhaft", e)
         }
-
         window.config = window.config || {}
         window.config.items = it
         window.config.startPage = conf.start_page
         window.config.endPage = conf.end_page
         window.config.timeLimit = conf.time_limit
+        window.config.dimensions = conf.dimensions
     <% end %>
 
     function preventNavigation(navEvent) {

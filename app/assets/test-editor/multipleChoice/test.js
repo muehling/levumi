@@ -21,8 +21,6 @@ const rawItems = window.config.items
 const items = Object.values(rawItems)
 
 const next = res => {
-  console.log('next', res, currentTask, items.length)
-
   if (isPaused) {
     return
   }
@@ -38,8 +36,6 @@ const next = res => {
     group: items[currentTask].group,
   })
   if (currentTask === items.length - 1 || timerWidget.hasElapsed()) {
-    console.log('zu ende')
-
     timerWidget.stopCounter()
     save()
     quit()
@@ -89,7 +85,7 @@ const quit = () => {
   $('#button-container').remove()
 }
 
-const save = () => {
+/*const save = () => {
   const positive = result.filter(res => res.result === 1)
   const negative = result.filter(res => res.result === 0)
 
@@ -134,47 +130,11 @@ const save = () => {
     result,
     function () {}
   )
-}
-/*const save = () => {
-  const testDuration = timerWidget.getTotalDuration()
-  const wordsPerMinute = (result.length / testDuration).toFixed(0)
-
-  const positive = result.filter(res => res.result === 1)
-  const positiveTotal = positive.length
-  const positiveItems = positive.map(res => res.item)
-  const positiveQuestions = positive.map(res => `${res.question}, <${res.answer}>}`).join(', ')
-
-  const negative = result.filter(res => res.result === 0)
-  const negativeTotal = negative.length
-  const negativeItems = negative.map(res => res.item)
-  const negativeQuestions = negative.map(res => `${res.question} <${res.answer}>`).join(', ')
-
-  const trend = window.lastResult ? (positiveTotal >= window.lastResult.views['V1'] ? 1 : -1) : 0
-  const factor = ((positiveTotal / result.length) * 100).toFixed(1)
-  console.log('result', result)
-
-  let correct =
-    '<strong>Anzahl richtig gelöster Items:</strong> ' +
-    positiveTotal +
-    '<hr style="margin-top:0; margin-bottom:0"/>' +
-    positiveQuestions
-  let wrong =
-    '<strong>Anzahl falsch gelöster Items:</strong> ' +
-    negativeTotal +
-    '<hr style="margin-top:0; margin-bottom:0"/>' +
-    negativeQuestions
-//'RI', 'COR', 'FAL', 'KPC', 'APM'
-  window.saveResults(
-    {
-      V1: positiveTotal,
-      V2: { RI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
-      V3: { SUM: positiveTotal, RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
-    },
-    { trend: trend, positive: positiveItems, negative: negativeItems },
-    result,
-    function () {}
-  )
 }*/
+const save = () => {
+  const duration = timerWidget.getTotalDuration()
+  window.useSaveResult({ result, duration, dimensions: window.config.dimensions })
+}
 
 const updateTask = item => {
   const el = window.useMultipleChoice({
@@ -194,7 +154,7 @@ if (window.config.startPage.length !== 0) {
     continueConfig: {
       text: 'Test starten',
       handler: () => {
-        startTime = Date.now()
+        timerWidget.startCounter()
         setNextItem()
       },
     },

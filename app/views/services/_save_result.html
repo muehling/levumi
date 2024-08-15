@@ -1,0 +1,63 @@
+<script type="module">
+  window.useSaveResult = ({ result, duration, dimensions }) => {
+    const wordsPerMinute = (result.length / duration).toFixed(0)
+
+    const positive = result.filter(res => res.result === 1)
+    const positiveTotal = positive.length
+    const positiveItems = positive.map(res => res.item)
+    const positiveQuestions = positive
+      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .join(', ')
+
+    const negative = result.filter(res => res.result === 0)
+    const negativeTotal = negative.length
+    const negativeItems = negative.map(res => res.item)
+    const negativeQuestions = negative
+      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .join(', ')
+
+    ///////////////////////////////
+    const correct = dimensions.reduce((acc, dimension) => {
+      const d = result
+        .filter(res => res.result === 1 && res.group === dimension.id)
+        .map(res => `(${res.question})`)
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
+        ', '
+      )}<br/></br/>`
+    }, '')
+
+    const wrong = dimensions.reduce((acc, dimension) => {
+      const d = result
+        .filter(res => res.result === 0 && res.group === dimension.id)
+        .map(res => `(${res.question})`) //(${res.answer}) mit reinpacken für besser auswertung ?
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
+        ', '
+      )}<br/></br/>`
+    }, '')
+    ///////////////////////////////
+
+    const trend = window.lastResult ? (positiveTotal >= window.lastResult.views['V1'] ? 1 : -1) : 0
+    const factor = ((positiveTotal / result.length) * 100).toFixed(1)
+
+    /*  const correct =
+      '<strong>Anzahl richtig gelöster Items:</strong> ' +
+      positiveTotal +
+      '<hr style="margin-top:0; margin-bottom:0"/>' +
+      positiveQuestions
+    const wrong =
+      '<strong>Anzahl falsch gelöster Items:</strong> ' +
+      negativeTotal +
+      '<hr style="margin-top:0; margin-bottom:0"/>' +
+      negativeQuestions*/
+    window.saveResults(
+      {
+        V1: positiveTotal,
+        V2: { RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
+        V3: { SUM: positiveTotal, RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
+      },
+      { trend: trend, positive: positiveItems, negative: negativeItems },
+      result,
+      function () {}
+    )
+  }
+</script>

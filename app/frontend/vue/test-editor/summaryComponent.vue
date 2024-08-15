@@ -81,6 +81,7 @@
           start_page: this.startPage,
           end_page: this.endPage,
           time_limit: this.properties.time_limit,
+          dimensions: this.properties.dimensions,
           views: [
             {
               key: 'V1',
@@ -106,11 +107,10 @@
               student: true,
               group: false,
               type: 'table',
-              column_keys: ['RI', 'COR', 'FAL', 'KPC', 'APM'],
+              column_keys: ['RGI', 'FGI', 'LG', 'LGM'],
               columns: [
-                'Rate insgesamt',
-                'Anzahl richtig gelöster Items',
-                'Anzahl falsch gelöster Items',
+                'Richtig gelöste Items',
+                'Falsch gelöste Items',
                 'Bearbeitungsgenauigkeit (in %)',
                 'Bearbeitungsgeschwindigkeit pro Minute',
               ],
@@ -121,11 +121,10 @@
               student: true,
               group: false,
               type: 'graph_table',
-              column_keys: ['RI', 'COR', 'FAL', 'KPC', 'APM'],
+              column_keys: ['RGI', 'FGI', 'LG', 'LGM'],
               columns: [
-                'Rate insgesamt',
-                'Anzahl richtig gelöster Items',
-                'Anzahl falsch gelöster Items',
+                'Richtig gelöste Items',
+                'Falsch gelöste Items',
                 'Bearbeitungsgenauigkeit (in %)',
                 'Bearbeitungsgeschwindigkeit pro Minute',
               ],
@@ -163,7 +162,7 @@
 
         const items = this.questions.reduce((acc, item) => {
           delete item.type
-          acc[`I${item.id}`] = item
+          acc[`I${item.id}`] = { ...item, id: `I${item.id}` }
           return acc
         }, {})
 
@@ -172,7 +171,7 @@
         const html = await response3.text()
         const json = JSON.stringify({
           ...this.properties,
-          required_services: ['timer', 'content_page', 'multiple_choice'],
+          required_services: ['timer', 'content_page', 'multiple_choice', 'save_result'],
           configuration: this.getConfiguration(),
           items: items,
         })
