@@ -1,0 +1,21 @@
+<script type="module">
+  window.useEndPage = ({ styles }) => {
+    let src = ''
+    if (window.lastResult === undefined) {
+      src = '/images/shared/Levumi-normal.jpg'
+    } else if (trend === 1) {
+      src = '/images/shared/Levumi-jubelt.gif'
+    } else {
+      src = '/images/shared/Levumi-liest.gif'
+    }
+    const el = $(
+      `<div class='end-pic-wrapper text-center' style="background-image: url('${src}')">      
+          </div>
+          <h1>Geschafft!</h1><br><br><br><h3>Um den Test abzuschließen, klicke bitte auf den Button unten.</h3><br><br>`
+    ).css(styles)
+    const button = $(`<button class='btn btn-primary'>Fertig!</button>`)
+    button.on('click', window.exit)
+    el.append(button)
+    return el
+  }
+</script>

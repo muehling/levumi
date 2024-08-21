@@ -3,23 +3,43 @@
     const wordsPerMinute = (result.length / duration).toFixed(0)
 
     const positive = result.filter(res => res.result === 1)
-    const positiveTotal = positive.length
-    const positiveItems = positive.map(res => res.item)
-    const positiveQuestions = positive
-      .map(res => `${res.question} &lt;${res.answer}&gt;`)
-      .join(', ')
-
     const negative = result.filter(res => res.result === 0)
-    const negativeTotal = negative.length
-    const negativeItems = negative.map(res => res.item)
-    const negativeQuestions = negative
-      .map(res => `${res.question} &lt;${res.answer}&gt;`)
-      .join(', ')
 
-    ///////////////////////////////
+    let res
+    if (dimensions.length > 1) {
+      res = saveWithDimensions(result, dimensions)
+    } else {
+      res = saveWithoutDimensions(positive, negative)
+    }
+
+    const trend = window.lastResult
+      ? positive.length >= window.lastResult.views['V1']
+        ? 1
+        : -1
+      : 0
+    const factor = ((positive.length / result.length) * 100).toFixed(1)
+
+    const { correct, wrong } = res
+
+    window.saveResults(
+      {
+        V1: positive.length,
+        V2: { RGI: correct, FGI: res.wrong, LG: factor, LGM: wordsPerMinute },
+        V3: { SUM: positive.length, RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
+      },
+      {
+        trend: trend,
+        positive: positive.map(res => res.item),
+        negative: negative.map(res => res.item),
+      },
+      result,
+      function () {}
+    )
+  }
+  const saveWithDimensions = (result, dimensions) => {
     const correct = dimensions.reduce((acc, dimension) => {
       const d = result
-        .filter(res => res.result === 1 && res.group === dimension.id)
+        .filter(res => res.result === 1 && res.group + '' === dimension.id + '')
         .map(res => `(${res.question})`)
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
         ', '
@@ -28,36 +48,33 @@
 
     const wrong = dimensions.reduce((acc, dimension) => {
       const d = result
-        .filter(res => res.result === 0 && res.group === dimension.id)
-        .map(res => `(${res.question})`) //(${res.answer}) mit reinpacken für besser auswertung ?
+        .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
+        .map(res => `(${res.question} &lt;${res.answer}&gt;)`)
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
         ', '
       )}<br/></br/>`
     }, '')
-    ///////////////////////////////
+    return { correct, wrong }
+  }
 
-    const trend = window.lastResult ? (positiveTotal >= window.lastResult.views['V1'] ? 1 : -1) : 0
-    const factor = ((positiveTotal / result.length) * 100).toFixed(1)
+  const saveWithoutDimensions = (positve, negative) => {
+    const positiveQuestions = positive
+      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .join(', ')
+    const negativeQuestions = negative
+      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .join(', ')
 
-    /*  const correct =
+    const correct =
       '<strong>Anzahl richtig gelöster Items:</strong> ' +
-      positiveTotal +
+      positive.length +
       '<hr style="margin-top:0; margin-bottom:0"/>' +
       positiveQuestions
     const wrong =
       '<strong>Anzahl falsch gelöster Items:</strong> ' +
-      negativeTotal +
+      negative.length +
       '<hr style="margin-top:0; margin-bottom:0"/>' +
-      negativeQuestions*/
-    window.saveResults(
-      {
-        V1: positiveTotal,
-        V2: { RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
-        V3: { SUM: positiveTotal, RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
-      },
-      { trend: trend, positive: positiveItems, negative: negativeItems },
-      result,
-      function () {}
-    )
+      negativeQuestions
+    return { correct, wrong }
   }
 </script>

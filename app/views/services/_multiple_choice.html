@@ -23,18 +23,23 @@
     const el = $(
       `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
     ).css(styles)
-    let image
+    const imageContainer = $("<div class='image-container'></div>")
     if (item.image) {
-      image = `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${
-        window.media_paths[item.image]
-      });'></div`
+      const images = item.image.split(',')
+      //TODO fix layout for multiple pictures
+      images.forEach(i => {
+        const image = $(
+          `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${window.media_paths[i]});'></div`
+        )
+        imageContainer.append(image)
+      })
     }
     if (item.imageTextOrder === '0') {
-      el.append(image)
+      el.append(imageContainer)
       el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
     } else {
       el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
-      el.append(image)
+      el.append(imageContainer)
     }
     const answers = [...item.wrongAnswers, item.correctAnswer]
     window.shuffleArray(answers)

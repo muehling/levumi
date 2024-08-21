@@ -1,13 +1,6 @@
 <template>
-  <div class="positionRelative">
+  <b-card title="Eigenschaften definieren">
     <div class="m-4">
-      <h2>Eigenschaften definieren</h2>
-      Hier können Sie weitere Eigenschaften und Beschreibungen des Tests festlegen. Eine Erklärung
-      zu den jeweiligen Eigenschaften können Sie über das
-      <b-icon icon="info-circle"></b-icon>
-      erhalten. Bitte füllen Sie alle Felder aus und beschreiben Sie den Test möglichst genau.
-      <br />
-      <hr />
       <b-button class="mt-3" @click="load">Laden</b-button>
       <b-button class="mt-3 ml-2" @click="save">Speichern</b-button>
       <b-button class="continue mt-3 ml-2" @click="saveAndContinue">
@@ -17,15 +10,15 @@
     </div>
 
     <b-form :validated="wasSubmitted" class="mx-4" @submit.prevent="saveAndContinue">
-      <b-form-group id="input-group-1" label="Name" label-for="inputName">
+      <b-form-group id="input-group-1" label="Name" label-for="inputName" label-cols="3">
         <b-form-input id="inputName" v-model="name" required min-length="5" />
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="Lernbereich" label-for="inputArea">
+      <b-form-group id="input-group-2" label="Lernbereich" label-for="inputArea" label-cols="3">
         <b-form-select id="inputArea" v-model="area" class="" required :options="areas" />
       </b-form-group>
 
-      <b-form-group id="input-group-3" label="Testtyp" label-for="inputTestType">
+      <b-form-group id="input-group-3" label="Testtyp" label-for="inputTestType" label-cols="3">
         <b-form-select
           id="inputTestType"
           v-model="test_type"
@@ -34,7 +27,11 @@
           :options="testTypes" />
       </b-form-group>
 
-      <b-form-group id="input-group-4" label="Lernkompetenz" label-for="inputCompetence">
+      <b-form-group
+        id="input-group-4"
+        label="Lernkompetenz"
+        label-for="inputCompetence"
+        label-cols="3">
         <b-form-select
           id="inputCompetence"
           v-model="competence"
@@ -44,7 +41,11 @@
           :options="competences" />
       </b-form-group>
 
-      <b-form-group id="input-group-5" label="Testfamilie" label-for="inputTestFamily">
+      <b-form-group
+        id="input-group-5"
+        label="Testfamilie"
+        label-for="inputTestFamily"
+        label-cols="3">
         <b-form-select
           id="inputTestFamily"
           v-model="family"
@@ -54,19 +55,27 @@
           :options="testFamilies" />
       </b-form-group>
 
-      <b-form-group id="input-group-6" label="Kürzel" label-for="inputShorthand">
+      <b-form-group id="input-group-6" label="Kürzel" label-for="inputShorthand" label-cols="3">
         <b-form-input id="inputShorthand" v-model="shorthand" required class="" />
       </b-form-group>
 
-      <b-form-group id="input-group-7" label="Verantwortlich" label-for="inputResponsible">
+      <b-form-group
+        id="input-group-7"
+        label="Verantwortlich"
+        label-for="inputResponsible"
+        label-cols="3">
         <b-form-input id="inputResponsible" v-model="responsible" type="email" required class="" />
       </b-form-group>
 
-      <b-form-group id="input-group-8" label="Niveaustufe" label-for="inputLevel">
+      <b-form-group id="input-group-8" label="Niveaustufe" label-for="inputLevel" label-cols="3">
         <b-form-input id="inputLevel" v-model="level" type="email" required class="" />
       </b-form-group>
 
-      <b-form-group id="input-group-9" label="Durchführung durch" label-for="inputStudentTest">
+      <b-form-group
+        id="input-group-9"
+        label="Durchführung durch"
+        label-for="inputStudentTest"
+        label-cols="3">
         <b-form-select
           id="inputStudentTest"
           v-model="student_test"
@@ -75,7 +84,7 @@
           :options="student_testOptions" />
       </b-form-group>
 
-      <b-form-group id="input-group-10" label="Version" label-for="inputVersion">
+      <b-form-group id="input-group-10" label="Version" label-for="inputVersion" label-cols="3">
         <b-form-select
           id="inputVersion"
           v-model="version"
@@ -84,7 +93,11 @@
           :options="versionDropdownOptions" />
       </b-form-group>
 
-      <b-form-group id="input-group-11" label="Zeitbegrenzung" label-for="inputTimeLimit">
+      <b-form-group
+        id="input-group-11"
+        label="Zeitbegrenzung"
+        label-for="inputTimeLimit"
+        label-cols="3">
         <b-form-select
           id="inputTimeLimit"
           v-model="time_limit"
@@ -92,8 +105,18 @@
           required
           :options="timeDropdownOptions" />
       </b-form-group>
-
-      <b-form-group id="input-group-12" label="Beschreibung" label-for="inputDescription">
+      <b-form-group label="Demo-Aufgabe anzeigen" label-for="inputDemoTask" label-cols="3">
+        <b-form-checkbox
+          id="inputDemoTask"
+          v-model="showDemoTask"
+          :value="1"
+          :unchecked-value="0" />
+      </b-form-group>
+      <b-form-group
+        id="input-group-12"
+        label="Beschreibung"
+        label-for="inputDescription"
+        label-cols="3">
         <b-form-textarea
           id="inputDescription"
           v-model="description"
@@ -103,7 +126,11 @@
           required />
       </b-form-group>
 
-      <b-form-group id="input-group-13" label="Kurzbeschreibung" label-for="inputShortDescription">
+      <b-form-group
+        id="input-group-13"
+        label="Kurzbeschreibung"
+        label-for="inputShortDescription"
+        label-cols="3">
         <b-form-textarea
           id="inputShortDescription"
           v-model="short"
@@ -113,7 +140,7 @@
           required />
       </b-form-group>
 
-      <b-form-group id="input-group-14" label="Verwendung" label-for="inputUsage">
+      <b-form-group id="input-group-14" label="Verwendung" label-for="inputUsage" label-cols="3">
         <b-form-textarea
           id="inputUsage"
           v-model="usage"
@@ -122,27 +149,13 @@
           rows="3"
           max-rows="6" />
       </b-form-group>
-      <hr />
-      <b-form-group
-        v-for="(dimension, index) in dimensions"
-        :key="dimension.id"
-        :label="`Dimension #${index + 1}`"
-        :label-for="'dimension' + dimension.id">
-        <b-form-input
-          :id="'dimension' + dimension.id"
-          :placeholder="`Dimension ${index + 1}`"
-          :value="dimension.text"
-          @input="text => changeDimension(text, dimension.id)"></b-form-input>
-      </b-form-group>
-      <b-button @click="addDimension">Weitere Dimension hinzufügen</b-button>
-      <hr />
 
       <b-button class="continue mt-4" @click="saveAndContinue">
         Speichern und weiter
         <b-icon icon="arrow-right"></b-icon>
       </b-button>
     </b-form>
-  </div>
+  </b-card>
 </template>
 
 <script>
@@ -170,8 +183,7 @@
         responsible: '',
         test_type: undefined,
         wasSubmitted: false,
-        dimensions: [{ id: 1, text: '' }],
-        currentDimensionId: 1,
+        showDemoTask: false,
 
         timeDropdownOptions: [
           { value: null, text: 'Bitte auswählen' },
@@ -254,12 +266,16 @@
           level: this.level,
           student_test: this.student_test,
           version: this.version,
-          time_limit: this.time_limit,
-          description: this.description,
-          short: this.short,
-          usage: this.usage,
+
+          description: {
+            full: this.description,
+            short: this.short,
+            time_limit: this.time_limit,
+            usage: this.usage,
+          },
           responsible: this.responsible,
-          dimensions: this.dimensions,
+
+          show_demo_task: this.showDemoTask,
         }
       },
     },
@@ -289,16 +305,16 @@
           this.level = props.level
           this.student_test = props.student_test
           this.version = props.version
-          this.time_limit = props.time_limit
-          this.description = props.description || ''
-          this.short = props.short || ''
-          this.usage = props.usage || ''
+          this.time_limit = props.description.time_limit
+          this.description = props.description.full || ''
+          this.short = props.description.short || ''
+          this.usage = props.description.usage || ''
           this.responsible = props.responsible || ''
           this.test_type = this.store.staticData.testTypes.find(
             tt => tt.name === props.test_type
           )?.id
-          this.dimensions = data.dimensions
-          this.currentDimensionId = data.dimensions.length
+
+          this.showDemoTask = data.show_demo_task
         } else {
           this.store.setErrorMessage('Keine Daten gefunden!')
         }
@@ -339,14 +355,8 @@
         }
         localStorage.setItem(
           'test-editor-data',
-          JSON.stringify({ ...data, properties: this.compiledProps, dimensions: this.dimensions })
+          JSON.stringify({ ...data, properties: this.compiledProps })
         )
-      },
-      addDimension() {
-        this.dimensions.push({ id: ++this.currentDimensionId, text: '' })
-      },
-      changeDimension(text, id) {
-        this.dimensions.find(wa => wa.id === id).text = text
       },
     },
   }

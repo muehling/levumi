@@ -12,47 +12,41 @@
       id="fileUploader"
       ref="fileUpload"
       v-model="file"
-      class="dropArea"
-      :class="{ dropAreaDropped: isValidFile }"
-      :state="isValidFile"
+      class="dropArea my-3"
+      :class="{ dropAreaDropped: isFileChecked }"
+      :state="isFileChecked"
       accept="text/csv"
-      placeholder="Bitte eine Datei auswählen oder hier ablegen"
-      drop-placeholder="Datei hier ablegen"
-      size="lg"
-      plain
-      @change="fileToData()"></b-form-file>
-    <b-form-invalid-feedback class="defaultFeedbackData" :state="isValidFile">
+      placeholder="Datei auswählen oder hier ablegen"
+      drop-placeholder="Datei hier ablegen" />
+    <b-form-invalid-feedback class="defaultFeedbackData" :state="isFileChecked">
       {{ `Die Datei daf keines der folgenden Zeichen enthalten: <, >, " oder '` }}
       <br />
       Auch sind Felder, die ausschließlich Leerzeichen enthalten nicht erlaubt.
       <br />
     </b-form-invalid-feedback>
-    <b-form-valid-feedback class="defaultFeedbackData" :state="isValidFile">
-      Sieht gut aus!
-    </b-form-valid-feedback>
-
-    <b-button :disabled="!!file" class="deleteUploadButton" @click="clearFile">
+    <b-button :disabled="!file" class="m-1" @click="clearCsvFile">
       <i class="fa-solid fa-trash"></i>
       Datei entfernen
     </b-button>
-    <b-button :disabled="!!file" @click="checkFile">
+    <b-button :disabled="!file" class="m-1" @click="checkFile">
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
+    <b-button class="m-1" @click="debug">debug</b-button>
     <hr />
 
-    <div v-if="isValidFile">
+    <div v-if="isFileChecked">
       <p>Laden Sie hier bitte die einzelnen Bilder hoch.</p>
       <b-form-file
         id="imageUploader"
+        v-model="images"
         class="dropAreaDropped"
-        :class="{ imageDropArea: isValidFile }"
+        :class="{ imageDropArea: isFileChecked }"
         accept="image/*"
         placeholder="Hier bitte die Bilder hochladen"
         drop-placeholder="Datei hier ablegen"
-        size="lg"
-        plain
-        multiple></b-form-file>
+        multiple
+        @input="uploadImages" />
       <hr />
     </div>
 
@@ -65,56 +59,53 @@
     name: 'CsvUpload',
     components: { CsvHelp },
     data() {
-      return { file: undefined, csvHelpType: 'multipleChoice', dataArray: null }
+      return {
+        file: undefined,
+        csvHelpType: 'multipleChoice',
+        data: null,
+        isFileChecked: null,
+        images: [],
+      }
     },
-    computed: {
-      isValidFile() {
-        if (!this.dataArray) {
-          return null
-        } else {
-          let result = this.checkFile()
-          return result
-        }
-      },
-    },
+    computed: {},
 
     methods: {
-      clearFile() {
+      debug() {
+        console.log('debug', this.data, this.questions, this.images)
+      },
+      uploadImages() {
+        this.$emit('submit-csv-images', this.images)
+      },
+      clearCsvFile() {
         this.$refs['fileUpload'].reset()
-        this.dataArray = null
+        this.data = null
       },
 
-      fileToData: function () {
-        let vm = this //iek
-        const [file] = document.getElementById('fileUploader').files
-        const reader = new FileReader()
-        reader.readAsText(file)
-        reader.onload = function () {
-          const dataAsString = reader.result
-          vm.dataArray = stringToArray(dataAsString)
-        }
-        // Seperates the string at every line feed character (\r\n) and maps the split function to each resulting line then.
-        function stringToArray(data) {
-          let delimiter = null
-          let comma = (data.match(/,/g) || []).length
-          let semi = (data.match(/;/g) || []).length
-          if (comma > semi) {
-            delimiter = ','
-          } else {
-            delimiter = ';'
+      readCsvData() {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader()
+          reader.readAsText(this.file)
+          reader.onload = () => {
+            resolve(reader.result)
+            reject(reader.error)
           }
-          let refinedData = data.replace(/(\r\n|\r|\n)/g, '\r\n')
-          let array = refinedData.split('\r\n').map(function (line) {
-            return line.split(delimiter)
-          })
-          vm.deleteEmptyFields(array)
-          if (array[array.length - 1] == '') {
-            array.pop()
-          }
-          return array
-        }
+        })
       },
-      deleteEmptyFields: function (array) {
+
+      stringToArray(data) {
+        data = data.replace(/(\r\n|\r|\n)/g, '\r\n')
+        let array = data.split('\r\n').map(function (line) {
+          return line.split(';')
+        })
+
+        this.deleteEmptyFields(array) // das dürfte quatsch sein
+
+        if (array[array.length - 1].length === 1) {
+          array.pop()
+        }
+        return array
+      },
+      deleteEmptyFields(array) {
         array.forEach(line => {
           for (let i = line.length; i > 0; i--) {
             if (line[i] == '' && i != 1) {
@@ -123,25 +114,47 @@
           }
         })
       },
-      checkFile() {
-        let copyOfDataArray = [...this.dataArray]
-        const hasInvalidLines = copyOfDataArray.reduce((linesOkaySoFar, line) => {
+      async checkFile() {
+        const dataAsString = await this.readCsvData()
+        const data = this.stringToArray(dataAsString)
+
+        const checkResult = data.reduce((linesOkaySoFar, line) => {
           const lineHasInvalidFields = line.reduce((fieldsOkaySoFar, field, index) => {
-            if (index != 0 && index != 1) {
+            if (index !== 0 && index !== 1) {
               return fieldsOkaySoFar && this.stringIsValid(field)
-            } else if (index == 1) {
+            } else if (index === 1) {
               return fieldsOkaySoFar && this.isValidFileName(field)
             } else {
-              return fieldsOkaySoFar && (!isNaN(field) || null || '') //If Group is mandatory: remove null and ""
+              return fieldsOkaySoFar
             }
           }, true)
-          if (this.isMultipleChoice || this.isGapText) {
-            return linesOkaySoFar && lineHasInvalidFields && 3 < line.length && line.length < 10
-          } else {
-            return linesOkaySoFar && lineHasInvalidFields && line.length == 4
-          }
+          return linesOkaySoFar && lineHasInvalidFields && 3 < line.length && line.length < 10
         }, true)
-        return hasInvalidLines
+
+        if (checkResult) {
+          this.data = data
+          this.$emit('submit-csv-data', this.parseData(data))
+        }
+
+        this.isFileChecked = checkResult
+      },
+      parseData(data) {
+        const rawDimensions = data.reduce((acc, d) => {
+          acc[d[0]] = true
+          return acc
+        }, {})
+        const dimensions = Object.keys(rawDimensions).map((d, i) => ({ id: i + 1, text: d }))
+        const parsed = data.map((d, i) => {
+          return {
+            correctAnswer: d[3],
+            group: dimensions.find(dim => dim.text === d[0]).id,
+            id: i + 1,
+            image: d[1],
+            question: d[2],
+            wrongAnswers: d.slice(4),
+          }
+        })
+        return { questions: parsed, dimensions }
       },
       isValidFileName(name) {
         return (
@@ -150,11 +163,16 @@
           !name.includes('"') &&
           !name.includes('<') &&
           !name.includes('>') &&
+          !name.includes('(') &&
+          !name.includes(')') &&
           !name.includes('ß') &&
           !name.includes('ü') &&
           !name.includes('ä') &&
           !name.includes('ö')
         )
+      },
+      stringIsValid: function (string) {
+        return string !== ''
       },
     },
   }

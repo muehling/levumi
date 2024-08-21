@@ -392,7 +392,8 @@
       },
       getFormattedItems(items) {
         const it = Object.values(items).map(item => {
-          const a = this.test.items[item]
+          const a = this.test.items[item] || { question: '<unknown item>' }
+
           return typeof a === 'string' ? a : a.question
         })
         return it.join(', ')

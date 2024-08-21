@@ -84,9 +84,15 @@
         let conf = {}
         try {
             conf = JSON.parse(configText)
+        } catch (e) {
+            console.error ("Config fehlerhaft", e)
+        }
+
+        
+        try {            
             it = JSON.parse(itemText)        
         } catch (e) {
-            console.error ("Config oder Items fehlerhaft", e)
+            console.error ("Items fehlerhaft", e)
         }
         window.config = window.config || {}
         window.config.items = it

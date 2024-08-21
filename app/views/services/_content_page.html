@@ -35,7 +35,9 @@
           });'></div`
         )
       } else {
-        el.append(`<${item.type} class='content-${item.type}-element'>${item.text}</${item.type}>`)
+        const textEl = $(`<${item.type} class='content-${item.type}-element'></${item.type}>`)
+        textEl.html(item.text)
+        el.append(textEl)
       }
     })
     const button = $(
