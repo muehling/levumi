@@ -259,11 +259,11 @@
                   </tr>
                   <tr>
                     <td>Zeitbeschränkung</td>
-                    <td>{{ selectedTest.time_limit }}</td>
+                    <td>{{ selectedTest.description.time_limit + timeLimitSuffix }}</td>
                   </tr>
                   <tr>
                     <td>Durchführung</td>
-                    <td>{{ selectedTest.usage }}</td>
+                    <td>{{ selectedTest.description.usage }}</td>
                   </tr>
                   <tr>
                     <td colspan="2">
@@ -271,7 +271,7 @@
                         Items
                       </b-button>
                       <b-collapse id="test-items">
-                        {{ Object.values(selectedTest.items).join(', ') }}
+                        <p v-html="formattedItems(selectedTest.items)"></p>
                       </b-collapse>
                     </td>
                   </tr>
@@ -352,6 +352,10 @@
       }
     },
     computed: {
+      timeLimitSuffix() {
+        const isNumber = /^\d+$/.test(this.selectedTest.description.time_limit)
+        return isNumber ? ' Minuten' : ''
+      },
       filteredTests: function () {
         return this.testMetaData.tests
           .filter(
@@ -477,6 +481,12 @@
     },
 
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       handleClose() {
         this.reset('area')
         this.$router.push(`/diagnostik/${this.group.id}`)

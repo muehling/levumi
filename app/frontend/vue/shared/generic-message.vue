@@ -1,8 +1,8 @@
 <template>
-  <b-modal id="error-dialog" ref="errorDialog" v-model="isOpen" hide-footer>
-    <template #modal-title> {{ globalStore.genericMessage.title }} </template>
+  <b-modal id="generic-dialog" v-model="isOpen" hide-footer>
+    <template #modal-title>{{ globalStore.genericMessage.title }}</template>
 
-    <div class="d-block text-center mb-4">
+    <div class="d-block text-center mb-4 generic-message">
       {{ globalStore.genericMessage.message }}
       <slot></slot>
     </div>
@@ -42,3 +42,8 @@
     },
   }
 </script>
+<style>
+  #generic-dialog .generic-message {
+    white-space: pre-line;
+  }
+</style>

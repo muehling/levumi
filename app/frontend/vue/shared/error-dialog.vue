@@ -1,8 +1,8 @@
 <template>
   <b-modal id="error-dialog" ref="errorDialog" v-model="isOpen" hide-footer>
-    <template #modal-title> Fehler </template>
+    <template #modal-title>Fehler</template>
 
-    <div class="d-block text-center mb-4">
+    <div class="d-block text-center mb-4 error-message">
       {{ globalStore.errorMessage }}
       <slot></slot>
     </div>
@@ -42,3 +42,8 @@
     },
   }
 </script>
+<style>
+  #error-dialog .error-message {
+    white-space: pre-line;
+  }
+</style>

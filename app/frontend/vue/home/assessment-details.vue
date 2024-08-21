@@ -117,18 +117,10 @@
                       <td>{{ formatDate(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
-                        <span
-                          v-for="(item, n) in result.data.report.positive"
-                          :key="item + '/' + n">
-                          {{ (n > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
-                        </span>
+                        <span v-html="getFormattedItems(result.data.report.positive)"></span>
                       </td>
                       <td>
-                        <span
-                          v-for="(item, m) in result.data.report.negative"
-                          :key="item + '/' + m">
-                          {{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
-                        </span>
+                        <span v-html="getFormattedItems(result.data.report.negative)"></span>
                       </td>
                       <td>
                         <i
@@ -398,13 +390,12 @@
         //Student-Objekt aus globaler Variable holen
         return getStudent(this.group.id, id)?.name
       },
-
-      getItemName(item, fallback) {
-        if (isObject(fallback) && fallback.question) {
-          return `(${fallback.question})` || item
-        } else {
-          return fallback
-        }
+      getFormattedItems(items) {
+        const it = Object.values(items).map(item => {
+          const a = this.test.items[item]
+          return typeof a === 'string' ? a : a.question
+        })
+        return it.join(', ')
       },
     },
   }

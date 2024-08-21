@@ -94,15 +94,7 @@
                                     <tr>
                                       <td>Items</td>
                                       <td>
-                                        <p>
-                                          <span v-for="(item, key, i) in test.items" :key="key">
-                                            {{
-                                              `${item}${
-                                                i < parseInt(test.items_count, 10) ? ', ' : ''
-                                              }`
-                                            }}
-                                          </span>
-                                        </p>
+                                        <p v-html="formattedItems(test.items)"></p>
                                       </td>
                                     </tr>
                                   </table>
@@ -146,6 +138,7 @@
 
 <script>
   import { useTestsStore } from '../../store/testsStore'
+
   export default {
     name: 'TestsApp',
     setup() {
@@ -172,6 +165,12 @@
       await this.testsStore.fetch()
     },
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       getAttachedImages(test) {
         return test.info_attachments.filter(attachment =>
           attachment.content_type.startsWith('image')
