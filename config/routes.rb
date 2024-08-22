@@ -25,6 +25,8 @@ Rails.application.routes.draw do
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
   post '/recovery_notification', to: 'users#recovery_notification'
+  post '/recovery_key_verification', to:'users#recovery_key_verification'
+  get '/recovery_key_verification', to:'users#recovery_key_verification'
 
   # Vue Router routes
   get '/administration', to: 'users#show'

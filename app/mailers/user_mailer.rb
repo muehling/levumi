@@ -52,7 +52,6 @@ class UserMailer < ApplicationMailer
   end
 
   def password_reset
-    puts 'ich war hier ##############################################################'
     @user = params[:user]
     mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:PASSWORD_RESET])
   end
