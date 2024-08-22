@@ -57,10 +57,8 @@
     return { correct, wrong }
   }
 
-  const saveWithoutDimensions = (positve, negative) => {
-    const positiveQuestions = positive
-      .map(res => `${res.question} &lt;${res.answer}&gt;`)
-      .join(', ')
+  const saveWithoutDimensions = (positive, negative) => {
+    const positiveQuestions = positive.map(res => `${res.question}`).join(', ')
     const negativeQuestions = negative
       .map(res => `${res.question} &lt;${res.answer}&gt;`)
       .join(', ')

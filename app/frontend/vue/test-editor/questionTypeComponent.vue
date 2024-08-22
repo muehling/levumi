@@ -24,7 +24,7 @@
           {
             id: 0,
             title: 'Multiple Choice',
-            click: 'multipleChoice',
+            click: 'multiple_choice',
           },
           {
             id: 1,

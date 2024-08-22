@@ -25,7 +25,7 @@
         </b-card-body>
       </b-collapse>
     </b-card>
-    <b-card v-if="type === 'multipleChoice'" no-body class="mb-1">
+    <b-card v-if="type === 'multiple_choice'" no-body class="mb-1">
       <b-card-header header-tag="header" class="p-1" role="tab">
         <b-button v-b-toggle.accordion-2 block variant="info">
           So muss die CSV Datei für Multiple Choice Tests aussehen

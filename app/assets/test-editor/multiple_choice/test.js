@@ -58,17 +58,7 @@ const updateTask = item => {
 }
 
 const quit = () => {
-  let el
-  if (window.config.endPage) {
-    el = window.useContentPage({
-      id: 'end-page',
-      styles,
-      content: window.config.endPage,
-      continueConfig: { text: 'Fertig!', handler: window.exit },
-    })
-  } else {
-    el.window.useEndPage({ styles })
-  }
+  const el = window.useEndPage({ config: window.config.endPage, styles })
   $('#content-container').html(el)
 }
 
@@ -80,21 +70,15 @@ const save = () => {
 //######################################
 //## start test
 //######################################
-if (window.config.startPage.length !== 0) {
-  const el = window.useContentPage({
-    id: 'start-page',
-    styles,
-    content: window.config.startPage,
-    continueConfig: {
-      text: 'Test starten',
-      handler: () => {
-        timerWidget.startCounter()
-        setNextItem()
-      },
-    },
-  })
-  $('#content-container').html(el)
-}
+const el = window.useStartPage({
+  styles,
+  config: window.config.startPage,
+  continueHandler: () => {
+    timerWidget.startCounter()
+    setNextItem()
+  },
+})
+$('#content-container').html(el)
 
 if (window.lastResult !== undefined) {
   window.shuffleArray(items)

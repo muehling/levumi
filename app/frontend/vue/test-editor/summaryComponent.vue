@@ -29,7 +29,7 @@
 
     computed: {
       isMultipleChoice() {
-        return this.allData.questionType === 'multipleChoice'
+        return this.allData.questionType === 'multiple_choice'
       },
       isTrueOrFalse() {
         return this.allData.questionType === 'trueOrFalse'
@@ -138,7 +138,7 @@
         const zip = new JSZip()
 
         const questionType = this.allData.questionType
-        const fileName = this.allData.properties.name
+        const fileName = this.allData.properties.shorthand
 
         const [response1, response2, response3] = await Promise.all([
           fetch(`assets/${questionType}/test.js`),
@@ -157,7 +157,14 @@
         const html = await response3.text()
         const json = JSON.stringify({
           ...this.properties,
-          required_services: ['timer', 'content_page', 'multiple_choice', 'save_result'],
+          required_services: [
+            `${this.allData.questionType}`,
+            'timer',
+            'content_page',
+            'save_result',
+            'start_page',
+            'end_page',
+          ],
           configuration: this.getConfiguration(),
           items: items,
         })

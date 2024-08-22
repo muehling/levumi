@@ -61,7 +61,7 @@
     data() {
       return {
         file: undefined,
-        csvHelpType: 'multipleChoice',
+        csvHelpType: 'multiple_choice',
         data: null,
         isFileChecked: null,
         images: [],

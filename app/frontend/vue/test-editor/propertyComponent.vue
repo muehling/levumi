@@ -10,10 +10,6 @@
     </div>
 
     <b-form :validated="wasSubmitted" class="mx-4" @submit.prevent="saveAndContinue">
-      <b-form-group id="input-group-1" label="Name" label-for="inputName" label-cols="3">
-        <b-form-input id="inputName" v-model="name" required min-length="5" />
-      </b-form-group>
-
       <b-form-group id="input-group-2" label="Lernbereich" label-for="inputArea" label-cols="3">
         <b-form-select id="inputArea" v-model="area" class="" required :options="areas" />
       </b-form-group>
@@ -168,7 +164,6 @@
     },
     data() {
       return {
-        name: '',
         area: undefined,
         competence: undefined,
         family: undefined,
@@ -254,7 +249,6 @@
       },
       compiledProps() {
         return {
-          name: this.name,
           area: this.store.staticData.testMetaData.areas.find(a => a.id === this.area)?.name,
           competence: this.store.staticData.testMetaData.competences.find(
             c => c.id === this.competence
@@ -293,7 +287,7 @@
           }
 
           const props = data.properties
-          this.name = props.name || ''
+
           this.area = this.store.staticData.testMetaData.areas.find(a => a.name === props.area)?.id
           this.competence = this.store.staticData.testMetaData.competences.find(
             c => c.name === props.competence
@@ -324,7 +318,6 @@
         this.wasSubmitted = true
 
         if (
-          this.name &&
           this.area &&
           this.competence &&
           this.family &&

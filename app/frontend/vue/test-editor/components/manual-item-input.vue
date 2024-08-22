@@ -18,7 +18,7 @@
     components: { ItemInput },
     props: { dimensions: Array },
     data() {
-      return { questions: [], currentQuestionId: 0, questionType: 'multipleChoice' }
+      return { questions: [], currentQuestionId: 0, questionType: 'multiple_choice' }
     },
     methods: {
       addItem() {

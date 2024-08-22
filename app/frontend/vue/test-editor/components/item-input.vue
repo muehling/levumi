@@ -118,7 +118,7 @@
         return itemInputTexts
       },
       displayMultipleAnswers() {
-        return this.item.type === 'multipleChoice' || this.item.type === 'trueOrFalse'
+        return this.item.type === 'multiple_choice' || this.item.type === 'trueOrFalse'
       },
       groupOptions() {
         return this.dimensions.map(dimension => ({ value: dimension.id, text: dimension.text }))

@@ -5,7 +5,7 @@ export const itemInputTexts = {
       helpText: 'Bitte den kompletten Satz inklusive des gesuchten Wortes eingeben.',
     },
     trueOrFalse: { question: 'Frage', helpText: 'Hier bitte die Frage eingeben.' },
-    multipleChoice: { question: 'Frage', helpText: 'Hier bitte die Frage eingeben.' },
+    multiple_choice: { question: 'Frage', helpText: 'Hier bitte die Frage eingeben.' },
   },
   group: {
     title: 'Dimension',

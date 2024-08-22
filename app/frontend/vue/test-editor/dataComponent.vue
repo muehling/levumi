@@ -106,7 +106,7 @@
       },
 
       isMultipleChoice() {
-        return this.questionType === 'multipleChoice'
+        return this.questionType === 'multiple_choice'
       },
       isTrueFalse() {
         return this.questionType === 'trueOrFalse'
