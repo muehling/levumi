@@ -20,6 +20,7 @@ const next = res => {
   if (isPaused) {
     return
   }
+
   const endTaskTimestamp = window.stopTimer()
   const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
 
@@ -47,12 +48,34 @@ const setNextItem = () => {
   updateTask(item)
 }
 
+//TODO demokram rausfummeln
+
+const displayDemoItem = () => {
+  const itemIndex = Math.floor(Math.random() * Math.floor(items.length - 1))
+  const demoEl = window.useMultipleChoice({ id: 0, styles, item: items[itemIndex] })
+  const el = window.useDemoItem({ element: demoEl, continueHandler: endDemo })
+  $('#content-container').html(el)
+}
+
+const displayFeedback = res => {
+  const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+  const el = window.useFeedback({
+    isCorrect: isCorrect,
+    correctAnswer: items[currentTask].correctAnswer,
+    styles,
+    continueHandler: result => next(result),
+  })
+  $('#content-container').html(el)
+}
+
 const updateTask = item => {
+  const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
+
   const el = window.useMultipleChoice({
     id: item.id,
     styles,
     item,
-    resultHandler: next,
+    resultHandler,
   })
   $('#content-container').html(el)
 }

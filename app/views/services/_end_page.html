@@ -1,5 +1,6 @@
 <script type="module">
   window.useEndPage = ({ config, styles }) => {
+    let conf = config
     if (!config.length) {
       let src = ''
       if (window.lastResult === undefined) {
@@ -9,12 +10,12 @@
       } else {
         src = '/images/shared/Levumi-liest.gif'
       }
-      config = [{ type: 'image', src }]
+      conf = [{ type: 'image', src }]
     }
     const el = window.useContentPage({
       id: 'end-page',
       styles,
-      content: config,
+      content: conf,
       continueConfig: { text: 'Fertig!', handler: window.exit },
     })
 

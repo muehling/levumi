@@ -1,0 +1,28 @@
+<script type="module">
+  window.useFeedback = ({ styles, isCorrect, correctAnswer, continueHandler }) => {
+    let src, text
+    if (isCorrect) {
+      text = 'Das war richtig!'
+      src = '/images/shared/Levumi-jubelt.gif'
+    } else {
+      text = `Das war nicht ganz richtig. Richtig wäre "${correctAnswer}" gewesen.`
+      src = '/images/shared/Levumi-liest.gif'
+    }
+    const config = [
+      { type: 'image', src },
+      { type: 'p', text },
+    ]
+
+    const el = window.useContentPage({
+      id: 'start-page',
+      styles,
+      content: config,
+      continueConfig: {
+        text: `Weiter zur nächsten Frage`,
+        handler: continueHandler,
+      },
+    })
+
+    return el
+  }
+</script>

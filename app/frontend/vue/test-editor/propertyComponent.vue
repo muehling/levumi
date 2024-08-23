@@ -109,6 +109,16 @@
           :unchecked-value="0" />
       </b-form-group>
       <b-form-group
+        label="Feedback nach jeder Aufgabe anzeigen"
+        label-for="inputFeedback"
+        label-cols="3">
+        <b-form-checkbox
+          id="inputFeedback"
+          v-model="showFeedback"
+          :value="1"
+          :unchecked-value="0" />
+      </b-form-group>
+      <b-form-group
         id="input-group-12"
         label="Beschreibung"
         label-for="inputDescription"
@@ -179,6 +189,7 @@
         test_type: undefined,
         wasSubmitted: false,
         showDemoTask: false,
+        showFeedback: false,
 
         timeDropdownOptions: [
           { value: null, text: 'Bitte auswählen' },
@@ -270,6 +281,7 @@
           responsible: this.responsible,
 
           show_demo_task: this.showDemoTask,
+          show_feedback: this.showFeedback,
         }
       },
     },
@@ -285,6 +297,7 @@
           } catch {
             this.store.setErrorMessage('Geladene Daten sind fehlerhaft!')
           }
+          console.log('meh')
 
           const props = data.properties
 
@@ -308,7 +321,8 @@
             tt => tt.name === props.test_type
           )?.id
 
-          this.showDemoTask = data.show_demo_task
+          this.showDemoTask = parseInt(props.show_demo_task, 10)
+          this.showFeedback = parseInt(props.show_feedback, 10)
         } else {
           this.store.setErrorMessage('Keine Daten gefunden!')
         }

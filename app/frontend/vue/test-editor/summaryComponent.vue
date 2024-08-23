@@ -68,6 +68,10 @@
           end_page: this.endPage,
           time_limit: this.properties.time_limit,
           dimensions: this.allData.dimensions,
+          options: {
+            show_demo_task: this.properties.show_demo_task,
+            show_feedback: this.properties.show_feedback,
+          },
           views: [
             {
               key: 'V1',
@@ -155,16 +159,25 @@
         const scripts = await response1.text()
         const styles = await response2.text()
         const html = await response3.text()
+
+        const requiredServices = [
+          `${this.allData.questionType}`,
+          'timer',
+          'content_page',
+          'save_result',
+          'start_page',
+          'end_page',
+        ]
+        if (this.properties.show_feedback) {
+          requiredServices.push('feedback')
+        }
+        if (this.properties.show_demo_task) {
+          requiredServices.push('demo_item')
+        }
+
         const json = JSON.stringify({
           ...this.properties,
-          required_services: [
-            `${this.allData.questionType}`,
-            'timer',
-            'content_page',
-            'save_result',
-            'start_page',
-            'end_page',
-          ],
+          required_services: requiredServices,
           configuration: this.getConfiguration(),
           items: items,
         })
