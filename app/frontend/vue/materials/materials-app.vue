@@ -23,8 +23,7 @@
                 selected_competence = -1
                 selected_family = -1
                 selected_test = -1
-              "
-            >
+              ">
               {{ area.name }}
             </b-button>
           </b-button-group>
@@ -44,8 +43,7 @@
                 selected_competence = competence.id
                 selected_family = -1
                 selected_test = -1
-              "
-            >
+              ">
               {{ competence.name }}
             </b-button>
           </b-button-group>
@@ -64,8 +62,7 @@
               @click="
                 selected_family = family.id
                 selected_test = -1
-              "
-            >
+              ">
               {{ family.name }}
             </b-button>
           </b-button-group>
@@ -81,8 +78,7 @@
               class="mr-1"
               variant="outline-primary"
               :pressed="selected_test == test.id"
-              @click="selected_test = test.id"
-            >
+              @click="selected_test = test.id">
               {{ test.level }}
             </b-button>
           </b-button-group>
@@ -96,18 +92,20 @@
               <b-tab
                 v-for="material in filteredMaterials"
                 :key="material.id"
-                :title="material.name"
-              >
+                :title="material.name">
                 <material-view :material="material" :full="true"></material-view>
+                <LicenceDisplay :for-material="true" />
               </b-tab>
             </b-tabs>
           </b-card>
           <b-card v-else>
             <div class="text-center text-muted">
               Wählen Sie aus, wofür sie Fördermaterial suchen. Es werden Ihnen immer alle passenden
-              Materialen für Ihre aktuelle Auswahl angezeigt.<br />
+              Materialen für Ihre aktuelle Auswahl angezeigt.
+              <br />
               Manche Materialien sind für spezifische Niveaustufen eines Tests geeignet und werden
-              erst angezeigt wenn diese ausgewählt ist.<br />
+              erst angezeigt wenn diese ausgewählt ist.
+              <br />
               Andere sind für ganze Testarten oder Kompetenzen geeignet und werden im Auswahlprozess
               schon vorab angezeigt.
             </div>
@@ -124,9 +122,10 @@
   import { useMaterialsStore } from '../../store/materialsStore'
   import flatten from 'lodash/flatten'
   import MaterialView from './material-view.vue'
+  import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'MaterialsApp',
-    components: { MaterialView },
+    components: { MaterialView, LicenceDisplay },
     setup() {
       const globalStore = useGlobalStore()
       const materialsStore = useMaterialsStore()
