@@ -2,7 +2,7 @@
   <div>
     <p id="licence-headline" class="text-light bg-secondary pl-2 text-small">Lizenz</p>
     <p class="text-small">
-      {{ `${forMaterial ? 'Diese Fördermaterialien sind' : 'Dieser Test ist'} lizensiert unter` }}
+      {{ `${licenceText} lizensiert unter` }}
       <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de" target="_blank">
         CC BY-NC-SA 4.0
         <img
@@ -29,5 +29,12 @@
   export default {
     name: 'LicenceDisplay',
     props: { forMaterial: Boolean },
+    computed: {
+      licenceText() {
+        return this.forMaterial
+          ? 'Diese Fördermaterialien sind, soweit im Text nicht anders angegeben, lizensiert unter'
+          : 'Dieser Test ist'
+      },
+    },
   }
 </script>
