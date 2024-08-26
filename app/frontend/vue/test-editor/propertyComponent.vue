@@ -10,6 +10,8 @@
     </div>
 
     <b-form :validated="wasSubmitted" class="mx-4" @submit.prevent="saveAndContinue">
+      <context-help
+        help-text="Lernbereich, Testtyp, Kompetenz und Testfamilie können aktuell nur aus den vorhandenen Stammdaten ausgewählt werden." />
       <b-form-group id="input-group-2" label="Lernbereich" label-for="inputArea" label-cols="3">
         <b-form-select id="inputArea" v-model="area" class="" required :options="areas" />
       </b-form-group>
@@ -50,9 +52,11 @@
           :disabled="!competence"
           :options="testFamilies" />
       </b-form-group>
-
+      <hr />
       <b-form-group id="input-group-6" label="Kürzel" label-for="inputShorthand" label-cols="3">
-        <b-form-input id="inputShorthand" v-model="shorthand" required class="" />
+        <b-form-input id="inputShorthand" v-model="shorthand" required class="d-inline" />
+        <context-help
+          help-text="Kürzel des Tests. Muss eindeutig sein. Aktuell findet allerdings keine Überprüfung statt, ob das Kürzel bereits vergeben ist." />
       </b-form-group>
 
       <b-form-group
@@ -61,10 +65,12 @@
         label-for="inputResponsible"
         label-cols="3">
         <b-form-input id="inputResponsible" v-model="responsible" type="email" required class="" />
+        <context-help
+          help-text="Emailadresse der verantwortlichen Person. Verwenden Sie im Zweifelsfall Ihre eigene." />
       </b-form-group>
 
       <b-form-group id="input-group-8" label="Niveaustufe" label-for="inputLevel" label-cols="3">
-        <b-form-input id="inputLevel" v-model="level" type="email" required class="" />
+        <b-form-input id="inputLevel" v-model="level" required class="" />
       </b-form-group>
 
       <b-form-group
@@ -87,6 +93,8 @@
           class=""
           required
           :options="versionDropdownOptions" />
+        <context-help
+          help-text="Eine Versionsnummer > 1 sollte nur vergeben werden, wenn bereits ein Test mit diesem Kürzel vorhanden sind, dessen Ergebnisse aber nicht mehr vergleichbar sind." />
       </b-form-group>
 
       <b-form-group
@@ -107,6 +115,8 @@
           v-model="showDemoTask"
           :value="1"
           :unchecked-value="0" />
+        <context-help
+          help-text="Wenn aktiv, wird eine zufällige Aufgabe als Demo-Aufgabe angzeigt. Die gegebene Antwort fließt nicht in die Messung ein." />
       </b-form-group>
       <b-form-group
         label="Feedback nach jeder Aufgabe anzeigen"
@@ -117,6 +127,8 @@
           v-model="showFeedback"
           :value="1"
           :unchecked-value="0" />
+        <context-help
+          help-text="Wenn aktiv, wird nach jeder Frage eine Feedback-Seite angezeigt." />
       </b-form-group>
       <b-form-group
         id="input-group-12"
@@ -166,8 +178,10 @@
 
 <script>
   import { useGlobalStore } from 'src/store/store'
+  import ContextHelp from 'src/vue/shared/context-help.vue'
 
   export default {
+    components: { ContextHelp },
     setup() {
       const store = useGlobalStore()
       return { store }

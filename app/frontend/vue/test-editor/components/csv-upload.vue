@@ -1,11 +1,8 @@
 <template>
   <div>
     <div class="dataInfoText">
-      Bitte laden Sie hier eine .CSV-Datei mit den einzelnen Fragen/Aufgaben hoch. Wie man eine
-      solche Datei erstellt und in welcher Form Sie die Daten eintragen müssen finden Sie weiter
-      unten auf dieser Seite. Es findet eine automatische Prüfung der hochgeladenen Datei statt,
-      bitte beachten Sie, dass dies keine inhaltliche Prüfung ist, sondern nur nach unerlaubten
-      Zeichen ( &lt; , > , " , ' ) und leeren Feldern sucht.
+      Bitte laden Sie hier eine .CSV-Datei mit den einzelnen Fragen/Aufgaben hoch.
+      <csv-help :type="csvHelpType" />
     </div>
 
     <b-form-file
@@ -32,7 +29,7 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
-    <b-button class="m-1" @click="debug">debug</b-button>
+    <b-button class="m-1 d-none" @click="debug">debug</b-button>
     <hr />
 
     <div v-if="isFileChecked">
@@ -49,8 +46,6 @@
         @input="uploadImages" />
       <hr />
     </div>
-
-    <csv-help :type="csvHelpType" />
   </div>
 </template>
 <script>

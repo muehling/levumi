@@ -54,7 +54,7 @@
         Weiter zur Zusammenfassung
         <b-icon icon="arrow-right"></b-icon>
       </b-button>
-      <b-button class="ml-2" @click="prepareData">debug</b-button>
+      <b-button class="ml-2 d-none" @click="prepareData">debug</b-button>
     </div>
   </div>
 </template>
@@ -63,7 +63,6 @@
   import ContentInput from './components/content-input.vue'
   import CsvUpload from './components/csv-upload.vue'
   import difference from 'lodash/difference'
-  import isObject from 'lodash/isObject'
   import { useGlobalStore } from 'src/store/store'
 
   export default {
