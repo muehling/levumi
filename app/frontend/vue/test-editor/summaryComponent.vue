@@ -12,7 +12,7 @@
       Test erstellen und herunterladen
       <b-icon icon="download"></b-icon>
     </b-button>
-    <b-button class="ml-2" @click="printAll">debug</b-button>
+    <b-button class="ml-2 d-none" @click="printAll">debug</b-button>
   </b-card>
 </template>
 
@@ -68,6 +68,7 @@
           end_page: this.endPage,
           time_limit: this.properties.time_limit,
           dimensions: this.allData.dimensions,
+          item_type: this.allData.questionType,
           options: {
             show_demo_task: this.properties.show_demo_task,
             show_feedback: this.properties.show_feedback,
@@ -167,6 +168,7 @@
           'save_result',
           'start_page',
           'end_page',
+          'test_controller',
         ]
         if (this.properties.show_feedback) {
           requiredServices.push('feedback')

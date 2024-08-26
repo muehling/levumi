@@ -1,6 +1,7 @@
 <script type="module">
-  window.useEndPage = ({ config, styles }) => {
+  window.useEndPage = ({ config, styles, trend }) => {
     let conf = config
+
     if (!config.length) {
       let src = ''
       if (window.lastResult === undefined) {

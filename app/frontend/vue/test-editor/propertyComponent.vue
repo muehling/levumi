@@ -297,7 +297,6 @@
           } catch {
             this.store.setErrorMessage('Geladene Daten sind fehlerhaft!')
           }
-          console.log('meh')
 
           const props = data.properties
 
