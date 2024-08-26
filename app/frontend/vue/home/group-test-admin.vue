@@ -280,6 +280,7 @@
             </div>
           </div>
         </div>
+        <licence-display v-if="selectedTest" />
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
@@ -326,9 +327,10 @@
   import { useTestsStore } from '../../store/testsStore'
   import apiRoutes from '../routes/api-routes'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'GroupTestAdmin',
-    components: { ConfirmDialog },
+    components: { ConfirmDialog, LicenceDisplay },
     props: {
       group: Object,
       isOpen: Boolean,

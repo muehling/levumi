@@ -66,12 +66,17 @@
             </p>
             <h5>Urheberrechte</h5>
             <p class="text-justify">
-              Die in Levumi zur Verfügung gestellten Tests und Fördermaterialien sind alle unter
-              einer "Creative Common" Lizenz veröffentlicht. Die Tests können Sie außerhalb von
-              Levumi unter Nennung der Urheber weiterverwenden und abändern. Die entsprechende
-              Quellenangabe finden Sie in Levumi als Teil der Testbeschreibung. Die
-              Fördermaterialien können Sie ohne Einschränkung und ohne Angabe der Urheber
-              weiterverwenden und abändern.
+              Die in Levumi zur Verfügung gestellten Tests und Fördermaterialien sind, soweit nicht
+              anders angegegen, alle unter der Creative Commons-Lizenz
+              <a
+                href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.de"
+                alt="Creative Commons Lizenz">
+                CC BY-NC-SA 4.0
+              </a>
+              veröffentlicht. Die Tests können Sie außerhalb von Levumi unter Nennung der Urheber
+              weiterverwenden und abändern. Die entsprechende Quellenangabe finden Sie in Levumi als
+              Teil der Testbeschreibung. Die Fördermaterialien können Sie ohne Einschränkung und
+              ohne Angabe der Urheber weiterverwenden und abändern.
             </p>
             <h5>Datenlöschung</h5>
             <p class="text-justify">
@@ -93,7 +98,7 @@
             <b-form-checkbox v-model="areTermsAccepted" name="accept-box">
               Ich bin mit diesen Nutzungsbedingungen einverstanden.
             </b-form-checkbox>
-            <b-btn class="mt-3" :disabled="!areTermsAccepted" @click="submit"> Weiter </b-btn>
+            <b-btn class="mt-3" :disabled="!areTermsAccepted" @click="submit">Weiter</b-btn>
             <p v-if="login.tc_accepted">Akzeptiert am: {{ login.tc_accepted }}</p>
           </div>
         </b-card>
