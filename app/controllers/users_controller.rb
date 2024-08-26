@@ -14,9 +14,10 @@ class UsersController < ApplicationController
                   get_classbook_info
                   recovery_notification
                   recovery_key_verification
+                  delete_used_recovery_key
                 ]
 
-  skip_before_action :set_login, only: %i[create register recover recovery_notification recovery_key_verification]
+  skip_before_action :set_login, only: %i[create register recover recovery_notification recovery_key_verification delete_used_recovery_key]
 
   #GET /start
   #GET /users/:id
@@ -321,12 +322,9 @@ class UsersController < ApplicationController
 
   def recovery_notification
     @user = User.find_by_email(user_attributes[:email])
-    @user.update(recovery_key:123)#(0...6).map { ('a'..'z').to_a[rand(26)] }.join)
-    puts '################################################################################################################'
-    puts @user.recovery_key 
+    @user.update(recovery_key:(0...9).map { ('a'..'z').to_a[rand(26)] }.join)
     UserMailer.with(sender: 'noreply@levumi.de',user: @user).password_reset.deliver_later
     head :ok
-
   end
   def recovery_key_verification
     @user = User.find_by_email(user_attributes[:email])
@@ -335,6 +333,12 @@ class UsersController < ApplicationController
     else 
       head :forbidden and return 
     end
+  end
+  def delete_used_recovery_key 
+    @user = User.find_by_email(user_attributes[:email])
+    @user.recovery_key = ''
+    puts @user.recovery_key
+    head :ok and return
   end
 
   private
