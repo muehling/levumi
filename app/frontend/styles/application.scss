@@ -293,3 +293,15 @@ textarea:focus {
   border-color: $primary-color;
   background-color: $primary-color;
 }
+
+.improvement-arrow {
+  color: $success-color;
+  transform: rotate(45deg);
+}
+.neutral-arrow {
+  color: $secondary-color;
+}
+.degradation-arrow {
+  color: $danger-color;
+  transform: rotate(-45deg);
+}

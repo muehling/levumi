@@ -125,13 +125,11 @@
                       <td>
                         <i
                           v-if="result.data.report.trend > 0"
-                          class="fas fa-arrow-up"
-                          style="color: var(--success-color)"></i>
+                          class="fas fa-arrow-up improvement-arrow"></i>
                         <i
                           v-else-if="result.data.report.trend == 0"
-                          class="fas fa-arrow-right"
-                          style="color: var(--secondary-color)"></i>
-                        <i v-else class="fas fa-arrow-down" style="color: var(--danger-color)"></i>
+                          class="fas fa-arrow-right neutral-arrrow"></i>
+                        <i v-else class="fas fa-arrow-down degradation-arrow"></i>
                       </td>
                       <td v-if="!readOnly">
                         <b-btn
