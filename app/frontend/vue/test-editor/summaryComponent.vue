@@ -12,7 +12,7 @@
       Test erstellen und herunterladen
       <b-icon icon="download"></b-icon>
     </b-button>
-    <b-button class="ml-2 d-none" @click="printAll">debug</b-button>
+    <b-button class="ml-2" @click="printAll">debug</b-button>
   </b-card>
 </template>
 

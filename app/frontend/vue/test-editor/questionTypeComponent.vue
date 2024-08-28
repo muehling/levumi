@@ -28,9 +28,9 @@
           },
           {
             id: 1,
-            title: 'Wahr oder Falsch',
-            disabled: true,
-            click: 'trueOrFalse',
+            title: 'Arithmetik',
+            //disabled: true,
+            click: 'number_input',
           },
           {
             id: 2,

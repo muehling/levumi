@@ -1,0 +1,201 @@
+<style>
+  #delete {
+    white-space: nowrap;
+  }
+  #numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.2em;
+    touch-action: manipulation;
+  }
+
+  .delete {
+    grid-column: span 2;
+    order: 11;
+  }
+  #continue {
+    grid-column: span 3;
+    order: 12;
+  }
+  #answer {
+    max-width: 4em;
+    text-align: center;
+  }
+  .button {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  .order-1 {
+    order: 1;
+  }
+  .order-2 {
+    order: 2;
+  }
+  .order-3 {
+    order: 3;
+  }
+  .order-4 {
+    order: 4;
+  }
+  .order-5 {
+    order: 5;
+  }
+  .order-6 {
+    order: 6;
+  }
+  .order-7 {
+    order: 7;
+  }
+  .order-8 {
+    order: 8;
+  }
+  .order-9 {
+    order: 9;
+  }
+  .order-10 {
+    order: 10;
+  }
+</style>
+
+<script type="module">
+  let currentInputVal = ''
+  let handleInput
+  let handleSubmit
+  window.useNumberInput = ({ resultHandler, item }) => {
+    console.log('arghg', item)
+
+    const el = $(`
+        <div id="number-input" class="d-flex justify-content-center flex-column">
+          <div class="text-center">
+            <p id="task-description">
+              <span id="pre-input"></span>
+              <input type="input" id="answer" class="" readonly />
+              <span id="post-input"></span>
+            </p>
+          </div>
+          <div class="container">
+            <div class="mx-auto mt-3 ">
+              <div id="numpad">
+                
+                <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
+              </div>
+              <div id="empty-error" class="text-danger"></div>
+            </div>
+          </div>
+        </div>
+    `)
+
+    handleSubmit = resultHandler
+
+    attachHandlers()
+
+    const inputs =
+      window.calculatorLayout === 'phone'
+        ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+        : [7, 8, 9, 4, 5, 6, 1, 2, 3, 0]
+
+    const calcButtons = inputs.map((v, i) => {
+      const calcButton = $(
+        `<div id="btn-${v}" class="calc-btn btn btn-primary order-${i}">${v}</div>`
+      )
+      calcButton
+        .on('click', () => addNumber(v))
+        .css({ fontSize: '3rem', fontFamily: window.font_family })
+      return calcButton
+    })
+
+    const numpad = el.find('#numpad')
+
+    numpad.append(calcButtons)
+
+    const del = $('<div class="calc-btn btn btn-warning delete">Löschen</div>')
+      .on('click', removeNumber)
+      .css({ fontSize: '3rem', fontFamily: window.font_family })
+    const cont = $(
+      '<div id="continue"><button class="calc-btn btn btn-success w-100">Weiter?</button></div>'
+    )
+      .on('click', submit)
+      .css({ fontSize: '3rem', fontFamily: window.font_family })
+
+    numpad.append(del).append(cont)
+
+    updateNumberInput(el, item)
+
+    return el
+  }
+
+  const updateNumberInput = (
+    el,
+    { continueText, firstNumber, secondNumber, operation, inputPosition }
+  ) => {
+    console.log('miau', firstNumber, secondNumber, inputPosition)
+
+    if (firstNumber !== undefined && secondNumber !== undefined && inputPosition !== undefined) {
+      switch (inputPosition) {
+        case '1':
+          el.find('#pre-input').text('')
+          el.find('#post-input').text(`${operation} ${firstNumber} = ${secondNumber}`)
+          break
+        case '2':
+          el.find('#pre-input').text(`${firstNumber} ${operation} `)
+          el.find('#post-input').text(` = ${secondNumber}`)
+          break
+        case '3':
+          el.find('#pre-input').text(`${firstNumber} ${operation} ${secondNumber} =`)
+          el.find('#post-input').text('')
+          break
+        default:
+          console.warn("Number Input: parameters don't make sense.")
+      }
+    }
+  }
+
+  const attachHandlers = () => {
+    // keyboard input
+    document.addEventListener('keydown', e => {
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.key >= '0' && e.key <= '9') {
+        addNumber(e.key)
+      } else if (e.key === 'Backspace') {
+        removeNumber()
+      } else if (e.key === 'Enter') {
+        submit()
+      }
+    })
+  }
+
+  const submit = () => {
+    if (currentInputVal === '') {
+      $('#empty-error').text('Bitte gib eine Zahl ein!')
+      return
+    }
+    $('#empty-error').text('')
+
+    handleSubmit(currentInputVal)
+    currentInputVal = ''
+    $('#answer').val('')
+  }
+
+  const addNumber = num => {
+    currentInputVal += num
+    updateDom()
+  }
+
+  const removeNumber = () => {
+    currentInputVal = currentInputVal.slice(0, -1)
+    updateDom()
+  }
+
+  const updateDom = () => {
+    currentInputVal = currentInputVal.replace(/[^\d ]+/g, '')
+    currentInputVal = currentInputVal.replace(/ /g, '')
+
+    // Add spaces as thousands separators every three digits
+    currentInputVal = currentInputVal.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+
+    $('#answer').val(currentInputVal)
+  }
+</script>

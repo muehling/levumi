@@ -60,6 +60,10 @@
       switch (itemType) {
         case 'multiple_choice':
           return window.useMultipleChoice
+        case 'number_input':
+          return window.useNumberInput
+        default:
+          console.warn('Unknown renderer')
       }
     }
 

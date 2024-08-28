@@ -2,7 +2,7 @@
   <div>
     <div class="dataInfoText">
       Bitte laden Sie hier eine .CSV-Datei mit den einzelnen Fragen/Aufgaben hoch.
-      <csv-help :type="csvHelpType" />
+      <csv-help :type="questionType" />
     </div>
 
     <b-form-file
@@ -21,10 +21,6 @@
       Auch sind Felder, die ausschließlich Leerzeichen enthalten nicht erlaubt.
       <br />
     </b-form-invalid-feedback>
-    <b-button :disabled="!file" class="m-1" @click="clearCsvFile">
-      <i class="fa-solid fa-trash"></i>
-      Datei entfernen
-    </b-button>
     <b-button :disabled="!file" class="m-1" @click="checkFile">
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
@@ -33,7 +29,7 @@
     <hr />
 
     <div v-if="isFileChecked">
-      <p>Laden Sie hier bitte die einzelnen Bilder hoch.</p>
+      <p>Laden Sie hier bitte ggf. die benötigten Bilder hoch.</p>
       <b-form-file
         id="imageUploader"
         v-model="images"
@@ -53,10 +49,10 @@
   export default {
     name: 'CsvUpload',
     components: { CsvHelp },
+    props: { questionType: String },
     data() {
       return {
         file: undefined,
-        csvHelpType: 'multiple_choice',
         data: null,
         isFileChecked: null,
         images: [],
@@ -70,10 +66,6 @@
       },
       uploadImages() {
         this.$emit('submit-csv-images', this.images)
-      },
-      clearCsvFile() {
-        this.$refs['fileUpload'].reset()
-        this.data = null
       },
 
       readCsvData() {
@@ -114,16 +106,16 @@
         const data = this.stringToArray(dataAsString)
 
         const checkResult = data.reduce((linesOkaySoFar, line) => {
-          const lineHasInvalidFields = line.reduce((fieldsOkaySoFar, field, index) => {
-            if (index !== 0 && index !== 1) {
-              return fieldsOkaySoFar && this.stringIsValid(field)
-            } else if (index === 1) {
-              return fieldsOkaySoFar && this.isValidFileName(field)
-            } else {
-              return fieldsOkaySoFar
-            }
-          }, true)
-          return linesOkaySoFar && lineHasInvalidFields && 3 < line.length && line.length < 10
+          const lineHasInvalidFields = true //line.reduce((fieldsOkaySoFar, field, index) => {
+          //  if (index !== 0 && index !== 1) {
+          //    return fieldsOkaySoFar && this.stringIsValid(field)
+          //  } else if (index === 1) {
+          //    return fieldsOkaySoFar && this.isValidFileName(field)
+          //  } else {
+          //    return fieldsOkaySoFar
+          //  }
+          //}, true)
+          return linesOkaySoFar && lineHasInvalidFields
         }, true)
 
         if (checkResult) {
@@ -133,23 +125,56 @@
 
         this.isFileChecked = checkResult
       },
-      parseData(data) {
+      parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {
           acc[d[0]] = true
           return acc
         }, {})
-        const dimensions = Object.keys(rawDimensions).map((d, i) => ({ id: i + 1, text: d }))
+        return Object.keys(rawDimensions).map((d, i) => ({ id: i + 1, text: d }))
+      },
+      parseMultipleChoice(data) {
+        const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
           return {
+            id: i + 1,
             correctAnswer: d[3],
             group: dimensions.find(dim => dim.text === d[0]).id,
-            id: i + 1,
             image: d[1],
             question: d[2],
             wrongAnswers: d.slice(4),
           }
         })
         return { questions: parsed, dimensions }
+      },
+
+      parseArithmetics(data) {
+        const dimensions = this.parseDimensions(data)
+        const parsed = data.map((d, i) => {
+          return {
+            id: i + 1,
+            group: dimensions.find(dim => dim.text === d[0]).id,
+            question: `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`,
+            firstNumber: d[1],
+            operation: d[2],
+            secondNumber: d[3],
+            correctAnswer: d[4],
+            inputPosition: d[5],
+          }
+        })
+
+        return { questions: parsed, dimensions }
+      },
+
+      parseData(data) {
+        switch (this.questionType) {
+          case 'multiple_choice':
+            return this.parseMultipleChoice(data)
+
+          case 'number_input':
+            return this.parseArithmetics(data)
+          default:
+            console.log('Unbekannte Testart :-(')
+        }
       },
       isValidFileName(name) {
         return (

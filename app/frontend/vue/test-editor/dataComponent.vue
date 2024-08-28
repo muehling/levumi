@@ -27,7 +27,10 @@
 
         <!--<b-tabs content-class="mt-3" align="center">
           <b-tab title="Datei hochladen" active> -->
-        <csv-upload @submit-csv-data="addCsvData" @submit-csv-images="addCsvImages" />
+        <csv-upload
+          :question-type="questionType"
+          @submit-csv-data="addCsvData"
+          @submit-csv-images="addCsvImages" />
         <!--  </b-tab>
           <b-tab title="Daten eingeben">
             <manual-item-input :dimensions="dimensions" @submit-items="addManualData" />
@@ -242,9 +245,13 @@
         const staticPagesAreValid = this.checkStaticPages()
 
         const imagesInQuestions = this.questions.reduce((acc, question) => {
-          const images = question.image.split(',')
+          let images
+          if (question.image) {
+            images = question.image.split(',')
+          }
           return acc.concat(images)
         }, [])
+        console.log('imagesInQuestions', imagesInQuestions)
 
         const imagesInStaticPages = this.startPage
           .filter(el => el.type === 'image')
@@ -254,7 +261,10 @@
         const missingImagesInStaticPages = imagesInStaticPages.filter(img => !img)
 
         // remove duplicates via `...new Set(...)`
-        const allImages = [...new Set(imagesInQuestions), ...new Set(imagesInStaticPages)]
+        const allImages = [...new Set(imagesInQuestions), ...new Set(imagesInStaticPages)].filter(
+          image => image !== undefined
+        )
+        console.log('allImages', allImages)
 
         let uploadedImages = this.images.filter(file => file).map(file => file.name)
 
@@ -275,6 +285,7 @@
         this.storeImages()
 
         const { missingImages, redundantImages, missingImagesInStaticPages } = this.prepareData()
+        console.log('arhg', missingImages, redundantImages, missingImagesInStaticPages)
 
         if (missingImages.length) {
           this.store.setErrorMessage(
