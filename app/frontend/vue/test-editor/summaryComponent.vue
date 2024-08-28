@@ -162,13 +162,13 @@
         const html = await response3.text()
 
         const requiredServices = [
-          `${this.allData.questionType}`,
+          `v2/${this.allData.questionType}`,
           'timer',
-          'content_page',
-          'save_result',
-          'start_page',
-          'end_page',
-          'test_controller',
+          'v2/content_page',
+          'v2/save_result',
+          'v2/start_page',
+          'v2/end_page',
+          'v2/test_controller',
         ]
         if (this.properties.show_feedback) {
           requiredServices.push('feedback')
