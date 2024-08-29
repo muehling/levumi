@@ -285,7 +285,7 @@
           level: this.level,
           student_test: this.student_test,
           version: this.version,
-
+          time_limit: this.time_limit,
           description: {
             full: this.description,
             short: this.short,

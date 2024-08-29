@@ -49,6 +49,10 @@
         displayDemoItem()
         wasDemoDisplayed = true
       } else {
+        if (!timerWidget.isRunning()) {
+          timerWidget.startCounter()
+        }
+
         currentTask++
         const item = items[currentTask]
         window.startTimer()
@@ -122,7 +126,6 @@
       styles,
       config: window.config.startPage,
       continueHandler: () => {
-        timerWidget.startCounter()
         setNextItem()
       },
     })

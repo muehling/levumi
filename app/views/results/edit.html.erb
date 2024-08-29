@@ -104,6 +104,7 @@
         } catch (e) {
             console.error ("Items fehlerhaft", e)
         }
+        console.log("arghg", conf)
         window.config = window.config || {}
         window.config.items = it
         window.config.startPage = conf.start_page
@@ -180,13 +181,11 @@
     //Hilfsfunktionen
 
     //Zeitmessen
-    var stopwatch = null
-
+    let stopwatch = null
     function startTimer() {
         stopwatch = new Date()
     }
     window.startTimer = startTimer
-
     function stopTimer() {
         return (new Date() - stopwatch)
     }
