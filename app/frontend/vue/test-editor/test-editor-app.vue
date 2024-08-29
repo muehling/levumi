@@ -55,7 +55,7 @@
           questionType: this.questionType,
           properties: this.properties,
           questions: this.questions,
-          images: this.images,
+          assets: this.assets,
           startPage: this.startPage,
           endPage: this.endPage,
           dimensions: this.dimensions,
@@ -78,7 +78,7 @@
         this.startPage = data[0].startPage
         this.endPage = data[0].endPage
         this.dimensions = data[0].dimensions
-        this.images = data[1]
+        this.assets = data[1]
         this.view++
       },
 

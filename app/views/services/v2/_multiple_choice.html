@@ -24,10 +24,12 @@
       `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
     ).css(styles)
     const imageContainer = $("<div class='image-container'></div>")
-    if (item.image) {
-      const images = item.image.split(',')
+
+    if (item.assets) {
+      const assets = item.assets.split(',')
       //TODO fix layout for multiple pictures
-      images.forEach(i => {
+      assets.forEach(i => {
+        //TODO might check if asset is an image
         const image = $(
           `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${window.media_paths[i]});'></div`
         )

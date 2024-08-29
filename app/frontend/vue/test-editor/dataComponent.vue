@@ -30,7 +30,7 @@
         <csv-upload
           :question-type="questionType"
           @submit-csv-data="addCsvData"
-          @submit-csv-images="addCsvImages" />
+          @submit-csv-assets="addCsvAssets" />
         <!--  </b-tab>
           <b-tab title="Daten eingeben">
             <manual-item-input :dimensions="dimensions" @submit-items="addManualData" />
@@ -86,7 +86,7 @@
         file: null,
         questions: [],
         currentQuestionId: 0,
-        images: [],
+        assets: [],
         dimensions: [],
       }
     },
@@ -163,11 +163,11 @@
 
       addManualData(data) {
         data.forEach(question => {
-          if (question.image != null) {
-            if (!this.checkIfImageIsStored(question.image.name)) {
-              this.images.push(question.image)
+          if (question.asset != null) {
+            if (!this.checkIfAssetIsStored(question.asset.name)) {
+              this.assets.push(question.asset)
             }
-            question.image = question.image.name
+            question.asset = question.asset.name
           }
         })
         this.questions = data
@@ -178,10 +178,10 @@
         this.dimensions = data.dimensions
       },
 
-      addCsvImages(images) {
-        images.forEach(image => {
-          if (!this.checkIfImageIsStored(image.name)) {
-            this.images.push(image)
+      addCsvAssets(assets) {
+        assets.forEach(asset => {
+          if (!this.checkIfAssetIsStored(asset.name)) {
+            this.assets.push(asset)
           }
         })
       },
@@ -197,8 +197,8 @@
       checkElement(acc, element) {
         if (element.type == 'h1' || element.type == 'h3' || element.type == 'p') {
           return acc && this.stringIsValid(element.text)
-        } else if (element.type === 'image') {
-          return acc && element.image instanceof File
+        } else if (element.type === 'asset') {
+          return acc && element.asset instanceof File
         } else {
           return false
         }
@@ -231,12 +231,12 @@
         return parsed
       },
 
-      storeImages: function () {
+      storeAssets: function () {
         this.startPage.concat(this.endPage).forEach(el => {
-          if (el.type === 'image' && !this.checkIfImageIsStored(el.image.name)) {
-            this.images.push(el.image)
-            const imgName = el.image.name
-            el.image = imgName // replace the File object with just the name
+          if (el.type === 'asset' && !this.checkIfAssetIsStored(el.asset.name)) {
+            this.assets.push(el.asset)
+            const imgName = el.asset.name
+            el.asset = imgName // replace the File object with just the name
           }
         })
       },
@@ -244,66 +244,67 @@
       prepareData() {
         const staticPagesAreValid = this.checkStaticPages()
 
-        const imagesInQuestions = this.questions.reduce((acc, question) => {
-          let images
-          if (question.image) {
-            images = question.image.split(',')
+        const assetsInQuestions = this.questions.reduce((acc, question) => {
+          let assets
+          if (question.assets) {
+            assets = question.assets.split(',')
           }
-          return acc.concat(images)
+          return acc.concat(assets)
         }, [])
-        console.log('imagesInQuestions', imagesInQuestions)
+        console.log('assetsInQuestions', assetsInQuestions)
 
-        const imagesInStaticPages = this.startPage
-          .filter(el => el.type === 'image')
-          .concat(this.endPage.filter(el => el.type === 'image'))
-          .map(el => el.image)
+        const assetsInStaticPages = this.startPage
+          .filter(el => el.type === 'asset')
+          .concat(this.endPage.filter(el => el.type === 'asset'))
+          .map(el => el.asset)
 
-        const missingImagesInStaticPages = imagesInStaticPages.filter(img => !img)
+        const missingAssetsInStaticPages = assetsInStaticPages.filter(img => !img)
 
         // remove duplicates via `...new Set(...)`
-        const allImages = [...new Set(imagesInQuestions), ...new Set(imagesInStaticPages)].filter(
-          image => image !== undefined
+        const allAssets = [...new Set(assetsInQuestions), ...new Set(assetsInStaticPages)].filter(
+          asset => asset !== undefined
         )
 
-        let uploadedImages = this.images.filter(file => file).map(file => file.name)
+        let uploadedAssets = this.assets.filter(file => file).map(file => file.name)
+        console.log('arghghg', allAssets, uploadedAssets)
 
-        const missingImages = difference(allImages, uploadedImages)
-        const redundantImages = difference(uploadedImages, allImages)
+        const missingAssets = difference(allAssets, uploadedAssets)
+        const redundantAssets = difference(uploadedAssets, allAssets)
 
-        // remove redundant images
-        if (redundantImages.length) {
-          uploadedImages = uploadedImages.filter(
-            image => redundantImages.findIndex(img => img === image?.name) !== -1
+        // remove redundant assets
+        if (redundantAssets.length) {
+          uploadedAssets = uploadedAssets.filter(
+            asset => redundantAssets.findIndex(img => img === asset?.name) !== -1
           )
         }
 
-        return { missingImages, redundantImages, missingImagesInStaticPages }
+        return { missingAssets, redundantAssets, missingAssetsInStaticPages }
       },
 
       sendDataAndcontinueToSummary: function () {
-        this.storeImages()
+        this.storeAssets()
 
-        const { missingImages, redundantImages, missingImagesInStaticPages } = this.prepareData()
+        const { missingAssets, redundantAssets, missingAssetsInStaticPages } = this.prepareData()
 
-        if (missingImages.length) {
+        if (missingAssets.length) {
           this.store.setErrorMessage(
             `Folgende Bilder sind in den Eingabedaten definiert, wurden jedoch nicht hochgeladen: 
-            \r\n${missingImages.join('\r\n')}
+            \r\n${missingAssets.join('\r\n')}
             \r\nBitte fügen Sie diese auf dem Tab 'Fragen' hinzu.`
           )
           return
         }
-        if (missingImagesInStaticPages.length) {
+        if (missingAssetsInStaticPages.length) {
           this.store.setErrorMessage(
             'Auf der Start- oder Endseite wurde Bild-Elemente definiert, jedoch keine Bilder hochgeladen.'
           )
           return
         }
 
-        if (redundantImages.length) {
+        if (redundantAssets.length) {
           this.store.setGenericMessage({
             message: `Folgende Bilder wurden hochgeladen, sind jedoch nicht in den Eingabedaten definiert: 
-          \r\n${redundantImages.join('\r\n')}
+          \r\n${redundantAssets.join('\r\n')}
           \r\nDiese wurden entfernt.`,
           })
         }
@@ -318,7 +319,7 @@
           dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
         }
 
-        this.$emit('continueToSummary', [data, this.images])
+        this.$emit('continueToSummary', [data, this.assets])
       },
 
       addGroupIfMissing() {
@@ -329,9 +330,9 @@
         })
       },
 
-      checkIfImageIsStored(imageName) {
-        this.images.forEach(image => {
-          if (image.name === imageName) {
+      checkIfAssetIsStored(assetName) {
+        this.assets.forEach(asset => {
+          if (asset.name === assetName) {
             return true
           }
         })

@@ -195,8 +195,8 @@
 
         zip.file('test.json', json)
 
-        this.allData.images.forEach(image => {
-          zip.folder('media').file(image.name, image)
+        this.allData.assets.forEach(asset => {
+          zip.folder('media').file(asset.name, asset)
         })
 
         zip.generateAsync({ type: 'blob' }).then(function (content) {

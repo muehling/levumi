@@ -8,7 +8,8 @@
       <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
         <b-card>
           <p class="pt-3">
-            Jede Zeile der CSV-Datei definiert ein Test-Item und besteht aus folgenden Einträgen:
+            Als Feldtrennzeichen muss das Semikolon verwendet werden. Jede Zeile der CSV-Datei
+            definiert ein Test-Item und besteht aus folgenden Einträgen:
           </p>
           <p v-for="(field, index) in fields" :key="index">
             <b>{{ getTitle(index) }}</b>

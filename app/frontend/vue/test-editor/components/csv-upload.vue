@@ -8,38 +8,36 @@
     <b-form-file
       id="fileUploader"
       ref="fileUpload"
-      v-model="file"
+      v-model="csv"
       class="dropArea my-3"
-      :class="{ dropAreaDropped: isFileChecked }"
-      :state="isFileChecked"
+      :class="{ dropAreaDropped: isCsvChecked }"
+      :state="isCsvChecked"
       accept="text/csv"
       placeholder="Datei auswählen oder hier ablegen"
       drop-placeholder="Datei hier ablegen" />
-    <b-form-invalid-feedback class="defaultFeedbackData" :state="isFileChecked">
+    <b-form-invalid-feedback class="defaultFeedbackData" :state="isCsvChecked">
       {{ `Die Datei daf keines der folgenden Zeichen enthalten: <, >, " oder '` }}
       <br />
       Auch sind Felder, die ausschließlich Leerzeichen enthalten nicht erlaubt.
       <br />
     </b-form-invalid-feedback>
-    <b-button :disabled="!file" class="m-1" @click="checkFile">
+    <b-button :disabled="!csv" class="m-1" @click="checkCsv">
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
     <b-button class="m-1 d-none" @click="debug">debug</b-button>
     <hr />
 
-    <div v-if="isFileChecked">
-      <p>Laden Sie hier bitte ggf. die benötigten Bilder hoch.</p>
+    <div v-if="isCsvChecked">
+      <p>Laden Sie hier bitte ggf. die benötigten Assets (Bilder, mp3s, etc.) hoch.</p>
       <b-form-file
-        id="imageUploader"
-        v-model="images"
+        id="assetUploader"
+        v-model="assets"
         class="dropAreaDropped"
-        :class="{ imageDropArea: isFileChecked }"
-        accept="image/*"
-        placeholder="Hier bitte die Bilder hochladen"
+        placeholder="Hier bitte die Dateien hochladen"
         drop-placeholder="Datei hier ablegen"
         multiple
-        @input="uploadImages" />
+        @input="uploadAssets" />
       <hr />
     </div>
   </div>
@@ -52,26 +50,26 @@
     props: { questionType: String },
     data() {
       return {
-        file: undefined,
+        csv: undefined,
         data: null,
-        isFileChecked: null,
-        images: [],
+        isCsvChecked: null,
+        assets: [],
       }
     },
     computed: {},
 
     methods: {
       debug() {
-        console.log('debug', this.data, this.questions, this.images)
+        console.log('debug', this.data, this.questions, this.assets)
       },
-      uploadImages() {
-        this.$emit('submit-csv-images', this.images)
+      uploadAssets() {
+        this.$emit('submit-csv-assets', this.assets)
       },
 
       readCsvData() {
         return new Promise((resolve, reject) => {
           const reader = new FileReader()
-          reader.readAsText(this.file)
+          reader.readAsText(this.csv)
           reader.onload = () => {
             resolve(reader.result)
             reject(reader.error)
@@ -101,7 +99,7 @@
           }
         })
       },
-      async checkFile() {
+      async checkCsv() {
         const dataAsString = await this.readCsvData()
         const data = this.stringToArray(dataAsString)
 
@@ -110,7 +108,7 @@
           //  if (index !== 0 && index !== 1) {
           //    return fieldsOkaySoFar && this.stringIsValid(field)
           //  } else if (index === 1) {
-          //    return fieldsOkaySoFar && this.isValidFileName(field)
+          //    return fieldsOkaySoFar && this.isValidCsvName(field)
           //  } else {
           //    return fieldsOkaySoFar
           //  }
@@ -123,7 +121,7 @@
           this.$emit('submit-csv-data', this.parseData(data))
         }
 
-        this.isFileChecked = checkResult
+        this.isCsvChecked = checkResult
       },
       parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {
@@ -139,7 +137,7 @@
             id: i + 1,
             correctAnswer: d[3],
             group: dimensions.find(dim => dim.text === d[0]).id,
-            image: d[1],
+            assets: d[1],
             question: d[2],
             wrongAnswers: d.slice(4),
           }
