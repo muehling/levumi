@@ -274,11 +274,13 @@ class Test < ApplicationRecord
         end
 
         f = zip.glob('test.html').first
+        if !f.nil?
         test.entry_point.attach(
           io: StringIO.new(f.get_input_stream.read),
           filename: 'test.html',
           content_type: 'text/html'
         )
+        end
 
         zip
           .glob('media/*')

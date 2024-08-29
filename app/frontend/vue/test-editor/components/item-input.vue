@@ -11,13 +11,11 @@
 
     <b-collapse :id="'collapse' + item.id" class="mt-2" visible appear>
       <div class="flexContainer">
-        <b-form-group
-          :label="texts.testTypes[item.type].question"
-          :label-for="'question' + item.id">
+        <b-form-group label="Frage" :label-for="'question' + item.id">
           <b-form-input :id="'question' + item.id" v-model="question" @input="updateItem" />
         </b-form-group>
 
-        <b-form-group :label="texts.group.title" :label-for="'group' + item.id">
+        <b-form-group label="Dimension" :label-for="'group' + item.id">
           <b-form-select
             :id="'group' + item.id"
             v-model="group"
@@ -25,7 +23,7 @@
             @change="updateItem" />
         </b-form-group>
 
-        <b-form-group :label="texts.image.title" :label-for="'image' + item.id">
+        <b-form-group label="Bild (optional)" :label-for="'image' + item.id">
           <b-form-file
             :id="'image' + item.id"
             accept="image/*"
@@ -96,7 +94,6 @@
   </div>
 </template>
 <script>
-  import { itemInputTexts } from './item-input-texts'
   export default {
     name: 'ItemInput',
     props: { item: Object, dimensions: Array },
@@ -114,9 +111,6 @@
       }
     },
     computed: {
-      texts() {
-        return itemInputTexts
-      },
       displayMultipleAnswers() {
         return this.item.type === 'multiple_choice' || this.item.type === 'trueOrFalse'
       },

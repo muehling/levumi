@@ -145,21 +145,30 @@
         const questionType = this.allData.questionType
         const fileName = this.allData.properties.shorthand
 
-        const [response1, response2, response3] = await Promise.all([
-          fetch(`assets/${questionType}/test.js`),
-          fetch(`assets/${questionType}/test.css`),
-          fetch(`assets/${questionType}/test.html`),
-        ])
+        let scripts, styles, html
+        try {
+          fetch(`assets/${questionType}/test.js`).then(res => (scripts = res.text()))
+          fetch(`assets/${questionType}/test.css`).then(res => (styles = res.text()))
+          fetch(`assets/${questionType}/test.html`).then(res => (html = res.text()))
+
+          if (scripts) {
+            zip.folder('scripts').file('test.js ', scripts)
+          }
+          if (styles) {
+            zip.folder('styles').file('test.css', styles)
+          }
+          if (html) {
+            zip.file('test.html', html)
+          }
+        } catch (e) {
+          console.warn('Error getting test specific files. Probably none are needed.')
+        }
 
         const items = this.questions.reduce((acc, item) => {
           delete item.type
           acc[`I${item.id}`] = { ...item, id: `I${item.id}` }
           return acc
         }, {})
-
-        const scripts = await response1.text()
-        const styles = await response2.text()
-        const html = await response3.text()
 
         const requiredServices = [
           `v2/${this.allData.questionType}`,
@@ -171,10 +180,10 @@
           'v2/test_controller',
         ]
         if (this.properties.show_feedback) {
-          requiredServices.push('feedback')
+          requiredServices.push('v2/feedback')
         }
         if (this.properties.show_demo_task) {
-          requiredServices.push('demo_item')
+          requiredServices.push('v2/demo_item')
         }
 
         const json = JSON.stringify({
@@ -184,9 +193,6 @@
           items: items,
         })
 
-        zip.folder('scripts').file('test.js ', scripts)
-        zip.folder('styles').file('test.css', styles)
-        zip.file('test.html', html)
         zip.file('test.json', json)
 
         this.allData.images.forEach(image => {

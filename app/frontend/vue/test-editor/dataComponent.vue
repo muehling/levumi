@@ -264,7 +264,6 @@
         const allImages = [...new Set(imagesInQuestions), ...new Set(imagesInStaticPages)].filter(
           image => image !== undefined
         )
-        console.log('allImages', allImages)
 
         let uploadedImages = this.images.filter(file => file).map(file => file.name)
 
@@ -285,7 +284,6 @@
         this.storeImages()
 
         const { missingImages, redundantImages, missingImagesInStaticPages } = this.prepareData()
-        console.log('arhg', missingImages, redundantImages, missingImagesInStaticPages)
 
         if (missingImages.length) {
           this.store.setErrorMessage(

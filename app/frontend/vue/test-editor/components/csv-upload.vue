@@ -147,7 +147,7 @@
         return { questions: parsed, dimensions }
       },
 
-      parseArithmetics(data) {
+      parseNumberInput(data) {
         const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
           return {
@@ -171,7 +171,7 @@
             return this.parseMultipleChoice(data)
 
           case 'number_input':
-            return this.parseArithmetics(data)
+            return this.parseNumberInput(data)
           default:
             console.log('Unbekannte Testart :-(')
         }

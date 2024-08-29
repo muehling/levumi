@@ -10,7 +10,7 @@
 </style>
 <script type="module">
   const el = $(
-    '<div id="demo-task" class="d-flex justify-content-center flex-column"><h1>Beispiel</h1></div>'
+    '<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4"><h1>Beispiel</h1></div>'
   )
 
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
@@ -34,6 +34,7 @@
     }
 
     config.resultHandler = endDemo
+    config.isDemo = true
 
     el.append(renderer(config))
 

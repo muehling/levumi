@@ -63,9 +63,8 @@
   let currentInputVal = ''
   let handleInput
   let handleSubmit
-  window.useNumberInput = ({ resultHandler, item }) => {
-    console.log('arghg', item)
-
+  let demoMode
+  window.useNumberInput = ({ resultHandler, item, isDemo }) => {
     const el = $(`
         <div id="number-input" class="d-flex justify-content-center flex-column">
           <div class="text-center">
@@ -77,9 +76,7 @@
           </div>
           <div class="container">
             <div class="mx-auto mt-3 ">
-              <div id="numpad">
-                
-                <div id="continue"><button class="calc-btn btn btn-success w-100">Weiter</button></div>
+              <div id="numpad">               
               </div>
               <div id="empty-error" class="text-danger"></div>
             </div>
@@ -88,6 +85,7 @@
     `)
 
     handleSubmit = resultHandler
+    demoMode = isDemo
 
     attachHandlers()
 
@@ -113,15 +111,20 @@
     const del = $('<div class="calc-btn btn btn-warning delete">Löschen</div>')
       .on('click', removeNumber)
       .css({ fontSize: '3rem', fontFamily: window.font_family })
-    const cont = $(
-      '<div id="continue"><button class="calc-btn btn btn-success w-100">Weiter?</button></div>'
-    )
+
+    const cont = $('<div id="continue" class="calc-btn btn btn-success w-100">Weiter</div>')
       .on('click', submit)
       .css({ fontSize: '3rem', fontFamily: window.font_family })
 
     numpad.append(del).append(cont)
 
     updateNumberInput(el, item)
+
+    if (demoMode) {
+      el.append(
+        '<p class="text-center">Zum Eingeben der Lösung kannst du sowohl die Tastatur als auch den Ziffernblock benutzen.</p>'
+      )
+    }
 
     return el
   }
@@ -130,8 +133,6 @@
     el,
     { continueText, firstNumber, secondNumber, operation, inputPosition }
   ) => {
-    console.log('miau', firstNumber, secondNumber, inputPosition)
-
     if (firstNumber !== undefined && secondNumber !== undefined && inputPosition !== undefined) {
       switch (inputPosition) {
         case '1':
@@ -173,6 +174,10 @@
       return
     }
     $('#empty-error').text('')
+
+    if (demoMode) {
+      $('#continue').hide()
+    }
 
     handleSubmit(currentInputVal)
     currentInputVal = ''

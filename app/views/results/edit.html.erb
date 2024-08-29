@@ -12,6 +12,13 @@
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
 
+<% if @test.script_files.count == 0 %>
+    <div id="main-container">
+      <div id="timer"></div>
+      <div id="content-container"></div>
+    </div>
+<% end %>
+
 
 <% @test.required_services&.each do |partial| %>
   <%= render partial: "services/#{partial}" %>
@@ -27,7 +34,10 @@
 <% if @assessment.nil? && @student.nil? %>
     <div class="m-4 text-center"><button id="end-preview" class="btn btn-danger">Vorschau beenden</button></div>
 <% end %>
-<%= raw @test.entry_point.download.force_encoding('UTF-8') %>
+<% puts @test.entry_point.download.inspect %>
+<% if !@test.entry_point.download.nil? %>
+    <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
+<% end %>
 <!-- Testskripte laden und Testumgebung definieren -->
 <script type="module">
     // all variables and functions declared here that are part of the interface of the tests
@@ -186,16 +196,20 @@
     const shuffleArray = (array)=> {
        let j = undefined
         for (let i = array.length - 1; i > 0; --i) {
-            j = Math.floor(Math.random() * (i + 1)); //Hier nötig, da ansonsten [ in der nächsten Zeile als Array-Zugriff interpretiert wird...
+            j = Math.floor(Math.random() * (i + 1)); 
             [array[i], array[j]] = [array[j], array[i]]
         }
     }
     window.shuffleArray = shuffleArray
 
-
-    //Test-Skripte einbinden
-    <% @test.script_files.each do |f| %>
-    <%= raw f.download.force_encoding('UTF-8') %>
+    // include test scripts, or call the test controller, if no tests scripts are found
+    <% if @test.script_files.count > 0       
+            @test.script_files.each do |f| %>
+                <%= raw f.download.force_encoding('UTF-8') %>
+    <%      end 
+        else        
+    %>   
+        window.useTestController()  
     <% end %>
 
     //FIXME these functions are declared in various test.js files, and referenced in click handlers in the corresponding test.html files

@@ -305,3 +305,44 @@ textarea:focus {
   color: $danger-color;
   transform: rotate(-45deg);
 }
+
+// generated tests
+#main-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#main-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.answer-button {
+  margin: 0.5rem;
+}
+
+#timer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#image-container {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
+}
+
+#content-container {
+  display: flex;
+  justify-content: center;
+}
