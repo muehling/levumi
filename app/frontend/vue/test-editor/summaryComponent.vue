@@ -18,6 +18,7 @@
 
 <script>
   import JSZip from 'jszip'
+  import { testDefinitions } from './test-definitions.js'
   export default {
     props: { allData: Object },
 
@@ -170,8 +171,10 @@
           return acc
         }, {})
 
+        const renderer = testDefinitions[this.allData.questionType].renderer
+
         const requiredServices = [
-          `v2/${this.allData.questionType}`,
+          `${renderer}`,
           'timer',
           'v2/content_page',
           'v2/save_result',

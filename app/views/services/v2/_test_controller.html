@@ -63,11 +63,11 @@
 
     const getRenderer = itemType => {
       switch (itemType) {
-        case 'render/multiple_choice':
+        case 'multiple_choice':
           return window.useMultipleChoice
-        case 'render/number_input':
+        case 'number_input':
           return window.useNumberInput
-        case 'render/audio_images_multiple_choice':
+        case 'audio_images_multiple_choice':
           return window.useAudioImagesMultipleChoice
         default:
           console.warn('Unknown renderer', itemType)

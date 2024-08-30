@@ -2,44 +2,29 @@
   <div>
     <div>Testart auswählen</div>
     <hr />
-    <div>
-      <b-button
-        v-for="questionType in questionTypes"
-        :key="questionType.id"
-        variant="outline-secondary"
-        class="m-2"
-        :disabled="questionType.disabled"
-        @click="chooseType(questionType.click)">
-        {{ questionType.title }}
-      </b-button>
-    </div>
+
+    <b-card v-for="def in testTypes" class="mb-4" :key="def.id">
+      <b-card-header>{{ def.label }}</b-card-header>
+      <b-card-body>
+        <p v-html="def.description"></p>
+        <b-button variant="outline-secondary" @click="chooseType(def.id)">Auswählen</b-button>
+      </b-card-body>
+    </b-card>
   </div>
 </template>
 
 <script>
+  import { testDefinitions } from './test-definitions.js'
   export default {
-    data() {
-      return {
-        questionTypes: [
-          {
-            id: 0,
-            title: 'Multiple Choice',
-            click: 'render/multiple_choice',
-          },
-          {
-            id: 1,
-            title: 'Arithmetik',
-            click: 'render/number_input',
-          },
-          {
-            id: 2,
-            title: 'Audio/Bilder Multiple Choice',
-            click: 'render/audio_images_multiple_choice',
-          },
-        ],
-      }
+    computed: {
+      testTypes() {
+        return Object.entries(testDefinitions).map(def => ({
+          label: def[1].label,
+          description: def[1].description,
+          id: def[0],
+        }))
+      },
     },
-
     methods: {
       chooseType: function (questionType) {
         this.$emit('buttonClicked', questionType)

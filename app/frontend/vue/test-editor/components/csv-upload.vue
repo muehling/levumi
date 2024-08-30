@@ -181,11 +181,11 @@
 
       parseData(data) {
         switch (this.questionType) {
-          case 'render/multiple_choice':
+          case 'multiple_choice':
             return this.parseMultipleChoice(data)
-          case 'render/number_input':
+          case 'number_input':
             return this.parseNumberInput(data)
-          case 'render/audio_images_multiple_choice':
+          case 'audio_images_multiple_choice':
             return this.parseAudioImageMultipleChoice(data)
           default:
             console.log('Unbekannte Testart :-(')

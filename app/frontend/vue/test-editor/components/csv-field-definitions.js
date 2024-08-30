@@ -20,6 +20,7 @@ export const fieldDefinitions = {
     'enthält die Frage als Text.',
     'enthält den Namen der Audio-Datei',
     'enthält den Namen des richtigen anzuklickenden Bildes.',
-    'enthalten die Namen der falschen Bilder.',
+    'enthält die Namen der falschen Bilder, durch Kommata ohne Leerzeichen voneinander getrennt.',
+    '',
   ],
 }
