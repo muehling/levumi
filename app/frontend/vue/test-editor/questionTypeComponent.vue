@@ -24,19 +24,17 @@
           {
             id: 0,
             title: 'Multiple Choice',
-            click: 'multiple_choice',
+            click: 'render/multiple_choice',
           },
           {
             id: 1,
             title: 'Arithmetik',
-            //disabled: true,
-            click: 'number_input',
+            click: 'render/number_input',
           },
           {
             id: 2,
-            title: 'Lückentext',
-            disabled: true,
-            click: 'gapText',
+            title: 'Audio/Bilder Multiple Choice',
+            click: 'render/audio_images_multiple_choice',
           },
         ],
       }

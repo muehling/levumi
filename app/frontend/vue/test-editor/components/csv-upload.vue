@@ -135,10 +135,10 @@
         const parsed = data.map((d, i) => {
           return {
             id: i + 1,
-            correctAnswer: d[3],
             group: dimensions.find(dim => dim.text === d[0]).id,
             assets: d[1],
             question: d[2],
+            correctAnswer: d[3],
             wrongAnswers: d.slice(4),
           }
         })
@@ -163,13 +163,30 @@
         return { questions: parsed, dimensions }
       },
 
+      parseAudioImageMultipleChoice(data) {
+        const dimensions = this.parseDimensions(data)
+        const parsed = data.map((d, i) => {
+          return {
+            id: i + 1,
+            group: dimensions.find(dim => dim.text === d[0]).id,
+            question: d[1],
+            audio: d[2],
+            correctAnswer: d[3],
+            wrongAnswers: d[4],
+            assets: `${d[2]},${d[3]},${d[4]}`,
+          }
+        })
+        return { questions: parsed, dimensions }
+      },
+
       parseData(data) {
         switch (this.questionType) {
-          case 'multiple_choice':
+          case 'render/multiple_choice':
             return this.parseMultipleChoice(data)
-
-          case 'number_input':
+          case 'render/number_input':
             return this.parseNumberInput(data)
+          case 'render/audio_images_multiple_choice':
+            return this.parseAudioImageMultipleChoice(data)
           default:
             console.log('Unbekannte Testart :-(')
         }

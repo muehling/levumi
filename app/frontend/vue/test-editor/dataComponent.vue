@@ -266,7 +266,6 @@
         )
 
         let uploadedAssets = this.assets.filter(file => file).map(file => file.name)
-        console.log('arghghg', allAssets, uploadedAssets)
 
         const missingAssets = difference(allAssets, uploadedAssets)
         const redundantAssets = difference(uploadedAssets, allAssets)

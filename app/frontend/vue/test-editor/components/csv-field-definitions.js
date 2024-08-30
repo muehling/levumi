@@ -15,4 +15,11 @@ export const fieldDefinitions = {
     'enthält die Position des Eingabefeldes. Für "echte" Rechenaufgaben ( 1 + 4= _ ) gilt die 3, für Platzhalteraufgaben ( _ + 3 = 5 ) 1 oder 2.',
     '',
   ],
+  audio_images_multiple_choice: [
+    'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
+    'enthält die Frage als Text.',
+    'enthält den Namen der Audio-Datei',
+    'enthält den Namen des richtigen anzuklickenden Bildes.',
+    'enthalten die Namen der falschen Bilder.',
+  ],
 }

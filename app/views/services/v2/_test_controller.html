@@ -55,19 +55,22 @@
 
         currentTask++
         const item = items[currentTask]
+        const nextItem = items[currentTask + 1]
         window.startTimer()
-        updateTask(item)
+        updateTask(item, nextItem)
       }
     }
 
     const getRenderer = itemType => {
       switch (itemType) {
-        case 'multiple_choice':
+        case 'render/multiple_choice':
           return window.useMultipleChoice
-        case 'number_input':
+        case 'render/number_input':
           return window.useNumberInput
+        case 'render/audio_images_multiple_choice':
+          return window.useAudioImagesMultipleChoice
         default:
-          console.warn('Unknown renderer')
+          console.warn('Unknown renderer', itemType)
       }
     }
 
@@ -97,13 +100,14 @@
       $('#content-container').html(el)
     }
 
-    const updateTask = item => {
+    const updateTask = (item, nextItem) => {
       const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
       const renderer = getRenderer(window.config.item_type)
       const el = renderer({
         id: item.id,
         styles,
         item,
+        nextItem,
         resultHandler,
       })
       $('#content-container').html(el)
