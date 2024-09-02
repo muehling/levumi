@@ -10,20 +10,13 @@
     <button class='btn btn-primary' id="sendCode" >Einmalcode anfordern </button>
     </div>
     <div>
-      <div class='form-group' id="hiddenField" style="display: none">
+      <div class='card-body' id="hiddenField" style="display: none">
           </br>
+          <label>Einmalcode eingeben</label>
           <input type='text' class='form-control' id='verificationCode' placeholder='Eingabe des Einmalcodes'>
-          <label>In welcher Stadt wurden Sie geboren?</label>
-          <input type='text' class='form-control' id='securityQuestion' placeholder='Antwort auf die Sicherheitsfrage'>
-          <button class='btn btn-primary' id="securityCheck" >Passwort anfordern </button>
-      </div>
-      <div class='form-group' id="hiddenAccess" style="display: none">
-      <button class='btn btn-success' id='lastSecurityCheck' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
-      Überprüfung erfolgreich<br>
-      Hier klicken, um das Passwort anzeigen
-      </button>
-      <div class='form-group' id="hiddenPassword" style="display: none">
-      <p id='successfulVerification'></p>
+          </br>
+          <button class='btn btn-primary' id="securityKeyCheck" >Überprüfung des Einmalcodes </button>
+          <div class='card-body' id="hiddenSecurityForm">
       </div>
       </div>
     </div>
@@ -31,11 +24,10 @@
       Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
     </div>
   </div>
-
 </div>
 <script type="module">
+
 async function sendVerificationCode(){
-  
   const email = $('#email-input').val()
   const mail = await fetch('/recovery_notification', {
     method: 'POST',
@@ -59,25 +51,11 @@ function showSecurityQuestions(){
   $('#hiddenField').show()
 }
 
+$("#sendCode").one("click", sendVerificationCode)
+$("#securityKeyCheck").one("click", checkKey)
 
-$("#sendCode").on("click", sendVerificationCode)
-$("#securityCheck").on("click", checkSecurityQuestions)
-$("#lastSecurityCheck").on("click", retrievePassword)
-
-async function checkSecurityQuestions(){
-  const email =  $('#email-input').val()
-  const security =  $('#securityQuestion').val()
-  const res = await fetch('/passwort', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({ email, security }),
-  })
-
+async function checkKey(){
+  const email = $('#email-input').val()
   const recovery_key =  $('#verificationCode').val()
   const key = await fetch('/recovery_key_verification', {
     method: 'POST',
@@ -89,131 +67,18 @@ async function checkSecurityQuestions(){
     },
     body: JSON.stringify({user : {email, recovery_key}}),
   })
-  if (res.status === 200 && key.status === 200){
-    $(document).ready(function(){
-      showSecurityAccess()
-    })
-  }
-} 
-function showSecurityAccess(){
-  $('#hiddenAccess').show()
-}
-
-async function retrievePassword(){
-  const email =  $('#email-input').val()
-  const security =  $('#securityQuestion').val()
-  const res = await fetch('/passwort', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({ email, security }),
-  })
-
-  const recovery_key =  $('#verificationCode').val()
-  const key = await fetch('/recovery_key_verification', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({user : {email, recovery_key}}),
-  })
-  if (res.status === 200 && key.status === 200){
-    const data = await res.json()
-    let password;
-    try {
-      password = sjcl.decrypt(security, data.user.security_digest)
-      console.log(password)
-      if(password){
-        $('#successfulVerification').text('Ihr Passwort ist: ' +password)
-        showPassword()
-        const del = await fetch('/delete_used_recovery_key', {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'X-Requested-With': 'XMLHttpRequest',
-            'Content-Type': 'application/json',
-            'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-          },
-          body: JSON.stringify({user : {email}}),
-        })
+  if(key.status === 200){
+    const partial = await fetch('/load_partial',{
+      method: 'GET',
+      headers: {
+        Accept: 'text/html',
+        'X-Requested-With': 'XMLHttpRequest',
       }
-
-    } catch (e) {
-      // error message is displayed in the else case below
+    })
+    if (partial.ok){
+      const content = await partial.text()
+      $('#hiddenSecurityForm').html(content)
     }
   }
 }
-async function showPassword(){
-  $('#hiddenPassword').show()
-
-}
-
-
-
-/*
-const submit = async e => {
-  e.preventDefault()
-  e.stopPropagation()
-
-  const email =  $('#email-input').val()
-  const security =  $('#security').val()
-
-  const res = await fetch('/passwort', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({ email, security }),
-  })
-
-  let pw = ''$("#password-reset").on("submit", submit)
-  if (res.status === 200) {
-
-    $('#res').html(
-      `
-        <div class='form-group'>
-          <input type='text' name='recovery_key' class='form-control' id='recovery_key' placeholder='Einmalcode nach Pressen des Überprüfen Knopfes'>
-        </div>
-        <button onclick="keyVerification()">Anzeigen des Passwortes</button>
-        
-      `
-    )
-    if (keyVerification()) {
-    const data = await res.json()
-    try {
-      pw = sjcl.decrypt(security, data.user.security_digest)
-    } catch (e) {
-      // error message is displayed in the else case below
-    }
-  } 
-  if (pw) {
-    $('#res').html(
-      `<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
-      Überprüfung erfolgreich<br>
-      Hier klicken, um das Passwort anzeigen
-      </button>
-      <div class='collapse mt-3' id='collapse'><p class="alert alert-success">${pw}</p>
-        <p>Bitte kehren Sie zur <a href="/">Startseite</a> zurück, um sich mit Ihrer Email-Adresse und dem angezeigten Passwort einzuloggen.</p>
-      </div>
-      `
-    )
-} else {
-  $('#res').html(
-    "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"
-  )
-}
-}
-
-}
-*/
 </script>

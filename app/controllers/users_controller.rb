@@ -15,9 +15,10 @@ class UsersController < ApplicationController
                   recovery_notification
                   recovery_key_verification
                   delete_used_recovery_key
+                  load_partial
                 ]
 
-  skip_before_action :set_login, only: %i[create register recover recovery_notification recovery_key_verification delete_used_recovery_key]
+  skip_before_action :set_login, only: %i[create register recover recovery_notification recovery_key_verification delete_used_recovery_key load_partial]
 
   #GET /start
   #GET /users/:id
@@ -315,9 +316,9 @@ class UsersController < ApplicationController
     headers['Cache-Control'] = 'no-store, must-revalidate'
     if request.post?
       @user = User.find_by_email(params[:email])
-    else
-      render 'recover', layout: 'minimal'
     end
+      render 'recover', layout: 'minimal'
+    
   end
 
   def recovery_notification
@@ -334,10 +335,14 @@ class UsersController < ApplicationController
       head :forbidden and return 
     end
   end
+
+  def load_partial
+    render partial: 'users/recover/partial_recover'
+  end
+
   def delete_used_recovery_key 
     @user = User.find_by_email(user_attributes[:email])
-    @user.recovery_key = ''
-    puts @user.recovery_key
+    @user.update(recovery_key:'')
     head :ok and return
   end
 

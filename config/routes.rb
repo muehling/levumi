@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   post '/recovery_key_verification', to:'users#recovery_key_verification'
   get '/recovery_key_verification', to:'users#recovery_key_verification'
   post '/delete_used_recovery_key', to:'users#delete_used_recovery_key'
+  get '/load_partial', to:'users#load_partial'
 
   # Vue Router routes
   get '/administration', to: 'users#show'
