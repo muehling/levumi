@@ -2,11 +2,13 @@
   <b-container>
     <b-card title="Test-Editor">
       <div v-if="view == 1">
-        <questionTypeComponent @buttonClicked="setType($event)"></questionTypeComponent>
+        <questionTypeComponent @test-selected="setType($event)"></questionTypeComponent>
       </div>
 
       <div v-show="view == 2">
-        <propertyComponent @setProperties="setProperties($event)"></propertyComponent>
+        <propertyComponent
+          :question-type="questionType"
+          @setProperties="setProperties($event)"></propertyComponent>
       </div>
       <div v-if="view == 3">
         <dataComponent
@@ -17,6 +19,7 @@
       <div v-if="view == 4">
         <summaryComponent
           :all-data="allData"
+          :question-type="questionType"
           @continueToSummary="setData($event)"></summaryComponent>
       </div>
     </b-card>

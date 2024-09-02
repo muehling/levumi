@@ -95,7 +95,7 @@
         isCorrect: isCorrect,
         correctAnswer: items[currentTask].correctAnswer,
         styles,
-        continueHandler: result => next(result),
+        continueHandler: () => next(res),
       })
       $('#content-container').html(el)
     }

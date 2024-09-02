@@ -1,6 +1,5 @@
 <template>
-  <div class="dataApp">
-    <h2>Fragen erstellen</h2>
+  <b-card class="dataApp" :title="`${questionTypeLabel}: Start-/Endseite/Daten definieren`">
     <div class="dataInfoText">
       In diesem Abschnitt können Sie die Start- und Endseite des Tests, sowie die einzelnen Fragen
       und Antworten definieren. Klicken Sie auf die einzelnen Abschnitte, um diese zu bearbeiten.
@@ -59,7 +58,7 @@
       </b-button>
       <b-button class="ml-2 d-none" @click="prepareData">debug</b-button>
     </div>
-  </div>
+  </b-card>
 </template>
 
 <script>
@@ -67,6 +66,7 @@
   import CsvUpload from './components/csv-upload.vue'
   import difference from 'lodash/difference'
   import { useGlobalStore } from 'src/store/store'
+  import { testDefinitions } from './test-definitions.js'
 
   export default {
     components: { CsvUpload, ContentInput },
@@ -91,6 +91,9 @@
       }
     },
     computed: {
+      questionTypeLabel() {
+        return testDefinitions[this.questionType]?.label
+      },
       positionId() {
         let a
         switch (this.currentTab) {

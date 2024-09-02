@@ -134,7 +134,7 @@
           ...(this.wrongAnswers[0].text !== '' && {
             wrongAnswers: this.wrongAnswers.map(answer => answer.text),
           }),
-          ...(this.question !== '' && { question: this.question }),
+          ...(this.question !== '' && { question: this.question.replaceAll('"', 'ʺ') }),
           ...(this.group && { group: this.group }),
           ...(this.image && { image: this.image }),
           ...(this.imageTextOrder && { imageTextOrder: this.imageTextOrder }),

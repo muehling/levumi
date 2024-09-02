@@ -171,7 +171,7 @@
         this.items = tempItems
       },
       updateElement(item, val) {
-        item.text = val
+        item.text = val.replaceAll('"', 'ʺ')
         this.items = this.items.map(el => (el.id === item.id ? item : el))
         this.$emit('update-content', this.items)
       },

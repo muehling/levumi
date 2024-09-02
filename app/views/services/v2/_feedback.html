@@ -1,11 +1,17 @@
 <script type="module">
   window.useFeedback = ({ styles, isCorrect, correctAnswer, continueHandler }) => {
     let src, text
+
     if (isCorrect) {
-      text = 'Das war richtig!'
+      text = window.config.options?.feedback?.positive
+        ? window.config.options?.feedback?.positive
+        : 'Das war richtig!'
       src = '/images/shared/Levumi-jubelt.gif'
     } else {
-      text = `Das war nicht ganz richtig. Richtig wäre "${correctAnswer}" gewesen.`
+      text = window.config.options?.feedback?.negative
+        ? window.config.options?.feedback?.negative
+        : `Das war nicht ganz richtig. Richtig wäre "###" gewesen.`
+      text = text.replace('###', correctAnswer)
       src = '/images/shared/Levumi-liest.gif'
     }
     const config = [
@@ -14,7 +20,7 @@
     ]
 
     const el = window.useContentPage({
-      id: 'start-page',
+      id: 'feedback-page',
       styles,
       content: config,
       continueConfig: {

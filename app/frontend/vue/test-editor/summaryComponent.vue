@@ -20,7 +20,7 @@
   import JSZip from 'jszip'
   import { testDefinitions } from './test-definitions.js'
   export default {
-    props: { allData: Object },
+    props: { allData: Object, questionType: String },
 
     data() {
       return {
@@ -29,6 +29,9 @@
     },
 
     computed: {
+      questionTypeLabel() {
+        return testDefinitions[this.questionType]?.label
+      },
       isMultipleChoice() {
         return this.allData.questionType === 'multiple_choice'
       },
@@ -55,6 +58,8 @@
     methods: {
       printAll: function () {
         console.log(this.allData)
+        console.log(this.properties)
+        console.log(this.getConfiguration())
       },
 
       printQuestions: function () {
@@ -73,6 +78,10 @@
           options: {
             show_demo_task: this.properties.show_demo_task,
             show_feedback: this.properties.show_feedback,
+            feedback: {
+              positive: this.properties.positive_feedback_text,
+              negative: this.properties.negative_feedback_text,
+            },
           },
           views: [
             {

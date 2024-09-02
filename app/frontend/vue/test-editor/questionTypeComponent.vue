@@ -3,8 +3,10 @@
     <div>Testart auswählen</div>
     <hr />
 
-    <b-card v-for="def in testTypes" class="mb-4" :key="def.id">
-      <b-card-header>{{ def.label }}</b-card-header>
+    <b-card v-for="def in testTypes" :key="def.id" class="mb-4">
+      <b-card-header>
+        <strong>{{ def.label }}</strong>
+      </b-card-header>
       <b-card-body>
         <p v-html="def.description"></p>
         <b-button variant="outline-secondary" @click="chooseType(def.id)">Auswählen</b-button>
@@ -27,7 +29,7 @@
     },
     methods: {
       chooseType: function (questionType) {
-        this.$emit('buttonClicked', questionType)
+        this.$emit('test-selected', questionType)
       },
     },
   }

@@ -139,7 +139,7 @@
             assets: d[1],
             question: d[2],
             correctAnswer: d[3],
-            wrongAnswers: d.slice(4),
+            wrongAnswers: d[4].split(','),
           }
         })
         return { questions: parsed, dimensions }

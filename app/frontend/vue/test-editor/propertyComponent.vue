@@ -1,5 +1,5 @@
 <template>
-  <b-card title="Eigenschaften definieren">
+  <b-card :title="`${questionTypeLabel}: Eigenschaften definieren`">
     <div class="m-4">
       <b-button class="mt-3" @click="load">Laden</b-button>
       <b-button class="mt-3 ml-2" @click="save">Speichern</b-button>
@@ -131,6 +131,22 @@
           help-text="Wenn aktiv, wird nach jeder Frage eine Feedback-Seite angezeigt." />
       </b-form-group>
       <b-form-group
+        v-if="showFeedback"
+        label="Text für positives Feedback"
+        label-for="inputPositiveFeedback"
+        label-cols="3">
+        <b-form-input id="inputPositiveFeedback" v-model="positiveFeedbackText" />
+      </b-form-group>
+      <b-form-group
+        v-if="showFeedback"
+        label="Text für negatives Feedback"
+        label-for="inputNegativeFeedback"
+        label-cols="3">
+        <b-form-input id="inputNegativeFeedback" v-model="negativeFeedbackText" />
+        <context-help
+          help-text="Text, der als negatives Feedback dargestellt wird. ### kann als Platzhalter für die korrekte Antwort verwendet werden." />
+      </b-form-group>
+      <b-form-group
         id="input-group-12"
         label="Beschreibung"
         label-for="inputDescription"
@@ -179,9 +195,11 @@
 <script>
   import { useGlobalStore } from 'src/store/store'
   import ContextHelp from 'src/vue/shared/context-help.vue'
+  import { testDefinitions } from './test-definitions.js'
 
   export default {
     components: { ContextHelp },
+    props: { questionType: String },
     setup() {
       const store = useGlobalStore()
       return { store }
@@ -204,6 +222,8 @@
         wasSubmitted: false,
         showDemoTask: false,
         showFeedback: false,
+        positiveFeedbackText: '',
+        negativeFeedbackText: '',
 
         timeDropdownOptions: [
           { value: null, text: 'Bitte auswählen' },
@@ -244,6 +264,9 @@
     },
 
     computed: {
+      questionTypeLabel() {
+        return testDefinitions[this.questionType]?.label
+      },
       areas() {
         return this.store.staticData.testMetaData.areas.map(area => ({
           value: area.id,
@@ -296,6 +319,8 @@
 
           show_demo_task: this.showDemoTask,
           show_feedback: this.showFeedback,
+          positive_feedback_text: this.positiveFeedbackText,
+          negative_feedback_text: this.negativeFeedbackText,
         }
       },
     },
@@ -336,6 +361,8 @@
 
           this.showDemoTask = parseInt(props.show_demo_task, 10)
           this.showFeedback = parseInt(props.show_feedback, 10)
+          this.positiveFeedbackText = props.positive_feedback_text.replaceAll('"', 'ʺ')
+          this.negativeFeedbackText = props.negative_feedback_text.replaceAll('"', 'ʺ')
         } else {
           this.store.setErrorMessage('Keine Daten gefunden!')
         }
