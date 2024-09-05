@@ -153,23 +153,23 @@
     }
   }
 
-  let handlersAttached = false;
+  let handlersAttached = false
   const attachHandlers = () => {
-    if(!handlersAttached){
-    // keyboard input
-    document.addEventListener('keydown', e => {
-      e.preventDefault()
-      e.stopPropagation()
-      if (e.key >= '0' && e.key <= '9') {
-        addNumber(e.key)
-      } else if (e.key === 'Backspace') {
-        removeNumber()
-      } else if (e.key === 'Enter') {
-        submit()
-      }
-    })
-    handlersAttached = true;
-  }
+    if (!handlersAttached) {
+      // keyboard input
+      document.addEventListener('keydown', e => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (e.key >= '0' && e.key <= '9') {
+          addNumber(e.key)
+        } else if (e.key === 'Backspace') {
+          removeNumber()
+        } else if (e.key === 'Enter') {
+          submit()
+        }
+      })
+      handlersAttached = true
+    }
   }
 
   const submit = () => {
@@ -183,7 +183,7 @@
       $('#continue').hide()
     }
 
-    handleSubmit()
+    handleSubmit(currentInputVal)
     currentInputVal = ''
     $('#answer').val(currentInputVal)
   }
