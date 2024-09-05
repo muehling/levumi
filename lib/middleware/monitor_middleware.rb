@@ -16,13 +16,14 @@ module Middleware
         queue_time -= network_time
 
         Rails
-          .logger.info "######################## Request queue_time=#{queue_time}ms network_time=#{network_time}ms"
+          .logger.info "######################## queue_time=#{queue_time}ms network_time=#{network_time}ms #{req}"
       else
         network_time = env['puma.request_body_wait'].to_i
         request_start_header = 1
         queue_time = 'unknown'
+        req = "#{env['REQUEST_METHOD']} #{env['REQUEST_URI']}"
         Rails
-          .logger.info "######################## Request queue_time=#{queue_time}ms network_time=#{network_time}ms"
+          .logger.info "######################## queue_time=#{queue_time}ms network_time=#{network_time}ms #{req}"
       end
       @app.call(env)
     end

@@ -27,6 +27,14 @@
   }
 </style>
 <script type="module">
+  const getBlobUrl = asset => {
+    if (window.assetBlobs[asset]) {
+      return assetBlobs[asset]
+    } else {
+      return window.media_paths[asset]
+    }
+  }
+
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
     const el = $(
       `<div class="container d-flex flex-column w-100">
@@ -34,7 +42,7 @@
           <i class="fas fa-arrow-rotate-right"></i>
         </button>
       <div id='audio-images-multiple-choice-${id}' class='height-80 d-flex justify-content-center align-items-center flex-column'>
-        <audio id='audio-${id}' autoplay src='${media_paths[item.audio]}'></audio>
+        <audio id='audio-${id}' autoplay src='${getBlobUrl(item.audio)}'></audio>
        
          
         <div class="w-100">
@@ -51,7 +59,7 @@
     const buttons = images.map(image => {
       return $(
         `<div class="image-button col-6 p-3">
-          <div class="image-button-inner" style="background-image: url(${media_paths[image]})"></div>
+          <div class="image-button-inner" style="background-image: url(${getBlobUrl(image)})"></div>
         </div>`
       ).on('click', () => resultHandler(image))
     })

@@ -1,7 +1,9 @@
 <script>
   window.useTestController = () => {
     let currentTask = -1
-    let result = []
+    const result = []
+    const assetBlobs = {}
+    window.assetBlobs = window.assetBlobs || {}
     let isPaused = false
     let wasDemoDisplayed = false
     const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
@@ -19,6 +21,70 @@
     }
     const styles = { fontSize, fontFamily: window.font_family }
 
+    //######################################
+    //## preload assets
+    //######################################
+
+    const readAsset = asset => {
+      return new Promise(async (resolve, reject) => {
+        if (assetBlobs[asset]) {
+          return
+        }
+        const response = await fetch(window.media_paths[asset])
+        const data = await response.arrayBuffer()
+        const parts = asset.split('.')
+        const fileExtension = parts[parts.length - 1]
+        let fileType
+        switch (fileExtension) {
+          case 'mp3':
+            fileType = 'audio/mp3'
+            break
+          case 'webp':
+            fileType = 'image/webp'
+            break
+          case 'png':
+            fileType = 'image/png'
+            break
+          case 'jpg':
+          case 'jpeg':
+            fileType = 'image/jpg'
+            break
+
+          default:
+            break
+        }
+
+        const blob = new Blob([data], { type: fileType })
+        const blobUrl = URL.createObjectURL(blob)
+
+        assetBlobs[asset] = blobUrl
+      })
+    }
+
+    const preloadAssets = () => {
+      const nextItems = [
+        items[currentTask],
+        items[currentTask + 1],
+        items[currentTask + 2],
+        items[currentTask + 3],
+      ]
+
+      nextItems.forEach(item => {
+        if (!item.assets) {
+          return
+        }
+
+        item.assets.split(',').forEach(async asset => {
+          await readAsset(asset)
+        })
+
+        window.assetBlobs = assetBlobs
+      })
+    }
+
+    //######################################
+    //## store result from previous task and set next task
+    //######################################
     const next = res => {
       if (isPaused) {
         return
@@ -44,6 +110,9 @@
       }
     }
 
+    //######################################
+    //## set next item
+    //######################################
     const setNextItem = () => {
       if (window.config.options?.show_demo_task && !wasDemoDisplayed) {
         displayDemoItem()
@@ -57,10 +126,14 @@
         const item = items[currentTask]
         const nextItem = items[currentTask + 1]
         window.startTimer()
-        updateTask(item, nextItem)
+        preloadAssets()
+        renderItem(item, nextItem)
       }
     }
 
+    //######################################
+    //## get the correct renderer for the item
+    //######################################
     const getRenderer = itemType => {
       switch (itemType) {
         case 'multiple_choice':
@@ -74,10 +147,16 @@
       }
     }
 
+    //######################################
+    //## end demo and start test
+    //######################################
     const endDemo = () => {
       setNextItem()
     }
 
+    //######################################
+    //## display demo item
+    //######################################
     const displayDemoItem = () => {
       const itemIndex = Math.floor(Math.random() * Math.floor(items.length - 1))
       const renderer = getRenderer(window.config.item_type)
@@ -89,6 +168,9 @@
       $('#content-container').html(el)
     }
 
+    //######################################
+    //## display feedback page
+    //######################################
     const displayFeedback = res => {
       const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
       const el = window.useFeedback({
@@ -100,7 +182,10 @@
       $('#content-container').html(el)
     }
 
-    const updateTask = (item, nextItem) => {
+    //######################################
+    //## render the current item
+    //######################################
+    const renderItem = (item, nextItem) => {
       const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
       const renderer = getRenderer(window.config.item_type)
       const el = renderer({
@@ -113,11 +198,17 @@
       $('#content-container').html(el)
     }
 
+    //######################################
+    //## display end page after test is complete
+    //######################################
     const quit = trend => {
       const el = window.useEndPage({ config: window.config.endPage, styles, trend })
       $('#content-container').html(el)
     }
 
+    //######################################
+    //## send test results to backend
+    //######################################
     const save = () => {
       const duration = timerWidget.getTotalDuration()
       return window.useSaveResult({ result, duration, dimensions: window.config.dimensions })
@@ -140,7 +231,7 @@
     }
 
     //######################################
-    //## Timer
+    //## initialize timer
     //######################################
     const handlePause = isTimerPaused => {
       isPaused = isTimerPaused
