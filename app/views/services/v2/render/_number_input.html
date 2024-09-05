@@ -153,7 +153,9 @@
     }
   }
 
+  let handlersAttached = false;
   const attachHandlers = () => {
+    if(!handlersAttached){
     // keyboard input
     document.addEventListener('keydown', e => {
       e.preventDefault()
@@ -166,6 +168,8 @@
         submit()
       }
     })
+    handlersAttached = true;
+  }
   }
 
   const submit = () => {
@@ -179,9 +183,9 @@
       $('#continue').hide()
     }
 
-    handleSubmit(currentInputVal)
+    handleSubmit()
     currentInputVal = ''
-    $('#answer').val('')
+    $('#answer').val(currentInputVal)
   }
 
   const addNumber = num => {
