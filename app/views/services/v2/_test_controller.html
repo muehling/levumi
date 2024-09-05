@@ -62,15 +62,11 @@
     }
 
     const preloadAssets = () => {
-      const nextItems = [
-        items[currentTask],
-        items[currentTask + 1],
-        items[currentTask + 2],
-        items[currentTask + 3],
-      ]
+      const index = currentTask >= 0 ? currentTask : 0
+      const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
 
       nextItems.forEach(item => {
-        if (!item.assets) {
+        if (!item?.assets) {
           return
         }
 
@@ -217,6 +213,7 @@
     //######################################
     //## start test
     //######################################
+    preloadAssets()
     const el = window.useStartPage({
       styles,
       config: window.config.startPage,
