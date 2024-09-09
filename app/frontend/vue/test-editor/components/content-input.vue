@@ -43,12 +43,12 @@
             @input="val => updateElement(item, val)" />
 
           <b-form-file
-            v-if="item.type == 'image'"
+            v-if="item.type == 'asset'"
             :id="`imageUpload${item.id}`"
             accept="image/*"
             class="inputImage"
             size="md"
-            :placeholder="item.image ? item.image.name : 'Bild hochladen'"
+            :placeholder="item.asset ? item.asset.name : 'Bild hochladen'"
             @input="addPicture(item)" />
         </div>
         <b-button-group vertical>
@@ -89,7 +89,7 @@
         </b-button>
         <br />
         <!-- Adds an img tag -->
-        <b-button variant="outline-secondary" class="w-100 mb-3" @click="addElement('image')">
+        <b-button variant="outline-secondary" class="w-100 mb-3" @click="addElement('asset')">
           Bild
         </b-button>
       </div>
@@ -135,7 +135,7 @@
             return 'Überschrift 2'
           case 'p':
             return 'Fließtext'
-          case 'image':
+          case 'asset':
             return 'Bild'
           default:
             return '<unbekannter Typ>'
@@ -155,7 +155,7 @@
       },
       addPicture(item) {
         const file = document.getElementById(`imageUpload${item.id}`).files[0]
-        item.image = file
+        item.asset = file
         this.updateElement(item)
       },
       moveElement(itemId, direction) {
@@ -171,7 +171,9 @@
         this.items = tempItems
       },
       updateElement(item, val) {
-        item.text = val.replaceAll('"', 'ʺ')
+        if (val) {
+          item.text = val.replaceAll('"', 'ʺ')
+        }
         this.items = this.items.map(el => (el.id === item.id ? item : el))
         this.$emit('update-content', this.items)
       },
@@ -187,9 +189,9 @@
 
       generateHTMLforPreview: function () {
         return this.items.reduce((string, currentLine, index) => {
-          if (currentLine.type == 'image') {
+          if (currentLine.type == 'asset') {
             return (string +=
-              '<div id="imageContainer' + index + '" class = "imageContainer"></div><br>')
+              '<div id="imageContainer' + index + '" class = "imageContainer"></div>')
           } else {
             return (string +=
               '<' + currentLine.type + '>' + currentLine.text + '</' + currentLine.type + '><br>')
@@ -200,15 +202,15 @@
       addImagesToPreview: function () {
         let imageIsMissing = false
         this.items.forEach((element, index) => {
-          if (element.type == 'image') {
+          if (element.type == 'asset') {
             let reader = new FileReader()
             reader.onload = function (e) {
               let img = new Image()
               img.src = e.target.result
               document.getElementById('imageContainer' + index).appendChild(img)
             }
-            if (element.image) {
-              reader.readAsDataURL(element.image)
+            if (element.asset) {
+              reader.readAsDataURL(element.asset)
             } else {
               imageIsMissing = true
             }

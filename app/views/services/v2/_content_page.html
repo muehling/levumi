@@ -28,8 +28,8 @@
     )
 
     content.forEach((item, index) => {
-      if (item.type === 'image') {
-        const imgSrc = item.image ? window.media_paths[item.image] : item.src
+      if (item.type === 'asset') {
+        const imgSrc = item.asset ? window.media_paths[item.asset] : item.src
         el.append(
           `<div id='content-image-${index}' class='content-image-element' style='background-image:url(${imgSrc});'></div`
         )
