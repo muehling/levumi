@@ -15,10 +15,17 @@ class UsersController < ApplicationController
                   recovery_notification
                   recovery_key_verification
                   delete_used_recovery_key
-                  load_partial
                 ]
 
-  skip_before_action :set_login, only: %i[create register recover recovery_notification recovery_key_verification delete_used_recovery_key load_partial]
+  skip_before_action :set_login,
+                     only: %i[
+                       create
+                       register
+                       recover
+                       recovery_notification
+                       recovery_key_verification
+                       delete_used_recovery_key
+                     ]
 
   #GET /start
   #GET /users/:id
@@ -314,35 +321,44 @@ class UsersController < ApplicationController
   #POST /passwort
   def recover
     headers['Cache-Control'] = 'no-store, must-revalidate'
-    if request.post?
-      @user = User.find_by_email(params[:email])
-    end
-      render 'recover', layout: 'minimal'
-    
+    @user = User.find_by_email(params[:email]) if request.post?
+    render 'recover', layout: 'minimal'
   end
 
   def recovery_notification
     @user = User.find_by_email(user_attributes[:email])
-    @user.update(recovery_key:(0...9).map { ('a'..'z').to_a[rand(26)] }.join)
-    UserMailer.with(sender: 'noreply@levumi.de',user: @user).password_reset.deliver_later
+    if @user.nil?
+      render json: { message: 'Diese E-Mail-Adresse ist nicht registriert!' }, status: :not_found
+      return
+    elsif @user.intro_state < 4
+      render json: {
+               message:
+                 'Bitte schließen Sie zunächst die Registrierung mit dem Code aus Registrierungsmail ab!'
+             },
+             status: :not_acceptable
+      return
+    end
+    @user.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+    UserMailer.with(sender: 'noreply@levumi.de', user: @user).password_reset.deliver_later
     head :ok
   end
+
   def recovery_key_verification
     @user = User.find_by_email(user_attributes[:email])
     if @user.recovery_key == user_attributes[:recovery_key]
-      head :ok and return
-    else 
-      head :forbidden and return 
+      respond_to do |format|
+        format.html { render partial: 'users/recover/decrypt_password' and return }
+        format.json { render json: @user and return }
+      end
+    else
+      render json: { message: 'Übermittelter Code stimmt nicht überein!' }, status: :forbidden
+      return
     end
   end
 
-  def load_partial
-    render partial: 'users/recover/partial_recover'
-  end
-
-  def delete_used_recovery_key 
+  def delete_used_recovery_key
     @user = User.find_by_email(user_attributes[:email])
-    @user.update(recovery_key:'')
+    @user.update(recovery_key: '')
     head :ok and return
   end
 

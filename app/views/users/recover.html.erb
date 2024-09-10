@@ -1,84 +1,90 @@
 <div class="container">
-  <div class='card mt-4'>  
-    <div class='card-header'>
-      Passwort wiederherstellen
-    </div>
-    <div class='card card-body'>
-    <div>
-    <input type='email' name='email' class='form-control' id='email-input' placeholder='E-Mail Adresse'>
-    </br>
-    <button class='btn btn-primary' id="sendCode" >Einmalcode anfordern </button>
-    </div>
-    <div>
-      <div class='card-body' id="hiddenField" style="display: none">
-          </br>
-          <label>Einmalcode eingeben</label>
-          <input type='text' class='form-control' id='verificationCode' placeholder='Eingabe des Einmalcodes'>
-          </br>
-          <button class='btn btn-primary' id="securityKeyCheck" >Überprüfung des Einmalcodes </button>
-          <div class='card-body' id="hiddenSecurityForm">
+  <div class="card mt-4">
+    <div class="card-header"><strong>Passwort wiederherstellen</strong></div>
+    <div class="card card-body">
+      <p>Bitte geben Sie Ihre E-Mail-Adresse ein, und fordern Sie dann einen Freischaltcode an.</p>
+      <div>
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          id="email-input"
+          placeholder="E-Mail-Adresse" />
+
+        <div id="email-invalid-feedback" class="invalid-feedback" style="display: none">
+          
+        </div>
+        <button class="btn btn-primary mt-3" id="send-code">Einmalcode anfordern</button>
       </div>
+      <div>
+        <div id="hidden-code-input" style="display: none">
+          <input
+            type="text"
+            class="form-control mt-4"
+            id="verificationCode"
+            placeholder="Einmal-Code" />
+          <div id="code-invalid-feedback" class="invalid-feedback" style="display: none">
+            Der eingegebene Code ist falsch!
+          </div>
+          <button class="btn btn-primary mt-3" id="security-key-check">
+            Überprüfung des Einmalcodes
+          </button>
+        </div>
+        <div id="hidden-security-form"></div>
       </div>
-    </div>
-    <div id='res' class='card-footer'>
-      Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
     </div>
   </div>
 </div>
 <script type="module">
+  $('#send-code').on('click', sendVerificationCode)
+  $('#security-key-check').on('click', checkKey)
 
-async function sendVerificationCode(){
-  const email = $('#email-input').val()
-  const mail = await fetch('/recovery_notification', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({user : {email}}),
-  })
-  if (mail.status === 200){
-    $(document).ready(function(){
-      showSecurityQuestions()
+  async function sendVerificationCode() {
+    $('#email-invalid-feedback').hide()
+    const email = $('#email-input').val()
+    if (!email || !email.includes('@')) {
+      $('#email-invalid-feedback').text("Bitte geben Sie eine gültige E-Mail-Adresse an.").show()
+      return
     }
-    )
-    
+    const mail = await fetch('/recovery_notification', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      },
+      body: JSON.stringify({ user: { email } }),
+    })
+    if (mail.status === 200) {
+      $('#hidden-code-input').show()
+    } else {
+      const res = await mail.json()
+      
+      $('#email-invalid-feedback').text(res.message).show()
+      return
+    }
   }
-}
-function showSecurityQuestions(){
-  $('#hiddenField').show()
-}
 
-$("#sendCode").one("click", sendVerificationCode)
-$("#securityKeyCheck").one("click", checkKey)
-
-async function checkKey(){
-  const email = $('#email-input').val()
-  const recovery_key =  $('#verificationCode').val()
-  const key = await fetch('/recovery_key_verification', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({user : {email, recovery_key}}),
-  })
-  if(key.status === 200){
-    const partial = await fetch('/load_partial',{
-      method: 'GET',
+  async function checkKey() {
+    $('#code-invalid-feedback').hide()
+    const email = $('#email-input').val()
+    const recovery_key = $('#verificationCode').val()
+    const key = await fetch('/recovery_key_verification', {
+      method: 'POST',
       headers: {
         Accept: 'text/html',
         'X-Requested-With': 'XMLHttpRequest',
-      }
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+      },
+      body: JSON.stringify({ user: { email, recovery_key } }),
     })
-    if (partial.ok){
-      const content = await partial.text()
-      $('#hiddenSecurityForm').html(content)
+    if (key.status === 200) {
+      const content = await key.text()
+      $('#hidden-security-form').html(content)
+    } else if (key.status === 403) {
+      $('#code-invalid-feedback').show()
     }
   }
-}
 </script>
