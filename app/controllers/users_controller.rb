@@ -351,14 +351,14 @@ class UsersController < ApplicationController
         format.json { render json: @user and return }
       end
     else
-      render json: { message: 'Übermittelter Code stimmt nicht überein!' }, status: :forbidden
+      render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
       return
     end
   end
 
   def delete_used_recovery_key
     @user = User.find_by_email(user_attributes[:email])
-    @user.update(recovery_key: '')
+    @user.update(recovery_key: nil)
     head :ok and return
   end
 

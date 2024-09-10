@@ -44,6 +44,7 @@ class ApplicationController < ActionController::Base
     if !u.nil? && u.authenticate(params[:password])
       session[:user] = u.id
       u.last_login = Time.now
+      u.recovery_key = nil
       u.save
 
       #head :ok
