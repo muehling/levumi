@@ -54,9 +54,14 @@
       </b-form-group>
       <hr />
       <b-form-group id="input-group-6" label="Kürzel" label-for="inputShorthand" label-cols="3">
-        <b-form-input id="inputShorthand" v-model="shorthand" required class="d-inline" />
+        <b-form-input
+          id="inputShorthand"
+          v-model="shorthand"
+          :formatter="setShorthand"
+          required
+          class="d-inline" />
         <context-help
-          help-text="Kürzel des Tests. Muss eindeutig sein. Aktuell findet allerdings keine Überprüfung statt, ob das Kürzel bereits vergeben ist." />
+          help-text="Kürzel des Tests. Muss eindeutig sein und darf keine Leerzeichen enthalten. Aktuell findet keine Überprüfung statt, ob das Kürzel bereits vergeben ist." />
       </b-form-group>
 
       <b-form-group
@@ -323,9 +328,16 @@
           negative_feedback_text: this.negativeFeedbackText,
         }
       },
+      shd() {
+        return this.shorthand.replaceAll(/\s/g, '')
+      },
     },
 
     methods: {
+      setShorthand(val) {
+        const trimmed = val.replaceAll(/\s/g, '')
+        return trimmed
+      },
       load() {
         const d = localStorage.getItem('test-editor-data')
 

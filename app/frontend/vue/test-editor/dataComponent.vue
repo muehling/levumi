@@ -110,15 +110,6 @@
         return this.questionType
       },
 
-      isMultipleChoice() {
-        return this.questionType === 'multiple_choice'
-      },
-      isTrueFalse() {
-        return this.questionType === 'trueOrFalse'
-      },
-      isGapText() {
-        return this.questionType === 'gapText'
-      },
       dataWasUploaded() {
         return this.fileUploaded || !this.isEmptyManualQuestions
       },
@@ -216,8 +207,6 @@
       replaceUnsafeCharacters(elArray, prop) {
         const parsed = elArray.map(el => {
           if (el[prop]) {
-            //TODO proper handling for " and '
-
             return {
               ...el,
               [prop]: el[prop]
@@ -254,7 +243,6 @@
           }
           return acc.concat(assets)
         }, [])
-        console.log('assetsInQuestions', assetsInQuestions)
 
         const assetsInStaticPages = this.startPage
           .filter(el => el.type === 'asset')
@@ -290,7 +278,7 @@
 
         if (missingAssets.length) {
           this.store.setErrorMessage(
-            `Folgende Bilder sind in den Eingabedaten definiert, wurden jedoch nicht hochgeladen: 
+            `Folgende Dateien sind in den Eingabedaten definiert, wurden jedoch nicht hochgeladen: 
             \r\n${missingAssets.join('\r\n')}
             \r\nBitte fügen Sie diese auf dem Tab 'Fragen' hinzu.`
           )
@@ -305,7 +293,7 @@
 
         if (redundantAssets.length) {
           this.store.setGenericMessage({
-            message: `Folgende Bilder wurden hochgeladen, sind jedoch nicht in den Eingabedaten definiert: 
+            message: `Folgende Dateien wurden hochgeladen, sind jedoch nicht in den Eingabedaten definiert: 
           \r\n${redundantAssets.join('\r\n')}
           \r\nDiese wurden entfernt.`,
           })
