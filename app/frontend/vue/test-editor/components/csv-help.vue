@@ -27,6 +27,18 @@
               {{ field }}
             </li>
           </ul>
+          <b-card variant="info">
+            <p>
+              Es kann vorkommen, dass beim Export aus Excel oder Libre Office noch andere
+              Trennzeichen hinzugefügt werden. Diese müssen ggf. durch andere Export-Einstellungen
+              oder schlimmstenfalls händisch entfernt werden. Dies kann überprüft werden, indem die
+              exportierte Datei in einem einfachen Text-Editor geöffnet wird.
+            </p>
+            <p>
+              Eine korrekte Zeile sieht folgendermaßen aus:
+              <b-alert show>{{ demoLine }}</b-alert>
+            </p>
+          </b-card>
         </b-card>
       </b-collapse>
     </div>
@@ -40,6 +52,9 @@
     computed: {
       fields() {
         return testDefinitions[this.type].csvFieldHelp
+      },
+      demoLine() {
+        return testDefinitions[this.type].demoLine
       },
     },
   }
