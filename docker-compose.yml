@@ -8,6 +8,8 @@ services:
     command: bash -c "rm -f tmp/pids/server.pid; rails s -b '0.0.0.0' -p 3000"
     depends_on:
       - vite
+      - db
+      - redis
     volumes:
       - ./:/usr/src/app
       - bundle:/usr/local/bundle
@@ -22,6 +24,7 @@ services:
       VITE_RUBY_HOST: vite
       MAIL_HOST: mailhog
       MAIL_PORT: 1025
+      REDIS_URL: 'redis://levumi_redis_1:6379'
       #MAINTENANCE: "true" # uncomment to test maintenance mode
   vite:
     build: .
@@ -47,9 +50,11 @@ services:
     volumes:
       - db:/var/lib/mysql
   redis:
-    image: redis
+    image: "redis:7-alpine"
+    ports:
+      - 6379
     volumes:
-      - redis_data:/data
+    - ./tmp/redis_data:/var/lib/redis/data
   mailhog:
     container_name: mailhog
     image: mailhog/mailhog:latest    
