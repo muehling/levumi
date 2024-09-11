@@ -71,4 +71,6 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail
+
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
 end

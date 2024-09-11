@@ -45,7 +45,7 @@ class Test < ApplicationRecord
     tests_meta =
       Rails
         .cache
-        .fetch('tests/tests_meta', expires_in: 7.days) do
+        .fetch('tests/tests_meta', expires_in: 30.days) do
           all_families =
             TestFamily.all.map do |family|
               tests_for_family = Test.where(test_family_id: family.id)
