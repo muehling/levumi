@@ -42,6 +42,10 @@ class Group < ApplicationRecord
     group_shares.where(owner: true).first.user
   end
 
+  def owned_by_login(user)
+    return user == owner
+  end
+
   def read_only(user)
     group_shares.where(user: user).pluck(:read_only).first
   end

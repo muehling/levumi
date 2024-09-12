@@ -11,122 +11,106 @@
       <b-row v-cloak class="mt-3">
         <b-col md="12">
           <b-tabs pills lazy>
-            <!--% Area.order(:name).all.each do |a| %-->
-            <!-- Oberste Ebene Lernbereiche -->
             <b-tab v-for="area in testData" :key="area.id">
               <template slot="title">
                 {{ area.name }}
               </template>
               <b-tabs pills lazy class="mt-3">
-                <!-- Hinweistext falls keine Tests vorhanden -->
                 <div slot="empty">
                   <div class="text-center text-muted">Keine Kompetenzbereiche vorhanden.</div>
                 </div>
-
-                <!--% a.competences.order(:name).each do |c| %-->
-                <!-- Zweite Ebene Kompetenzen -->
                 <b-tab v-for="competence in area.competences" :key="competence.id">
                   <template slot="title">
                     {{ competence.name }}
                   </template>
-
                   <b-alert show variant="secondary" class="mt-2">
                     <span class="text-small">{{ competence.description }}</span>
                   </b-alert>
 
                   <b-tabs pills lazy class="mt-3">
-                    <!-- Hinweistext falls keine Tests vorhanden -->
                     <div slot="empty">
                       <div class="text-center text-muted">Keine Tests vorhanden.</div>
                     </div>
-
-                    <!--% c.test_families.order(:name).each do |f| %-->
-                    <!-- Dritte Ebene Tests -->
                     <b-tab v-for="testFamily in competence.test_families" :key="testFamily.id">
                       <template slot="title">
                         {{ testFamily.name }}
                       </template>
-
                       <b-alert show variant="secondary" class="mt-2">
                         <span class="text-small">{{ testFamily.description }}</span>
                       </b-alert>
-
                       <b-card no-body class="mt-3">
                         <b-tabs pills lazy card vertical>
-                          <!--% f.tests.where(archive: false).order(:level).all.each do |t|  %-->
-                          <!-- Vierte Ebene Niveaustufen -->
                           <b-tab
                             v-for="test in testFamily.tests"
                             :key="test.id"
                             :title="test.level">
-                            <!-- Testinfo rendern -->
-                            <div id="info_<%= t.id %>">
-                              <div id="info_<%= t.id %>_inner">
-                                <div class="container-fluid">
-                                  <table
-                                    class="table table-sm table-striped table-borderless text-small mt-1">
-                                    <tr>
-                                      <td>Anzahl an Items</td>
-                                      <td>{{ test.items_count }}</td>
-                                    </tr>
-                                    <tr>
-                                      <td>Durchführung</td>
-                                      <td>
-                                        <span>
+                            <div>
+                              <div class="container-fluid">
+                                <table
+                                  class="table table-sm table-striped table-borderless text-small mt-1">
+                                  <tr>
+                                    <td>Anzahl an Items</td>
+                                    <td>{{ test.items_count }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Durchführung</td>
+                                    <td>
+                                      <span>
+                                        {{
+                                          test.is_student_test
+                                            ? 'Selbstständig durch die Schüler:innen'
+                                            : 'Durch die Lehrkraft'
+                                        }}
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Zeitbeschränkung</td>
+                                    <td>{{ test.time_limit }}</td>
+                                  </tr>
+                                  <tr>
+                                    <td>Durchführung</td>
+                                    <td>
+                                      <p>{{ test.usage }}</p>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td>Items</td>
+                                    <td>
+                                      <p>
+                                        <span v-for="(item, key, i) in test.items" :key="key">
                                           {{
-                                            test.is_student_test
-                                              ? 'Selbstständig durch die Schüler:innen'
-                                              : 'Durch die Lehrkraft'
+                                            `${item}${
+                                              i < parseInt(test.items_count, 10) ? ', ' : ''
+                                            }`
                                           }}
                                         </span>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Zeitbeschränkung</td>
-                                      <td>{{ test.time_limit }}</td>
-                                    </tr>
-                                    <tr>
-                                      <td>Durchführung</td>
-                                      <td>
-                                        <p>{{ test.usage }}</p>
-                                      </td>
-                                    </tr>
-                                    <tr>
-                                      <td>Items</td>
-                                      <td>
-                                        <p>
-                                          <span v-for="(item, key, i) in test.items" :key="key">
-                                            {{
-                                              `${item}${
-                                                i < parseInt(test.items_count, 10) ? ', ' : ''
-                                              }`
-                                            }}
-                                          </span>
-                                        </p>
-                                      </td>
-                                    </tr>
-                                  </table>
-                                </div>
-
-                                <div v-if="test.description" class="container-fluid mb-4">
-                                  <p class="text-light bg-secondary pl-4">Beschreibung</p>
-                                  <div
-                                    class="full-description text-small"
-                                    v-html="test.description"></div>
-                                </div>
-                                <div v-if="hasAttachments(test)" class="container-fluid">
-                                  <p class="text-light bg-secondary pl-4">Anhänge</p>
-                                  <img
-                                    v-for="attachment in getAttachedImages(test)"
-                                    :key="attachment.filename"
-                                    class="attached-image"
-                                    :src="attachment.filepath" />
-                                </div>
-                                <ul>
-                                  <li v-for="file in getAttachedOther(test)" :key="file.filename">
-                                    <a :href="file.filepath" target="_blank">{{ file.filename }}</a>
-                                  </li>
-                                </ul>
+                                      </p>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </div>
+                              <div v-if="test.description" class="container-fluid mb-4">
+                                <p class="text-light bg-secondary pl-2">Beschreibung</p>
+                                <div
+                                  class="full-description text-small"
+                                  v-html="test.description"></div>
+                              </div>
+                              <div v-if="hasAttachments(test)" class="container-fluid">
+                                <p class="text-light bg-secondary pl-2">Anhänge</p>
+                                <img
+                                  v-for="attachment in getAttachedImages(test)"
+                                  :key="attachment.filename"
+                                  class="attached-image"
+                                  :src="attachment.filepath" />
+                              </div>
+                              <ul class="mb-4">
+                                <li v-for="file in getAttachedOther(test)" :key="file.filename">
+                                  <a :href="file.filepath" target="_blank">{{ file.filename }}</a>
+                                </li>
+                              </ul>
+                              <div class="container-fluid">
+                                <licence-display />
                               </div>
                             </div>
                           </b-tab>
@@ -146,8 +130,10 @@
 
 <script>
   import { useTestsStore } from '../../store/testsStore'
+  import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'TestsApp',
+    components: { LicenceDisplay },
     setup() {
       const testsStore = useTestsStore()
       return { testsStore }
@@ -192,5 +178,13 @@
 <style>
   .tests-app .attached-image {
     max-width: 100%;
+  }
+  .cc-image {
+    height: 14px !important;
+    margin-left: 3px;
+    vertical-align: text-bottom;
+  }
+  #licence-headline {
+    font-size: 1em;
   }
 </style>
