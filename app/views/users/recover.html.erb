@@ -14,7 +14,7 @@
         <div id="email-invalid-feedback" class="invalid-feedback" style="display: none">
           
         </div>
-        <button class="btn btn-primary mt-3" id="send-code">Einmalcode anfordern</button>
+        <button class="btn btn-primary mt-3" id="send-code">Code anfordern</button>
       </div>
       <div>
         <div id="hidden-code-input" style="display: none">
@@ -27,9 +27,12 @@
             Der eingegebene Code ist falsch!
           </div>
           <button class="btn btn-primary mt-3" id="security-key-check">
-            Überprüfung des Einmalcodes
+            Code überprüfem
           </button>
         </div>
+        <p class="mt-4" id="pw-hint">Nach der Eingabe des Codes müssen Sie nur noch die Sicherheitsfrage mit der 
+        von Ihnen festgelegten Antwort beantworten. Danach haben Sie wieder Zugriff auf Ihr Benutzerkonto.
+        </p>
         <div id="hidden-security-form"></div>
       </div>
     </div>
@@ -40,6 +43,7 @@
   $('#security-key-check').on('click', checkKey)
 
   async function sendVerificationCode() {
+    $('#send-code').text("Code erneut anfordern")
     $('#email-invalid-feedback').hide()
     const email = $('#email-input').val()
     if (!email || !email.includes('@')) {
@@ -82,6 +86,7 @@
     })
     if (key.status === 200) {
       const content = await key.text()
+      $('#pw-hint').remove()
       $('#hidden-security-form').html(content)
     } else if (key.status === 403) {
       $('#code-invalid-feedback').show()

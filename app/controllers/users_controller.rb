@@ -333,12 +333,14 @@ class UsersController < ApplicationController
     elsif @user.intro_state < 4
       render json: {
                message:
-                 'Bitte schließen Sie zunächst die Registrierung mit dem Code aus Registrierungsmail ab!'
+                 'Bitte schließen Sie zunächst die Registrierung mit dem Code aus der Registrierungsmail ab!'
              },
              status: :not_acceptable
       return
     end
-    @user.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+    if @user.recovery_key.nil?
+      @user.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+    end
     UserMailer.with(sender: 'noreply@levumi.de', user: @user).password_reset.deliver_later
     head :ok
   end
