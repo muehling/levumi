@@ -73,4 +73,9 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :sendmail
 
   config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
+  Rails.application.config.session_store :cache_store,
+                                         key: 'levumi_session',
+                                         expire_after: 1.week,
+                                         signed: true,
+                                         secure: false
 end

@@ -67,30 +67,6 @@ class User < ApplicationRecord
     end
   end
 
-  # get all used tests per group
-  def get_home_info
-    all_tests = Test.pluck(:id)
-    all_families = TestFamily.pluck(:id)
-    all_competences = Competence.pluck(:id)
-    all_areas = Area.pluck(:id)
-
-    result = []
-    groups
-      .where(archive: false)
-      .each do |group|
-        used =
-          group
-            .assessments
-            .select do |assessment|
-              !assessment.test.archive || (assessment.test.archive && assessment.results.count > 0)
-            end
-            .pluck(:test_id)
-        used_tests = Test.where(id: used).pluck(:id)
-        result += [{ group_id: group.id, used_test_ids: used_tests }]
-      end
-    return result
-  end
-
   #Informationen für die Klassenbuchansicht sammeln.
   def get_classbook_info
     result = []

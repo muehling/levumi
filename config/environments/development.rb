@@ -74,4 +74,11 @@ Rails.application.configure do
   config.action_mailer.perform_deliveries = true
   config.action_mailer.smtp_settings = { address: 'mailhog', port: 1025 }
   config.action_mailer.raise_delivery_errors = true
+
+  #config.session_store :cache_store, key: 'levumi_session', expire_after: 1.week
+  Rails.application.config.session_store :cache_store,
+                                         key: 'levumi_session',
+                                         expire_after: 1.week,
+                                         signed: true,
+                                         secure: false # if true, the csrf token will be stored too, which is guaranteed to not match on subsequent logins
 end
