@@ -1,10 +1,8 @@
 <template>
   <b-card class="dataApp" :title="`${questionTypeLabel}: Start-/Endseite/Daten definieren`">
     <div class="dataInfoText">
-      In diesem Abschnitt können Sie die Start- und Endseite des Tests, sowie die einzelnen Fragen
+      In diesem Abschnitt können Sie die Start- und Endseite des Tests sowie die einzelnen Fragen
       und Antworten definieren. Klicken Sie auf die einzelnen Abschnitte, um diese zu bearbeiten.
-      Sie können sich entscheiden, ob Sie die Fragen einzelnen eingeben, oder eine vorausgefüllte
-      CSV-Datei hochladen. Wie dies geht erfahren Sie im Abschnitt "Datei hochladen".
     </div>
     <hr />
     <div class="my-4">
