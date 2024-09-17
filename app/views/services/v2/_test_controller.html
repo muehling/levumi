@@ -154,14 +154,14 @@
     //## display demo item
     //######################################
     const displayDemoItem = () => {
-      const itemIndex = Math.floor(Math.random() * Math.floor(items.length - 1))
       const renderer = getRenderer(window.config.item_type)
       const el = window.useDemoItem({
-        config: { id: 0, styles, item: items[itemIndex] },
+        config: { id: 0, styles, item: items[0] },
         renderer: renderer,
         continueHandler: endDemo,
       })
       $('#content-container').html(el)
+      items.shift()
     }
 
     //######################################

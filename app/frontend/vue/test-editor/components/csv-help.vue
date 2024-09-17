@@ -17,6 +17,10 @@
           </ul>
         </b-card>
         <b-card class="mt-3">
+          <p>
+            Wenn die Option "Demo-Aufgabe anzeigen" verwendet wird, dient das erste Item/die erste
+            Zeile in der CSV-Datei als Demo-Aufgabe. Diese fließt nicht in die Auswertung ein.
+          </p>
           <p class="pt-3">
             Als Feldtrennzeichen muss das Semikolon verwendet werden. Jede Zeile der CSV-Datei
             definiert ein Test-Item und besteht aus folgenden Einträgen:
