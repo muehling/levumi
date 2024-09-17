@@ -131,8 +131,8 @@
       load() {
         const settings = this.parseSavedData()
         this.questions = settings.questions || []
-        this.startPage = settings.startPage
-        this.endPage = settings.endPage
+        this.startPage = settings.startPage || []
+        this.endPage = settings.endPage || []
       },
       save() {
         const settings = this.parseSavedData()
@@ -266,13 +266,14 @@
           )
         }
 
-        return { missingAssets, redundantAssets, missingAssetsInStaticPages }
+        return { allAssets, missingAssets, redundantAssets, missingAssetsInStaticPages }
       },
 
-      sendDataAndcontinueToSummary: function () {
+      sendDataAndcontinueToSummary() {
         this.storeAssets()
 
-        const { missingAssets, redundantAssets, missingAssetsInStaticPages } = this.prepareData()
+        const { allAssets, missingAssets, redundantAssets, missingAssetsInStaticPages } =
+          this.prepareData()
 
         if (missingAssets.length) {
           this.store.setErrorMessage(
@@ -307,7 +308,11 @@
           dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
         }
 
-        this.$emit('continueToSummary', [data, this.assets])
+        const usedFiles = this.assets.filter(
+          asset => allAssets.findIndex(a => a === asset.name) !== -1
+        )
+
+        this.$emit('continueToSummary', [data, usedFiles])
       },
 
       addGroupIfMissing() {
