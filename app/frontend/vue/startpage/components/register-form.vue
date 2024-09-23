@@ -16,7 +16,7 @@
       </p>
       <hr />
       <b-form @submit="handleRegister">
-        <BFormGroup label-class="text-small mb-0" label="Email-Adresse" label-for="register-email">
+        <BFormGroup label-class="text-small" label="Email-Adresse" label-for="register-email">
           <BFormInput
             id="register-email"
             v-model="email"
@@ -24,18 +24,22 @@
             type="email" />
           <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
         </BFormGroup>
-        <hr class="mt-0 d-none" />
-        <BFormGroup label-class="text-small mt-3 mb-0" label="Ich bin...">
+
+        <div class="mt-3 mb-0">
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="2">
+            Ich bin Privatperson/möchte Levumi nur ausprobieren.
+          </b-form-radio>
+          <br />
           <b-form-radio v-model="accountType" inline name="user[account_type]" value="0">
-            Lehrkraft
+            Ich bin hauptsächlich an einer Schule tätig.
           </b-form-radio>
           <b-form-radio v-model="accountType" inline name="user[account_type]" value="1">
-            Forscher:in
+            Ich bin hauptsächlich in der Forschung tätig.
           </b-form-radio>
-          <b-form-radio v-model="accountType" inline name="user[account_type]" value="2">
-            Privatperson
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="3">
+            Ich bin in einer Klinik/privaten Praxis tätig.
           </b-form-radio>
-        </BFormGroup>
+        </div>
         <hr class="mt-0 d-none" />
         <BFormGroup label-class="text-small mt-3 mb-0" label="Aus...">
           <b-form-select
@@ -161,3 +165,8 @@
     },
   }
 </script>
+<style>
+  .form-check-input {
+    border-color: gray !important;
+  }
+</style>

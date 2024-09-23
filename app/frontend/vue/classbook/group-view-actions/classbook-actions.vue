@@ -54,7 +54,7 @@
       :student-or-group="group"
       path="group"
       @hide-fonts-modal="closeFontsModal"
-      @update="updateGroup" />
+      @update-font-settings="updateGroup" />
   </div>
 </template>
 <script>

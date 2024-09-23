@@ -1,6 +1,6 @@
 <template>
   <table
-    v-if="groupShares.length > 0"
+    v-if="groupShares?.length > 0"
     class="mt-4 table table-sm table-striped table-responsive-md text-small">
     <thead>
       <tr>
@@ -79,7 +79,7 @@
           : null
       },
       groupShares() {
-        return this.group.shares.filter(share => !share.owner)
+        return this.group.shares?.filter(share => !share.owner)
       },
     },
     methods: {

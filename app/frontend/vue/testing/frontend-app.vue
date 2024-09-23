@@ -9,12 +9,12 @@
           height="48" />
         Levumi
       </a>
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ms-auto">
         <li v-if="isLoggedIn" id="navbar_button" class="nav-item">
           <b-button variant="outline-secondary" @click="handleLogout">Abmelden</b-button>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ms-auto">
         <li v-if="isLoggedIn" id="navbar_text" class="navbar-text">
           {{ student?.login ? `Dein Login-Code: ${student.login}` : '' }}
         </li>

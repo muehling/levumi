@@ -140,9 +140,7 @@
 
     computed: {
       testData() {
-        console.log('miau', JSON.parse(JSON.stringify(this.testsStore.getTests)))
         return this.testsStore.tests
-        //return this.testsStore.getTests
       },
       isLoading() {
         return this.testsStore.isLoading

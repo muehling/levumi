@@ -36,6 +36,7 @@
               @groupview::action="handleSwitchActionPage" />
           </b-col>
           <b-col>
+            {{ currentNav }}
             <b-card :title="actionCardTitle">
               <div v-if="currentNav === 'general'">
                 <classbook-actions

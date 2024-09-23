@@ -81,7 +81,7 @@ class ApplicationController < ActionController::Base
   #POST '/logout'
   def logout
     reset_session #Session löschen
-    redirect_to '/'
+    head :ok
   end
 
   #Zugang für Schülerinnen und Schüler

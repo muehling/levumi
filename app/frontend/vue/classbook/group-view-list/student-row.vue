@@ -9,26 +9,23 @@
           variant="outline-secondary"
           class="text-nowrap mt-2"
           size="sm"
-          @click="editMode = true">
+          @click="setEditMode">
           <i class="fas fa-user-plus"></i>
           Anlegen
         </b-button>
       </div>
     </td>
-
     <td id="intro_cb_6">
       <div>
         {{ student.login }}
       </div>
     </td>
-
     <td>
       <div>
         <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
-
     <td>
       <div>
         <span v-if="student.birthmonth != undefined">{{ months[month] }} {{ year }}</span>
@@ -41,7 +38,6 @@
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
-
     <td>
       <div>
         <span>
@@ -51,7 +47,7 @@
       </div>
     </td>
     <td>
-      <span v-if="!empty" :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
+      <span v-if="!empty" :class="`${hasFontSettings ? 'fw-bold' : ''}`">
         {{ fontSettingsText }}
       </span>
     </td>
@@ -61,7 +57,6 @@
           <b-button
             v-if="!readOnly"
             v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="'Schrifteinstellungen'"
             class="me-1"
             variant="outline-secondary"
             size="sm"
@@ -70,16 +65,14 @@
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
-            @click="editMode = true">
+            @click="setEditMode">
             <i class="fas fa-user-edit"></i>
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -88,7 +81,6 @@
           </b-button>
           <b-button
             v-if="!!student.id"
-            v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -99,6 +91,7 @@
       </span>
     </td>
   </tr>
+
   <tr v-else id="intro_cb_5" class="student-row student-row-edit">
     <td class="pl-0">
       <div class="ps-1">
@@ -131,7 +124,7 @@
           </option>
         </b-form-select>
         <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
-          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+          <option v-for="y in years" :key="`${y}/${student.id}`" :value="y">{{ y }}</option>
         </b-form-select>
         <b-button
           v-if="month && year"
@@ -192,8 +185,7 @@
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-button
             v-if="!readOnly"
-            v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="'Schrifteinstellungen'"
+            v-b-tooltip="'Schrifteinstellungen'"
             class="me-1"
             variant="outline-secondary"
             size="sm"
@@ -202,16 +194,16 @@
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'Bearbeiten'"
+            v-b-tooltip="'Bearbeiten'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
-            @click="editMode = true">
+            @click="setEditMode">
             <i class="fas fa-user-edit"></i>
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'QR-Code'"
+            v-b-tooltip="'QR-Code'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -220,7 +212,7 @@
           </b-button>
           <b-button
             v-if="!!student.id"
-            v-b-popover.hover.topright="'Test-Info'"
+            v-b-tooltip="'Test-Info'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -348,9 +340,9 @@
         }
       },
       fontSettingsText() {
-        if (this.student.settings.font_size && this.student.settings.font_family) {
+        if (this.student.settings?.font_size && this.student.settings?.font_family) {
           return getFontSettingsDescription(this.student.settings, this.group.settings)
-        } else if (this.group.settings.font_size && this.group.settings.font_family) {
+        } else if (this.group.settings?.font_size && this.group.settings?.font_family) {
           return getFontSettingsDescription(this.group.settings, null)
         } else {
           return getFontSettingsDescription(this.group.settings, this.group.settings)
@@ -365,44 +357,48 @@
       studentTags() {
         return isArray(this.student.tags) ? this.student.tags.join(', ') : ''
       },
-    },
-    beforeCreate() {
-      // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
-      this.options_gender = [
-        { text: 'weiblich', value: '0' },
-        { text: 'männlich', value: '1' },
-        { text: 'divers', value: '2' },
-      ]
-
-      this.months = [
-        'Januar',
-        'Februar',
-        'März',
-        'April',
-        'Mai',
-        'Juni',
-        'Juli',
-        'August',
-        'September',
-        'Oktober',
-        'November',
-        'Dezember',
-      ]
-
-      this.options_sen = [
-        { text: 'Keiner', value: 0 },
-        { text: 'Lernen', value: 1 },
-        { text: 'Geistige Entwicklung', value: 2 },
-        { text: 'Emotional-soziale Entwicklung', value: 3 },
-        { text: 'Sprache', value: 4 },
-        { text: 'Körperlich-motorische Entwicklung', value: 5 },
-        { text: 'Sehen', value: 6 },
-        { text: 'Hören', value: 7 },
-        { text: 'Autismus', value: 8 },
-      ]
+      months() {
+        return [
+          'Januar',
+          'Februar',
+          'März',
+          'April',
+          'Mai',
+          'Juni',
+          'Juli',
+          'August',
+          'September',
+          'Oktober',
+          'November',
+          'Dezember',
+        ]
+      },
+      options_gender() {
+        return [
+          { text: 'weiblich', value: '0' },
+          { text: 'männlich', value: '1' },
+          { text: 'divers', value: '2' },
+        ]
+      },
+      options_sen() {
+        return [
+          { text: 'Keiner', value: 0 },
+          { text: 'Lernen', value: 1 },
+          { text: 'Geistige Entwicklung', value: 2 },
+          { text: 'Emotional-soziale Entwicklung', value: 3 },
+          { text: 'Sprache', value: 4 },
+          { text: 'Körperlich-motorische Entwicklung', value: 5 },
+          { text: 'Sehen', value: 6 },
+          { text: 'Hören', value: 7 },
+          { text: 'Autismus', value: 8 },
+        ]
+      },
     },
 
     methods: {
+      setEditMode() {
+        this.editMode = true
+      },
       addTag() {
         this.options_tags.push({ text: this.newTag, value: this.newTag })
         this.tags.push(this.newTag)

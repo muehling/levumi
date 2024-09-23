@@ -1,6 +1,7 @@
 <template>
   <b-modal
     id="'font-settings-modal'"
+    v-model="isVisible"
     :title="`Schrifteinstellungen für ${
       studentOrGroup.name ? studentOrGroup.name : studentOrGroup.label
     }`"
@@ -8,7 +9,6 @@
     scrollable
     hide-footer
     lazy
-    :visible="!!studentOrGroup"
     @hidden="hideModal">
     <p
       class="mt-5 mb-5 text-center"
@@ -69,6 +69,7 @@
   import { ajax } from 'src/utils/ajax'
   import { useGlobalStore } from 'src/store/store'
   import { defaultFont } from 'src/utils/constants'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'FontSettingsModal',
@@ -76,13 +77,17 @@
       studentOrGroup: Object,
       defaultSettings: Object,
       path: String,
+      isOpen: Boolean,
     },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
     },
     data: function () {
-      const s = this.studentOrGroup.settings ? this.studentOrGroup.settings : this.defaultSettings
+      const s = !isEmpty(this.studentOrGroup.settings)
+        ? this.studentOrGroup.settings
+        : this.defaultSettings
+
       return {
         fontFamily:
           s === undefined || s['font_family'] === undefined
@@ -90,6 +95,7 @@
             : decodeURIComponent(s['font_family']),
         fontSize:
           s === undefined || s['font_size'] === undefined ? defaultFont.fontSize : s['font_size'],
+        isVisible: !!this.studentOrGroup,
       }
     },
     methods: {
@@ -112,12 +118,12 @@
           },
         }
         const res = await ajax({
-          url: `/${this.path + 's'}/${this.studentOrGroup.id}`, //TODO für die Klasse hauts hier noch nicht hin
+          url: `/${this.path + 's'}/${this.studentOrGroup.id}`,
           method: 'put',
           data,
         })
         if (res.status === 200) {
-          this.$emit('update', { ...res.data })
+          this.$emit('update-font-settings', { ...res.data })
           this.hideModal()
         }
       },

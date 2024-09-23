@@ -10,7 +10,7 @@
         <b-nav-item v-else class="navbar-brand d-block d-xs-inline" to="/">
           <img :src="levumiSmall" alt="Levumi - Startseite" width="48" height="48" />
           Levumi
-          <b-alert v-if="!!systemMessage" class="ml-auto mb-0 d-inline" show variant="danger">
+          <b-alert v-if="!!systemMessage" class="ms-auto mb-0 d-inline" show variant="danger">
             {{ systemMessage }}
           </b-alert>
         </b-nav-item>

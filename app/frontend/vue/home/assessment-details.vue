@@ -44,16 +44,18 @@
       </b-nav>
     </div>
     <b-tabs v-if="!isLoading" pills card>
-      <b-tab :active="!hasResults" class="m-3" :title="`Messungen (${test.shorthand})`">
-        <!--<div slot="title">
-          Messungen ({{ test.shorthand }})
-          <span v-if="!isActive && test.student_test" class="badge badge-danger">
-            <i class="fas fa-pause"></i>
-          </span>
-          <span v-if="isActive && test.student_test" class="badge badge-success">
-            <i class="fas fa-play"></i>
-          </span>
-        </div>-->
+      <b-tab :active="!hasResults" class="m-3">
+        <template #title>
+          <div>
+            Messungen ({{ test.shorthand }}) bla
+            <span v-if="!isActive && test.student_test" class="badge badge-danger">
+              <i class="fas fa-pause"></i>
+            </span>
+            <span v-if="isActive && test.student_test" class="badge badge-success">
+              <i class="fas fa-play"></i>
+            </span>
+          </div>
+        </template>
         <!-- Neue Messungen -->
         <div class="mb-3">
           <div v-if="test.archive">

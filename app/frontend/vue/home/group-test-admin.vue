@@ -185,7 +185,7 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest" class="col-lg-6 ml-0 pl-0">
+        <div v-if="!selectedTest" class="col-lg-6 ms-0 pl-0">
           <p>
             Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
             eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests

@@ -38,8 +38,8 @@
           <li id="intro4" class="nav-item">
             <router-link to="/testuebersicht" class="nav-link rounded">Testübersicht</router-link>
           </li>
-          <li id="intro5" class="nav-item dropdown">
-            <BDropdown :text="'Weiteres'" variant="navbar-light">
+          <li id="intro5" class="nav-item mt-1">
+            <BDropdown text="Weiteres" is-nav variant="">
               <BDropdownItem>
                 <a
                   class="dropdown-item"
@@ -115,74 +115,62 @@
               </BDropdownItem>
             </BDropdown>
           </li>
-          <!--######################################################################-->
         </ul>
-        <b-alert v-if="!!systemMessage" class="ml-auto mb-0" show variant="danger">
+        <b-alert v-if="!!systemMessage" class="ms-auto mb-0" :model-value="true" variant="danger">
           {{ systemMessage }}
         </b-alert>
-
-        <ul class="navbar-nav ml-auto">
+        <ul class="navbar-nav ms-auto">
           <li v-if="masquerade" class="nav-item">
             <a href="#" class="nav-link btn btn-outline-secondary" @click="endMasquerade">
               Sitzung als {{ login?.email }} beenden
             </a>
           </li>
-
-          <!--######################################################################-->
-          <!--Support Button-->
-          <li v-if="!masquerade" class="nav-item dropdown">
-            <BDropdown :text="'Support'" variant="">
+          <li v-if="!masquerade">
+            <BDropdown :text="'Support'" variant="" is-nav>
               <BDropdownItem><contact-form /></BDropdownItem>
             </BDropdown>
           </li>
-          <!--######################################################################-->
-
-          <!--######################################################################-->
-          <!--System Button-->
-          <li v-if="!isRegularUser && !masquerade" class="nav-item">
-            <BDropdown v-model="showAdminMenu" text="System" variant="">
+          <li v-if="!isRegularUser && !masquerade">
+            <BDropdown v-model="showAdminMenu" text="System" variant="" is-nav>
               <BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
                 Statistik
               </BDropdownItem>
               <BDropdownItem v-if="checkCapability('user')" to="/nutzerverwaltung">
-                Benutzendenverwaltung
+                Benutzerverwaltung
               </BDropdownItem>
+              <router-link
+                v-if="
+                  checkCapability('test') ||
+                  checkCapability('test_admin') ||
+                  checkCapability('test_upload')
+                "
+                to="/testverwaltung"
+                class="dropdown-item">
+                Testverwaltung
+              </router-link>
+              <router-link
+                v-if="checkCapability('material')"
+                to="/materialverwaltung"
+                class="dropdown-item">
+                Materialverwaltung
+              </router-link>
+              <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
+                Export
+              </router-link>
+              <router-link
+                v-if="checkCapability('admin')"
+                to="/administration"
+                class="dropdown-item">
+                Allgemeine Einstellungen
+              </router-link>
             </BDropdown>
           </li>
-          <!--######################################################################-->
-
-          <!--######################################################################-->
-          <!--Start Meine daten Button-->
-          <div class="d-none">
-            <router-link
-              v-if="
-                checkCapability('test') ||
-                checkCapability('test_admin') ||
-                checkCapability('test_upload')
-              "
-              to="/testverwaltung"
-              class="dropdown-item">
-              Testverwaltung
-            </router-link>
-            <router-link
-              v-if="checkCapability('material')"
-              to="/materialverwaltung"
-              class="dropdown-item">
-              Materialverwaltung
-            </router-link>
-            <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
-              Export
-            </router-link>
-            <router-link v-if="checkCapability('admin')" to="/administration" class="dropdown-item">
-              Allgemeine Einstellungen
-            </router-link>
-          </div>
           <li v-if="!masquerade" id="intro6" class="nav-item">
-            <!--Meine Daten Button-->
             <BDropdown
               v-model="showProfile"
               :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
-              variant="">
+              variant=""
+              is-nav>
               <BDropdownItem @click="editOwnProfile">Profildaten ändern</BDropdownItem>
               <BDropdownItem @click="editUserSettings">Einstellungen ändern ändern</BDropdownItem>
               <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
@@ -191,7 +179,7 @@
             </BDropdown>
           </li>
           <li v-if="!masquerade" class="nav-item">
-            <BDropdown v-model="showLegal" text="Rechtliches" variant="outline-primary">
+            <BDropdown v-model="showLegal" text="Rechtliches" variant="" is-nav>
               <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
                 Vorlage Einwilligungserklärung
               </BDropdownItem>
@@ -203,12 +191,7 @@
             </BDropdown>
           </li>
           <li v-if="!masquerade" class="nav-item">
-            <form action="/logout" method="post" onsubmit="sessionStorage.removeItem('login')">
-              <input name="authenticity_token" type="hidden" :value="getCSRFToken()" />
-              <button type="submit" class="nav-link border-0 bg-transparent" href="/logout">
-                Ausloggen
-              </button>
-            </form>
+            <b-button class="nav-link" variant="" @click="handleLogout">Ausloggen</b-button>
           </li>
         </ul>
       </div>
@@ -223,7 +206,7 @@
   </div>
 </template>
 <script>
-  import { ajax, getCSRFToken } from '../../utils/ajax'
+  import { ajax } from '../../utils/ajax'
   import { isRegularUser, hasCapability } from '../../utils/user'
   import { RouterLink } from 'vue-router'
   import { useAssessmentsStore } from '../../store/assessmentsStore'
@@ -312,12 +295,19 @@
       checkCapability(capability) {
         return hasCapability(capability, this.globalStore.login.capabilities)
       },
-      getCSRFToken,
       editOwnProfile() {
         this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
       },
       editUserSettings() {
         this.$refs.userSettingsDialog.open({ user: this.globalStore.login })
+      },
+      async handleLogout() {
+        const res = await ajax({ url: apiRoutes.users.logout, method: 'POST' })
+        if (res.status === 200) {
+          router.push('/')
+          sessionStorage.removeItem('login')
+          window.location.reload()
+        }
       },
       async endMasquerade() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'GET' })
