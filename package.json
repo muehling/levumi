@@ -13,7 +13,7 @@
     "apexcharts": "^3.43.2-0",
     "axios": "^1.6.5",
     "bootstrap": "^5.3.3",
-    "bootstrap-vue-next": "^0.21.0",
+    "bootstrap-vue-next": "^0.24.17",
     "core-js": "3",
     "date-fns": "^2.29.3",
     "deepmerge": "^3.3.0",
