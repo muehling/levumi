@@ -47,7 +47,7 @@
       <b-tab :active="!hasResults" class="m-3">
         <template #title>
           <div>
-            Messungen ({{ test.shorthand }}) bla
+            Messungen ({{ test.shorthand }})
             <span v-if="!isActive && test.student_test" class="badge badge-danger">
               <i class="fas fa-pause"></i>
             </span>

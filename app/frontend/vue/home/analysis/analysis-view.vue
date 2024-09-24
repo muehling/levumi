@@ -626,7 +626,6 @@
 
         pdf.save(filename + '.pdf')
       },
-
       createGroupedStackedColumnData() {
         const view = this.viewConfig
         const series = []
@@ -1085,6 +1084,8 @@
       },
 
       toggleCollapse(collapseId) {
+        console.log('toggle', collapseId)
+
         switch (collapseId) {
           case 'annotation_collapse':
             this.targetControlVisible = false

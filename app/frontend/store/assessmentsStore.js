@@ -42,6 +42,7 @@ export const useAssessmentsStore = defineStore('assessments', {
         this.currentAssessment = undefined
       }
       this.isLoading = false
+
       return this.currentAssessment
     },
     async fetch(groupId) {

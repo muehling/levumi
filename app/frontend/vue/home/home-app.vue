@@ -41,7 +41,7 @@
                 </p>
               </b-card>
             </div>
-            <group-view v-else :key="selectedGroupId" :selected-group-id="selectedGroupId" />
+            <group-view v-else :key="selectedGroupId" />
           </div>
         </b-col>
       </b-row>
@@ -59,14 +59,16 @@
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
   //import Vue from 'vue'
+  import { useRoute } from 'vue-router'
 
   export default {
     name: 'HomeApp',
     components: { GroupView, IntroPopover, LoadingDots },
     setup() {
+      const route = useRoute()
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
-      return { globalStore, assessmentsStore }
+      return { globalStore, assessmentsStore, route }
     },
     data() {
       return {
@@ -92,6 +94,7 @@
         return this.ownActiveGroups.find(group => group.id === this.selectedGroupId)
       },
     },
+
     watch: {
       '$route.params': {
         immediate: true,
@@ -136,7 +139,6 @@
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
-        //Vue.set(this.globalStore.login, 'intro_state', 4)
         this.globalStore.login.intro_state = 4
       },
       getTestsForGroup(groupId) {

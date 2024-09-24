@@ -27,17 +27,30 @@
       </b-button>
       <b-button
         v-if="isTestDetailsOpen || isTestAdminOpen"
-        class="my-3"
+        class="my-3 me-2"
         size="sm"
         variant="outline-secondary"
         @click="backToOverview">
-        <i class="fas fa-backward-step me-1"></i>
+        <i class="fas fa-backward-step me-2"></i>
         Zurück zur Testübersicht
       </b-button>
+      <b-button
+        v-if="!isTestListOpen && !isAssessmentSettingsOpen"
+        class="my-3"
+        size="sm"
+        variant="outline-secondary"
+        @click="openSettings">
+        <i class="fas fa-gear me-2"></i>
+        Aktionen und Einstellungen
+      </b-button>
     </div>
-    <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
-    <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
-    <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
+    <div v-if="!!group">
+      <assessment-settings v-if="isAssessmentSettingsOpen" :group="group" />
+
+      <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
+      <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
+      <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
+    </div>
   </div>
 </template>
 
@@ -49,18 +62,19 @@
   import AssessmentDetails from './assessment-details.vue'
   import AssessmentView from './assessment-view.vue'
   import GroupTestAdmin from './group-test-admin.vue'
+  import AssessmentSettings from './assessment-settings/assessment-settings.vue'
+  import { useRoute } from 'vue-router'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentDetails, AssessmentView, GroupTestAdmin },
-    props: {
-      selectedGroupId: Number,
-    },
+    components: { AssessmentDetails, AssessmentView, GroupTestAdmin, AssessmentSettings },
+
     setup() {
+      const route = useRoute()
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
-      return { globalStore, assessmentsStore, testsStore }
+      return { globalStore, assessmentsStore, testsStore, route }
     },
     data: function () {
       return {
@@ -70,10 +84,16 @@
             : 0,
         isTestAdminOpen: false,
         isTestDetailsOpen: false,
-        isTestListOpen: true,
+        isTestListOpen: false,
+        isAssessmentSettingsOpen: false,
       }
     },
     computed: {
+      selectedGroupId() {
+        return (
+          parseInt(this.$route.params.groupId, 10) || this.groups.find(group => !group.archive).id
+        )
+      },
       assessmentData() {
         return this.assessmentsStore.currentAssessment
       },
@@ -82,7 +102,7 @@
         return this.assessmentData?.annotations
       },
       displayClassBookButton() {
-        return !this.isTestAdminOpen && !this.isTestDetailsOpen && this.group.students.length > 0
+        return this.$route.name === 'AssessmentList'
       },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
@@ -90,7 +110,9 @@
         return this.globalStore.groups.filter(group => group.id)
       },
       group() {
-        return this.groups.find(group => group.id === this.selectedGroupId)
+        return this.globalStore.groups.find(
+          group => group.id === parseInt(this.selectedGroupId, 10)
+        )
       },
       isAllowed() {
         const permissions = access(this.group).diagnostics
@@ -100,34 +122,45 @@
         return !!this.group?.read_only
       },
       displayTestAdminButton() {
-        return (
-          !!this.selectedGroupId &&
-          !this.assessmentData &&
-          this.isAllowed &&
-          !this.isTestAdminOpen &&
-          this.group.students.length > 0
-        )
+        return this.$route.name === 'AssessmentList'
       },
     },
     watch: {
-      '$route.params': {
+      '$route.name': {
         immediate: true,
-        async handler(data) {
-          switch (data.location) {
+        async handler(name) {
+          console.log('route change', name)
+
+          switch (name) {
             case 'testverwaltung':
+              console.log('Testverwaltung')
+
+              this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = false
               this.isTestAdminOpen = true
               this.isTestListOpen = false
               break
-            case 'testdetails':
+            case 'Assessment':
+              console.log('Assessment')
+
+              this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = true
               this.isTestAdminOpen = false
               this.isTestListOpen = false
-              if (this.assessmentsStore.currentAssessment?.test?.id !== parseInt(data.testId, 10)) {
-                await this.assessmentsStore.fetchCurrentAssessment(this.group.id, data.testId)
-              }
+
+              break
+            case 'AssessmentSettings':
+              console.log('AssessmentSettings')
+
+              this.isAssessmentSettingsOpen = true
+              this.isTestDetailsOpen = false
+              this.isTestAdminOpen = false
+              this.isTestListOpen = false
               break
             default:
+              console.log('Default')
+
+              this.isAssessmentSettingsOpen = false
               this.isTestAdminOpen = false
               this.isTestDetailsOpen = false
               this.isTestListOpen = true
@@ -137,21 +170,40 @@
     },
 
     async mounted() {
-      const groupId = this.group.id
+      //this.selectedGroupId = this.$route.params.groupId
 
       //this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
       //this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
+      console.log('group view mounted', this.$route.params, this.group)
 
-      await this.assessmentsStore.fetch(groupId)
-      await this.testsStore.fetchUsedTestsForGroup(groupId)
+      await this.assessmentsStore.fetch(this.selectedGroupId)
+      await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
+
+      if (
+        this.$route.params.testId &&
+        this.assessmentsStore.currentAssessment?.test?.id !==
+          parseInt(this.$route.params.testId, 10)
+      ) {
+        await this.assessmentsStore.fetchCurrentAssessment(
+          this.selectedGroupId,
+          this.$route.params.testId
+        )
+      }
     },
     methods: {
       gotoClassbook() {
         if (this.group.owner) {
-          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}`)
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.selectedGroupId}`)
         } else {
-          this.$router.push(`/klassenbuch/geteilte_klassen/${this.group.id}`)
+          this.$router.push(`/klassenbuch/geteilte_klassen/${this.selectedGroupId}`)
         }
+      },
+      openSettings() {
+        console.log('meh', this.assessmentData)
+        this.$router.push(
+          //TODO irgendwie gucken, wo der blöde Button hinsoll
+          `/diagnostik/${this.selectedGroupId}/testdetails/${this.assessmentData.test.id}/einstellungen`
+        )
       },
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)

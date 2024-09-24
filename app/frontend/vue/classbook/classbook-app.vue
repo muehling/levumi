@@ -151,7 +151,6 @@
   import TransferStatus from 'src/vue/classbook/transfer-status.vue'
 
   import { useRoute } from 'vue-router'
-  // import { watch } from 'vue'
 
   export default {
     name: 'ClassBookApp',

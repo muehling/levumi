@@ -50,6 +50,7 @@ Rails.application.routes.draw do
   get '/diagnostik', to: 'users#show'
   get '/diagnostik/:group_id', to: 'users#show'
   get '/diagnostik/:group_id/testdetails/:test_id', to: 'users#show'
+  get '/diagnostik/:group_id/testdetails/:test_id/einstellungen', to: 'users#show'
   get '/diagnostik/:group_id/testverwaltung', to: 'users#show'
   get '/testinventar', to: 'application#start'
   get '/lehrkraefte', to: 'application#start'

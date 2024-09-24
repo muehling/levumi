@@ -12,7 +12,7 @@ import { createApp } from 'vue'
 import VueApexCharts from 'vue3-apexcharts'
 //import VueRouter from 'vue-router'
 
-import { createPinia, PiniaVuePlugin } from 'pinia' // used for global stores
+import { createPinia } from 'pinia' // used for global stores
 
 import router from '../vue/routes/frontend-routes'
 
@@ -29,8 +29,6 @@ const init = async () => {
 
   //new Vue({
   const app = createApp({
-    router,
-    pinia,
     el: '#levumi',
     components: {
       RootApp,
@@ -45,9 +43,9 @@ const init = async () => {
     },
   })
   app.use(createBootstrap())
+  app.use(pinia)
   app.use(router)
   app.use(VueApexCharts)
-  app.use(PiniaVuePlugin)
   app.mount('#levumi')
 }
 

@@ -77,13 +77,17 @@ export const useGlobalStore = defineStore('global', {
     async fetchGroups() {
       const res = await ajax(apiRoutes.groups.groups)
 
-      this.groups = res.data.groups
       this.shareKeys = res.data.share_keys
       const studentsInGroups = res.data.groups.reduce((acc, group) => {
         acc[group.id] = decryptStudentNames(group)
 
         return acc
       }, {})
+      this.groups = res.data.groups.map(group => {
+        group.students = studentsInGroups[group.id]
+        return group
+      })
+
       this.studentsInGroups = studentsInGroups
     },
     async getItemsForTest(testId) {
@@ -108,15 +112,15 @@ export const useGlobalStore = defineStore('global', {
       this.groupInfo = coreData.groupInfo
       this.masquerade = coreData.masquerade
       this.login = coreData.login
-      this.staticData = {
-        states: coreData.states,
-        schoolTypes: coreData.schoolTypes,
-        focusTypes: coreData.focusTypes,
-        accountTypes: coreData.accountTypes,
-        annotationCategories: coreData.annotationCategories,
-        testTypes: coreData.testTypes,
-        testMetaData: coreData.testMetaData,
-      }
+
+      this.staticData.states = coreData.states
+      this.staticData.schoolTypes = coreData.schoolTypes
+      this.staticData.focusTypes = coreData.focusTypes
+      this.staticData.accountTypes = coreData.accountTypes
+      this.staticData.annotationCategories = coreData.annotationCategories
+      this.staticData.testTypes = coreData.testTypes
+      this.staticData.testMetaData = coreData.testMetaData
+
       this.isLoading = false
     },
   },

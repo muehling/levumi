@@ -146,7 +146,7 @@
         return isAdmin()
       },
       isAllowed() {
-        return !this.group.read_only
+        return !this.group?.read_only
       },
       defaultTestType() {
         return this.globalStore.staticData.testMetaData.test_types[0]

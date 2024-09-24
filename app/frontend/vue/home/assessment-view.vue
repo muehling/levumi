@@ -2,7 +2,7 @@
   <div>
     <div>
       <b-card
-        v-if="globalStore.studentsInGroups[selectedGroupId].length === 0"
+        v-if="globalStore.studentsInGroups[selectedGroupId]?.length === 0"
         bg-variant="white"
         class="col-lg-8 col-xl-6 mt-3">
         <p v-if="group.read_only" class="mb-0">
@@ -66,7 +66,9 @@
     },
     computed: {
       group() {
-        return this.globalStore.groups.find(group => group.id === this.selectedGroupId)
+        return this.globalStore.groups.find(
+          group => group.id === parseInt(this.selectedGroupId, 10)
+        )
       },
     },
     methods: {

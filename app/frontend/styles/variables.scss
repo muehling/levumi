@@ -1,3 +1,6 @@
+//@import 'functions';
+//@import 'variables';
+
 $black: #000;
 $white: #fff;
 
@@ -14,17 +17,23 @@ $levumi-color: rgba(94, 86, 187, 0.7);
 $levumi-transparent-color: #5a598c11;
 
 $theme-colors: (
-  'primary': #5a598c,
-  'danger': #b73631,
-  'secondary': #616970,
-  'success': #34823e,
-);
-
-$link-color: $primary-color;
-
-$theme-colors: (
   'primary': $primary-color,
   'secondary': $secondary-color,
   'danger': $danger-color,
   'success': $success-color,
 );
+
+/*
+$theme-colors-text: (
+  "primary": $primary-text-emphasis,
+  "secondary": $secondary-text-emphasis,
+  "success": $success-text-emphasis,
+  "info": $info-text-emphasis,
+  "warning": $warning-text-emphasis,
+  "danger": $danger-text-emphasis,
+  "light": $light-text-emphasis,
+  "dark": $dark-text-emphasis,
+);
+*/
+
+$link-color: $primary-color;

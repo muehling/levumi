@@ -13,15 +13,34 @@ import { createWebHistory, createRouter } from 'vue-router'
 
 const routes = [
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
-  { path: '/diagnostik', component: HomeApp, name: 'Diagnostik', props: { forceUpdate: true } },
   {
-    path: '/diagnostik/:groupId',
+    path: '/diagnostik',
     component: HomeApp,
-    name: 'GroupDiagnostics',
-
+    name: 'Diagnostik',
+    props: { forceUpdate: true },
     children: [
-      { path: ':location', component: HomeApp, props: true },
-      { path: ':location/:testId', component: HomeApp, props: true },
+      {
+        path: ':groupId',
+        component: HomeApp,
+        name: 'AssessmentList',
+
+        children: [
+          {
+            path: 'testdetails/:testId',
+            component: HomeApp,
+            props: true,
+            name: 'Assessment',
+            children: [
+              {
+                path: 'einstellungen',
+                component: HomeApp,
+                props: true,
+                name: 'AssessmentSettings',
+              },
+            ],
+          },
+        ],
+      },
     ],
   },
   {
