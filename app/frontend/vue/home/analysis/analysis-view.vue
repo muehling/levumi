@@ -97,6 +97,7 @@
           <b-col>
             <b-button
               v-if="!readOnly"
+              v-b-toggle.annotation_collapse
               id="annotation_btn"
               :aria-expanded="annotationControlVisible ? 'true' : 'false'"
               aria-controls="annotation_collapse"
@@ -111,6 +112,7 @@
             </b-button>
             <b-button
               v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
+              v-b-toggle.target_collapse
               id="target_btn"
               class="ms-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
@@ -132,31 +134,38 @@
         </b-row>
         <b-row class="ms-1">
           <b-col class="me-4">
-            <annotations-section
-              v-model="annotationControlVisible"
-              :annotations="annotations"
-              :group="group"
-              :test="test"
-              :selected-student="selectedStudent"
-              :selected-view-key="selectedView"
-              :trend-is-enabled="trendIsEnabled"
-              @annotation-removed="removeAnnotation" />
-            <TargetControls
-              v-model="targetControlVisible"
-              :target-val="targetVal"
-              :deviation-val="deviationVal"
-              :date-until-val="dateUntilVal"
-              :date-until-is-enabled="dateUntilIsEnabled"
-              :target-is-enabled="targetIsEnabled"
-              :deviation-is-enabled="deviationIsEnabled"
-              :target-val-stored="targetValStored"
-              :date-until-stored="dateUntilStored"
-              :deviation-stored="deviationStored"
-              :student-targets="studentTargets"
-              :selected-student-id="selectedStudentId"
-              :target-valid="targetValid"
-              :test="test"
-              :group="group"></TargetControls>
+            <b-tabs pills card>
+              <b-tab title="Aktionen und Einstellungen">Einstellungen</b-tab>
+              <b-tab title="Anmerkungen">
+                <annotations-section
+                  :group="group"
+                  :test="test"
+                  :selected-student="selectedStudent"
+                  :selected-view-key="selectedView"
+                  :trend-is-enabled="trendIsEnabled"
+                  :weeks="weeks"
+                  @annotation-removed="removeAnnotation"
+                  @annotation-added="addAnnotation" />
+              </b-tab>
+
+              <b-tab title="Ziele und Trends">
+                <TargetControls
+                  :target-val="targetVal"
+                  :deviation-val="deviationVal"
+                  :date-until-val="dateUntilVal"
+                  :date-until-is-enabled="dateUntilIsEnabled"
+                  :target-is-enabled="targetIsEnabled"
+                  :deviation-is-enabled="deviationIsEnabled"
+                  :target-val-stored="targetValStored"
+                  :date-until-stored="dateUntilStored"
+                  :deviation-stored="deviationStored"
+                  :student-targets="studentTargets"
+                  :selected-student-id="selectedStudentId"
+                  :target-valid="targetValid"
+                  :test="test"
+                  :group="group"></TargetControls>
+              </b-tab>
+            </b-tabs>
           </b-col>
         </b-row>
       </b-col>
@@ -1025,6 +1034,9 @@
         return this.results.some(result => result.student_id === student.id)
       },
 
+      addAnnotation() {
+        console.log('yay, neue annotation')
+      },
       removeAnnotation(id) {
         //    this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
@@ -1083,6 +1095,7 @@
         this.restoreTarget()
       },
 
+      //TODO vielleicht noch ne halbe Stunde investieren, ob man das halbwegs hübsch auf und zusliden lassen kann. Sonst einfach hin und wieder weg
       toggleCollapse(collapseId) {
         console.log('toggle', collapseId)
 
