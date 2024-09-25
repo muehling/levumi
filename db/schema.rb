@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
+ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -136,6 +136,14 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
     t.datetime "updated_at", precision: nil, null: false
   end
 
+  create_table "news", charset: "utf8mb3", force: :cascade do |t|
+    t.date "date"
+    t.string "title"
+    t.text "message"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "results", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "student_id"
     t.bigint "assessment_id"
@@ -193,6 +201,19 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 
+  create_table "support_messages", charset: "utf8mb3", force: :cascade do |t|
+    t.string "subject"
+    t.string "sender"
+    t.text "message"
+    t.integer "status"
+    t.bigint "user_id"
+    t.string "updated_by"
+    t.text "comment"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_support_messages_on_user_id"
+  end
+
   create_table "targets", charset: "utf8mb3", force: :cascade do |t|
     t.bigint "assessment_id"
     t.bigint "student_id"
@@ -237,6 +258,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
     t.bigint "test_type_id"
     t.string "updated_by"
     t.string "responsible"
+    t.json "required_services"
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end
@@ -262,5 +284,6 @@ ActiveRecord::Schema[7.0].define(version: 2024_05_29_113855) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "support_messages", "users"
   add_foreign_key "tests", "test_types"
 end

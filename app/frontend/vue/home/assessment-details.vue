@@ -119,29 +119,19 @@
                       <td>{{ formatDate(result.data.test_date) }}</td>
                       <td>{{ studentName(result.data.student_id) }}</td>
                       <td>
-                        <span
-                          v-for="(item, n) in result.data.report.positive"
-                          :key="item + '/' + n">
-                          {{ (n > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
-                        </span>
+                        <span v-html="getFormattedItems(result.data.report.positive)"></span>
                       </td>
                       <td>
-                        <span
-                          v-for="(item, m) in result.data.report.negative"
-                          :key="item + '/' + m">
-                          {{ (m > 0 ? ', ' : '') + getItemName(item, test.items[item]) }}
-                        </span>
+                        <span v-html="getFormattedItems(result.data.report.negative)"></span>
                       </td>
                       <td>
                         <i
                           v-if="result.data.report.trend > 0"
-                          class="fas fa-arrow-up"
-                          style="color: var(--success-color)"></i>
+                          class="fas fa-arrow-up improvement-arrow"></i>
                         <i
                           v-else-if="result.data.report.trend == 0"
-                          class="fas fa-arrow-right"
-                          style="color: var(--secondary-color)"></i>
-                        <i v-else class="fas fa-arrow-down" style="color: var(--danger-color)"></i>
+                          class="fas fa-arrow-right neutral-arrrow"></i>
+                        <i v-else class="fas fa-arrow-down degradation-arrow"></i>
                       </td>
                       <td v-if="!readOnly">
                         <b-button
@@ -400,13 +390,13 @@
         //Student-Objekt aus globaler Variable holen
         return getStudent(this.group.id, id)?.name
       },
+      getFormattedItems(items) {
+        const it = Object.values(items).map(item => {
+          const a = this.test.items[item] || { question: '<unknown item>' }
 
-      getItemName(item, fallback) {
-        if (isObject(this.test.items[0])) {
-          return this.test.items.find(n => n.id === item).label
-        } else {
-          return fallback
-        }
+          return typeof a === 'string' ? a : a.question
+        })
+        return it.join(', ')
       },
     },
   }

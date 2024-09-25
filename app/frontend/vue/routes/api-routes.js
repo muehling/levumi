@@ -125,11 +125,17 @@ export default {
     moveStudents: { url: '/students/move_students', method: 'POST' },
   },
   groups: {
+    update: id => ({ url: `/groups/${id}`, method: 'PUT' }),
     group: id => ({ url: `/groups/${id}` }),
     groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),
   },
   groupShares: {
     transferGroup: id => ({ url: `/groups_shares/${id}/transfer_group` }),
+  },
+  supportMessages: {
+    create: data => ({ url: 'support_messages', method: 'POST', data }),
+    index: { url: '/support_messages' },
+    update: (id, data) => ({ url: `support_messages/${id}`, method: 'PATCH', data }),
   },
 }

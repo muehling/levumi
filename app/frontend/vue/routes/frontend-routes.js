@@ -1,15 +1,16 @@
+import { createWebHistory, createRouter } from 'vue-router'
+import AdministrationApp from '../administration/administration-app.vue'
 import ClassBookApp from '../classbook/classbook-app.vue'
 import HomeApp from '../home/home-app.vue'
-import MaterialsApp from '../materials/materials-app.vue'
-import UsersApp from '../users/users-app.vue'
-import TestsApp from '../tests/tests-app.vue'
-import TestsAdmin from '../tests/tests-admin.vue'
-import TestsExport from '../tests/tests-export.vue'
 import MaterialsAdmin from '../materials/materials-admin.vue'
+import MaterialsApp from '../materials/materials-app.vue'
 import StatisticsApp from '../statistics/statistics-app.vue'
-import AdministrationApp from '../administration/administration-app.vue'
-
-import { createWebHistory, createRouter } from 'vue-router'
+import SupportApp from '../support/support-app.vue'
+import TestEditorApp from '../test-editor/test-editor-app.vue'
+import TestsAdmin from '../tests/tests-admin.vue'
+import TestsApp from '../tests/tests-app.vue'
+import TestsExport from '../tests/tests-export.vue'
+import UsersApp from '../users/users-app.vue'
 
 const routes = [
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
@@ -99,6 +100,8 @@ const routes = [
   { path: '/statistiken', component: StatisticsApp, name: 'Statistics' }, // Statistiken
   { path: '/administration', component: AdministrationApp, name: 'Administration' }, // Administration
   { path: '/groups/:groupId/assessments/:testId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /diagnostik if the data can be kept
+  { path: '/support', component: SupportApp },
+  { path: '/test-editor', component: TestEditorApp },
 ]
 
 export default createRouter({ routes, linkActiveClass: 'active', history: createWebHistory() })

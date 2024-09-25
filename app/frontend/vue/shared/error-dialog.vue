@@ -40,3 +40,8 @@
     },
   }
 </script>
+<style>
+  #error-dialog .error-message {
+    white-space: pre-line;
+  }
+</style>

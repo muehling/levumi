@@ -34,7 +34,6 @@
   import InputDialog from './shared/input-dialog.vue'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
-  import { updates } from '../utils/updates'
 
   export default {
     name: 'RootApp',
@@ -156,7 +155,7 @@
           const login = sessionStorage.getItem('login')
           if (!login) {
             if (!this.globalStore.masquerade) {
-              this.sendLogin('')
+              await this.sendLogin('')
             } else {
               // if a masqueraded session was active, tell the user and terminate the session.
               // TBD really tell the user?
@@ -176,7 +175,10 @@
         }
       },
       async updateSeenNews() {
-        const maxIntroState = updates.reduce((acc, update) => Math.max(acc, update.intro_state), 0)
+        const maxIntroState = this.globalStore.staticData.news.reduce(
+          (acc, update) => Math.max(acc, update.id),
+          0
+        )
         const data = { user: { intro_state: maxIntroState } }
         await ajax({
           ...apiRoutes.users.update(this.globalStore.login.id),
@@ -184,12 +186,14 @@
         })
       },
       async displayNews() {
-        const messagesToBeDisplayed = updates.filter(update => {
+        const news = this.globalStore.staticData.news
+
+        const messagesToBeDisplayed = news.filter(newsItem => {
           if (this.globalStore.login.intro_state === 5) {
             this.updateSeenNews() // for newly registered users, don't display any news.
             return
           } else {
-            return update.intro_state > this.globalStore.login.intro_state
+            return newsItem.id > this.globalStore.login.intro_state
           }
         })
 
@@ -242,6 +246,7 @@
         if (res.status === 200) {
           sessionStorage.setItem('login', pw)
           await this.globalStore.fetch()
+          await this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
         }

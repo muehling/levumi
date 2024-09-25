@@ -3,7 +3,6 @@
     <div class="d-block text-center mb-4">
       {{ globalStore.genericMessage.message }}
       <slot></slot>
-      miau
     </div>
     <div class="d-flex justify-content-end">
       <b-button class="m-1" @click="_close">Schließen</b-button>
@@ -41,3 +40,8 @@
     },
   }
 </script>
+<style>
+  #generic-dialog .generic-message {
+    white-space: pre-line;
+  }
+</style>

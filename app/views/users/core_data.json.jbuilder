@@ -8,3 +8,4 @@ json.accountTypes accounttypes_to_array
 json.annotationCategories annotation_categories
 json.testTypes TestType.all
 json.testMetaData Test.tests_meta
+json.news News.all

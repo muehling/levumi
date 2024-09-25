@@ -1,0 +1,79 @@
+<script type="module">
+  window.useSaveResult = ({ result, duration, dimensions }) => {
+    const wordsPerMinute = (result.length / duration).toFixed(0)
+
+    const positive = result.filter(res => res.result === 1)
+    const negative = result.filter(res => res.result === 0)
+
+    let res
+    if (dimensions.length > 1) {
+      res = saveWithDimensions(result, dimensions)
+    } else {
+      res = saveWithoutDimensions(positive, negative)
+    }
+
+    const trend = window.lastResult
+      ? positive.length >= window.lastResult.views['V1']
+        ? 1
+        : -1
+      : 0
+    const factor = ((positive.length / result.length) * 100).toFixed(1)
+
+    const { correct, wrong } = res
+
+    window.saveResults(
+      {
+        V1: positive.length,
+        V2: { RGI: correct, FGI: res.wrong, LG: factor, LGM: wordsPerMinute },
+        V3: { SUM: positive.length, RGI: correct, FGI: wrong, LG: factor, LGM: wordsPerMinute },
+      },
+      {
+        trend: trend,
+        positive: positive.map(res => res.item),
+        negative: negative.map(res => res.item),
+      },
+      result,
+      function () {}
+    )
+    return trend
+  }
+  const saveWithDimensions = (result, dimensions) => {
+    const correct = dimensions.reduce((acc, dimension) => {
+      const d = result
+        .filter(res => res.result === 1 && res.group + '' === dimension.id + '')
+        .map(res => `(${res.question})`)
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
+        ', '
+      )}<br/></br/>`
+    }, '')
+
+    const wrong = dimensions.reduce((acc, dimension) => {
+      const d = result
+        .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
+        .map(res => `(${res.question} &lt;${res.answer}&gt;)`)
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
+        ', '
+      )}<br/></br/>`
+    }, '')
+    return { correct, wrong }
+  }
+
+  const saveWithoutDimensions = (positive, negative) => {
+    const positiveQuestions = positive.map(res => `${res.question}`).join(', ')
+    const negativeQuestions = negative
+      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .join(', ')
+
+    const correct =
+      '<strong>Anzahl richtig gelöster Items:</strong> ' +
+      positive.length +
+      '<hr style="margin-top:0; margin-bottom:0"/>' +
+      positiveQuestions
+    const wrong =
+      '<strong>Anzahl falsch gelöster Items:</strong> ' +
+      negative.length +
+      '<hr style="margin-top:0; margin-bottom:0"/>' +
+      negativeQuestions
+    return { correct, wrong }
+  }
+</script>

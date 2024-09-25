@@ -3,6 +3,7 @@
     id="confirm-dialog"
     ref="confirmDialog"
     hide-footer
+    :size="size"
     :no-close-on-backdrop="disableCloseOnBackdrop"
     :title="title"
     @hidden="_close">
@@ -33,6 +34,7 @@
         okIntent: '',
         okText: '',
         resolvePromise: undefined,
+        size: '',
         title: '',
       }
     },
@@ -46,7 +48,7 @@
         this.okIntent = data.okIntent || 'outline-danger'
         this.okText = data.okText || 'Ok'
         this.title = data.title || ''
-
+        this.size = data.size || ''
         this.$refs.confirmDialog.show()
         return new Promise(resolve => {
           this.resolvePromise = resolve

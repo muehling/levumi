@@ -144,9 +144,9 @@
       getTestsForGroup(groupId) {
         this.selectedGroupId = groupId
         this.assessmentsStore.setCurrentAssessment(undefined)
-        this.$router.push({
-          path: `/diagnostik/${groupId}`,
-        })
+        if (window.location.pathname !== `/diagnostik/${groupId}`) {
+          this.$router.push({ path: `/diagnostik/${groupId}` })
+        }
       },
     },
   }

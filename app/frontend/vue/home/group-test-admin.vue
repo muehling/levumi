@@ -3,7 +3,32 @@
   <b-card v-else class="mt-3">
     <div class="row">
       <div class="col-12 col-xl-3 col-lg-4 col-md-5 col-sm-6">
-        <div class="accordion" role="tablist">
+        <div class="d-flex mb-1 mx-1">
+          <b-form-input
+            v-model="searchString"
+            placeholder="Test nach Kürzel oder Name suchen"></b-form-input>
+          <b-button
+            v-if="searchString !== ''"
+            class="d-inline border-0"
+            variant="outline-secondary"
+            @click="searchString = ''">
+            <i class="fa-regular fa-circle-xmark"></i>
+          </b-button>
+        </div>
+        <div :class="searchString !== '' && searchString.length >= 2 ? 'd-block' : 'd-none'">
+          <div v-for="test in filteredTests" :key="test.id">
+            <b-button
+              class="test-admin-button"
+              block
+              :variant="`${getTestButtonVariant(test.id)}`"
+              @click.stop.prevent="displayTestDetail(test.id)">
+              <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
+                {{ `${test.full_name} ${getTestButtonSuffix(test.id)}` }}
+              </span>
+            </b-button>
+          </div>
+        </div>
+        <div :class="`accordion${searchString.length < 2 ? ' d-block' : ' d-none'}`" role="tablist">
           <b-card v-for="area in areas" :key="'area' + area.id" no-body class="mb-0 border-0">
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
@@ -234,11 +259,11 @@
                   </tr>
                   <tr>
                     <td>Zeitbeschränkung</td>
-                    <td>{{ selectedTest.time_limit }}</td>
+                    <td>{{ selectedTest.description.time_limit + timeLimitSuffix }}</td>
                   </tr>
                   <tr>
                     <td>Durchführung</td>
-                    <td>{{ selectedTest.usage }}</td>
+                    <td>{{ selectedTest.description.usage }}</td>
                   </tr>
                   <tr>
                     <td colspan="2">
@@ -246,7 +271,7 @@
                         Items
                       </b-button>
                       <b-collapse id="test-items">
-                        {{ Object.values(selectedTest.items).join(', ') }}
+                        <p v-html="formattedItems(selectedTest.items)"></p>
                       </b-collapse>
                     </td>
                   </tr>
@@ -309,7 +334,7 @@
       isOpen: Boolean,
     },
     setup() {
-      const globalStore = useGlobalStore() // evtl raus
+      const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
 
@@ -323,9 +348,24 @@
         selectedTestFamilyId: undefined,
         selectedTestId: undefined,
         accordionData: {},
+        searchString: '',
       }
     },
     computed: {
+      timeLimitSuffix() {
+        const isNumber = /^\d+$/.test(this.selectedTest.description.time_limit)
+        return isNumber ? ' Minuten' : ''
+      },
+      filteredTests: function () {
+        return this.testMetaData.tests
+          .filter(
+            test =>
+              (test.full_name.toLowerCase().includes(this.searchString.toLowerCase()) ||
+                test.shorthand.toLowerCase().includes(this.searchString.toLowerCase())) &&
+              !test.archive
+          )
+          .sort((a, b) => (a.level > b.level ? 1 : -1))
+      },
       defaultTestType: function () {
         return this.globalStore.staticData.testMetaData.test_types[0]
       },
@@ -441,6 +481,12 @@
     },
 
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       handleClose() {
         this.reset('area')
         this.$router.push(`/diagnostik/${this.group.id}`)

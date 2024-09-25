@@ -1,0 +1,43 @@
+<style>
+  #demo-task h1 {
+    text-decoration: underline;
+    font-weight: bold;
+    text-align: center;
+  }
+  #demo-task .end-demo-text {
+    text-align: center;
+  }
+</style>
+<script type="module">
+  const el = $(
+    '<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4"><h1>Beispiel</h1></div>'
+  )
+
+  window.useDemoItem = ({ config, renderer, continueHandler }) => {
+    let isEndButtonAppended = false
+    const endDemo = () => {
+      if (isEndButtonAppended) {
+        return
+      }
+      isEndButtonAppended = true
+      const endText = $(
+        '<p class="end-demo-text">Keine Fragen mehr? Dann starte den Test!</p>'
+      ).css(config.styles)
+      const continueButton = $('<button class="btn btn-success">Test starten</button>').css(
+        config.styles
+      )
+
+      continueButton.on('click', () => {
+        continueHandler()
+      })
+      el.append(endText).append(continueButton)
+    }
+
+    config.resultHandler = endDemo
+    config.isDemo = true
+
+    el.append(renderer(config))
+
+    return el
+  }
+</script>

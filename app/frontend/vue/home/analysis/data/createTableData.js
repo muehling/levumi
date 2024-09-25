@@ -17,27 +17,24 @@ export const createSimpleTableData = (data, formatDate) => {
   return d
 }
 
-export const createHtmlTableFromViewConfig = data => {
-  // data contains the following props from the analysis-view:
-  // weeks
-  // results
-  // viewConfig
-  // selectedStudentId
-  // columns
-  let weeks = data.weeks.slice().reverse()
+export const createHtmlTableFromViewConfig = ({
+  weeks,
+  results,
+  viewConfig,
+  selectedStudentId,
+  columns,
+}) => {
+  weeks = weeks.slice().reverse()
   let res = []
   for (let w = 0; w < weeks.length; ++w) {
     let found = false
-    for (let r = 0; r < data.results.length; ++r) {
-      if (
-        data.results[r].student_id === data.selectedStudentId &&
-        data.results[r].test_week === weeks[w]
-      ) {
+    for (let r = 0; r < results.length; ++r) {
+      if (results[r].student_id === selectedStudentId && results[r].test_week === weeks[w]) {
         let temp = {}
-        for (let i = 0; i < data.viewConfig.column_keys.length; ++i) {
-          let key = data.viewConfig.column_keys[i]
-          let name = data.viewConfig.columns[i]
-          temp[name] = data.results[r].views?.[data.viewConfig.key]?.[key]
+        for (let i = 0; i < viewConfig.column_keys.length; ++i) {
+          let key = viewConfig.column_keys[i]
+          let name = viewConfig.columns[i]
+          temp[name] = results[r].views?.[viewConfig.key]?.[key]
           if (temp[name] === undefined) {
             temp[name] = '-'
           }
@@ -49,8 +46,8 @@ export const createHtmlTableFromViewConfig = data => {
     }
     if (!found) {
       let temp = {}
-      for (let c = 0; c < data.columns.length; ++c) {
-        temp[data.columns[c]] = '-'
+      for (let c = 0; c < columns.length; ++c) {
+        temp[columns[c]] = '-'
       }
       res.push(deepmerge({ week: weeks[w] }, temp))
     }

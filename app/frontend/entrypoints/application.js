@@ -27,7 +27,6 @@ const init = async () => {
   const data = JSON.parse(element.getAttribute('data')) || {}
   const pinia = createPinia()
 
-  //new Vue({
   const app = createApp({
     el: '#levumi',
     components: {

@@ -79,15 +79,7 @@
                                     <tr>
                                       <td>Items</td>
                                       <td>
-                                        <p>
-                                          <span v-for="(item, key, i) in test.items" :key="key">
-                                            {{
-                                              `${item}${
-                                                i < parseInt(test.items_count, 10) ? ', ' : ''
-                                              }`
-                                            }}
-                                          </span>
-                                        </p>
+                                        <p v-html="formattedItems(test.items)"></p>
                                       </td>
                                     </tr>
                                   </table>
@@ -131,6 +123,7 @@
 
 <script>
   import { useTestsStore } from '../../store/testsStore'
+
   export default {
     name: 'TestsApp',
     setup() {
@@ -140,7 +133,15 @@
 
     computed: {
       testData() {
-        return this.testsStore.tests
+        return this.testsStore.tests.filter(area => {
+          area.competences = area.competences.filter(competence => {
+            competence.test_families = competence.test_families.filter(tf => {
+              return tf.tests.length > 0
+            })
+            return competence.test_families.length > 0
+          })
+          return area.competences.length > 0
+        })
       },
       isLoading() {
         return this.testsStore.isLoading
@@ -151,6 +152,12 @@
       await this.testsStore.fetch()
     },
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       getAttachedImages(test) {
         return test.info_attachments.filter(attachment =>
           attachment.content_type.startsWith('image')

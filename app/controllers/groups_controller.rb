@@ -40,9 +40,14 @@ class GroupsController < ApplicationController
     if @group.read_only(@login)
       render json: { message: 'groups_controller::update: no edit permission', status: :forbidden }
     end
-    if @group.update(
-         params.require(:group).permit(:label, :archive, settings: %i[font_family font_size])
-       )
+
+    # group settings can be changed from various places - with this, you only need to pass
+    # the changed settings from the frontend.
+    if !@group.settings.nil? && !params[:group][:settings].nil?
+      params[:group][:settings] = @group.settings.merge group_params[:settings]
+    end
+
+    if @group.update(group_params)
       shares_object = {}
       @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
       render json: { groups: @login.get_classbook_info, share_keys: shares_object }
@@ -86,5 +91,11 @@ class GroupsController < ApplicationController
   def set_group
     @group = @login.groups.find(params[:id]) #Nur aus den Gruppen des eingeloggten Users wählen.
     redirect_to '/' if @group.nil?
+  end
+
+  def group_params
+    params
+      .require(:group)
+      .permit(:label, :archive, settings: %i[font_family font_size calculator_layout])
   end
 end

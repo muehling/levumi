@@ -50,6 +50,7 @@
     "vite-plugin-ruby": "^5.0.0"
   },
   "resolutions": {
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.31",
+    "braces": "^3.0.3"
   }
 }

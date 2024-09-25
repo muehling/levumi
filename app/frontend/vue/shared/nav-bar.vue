@@ -132,9 +132,15 @@
           </li>
           <li v-if="!isRegularUser && !masquerade">
             <BDropdown v-model="showAdminMenu" text="System" variant="" is-nav>
-              <BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
+              <BDropdownItem v-if="checkCapability('support')" to="/support">Support</BDropdownItem>
+              <!--<BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
                 Statistik
-              </BDropdownItem>
+              </BDropdownItem>-->
+              <span
+                class="dropdown-item"
+                style="opacity: 0.5; pointer-events: none; white-space: nowrap">
+                Statistiken (aktuell außer Betrieb)
+              </span>
               <BDropdownItem v-if="checkCapability('user')" to="/nutzerverwaltung">
                 Benutzerverwaltung
               </BDropdownItem>
@@ -147,6 +153,12 @@
                 to="/testverwaltung"
                 class="dropdown-item">
                 Testverwaltung
+              </router-link>
+              <router-link
+                v-if="checkCapability('test_editor')"
+                to="/test-editor"
+                class="dropdown-item">
+                Test-Editor
               </router-link>
               <router-link
                 v-if="checkCapability('material')"

@@ -25,7 +25,7 @@
       </div>
       <div v-else-if="showActionTab">
         <b-button size="sm" variant="outline-secondary" @click="handleNavigate('liste')">
-          <i class="fas fa-backward-step"></i>
+          <i class="fas fa-arrow-left"></i>
           Zurück zur Liste
         </b-button>
         <b-row class="mt-4">

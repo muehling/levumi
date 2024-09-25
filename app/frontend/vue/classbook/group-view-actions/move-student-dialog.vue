@@ -30,13 +30,22 @@
         </ul>
       </b-card>
     </b-collapse>
-    <b-form-select v-model="targetGroupId" :options="groupOptions" />
+    <b-form-select
+      v-model="targetGroupId"
+      :options="groupOptions"
+      :disabled="movedStudents.length !== 0" />
     <div v-if="targetGroupId">
       <hr />
-      <p>Mit Klick auf eine Schüler:in wird diese in die ausgewählte Klasse verschoben.</p>
+      <p>
+        Mit Klick auf eine Schüler:in wird diese aus der Klasse
+        <b>{{ group.label }}</b>
+        in die ausgewählte Klasse
+        <b>{{ targetGroup.label }}</b>
+        verschoben.
+      </p>
       <b-row>
         <b-col>
-          <b-card>
+          <b-card :header="group.label">
             <div
               v-for="(student, index) in sourceGroupStudents"
               :key="student.id"
@@ -53,7 +62,7 @@
         </b-col>
         <b-col>
           <div v-if="!!targetGroupId">
-            <b-card>
+            <b-card :header="targetGroup.label">
               <div
                 v-for="(student, index) in targetGroupStudents"
                 :key="student.id"
@@ -67,7 +76,13 @@
                       ? 'text-dark cursor-pointer'
                       : 'text-muted not-allowed'
                   }`">
-                  {{ student.name }}
+                  {{
+                    `${student.name}${
+                      hasStudentMoved(student.id, targetGroupId)
+                        ? ' (aus Klasse ' + group.label + ')'
+                        : ''
+                    }`
+                  }}
                 </span>
               </div>
             </b-card>
@@ -110,12 +125,9 @@
     },
     computed: {
       allGroups() {
-        return (
-          this.globalStore.groups
-            //.filter((group, index) => index > 0 && !group.read_only && !group.archive) // can be used for shares
-            .filter(group => group.owner && !group.archive)
-            .sort((a, b) => (a.label < b.label ? -1 : 1))
-        )
+        return this.globalStore.groups
+          .filter(group => group.owner && !group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       groupOptions() {
         const options = this.allGroups
@@ -126,6 +138,9 @@
           }))
         options.unshift({ text: 'Bitte wählen Sie eine Klasse aus.', value: null })
         return options
+      },
+      targetGroup() {
+        return this.allGroups.find(g => g.id === this.targetGroupId)
       },
     },
     watch: {

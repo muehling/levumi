@@ -1,0 +1,21 @@
+<script>
+  window.useStartPage = ({ config, styles, continueHandler }) => {
+    const conf = config.length
+      ? config
+      : [{ type: 'asset', src: '/images/shared/Levumi-normal.jpg' }]
+
+    const el = window.useContentPage({
+      id: 'start-page',
+      styles,
+      content: conf,
+      continueConfig: {
+        text: `Los geht's!`,
+        handler: () => {
+          continueHandler()
+        },
+      },
+    })
+
+    return el
+  }
+</script>

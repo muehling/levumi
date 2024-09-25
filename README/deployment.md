@@ -18,7 +18,7 @@ The dokku apps are called `levumi2-prod` for the production system and `levumi2-
 The database connections are entirely managed by Dokku and should be of no concern to the user. The access data is stored in environment variables in the respective containers. Manual changes to the databases in both environments can be done with the Rails console in the application container (`sudo` privileges are required):
 
 ```
-dokku enter levumi2-prod
+dokku enter levumi2-prod web
 rails c
 ```
 
@@ -32,7 +32,7 @@ mysql -u <username> -p
 The necessary credentials can be pulled from the environment variables in the application container:
 
 ```
-dokku enter levumi2-prod
+dokku enter levumi2-prod web
 env | grep DOKKU_MYSQL
 ```
 
@@ -67,13 +67,14 @@ rails test
 
 If the tests fail, please check why, fix the errors, or adapt the tests accordingly.
 
-Check if there are outdated or vulnerable node_modules:
+Check if there are outdated or vulnerable node_modules or ruby gems. In the container:
 
 ```
 yarn audit
+bundle exec bundle-audit
 ```
 
-Please update any vulnerable dependencies in the package.json (and run `yarn` to update the yarn.lock as well) before progessing.
+Please update any vulnerable dependencies in the package.json (and run `yarn` to update the yarn.lock as well), and update the ruby dependencies before progessing.
 
 Afterwards, merge your feature first into `develop`, then merge `develop` into `master`:
 
@@ -97,11 +98,11 @@ For server or database maintenance tasks, Levumi can be put into maintenance mod
 The maintenance mode can be activated with
 
 ```
-dokku config:set levumi2 MAINTENANCE="true"
+dokku config:set levumi2 MAINTENANCE=true
 ```
 
 and deactivated again with
 
 ```
-dokku config:unset levumi2 MAINTENANCE
+dokku config:set levumi2 MAINTENANCE=false # dokku config:unset seems to buggy.
 ```

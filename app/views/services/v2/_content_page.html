@@ -1,0 +1,52 @@
+<style>
+  .content-h1-element {
+    font-size: 1.5em;
+    text-align: center;
+  }
+  .content-p-element {
+    font-size: 1em;
+    text-align: center;
+  }
+  .content-image-element {
+    max-width: 70vw;
+    min-width: 50vw;
+    max-height: 50vh;
+    min-height: 30vh;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .content-button-element {
+    font-size: 1em;
+    margin-top: 1em;
+  }
+</style>
+<script type="module">
+  window.useContentPage = ({ id, styles, content, continueConfig }) => {
+    const el = $(
+      `<div id='content-page-${id}' class='d-flex justify-content-center flex-column align-items-center'></div`
+    )
+
+    content.forEach((item, index) => {
+      if (item.type === 'asset') {
+        const imgSrc = item.asset ? window.media_paths[item.asset] : item.src
+        el.append(
+          `<div id='content-image-${index}' class='content-image-element' style='background-image:url(${imgSrc});'></div`
+        )
+      } else {
+        const textEl = $(`<${item.type} class='content-${item.type}-element'></${item.type}>`)
+        textEl.html(item.text)
+        el.append(textEl)
+      }
+    })
+    const button = $(
+      `<button class='btn btn-primary content-button-element'>${continueConfig.text}</button>`
+    )
+    button.on('click', continueConfig.handler)
+    el.append(button)
+
+    el.css(styles)
+
+    return el
+  }
+</script>
