@@ -2,7 +2,6 @@
   <b-modal
     id="input-dialog"
     ref="genericInputDialog"
-    v-if="isOpen"
     :no-close-on-backdrop="disableClose"
     :no-close-on-esc="disableClose"
     :hide-header-close="disableClose"
@@ -49,7 +48,6 @@
       type: 'text',
       disableClose: false,
       showPassword: false,
-      isOpen: false,
     }),
     computed: {
       inputType() {
@@ -71,8 +69,7 @@
 
     methods: {
       open(data = {}) {
-        //this.$refs.genericInputDialog.show()
-        this.isOpen = true
+        this.$refs.genericInputDialog.show()
         this.message = data.message
         this.title = data.title || ''
         this.okText = data.okText
@@ -87,8 +84,7 @@
       },
 
       _close() {
-        //this.$refs.genericInputDialog.hide()
-        this.isOpen = false
+        this.$refs.genericInputDialog.hide()
         this.message = ''
         this.title = ''
         this.resolvePromise(false)
@@ -96,8 +92,7 @@
       _confirm(e) {
         e.preventDefault()
         e.stopPropagation()
-        //this.$refs.genericInputDialog.hide()
-        this.isOpen = false
+        this.$refs.genericInputDialog.hide()
         this.message = ''
         this.title = ''
         this.resolvePromise(this.inputValue)
