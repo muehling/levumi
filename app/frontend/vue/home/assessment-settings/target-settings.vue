@@ -28,10 +28,7 @@
                   id="target_input"
                   v-model="targetVal"
                   placeholder="Zielwert "
-                  trim
-                  :formatter="targetFormatter"
                   type="number"
-                  inputmode="decimal"
                   min="0"
                   step="0.01"
                   lang="de"
@@ -42,17 +39,13 @@
                   id="deviation_target_input"
                   v-model="deviation"
                   placeholder="Angabe in Prozent"
-                  trim
-                  :formatter="deviationFormatter"
                   type="number"
-                  inputmode="numeric"
                   min="0"
                   max="100"
                   step="1"
                   lang="de"
                   size="sm" />
               </td>
-              <b-form-input
             </tr>
           </tbody>
         </table>
@@ -96,6 +89,8 @@
   }
 
   const deviationFormatter = value => {
+    console.log('wtf scheiß die wand an', value)
+
     if (value === '') {
       return ''
     }

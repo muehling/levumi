@@ -134,38 +134,32 @@
         </b-row>
         <b-row class="ms-1">
           <b-col class="me-4">
-            <b-tabs pills card>
-              <b-tab title="Aktionen und Einstellungen">Einstellungen</b-tab>
-              <b-tab title="Anmerkungen">
-                <annotations-section
-                  :group="group"
-                  :test="test"
-                  :selected-student="selectedStudent"
-                  :selected-view-key="selectedView"
-                  :trend-is-enabled="trendIsEnabled"
-                  :weeks="weeks"
-                  @annotation-removed="removeAnnotation"
-                  @annotation-added="addAnnotation" />
-              </b-tab>
+            <annotations-section
+              v-if="annotationControlVisible"
+              :group="group"
+              :test="test"
+              :selected-student="selectedStudent"
+              :selected-view-key="selectedView"
+              :trend-is-enabled="trendIsEnabled"
+              :weeks="weeks" />
 
-              <b-tab title="Ziele und Trends">
-                <TargetControls
-                  :target-val="targetVal"
-                  :deviation-val="deviationVal"
-                  :date-until-val="dateUntilVal"
-                  :date-until-is-enabled="dateUntilIsEnabled"
-                  :target-is-enabled="targetIsEnabled"
-                  :deviation-is-enabled="deviationIsEnabled"
-                  :target-val-stored="targetValStored"
-                  :date-until-stored="dateUntilStored"
-                  :deviation-stored="deviationStored"
-                  :student-targets="studentTargets"
-                  :selected-student-id="selectedStudentId"
-                  :target-valid="targetValid"
-                  :test="test"
-                  :group="group"></TargetControls>
-              </b-tab>
-            </b-tabs>
+            <TargetControls
+              v-if="targetControlVisible"
+              :target-val="targetVal"
+              :deviation-val="deviationVal"
+              :date-until-val="dateUntilVal"
+              :date-until-is-enabled="dateUntilIsEnabled"
+              :target-is-enabled="targetIsEnabled"
+              :deviation-is-enabled="deviationIsEnabled"
+              :target-val-stored="targetValStored"
+              :date-until-stored="dateUntilStored"
+              :deviation-stored="deviationStored"
+              :student-targets="studentTargets"
+              :selected-student-id="selectedStudentId"
+              :target-valid="targetValid"
+              :test="test"
+              :group="group"
+              @set-target="setTarget" />
           </b-col>
         </b-row>
       </b-col>
@@ -210,13 +204,14 @@
     <b-row :hidden="!simpleTableVisible">
       <b-tabs class="w-100" pills no-body card>
         <b-tab title="Tabellarische Daten" lazy>
-          <b-table-lite
+          <b-table
             id="simple-table"
             class="mt-4 text-small"
             small
             striped
             hover
-            :items="simpleTableData"></b-table-lite>
+            :fields="simpleTableFields"
+            :items="simpleTableData" />
         </b-tab>
       </b-tabs>
     </b-row>
@@ -287,7 +282,6 @@
       }
     },
     props: {
-      annotations: Array,
       configuration: Object,
       group: Object,
       results: Array,
@@ -322,6 +316,14 @@
       }
     },
     computed: {
+      simpleTableFields() {
+        const a = this.weeks.map(week => ({ key: printDate(week) }))
+        a.unshift({ key: 'name' })
+        return a
+      },
+      annotations() {
+        return this.assessmentsStore.currentAssessment.annotations.slice()
+      },
       displaySupportFilterHint() {
         return !this.graphData.length && this.selectedSupportNeedFilter
       },
@@ -557,7 +559,7 @@
         // this watcher might run before the chart is properly instantiated, resulting in Apexcharts
         // throwing an error when it tries to draw the annotations.
         if (this.isInitialized) {
-          this.updateAnnotations()
+          this.updateView(false)
         }
         if (this.trendIsEnabled) {
           this.updateView(true)
@@ -771,15 +773,20 @@
         if (!trueChartType) {
           trueChartType = 'line'
         }
+
         const preparedOptions = prepareOptions(
           trueChartType,
           view.options,
           this.weeks,
           this.targetIsSlopeVariant,
           this.targetIsEnabled,
-          animate,
+          false, //animate,
           this.maxYValue
         )
+
+        const { points, xaxis } = this.updateAnnotations()
+
+        preparedOptions.annotations = { points, xaxis }
 
         // bar and grouped stacked bar are currently the only supported non-line charts
         const nonLineChart = ['bar'].includes(trueChartType)
@@ -865,7 +872,7 @@
         if (this.targetIsEnabled) {
           this.updateNonSlopeTarget()
         }
-        this.updateAnnotations()
+
         if (stackedBarChart) {
           postProcessGroupedStackedBars(this.viewConfig)
         }
@@ -914,13 +921,8 @@
               annotation.start
             )
           })
-        // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
-        //   this.annotations.forEach(annotation => {
-        //     this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
-        //   })
 
-        //xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
-        //points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
+        return { points, xaxis }
       },
 
       // append the slope target line on the chart if the slope variant is chosen by the current view
@@ -1032,13 +1034,6 @@
 
       hasResults(student) {
         return this.results.some(result => result.student_id === student.id)
-      },
-
-      addAnnotation() {
-        console.log('yay, neue annotation')
-      },
-      removeAnnotation(id) {
-        //    this.$refs.levumiChart?.removeAnnotation('a' + id)
       },
 
       setTarget(targetVal, dateUntilVal, deviationVal, redraw) {

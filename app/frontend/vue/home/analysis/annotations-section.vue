@@ -224,8 +224,11 @@
         if (ok) {
           const res = await ajax(apiRoutes.annotations.delete(id))
           if (res.status === 200) {
-            this.assessmentsStore.currentAssessment.annotations =
-              this.assessmentsStore.currentAssessment.annotations.filter(a => a.id !== id)
+            const assessment = { ...this.assessmentsStore.currentAssessment }
+            assessment.annotations = this.assessmentsStore.currentAssessment.annotations.filter(
+              a => a.id !== id
+            )
+            this.assessmentsStore.currentAssessment = assessment
           }
         }
       },
@@ -262,9 +265,9 @@
         if (res.status === 200) {
           const annotations = this.assessmentsStore.currentAssessment.annotations
           annotations.push(res.data)
-          this.assessmentsStore.currentAssessment.annotations = annotations.sort((a, b) =>
-            a.end > b.end ? -1 : 1
-          )
+          const assessment = { ...this.assessmentsStore.currentAssessment }
+          assessment.annotations = annotations.sort((a, b) => (a.end > b.end ? -1 : 1))
+          this.assessmentsStore.currentAssessment = assessment
           this.annotationIsTrendThreshold = false
           this.annotationCategoryId = this.minCategoryId
           this.annotationEnd = null

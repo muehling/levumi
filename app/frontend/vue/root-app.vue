@@ -188,6 +188,9 @@
       async displayNews() {
         const news = this.globalStore.staticData.news
 
+        if (!news) {
+          return
+        }
         const messagesToBeDisplayed = news.filter(newsItem => {
           if (this.globalStore.login.intro_state === 5) {
             this.updateSeenNews() // for newly registered users, don't display any news.

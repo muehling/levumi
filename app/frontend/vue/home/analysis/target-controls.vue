@@ -1,6 +1,6 @@
 <template>
   <div id="target-controls">
-    <b-form v-if="!readOnly" class="border p-3" accept-charset="UTF-8" onsubmit="return false">
+    <b-form v-if="!readOnly" class="border p-3" accept-charset="UTF-8">
       <b-alert
         :show="selectedStudentId !== -1 && storedIsNull"
         variant="info"
@@ -15,8 +15,8 @@
         <div class="col-12 col-md-4 col-xl-3">
           <b-form-input
             id="target_input"
+            v-model="target"
             placeholder="Hier Zielwert eingeben"
-            :value="targetVal"
             trim
             :formatter="targetFormatter"
             type="number"
@@ -25,7 +25,7 @@
             step="0.01"
             lang="de"
             size="sm"
-            @update="setTarget($event, dateUntilVal, deviationVal, true)"></b-form-input>
+            @update:model-value="setTarget($event, dateUntilVal, deviationVal, true)" />
         </div>
         <context-help
           help-text="Der Zielwert wird wahlweise als horizontale oder an-/absteigende Gerade dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
@@ -38,14 +38,14 @@
         <div class="col-12 col-md-4 col-xl-3">
           <b-form-input
             id="available_target_input"
-            :value="dateUntilVal"
+            v-model="dateUntil"
             placeholder="Bis wann soll das Ziel erreicht worden sein?"
             trim
             :formatter="dateFormatter"
             type="date"
             lang="de"
             size="sm"
-            @update="setTarget(targetVal, $event, deviationVal, true)"></b-form-input>
+            @update:model-value="setTarget(targetVal, $event, deviationVal, true)" />
         </div>
         <context-help
           help-text="Mit dieser Option wird die Zeitachse des Diagramms auf das eingestellte Datum erweitert. An-/absteigende Zielwerte gelten für dieses Datum;
@@ -60,7 +60,7 @@
           <b-input-group size="sm" append="%">
             <b-form-input
               id="deviation_target_input"
-              :value="deviationVal"
+              v-model="deviation"
               placeholder="Angabe in Prozent"
               trim
               :formatter="deviationFormatter"
@@ -71,7 +71,7 @@
               step="1"
               lang="de"
               size="sm"
-              @update="setTarget(targetVal, dateUntilVal, $event, true)"></b-form-input>
+              @update:model-value="setTarget(targetVal, dateUntilVal, $event, true)" />
           </b-input-group>
         </div>
         <context-help
@@ -128,14 +128,7 @@
   export default {
     name: 'TargetControls',
     components: { ConfirmDialog, ContextHelp },
-    inject: [
-      'readOnly',
-      'restoreTarget',
-      'viewConfig',
-      'setTarget',
-      'targetStored',
-      'loadStudentTargets',
-    ],
+    inject: ['readOnly', 'restoreTarget', 'viewConfig', 'targetStored', 'loadStudentTargets'],
     props: {
       targetIsEnabled: Boolean,
       dateUntilIsEnabled: Boolean,
@@ -157,6 +150,9 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
+    data() {
+      return { target: undefined, dateUntil: undefined, deviation: undefined }
+    },
     computed: {
       multipleValues() {
         return (this.dateUntilIsEnabled || this.deviationIsEnabled) && this.targetIsEnabled
@@ -176,6 +172,13 @@
       },
     },
     methods: {
+      setTarget(targetVal, dateUntilVal, deviationVal) {
+        console.log('meh', dateUntilVal, this.dateUntil)
+
+        if (this.target) {
+          this.$emit('set-target', targetVal, dateUntilVal, deviationVal, true)
+        }
+      },
       /**
        * Returns a string of a number rounded to two digits, if a number can be constructed from the input.
        * If not, it returns an empty string.

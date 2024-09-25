@@ -4,8 +4,7 @@
 import './add_jquery'
 import * as bootstrap from 'bootstrap'
 
-import BootstrapVue from 'bootstrap-vue-next'
-import Vue from 'vue'
+import { createBootstrap } from 'bootstrap-vue-next'
 import { createApp } from 'vue'
 
 import FrontendApp from '../vue/testing/frontend-app.vue'
@@ -30,7 +29,8 @@ const init = async () => {
       return data
     },
   })
-  app.use(BootstrapVue)
+  app.use(createBootstrap())
+
   app.mixin({
     data: function () {
       return {
@@ -40,7 +40,9 @@ const init = async () => {
       }
     },
   })
+  app.mount('#levumi')
 }
+
 $('[data-toggle="popover"]').popover()
 
 if (element) {
