@@ -19,6 +19,8 @@ class Test < ApplicationRecord
   validates_presence_of :level
   validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
+  attribute :area_name, :string
+
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     archive ? level + ' (veraltet)' : level
@@ -275,11 +277,11 @@ class Test < ApplicationRecord
 
         f = zip.glob('test.html').first
         if !f.nil?
-        test.entry_point.attach(
-          io: StringIO.new(f.get_input_stream.read),
-          filename: 'test.html',
-          content_type: 'text/html'
-        )
+          test.entry_point.attach(
+            io: StringIO.new(f.get_input_stream.read),
+            filename: 'test.html',
+            content_type: 'text/html'
+          )
         end
 
         zip
@@ -353,10 +355,11 @@ class Test < ApplicationRecord
 
     #Keine alten Messungen exportieren
     res =
-      Result
-        .where("test_date > '2019-09-09'")
-        .where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
-        .all
+      Result.where(
+        student_id: student_ids,
+        assessment_id: assessment_ids,
+        test_date: '2019-09-09'..
+      ).all
     csv = ''
     csv = res[0].csv_header(false) + "\n" if res.size > 0
     res.each { |r| csv = csv + r.as_csv(false) }
@@ -379,6 +382,7 @@ class Test < ApplicationRecord
         .order(test_family_id: :asc)
         .all
     res = []
+    areas_by_month = {}
     tests.each do |t|
       assessment_ids = Assessment.where(group_id: groups, test_id: t.id).pluck('id')
       results =
