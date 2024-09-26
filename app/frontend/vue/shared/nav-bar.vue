@@ -133,9 +133,9 @@
           <li v-if="!isRegularUser && !masquerade">
             <BDropdown v-model="showAdminMenu" text="System" variant="" is-nav>
               <BDropdownItem v-if="checkCapability('support')" to="/support">Support</BDropdownItem>
-              <BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
-                Statistik
-              </BDropdownItem>
+              <!--<BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
+                Statistiken
+              </BDropdownItem>-->
               <span
                 class="dropdown-item"
                 style="opacity: 0.5; pointer-events: none; white-space: nowrap">

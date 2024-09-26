@@ -132,7 +132,7 @@
           console.log('route change', name)
 
           switch (name) {
-            case 'testverwaltung':
+            case 'GroupTestAdmin':
               console.log('Testverwaltung')
 
               this.isAssessmentSettingsOpen = false

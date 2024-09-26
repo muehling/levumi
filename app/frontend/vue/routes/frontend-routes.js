@@ -26,6 +26,7 @@ const routes = [
         name: 'AssessmentList',
 
         children: [
+          { path: 'testverwaltung', props: true, name: 'GroupTestAdmin', component: HomeApp },
           {
             path: 'testdetails/:testId',
             component: HomeApp,
