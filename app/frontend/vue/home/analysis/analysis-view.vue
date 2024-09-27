@@ -193,7 +193,7 @@
           </thead>
           <tbody>
             <tr v-for="entry in table_data" :key="entry.week">
-              <td>{{ printDate(entry.week) }}</td>
+              <td>{{ formatDate(entry.week) }}</td>
               <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
             </tr>
           </tbody>
@@ -269,11 +269,9 @@
       LoadingDots,
     },
 
-    inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
     provide: function () {
       return {
         restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
-        setTarget: this.setTarget,
         loadStudentTargets: this.loadStudentTargets,
         targetStored: computed(() => this.targetStored), // computed necessary for reactivity
         viewConfig: computed(() => this.viewConfig),
@@ -282,11 +280,7 @@
       }
     },
     props: {
-      configuration: Object,
       group: Object,
-      results: Array,
-      students: Array,
-      test: Object,
     },
     setup() {
       const testsStore = useTestsStore()
@@ -306,7 +300,7 @@
         maxY: 0,
         selectedStudentId: -1,
         selectedSupportNeedFilter: undefined,
-        selectedView: this.test?.configuration.views[0].key,
+        selectedView: undefined,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
@@ -316,6 +310,20 @@
       }
     },
     computed: {
+      test() {
+        return this.assessmentsStore.currentAssessment?.test
+      },
+      results() {
+        return this.assessmentsStore.currentAssessment?.series
+      },
+      students() {
+        return this.globalStore.studentsInGroups[this.group.id] || []
+      },
+
+      readOnly() {
+        return !!this.group.read_only
+      },
+
       simpleTableFields() {
         const a = this.weeks.map(week => ({ key: printDate(week) }))
         a.unshift({ key: 'name' })
@@ -323,6 +331,9 @@
       },
       annotations() {
         return this.assessmentsStore.currentAssessment.annotations.slice()
+      },
+      configuration() {
+        return this.assessmentsStore.currentAssessment.configuration
       },
       displaySupportFilterHint() {
         return !this.graphData.length && this.selectedSupportNeedFilter
@@ -585,6 +596,9 @@
       )
     },
     methods: {
+      formatDate(date) {
+        return printDate(date)
+      },
       currentViewConfig(key = this.selectedView) {
         if (key) {
           return this.configuration.views.find(view => view.key === key)
@@ -704,7 +718,7 @@
         return series
       },
 
-      createSeries(studentId, seriesKey, formatDate) {
+      createSeries(studentId, seriesKey, dateNeedsFormatting) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
         const res = this.weeks.map(week => {
@@ -712,9 +726,9 @@
 
           // if a week has no results add a point with an empty y value for this week
           if (currentResult === null || currentResult === undefined) {
-            return { x: formatDate ? printDate(week) : week, y: null }
+            return { x: dateNeedsFormatting ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
+          let point = this.XYFromResult(currentResult, seriesKey, dateNeedsFormatting)
           point.y = point.y?.toFixed(2)
           if (point.y === undefined) {
             point.y = null
@@ -725,7 +739,7 @@
         })
         return res
       },
-      XYFromResult(result, seriesKey, formatDate) {
+      XYFromResult(result, seriesKey, dateNeedsFormatting) {
         if (result === null || result === undefined) {
           return undefined
         }
@@ -741,7 +755,7 @@
         }
         const w = result.test_week
         return {
-          x: formatDate ? printDate(w) : w ?? null,
+          x: dateNeedsFormatting ? printDate(w) : w ?? null,
           y: yVal,
         }
       },

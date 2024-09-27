@@ -67,8 +67,7 @@
                           :class="`${
                             assessmentExists('testType', testTypeId) ? 'font-weight-bold' : ''
                           }`">
-                          {{ testTypes.find(testType => testType.id === testTypeId).name
-                          }}{{ '/' + testTypeId + '/' + area.id }}
+                          {{ testTypes.find(testType => testType.id === testTypeId).name }}
                         </span>
                       </b-button>
                     </b-card-header>

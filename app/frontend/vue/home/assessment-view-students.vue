@@ -49,12 +49,12 @@
       <b-button
         v-if="isAllowed"
         class="btn btn-sm"
-        :variant="isactive ? ' btn-danger' : ' btn-success'"
+        :variant="isActive ? ' btn-danger' : ' btn-success'"
         :disabled="isUpdating"
         @click="toggleAssessment()">
-        <i v-if="!isUpdating" :class="isactive ? 'fas fa-pause' : 'fas fa-play'"></i>
+        <i v-if="!isUpdating" :class="isActive ? 'fas fa-pause' : 'fas fa-play'"></i>
         <i v-else class="fas fa-spinner fa-spin"></i>
-        {{ isactive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
+        {{ isActive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
       </b-button>
 
       <b-dropdown v-if="isAllowed" size="sm" class="ms-1" variant="outline-secondary" no-caret>
@@ -142,7 +142,7 @@
                 <b-button
                   :key="student.id"
                   :variant="getResult(student.id) > 0 ? 'success' : 'outline-secondary'"
-                  :disabled="!isactive || !isAllowed"
+                  :disabled="!isActive || !isAllowed"
                   type="submit">
                   {{ student.name }}
                   <br />
@@ -209,10 +209,8 @@
       excludedStudents() {
         return this.students.filter(student => this.excludeList.includes(student.id))
       },
-      isactive() {
-        const assessments = this.assessmentsStore.assessments[this.group.id]
-
-        return assessments?.find(a => a.test_id === this.test.id)?.active
+      isActive() {
+        return this.assessmentsStore.currentAssessment.active
       },
       isAllowed() {
         return this.globalStore.login.is_masquerading === null && !this.group.read_only
@@ -240,17 +238,16 @@
         this.isUpdating = true
         const res = await ajax(
           apiRoutes.assessments.toggleAssessment(this.group.id, this.test.id, {
-            assessment: { active: this.isactive ? 0 : 1 },
+            assessment: { active: this.isActive ? 0 : 1 },
           })
         )
         if (res.status === 200) {
-          await this.assessmentsStore.fetch(this.group.id)
+          this.assessmentsStore.currentAssessment.active =
+            !this.assessmentsStore.currentAssessment.active
         }
         this.isUpdating = false
       },
       async include(studentId) {
-        //AJAX-Request senden
-
         const res = await ajax(
           apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId)
         )
@@ -259,8 +256,6 @@
         }
       },
       async exclude(studentId) {
-        //AJAX-Request senden
-
         const res = await ajax(
           apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId)
         )
