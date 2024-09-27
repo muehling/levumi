@@ -33,7 +33,7 @@
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
                 :aria-expanded="selectedAreaId === area.id ? 'true' : 'false'"
-                :aria-controls="`area-select-accordion${area.id}`"
+                :aria-controls="`area-acc${area.id}`"
                 class="test-admin-button"
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
@@ -43,11 +43,8 @@
                 </span>
               </b-button>
             </b-card-header>
-            <b-collapse
-              :id="`area-select-accordion${area.id}`"
-              :visible="selectedAreaId === area.id"
-              role="tabpanel">
-              <b-card-body class="pr-0 py-0">
+            <b-collapse :id="`area-acc${area.id}`" :ref="`area-acc${area.id}`" role="tabpanel">
+              <b-card-body class="pe-0 py-0">
                 <div class="accordion" role="tablist">
                   <b-card
                     v-for="testTypeId in area.test_type_ids"
@@ -57,26 +54,29 @@
                     <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                       <b-button
                         :aria-expanded="selectedTestTypeId === testTypeId ? 'true' : 'false'"
-                        :aria-controls="`testType-select-accordion${testTypeId + '/' + area.id}`"
+                        :aria-controls="`testType-acc${testTypeId + '/' + area.id}`"
                         class="test-admin-button"
                         block
                         :variant="`${
-                          selectedTestTypeId === testTypeId ? 'primary' : 'outline-primary'
+                          selectedTestTypeId === testTypeId && area.id === selectedAreaId
+                            ? 'primary'
+                            : 'outline-primary'
                         }`"
                         @click.stop.prevent="expandTestType(testTypeId)">
                         <span
                           :class="`${
                             assessmentExists('testType', testTypeId) ? 'font-weight-bold' : ''
                           }`">
-                          {{ testTypes.find(testType => testType.id === testTypeId).name }}
+                          {{ testTypes.find(testType => testType.id === testTypeId).name
+                          }}{{ '/' + testTypeId + '/' + area.id }}
                         </span>
                       </b-button>
                     </b-card-header>
                     <b-collapse
-                      :id="`testType-select-accordion${testTypeId + '/' + area.id}`"
-                      :visible="selectedTestTypeId === testTypeId && selectedAreaId === area.id"
+                      :id="`testType-acc${testTypeId + '/' + area.id}`"
+                      :ref="`testType-acc${testTypeId + '/' + area.id}`"
                       role="tabpanel">
-                      <b-card-body class="pr-0 py-0">
+                      <b-card-body class="pe-0 py-0">
                         <div class="accordion" role="tablist">
                           <b-card
                             v-for="competence in competencesForTestType(area.id, testTypeId)"
@@ -91,9 +91,7 @@
                                 :aria-expanded="
                                   selectedCompetenceId === competence.id ? 'true' : 'false'
                                 "
-                                :aria-controls="`competence-select-accordion${
-                                  testTypeId + '/' + competence.id
-                                }`"
+                                :aria-controls="`competence-acc${testTypeId + '/' + competence.id}`"
                                 class="test-admin-button"
                                 block
                                 :variant="`${
@@ -113,10 +111,10 @@
                               </b-button>
                             </b-card-header>
                             <b-collapse
-                              :id="`competence-select-accordion${testTypeId + '/' + competence.id}`"
-                              :visible="selectedCompetenceId === competence.id"
+                              :id="`competence-acc${testTypeId + '/' + competence.id}`"
+                              :ref="`competence-acc${testTypeId + '/' + competence.id}`"
                               role="tabpanel">
-                              <b-card-body class="pr-0 py-0">
+                              <b-card-body class="pe-0 py-0">
                                 <div class="accordion" role="tablist">
                                   <b-card
                                     v-for="testFamily in testFamiliesForCompetence(
@@ -134,7 +132,7 @@
                                         :aria-expanded="
                                           selectedTestFamilyId === testFamily.id ? 'true' : 'false'
                                         "
-                                        :aria-controls="`testFamily-select-accordion${
+                                        :aria-controls="`testFamily-acc${
                                           testTypeId + '/' + testFamily.id
                                         }`"
                                         class="test-admin-button"
@@ -156,12 +154,10 @@
                                       </b-button>
                                     </b-card-header>
                                     <b-collapse
-                                      :id="`testFamily-select-accordion${
-                                        testTypeId + '/' + testFamily.id
-                                      }`"
-                                      :visible="testFamily.id === selectedTestFamilyId"
+                                      :id="`testFamily-acc${testTypeId + '/' + testFamily.id}`"
+                                      :ref="`testFamily-acc${testTypeId + '/' + testFamily.id}`"
                                       role="tabpanel">
-                                      <b-card-body class="pr-0 py-0">
+                                      <b-card-body class="pe-0 py-0">
                                         <div class="accordion" role="tablist">
                                           <b-card
                                             v-for="test in testsForTestFamily(
@@ -589,36 +585,52 @@
       },
 
       reset(level) {
+        // first elements of the refs contain the bootstrap collapse instance, so we can call .hide() and .show() on it
         switch (level) {
           case 'area':
-            this.selectedAreaId = undefined
+            this.$refs[`area-acc${this.selectedAreaId}`] &&
+              this.$refs[`area-acc${this.selectedAreaId}`][0].hide()
+
           case 'testType': //eslint-disable-line no-fallthrough
-            this.selectedTestTypeId = undefined
+            this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`] &&
+              this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`][0].hide()
+
           case 'competence': // eslint-disable-line no-fallthrough
-            this.selectedCompetenceId = undefined
+            this.$refs[`competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`] &&
+              this.$refs[
+                `competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`
+              ][0].hide()
+
           case 'testFamily': // eslint-disable-line no-fallthrough
-            this.selectedTestFamilyId = undefined
-          case 'test': // eslint-disable-line no-fallthrough
-            this.selectedTestId = undefined
+            this.$refs[`testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`] &&
+              this.$refs[
+                `testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`
+              ][0].hide()
         }
+        if (level === 'area' || level === 'testType') {
+          this.selectedTestTypeId = undefined
+        }
+        this.selectedTestId = undefined
       },
       expandArea(areaId) {
-        this.reset('testType')
-        this.selectedAreaId = this.selectedAreaId === areaId ? undefined : areaId
+        this.$refs[`area-acc${areaId}`][0].show()
+        this.reset('area')
+        this.selectedAreaId = areaId
       },
       expandTestType(testTypeId) {
-        this.selectedTestTypeId = this.selectedTestTypeId === testTypeId ? undefined : testTypeId
-        this.reset('competence')
+        this.reset('testType')
+        this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0].show()
+        this.selectedTestTypeId = testTypeId
       },
       expandCompetence(competenceId) {
-        this.reset('testFamily')
-        this.selectedCompetenceId =
-          this.selectedCompetenceId === competenceId ? undefined : competenceId
+        this.reset('competence')
+        this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0].show()
+        this.selectedCompetenceId = competenceId
       },
       expandTestFamily(testFamilyId) {
-        this.reset('test')
-        this.selectedTestFamilyId =
-          this.selectedTestFamilyId === testFamilyId ? undefined : testFamilyId
+        this.reset('testFamily')
+        this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0].show()
+        this.selectedTestFamilyId = testFamilyId
       },
       async displayTestDetail(testId) {
         await this.globalStore.getItemsForTest(testId)
@@ -680,5 +692,8 @@
   .test-details {
     max-height: 80vh;
     overflow: auto;
+  }
+  .test-admin-button {
+    width: 100%;
   }
 </style>
