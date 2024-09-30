@@ -2,12 +2,12 @@
   <div>
     <b-modal
       id="edit-user-dialog"
-      ref="editDialog"
+      ref="editUserDialog"
       title="Benutzerdaten ändern"
-      v-if="isOpen"
-      @hidden="isOpen = false"
-      hide-footer>
+      hide-footer
+      @hidden="isOpen = false">
       <user-form
+        :key="user.id"
         :is-new="isNew"
         :user="user"
         :show-delete-button="!isNew"
@@ -39,15 +39,13 @@
         password: '',
         passwordConfirm: '',
         securityAnswer: '',
-        isOpen: false,
       }
     },
     methods: {
       open(data = {}) {
-        // this.$refs.editDialog.show()
-        this.isOpen = true
         this.user = data.user
         this.isNew = data.isNew || false
+        this.$refs.editUserDialog.show()
       },
       handleSuccess(res) {
         const params = this.isNew ? { currentPage: 1 } : res
@@ -65,8 +63,7 @@
         this._close()
       },
       _close() {
-        //  this.$refs.editDialog.hide()
-        this.isOpen = false
+        this.$refs.editUserDialog.hide()
         this.user = {}
       },
     },

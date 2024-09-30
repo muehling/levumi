@@ -184,7 +184,7 @@
               variant=""
               is-nav>
               <BDropdownItem @click="editOwnProfile">Profildaten ändern</BDropdownItem>
-              <BDropdownItem @click="editUserSettings">Einstellungen ändern ändern</BDropdownItem>
+              <BDropdownItem @click="editUserSettings">Einstellungen ändern</BDropdownItem>
               <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
                 Testungen exportieren
               </BDropdownItem>

@@ -1,30 +1,23 @@
 <template>
   <div>
-    <b-modal id="edit-user-dialog" ref="editDialog" title="Einstellungen" v-if="isOpen" hide-footer>
+    <b-modal
+      id="edit-user-dialog"
+      ref="editSettingsDialog"
+      title="Einstellungen"
+      hide-footer
+      @hidden="_close">
       <div class="user-settings">
         <b-card>
           <b class="mb-2 d-inline-block">Grafische Auswertung</b>
           <b-form-checkbox v-model="targets.enabled" name="targets-enabled" switch>
             Ziele verwenden
-            <span
-              v-b-popover.hover="
-                `Ziele werden als gestrichelte Linien im Diagramm dargestellt und lassen sich im Abschnitt 'Ziele und Trends' einstellen. Sie können sowohl auf Klassen- als auch auf individueller Ebene vergeben werden.`
-              "
-              style="font-size: 1rem"
-              class="mt-1 ms-2">
-              <i class="fas fa-circle-question"></i>
-            </span>
+            <context-help
+              help-text="Ziele werden als gestrichelte Linien im Diagramm dargestellt und lassen sich im Abschnitt 'Ziele und Trends' einstellen. Sie können sowohl auf Klassen- als auch auf individueller Ebene vergeben werden." />
           </b-form-checkbox>
           <b-form-checkbox v-model="trends.enabled" name="trends-enabled" switch>
             Trendlinien verwenden
-            <span
-              v-b-popover.hover="
-                `Trendlinien dienen zur besseren Visualisierung des Lernverlaufs. Sie stehen nur für die Individualgraphen der Schüler:innen zur Verfügung.`
-              "
-              style="font-size: 1rem"
-              class="mt-1 ms-2">
-              <i class="fas fa-circle-question"></i>
-            </span>
+            <context-help
+              help-text="Trendlinien dienen zur besseren Visualisierung des Lernverlaufs. Sie stehen nur für die Individualgraphen der Schüler:innen zur Verfügung." />
           </b-form-checkbox>
           <b-button
             v-b-toggle.extended-graph-settings
@@ -47,14 +40,8 @@
                 name="deviations-enabled"
                 switch>
                 Abweichungen anzeigen
-                <span
-                  v-b-popover.hover="
-                    `Abweichungen werden als Bereich unterhalb der gestrichelten Ziel-Linie dargestellt. Sie visualisieren den Bereich, in dem ein Ergebnis, dass das vorgegebene Ziel nicht erreicht hat, noch akzeptable ist.`
-                  "
-                  style="font-size: 1rem"
-                  class="mt-1 ms-2">
-                  <i class="fas fa-circle-question"></i>
-                </span>
+                <context-help
+                  help-text="Abweichungen werden als Bereich unterhalb der gestrichelten Ziel-Linie dargestellt. Sie visualisieren den Bereich, in dem ein Ergebnis, dass das vorgegebene Ziel nicht erreicht hat, noch akzeptable ist." />
               </b-form-checkbox>
               <b-form-checkbox
                 v-model="targets.slope"
@@ -62,14 +49,8 @@
                 name="sloped-targetes"
                 switch>
                 An-/Absteigende Ziele
-                <span
-                  v-b-popover.hover="
-                    `Ist diese Option aktiviert, wird die Ziellinie als Gerade, ausgehend vom Durchschnitt der ersten Messpunkte, hin zum Zielwert dargestellt.`
-                  "
-                  style="font-size: 1rem"
-                  class="mt-1 ms-2">
-                  <i class="fas fa-circle-question"></i>
-                </span>
+                <context-help
+                  help-text="Ist diese Option aktiviert, wird die Ziellinie als Gerade, ausgehend vom Durchschnitt der ersten Messpunkte, hin zum Zielwert dargestellt." />
               </b-form-checkbox>
               <hr class="mt-1 mb-2" />
               <b :class="trends.extrapolate ? '' : 'text-muted'">Trendlinien</b>
@@ -79,14 +60,8 @@
                 name="extrapolation-enabled"
                 switch>
                 Trendlinien extrapolieren
-                <span
-                  v-b-popover.hover="
-                    `Mit dieser Option kann die Trendlinie bis zum Ende des eingestellten verfügbaren Zeitraums verlängert werden.`
-                  "
-                  style="font-size: 1rem"
-                  class="mt-1 ms-2">
-                  <i class="fas fa-circle-question"></i>
-                </span>
+                <context-help
+                  help-text="Mit dieser Option kann die Trendlinie bis zum Ende des eingestellten verfügbaren Zeitraums verlängert werden." />
               </b-form-checkbox>
             </b-card>
           </b-collapse>
@@ -105,25 +80,25 @@
   import { ajax } from '../../../utils/ajax'
   import apiRoutes from '../../routes/api-routes'
   import InfoDialog from '../../shared/info-dialog.vue'
+  import ContextHelp from 'src/vue/shared/context-help.vue'
   export default {
     name: 'UserSettingsDialog',
-    components: { InfoDialog },
+    components: { InfoDialog, ContextHelp },
     data() {
       return {
         targets: { enabled: false, deviation: true, slope: true },
         trends: { enabled: false, extrapolate: true },
         user: undefined,
-        isOpen: false,
+
         extendedGraphSettingsVisible: false,
       }
     },
     methods: {
       open(data = {}) {
-        //this.$refs.editDialog.show()
-        this.isOpen = true
         this.targets = data.user.settings?.targets || this.targets
         this.trends = data.user.settings?.trends || this.trends
         this.user = data.user
+        this.$refs.editSettingsDialog.show()
       },
       async handleSubmit() {
         const data = {
@@ -162,8 +137,8 @@
         this._close()
       },
       _close() {
-        //this.$refs.editDialog.hide()
-        this.isOpen = false
+        this.$refs.editSettingsDialog.hide()
+
         this.user = {}
       },
     },

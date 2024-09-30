@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="info-dialog" ref="infoDialog" v-if="isOpen" :title="title" hide-footer>
+  <b-modal id="info-dialog" ref="infoDialog" :title="title" hide-footer>
     <div class="d-block text-center mb-4">
       {{ message }}
     </div>
@@ -17,21 +17,18 @@
       message: '',
       title: '',
       okText: '',
-      isOpen: false,
     }),
 
     methods: {
       open(data = {}) {
-        //this.$refs.infoDialog.show()
-        this.isOpen = true
+        this.$refs.infoDialog.show()
         this.message = data.message
         this.title = data.title || ''
         this.okText = data.okText
       },
 
       _close() {
-        //this.$refs.infoDialog.hide()
-        this.isOpen = false
+        this.$refs.infoDialog.hide()
         this.message = ''
         this.title = ''
       },

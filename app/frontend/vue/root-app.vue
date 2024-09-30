@@ -8,10 +8,12 @@
     <router-view />
     <error-dialog />
     <input-dialog ref="renewLoginDialog">
-      <div slot="extraContent" class="d-flex justify-content-between mb-4">
-        <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
-        <b-button variant="outline-secondary" @click="logout">Logout</b-button>
-      </div>
+      <template #extraContent>
+        <div class="d-flex justify-content-between mb-4">
+          <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
+          <b-button variant="outline-secondary" @click="logout">Logout</b-button>
+        </div>
+      </template>
     </input-dialog>
     <generic-message />
     <confirm-dialog ref="confirmDialog" />

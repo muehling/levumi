@@ -38,13 +38,15 @@
             @change-security-answer="a => (securityAnswer = a)" />
         </b-collapse>
       </b-form-group>
-      <b-form-group label-cols="4" label="Bundesland*">
-        <b-form-select
-          id="state-input"
-          v-model="state"
-          :class="hasStateErrors && 'is-invalid'"
-          :options="stateOptions" />
-      </b-form-group>
+      <div class="mt-3 mb-2">
+        <b-form-group label-cols="4" label="Bundesland*">
+          <b-form-select
+            id="state-input"
+            v-model="state"
+            :class="hasStateErrors && 'is-invalid'"
+            :options="stateOptions" />
+        </b-form-group>
+      </div>
       <extra-data-form
         :account-type="accountType"
         :town="town"
