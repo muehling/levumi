@@ -33,7 +33,7 @@
             Der eingegebene Code ist falsch!
           </div>
           <button class="btn btn-primary mt-3" id="security-key-check">
-            Code überprüfem
+            Code überprüfen
           </button>
         </div>
         <p class="mt-4" id="pw-hint">Nach der Eingabe des Codes müssen Sie nur noch die Sicherheitsfrage mit der 
@@ -45,57 +45,66 @@
   </div>
 </div>
 <script type="module">
-  $('#send-code').on('click', sendVerificationCode)
-  $('#security-key-check').on('click', checkKey)
+  document.getElementById('send-code').addEventListener('click', sendVerificationCode)
+  document.getElementById('security-key-check').addEventListener('click', checkKey)
 
   async function sendVerificationCode() {
-    $('#send-code').text("Code erneut anfordern")
-    $('#email-invalid-feedback').hide()
-    const email = $('#email-input').val()
+    document.getElementById('send-code').textContent = "Code erneut anfordern"
+    document.getElementById('email-invalid-feedback').style.display = 'none'
+    const email = document.getElementById('email-input').value
     if (!email || !email.includes('@')) {
-      $('#email-invalid-feedback').text("Bitte geben Sie eine gültige E-Mail-Adresse an.").show()
+      document.getElementById('email-invalid-feedback').textContent = "Bitte geben Sie eine gültige E-Mail-Adresse an"
+      document.getElementById('email-invalid-feedback').style.display = 'block'
       return
     }
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
     const mail = await fetch('/recovery_notification', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+        'X-CSRF-Token': csrfToken
       },
       body: JSON.stringify({ user: { email } }),
     })
     if (mail.status === 200) {
-      $('#hidden-code-input').show()
+      document.getElementById('hidden-code-input').style.display = 'block'
     } else {
       const res = await mail.json()
       
-      $('#email-invalid-feedback').text(res.message).show()
+      document.getElementById('email-invalid-feedback').textContent = res.message
+      document.getElementById('email-invalid-feedback').style.display = 'block'
       return
     }
   }
 
   async function checkKey() {
-    $('#code-invalid-feedback').hide()
-    const email = $('#email-input').val()
-    const recovery_key = $('#verificationCode').val()
+    document.getElementById('code-invalid-feedback').style.display = 'none'
+    const email = document.getElementById('email-input').value
+    const recovery_key = document.getElementById('verificationCode').value
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    
     const key = await fetch('/recovery_key_verification', {
       method: 'POST',
       headers: {
         Accept: 'text/html',
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
+        'X-CSRF-Token': csrfToken
       },
       body: JSON.stringify({ user: { email, recovery_key } }),
     })
+  
     if (key.status === 200) {
       const content = await key.text()
-      $('#pw-hint').remove()
-      $('#hidden-security-form').html(content)
+      const pwHint = document.getElementById('pw-hint')
+      if (pwHint) {
+        pwHint.remove()
+        document.getElementById('hidden-security-form').innerHTML = content}
     } else if (key.status === 403) {
-      $('#code-invalid-feedback').show()
+      document.getElementById('code-invalid-feedback').style.display = 'block'
     }
   }
+  
 </script>
