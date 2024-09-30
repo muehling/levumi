@@ -89,7 +89,6 @@
         targets: { enabled: false, deviation: true, slope: true },
         trends: { enabled: false, extrapolate: true },
         user: undefined,
-
         extendedGraphSettingsVisible: false,
       }
     },
@@ -138,7 +137,6 @@
       },
       _close() {
         this.$refs.editSettingsDialog.hide()
-
         this.user = {}
       },
     },

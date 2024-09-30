@@ -67,17 +67,20 @@
               <BDropdownDivider />
               <BDropdownItem>
                 <h6 class="dropdown-header">Handbücher</h6>
-                <a class="dropdown-item" href="/files/Testhandbuch_Empfinden_Verhalten.pdf">
+                <a
+                  class="dropdown-item"
+                  href="/files/Testhandbuch_Empfinden_Verhalten.pdf"
+                  target="_blank">
                   Handbuch Lernbereich Empfinden & Verhalten
                 </a>
               </BDropdownItem>
               <BDropdownItem>
-                <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf">
+                <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf" target="_blank">
                   Handbuch Lernbereich Deutsch
                 </a>
               </BDropdownItem>
               <BDropdownItem>
-                <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf">
+                <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf" target="_blank">
                   Handbuch Fördermaterial Deutsch
                 </a>
               </BDropdownItem>
@@ -126,9 +129,13 @@
             </a>
           </li>
           <li v-if="!masquerade">
-            <BDropdown :text="'Support'" variant="" is-nav>
+            <b-button class="nav-link" variant="" @click="toggleContact">Support</b-button>
+            <div v-if="showContact" class="position-absolute z-3">
+              <contact-form @close-contact-form="toggleContact" />
+            </div>
+            <!-- <BDropdown :text="'Support'" variant="" is-nav :auto-close="false">
               <BDropdownItem><contact-form /></BDropdownItem>
-            </BDropdown>
+            </BDropdown>-->
           </li>
           <li v-if="!isRegularUser && !masquerade">
             <BDropdown v-model="showAdminMenu" text="System" variant="" is-nav>
@@ -137,6 +144,7 @@
                 Statistiken
               </BDropdownItem>-->
               <span
+                v-if="checkCapability('stats')"
                 class="dropdown-item"
                 style="opacity: 0.5; pointer-events: none; white-space: nowrap">
                 Statistiken (aktuell außer Betrieb)
@@ -253,7 +261,7 @@
       return { globalStore, assessmentsStore }
     },
     data() {
-      return { showLegal: false, showProfile: false, showAdminMenu: false }
+      return { showLegal: false, showProfile: false, showAdminMenu: false, showContact: false }
     },
     computed: {
       systemMessage() {
@@ -288,6 +296,9 @@
     },
 
     methods: {
+      toggleContact() {
+        this.showContact = !this.showContact
+      },
       openImprint() {
         this.globalStore.generalModals.isImprintOpen = true
       },
