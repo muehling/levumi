@@ -1,10 +1,9 @@
 <template>
   <BModal
-    v-if="store.generalModals.isPrivacyOpen"
+    :model-value="store.generalModals.isPrivacyOpen"
     scrollable
     ok-only
     size="xl"
-    title="Datenschutzerklärung"
     @hidden="close">
     <h3>Datenschutzerklärung</h3>
     <p class="text-justify">

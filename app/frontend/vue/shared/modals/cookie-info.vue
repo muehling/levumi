@@ -1,6 +1,6 @@
 <template>
   <BModal
-    v-if="store.generalModals.isCookieHintOpen"
+    :model-value="store.generalModals.isCookieHintOpen"
     ok-only
     title="Cookie-Hinweis"
     @hidden="close">

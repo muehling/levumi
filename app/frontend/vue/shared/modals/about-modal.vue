@@ -1,6 +1,6 @@
 <template>
   <BModal
-    v-if="store.generalModals.isAboutOpen"
+    :model-value="store.generalModals.isAboutOpen"
     scrollable
     ok-only
     size="xl"

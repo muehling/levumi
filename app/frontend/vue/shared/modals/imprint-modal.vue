@@ -1,6 +1,6 @@
 <template>
   <BModal
-    v-if="store.generalModals.isImprintOpen"
+    :model-value="store.generalModals.isImprintOpen"
     scrollable
     ok-only
     size="xl"
