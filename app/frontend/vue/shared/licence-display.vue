@@ -32,7 +32,7 @@
     computed: {
       licenceText() {
         return this.forMaterial
-          ? 'Diese Fördermaterialien sind, soweit im Text nicht anders angegeben, lizensiert unter'
+          ? 'Diese Fördermaterialien sind, soweit im Text nicht anders angegeben, '
           : 'Dieser Test ist'
       },
     },
