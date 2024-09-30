@@ -82,6 +82,7 @@
                 :key="material.id"
                 :title="material.name">
                 <material-view :material="material" :full="true"></material-view>
+                <LicenceDisplay :for-material="true" />
               </b-tab>
             </b-tabs>
           </b-card>
@@ -109,9 +110,10 @@
   import { useMaterialsStore } from '../../store/materialsStore'
   import flatten from 'lodash/flatten'
   import MaterialView from './material-view.vue'
+  import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'MaterialsApp',
-    components: { MaterialView },
+    components: { MaterialView, LicenceDisplay },
     setup() {
       const globalStore = useGlobalStore()
       const materialsStore = useMaterialsStore()

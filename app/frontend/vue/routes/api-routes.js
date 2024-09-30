@@ -134,8 +134,8 @@ export default {
     transferGroup: id => ({ url: `/groups_shares/${id}/transfer_group` }),
   },
   supportMessages: {
-    create: data => ({ url: 'support_messages', method: 'POST', data }),
+    create: data => ({ url: '/support_messages', method: 'POST', data }),
     index: { url: '/support_messages' },
-    update: (id, data) => ({ url: `support_messages/${id}`, method: 'PATCH', data }),
+    update: (id, data) => ({ url: `/support_messages/${id}`, method: 'PATCH', data }),
   },
 }
