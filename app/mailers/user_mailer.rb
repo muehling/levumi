@@ -51,12 +51,9 @@ class UserMailer < ApplicationMailer
     mail(to: recipients, subject: "#{@updater} hat #{@shorthand} hochgeladen!")
   end
 
-  def transfer_group #noch nicht fertig. im prinzip muss hier das gleiche gehampel gemacht werden wie beim teilen, mit annehmen und allem.
-    @sender = params[:sender]
-    @group_label = params[:group_label]
-    @recipient = params[:recipient]
-    @share_key = params[:share_key]
-    @is_new_share = params[:is_new_share]
-    mail(to: @recipient.email, subject: "#{@sender} möchte Ihnen eine Klasse übertragen")
+  def password_reset
+    @user = params[:user]
+    @recovery = @user.recovery_key
+    mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:PASSWORD_RESET])
   end
 end
