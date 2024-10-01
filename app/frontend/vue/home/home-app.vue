@@ -41,7 +41,7 @@
                 </p>
               </b-card>
             </div>
-            <group-view v-else :key="selectedGroupId" />
+            <group-view v-else />
           </div>
         </b-col>
       </b-row>

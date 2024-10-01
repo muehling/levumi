@@ -89,8 +89,6 @@
   }
 
   const deviationFormatter = value => {
-    console.log('wtf scheiß die wand an', value)
-
     if (value === '') {
       return ''
     }

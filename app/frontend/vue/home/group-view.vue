@@ -126,6 +126,13 @@
       },
     },
     watch: {
+      selectedGroupId: {
+        async handler(newId, oldId) {
+          if (oldId !== undefined && oldId !== newId) {
+            this.getAssessmentData()
+          }
+        },
+      },
       '$route.name': {
         immediate: true,
         async handler(name) {
@@ -170,27 +177,26 @@
     },
 
     async mounted() {
+      this.getAssessmentData()
       //this.selectedGroupId = this.$route.params.groupId
-
       //this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
       //this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
-      console.log('group view mounted', this.$route.params, this.group)
-
-      await this.assessmentsStore.fetch(this.selectedGroupId)
-      await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
-
-      if (
-        this.$route.params.testId &&
-        this.assessmentsStore.currentAssessment?.test?.id !==
-          parseInt(this.$route.params.testId, 10)
-      ) {
-        await this.assessmentsStore.fetchCurrentAssessment(
-          this.selectedGroupId,
-          this.$route.params.testId
-        )
-      }
     },
     methods: {
+      async getAssessmentData() {
+        await this.assessmentsStore.fetch(this.selectedGroupId)
+        await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
+        if (
+          this.$route.params.testId &&
+          this.assessmentsStore.currentAssessment?.test?.id !==
+            parseInt(this.$route.params.testId, 10)
+        ) {
+          await this.assessmentsStore.fetchCurrentAssessment(
+            this.selectedGroupId,
+            this.$route.params.testId
+          )
+        }
+      },
       gotoClassbook() {
         if (this.group.owner) {
           this.$router.push(`/klassenbuch/eigene_klassen/${this.selectedGroupId}`)
@@ -199,9 +205,7 @@
         }
       },
       openSettings() {
-        console.log('meh', this.assessmentData)
         this.$router.push(
-          //TODO irgendwie gucken, wo der blöde Button hinsoll
           `/diagnostik/${this.selectedGroupId}/testdetails/${this.assessmentData.test.id}/einstellungen`
         )
       },

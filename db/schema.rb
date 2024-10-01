@@ -176,8 +176,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_19_081726) do
   create_table "shadow_students", charset: "utf8mb3", force: :cascade do |t|
     t.integer "original_id"
     t.integer "group"
-    t.integer "account_type"
-    t.integer "state"
+    t.integer "account_type", null: false
+    t.integer "state", null: false
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
@@ -256,9 +256,9 @@ ActiveRecord::Schema[7.1].define(version: 2024_08_19_081726) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "test_type_id"
-    t.json "required_services"
     t.string "updated_by"
     t.string "responsible"
+    t.json "required_services"
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end
