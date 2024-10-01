@@ -49,11 +49,12 @@
   document.getElementById('security-key-check').addEventListener('click', checkKey)
 
   async function sendVerificationCode() {
-    document.getElementById('send-code').textContent = "Code erneut anfordern"
+    document.getElementById('send-code').textContent = 'Code erneut anfordern'
     document.getElementById('email-invalid-feedback').style.display = 'none'
     const email = document.getElementById('email-input').value
     if (!email || !email.includes('@')) {
-      document.getElementById('email-invalid-feedback').textContent = "Bitte geben Sie eine gültige E-Mail-Adresse an"
+      document.getElementById('email-invalid-feedback').textContent =
+        'Bitte geben Sie eine gültige E-Mail-Adresse an'
       document.getElementById('email-invalid-feedback').style.display = 'block'
       return
     }
@@ -64,7 +65,7 @@
         Accept: 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
+        'X-CSRF-Token': csrfToken,
       },
       body: JSON.stringify({ user: { email } }),
     })
@@ -72,7 +73,7 @@
       document.getElementById('hidden-code-input').style.display = 'block'
     } else {
       const res = await mail.json()
-      
+
       document.getElementById('email-invalid-feedback').textContent = res.message
       document.getElementById('email-invalid-feedback').style.display = 'block'
       return
@@ -84,24 +85,32 @@
     const email = document.getElementById('email-input').value
     const recovery_key = document.getElementById('verificationCode').value
     const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-    
+
     const key = await fetch('/recovery_key_verification', {
       method: 'POST',
       headers: {
         Accept: 'text/html',
         'X-Requested-With': 'XMLHttpRequest',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': csrfToken
+        'X-CSRF-Token': csrfToken,
       },
       body: JSON.stringify({ user: { email, recovery_key } }),
     })
-  
+
     if (key.status === 200) {
       const content = await key.text()
       const pwHint = document.getElementById('pw-hint')
       if (pwHint) {
         pwHint.remove()
-        document.getElementById('hidden-security-form').innerHTML = content}
+        const el = document.getElementById('hidden-security-form')
+        el.innerHTML = content
+        const scripts = el.querySelectorAll('script')     
+        scripts.forEach(script => {
+          const newScript = document.createElement('script')
+          newScript.textContent = script.textContent
+          document.body.appendChild(newScript)
+        })
+      }
     } else if (key.status === 403) {
       document.getElementById('code-invalid-feedback').style.display = 'block'
     }
