@@ -109,7 +109,6 @@ export const useGlobalStore = defineStore('global', {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
       const coreData = res.data
-      this.groupInfo = coreData.groupInfo
       this.masquerade = coreData.masquerade
       this.login = coreData.login
 
