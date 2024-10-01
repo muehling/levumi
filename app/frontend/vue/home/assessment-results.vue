@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mb-3">
-      <div v-if="test.archive">
+      <div v-if="test?.archive">
         <p>
           Dieser Test wurde vom Levumi-Team überarbeitet (z.B. Korrektur einer Aufgabe, Änderung in
           der Ergebnisdarstellung). Unter dem Button "Aktuell" finden Sie die neuste Testversion, in
@@ -125,6 +125,10 @@
   })
 
   const getFormattedItems = items => {
+    if (!items) {
+      return ''
+    }
+
     const it = Object.values(items).map(item => {
       const a = test.items[item] || { question: '<unknown item>' }
 
@@ -151,5 +155,8 @@
       }
     }
   }
-  const studentName = id => group.students.find(student => student.id === id).name
+  const studentName = id => {
+    const student = group.students.find(student => student.id === id)
+    return student.name || id
+  }
 </script>
