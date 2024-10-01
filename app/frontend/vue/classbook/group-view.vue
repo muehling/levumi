@@ -36,7 +36,6 @@
               @groupview::action="handleSwitchActionPage" />
           </b-col>
           <b-col>
-            {{ currentNav }}
             <b-card :title="actionCardTitle">
               <div v-if="currentNav === 'general'">
                 <classbook-actions
@@ -206,8 +205,6 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          ///Vue.set(this.globalStore, 'groups', res.data.groups)
-          ///Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
           this.globalStore.groups = res.data.groups
           this.globalStore.shareKeys = res.data.share_keys
           this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}/liste`)
@@ -217,8 +214,6 @@
        * update group and propagate to parent component
        ******************************/
       updateGroup({ object }) {
-        this.$set(this.group, object)
-        //store.shareKeys[object.id] = object.key
         this.globalStore.setShareKey({ key: object.id, value: object.key })
         const groups = [...this.groups]
         const index = groups.findIndex(g => g.id === object.id)

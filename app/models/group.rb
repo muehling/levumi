@@ -20,6 +20,7 @@ class Group < ApplicationRecord
     end
 
     gs = has_transfer_request_to == '' ? group_share : transfer_share
+
     #todo nee, das geht so nicht. das frontend kriegt groupshares und tut so, als seien es groups, das kann man nicht über group.as_hash abbilden X-(
     data = {
       archive: archive,
@@ -30,7 +31,6 @@ class Group < ApplicationRecord
       is_anonymous: gs.is_anonymous,
       key: gs.key,
       label: label,
-      #owner: group_share.owner,
       owner: gs.user_id == user.id,
       read_only: gs.read_only,
       settings: settings || {},
@@ -41,8 +41,9 @@ class Group < ApplicationRecord
     }
 
     # only add shares info if the user owns the group
-    data['belongs_to'] = group_share.group.owner.email
-    if group_share.owner
+
+    data['belongs_to'] = gs.group.owner.email
+    if gs.owner
       data['shares'] = []
 
       group_shares.all.each { |c| data['shares'] += [c.as_hash] if c.user != user && !c.owner }

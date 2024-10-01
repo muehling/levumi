@@ -36,10 +36,10 @@
         </b-button>
         <context-help
           help-text="Hier können Sie das in Mathematik-Tests verwendete Layout des Eingabeelementes festlegen. Sie können zwischen dem Nummernblock-Layout und dem Telefonlayout wählen. Diese Einstellung gilt für die gesamte Klasse."
-          class-name=" ml-2" />
+          class-name=" ms-2" />
       </div>
       <div v-if="!isCalcSettingsOpen" class="col-auto d-flex align-items-center">
-        <div class="mr-3">
+        <div class="me-3">
           <span>Aktuelle Standard-Einstellung: {{ calcSettings?.text }}</span>
         </div>
       </div>
@@ -73,7 +73,7 @@
           </b-button>
         </b-form-radio-group>
       </div>
-      <div class="col pl-3 mx-3 calc-preview">
+      <div class="col mx-3 calc-preview">
         <div class="row flex-nowrap">
           <div class="col border text-center text-small">
             {{ selectedCalcLayout === 'phone' ? '1' : '7' }}
@@ -160,7 +160,6 @@
   import GroupForm from './group-form.vue'
   import jsPDF from 'jspdf'
   import QRCodeStyling from 'qr-code-styling'
-  //import Vue from 'vue'
 
   export default {
     name: 'ClassbookActions',

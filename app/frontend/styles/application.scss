@@ -1,4 +1,4 @@
-@import '../styles/variables.scss';
+@import './variables.scss';
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 @import '@fortawesome/fontawesome-free/css/all.css';
@@ -251,12 +251,20 @@
 }
 
 /* Forms */
-
+.form-check-input,
 input:focus,
 select:focus,
 textarea:focus {
   border-color: $levumi-color !important;
   box-shadow: 0 0 0 0.075rem $secondary-color !important;
+}
+
+.form-check-input {
+  margin-top: 0.4em;
+  &:checked {
+    background-color: $levumi-color;
+    accent-color: $levumi-color !important;
+  }
 }
 
 #toast-wrapper {

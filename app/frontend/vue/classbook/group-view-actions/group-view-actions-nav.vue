@@ -1,6 +1,5 @@
 <template>
   <b-nav vertical pills>
-    {{ current }}
     <b-nav-item :active="current === 'general'" @click="handleClick('general')">
       Allgemein
     </b-nav-item>
