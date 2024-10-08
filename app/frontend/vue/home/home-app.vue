@@ -10,42 +10,48 @@
           </b-card>
           <div v-else>
             <div class="mb-3">
-              <b-nav pills>
-                <b-nav-item
+              <b-tabs pills card no-fade>
+                <b-tab
                   v-for="(group, index) in ownActiveGroups"
-                  :key="group.id"
+                  :key="'home' + group.id"
                   :active="selectedGroupId === group.id"
                   lazy
                   @click="getTestsForGroup(group.id)">
-                  <i v-if="group.demo && group.owner">{{ group.label }}</i>
-                  <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
-                    {{ group.label }}
-                    <span class="small">
-                      &nbsp;
-                      <i class="fas fa-share-nodes"></i>
+                  <template #title>
+                    <i v-if="group.demo && group.owner">{{ group.label }}</i>
+                    <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
+                      {{ group.label }}
+                      <span class="small">
+                        &nbsp;
+                        <i class="fas fa-share-nodes"></i>
+                      </span>
                     </span>
-                  </span>
-                  <span v-else>{{ group.label }}</span>
-                </b-nav-item>
-              </b-nav>
+                    <span v-else>{{ group.label }}</span>
+                  </template>
+
+                  <p v-if="!currentGroup?.owner">
+                    Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
+                  </p>
+                  <div v-if="!currentGroup?.key && currentGroup?.id">
+                    <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
+                      <p>
+                        Sie müssen diese Klasse zunächst im
+                        <router-link
+                          :to="{
+                            name: 'ClassbookSharedGroup',
+                            params: { groupId: currentGroup?.id },
+                          }">
+                          Klassenbuch
+                        </router-link>
+                        freischalten. Den ggf. erforderlichen Sicherheitscode erhalten Sie bzw.
+                        können Sie bei der Person erfragen, die die Klasse mit Ihnen geteilt hat.
+                      </p>
+                    </b-card>
+                  </div>
+                  <group-view v-else />
+                </b-tab>
+              </b-tabs>
             </div>
-            <p v-if="!currentGroup?.owner">
-              Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
-            </p>
-            <div v-if="!currentGroup?.key && currentGroup?.id">
-              <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
-                <p>
-                  Sie müssen diese Klasse zunächst im
-                  <router-link
-                    :to="{ name: 'ClassbookSharedGroup', params: { groupId: currentGroup?.id } }">
-                    Klassenbuch
-                  </router-link>
-                  freischalten. Den ggf. erforderlichen Sicherheitscode erhalten Sie bzw. können Sie
-                  bei der Person erfragen, die die Klasse mit Ihnen geteilt hat.
-                </p>
-              </b-card>
-            </div>
-            <group-view v-else />
           </div>
         </b-col>
       </b-row>
@@ -62,7 +68,6 @@
   import IntroPopover from '../shared/intro-popover.vue'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  //import Vue from 'vue'
   import { useRoute } from 'vue-router'
 
   export default {
@@ -109,7 +114,6 @@
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
           }
-          await this.$nextTick()
         },
       },
     },

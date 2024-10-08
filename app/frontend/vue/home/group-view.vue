@@ -49,7 +49,7 @@
 
       <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
       <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
-      <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
+      <assessment-details v-if="isTestDetailsOpen" :group="group" />
     </div>
   </div>
 </template>
@@ -126,13 +126,6 @@
       },
     },
     watch: {
-      selectedGroupId: {
-        async handler(newId, oldId) {
-          if (oldId !== undefined && oldId !== newId) {
-            this.getAssessmentData()
-          }
-        },
-      },
       '$route.name': {
         immediate: true,
         async handler(name) {
@@ -212,24 +205,21 @@
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
       },
-      addAnnotation(annotation) {
-        const annotations = this.assessmentData.annotations
-        annotations.splice(0, 0, annotation)
-        this.$set(this.assessmentData, 'annotations', annotations)
-      },
-      removeAnnotation(annotationId) {
-        const annotations = this.assessmentData.annotations.filter(a => annotationId !== a.id)
-        this.$set(this.assessmentData, 'annotations', annotations)
-      },
+      //addAnnotation(annotation) {
+      //  const annotations = this.assessmentData.annotations
+      //  annotations.splice(0, 0, annotation)
+      //  this.$set(this.assessmentData, 'annotations', annotations)
+      //},
+      //removeAnnotation(annotationId) {
+      //  const annotations = this.assessmentData.annotations.filter(a => annotationId !== a.id)
+      //  this.$set(this.assessmentData, 'annotations', annotations)
+      //},
       async setPreselect(data) {
         this.testSelected = data.testId
       },
       backToOverview() {
         this.assessmentsStore.setCurrentAssessment(undefined)
         this.$router.push(`/diagnostik/${this.selectedGroupId}`)
-      },
-      removeEntry(index) {
-        this.assessmentData.series.splice(index, 1) // todo Mutation von computed prop, sollte nicht erlaubt sein
       },
     },
   }

@@ -7,14 +7,14 @@
         <b-col md="12">
           <div>
             <!-- reguläre Darstellung mit Klassenliste -->
-            <b-tabs :key="forceUpdate" pills>
+            <b-tabs pills>
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template #title>
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
 
                 <b-card no-body class="mt-3">
-                  <b-tabs :key="ownActiveGroups.length" pills card>
+                  <b-tabs :key="ownActiveGroups.length" pills card no-fade>
                     <!-- Neue Klasse anlegen -->
                     <b-tab
                       v-if="permissions.createGroup"
