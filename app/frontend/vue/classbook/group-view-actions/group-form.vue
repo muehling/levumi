@@ -22,7 +22,7 @@
           Anlegen
         </b-button>
       </div>
-      <div v-else>
+      <div v-else class="mt-3">
         <!-- Button für existierende Klasse Validierung Name nicht leer  -->
         <b-button
           type="submit"

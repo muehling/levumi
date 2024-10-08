@@ -13,7 +13,7 @@
         size="sm"
         class="me-2 my-3"
         @click="openTestAdmin">
-        <i class="fas fa-gear mr-1"></i>
+        <i class="fas fa-gear me-2"></i>
         Test hinzufügen / löschen
       </b-button>
       <b-button
@@ -22,7 +22,7 @@
         size="sm"
         class="my-3"
         @click="gotoClassbook">
-        <i class="fas fa-book-open mr-1"></i>
+        <i class="fas fa-book-open me-2"></i>
         Zum Klassenbuch
       </b-button>
       <b-button
@@ -31,7 +31,7 @@
         size="sm"
         variant="outline-secondary"
         @click="backToOverview">
-        <i class="fas fa-arrow-left mr-1"></i>
+        <i class="fas fa-arrow-left me-2"></i>
         Zurück zur Testübersicht
       </b-button>
       <b-button

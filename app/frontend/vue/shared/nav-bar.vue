@@ -20,16 +20,14 @@
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ms-3">
           <li id="intro1" class="nav-item">
-            <router-link
-              class="nav-link rounded"
-              :to="{ name: 'Diagnostik', state: { forceUpdate: true } }">
-              Diagnostik
-            </router-link>
+            <router-link class="nav-link rounded" to="/diagnostik">Diagnostik</router-link>
           </li>
           <li id="intro2" class="nav-item">
-            <router-link class="nav-link rounded" to="/klassenbuch">
-              Klassenbuch
-              <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
+            <router-link class="nav-link rounded position-relative text-nowrap" to="/klassenbuch">
+              <span>
+                Klassenbuch
+                <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
+              </span>
             </router-link>
           </li>
           <li id="intro3" class="nav-item">
@@ -185,14 +183,18 @@
               </router-link>
             </BDropdown>
           </li>
-          <li v-if="!masquerade" id="intro6" class="nav-item">
+          <li id="intro6" class="nav-item">
             <BDropdown
               v-model="showProfile"
               :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
               variant=""
               is-nav>
-              <BDropdownItem @click="editOwnProfile">Profildaten ändern</BDropdownItem>
-              <BDropdownItem @click="editUserSettings">Einstellungen ändern</BDropdownItem>
+              <BDropdownItem v-if="!masquerade" @click="editOwnProfile">
+                Profildaten ändern
+              </BDropdownItem>
+              <BDropdownItem v-if="!masquerade" @click="editUserSettings">
+                Einstellungen ändern
+              </BDropdownItem>
               <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
                 Testungen exportieren
               </BDropdownItem>

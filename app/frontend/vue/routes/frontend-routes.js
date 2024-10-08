@@ -18,13 +18,12 @@ const routes = [
     path: '/diagnostik',
     component: HomeApp,
     name: 'Diagnostik',
-    props: { forceUpdate: true },
+    props: true,
     children: [
       {
         path: ':groupId',
         component: HomeApp,
         name: 'AssessmentList',
-
         children: [
           { path: 'testverwaltung', props: true, name: 'GroupTestAdmin', component: HomeApp },
           {

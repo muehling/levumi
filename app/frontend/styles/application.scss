@@ -261,31 +261,15 @@ textarea:focus {
 
 .form-check-input {
   margin-top: 0.4em;
-  &:checked {
+  &:checked[type='radio'] {
     background-color: $levumi-color;
     accent-color: $levumi-color !important;
+    --bs-form-check-bg-image: unset !important;
   }
 }
 
-#toast-wrapper {
-  position: absolute;
-  top: 0;
-  display: flex;
-  width: 95vw;
-  justify-content: center;
-  z-index: 2000;
-  height: 0;
-}
-
-#toast-wrapper .toast {
-  background-color: $white;
-  position: absolute;
-  height: 0;
-  overflow: hidden;
-  &.show {
-    height: unset;
-    overflow: auto;
-  }
+.new-badge {
+  transform: translate(0, -2px);
 }
 
 .modal-backdrop {

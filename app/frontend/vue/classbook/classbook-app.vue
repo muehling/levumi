@@ -2,15 +2,15 @@
   <b-container fluid>
     <div v-if="isLoading"><loading-dots :is-loading="isLoading" /></div>
     <div v-else>
+      {{ activeGroupTab }}/{{ activeTab }}
       <b-row class="mt-3">
         <b-col md="12">
           <div>
             <!-- reguläre Darstellung mit Klassenliste -->
-            <b-tabs pills>
+            <b-tabs :key="forceUpdate" pills>
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
                 <template #title>
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
-                  <span v-if="transferRequests.length" class="badge badge-info ms-2">Neu!</span>
                 </template>
 
                 <b-card no-body class="mt-3">
@@ -50,7 +50,7 @@
                         :group="group"
                         @update:groups="updateGroups"></group-view>
                     </b-tab>
-                    <b-tab
+                    <!-- <b-tab
                       v-for="transferRequest in transferRequests"
                       :key="transferRequest.id"
                       :active="transferRequest.id === activeGroupTab"
@@ -61,7 +61,7 @@
                         <span class="badge badge-info">Neu!</span>
                       </template>
                       <transfer-status :group="transferRequest" />
-                    </b-tab>
+                    </b-tab>-->
                   </b-tabs>
                 </b-card>
               </b-tab>
@@ -71,11 +71,12 @@
                 v-if="displaySharesTab"
                 :disabled="sharedGroups.length === 0"
                 lazy
+                title-item-class="position-relative"
                 :active="activeTab === 2"
                 @click="handleNavigate('geteilte_klassen')">
                 <template #title>
                   Mit mir geteilte Klassen
-                  <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
+                  <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
                   <span v-else>({{ sharedGroups.length }})</span>
                 </template>
 
@@ -91,8 +92,10 @@
                       <!-- Beispielklasse kursiv darstellen -->
                       <template #title>
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label }}</span>
-                        <span v-if="group.key == null" class="badge badge-info ms-2">Neu!</span>
+                        <span v-else>{{ group.label }}&nbsp;</span>
+                        <b-badge v-if="!group.key" class="new-badge" variant="info" pill>
+                          Neu!
+                        </b-badge>
                       </template>
                       <group-view :groups="sharedGroups" :group="group"></group-view>
                     </b-tab>
@@ -214,13 +217,14 @@
       ownActiveGroups() {
         return this.globalStore.groups
           .filter(
-            group => (group.owner && !group.archive && group.key) || (group.owner && !group.key)
+            group =>
+              group.belongs_to === this.globalStore.login.email && !group.archive && group.key
           )
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       sharedGroups() {
         return this.globalStore.groups
-          .filter(group => !group.owner && !group.archive)
+          .filter(group => group.belongs_to !== this.globalStore.login.email && !group.archive)
           .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
@@ -264,15 +268,17 @@
           if (!data) {
             return
           }
+
+          if (this.selectedGroupId !== parseInt(data.groupId, 10)) {
+            this.forceUpdate = Symbol()
+          }
           this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
-          this.forceUpdate = Symbol()
         },
       },
     },
 
     async mounted() {
       await this.globalStore.fetchGroups()
-      this.forceUpdate = Symbol()
 
       let messages, targets
       if (this.isSingleUser) {

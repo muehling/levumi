@@ -6,6 +6,7 @@
       </div>
       <div v-else class="d-inline">
         <b-button
+          v-if="permissions.createStudents"
           variant="outline-secondary"
           class="text-nowrap mt-2"
           size="sm"
@@ -55,7 +56,7 @@
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-button
-            v-if="!readOnly"
+            v-if="permissions.updateStudents"
             v-b-modal="'modal_settings_' + student.id"
             class="me-1"
             variant="outline-secondary"
@@ -64,7 +65,7 @@
             <i class="fas fa-text-height"></i>
           </b-button>
           <b-button
-            v-if="!readOnly"
+            v-if="permissions.updateStudents"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -72,7 +73,7 @@
             <i class="fas fa-user-edit"></i>
           </b-button>
           <b-button
-            v-if="!readOnly"
+            v-if="permissions.updateStudents"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -185,7 +186,6 @@
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-button
             v-if="!readOnly"
-            v-b-tooltip="'Schrifteinstellungen'"
             class="me-1"
             variant="outline-secondary"
             size="sm"
@@ -194,7 +194,6 @@
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-tooltip="'Bearbeiten'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -203,7 +202,6 @@
           </b-button>
           <b-button
             v-if="!readOnly"
-            v-b-tooltip="'QR-Code'"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -212,7 +210,6 @@
           </b-button>
           <b-button
             v-if="!!student.id"
-            v-b-tooltip="'Test-Info'"
             variant="outline-secondary"
             class="me-1"
             size="sm"

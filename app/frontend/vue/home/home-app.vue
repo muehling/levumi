@@ -32,12 +32,16 @@
             <p v-if="!currentGroup?.owner">
               Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
             </p>
-            <div v-if="!currentGroup?.key">
+            <div v-if="!currentGroup?.key && currentGroup?.id">
               <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
                 <p>
-                  Sie müssen diese Klasse zunächst im Klassenbuch freischalten. Den ggf.
-                  erforderlichen Sicherheitscode erhalten Sie bzw. können Sie bei der Person
-                  erfragen, die die Klasse mit Ihnen geteilt hat.
+                  Sie müssen diese Klasse zunächst im
+                  <router-link
+                    :to="{ name: 'ClassbookSharedGroup', params: { groupId: currentGroup?.id } }">
+                    Klassenbuch
+                  </router-link>
+                  freischalten. Den ggf. erforderlichen Sicherheitscode erhalten Sie bzw. können Sie
+                  bei der Person erfragen, die die Klasse mit Ihnen geteilt hat.
                 </p>
               </b-card>
             </div>

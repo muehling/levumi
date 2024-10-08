@@ -73,6 +73,12 @@
       },
     },
     watch: {
+      $route: {
+        immediate: true,
+        handler() {
+          console.log('root', this.$route.name)
+        },
+      },
       'globalStore.serverError': {
         immediate: true,
         async handler() {

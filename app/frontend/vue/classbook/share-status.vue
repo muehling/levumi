@@ -6,7 +6,7 @@
         <b-input
           v-if="!group.is_anonymous"
           v-model="keyInput"
-          class="me-2"
+          class="me-2 mb-3"
           placeholder="Code"
           size="sm" />
         <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
