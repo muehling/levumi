@@ -218,7 +218,7 @@
         const groups = [...this.groups]
         const index = groups.findIndex(g => g.id === object.id)
         groups[index] = object
-        this.$emit('update:groups', groups)
+        this.globalStore.groups = groups
       },
 
       /*****************************

@@ -45,10 +45,7 @@
                           {{ group.label }}
                         </span>
                       </template>
-                      <group-view
-                        :groups="globalStore.groups"
-                        :group="group"
-                        @update:groups="updateGroups"></group-view>
+                      <group-view :groups="globalStore.groups" :group="group" />
                     </b-tab>
                     <!-- <b-tab
                       v-for="transferRequest in transferRequests"
@@ -84,7 +81,7 @@
                   <b-tabs pills card>
                     <b-tab
                       v-for="group in sharedGroups"
-                      :key="group.id"
+                      :key="group.id + '/' + !!group.key"
                       :active="group.id === selectedGroupId"
                       class="m-3"
                       lazy
@@ -126,7 +123,7 @@
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
                       </template>
-                      <group-view :groups="groups" :group="group" @update:groups="updateGroups" />
+                      <group-view :groups="groups" :group="group" />
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -320,9 +317,6 @@
       handleRouteChange(data) {
         this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
         this.forceUpdate = Symbol()
-      },
-      updateGroups(newGroups) {
-        this.globalStore.setGroups(newGroups)
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })

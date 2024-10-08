@@ -20,10 +20,12 @@
       <div id="navbarContent" class="collapse navbar-collapse">
         <ul class="navbar-nav ms-3">
           <li id="intro1" class="nav-item">
-            <router-link class="nav-link rounded" to="/diagnostik">Diagnostik</router-link>
+            <router-link class="nav-link rounded px-3" to="/diagnostik">Diagnostik</router-link>
           </li>
           <li id="intro2" class="nav-item">
-            <router-link class="nav-link rounded position-relative text-nowrap" to="/klassenbuch">
+            <router-link
+              class="nav-link rounded position-relative text-nowrap px-3"
+              to="/klassenbuch">
               <span>
                 Klassenbuch
                 <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
@@ -31,10 +33,14 @@
             </router-link>
           </li>
           <li id="intro3" class="nav-item">
-            <router-link class="nav-link rounded" to="/materialien">Fördermaterialien</router-link>
+            <router-link class="nav-link rounded px-3" to="/materialien">
+              Fördermaterialien
+            </router-link>
           </li>
           <li id="intro4" class="nav-item">
-            <router-link to="/testuebersicht" class="nav-link rounded">Testübersicht</router-link>
+            <router-link to="/testuebersicht" class="nav-link rounded px-3">
+              Testübersicht
+            </router-link>
           </li>
           <li id="intro5" class="nav-item mt-1">
             <BDropdown text="Weiteres" is-nav variant="">
