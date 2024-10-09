@@ -1,6 +1,11 @@
 <template>
   <div>
-    <b-modal id="create-test-dialog" ref="testImportDialog" title="Test importieren" hide-footer>
+    <b-modal
+      id="create-test-dialog"
+      ref="testImportDialog"
+      title="Test importieren"
+      hide-footer
+      @hidden="_clear">
       <div v-if="isLoading" class="card card-body align-items-center">
         <div v-if="isLoading" class="spinner">
           <div class="bounce1"></div>
@@ -120,9 +125,6 @@
           return 'Version vorhanden, bestehender Test wird aktualisiert'
         }
       },
-    },
-    mounted() {
-      this.$refs.testImportDialog.$on('hidden', this._clear)
     },
     methods: {
       open() {

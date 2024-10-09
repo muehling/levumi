@@ -19,9 +19,10 @@
         class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
         Registriert zwischen
       </label>
-      <b-form-datepicker
+      <b-form-input
         id="start-date-registration"
         v-model="startDateRegistration"
+        type="date"
         class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
         locale="de-DE"
@@ -30,10 +31,11 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-form-datepicker
+        }" />
+      <b-form-input
         id="end-date-registration"
         v-model="endDateRegistration"
+        type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
         locale="de-DE"
@@ -42,7 +44,7 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
+        }" />
       <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
@@ -54,9 +56,10 @@
       <label for="start-date-login" class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
         Zuletzt angemeldet zwischen
       </label>
-      <b-form-datepicker
+      <b-form-input
         id="start-date-login"
         v-model="startDateLogin"
+        type="date"
         class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
         locale="de-DE"
@@ -65,10 +68,11 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-form-datepicker
+        }" />
+      <b-form-input
         id="end-date-login"
         v-model="endDateLogin"
+        type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
         locale="de-DE"
@@ -77,7 +81,7 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
+        }" />
       <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"

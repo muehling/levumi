@@ -268,6 +268,12 @@ textarea:focus {
   }
 }
 
+ul.pagination > li.page-item.active > button {
+  background-color: $primary-color-dark;
+  border-color: $primary-color-dark;
+}
+
+/* custom elements */
 .new-badge {
   transform: translate(0, -2px);
 }

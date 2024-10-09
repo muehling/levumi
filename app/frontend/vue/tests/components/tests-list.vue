@@ -6,7 +6,9 @@
       <div class="bounce3"></div>
     </div>
     <div v-else>
-      <b-checkbox v-model="showArchive">Archivierte Tests anzeigen</b-checkbox>
+      <b-form-checkbox v-model="showArchive" class="mt-4">
+        Archivierte Tests anzeigen
+      </b-form-checkbox>
       <b-table
         class="tests-list text-small"
         small

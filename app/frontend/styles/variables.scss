@@ -1,5 +1,4 @@
-//@import 'functions';
-//@import 'variables';
+@import 'bootstrap/scss/_functions.scss';
 
 $black: #000;
 $white: #fff;
@@ -16,24 +15,19 @@ $levumi-color: rgba(94, 86, 187, 0.7);
 
 $levumi-transparent-color: #5a598c11;
 
-$theme-colors: (
-  'primary': $primary-color,
-  'secondary': $secondary-color,
-  'danger': $danger-color,
-  'success': $success-color,
-);
+$primary: $primary-color;
+$secondary: $secondary-color;
 
-/*
-$theme-colors-text: (
-  "primary": $primary-text-emphasis,
-  "secondary": $secondary-text-emphasis,
-  "success": $success-text-emphasis,
-  "info": $info-text-emphasis,
-  "warning": $warning-text-emphasis,
-  "danger": $danger-text-emphasis,
-  "light": $light-text-emphasis,
-  "dark": $dark-text-emphasis,
-);
-*/
+@import 'bootstrap/scss/_variables.scss';
 
-$link-color: $primary-color;
+@import '../node_modules/bootstrap/scss/maps';
+@import '../node_modules/bootstrap/scss/mixins';
+@import '../node_modules/bootstrap/scss/root';
+
+@import '../node_modules/bootstrap/scss/utilities';
+@import '../node_modules/bootstrap/scss/reboot';
+@import '../node_modules/bootstrap/scss/type';
+@import '../node_modules/bootstrap/scss/images';
+@import '../node_modules/bootstrap/scss/containers';
+@import '../node_modules/bootstrap/scss/grid';
+@import '../node_modules/bootstrap/scss/helpers';
