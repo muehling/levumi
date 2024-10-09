@@ -1,5 +1,5 @@
 <template>
-  <b-card>
+  <div class="contact-form">
     <b-form class="m-2" @submit="onSendSupportMail">
       <p><b>Sie haben eine Frage oder möchten uns etwas mitteilen?</b></p>
       <b-form-group v-slot="{ ariaDescribedby }">
@@ -17,16 +17,17 @@
           placeholder="Bitte geben Sie Ihre Nachricht ein."
           rows="3"
           max-rows="6"
+          class="mt-4"
           required></b-form-textarea>
         <b-button class="mt-4 mx-auto" type="submit" variant="outline-success">
           <span>Absenden</span>
         </b-button>
-        <b-button class="mt-4 ml-3 mx-auto" variant="outline-danger" @click="handleClose">
+        <b-button class="mt-4 ms-3 mx-auto" variant="outline-danger" @click="handleClose">
           <span>Abbrechen</span>
         </b-button>
       </b-form-group>
     </b-form>
-  </b-card>
+  </div>
 </template>
 
 <script>
@@ -87,3 +88,8 @@
     },
   }
 </script>
+<style>
+  .contact-form {
+    min-width: 25em;
+  }
+</style>

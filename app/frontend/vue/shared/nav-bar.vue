@@ -1,229 +1,197 @@
 <template>
   <div>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/">
+    <b-navbar toggleable="md" class="nav-pills">
+      <b-navbar-brand to="/">
         <img :src="'/images/shared/Levumi-normal_small.png'" alt="Levumi" height="48" />
         Levumi
-      </a>
-
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarContent"
-        aria-controls="navbarContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div id="navbarContent" class="collapse navbar-collapse">
-        <ul class="navbar-nav ms-3">
-          <li id="intro1" class="nav-item">
-            <router-link class="nav-link rounded px-3" to="/diagnostik">Diagnostik</router-link>
-          </li>
-          <li id="intro2" class="nav-item">
-            <router-link
-              class="nav-link rounded position-relative text-nowrap px-3"
-              to="/klassenbuch">
-              <span>
-                Klassenbuch
-                <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
-              </span>
-            </router-link>
-          </li>
-          <li id="intro3" class="nav-item">
-            <router-link class="nav-link rounded px-3" to="/materialien">
-              Fördermaterialien
-            </router-link>
-          </li>
-          <li id="intro4" class="nav-item">
-            <router-link to="/testuebersicht" class="nav-link rounded px-3">
-              Testübersicht
-            </router-link>
-          </li>
-          <li id="intro5" class="nav-item mt-1">
-            <BDropdown text="Weiteres" is-nav variant="">
-              <BDropdownItem>
-                <a
-                  class="dropdown-item"
-                  href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
-                  target="_blank">
-                  Levumi Newsletter
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a
-                  class="dropdown-item"
-                  href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
-                  target="_blank">
-                  Videos
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a
-                  class="dropdown-item"
-                  href="https://www.levumi-blog.uni-kiel.de/"
-                  target="_blank">
-                  Blog
-                </a>
-              </BDropdownItem>
-              <BDropdownDivider />
-              <BDropdownItem>
-                <h6 class="dropdown-header">Handbücher</h6>
-                <a
-                  class="dropdown-item"
-                  href="/files/Testhandbuch_Empfinden_Verhalten.pdf"
-                  target="_blank">
-                  Handbuch Lernbereich Empfinden & Verhalten
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf" target="_blank">
-                  Handbuch Lernbereich Deutsch
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf" target="_blank">
-                  Handbuch Fördermaterial Deutsch
-                </a>
-              </BDropdownItem>
-              <BDropdownDivider />
-              <BDropdownItem>
-                <h6 class="dropdown-header">Druckvorlagen</h6>
-                <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank">
-                  A4 Levumi normal
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank">
-                  A4 Levumi jubelt
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank">
-                  A4 Levumi liest
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank">
-                  A3 Levumi normal
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank">
-                  A3 Levumi jubelt
-                </a>
-              </BDropdownItem>
-              <BDropdownItem>
-                <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank">
-                  A3 Levumi liest
-                </a>
-              </BDropdownItem>
-            </BDropdown>
-          </li>
-        </ul>
-        <b-alert v-if="!!systemMessage" class="ms-auto mb-0" :model-value="true" variant="danger">
-          {{ systemMessage }}
-        </b-alert>
-        <ul class="navbar-nav ms-auto">
-          <li v-if="masquerade" class="nav-item">
-            <a href="#" class="nav-link btn btn-outline-secondary" @click="endMasquerade">
-              Sitzung als {{ login?.email }} beenden
-            </a>
-          </li>
-          <li v-if="!masquerade">
-            <b-button class="nav-link" variant="" @click="toggleContact">Support</b-button>
-            <div v-if="showContact" class="position-absolute z-3">
-              <contact-form @close-contact-form="toggleContact" />
-            </div>
-            <!-- <BDropdown :text="'Support'" variant="" is-nav :auto-close="false">
-              <BDropdownItem><contact-form /></BDropdownItem>
-            </BDropdown>-->
-          </li>
-          <li v-if="!isRegularUser && !masquerade">
-            <BDropdown v-model="showAdminMenu" text="System" variant="" is-nav>
-              <BDropdownItem v-if="checkCapability('support')" to="/support">Support</BDropdownItem>
-              <!--<BDropdownItem v-if="checkCapability('stats')" to="/statistiken">
-                Statistiken
-              </BDropdownItem>-->
-              <span
-                v-if="checkCapability('stats')"
-                class="dropdown-item"
-                style="opacity: 0.5; pointer-events: none; white-space: nowrap">
-                Statistiken (aktuell außer Betrieb)
-              </span>
-              <BDropdownItem v-if="checkCapability('user')" to="/nutzerverwaltung">
-                Benutzerverwaltung
-              </BDropdownItem>
-              <router-link
-                v-if="
-                  checkCapability('test') ||
-                  checkCapability('test_admin') ||
-                  checkCapability('test_upload')
-                "
-                to="/testverwaltung"
-                class="dropdown-item">
-                Testverwaltung
-              </router-link>
-              <router-link
-                v-if="checkCapability('test_editor')"
-                to="/test-editor"
-                class="dropdown-item">
-                Test-Editor
-              </router-link>
-              <router-link
-                v-if="checkCapability('material')"
-                to="/materialverwaltung"
-                class="dropdown-item">
-                Materialverwaltung
-              </router-link>
-              <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
-                Export
-              </router-link>
-              <router-link
-                v-if="checkCapability('admin')"
-                to="/administration"
-                class="dropdown-item">
-                Allgemeine Einstellungen
-              </router-link>
-            </BDropdown>
-          </li>
-          <li id="intro6" class="nav-item">
-            <BDropdown
-              v-model="showProfile"
-              :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
-              variant=""
-              is-nav>
-              <BDropdownItem v-if="!masquerade" @click="editOwnProfile">
-                Profildaten ändern
-              </BDropdownItem>
-              <BDropdownItem v-if="!masquerade" @click="editUserSettings">
-                Einstellungen ändern
-              </BDropdownItem>
-              <BDropdownItem :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
-                Testungen exportieren
-              </BDropdownItem>
-            </BDropdown>
-          </li>
-          <li v-if="!masquerade" class="nav-item">
-            <BDropdown v-model="showLegal" text="Rechtliches" variant="" is-nav>
-              <BDropdownItem href="/files/Vorlage_Elternbrief.pdf" target="_blank">
-                Vorlage Einwilligungserklärung
-              </BDropdownItem>
-              <BDropdownDivider />
-              <BDropdownItem href="#" @click="openImprint">Impressum</BDropdownItem>
-              <BDropdownItem href="#" @click="openPrivacy">Datenschutzerklärung</BDropdownItem>
-              <BDropdownItem href="#" @click="openTerms">Nutzungsbedingungen</BDropdownItem>
-              <BDropdownItem href="#" @click="openCookieHint">Cookie-Hinweis</BDropdownItem>
-            </BDropdown>
-          </li>
-          <li v-if="!masquerade" class="nav-item">
-            <b-button class="nav-link" variant="" @click="handleLogout">Ausloggen</b-button>
-          </li>
-        </ul>
+      </b-navbar-brand>
+      <div class="d-md-none">
+        <h1>{{ navigationDisplay }}</h1>
       </div>
-    </nav>
+      <b-navbar-toggle target="levumi-main-nav" />
+      <b-collapse id="levumi-main-nav" is-nav class="mt-3">
+        <b-navbar-nav class="d-flex w-100">
+          <b-nav-item to="/diagnostik" :active="$route.path.startsWith('/diagnostik')">
+            Diagnostik
+          </b-nav-item>
+          <b-nav-item to="/klassenbuch" :active="$route.path.startsWith('/klassenbuch')">
+            <span>
+              Klassenbuch
+              <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
+            </span>
+          </b-nav-item>
+          <b-nav-item to="/materialien" :active="$route.path.startsWith('/materialien')">
+            Fördermaterialien
+          </b-nav-item>
+          <b-nav-item to="/testuebersicht" :active="$route.path.startsWith('/testuebersicht')">
+            Testübersicht
+          </b-nav-item>
+          <b-nav-item-dropdown text="Weiteres" is-nav toggle-class="mt-1">
+            <b-dropdown-item>
+              <a
+                class="dropdown-item"
+                href="https://mailman.tu-dortmund.de/mailman/listinfo/levumi.news.fk13"
+                target="_blank">
+                Levumi Newsletter
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a
+                class="dropdown-item"
+                href="https://www.youtube.com/channel/UCy_3wk9N5Flhdy5bqDogzCg"
+                target="_blank">
+                Videos
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="https://www.levumi-blog.uni-kiel.de/" target="_blank">
+                Blog
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item>
+              <h6 class="dropdown-header">Handbücher</h6>
+              <a
+                class="dropdown-item"
+                href="/files/Testhandbuch_Empfinden_Verhalten.pdf"
+                target="_blank">
+                Handbuch Lernbereich Empfinden & Verhalten
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/Testhandbuch_Deutsch.pdf" target="_blank">
+                Handbuch Lernbereich Deutsch
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/Foerderansaetze_Deutsch.pdf" target="_blank">
+                Handbuch Fördermaterial Deutsch
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item>
+              <h6 class="dropdown-header">Druckvorlagen</h6>
+              <a class="dropdown-item" href="/files/A4_Levumi_normal.pdf" target="_blank">
+                A4 Levumi normal
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/A4_Levumi_jubelt.pdf" target="_blank">
+                A4 Levumi jubelt
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/A4_Levumi_liest.pdf" target="_blank">
+                A4 Levumi liest
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/A3_Levumi_normal.pdf" target="_blank">
+                A3 Levumi normal
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/A3_Levumi_jubelt.pdf" target="_blank">
+                A3 Levumi jubelt
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/A3_Levumi_liest.pdf" target="_blank">
+                A3 Levumi liest
+              </a>
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-alert v-if="!!systemMessage" class="ms-auto mb-0" :model-value="true" variant="danger">
+            {{ systemMessage }}
+          </b-alert>
+          <div class="flex-grow-1"></div>
+          <b-nav
+            v-if="masquerade"
+            href="#"
+            class="nav-link btn btn-outline-secondary"
+            @click="endMasquerade">
+            Sitzung als {{ login?.email }} beenden
+          </b-nav>
+
+          <b-nav-item-dropdown ref="contactRef" class="mt-1" :text="'Support'" is-nav>
+            <b-dropdown-form>
+              <contact-form @close-contact-form="closeContactForm" />
+            </b-dropdown-form>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown text="System" is-nav toggle-class="mt-1">
+            <b-dropdown-item v-if="checkCapability('support')" to="/support">
+              Support
+            </b-dropdown-item>
+            <!--<b-dropdown-item v-if="checkCapability('stats')" to="/statistiken">
+                Statistiken
+              </b-dropdown-item>-->
+            <span
+              v-if="checkCapability('stats')"
+              class="dropdown-item"
+              style="opacity: 0.5; pointer-events: none; white-space: nowrap">
+              Statistiken (aktuell außer Betrieb)
+            </span>
+            <b-dropdown-item v-if="checkCapability('user')" to="/nutzerverwaltung">
+              Benutzerverwaltung
+            </b-dropdown-item>
+            <router-link
+              v-if="
+                checkCapability('test') ||
+                checkCapability('test_admin') ||
+                checkCapability('test_upload')
+              "
+              to="/testverwaltung"
+              class="dropdown-item">
+              Testverwaltung
+            </router-link>
+            <router-link
+              v-if="checkCapability('test_editor')"
+              to="/test-editor"
+              class="dropdown-item">
+              Test-Editor
+            </router-link>
+            <router-link
+              v-if="checkCapability('material')"
+              to="/materialverwaltung"
+              class="dropdown-item">
+              Materialverwaltung
+            </router-link>
+            <router-link v-if="checkCapability('export')" to="/testexport" class="dropdown-item">
+              Export
+            </router-link>
+            <router-link v-if="checkCapability('admin')" to="/administration" class="dropdown-item">
+              Allgemeine Einstellungen
+            </router-link>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown
+            :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
+            is-nav
+            toggle-class="mt-1">
+            <b-dropdown-item v-if="!masquerade" @click="editOwnProfile">
+              Profildaten ändern
+            </b-dropdown-item>
+            <b-dropdown-item v-if="!masquerade" @click="editUserSettings">
+              Einstellungen ändern
+            </b-dropdown-item>
+            <b-dropdown-item :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
+              Testungen exportieren
+            </b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item-dropdown text="Rechtliches" class="mt-1">
+            <b-dropdown-item href="/files/Vorlage_Elternbrief.pdf" target="_blank">
+              Vorlage Einwilligungserklärung
+            </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item href="#" @click="openImprint">Impressum</b-dropdown-item>
+            <b-dropdown-item href="#" @click="openPrivacy">Datenschutzerklärung</b-dropdown-item>
+            <b-dropdown-item href="#" @click="openTerms">Nutzungsbedingungen</b-dropdown-item>
+            <b-dropdown-item href="#" @click="openCookieHint">Cookie-Hinweis</b-dropdown-item>
+          </b-nav-item-dropdown>
+          <b-nav-item @click="handleLogout">Ausloggen</b-nav-item>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+
     <edit-user-dialog ref="editUserDialog" @refetch="updateUser" />
     <user-settings-dialog ref="userSettingsDialog" @refetch="updateUser" />
     <ImprintModal />
@@ -269,9 +237,22 @@
       return { globalStore, assessmentsStore }
     },
     data() {
-      return { showLegal: false, showProfile: false, showAdminMenu: false, showContact: false }
+      return { showLegal: false, showProfile: false, showAdminMenu: false }
     },
     computed: {
+      navigationDisplay() {
+        if (this.$route.path.startsWith('/diagnostik')) {
+          return 'Diagnostik'
+        } else if (this.$route.path.startsWith('/klassenbuch')) {
+          return 'Klassenbuch'
+        } else if (this.$route.path.startsWith('/materialien')) {
+          return 'Fördermaterialien'
+        } else if (this.$route.path.startsWith('/testuebersicht')) {
+          return 'Testübersicht'
+        } else {
+          return ''
+        }
+      },
       systemMessage() {
         switch (this.$root.mode) {
           case 'staging':
@@ -304,8 +285,8 @@
     },
 
     methods: {
-      toggleContact() {
-        this.showContact = !this.showContact
+      closeContactForm() {
+        this.$refs.contactRef.hide()
       },
       openImprint() {
         this.globalStore.generalModals.isImprintOpen = true
@@ -351,3 +332,9 @@
     },
   }
 </script>
+<style>
+  .nav-link {
+    padding-left: 0.7em !important;
+    padding-right: 0.7em !important;
+  }
+</style>
