@@ -96,7 +96,7 @@
   <tr v-else id="intro_cb_5" class="student-row student-row-edit">
     <td class="pl-0">
       <div class="ps-1">
-        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
+        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" maxlength="40"/>
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
     </td>
@@ -226,7 +226,7 @@
               class="btn btn-sm me-1"
               variant="outline-success"
               title="Speichern"
-              :disabled="name.length == 0"
+              :disabled="name.length == 0 || name.startsWith(' ')"
               @click="handleSubmit">
               <i class="fas fa-check"></i>
             </b-button>
@@ -442,7 +442,6 @@
           encryptWithMasterKeyAndGroup(this.name, this.group.id)
         ) //Namen vor dem Senden verschlüsseln
         let res = `group=${this.group.id}&student[name]=${encodedName}`
-
         //Restliche Attribute anfügen, falls vorhanden
         if (this.gender != null) {
           res += '&student[gender]=' + this.gender
