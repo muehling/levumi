@@ -2,7 +2,6 @@
   <b-container fluid>
     <div v-if="isLoading"><loading-dots :is-loading="isLoading" /></div>
     <div v-else>
-      {{ activeGroupTab }}/{{ activeTab }}
       <b-row class="mt-3">
         <b-col md="12">
           <div>
