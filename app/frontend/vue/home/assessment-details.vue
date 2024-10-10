@@ -71,7 +71,7 @@
       </b-tab>
 
       <!-- Vorschläge für Fördermaterial -->
-      <b-tab title="Fördern">
+      <b-tab title="Fördern" lazy>
         <support-view :group="group" :test-id="test.id"></support-view>
       </b-tab>
 
