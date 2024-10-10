@@ -1,5 +1,5 @@
 <template>
-  <b-modal id="error-dialog" ref="errorDialog" v-if="isOpen" title="Fehler" hide-footer>
+  <b-modal id="error-dialog" ref="errorDialog" :model-value="isOpen" title="Fehler" hide-footer>
     <div class="d-block text-center mb-4">
       {{ globalStore.errorMessage }}
       <slot></slot>
@@ -23,19 +23,22 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    computed: {
-      isOpen: {
-        get: function () {
-          return this.globalStore.errorMessage !== ''
-        },
-        set: function () {
-          this.globalStore.setErrorMessage('')
+    data() {
+      return {
+        isOpen: false,
+      }
+    },
+    watch: {
+      'globalStore.errorMessage': {
+        handler(data) {
+          this.isOpen = !!data
         },
       },
     },
     methods: {
       _close() {
         this.globalStore.setErrorMessage('')
+        this.isOpen = false
       },
     },
   }
