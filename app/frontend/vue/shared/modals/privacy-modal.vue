@@ -128,22 +128,24 @@
       </tr>
     </table>
 
-    <h3>Name und Anschrift der Datenschutzbeauftragten der Verantwortlichen</h3>
+    <h3>Name und Anschrift des Datenschutzbeauftragten der Verantwortlichen</h3>
 
     <address>
-      Stella Thorben
+      Dr. Tim N. Höffler
       <br />
-      Christian-Albrechts-Universität zu Kiel
+      Leibniz-Institut für die Pädagogik der
       <br />
-      Leibnizstraße 9
+      Naturwissenschaften und Mathematik (IPN)
+      <br />
+      Olshausenstraße 62
       <br />
       24118 Kiel
       <br />
       Deutschland
       <br />
-      Tel.: +49 431 880 3581
+      Tel.: +49 431-880-4834
       <br />
-      E-Mail: sthoben@uv.uni-kiel.de
+      E-Mail: datenschutz@leibniz-ipn.de
     </address>
 
     <h3>Allgemeines zur Datenverarbeitung</h3>
