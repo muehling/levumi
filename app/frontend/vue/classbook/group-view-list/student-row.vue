@@ -96,7 +96,13 @@
   <tr v-else id="intro_cb_5" class="student-row student-row-edit">
     <td class="pl-0">
       <div class="ps-1">
-        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" maxlength="40"/>
+        <b-form-input
+          v-model.trim="name"
+          name="name"
+          type="text"
+          class="form-control"
+          size="sm"
+          maxlength="40" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
     </td>
@@ -156,7 +162,7 @@
         <div class="d-flex">
           <b-form @submit.prevent.stop="addTag">
             <b-form-input
-              v-model="newTag"
+              v-model.trim="newTag"
               placeholder="Weiteres Merkmal"
               class="d-inline new-tag-input text-small py-0"></b-form-input>
             <b-button
@@ -226,7 +232,7 @@
               class="btn btn-sm me-1"
               variant="outline-success"
               title="Speichern"
-              :disabled="name.length == 0 || name.startsWith(' ')"
+              :disabled="name.length === 0"
               @click="handleSubmit">
               <i class="fas fa-check"></i>
             </b-button>
