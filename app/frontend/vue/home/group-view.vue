@@ -177,8 +177,6 @@
     },
     methods: {
       async getAssessmentData() {
-        await this.assessmentsStore.fetch(this.selectedGroupId)
-        await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
         if (
           this.$route.params.testId &&
           this.assessmentsStore.currentAssessment?.test?.id !==

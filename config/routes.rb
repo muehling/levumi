@@ -29,6 +29,12 @@ Rails.application.routes.draw do
   get '/recovery_key_verification', to: 'users#recovery_key_verification'
   post '/delete_used_recovery_key', to: 'users#delete_used_recovery_key'
 
+  # Front page
+  get '/faq', to: 'application#start'
+  get '/forschung', to: 'application#start'
+  get '/lehrkraefte', to: 'application#start'
+  get '/testinventar', to: 'application#start'
+
   # Vue Router routes
   get '/administration', to: 'users#show'
   get '/diagnostik', to: 'users#show'
@@ -36,8 +42,6 @@ Rails.application.routes.draw do
   get '/diagnostik/:group_id/testdetails/:test_id', to: 'users#show'
   get '/diagnostik/:group_id/testdetails/:test_id/einstellungen', to: 'users#show'
   get '/diagnostik/:group_id/testverwaltung', to: 'users#show'
-  get '/faq', to: 'application#start'
-  get '/forschung', to: 'application#start'
   get '/klassenbuch', to: 'users#show'
   get '/klassenbuch/archiv', to: 'users#show'
   get '/klassenbuch/eigene_klassen', to: 'users#show'
@@ -49,7 +53,6 @@ Rails.application.routes.draw do
   get '/klassenbuch/geteilte_klassen/:group_id/aktionen', to: 'users#show'
   get '/klassenbuch/geteilte_klassen/:group_id/liste', to: 'users#show'
   get '/klassenbuch/neu', to: 'users#show'
-  get '/lehrkraefte', to: 'application#start'
   get '/materialien', to: 'users#show'
   get '/materialverwaltung', to: 'users#show'
   get '/nutzerverwaltung', to: 'users#show'
@@ -58,7 +61,6 @@ Rails.application.routes.draw do
   get '/support', to: 'users#show'
   get '/test-editor', to: 'users#show'
   get '/testexport', to: 'users#show'
-  get '/testinventar', to: 'application#start'
   get '/testuebersicht', to: 'users#show'
   get '/testverwaltung', to: 'users#show'
   get '/uebungen', to: 'users#show'

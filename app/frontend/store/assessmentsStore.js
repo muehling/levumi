@@ -12,7 +12,6 @@ export const useAssessmentsStore = defineStore('assessments', {
   }),
   actions: {
     setAssessments(groupId, assessments) {
-      //Vue.set(this.assessments, groupId, assessments) // need to set this way to preserve reactivity
       this.assessments[groupId] = assessments
     },
     getAssessments(groupId) {

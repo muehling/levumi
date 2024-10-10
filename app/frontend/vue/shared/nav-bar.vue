@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-navbar toggleable="md" class="nav-pills">
+    <b-navbar toggleable="md" class="nav-pills main-navbar">
       <b-navbar-brand to="/">
         <img :src="'/images/shared/Levumi-normal_small.png'" alt="Levumi" height="48" />
         Levumi
@@ -336,5 +336,8 @@
   .nav-link {
     padding-left: 0.7em !important;
     padding-right: 0.7em !important;
+  }
+  .main-navbar {
+    background: linear-gradient(to bottom, rgba(94, 86, 187, 0.12), rgba(255, 255, 255, 1));
   }
 </style>

@@ -13,6 +13,7 @@ import TestsExport from '../tests/tests-export.vue'
 import UsersApp from '../users/users-app.vue'
 
 const routes = [
+  { path: '/', component: HomeApp },
   { path: '/start', component: HomeApp }, // legacy link, is now /diagnostik
   {
     path: '/diagnostik',

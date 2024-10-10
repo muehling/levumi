@@ -255,6 +255,7 @@ class Test < ApplicationRecord
       if !test.nil? && test.save
         # invalidate cache
         Rails.cache.delete('tests/tests_meta')
+        Rails.cache.delete('tests/test_app_data')
 
         # create new assessments in case an old test was archived
         if (!old_test.nil? && old_test.archive && !assessments_for_old_test.nil?)

@@ -10,6 +10,7 @@ class ApplicationController < ActionController::Base
                   login_frontend
                   logout_frontend
                   redirect_to_registration_error
+                  start
                 ]
   before_action :check_maintenance, except: %i[login]
   before_action :set_locale
@@ -20,22 +21,12 @@ class ApplicationController < ActionController::Base
   #GET '/'
   def start
     headers['Cache-Control'] = 'no-store, must-revalidate'
-    respond_to do |format|
-      format.html do
-        @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
-        render :start, layout: 'startpage'
-      end
-    end
+    respond_to { |format| format.html { render :start, layout: 'startpage' } }
   end
 
   #GET '/info'
   def info
-    respond_to do |format|
-      format.html do
-        @no_script = true #verhindert Einbinden von _scripts.html.erb => Ansonsten Endlos-Redirect wegen fehlendem session Eintrag.
-        render :info
-      end
-    end
+    respond_to { |format| format.html { render :info } }
   end
 
   #POST '/login'
@@ -93,12 +84,7 @@ class ApplicationController < ActionController::Base
   def frontend
     headers['Cache-Control'] = 'no-store, must-revalidate'
     @student = Student.find(session[:student]) if session.has_key?(:student)
-    respond_to do |format|
-      format.html do
-        @no_script = true
-        render :frontend, layout: 'test_select'
-      end
-    end
+    respond_to { |format| format.html { render :frontend, layout: 'test_select' } }
   end
 
   #POST '/testen_login'

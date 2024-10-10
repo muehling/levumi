@@ -61,23 +61,23 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
+  import { ajax } from 'src/utils/ajax'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useTestsStore } from 'src/store/testsStore'
+  import { useGlobalStore } from 'src/store/store'
   import GroupView from './group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  import { useRoute } from 'vue-router'
 
   export default {
     name: 'HomeApp',
     components: { GroupView, IntroPopover, LoadingDots },
     setup() {
-      const route = useRoute()
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
-      return { globalStore, assessmentsStore, route }
+      const testsStore = useTestsStore()
+      return { globalStore, assessmentsStore, testsStore }
     },
     data() {
       return {
@@ -113,7 +113,17 @@
           }
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
+          } else {
+            this.selectedGroupId = this.ownActiveGroups[0]?.id
           }
+        },
+      },
+      selectedGroupId: {
+        immediate: true,
+        async handler() {
+          await this.assessmentsStore.fetch(this.selectedGroupId)
+          await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
+          console.log('arghg', this.selectedGroupId)
         },
       },
     },

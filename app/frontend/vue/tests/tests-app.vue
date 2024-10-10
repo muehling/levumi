@@ -167,17 +167,17 @@
         return it.join(', ')
       },
       getAttachedImages(test) {
-        return test.info_attachments.filter(attachment =>
+        return test.info_attachments?.filter(attachment =>
           attachment.content_type.startsWith('image')
         )
       },
       getAttachedOther(test) {
-        return test.info_attachments.filter(
+        return test.info_attachments?.filter(
           attachment => !attachment.content_type.startsWith('image')
         )
       },
       hasAttachments(test) {
-        return test.info_attachments.length
+        return test.info_attachments?.length
       },
     },
   }

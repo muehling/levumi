@@ -1,7 +1,7 @@
 <template>
   <div class="h-100 main-container">
     <nav
-      class="startpage-navbar navbar sticky-top navbar-light bg-light justify-content-between d-block d-sm-flex">
+      class="startpage-navbar navbar sticky-top navbar-light justify-content-between d-block d-sm-flex">
       <div class="container-fluid m-3">
         <a v-if="isLoggedIn" href="/diagnostik">
           <img :src="levumiSmall" alt="Levumi - Startseite" width="48" height="48" />
