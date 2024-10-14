@@ -109,7 +109,7 @@
                 <template #title>Archivierte Klassen ({{ archivedGroups.length }})</template>
 
                 <b-card no-body class="mt-3">
-                  <b-tabs pills card vertical>
+                  <b-tabs pills vertical class="m-3">
                     <!-- Hinweistext falls keine Klasse vorhanden -->
                     <template #empty>
                       <div v-cloak class="text-center text-muted">

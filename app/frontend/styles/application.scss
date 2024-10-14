@@ -261,10 +261,8 @@ textarea:focus {
 
 .form-check-input {
   margin-top: 0.4em;
-  &:checked[type='radio'] {
-    background-color: $levumi-color;
-    accent-color: $levumi-color !important;
-    --bs-form-check-bg-image: unset !important;
+  &:checked {
+    background-color: $primary-color-dark;
   }
 }
 

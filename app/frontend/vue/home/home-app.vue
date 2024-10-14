@@ -29,7 +29,7 @@
                     <span v-else>{{ group.label }}</span>
                   </template>
 
-                  <p v-if="!currentGroup?.owner">
+                  <p v-if="!currentGroup?.owner" class="mt-3">
                     Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
                   </p>
                   <div v-if="!currentGroup?.key && currentGroup?.id">

@@ -34,19 +34,9 @@
         <i class="fas fa-arrow-left me-2"></i>
         Zurück zur Testübersicht
       </b-button>
-      <b-button
-        v-if="!isTestListOpen && !isAssessmentSettingsOpen"
-        class="my-3"
-        size="sm"
-        variant="outline-secondary"
-        @click="openSettings">
-        <i class="fas fa-gear me-2"></i>
-        Aktionen und Einstellungen
-      </b-button>
     </div>
     <div v-if="!!group">
       <assessment-settings v-if="isAssessmentSettingsOpen" :group="group" />
-
       <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
       <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
       <assessment-details v-if="isTestDetailsOpen" :group="group" />
@@ -102,7 +92,7 @@
         return this.assessmentData?.annotations
       },
       displayClassBookButton() {
-        return this.$route.name === 'AssessmentList'
+        return this.$route.name === 'AssessmentList' || this.$route.name === 'Diagnostik'
       },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
@@ -122,7 +112,10 @@
         return !!this.group?.read_only
       },
       displayTestAdminButton() {
-        return this.$route.name === 'AssessmentList'
+        return (
+          this.$route.name === 'AssessmentList' ||
+          (this.$route.name === 'Diagnostik' && !this.group.read_only)
+        )
       },
     },
     watch: {
@@ -195,11 +188,7 @@
           this.$router.push(`/klassenbuch/geteilte_klassen/${this.selectedGroupId}`)
         }
       },
-      openSettings() {
-        this.$router.push(
-          `/diagnostik/${this.selectedGroupId}/testdetails/${this.assessmentData.test.id}/einstellungen`
-        )
-      },
+
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
       },

@@ -211,7 +211,7 @@
         }
       },
       /*****************************
-       * update group and propagate to parent component
+       * update group
        ******************************/
       updateGroup({ object }) {
         this.globalStore.setShareKey({ key: object.id, value: object.key })
@@ -238,7 +238,12 @@
 
           if (res.status === 200) {
             const remainingGroups = this.groups.filter(g => g.id !== this.group.id)
-            this.$emit('update:groups', remainingGroups)
+            this.globalStore.groups = remainingGroups
+
+            const archivedGroups = this.globalStore.groups.filter(group => group.archive)
+            if (archivedGroups.length === 0) {
+              this.$router.push('/diagnostik')
+            }
           }
         }
       },

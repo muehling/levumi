@@ -22,7 +22,7 @@
               block
               :variant="`${getTestButtonVariant(test.id)}`"
               @click.stop.prevent="displayTestDetail(test.id)">
-              <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
+              <span :class="`${assessmentExists('test', test.id) ? 'fw-bold' : ''}`">
                 {{ `${test.full_name} ${getTestButtonSuffix(test.id)}` }}
               </span>
             </b-button>
@@ -38,7 +38,7 @@
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
                 @click.stop.prevent="expandArea(area.id)">
-                <span :class="`${assessmentExists('area', area.id) ? 'font-weight-bold' : ''}`">
+                <span :class="`${assessmentExists('area', area.id) ? 'fw-bold' : ''}`">
                   {{ area.name }}
                 </span>
               </b-button>
@@ -64,9 +64,7 @@
                         }`"
                         @click.stop.prevent="expandTestType(testTypeId)">
                         <span
-                          :class="`${
-                            assessmentExists('testType', testTypeId) ? 'font-weight-bold' : ''
-                          }`">
+                          :class="`${assessmentExists('testType', testTypeId) ? 'fw-bold' : ''}`">
                           {{ testTypes.find(testType => testType.id === testTypeId).name }}
                         </span>
                       </b-button>
@@ -101,9 +99,7 @@
                                 @click.stop.prevent="expandCompetence(competence.id)">
                                 <span
                                   :class="`${
-                                    assessmentExists('competence', competence.id)
-                                      ? 'font-weight-bold'
-                                      : ''
+                                    assessmentExists('competence', competence.id) ? 'fw-bold' : ''
                                   }`">
                                   {{ competence.name }}
                                 </span>
@@ -145,7 +141,7 @@
                                         <span
                                           :class="`${
                                             assessmentExists('testFamily', testFamily.id)
-                                              ? 'font-weight-bold'
+                                              ? 'fw-bold'
                                               : ''
                                           }`">
                                           {{ testFamily.name }}
@@ -178,7 +174,7 @@
                                                 <span
                                                   :class="`${
                                                     assessmentExists('test', test.id)
-                                                      ? 'font-weight-bold'
+                                                      ? 'fw-bold'
                                                       : ''
                                                   }`">
                                                   {{ test.level + getTestButtonSuffix(test.id) }}
@@ -590,23 +586,23 @@
         switch (level) {
           case 'area':
             this.$refs[`area-acc${this.selectedAreaId}`] &&
-              this.$refs[`area-acc${this.selectedAreaId}`][0].hide()
+              this.$refs[`area-acc${this.selectedAreaId}`][0]?.hide()
 
           case 'testType': //eslint-disable-line no-fallthrough
             this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`] &&
-              this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`][0].hide()
+              this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`][0]?.hide()
 
           case 'competence': // eslint-disable-line no-fallthrough
             this.$refs[`competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`] &&
               this.$refs[
                 `competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`
-              ][0].hide()
+              ][0]?.hide()
 
           case 'testFamily': // eslint-disable-line no-fallthrough
             this.$refs[`testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`] &&
               this.$refs[
                 `testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`
-              ][0].hide()
+              ][0]?.hide()
         }
         if (level === 'area' || level === 'testType') {
           this.selectedTestTypeId = undefined
@@ -614,24 +610,44 @@
         this.selectedTestId = undefined
       },
       expandArea(areaId) {
-        this.$refs[`area-acc${areaId}`][0].show()
-        this.reset('area')
-        this.selectedAreaId = areaId
+        if (areaId !== this.selectedAreaId) {
+          this.$refs[`area-acc${areaId}`][0]?.show()
+          this.reset('area')
+          this.selectedAreaId = areaId
+        } else {
+          this.selectedAreaId = undefined
+          this.$refs[`area-acc${areaId}`][0]?.hide()
+        }
       },
       expandTestType(testTypeId) {
-        this.reset('testType')
-        this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0].show()
-        this.selectedTestTypeId = testTypeId
+        if (testTypeId !== this.selectedTestTypeId) {
+          this.reset('testType')
+          this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0]?.show()
+          this.selectedTestTypeId = testTypeId
+        } else {
+          this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0]?.hide()
+          this.selectedTestTypeId = undefined
+        }
       },
       expandCompetence(competenceId) {
-        this.reset('competence')
-        this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0].show()
-        this.selectedCompetenceId = competenceId
+        if (competenceId !== this.selectedCompetenceId) {
+          this.reset('competence')
+          this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0]?.show()
+          this.selectedCompetenceId = competenceId
+        } else {
+          this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0]?.hide()
+          this.selectedCompetenceId = undefined
+        }
       },
       expandTestFamily(testFamilyId) {
-        this.reset('testFamily')
-        this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0].show()
-        this.selectedTestFamilyId = testFamilyId
+        if (testFamilyId !== this.selectedTestFamilyId) {
+          this.reset('testFamily')
+          this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0]?.show()
+          this.selectedTestFamilyId = testFamilyId
+        } else {
+          this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0]?.hide()
+          this.selectedTestFamilyId = undefined
+        }
       },
       async displayTestDetail(testId) {
         await this.globalStore.getItemsForTest(testId)

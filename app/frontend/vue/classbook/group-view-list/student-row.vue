@@ -97,7 +97,7 @@
     <td class="pl-0">
       <div class="ps-1">
         <b-form-input
-          v-model.trim="name"
+          v-model="name"
           name="name"
           type="text"
           class="form-control"
@@ -162,7 +162,7 @@
         <div class="d-flex">
           <b-form @submit.prevent.stop="addTag">
             <b-form-input
-              v-model.trim="newTag"
+              v-model="newTag"
               placeholder="Weiteres Merkmal"
               class="d-inline new-tag-input text-small py-0"></b-form-input>
             <b-button
