@@ -16,7 +16,7 @@ class User < ApplicationRecord
 
   validates_numericality_of :account_type,
                             greater_than_or_equal_to: 0,
-                            less_than_or_equal_to: 2,
+                            less_than_or_equal_to: 3,
                             message: 'Bitte wählen Sie einen Account-Typen aus!'
   validates_numericality_of :state,
                             greater_than: 0,

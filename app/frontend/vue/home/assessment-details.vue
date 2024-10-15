@@ -39,7 +39,7 @@
         </b-nav-item>
       </b-nav>
     </div>
-    <b-tabs v-if="!isLoading" pills card nav-item-class="py-1">
+    <b-tabs pills card nav-item-class="py-1">
       <b-tab :active="!hasResults" class="m-3">
         <template #title>
           <div>

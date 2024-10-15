@@ -48,7 +48,7 @@
                       </p>
                     </b-card>
                   </div>
-                  <group-view v-else />
+                  <group-view v-else-if="selectedGroupId" :selected-group-id="selectedGroupId" />
                 </b-tab>
               </b-tabs>
             </div>
@@ -120,10 +120,9 @@
       },
       selectedGroupId: {
         immediate: true,
-        async handler() {
-          await this.assessmentsStore.fetch(this.selectedGroupId)
-          await this.testsStore.fetchUsedTestsForGroup(this.selectedGroupId)
-          console.log('arghg', this.selectedGroupId)
+        async handler(newId) {
+          await this.assessmentsStore.fetch(newId)
+          await this.testsStore.fetchUsedTestsForGroup(newId)
         },
       },
     },
