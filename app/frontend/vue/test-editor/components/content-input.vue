@@ -172,7 +172,7 @@
       },
       updateElement(item, val) {
         if (val) {
-          item.text = val.replaceAll('"', 'ʺ')
+          item.text = val.target.value.replaceAll('"', 'ʺ')
         }
         this.items = this.items.map(el => (el.id === item.id ? item : el))
         this.$emit('update-content', this.items)
