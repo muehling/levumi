@@ -58,6 +58,7 @@
   export default {
     name: 'GroupView',
     components: { AssessmentDetails, AssessmentView, GroupTestAdmin, AssessmentSettings },
+    props: { selectedGroupId: Number },
 
     setup() {
       const route = useRoute()
@@ -79,11 +80,6 @@
       }
     },
     computed: {
-      selectedGroupId() {
-        return (
-          parseInt(this.$route.params.groupId, 10) || this.groups.find(group => !group.archive).id
-        )
-      },
       assessmentData() {
         return this.assessmentsStore.currentAssessment
       },
@@ -122,20 +118,14 @@
       '$route.name': {
         immediate: true,
         async handler(name) {
-          console.log('route change', name)
-
           switch (name) {
             case 'GroupTestAdmin':
-              console.log('Testverwaltung')
-
               this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = false
               this.isTestAdminOpen = true
               this.isTestListOpen = false
               break
             case 'Assessment':
-              console.log('Assessment')
-
               this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = true
               this.isTestAdminOpen = false
@@ -143,16 +133,12 @@
 
               break
             case 'AssessmentSettings':
-              console.log('AssessmentSettings')
-
               this.isAssessmentSettingsOpen = true
               this.isTestDetailsOpen = false
               this.isTestAdminOpen = false
               this.isTestListOpen = false
               break
             default:
-              console.log('Default')
-
               this.isAssessmentSettingsOpen = false
               this.isTestAdminOpen = false
               this.isTestDetailsOpen = false

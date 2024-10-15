@@ -36,6 +36,7 @@
   import InputDialog from './shared/input-dialog.vue'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'RootApp',
@@ -59,11 +60,10 @@
         return this.globalStore.isLoading
       },
       isRegistrationComplete() {
-        return (
-          !!this.globalStore.login &&
-          this.globalStore.login.tc_accepted &&
-          this.globalStore.login.intro_state > 2
-        )
+        if (isEmpty(this.globalStore.login)) {
+          return true
+        }
+        return this.globalStore.login.tc_accepted && this.globalStore.login.intro_state > 2
       },
       areTermsAccepted() {
         return this.globalStore.login && this.globalStore.login.tc_accepted
@@ -73,12 +73,6 @@
       },
     },
     watch: {
-      $route: {
-        immediate: true,
-        handler() {
-          console.log('root', this.$route.name)
-        },
-      },
       'globalStore.serverError': {
         immediate: true,
         async handler() {
@@ -111,7 +105,8 @@
         },
       },
     },
-    async created() {
+    async mounted() {
+      await this.globalStore.fetch()
       await this.checkLogin()
       if (this.globalStore.login.intro_state >= 5) {
         this.displayNews()
@@ -157,7 +152,6 @@
       async checkLogin() {
         const path = window.location.pathname
         if (path !== '/testen' && path !== '/testen_login') {
-          await this.globalStore.fetch(true)
           // Check if login information is present. This may get lost in restored browser sessions,
           // or when a link is opened in a new tab. In this case, we need to log in again
           const login = sessionStorage.getItem('login')
@@ -256,8 +250,7 @@
         )
         if (res.status === 200) {
           sessionStorage.setItem('login', pw)
-          await this.globalStore.fetch()
-          await this.globalStore.fetchGroups()
+          this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
         }

@@ -10,7 +10,10 @@
               @change-password-confirm="pw => (passwordConfirm = pw)"
               @change-security-answer="a => (securityAnswer = a)" />
           </b-card>
-          <b-card v-if="accountType !== 2" title="Helfen Sie uns bei der Forschung" class="mt-4">
+          <b-card
+            v-if="accountType !== 2 && accountType !== 3"
+            title="Helfen Sie uns bei der Forschung"
+            class="mt-4">
             <extra-data-form
               :account-type="accountType"
               :focus-type="focusType || undefined"

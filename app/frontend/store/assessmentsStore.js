@@ -12,7 +12,7 @@ export const useAssessmentsStore = defineStore('assessments', {
   }),
   actions: {
     setAssessments(groupId, assessments) {
-      this.assessments[groupId] = assessments
+      this.assessments = { ...this.assessments, [groupId]: assessments }
     },
     getAssessments(groupId) {
       return this.assessments[groupId] || []
