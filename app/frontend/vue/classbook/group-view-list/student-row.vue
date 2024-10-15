@@ -303,7 +303,7 @@
       return {
         editMode: this.empty && this.open,
         isLoadingAssessments: false,
-        name: this.student.name,
+        name: this.student.name.trim(),
         activeAssessments: undefined,
         newTag: '',
 
