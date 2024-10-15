@@ -7,13 +7,13 @@
             :disabled="canMoveUp(i)"
             variant="outline-secondary"
             @click="moveElement(item.id, -1)">
-            <b-icon icon="arrow-up" aria-hidden="true" />
+            <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
           </b-button>
           <b-button
             :disabled="canMoveDown(i)"
             variant="outline-secondary"
             @click="moveElement(item.id, 1)">
-            <b-icon icon="arrow-down" aria-hidden="true" />
+            <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
           </b-button>
         </b-button-group>
         <div class="flex-grow-1 border mx-4">
@@ -53,7 +53,7 @@
         </div>
         <b-button-group vertical>
           <b-button variant="outline-secondary" @click="deleteElement(item.id)">
-            <b-icon icon="x-lg" aria-hidden="true" />
+            <i class="fa-solid fa-xmark" aria-hidden="true" ></i>
           </b-button>
         </b-button-group>
       </div>

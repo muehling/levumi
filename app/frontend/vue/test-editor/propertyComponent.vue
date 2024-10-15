@@ -5,7 +5,7 @@
       <b-button class="mt-3 ml-2" @click="save">Speichern</b-button>
       <b-button class="continue mt-3 ml-2" @click="saveAndContinue">
         Speichern und weiter
-        <b-icon icon="arrow-right"></b-icon>
+        <i class="fa-solid fa-arrow-right"></i>
       </b-button>
     </div>
 
@@ -191,7 +191,7 @@
 
       <b-button class="continue mt-4" @click="saveAndContinue">
         Speichern und weiter
-        <b-icon icon="arrow-right"></b-icon>
+        <i class="fa-solid fa-arrow-right"></i>
       </b-button>
     </b-form>
   </b-card>

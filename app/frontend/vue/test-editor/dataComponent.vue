@@ -52,7 +52,7 @@
         :disabled="!hasQuestions"
         @click="checkForValidData()">
         Weiter zur Zusammenfassung
-        <b-icon icon="arrow-right"></b-icon>
+        <i class="fa-solid fa-arrow-right"></i>
       </b-button>
       <b-button class="ml-2 d-none" @click="prepareData">debug</b-button>
     </div>
