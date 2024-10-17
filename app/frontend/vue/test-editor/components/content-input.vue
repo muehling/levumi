@@ -23,23 +23,23 @@
             rows="2"
             max-rows="4"
             :value="item.text"
-            placeholder="Hier bitte den Text eingeben"
+            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
             @input="val => updateElement(item, val)" />
 
           <b-form-textarea
             v-if="item.type == 'h3'"
-            placeholder="Hier bitte den Text eingeben"
             rows="2"
             max-rows="4"
             :value="item.text"
+            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
             @input="val => updateElement(item, val)" />
 
           <b-form-textarea
             v-if="item.type == 'p'"
-            placeholder="Hier bitte den Text eingeben"
             rows="2"
             max-rows="4"
             :value="item.text"
+            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
             @input="val => updateElement(item, val)" />
 
           <b-form-file
@@ -48,7 +48,7 @@
             accept="image/*"
             class="inputImage"
             size="md"
-            :placeholder="item.asset ? item.asset.name : 'Bild hochladen'"
+            :label="item.asset ? 'Ihre hochgeladenen Datei ist: '+item.asset.name : 'Bild hochladen'"
             @input="addPicture(item)" />
         </div>
         <b-button-group vertical>
@@ -169,6 +169,7 @@
         tempItems[sourcePosition] = targetElement
 
         this.items = tempItems
+        this.$emit('update-content', this.items)
       },
       updateElement(item, val) {
         if (val) {
@@ -179,6 +180,7 @@
       },
       deleteElement(itemId) {
         this.items = this.items.filter(item => item.id !== itemId)
+        this.$emit('update-content', this.items)
       },
       previewPage() {
         this.previewContent = '<div class = "previewContainer">' + this.generateHTMLforPreview()
@@ -207,7 +209,10 @@
             reader.onload = function (e) {
               let img = new Image()
               img.src = e.target.result
-              document.getElementById('imageContainer' + index).appendChild(img)
+              let childrenList= document.getElementById('imageContainer' + index).children
+              if (!Array.from(childrenList).some(el => el.src === img.src)){
+                document.getElementById('imageContainer' + index).appendChild(img)
+              }
             }
             if (element.asset) {
               reader.readAsDataURL(element.asset)
