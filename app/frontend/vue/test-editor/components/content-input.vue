@@ -4,13 +4,13 @@
       <div class="d-flex flex-row mb-3">
         <b-button-group vertical>
           <b-button
-            :disabled="canMoveUp(i)"
+            :disabled="!canMoveUp(i)"
             variant="outline-secondary"
             @click="moveElement(item.id, -1)">
             <i class="fa-solid fa-arrow-up" aria-hidden="true"></i>
           </b-button>
           <b-button
-            :disabled="canMoveDown(i)"
+            :disabled="!canMoveDown(i)"
             variant="outline-secondary"
             @click="moveElement(item.id, 1)">
             <i class="fa-solid fa-arrow-down" aria-hidden="true"></i>
@@ -20,7 +20,6 @@
           <p class="d-flex m-0">{{ typeDescription(item) }}:</p>
           <b-form-textarea
             v-if="item.type == 'h1'"
-            id="input-large"
             rows="2"
             max-rows="4"
             :value="item.text"
@@ -32,6 +31,7 @@
             placeholder="Hier bitte den Text eingeben"
             rows="2"
             max-rows="4"
+            :value="item.text"
             @input="val => updateElement(item, val)" />
 
           <b-form-textarea
@@ -161,7 +161,7 @@
       moveElement(itemId, direction) {
         let sourcePosition, targetElement, temp
         const tempItems = [...this.items]
-        sourcePosition = tempItems.findIndex(el => el.id === itemId)
+        sourcePosition = tempItems.findIndex(el => el && el.id === itemId)
 
         targetElement = tempItems[sourcePosition + direction]
         temp = tempItems[sourcePosition]
