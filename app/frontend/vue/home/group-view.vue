@@ -150,14 +150,12 @@
 
     async mounted() {
       this.getAssessmentData()
-      //this.selectedGroupId = this.$route.params.groupId
-      //this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
-      //this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
     },
     methods: {
       async getAssessmentData() {
         if (
           this.$route.params.testId &&
+          parseInt(this.$route.params.groupId, 10) === this.selectedGroupId &&
           this.assessmentsStore.currentAssessment?.test?.id !==
             parseInt(this.$route.params.testId, 10)
         ) {
@@ -178,15 +176,7 @@
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
       },
-      //addAnnotation(annotation) {
-      //  const annotations = this.assessmentData.annotations
-      //  annotations.splice(0, 0, annotation)
-      //  this.$set(this.assessmentData, 'annotations', annotations)
-      //},
-      //removeAnnotation(annotationId) {
-      //  const annotations = this.assessmentData.annotations.filter(a => annotationId !== a.id)
-      //  this.$set(this.assessmentData, 'annotations', annotations)
-      //},
+
       async setPreselect(data) {
         this.testSelected = data.testId
       },
