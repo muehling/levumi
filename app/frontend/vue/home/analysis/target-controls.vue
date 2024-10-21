@@ -143,7 +143,6 @@
   export default {
     name: 'TargetControls',
     components: { ConfirmDialog, ContextHelp },
-    inject: ['viewConfig', 'loadStudentTargets'],
     props: {
       currentTarget: Object,
       targetVal: String,
@@ -152,7 +151,8 @@
       selectedStudentId: Number,
       targetControlVisible: Boolean,
       studentTargets: Array,
-
+      loadStudentTargets: Function,
+      viewConfig: Object,
       test: Object,
       group: Object,
     },
