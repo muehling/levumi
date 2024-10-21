@@ -52,7 +52,7 @@
             </span>
           </div>
         </template>
-        <!-- Neue Messungen -->
+
         <assessment-results
           :test="test"
           :group="group"
@@ -150,7 +150,7 @@
       },
 
       hasResults() {
-        return !!this.results?.length || false
+        return !!this.assessmentsStore.currentAssessment?.series?.length || false
       },
       isLoading() {
         return this.assessmentsStore.isLoading || !this.assessment
@@ -166,7 +166,7 @@
       },
 
       weeks() {
-        return compact(uniq(this.results?.map(w => w.test_week)))
+        return compact(uniq(this.assessmentsStore.currentAssessment?.series?.map(w => w.test_week)))
       },
       isActive() {
         // const assessments = this.assessmentsStore.assessments[this.group.id]

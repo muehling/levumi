@@ -62,6 +62,11 @@ export default {
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
     }),
+    update: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}`,
+      method: 'PUT',
+      data,
+    }),
     updateAll: groupId => ({ url: `/groups/${groupId}/assessments`, method: 'PUT' }),
     currentAssessment: (groupId, testId) => ({ url: `/groups/${groupId}/assessments/${testId}` }),
   },

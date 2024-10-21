@@ -1,18 +1,73 @@
 <template>
   <div id="target-controls">
+    {{ selectedStudentId }}
     <b-form v-if="!readOnly" class="border p-3" accept-charset="UTF-8">
-      <b-alert
-        :show="selectedStudentId !== -1 && storedIsNull"
-        variant="info"
-        class="d-inline-block">
-        Hinweis: Die gezeigten Werte wurden aus der Klassenansicht übernommen. Wenn Sie hier andere
-        Werte eintragen und speichern, so gelten sie ausschließlich für diese Schüler*in.
-      </b-alert>
-      <div v-if="targetIsEnabled" class="text-small row">
+      <div class="d-inline-flex">
+        <p class="mb-3 me-3">Globale Einstellungen</p>
+        <context-help
+          help-text="Diese Einstellungen gelten sowohl für die ganze Klasse als auch für einzelne Schüler:innen." />
+      </div>
+      <div class="text-small row">
+        <div class="col-12 col-md-3 col-xl-2">
+          <label label-for="trend-input">Trend anzeigen:</label>
+        </div>
+        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
+          <b-form-checkbox
+            id="trend-input"
+            v-model="showTrends"
+            size="sm"
+            switch
+            @change="saveAssessmentSettings" />
+          <context-help
+            help-text="Mit dieser Option wird aus den bisherigen Messungen einer Schüler:in ein Trend bis 
+            zum eingegebenen Enddatum generiert. Die Trendlinie wird nicht in der Klassenansicht dargestellt,
+             sondern nur in den Individualgraphen."
+            class-name="mt-1 ms-3" />
+        </div>
+      </div>
+      <div class="text-small row mt-2">
+        <div class="col-12 col-md-3 col-xl-2">
+          <label>Verfügbarer Zeitraum:</label>
+        </div>
+        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
+          <b-form-input
+            id="available_target_input"
+            v-model="dateUntil"
+            placeholder="Bis wann soll das Ziel erreicht worden sein?"
+            trim
+            :formatter="dateFormatter"
+            type="date"
+            lang="de"
+            size="sm" />
+          <context-help
+            help-text="Dieses Datum bestimmt, bis zu welchem Datum die Zeitachse des Diagramms erweitert wird. Zielwerte gelten für dieses Datum;
+            Trendlinien werden bis zu diesem Datum extrapoliert."
+            class-name="mt-1 ms-3" />
+        </div>
+      </div>
+      <hr />
+      <div class="d-inline-flex">
+        <p class="mb-3 me-3">
+          {{
+            selectedStudentId === -1
+              ? 'Klassenspezifische Einstellungen '
+              : 'Schülerspezifische Einstellungen'
+          }}
+        </p>
+      </div>
+      <div v-if="showClassTargetForStudent && selectedStudentId !== -1">
+        <BAlert :model-value="true" class="p-2">
+          <span class="text-small">
+            Der angezeigte Zielwert ist auf Klassenebene festgelegt. Sie können für diese Schüler:in
+            einen eigenen Zielwert festlegen.
+          </span>
+        </BAlert>
+      </div>
+      <div class="text-small row">
         <div class="col-12 col-md-3 col-xl-2">
           <label>Zielwert:</label>
         </div>
-        <div class="col-12 col-md-4 col-xl-3">
+        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
           <b-form-input
             id="target_input"
             v-model="target"
@@ -24,39 +79,18 @@
             min="0"
             step="0.01"
             lang="de"
-            size="sm"
-            @update:model-value="setTarget($event, dateUntilVal, deviationVal, true)" />
+            size="sm" />
+          <context-help
+            help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
+            class-name="mt-1 ms-3" />
         </div>
-        <context-help
-          help-text="Der Zielwert wird wahlweise als horizontale oder an-/absteigende Gerade dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
-          class-name="mt-1" />
       </div>
-      <div v-if="dateUntilIsEnabled" class="text-small row mt-2">
+
+      <div class="text-small row mt-2 mb-2">
         <div class="col-12 col-md-3 col-xl-2">
-          <label>Verfügbarer Zeitraum:</label>
+          <label>Abweichungsbereich</label>
         </div>
-        <div class="col-12 col-md-4 col-xl-3">
-          <b-form-input
-            id="available_target_input"
-            v-model="dateUntil"
-            placeholder="Bis wann soll das Ziel erreicht worden sein?"
-            trim
-            :formatter="dateFormatter"
-            type="date"
-            lang="de"
-            size="sm"
-            @update:model-value="setTarget(targetVal, $event, deviationVal, true)" />
-        </div>
-        <context-help
-          help-text="Mit dieser Option wird die Zeitachse des Diagramms auf das eingestellte Datum erweitert. An-/absteigende Zielwerte gelten für dieses Datum;
-               Trendlinien können bis zu diesem Datum extrapoliert werden."
-          class-name="mt-1" />
-      </div>
-      <div v-if="deviationIsEnabled && targetIsEnabled" class="text-small row mt-2 mb-2">
-        <div class="col-12 col-md-3 col-xl-2">
-          <label>Erlaubte Abweichung:</label>
-        </div>
-        <div class="d-inline col-12 col-md-4 col-xl-3">
+        <div class="d-inline col-12 col-md-4 col-xl-3 d-inline-flex">
           <b-input-group size="sm" append="%">
             <b-form-input
               id="deviation_target_input"
@@ -70,46 +104,26 @@
               max="100"
               step="1"
               lang="de"
-              size="sm"
-              @update:model-value="setTarget(targetVal, dateUntilVal, $event, true)" />
+              size="sm" />
           </b-input-group>
+          <context-help
+            help-text="Dieser Wert bestimmt, wie weit die Ergebnisse maximal vom vorgegebenen Zielwert abweichen sollten."
+            class-name="mt-1 ms-3" />
         </div>
-        <context-help
-          help-text="Dieser Wert bestimmt, wie weit die Ergebnisse vom vorgegebenen Zielwert abweichen dürfen."
-          class-name="mt-1" />
       </div>
       <div class="mt-3">
-        <b-button
-          variant="outline-success"
-          size="sm"
-          :disabled="!targetOrTimeValid"
-          @click="changeStoredTarget(false)">
+        <b-button variant="outline-success" size="sm" @click="changeStoredTarget(false)">
           <i class="fas fa-check"></i>
-          Wert{{ multipleValues ? 'e' : '' }} speichern
+          Speichern
         </b-button>
-        <!-- the click doesn't always need to trigger a request; when the stored target is null anyway then we can skip it -->
         <b-button
-          :hidden="!(targetVal || dateUntilVal || deviationVal) && storedIsNull"
+          :disabled="!currentTarget"
           class="ms-2"
           variant="outline-danger"
           size="sm"
-          @click="storedIsNull ? restoreTarget() : changeStoredTarget(true)">
+          @click="changeStoredTarget(true)">
           <i class="fas fa-check"></i>
-          Wert{{ multipleValues ? 'e' : '' }} löschen
-        </b-button>
-        <b-button
-          :hidden="
-            (targetVal === targetValStored &&
-              dateUntilVal === dateUntilStored &&
-              deviationVal === deviationStored) ||
-            storedIsNull
-          "
-          class="ms-2"
-          variant="outline-warning"
-          size="sm"
-          @click="restoreTarget">
-          <i class="fas fa-check"></i>
-          Wert{{ multipleValues ? 'e' : '' }} zurücksetzen
+          Löschen
         </b-button>
       </div>
     </b-form>
@@ -123,58 +137,97 @@
   import { ajax } from '@/utils/ajax'
   import ConfirmDialog from '../../shared/confirm-dialog.vue'
   import { useGlobalStore } from 'src/store/store'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
   import ContextHelp from 'src/vue/shared/context-help.vue'
 
   export default {
     name: 'TargetControls',
     components: { ConfirmDialog, ContextHelp },
-    inject: ['readOnly', 'restoreTarget', 'viewConfig', 'targetStored', 'loadStudentTargets'],
+    inject: ['viewConfig', 'loadStudentTargets'],
     props: {
-      targetIsEnabled: Boolean,
-      dateUntilIsEnabled: Boolean,
-      deviationIsEnabled: Boolean,
+      currentTarget: Object,
       targetVal: String,
       dateUntilVal: String,
       deviationVal: String,
-      targetValStored: String,
-      dateUntilStored: String,
-      deviationStored: String,
       selectedStudentId: Number,
       targetControlVisible: Boolean,
       studentTargets: Array,
-      targetValid: Boolean,
+
       test: Object,
       group: Object,
     },
     setup() {
       const globalStore = useGlobalStore()
-      return { globalStore }
+      const assessmentsStore = useAssessmentsStore()
+
+      return { globalStore, assessmentsStore }
     },
     data() {
-      return { target: undefined, dateUntil: undefined, deviation: undefined }
+      const target =
+        this.selectedStudentId !== -1
+          ? this.studentTargets.find(t => t.student_id === this.selectedStudentId)
+          : this.studentTargets.find(t => t.student_id === null)
+
+      return {
+        target: target?.value,
+        dateUntil: this.assessmentsStore.currentAssessment.settings?.date_until,
+        deviation: target?.deviation,
+        showTrends: this.assessmentsStore.currentAssessment.settings?.is_trend_enabled,
+        showClassTargetForStudent: false,
+      }
     },
     computed: {
-      multipleValues() {
-        return (this.dateUntilIsEnabled || this.deviationIsEnabled) && this.targetIsEnabled
+      readOnly() {
+        return this.group.read_only
       },
-      storedIsNull() {
-        return (
-          this.dateUntilStored == null &&
-          this.targetValStored == null &&
-          this.deviationStored == null
-        )
-      },
+
       targetOrTimeValid() {
-        return this.targetValid || this.dateUntilVal
+        return true //todo
       },
-      targetId() {
-        return this.targetStored?.id
+    },
+    watch: {
+      currentTarget: {
+        immediate: true,
+        handler() {
+          if (!this.currentTarget?.student_id) {
+            this.showClassTargetForStudent = true
+          } else {
+            this.showClassTargetForStudent = false
+          }
+        },
+      },
+      selectedStudentId: {
+        immediate: true,
+        handler() {
+          //this.showClassTargetForStudent = false
+          let target =
+            this.selectedStudentId !== -1
+              ? this.studentTargets.find(t => t.student_id === this.selectedStudentId)
+              : this.studentTargets.find(t => t.student_id === null)
+          if (!target) {
+            target = this.studentTargets.find(t => t.student_id === null)
+            //  this.showClassTargetForStudent = true
+          }
+          this.target = target?.value
+          this.deviation = target?.deviation
+        },
       },
     },
     methods: {
-      setTarget(targetVal, dateUntilVal, deviationVal) {
-        console.log('meh', dateUntilVal, this.dateUntil)
+      async saveAssessmentSettings() {
+        const res = await ajax(
+          apiRoutes.assessments.update(this.group.id, this.test.id, {
+            assessment: {
+              settings: { is_trend_enabled: this.showTrends, date_until: this.dateUntil },
+            },
+          })
+        )
+        if (res.status === 200) {
+          this.assessmentsStore.setCurrentAssessment(res.data)
+        }
+      },
 
+      setTarget(targetVal, dateUntilVal, deviationVal) {
         if (this.target) {
           this.$emit('set-target', targetVal, dateUntilVal, deviationVal, true)
         }
@@ -197,27 +250,22 @@
         return twoDigitString === '' ? '' : Number(twoDigitString).toString()
       },
       dateFormatter(val) {
-        //return printDate(val) // breaks the input, unfortunately
         return val
       },
-      /**
-       * Returns a string of an integer created by rounding a number constructed from the input.
-       * This rounded number is clamped to the range [0,100].
-       * If the input is empty it returns this empty input instead.
-       * @param value
-       * @returns {string}
-       */
+
       deviationFormatter(value) {
         if (value === '') {
           return ''
         }
         return Math.max(Math.min(Math.round(value), 100), 0).toString()
       },
+
       async changeStoredTarget(deleteTarget) {
         let res
         if (deleteTarget) {
           res = await this.deleteStudentTarget()
         } else {
+          await this.saveAssessmentSettings()
           res = await this.saveStudentTarget()
         }
         if (res?.status === 200) {
@@ -225,33 +273,36 @@
           await this.loadStudentTargets() // this function only loads the detail information for the current assessment
         }
       },
+
       async saveStudentTarget() {
         const sId = this.selectedStudentId === -1 ? null : this.selectedStudentId
-        if (this.targetStored === null) {
+        const data = {
+          view: this.viewConfig.key,
+          value: this.target,
+          deviation: this.deviation,
+        }
+        if (!this.currentTarget) {
+          if (sId !== -1) {
+            data.student_id = sId
+          }
           return ajax(
             apiRoutes.targets.createStudentTarget(this.group.id, this.test.id, {
-              target: {
-                view: this.viewConfig.key,
-                value: this.targetVal,
-                date_until: this.dateUntilVal,
-                deviation: this.deviationVal,
-                student_id: sId,
-              },
+              target: data,
             })
           )
-        } else if (this.targetStored) {
+        } else if (this.currentTarget) {
           return ajax(
-            apiRoutes.targets.updateStudentTarget(this.group.id, this.test.id, this.targetId, {
-              target: {
-                view: this.viewConfig.key,
-                value: this.targetVal,
-                date_until: this.dateUntilVal,
-                deviation: this.deviationVal,
-                //student_id: sId,
-              },
-            })
+            apiRoutes.targets.updateStudentTarget(
+              this.group.id,
+              this.test.id,
+              this.currentTarget?.id,
+              {
+                target: data,
+              }
+            )
           )
         }
+        this.saveAssessmentSettings()
       },
       async deleteStudentTarget() {
         const ok = await this.$refs.confirmDialog.open({
@@ -261,7 +312,11 @@
         })
         if (ok) {
           return ajax(
-            apiRoutes.targets.deleteStudentTarget(this.group.id, this.test.id, this.targetId)
+            apiRoutes.targets.deleteStudentTarget(
+              this.group.id,
+              this.test.id,
+              this.currentTarget?.id
+            )
           )
         } else {
           return null

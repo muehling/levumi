@@ -51,28 +51,6 @@
           </div>
         </div>
       </div>
-      <div v-if="trendIsEnabled" class="mt-3 text-small row">
-        <div class="col-12 col-md-3 col-lg-2">
-          <label class="mt-1">Start neuer Trendlinie</label>
-        </div>
-        <div class="col-12 col-md-4">
-          <div class="d-flex flex-row">
-            <b-form-checkbox
-              v-model="annotationIsTrendThreshold"
-              :disabled="annotationStart !== annotationEnd"
-              size="sm"></b-form-checkbox>
-            <context-help
-              help-text="
-                'Umfasst eine Anmerkung nur ein einziges Datum, so können Trends für die Bereiche ' +
-                'vor und nach der Anmerkung erstellt werden.'
-              "
-              style="font-size: 1rem"
-              class="ms-2 mt-1">
-              <i class="fas fa-circle-question"></i>
-            </context-help>
-          </div>
-        </div>
-      </div>
       <div class="mt-3">
         <b-button
           variant="outline-success"
@@ -87,21 +65,19 @@
     <table class="table table-sm table-striped table-borderless mt-1 text-small">
       <thead>
         <tr>
+          <th>Anmerkung für:</th>
           <th>Von</th>
           <th>Bis</th>
           <th>Anmerkung</th>
-          <th v-if="trendIsEnabled">Trend-Bruchstelle</th>
           <th v-if="!readOnly">Aktionen</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="a in currentAnnotations" :key="a.id">
+          <td>{{ getStudentName(a.student_id) }}</td>
           <td>{{ formatDate(a.start) }}</td>
           <td>{{ formatDate(a.end) }}</td>
           <td>{{ getAnnotationLabel(a.annotation_category_id) }}</td>
-          <td v-if="trendIsEnabled">
-            <i :class="`${a.trend_threshold ? 'fas fa-check text-success' : 'fas fa-minus'}`"></i>
-          </td>
           <td v-if="!readOnly" class="annotation-action-button">
             <b-button variant="outline-danger" class="btn-sm" @click="deleteAnnotation(a.id)">
               <i class="fas fa-trash"></i>
@@ -122,14 +98,12 @@
   import apiRoutes from 'src/vue/routes/api-routes'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import { printDate } from 'src/utils/date'
-  import ContextHelp from 'src/vue/shared/context-help.vue'
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
 
   export default {
     name: 'AnnotationsSection',
     components: {
       ConfirmDialog,
-      ContextHelp,
     },
 
     props: {
@@ -138,7 +112,6 @@
       selectedViewKey: String,
       test: Object,
       annotationControlVisible: Boolean,
-      trendIsEnabled: Boolean,
       weeks: Array,
     },
     setup() {
@@ -188,7 +161,7 @@
           return (
             annotation.view === this.selectedViewKey &&
             ((this.selectedStudent && this.selectedStudent?.id == annotation.student_id) ||
-              (!this.selectedStudent && annotation.group_id != null))
+              annotation.group_id != null)
           )
         })
       },
@@ -212,6 +185,12 @@
     },
 
     methods: {
+      getStudentName(id) {
+        if (!id) {
+          return 'Ganze Klasse'
+        }
+        return this.group.students.find(student => student.id === id)?.name
+      },
       formatDate(date) {
         return printDate(date)
       },

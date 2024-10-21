@@ -34,6 +34,7 @@ class Assessment < ApplicationRecord
     res['series'] = self.results.where.not(test_date: nil).order(:test_date)
     res['annotations'] = self.annotations.order(end: :desc)
     res['targets'] = self.targets
+    res['settings'] = self.settings
     res
   end
 

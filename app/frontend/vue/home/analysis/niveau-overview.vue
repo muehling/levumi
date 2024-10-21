@@ -86,9 +86,10 @@
 
   export default {
     name: 'NiveauOverview',
-    inject: ['info_attachments'],
+
     props: {
       nivConfig: Object,
+      infoAttachments: Array,
     },
     data: function () {
       return {
@@ -111,7 +112,7 @@
     },
     computed: {
       exampleImages() {
-        return this.info_attachments?.filter(
+        return this.infoAttachments?.filter(
           attachment =>
             attachment.content_type.startsWith('image') && attachment.filename.startsWith(A + E)
         )
@@ -153,7 +154,9 @@
         let i = 1
         return example_texts.map(text => {
           // search for a corresponding image
-          const image = example_images?.find(img => img.filename.startsWith(A + E + level + '_' + i))
+          const image = example_images?.find(img =>
+            img.filename.startsWith(A + E + level + '_' + i)
+          )
           // first break the text into lines
           const lines = text.split('\n')
           // search the text for incidences of fractions (...⌹...) and split it there, keeping the separator
