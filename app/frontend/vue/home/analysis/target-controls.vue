@@ -1,6 +1,5 @@
 <template>
   <div id="target-controls">
-    {{ selectedStudentId }}
     <b-form v-if="!readOnly" class="border p-3" accept-charset="UTF-8">
       <div class="d-inline-flex">
         <p class="mb-3 me-3">Globale Einstellungen</p>
@@ -50,8 +49,10 @@
         <p class="mb-3 me-3">
           {{
             selectedStudentId === -1
-              ? 'Klassenspezifische Einstellungen '
-              : 'Schülerspezifische Einstellungen'
+              ? 'Klassen-Einstellungen '
+              : `Spezifische Einstellungen für ${
+                  group.students.find(student => student.id === selectedStudentId)?.name
+                }`
           }}
         </p>
       </div>

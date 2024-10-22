@@ -157,6 +157,9 @@
         return this.currentAssessment.annotations
       },
       currentAnnotations() {
+        if (!this.selectedStudent) {
+          return this.currentAssessment.annotations
+        }
         return this.currentAssessment.annotations.filter(annotation => {
           return (
             annotation.view === this.selectedViewKey &&
