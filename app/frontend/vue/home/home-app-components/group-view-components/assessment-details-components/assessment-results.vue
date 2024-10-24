@@ -97,11 +97,11 @@
   </div>
 </template>
 <script setup>
-  import AssessmentViewStudents from './assessment-view-students.vue'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
-  import { printDate } from '../../utils/date'
-  import { ajax } from '../../utils/ajax'
-  import apiRoutes from '../routes/api-routes'
+  import AssessmentViewStudents from './assessment-results-components/assessment-view-students.vue'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
+  import { printDate } from 'src/utils/date'
+  import { ajax } from 'src/utils/ajax'
+  import apiRoutes from 'src/vue/routes/api-routes'
   import { computed } from 'vue'
 
   const { test, group, weeks, results, assessment } = defineProps({

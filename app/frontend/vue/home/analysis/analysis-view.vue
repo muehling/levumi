@@ -1,5 +1,6 @@
 <template>
   <div>
+    {{ 'analysis-view isInitialized: ' + isInitialized }}
     <div class="d-flex justify-content-between">
       <b-button-group class="ms-3" size="sm">
         <b-button
@@ -76,8 +77,8 @@
         <div v-else-if="!isInitialized" style="height: 500px">
           <b-alert class="m-4 p-4" variant="secondary" show>
             <span class="preparing">
-              Daten werden vorbereitet
               <loading-dots
+                message="Daten werden vorbereitet"
                 :is-loading="true"
                 class-name="m-0 d-inline"
                 wrapper-class-name="d-inline" />
@@ -262,13 +263,6 @@
       LoadingDots,
     },
 
-    /* provide: function () {
-      return {
-        loadStudentTargets: this.loadStudentTargets,
-        viewConfig: computed(() => this.viewConfig),
-        weeks: computed(() => this.weeks),
-      }
-    },*/
     props: {
       group: Object,
     },
@@ -286,6 +280,7 @@
         deviationVal: null,
         forceUpdate: undefined,
         graphData: [],
+        isInitting: true,
         isInitialized: false,
         maxY: 0,
         selectedStudentId: -1,
@@ -570,15 +565,20 @@
         this.updateView(false)
       },
     },
-    async created() {
-      await this.loadStudentTargets()
-      await this.setStudentAndUpdate(
+    async mounted() {
+      console.log('created 1')
+
+      this.loadStudentTargets()
+      console.log('created 2')
+
+      this.setStudentAndUpdate(
         this.has_group_views
           ? -1
           : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
           ? this.studentsWithResults[0]?.id || -1
           : -1
       )
+      this.$emit('initialized')
     },
     methods: {
       formatDate(date) {
@@ -978,6 +978,8 @@
         const res = await ajax(apiRoutes.targets.getStudentTargets(this.group.id, this.test.id))
         if (res.status === 200) {
           const result = res.data
+          console.log('res.data', result)
+
           this.studentTargets = result.targets
         } else {
           this.studentTargets = []
@@ -987,7 +989,6 @@
         this.restoreTarget()
       },
 
-      //TODO vielleicht noch ne halbe Stunde investieren, ob man das halbwegs hübsch auf und zusliden lassen kann. Sonst einfach hin und wieder weg
       toggleCollapse(collapseId) {
         switch (collapseId) {
           case 'annotation_collapse':

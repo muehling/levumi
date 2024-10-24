@@ -50,9 +50,9 @@
   </div>
 </template>
 <script>
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import GroupAssessments from './group-assessments.vue'
+  import { useAssessmentsStore } from '../../../../store/assessmentsStore'
+  import { useGlobalStore } from '../../../../store/store'
+  import GroupAssessments from './assessment-view-components/group-assessments.vue'
   export default {
     name: 'AssessmentView',
     components: { GroupAssessments },

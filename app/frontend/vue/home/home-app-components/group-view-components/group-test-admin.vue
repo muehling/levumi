@@ -312,12 +312,12 @@
   </b-card>
 </template>
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import { useTestsStore } from '../../store/testsStore'
-  import apiRoutes from '../routes/api-routes'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { useTestsStore } from 'src/store/testsStore'
+  import apiRoutes from 'src/vue/routes/api-routes'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'GroupTestAdmin',

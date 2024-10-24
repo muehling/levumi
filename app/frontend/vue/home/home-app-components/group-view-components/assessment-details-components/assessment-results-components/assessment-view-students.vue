@@ -173,10 +173,10 @@
 </template>
 
 <script>
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import { ajax } from '../../utils/ajax'
-  import apiRoutes from '../routes/api-routes'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { ajax } from 'src/utils/ajax'
+  import apiRoutes from 'src/vue/routes/api-routes'
   export default {
     name: 'AssessmentViewStudents',
     props: {

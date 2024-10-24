@@ -65,7 +65,7 @@
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
   import { useTestsStore } from 'src/store/testsStore'
   import { useGlobalStore } from 'src/store/store'
-  import GroupView from './group-view.vue'
+  import GroupView from './home-app-components/group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'

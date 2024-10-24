@@ -1,5 +1,5 @@
 <template>
-  <loading-dots v-if="isLoading" :is-loading="isLoading" />
+  <loading-dots v-if="isLoading" :is-loading="isLoading" message="assessment-details" />
   <b-card v-else no-body class="mt-3 pb-0 mb-1">
     <div class="card-header">
       <b-nav pills>
@@ -39,7 +39,7 @@
         </b-nav-item>
       </b-nav>
     </div>
-    <b-tabs pills card nav-item-class="py-1">
+    <b-tabs v-if="!!test" pills card nav-item-class="py-1">
       <b-tab :active="!hasResults" class="m-3">
         <template #title>
           <div>
@@ -62,12 +62,13 @@
       </b-tab>
 
       <!-- Auswertungstab mit Graph -->
+      {{ 'assessment-details showLoader: ' + showLoader }}
       <b-tab
         title="Auswertung"
         :active="hasResults"
         class="m-3"
         :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0">
-        <analysis-view :key="test.id" :group="group" />
+        <analysis-view :key="test?.id" :group="group" @initialized="showLoader = false" />
       </b-tab>
 
       <!-- Vorschläge für Fördermaterial -->
@@ -84,14 +85,14 @@
 </template>
 
 <script>
-  import { isAdmin } from '../../utils/user'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import AnalysisView from './analysis/analysis-view.vue'
-  import AssessmentResults from './assessment-results.vue'
+  import { isAdmin } from 'src/utils/user'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import AnalysisView from 'src/vue/home/analysis/analysis-view.vue'
+  import AssessmentResults from './assessment-details-components/assessment-results.vue'
   import compact from 'lodash/compact'
-  import LoadingDots from '../shared/loading-dots.vue'
-  import SupportView from './supports/support-view.vue'
+  import LoadingDots from 'src/vue/shared/loading-dots.vue'
+  import SupportView from 'src/vue/home/supports/support-view.vue'
   import uniq from 'lodash/uniq'
 
   export default {
@@ -153,7 +154,7 @@
         return !!this.assessmentsStore.currentAssessment?.series?.length || false
       },
       isLoading() {
-        return this.assessmentsStore.isLoading || !this.assessment
+        return (this.assessmentsStore.isLoading || !this.assessment) && this.showLoader
       },
       assessment() {
         return this.assessmentsStore.currentAssessment
@@ -197,6 +198,9 @@
 
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
+    },
+    data() {
+      return { showLoader: true }
     },
     methods: {
       async handleClickVersion(version) {
