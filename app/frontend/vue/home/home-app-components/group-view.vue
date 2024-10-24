@@ -36,7 +36,6 @@
       </b-button>
     </div>
     <div v-if="!!group">
-      <assessment-settings v-if="isAssessmentSettingsOpen" :group="group" />
       <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
       <assessment-list v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
       <assessment-details v-if="isTestDetailsOpen" :group="group" />
@@ -52,12 +51,11 @@
   import AssessmentDetails from './group-view-components/assessment-details.vue'
   import AssessmentList from './group-view-components/assessment-list.vue'
   import GroupTestAdmin from './group-view-components/group-test-admin.vue'
-  import AssessmentSettings from './group-view-components/assessment-settings/assessment-settings.vue'
   import { useRoute } from 'vue-router'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentDetails, AssessmentList, GroupTestAdmin, AssessmentSettings },
+    components: { AssessmentDetails, AssessmentList, GroupTestAdmin },
     props: { selectedGroupId: Number },
 
     setup() {

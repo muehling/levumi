@@ -52,7 +52,7 @@
 <script>
   import { useAssessmentsStore } from '../../../../store/assessmentsStore'
   import { useGlobalStore } from '../../../../store/store'
-  import GroupAssessments from './assessment-view-components/group-assessments.vue'
+  import GroupAssessments from './assessment-list-components/group-assessments.vue'
   export default {
     name: 'AssessmentView',
     components: { GroupAssessments },

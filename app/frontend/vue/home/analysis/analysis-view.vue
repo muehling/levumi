@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{ 'analysis-view isInitialized: ' + isInitialized }}
     <div class="d-flex justify-content-between">
       <b-button-group class="ms-3" size="sm">
         <b-button
@@ -74,17 +73,6 @@
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
-        <div v-else-if="!isInitialized" style="height: 500px">
-          <b-alert class="m-4 p-4" variant="secondary" show>
-            <span class="preparing">
-              <loading-dots
-                message="Daten werden vorbereitet"
-                :is-loading="true"
-                class-name="m-0 d-inline"
-                wrapper-class-name="d-inline" />
-            </span>
-          </b-alert>
-        </div>
         <div v-else style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
@@ -151,8 +139,7 @@
               :student-targets="studentTargets"
               :selected-student-id="selectedStudentId"
               :test="test"
-              :group="group"
-              @set-target="setTarget" />
+              :group="group" />
           </b-col>
         </b-row>
       </b-col>
@@ -208,9 +195,9 @@
         </b-tab>
       </b-tabs>
     </b-row>
-    <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
+    <b-row v-if="selectedViewType === 'niveaus'">
       <niveau-overview
-        :niv-config="nivConfig"
+        :niv-config="viewConfig.niv_config"
         :info-attachments="info_attachments"></niveau-overview>
     </b-row>
   </div>
@@ -389,9 +376,6 @@
       viewConfig() {
         return this.currentViewConfig()
       },
-      nivConfig() {
-        return this.viewConfig.niv_config
-      },
       columns() {
         return this.viewConfig.columns || []
       },
@@ -418,9 +402,7 @@
       simpleTableVisible() {
         return this.selectedViewType === 'graph' && !this.viewConfig.options?.chart?.stacked
       },
-      niveaus_visible() {
-        return this.selectedViewType === 'niveaus'
-      },
+
       annotationAndTargetRowVisible() {
         // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
         return this.graph_visible && !this.viewConfig.options?.chart?.stacked
@@ -566,10 +548,7 @@
       },
     },
     async mounted() {
-      console.log('created 1')
-
-      this.loadStudentTargets()
-      console.log('created 2')
+      await this.loadStudentTargets()
 
       this.setStudentAndUpdate(
         this.has_group_views
@@ -578,7 +557,6 @@
           ? this.studentsWithResults[0]?.id || -1
           : -1
       )
-      this.$emit('initialized')
     },
     methods: {
       formatDate(date) {
@@ -747,7 +725,7 @@
       async setStudentAndUpdate(studentId) {
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
-        let animateChange = false
+
         // some combinations of views/selectedStudent/presence of results yield no views
         if (this.viewsWithGroupAndStudent.length) {
           await this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
@@ -755,12 +733,13 @@
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
-          animateChange = true
         }
-        await this.updateView(animateChange)
+        this.updateView()
+
+        this.$emit('analysis-view-initialized')
       },
 
-      async updateView(animate) {
+      updateView() {
         // return early if the view type has no graph
         if (!this.graph_visible) {
           return
@@ -925,6 +904,7 @@
       },
 
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
+      // todo if there are a lot of students (> ~50) in a group, the chart will lag considerably when updating. display loader again?
       redrawTarget() {
         if (this.targetIsEnabled) {
           this.updateView(false)
@@ -935,7 +915,7 @@
         return this.results.some(result => result.student_id === student.id)
       },
 
-      setTarget(targetVal, dateUntilVal, deviationVal, redraw) {
+      setTarget(targetVal, deviationVal, redraw) {
         this.targetVal = targetVal
         this.dateUntilVal = this.assessmentsStore.currentAssessment.settings?.date_until
         this.deviationVal = deviationVal
@@ -949,12 +929,7 @@
        * The assumption behind this is that when teachers haven't set a different target for an individual
        * they'd prefer to see the group target being applied instead of seeing no target at all. */
       restoreTarget(redraw = true) {
-        this.setTarget(
-          this.targetValStoredInclGroup,
-          this.dateUntilStoredInclGroup,
-          this.deviationStoredInclGroup,
-          redraw
-        )
+        this.setTarget(this.targetValStoredInclGroup, this.deviationStoredInclGroup, redraw)
       },
 
       expandXAxis(graphData) {
@@ -978,7 +953,6 @@
         const res = await ajax(apiRoutes.targets.getStudentTargets(this.group.id, this.test.id))
         if (res.status === 200) {
           const result = res.data
-          console.log('res.data', result)
 
           this.studentTargets = result.targets
         } else {

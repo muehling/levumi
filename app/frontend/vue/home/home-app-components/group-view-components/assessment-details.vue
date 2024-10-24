@@ -1,5 +1,7 @@
 <template>
-  <loading-dots v-if="isLoading" :is-loading="isLoading" message="assessment-details" />
+  <loading-dots
+    v-if="isAssessmentLoading && isChartInitializing"
+    :is-loading="isAssessmentLoading && isChartInitializing" />
   <b-card v-else no-body class="mt-3 pb-0 mb-1">
     <div class="card-header">
       <b-nav pills>
@@ -39,7 +41,7 @@
         </b-nav-item>
       </b-nav>
     </div>
-    <b-tabs v-if="!!test" pills card nav-item-class="py-1">
+    <b-tabs v-if="!!test && !isAssessmentLoading" pills card nav-item-class="py-1">
       <b-tab :active="!hasResults" class="m-3">
         <template #title>
           <div>
@@ -60,15 +62,19 @@
           :results="results"
           :assessment="assessment" />
       </b-tab>
-
-      <!-- Auswertungstab mit Graph -->
-      {{ 'assessment-details showLoader: ' + showLoader }}
+      <loading-dots
+        v-if="isChartInitializing"
+        :is-loading="true"
+        message="Daten werden vorbereitet" />
       <b-tab
         title="Auswertung"
         :active="hasResults"
         class="m-3"
         :disabled="weeks.length == 0 || assessmentData.configuration.views.length == 0">
-        <analysis-view :key="test?.id" :group="group" @initialized="showLoader = false" />
+        <analysis-view
+          :key="test?.id"
+          :group="group"
+          @analysis-view-initialized="handleChartIinitialized" />
       </b-tab>
 
       <!-- Vorschläge für Fördermaterial -->
@@ -112,6 +118,9 @@
       const assessmentsStore = useAssessmentsStore()
       return { globalStore, assessmentsStore }
     },
+    data() {
+      return { isChartInitializing: true }
+    },
 
     computed: {
       assessmentData() {
@@ -153,8 +162,8 @@
       hasResults() {
         return !!this.assessmentsStore.currentAssessment?.series?.length || false
       },
-      isLoading() {
-        return (this.assessmentsStore.isLoading || !this.assessment) && this.showLoader
+      isAssessmentLoading() {
+        return this.assessmentsStore.isLoading || !this.assessment
       },
       assessment() {
         return this.assessmentsStore.currentAssessment
@@ -170,8 +179,6 @@
         return compact(uniq(this.assessmentsStore.currentAssessment?.series?.map(w => w.test_week)))
       },
       isActive() {
-        // const assessments = this.assessmentsStore.assessments[this.group.id]
-        // return assessments?.find(a => a.test_id === this.test.id)?.active
         return this.assessmentsStore.currentAssessment.active
       },
       isAllowed() {
@@ -199,12 +206,12 @@
         return res.sort((a, b) => b?.info.id - a?.info.id)
       },
     },
-    data() {
-      return { showLoader: true }
-    },
     methods: {
       async handleClickVersion(version) {
         await this.assessmentsStore.fetchCurrentAssessment(this.group.id, version.info.id)
+      },
+      handleChartIinitialized() {
+        this.isChartInitializing = false
       },
     },
   }

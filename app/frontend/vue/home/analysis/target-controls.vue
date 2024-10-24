@@ -200,14 +200,12 @@
       selectedStudentId: {
         immediate: true,
         handler() {
-          //this.showClassTargetForStudent = false
           let target =
             this.selectedStudentId !== -1
               ? this.studentTargets.find(t => t.student_id === this.selectedStudentId)
               : this.studentTargets.find(t => t.student_id === null)
           if (!target) {
             target = this.studentTargets.find(t => t.student_id === null)
-            //  this.showClassTargetForStudent = true
           }
           this.target = target?.value
           this.deviation = target?.deviation
@@ -228,11 +226,6 @@
         }
       },
 
-      setTarget(targetVal, dateUntilVal, deviationVal) {
-        if (this.target) {
-          this.$emit('set-target', targetVal, dateUntilVal, deviationVal, true)
-        }
-      },
       /**
        * Returns a string of a number rounded to two digits, if a number can be constructed from the input.
        * If not, it returns an empty string.
