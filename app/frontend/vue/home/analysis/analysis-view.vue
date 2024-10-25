@@ -678,6 +678,7 @@
             decreaseBy(referenceData, EPSILON)
           }
         }
+        this.forceUpdate = Symbol()
         return series
       },
 

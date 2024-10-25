@@ -260,8 +260,6 @@
       'route.params': {
         immediate: true,
         async handler(data) {
-          console.log('watch', data)
-
           if (!data) {
             return
           }
