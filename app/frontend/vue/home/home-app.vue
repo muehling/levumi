@@ -10,38 +10,48 @@
           </b-card>
           <div v-else>
             <div class="mb-3">
-              <b-nav pills>
-                <b-nav-item
+              <b-tabs pills card no-fade>
+                <b-tab
                   v-for="(group, index) in ownActiveGroups"
-                  :key="group.id"
+                  :key="'home' + group.id"
                   :active="selectedGroupId === group.id"
                   lazy
                   @click="getTestsForGroup(group.id)">
-                  <i v-if="group.demo && group.owner">{{ group.label }}</i>
-                  <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
-                    {{ group.label }}
-                    <span class="small">
-                      &nbsp;
-                      <i class="fas fa-share-nodes"></i>
+                  <template #title>
+                    <i v-if="group.demo && group.owner">{{ group.label }}</i>
+                    <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
+                      {{ group.label }}
+                      <span class="small">
+                        &nbsp;
+                        <i class="fas fa-share-nodes"></i>
+                      </span>
                     </span>
-                  </span>
-                  <span v-else>{{ group.label }}</span>
-                </b-nav-item>
-              </b-nav>
+                    <span v-else>{{ group.label }}</span>
+                  </template>
+
+                  <p v-if="!currentGroup?.owner" class="mt-3">
+                    Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
+                  </p>
+                  <div v-if="!currentGroup?.key && currentGroup?.id">
+                    <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
+                      <p>
+                        Sie müssen diese Klasse zunächst im
+                        <router-link
+                          :to="{
+                            name: 'ClassbookSharedGroup',
+                            params: { groupId: currentGroup?.id },
+                          }">
+                          Klassenbuch
+                        </router-link>
+                        freischalten. Den ggf. erforderlichen Sicherheitscode erhalten Sie bzw.
+                        können Sie bei der Person erfragen, die die Klasse mit Ihnen geteilt hat.
+                      </p>
+                    </b-card>
+                  </div>
+                  <group-view v-else-if="selectedGroupId" :selected-group-id="selectedGroupId" />
+                </b-tab>
+              </b-tabs>
             </div>
-            <p v-if="!currentGroup?.owner">
-              Diese Klasse wurde geteilt von {{ currentGroup?.belongs_to }}.
-            </p>
-            <div v-if="!currentGroup?.key">
-              <b-card bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
-                <p>
-                  Sie müssen diese Klasse zunächst im Klassenbuch freischalten. Den ggf.
-                  erforderlichen Sicherheitscode erhalten Sie bzw. können Sie bei der Person
-                  erfragen, die die Klasse mit Ihnen geteilt hat.
-                </p>
-              </b-card>
-            </div>
-            <group-view v-else :key="selectedGroupId" :selected-group-id="selectedGroupId" />
           </div>
         </b-col>
       </b-row>
@@ -51,14 +61,14 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import GroupView from './group-view.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useTestsStore } from 'src/store/testsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import GroupView from './home-app-components/group-view.vue'
   import IntroPopover from '../shared/intro-popover.vue'
   import LoadingDots from 'src/vue/shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  import Vue from 'vue'
 
   export default {
     name: 'HomeApp',
@@ -66,7 +76,8 @@
     setup() {
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
-      return { globalStore, assessmentsStore }
+      const testsStore = useTestsStore()
+      return { globalStore, assessmentsStore, testsStore }
     },
     data() {
       return {
@@ -92,6 +103,7 @@
         return this.ownActiveGroups.find(group => group.id === this.selectedGroupId)
       },
     },
+
     watch: {
       '$route.params': {
         immediate: true,
@@ -101,8 +113,16 @@
           }
           if (data.groupId) {
             this.selectedGroupId = parseInt(data.groupId, 10)
+          } else {
+            this.selectedGroupId = this.ownActiveGroups[0]?.id
           }
-          await this.$nextTick()
+        },
+      },
+      selectedGroupId: {
+        immediate: true,
+        async handler(newId) {
+          await this.assessmentsStore.fetch(newId)
+          await this.testsStore.fetchUsedTestsForGroup(newId)
         },
       },
     },
@@ -136,7 +156,7 @@
     methods: {
       async finishIntro() {
         await ajax({ url: routes.home.finishIntro, method: 'PATCH' })
-        Vue.set(this.globalStore.login, 'intro_state', 4)
+        this.globalStore.login.intro_state = 4
       },
       getTestsForGroup(groupId) {
         this.selectedGroupId = groupId

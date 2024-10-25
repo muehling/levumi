@@ -2,51 +2,55 @@
   <div>
     <!-- eigene Klasse => Infos anzeigen und teilen erlauben-->
     <div v-if="group.owner">
-      <b-form inline class="text-small mt-4" @submit="submitNewShare">
+      <b-form class="text-small mt-4 row" @submit="submitNewShare">
         <label for="share-email">Teilen mit&nbsp;&nbsp;</label>
-        <div class="email-input-wrapper">
+        <div class="email-input-wrapper col-md-4 d-flex">
           <b-input
             id="share-email"
             v-model="email"
-            class="mr-2 position-relative"
+            class="position-relative"
             name="email"
-            placeholder="E-Mail Adresse"
+            placeholder="E-Mail-Adresse"
             size="sm"
             autocomplete="false"
             :state="errorMessage !== '' ? false : null"
             @focus="errorMessage = ''" />
-          <b-form-invalid-feedback v-if="errorMessage" class="position-absolute">
-            {{ errorMessage }}
-          </b-form-invalid-feedback>
+
           <context-help
             help-text="Geben Sie hier die Email-Adresse der Person ein, mit der Sie
             die Klasse teilen möchten. Die Person wird dann per Mail informiert. Bei nicht-anonymem
             Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler:innen-Namen.
             Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder 
             beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet."
-            class-name="mt-2" />
+            class-name="ms-2" />
         </div>
-        <b-form-radio-group v-model="rightsSelected" class="ml-4" name="group_share[read_only]">
+        <b-form-radio-group v-model="rightsSelected" class="col-md-6" name="group_share[read_only]">
           <b-form-radio
             v-for="option in permissionOptions"
             :key="option.text"
             :value="option.value">
             <span>{{ option.text }}</span>
-            <context-help :help-text="option.helpText" class-name="ml-1 mr-3" />
+            <context-help :help-text="option.helpText" class-name="ms-1 me-3" />
           </b-form-radio>
         </b-form-radio-group>
-        <b-button type="submit" variant="outline-success" size="sm" :disabled="email.trim() === ''">
+        <b-button
+          type="submit"
+          class="col-md-1"
+          variant="outline-success"
+          size="sm"
+          :disabled="email.trim() === ''">
           <i class="fas fa-check"></i>
           Teilen
         </b-button>
       </b-form>
 
-      <span v-if="errorMessage !== ''">&nbsp;</span>
+      <span v-if="errorMessage !== ''" class="text-danger text-small">{{ errorMessage }}</span>
     </div>
   </div>
 </template>
 
 <script>
+  import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
   import { decryptKey } from 'src/utils/encryption'
   import { useGlobalStore } from 'src/store/store'
@@ -70,9 +74,13 @@
         email: '',
         isShown: false,
         errorMessage: '',
+        transferEmail: '',
       }
     },
     computed: {
+      permissions() {
+        return access(this.group).classbook
+      },
       shareKey() {
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
@@ -129,8 +137,11 @@
         const isAnonymous = this.rightsSelected === 2 ? true : false
         const data = {
           email: this.email,
-          group_share: { read_only: isReadOnly, is_anonymous: isAnonymous },
-          share_key: this.shareKey,
+          group_share: {
+            read_only: isReadOnly,
+            is_anonymous: isAnonymous,
+            share_key: this.shareKey,
+          },
         }
         const result = this.submitData({
           url: `/groups/${this.group.id}/group_shares/`,

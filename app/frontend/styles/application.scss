@@ -1,6 +1,6 @@
-@import '../styles/variables.scss';
-@import '~bootstrap';
-@import 'bootstrap-vue/dist/bootstrap-vue.css';
+@import './variables.scss';
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-vue-next/dist/bootstrap-vue-next.css';
 @import '@fortawesome/fontawesome-free/css/all.css';
 @import './startpage.scss';
 
@@ -53,11 +53,6 @@
     -webkit-transform: scale(1);
     transform: scale(1);
   }
-}
-
-/* Verstecken von noch nicht geladenen Vue-Komponenten */
-[v-cloak] {
-  display: none;
 }
 
 /* Schriftarten */
@@ -256,7 +251,7 @@
 }
 
 /* Forms */
-
+.form-check-input,
 input:focus,
 select:focus,
 textarea:focus {
@@ -264,25 +259,21 @@ textarea:focus {
   box-shadow: 0 0 0 0.075rem $secondary-color !important;
 }
 
-#toast-wrapper {
-  position: absolute;
-  top: 0;
-  display: flex;
-  width: 95vw;
-  justify-content: center;
-  z-index: 2000;
-  height: 0;
+.form-check-input {
+  margin-top: 0.4em;
+  &:checked {
+    background-color: $primary-color-dark;
+  }
 }
 
-#toast-wrapper .toast {
-  background-color: $white;
-  position: absolute;
-  height: 0;
-  overflow: hidden;
-  &.show {
-    height: unset;
-    overflow: auto;
-  }
+ul.pagination > li.page-item.active > button {
+  background-color: $primary-color-dark;
+  border-color: $primary-color-dark;
+}
+
+/* custom elements */
+.new-badge {
+  transform: translate(0, -2px);
 }
 
 .modal-backdrop {
@@ -292,4 +283,70 @@ textarea:focus {
 .custom-control-input:checked ~ .custom-control-label::before {
   border-color: $primary-color;
   background-color: $primary-color;
+}
+
+a {
+  color: $primary-color-dark;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+a:hover {
+  color: $primary-color-dark;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.improvement-arrow {
+  color: $success-color;
+  transform: rotate(45deg);
+}
+.neutral-arrow {
+  color: $secondary-color;
+}
+.degradation-arrow {
+  color: $danger-color;
+  transform: rotate(-45deg);
+}
+
+// generated tests
+#main-container {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 2em;
+}
+
+#main-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+#button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.answer-button {
+  margin: 0.5rem;
+}
+
+#timer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+#image-container {
+  display: flex;
+  justify-content: center;
+  margin: 1em;
+}
+
+#content-container {
+  display: flex;
+  justify-content: center;
 }

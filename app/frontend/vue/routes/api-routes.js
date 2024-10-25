@@ -62,6 +62,11 @@ export default {
       url: `/groups/${groupId}/assessments/${assessmentId}`,
       method: 'DELETE',
     }),
+    update: (groupId, testId, data) => ({
+      url: `/groups/${groupId}/assessments/${testId}`,
+      method: 'PUT',
+      data,
+    }),
     updateAll: groupId => ({ url: `/groups/${groupId}/assessments`, method: 'PUT' }),
     currentAssessment: (groupId, testId) => ({ url: `/groups/${groupId}/assessments/${testId}` }),
   },
@@ -129,6 +134,9 @@ export default {
     group: id => ({ url: `/groups/${id}` }),
     groups: { url: '/groups' },
     getTestData: id => ({ url: `/groups/${id}/test_data` }),
+  },
+  groupShares: {
+    transferGroup: id => ({ url: `/groups_shares/${id}/transfer_group` }),
   },
   supportMessages: {
     create: data => ({ url: '/support_messages', method: 'POST', data }),

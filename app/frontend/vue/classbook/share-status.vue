@@ -1,18 +1,18 @@
 <template>
   <div>
-    <span class="mr-4">Diese Klasse wurde geteilt von: {{ group.belongs_to }}</span>
+    <span class="me-4">Diese Klasse wurde geteilt von: {{ group.belongs_to }}</span>
     <div v-if="!group.key">
       <b-form class="mt-3" inline :validated="checkKey()" @submit.prevent.stop="acceptShare">
         <b-input
           v-if="!group.is_anonymous"
           v-model="keyInput"
-          class="mr-2"
+          class="me-2 mb-3"
           placeholder="Code"
           size="sm" />
         <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
           Jetzt freischalten
         </b-button>
-        <b-button variant="outline-primary" size="sm" class="ml-3" @click="requestUnshare">
+        <b-button variant="outline-primary" size="sm" class="ms-3" @click="requestUnshare">
           Klassen entfernen
         </b-button>
       </b-form>
@@ -23,10 +23,10 @@
         Sie können die Klasse
         {{ group.read_only ? ' nur ansehen.' : ' ansehen und verwenden.' }}
       </p>
-      <b-btn class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
+      <b-button class="btn btn-sm" variant="outline-danger" @click="requestUnshare">
         <i class="fas fa-cancel"></i>
         Teilen beenden
-      </b-btn>
+      </b-button>
     </div>
     <confirm-dialog ref="confirmDialog" />
   </div>

@@ -1,5 +1,5 @@
 <template>
-  <b-container v-cloak fluid>
+  <b-container fluid>
     <div v-if="isLoading">
       <div class="spinner">
         <div class="bounce1"></div>
@@ -15,15 +15,10 @@
             <b-button
               v-for="area in filteredAreas"
               :key="area.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_area == area.id"
-              @click="
-                selected_area = area.id
-                selected_competence = -1
-                selected_family = -1
-                selected_test = -1
-              ">
+              @click="setSelectedArea(area.id)">
               {{ area.name }}
             </b-button>
           </b-button-group>
@@ -36,14 +31,10 @@
             <b-button
               v-for="competence in filteredCompetences"
               :key="competence.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_competence == competence.id"
-              @click="
-                selected_competence = competence.id
-                selected_family = -1
-                selected_test = -1
-              ">
+              @click="setSelectedCompetence(competence.id)">
               {{ competence.name }}
             </b-button>
           </b-button-group>
@@ -56,13 +47,10 @@
             <b-button
               v-for="family in filteredTestFamilies"
               :key="family.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_family == family.id"
-              @click="
-                selected_family = family.id
-                selected_test = -1
-              ">
+              @click="setSelectedFamily(family.id)">
               {{ family.name }}
             </b-button>
           </b-button-group>
@@ -75,7 +63,7 @@
             <b-button
               v-for="test in filteredTests"
               :key="test.id"
-              class="mr-1"
+              class="me-1"
               variant="outline-primary"
               :pressed="selected_test == test.id"
               @click="selected_test = test.id">
@@ -209,6 +197,23 @@
     },
     async created() {
       await this.materialsStore.fetch()
+    },
+    methods: {
+      setSelectedArea(id) {
+        this.selected_area = id
+        this.selected_competence = -1
+        this.selected_family = -1
+        this.selected_test = -1
+      },
+      setSelectedCompetence(id) {
+        this.selected_competence = id
+        this.selected_family = -1
+        this.selected_test = -1
+      },
+      setSelectedFamily(id) {
+        this.selected_family = id
+        this.selected_test = -1
+      },
     },
   }
 </script>

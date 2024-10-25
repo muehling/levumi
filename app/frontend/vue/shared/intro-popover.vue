@@ -4,27 +4,25 @@
     ref="introPopover"
     :key="currentIndex"
     :show="true"
-    :target="targets[currentIndex]"
-  >
+    :target="targets[currentIndex]">
     <template #title>
       <div>
         Einführung
-        <b-btn
+        <b-button
           v-b-popover.hover="'Diese Einführung beenden und nicht erneut anzeigen'"
           size="xs"
-          class="cancel-tutorial float-right text-secondary"
+          class="cancel-tutorial float-end text-secondary"
           variant="outline-light"
-          @click="cancelTutorial"
-        >
+          @click="cancelTutorial">
           <i class="fas fa-xmark"></i>
-        </b-btn>
+        </b-button>
       </div>
     </template>
     <p>{{ messages[currentIndex] }}</p>
     <div class="text-center mb-2">
-      <b-btn size="sm" class="ml-2" @click="next">
+      <b-button size="sm" class="ms-2" @click="next">
         {{ currentIndex === targets.length - 1 ? "Los geht's" : 'Weiter' }}
-      </b-btn>
+      </b-button>
     </div>
   </b-popover>
 </template>

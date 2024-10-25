@@ -1,34 +1,32 @@
 <template>
   <tr v-if="!editMode" id="intro_cb_5" class="student-row student-row-display">
     <td class="pl-0">
-      <div v-if="!empty" class="pl-1">
+      <div v-if="!empty" class="ps-1">
         {{ student.name }}
       </div>
       <div v-else class="d-inline">
-        <b-btn
+        <b-button
+          v-if="permissions.createStudents"
           variant="outline-secondary"
           class="text-nowrap mt-2"
           size="sm"
-          @click="editMode = true">
+          @click="setEditMode">
           <i class="fas fa-user-plus"></i>
           Anlegen
-        </b-btn>
+        </b-button>
       </div>
     </td>
-
     <td id="intro_cb_6">
       <div>
         {{ student.login }}
       </div>
     </td>
-
     <td>
       <div>
         <span v-if="student.gender != undefined">{{ options_gender[student.gender].text }}</span>
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
-
     <td>
       <div>
         <span v-if="student.birthmonth != undefined">{{ months[month] }} {{ year }}</span>
@@ -41,7 +39,6 @@
         <span v-else-if="!empty" class="text-muted">nicht erfasst</span>
       </div>
     </td>
-
     <td>
       <div>
         <span>
@@ -51,58 +48,61 @@
       </div>
     </td>
     <td>
-      <span v-if="!empty" :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
+      <span v-if="!empty" :class="`${hasFontSettings ? 'fw-bold' : ''}`">
         {{ fontSettingsText }}
       </span>
     </td>
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
-          <b-btn
-            v-if="!readOnly"
+          <b-button
+            v-if="permissions.updateStudents"
             v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="'Schrifteinstellungen'"
-            class="mr-1"
+            class="me-1"
             variant="outline-secondary"
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
             <i class="fas fa-text-height"></i>
-          </b-btn>
-          <b-btn
-            v-if="!readOnly"
-            v-b-popover.hover.topright="'Bearbeiten'"
+          </b-button>
+          <b-button
+            v-if="permissions.updateStudents"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
-            @click="editMode = true">
+            @click="setEditMode">
             <i class="fas fa-user-edit"></i>
-          </b-btn>
-          <b-btn
-            v-if="!readOnly"
-            v-b-popover.hover.topright="'QR-Code'"
+          </b-button>
+          <b-button
+            v-if="permissions.updateStudents"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!!student.id"
-            v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
-          </b-btn>
+          </b-button>
         </b-button-group>
       </span>
     </td>
   </tr>
+
   <tr v-else id="intro_cb_5" class="student-row student-row-edit">
     <td class="pl-0">
-      <div class="pl-1">
-        <b-form-input v-model="name" name="name" type="text" class="form-control" size="sm" />
+      <div class="ps-1">
+        <b-form-input
+          v-model="name"
+          name="name"
+          type="text"
+          class="form-control"
+          size="sm"
+          maxlength="40" />
         <small class="form-text text-muted">Name des Kindes, wird verschlüsselt gespeichert!</small>
       </div>
     </td>
@@ -131,15 +131,15 @@
           </option>
         </b-form-select>
         <b-form-select v-model="year" class="mt-2" size="sm" @change="changeYear">
-          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+          <option v-for="y in years" :key="`${y}/${student.id}`" :value="y">{{ y }}</option>
         </b-form-select>
-        <b-btn
+        <b-button
           v-if="month && year"
           class="btn btn-block btn-sm mt-2"
           variant="outline-danger"
           @click="clearDateInputs">
           Datum löschen
-        </b-btn>
+        </b-button>
       </div>
     </td>
 
@@ -169,14 +169,14 @@
               size="sm"
               :disabled="newTag === ''"
               variant="outline-success"
-              class="pb-0 pt-1 ml-2 new-tag-submit"
+              class="pb-0 pt-1 ms-2 new-tag-submit"
               @click="addTag">
               <i class="fas fa-check"></i>
             </b-button>
 
             <context-help
               help-text="Bitte wählen Sie alle zutreffenden Merkmale oder geben Sie ein neues ein. Bitte beachten: der eingegebene Text wird unverschlüsselt gespeichert!"
-              class-name="mt-3 ml-2" />
+              class-name="mt-3 ms-2" />
           </b-form>
         </div>
       </div>
@@ -190,43 +190,38 @@
     <td>
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
-          <b-btn
+          <b-button
             v-if="!readOnly"
-            v-b-modal="'modal_settings_' + student.id"
-            v-b-popover.hover.topright="'Schrifteinstellungen'"
-            class="mr-1"
+            class="me-1"
             variant="outline-secondary"
             size="sm"
             @click="handleClickAction(student, 'font-settings')">
             <i class="fas fa-text-height"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'Bearbeiten'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
-            @click="editMode = true">
+            @click="setEditMode">
             <i class="fas fa-user-edit"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!readOnly"
-            v-b-popover.hover.topright="'QR-Code'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'qr-code')">
             <i class="fas fa-qrcode"></i>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!!student.id"
-            v-b-popover.hover.topright="'Test-Info'"
             variant="outline-secondary"
-            class="mr-1"
+            class="me-1"
             size="sm"
             @click="handleClickAction(student, 'test-info')">
             <i class="fas fa-circle-info"></i>
-          </b-btn>
+          </b-button>
         </b-button-group>
       </span>
       <span>
@@ -234,32 +229,32 @@
           <b-button-group>
             <b-button
               id="intro_cb_7"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               variant="outline-success"
               title="Speichern"
-              :disabled="name.length == 0"
+              :disabled="name.length === 0"
               @click="handleSubmit">
               <i class="fas fa-check"></i>
             </b-button>
           </b-button-group>
           <b-button-group>
-            <b-btn
-              class="btn btn-sm mr-1"
+            <b-button
+              class="btn btn-sm me-1"
               variant="outline-secondary"
               title="Abbrechen"
               @click="handleCancel">
               <i class="fas fa-times"></i>
-            </b-btn>
+            </b-button>
           </b-button-group>
           <b-button-group>
-            <b-btn
+            <b-button
               v-if="!empty"
               class="btn btn-block btn-sm"
               variant="outline-danger"
               @click="requestDelete">
               <i class="fas fa-trash"></i>
               Löschen
-            </b-btn>
+            </b-button>
           </b-button-group>
         </b-button-toolbar>
       </span>
@@ -308,7 +303,7 @@
       return {
         editMode: this.empty && this.open,
         isLoadingAssessments: false,
-        name: this.student.name,
+        name: this.student.name.trim(),
         activeAssessments: undefined,
         newTag: '',
 
@@ -348,9 +343,9 @@
         }
       },
       fontSettingsText() {
-        if (this.student.settings.font_size && this.student.settings.font_family) {
+        if (this.student.settings?.font_size && this.student.settings?.font_family) {
           return getFontSettingsDescription(this.student.settings, this.group.settings)
-        } else if (this.group.settings.font_size && this.group.settings.font_family) {
+        } else if (this.group.settings?.font_size && this.group.settings?.font_family) {
           return getFontSettingsDescription(this.group.settings, null)
         } else {
           return getFontSettingsDescription(this.group.settings, this.group.settings)
@@ -365,44 +360,48 @@
       studentTags() {
         return isArray(this.student.tags) ? this.student.tags.join(', ') : ''
       },
-    },
-    beforeCreate() {
-      // "Konstanten" definieren - werden für die Form-Elemente und zur Anzeige verwendet.
-      this.options_gender = [
-        { text: 'weiblich', value: '0', disabled: 0 },
-        { text: 'männlich', value: '1', disabled: 0 },
-        { text: 'divers', value: '2', disabled: 0 },
-      ]
-
-      this.months = [
-        'Januar',
-        'Februar',
-        'März',
-        'April',
-        'Mai',
-        'Juni',
-        'Juli',
-        'August',
-        'September',
-        'Oktober',
-        'November',
-        'Dezember',
-      ]
-
-      this.options_sen = [
-        { text: 'Keiner', value: 0 },
-        { text: 'Lernen', value: 1 },
-        { text: 'Geistige Entwicklung', value: 2 },
-        { text: 'Emotional-soziale Entwicklung', value: 3 },
-        { text: 'Sprache', value: 4 },
-        { text: 'Körperlich-motorische Entwicklung', value: 5 },
-        { text: 'Sehen', value: 6 },
-        { text: 'Hören', value: 7 },
-        { text: 'Autismus', value: 8 },
-      ]
+      months() {
+        return [
+          'Januar',
+          'Februar',
+          'März',
+          'April',
+          'Mai',
+          'Juni',
+          'Juli',
+          'August',
+          'September',
+          'Oktober',
+          'November',
+          'Dezember',
+        ]
+      },
+      options_gender() {
+        return [
+          { text: 'weiblich', value: '0' },
+          { text: 'männlich', value: '1' },
+          { text: 'divers', value: '2' },
+        ]
+      },
+      options_sen() {
+        return [
+          { text: 'Keiner', value: 0 },
+          { text: 'Lernen', value: 1 },
+          { text: 'Geistige Entwicklung', value: 2 },
+          { text: 'Emotional-soziale Entwicklung', value: 3 },
+          { text: 'Sprache', value: 4 },
+          { text: 'Körperlich-motorische Entwicklung', value: 5 },
+          { text: 'Sehen', value: 6 },
+          { text: 'Hören', value: 7 },
+          { text: 'Autismus', value: 8 },
+        ]
+      },
     },
 
     methods: {
+      setEditMode() {
+        this.editMode = true
+      },
       addTag() {
         this.options_tags.push({ text: this.newTag, value: this.newTag })
         this.tags.push(this.newTag)
@@ -449,7 +448,6 @@
           encryptWithMasterKeyAndGroup(this.name, this.group.id)
         ) //Namen vor dem Senden verschlüsseln
         let res = `group=${this.group.id}&student[name]=${encodedName}`
-
         //Restliche Attribute anfügen, falls vorhanden
         if (this.gender != null) {
           res += '&student[gender]=' + this.gender

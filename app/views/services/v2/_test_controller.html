@@ -1,0 +1,262 @@
+<script>
+  window.useTestController = () => {
+    let currentTask = -1
+    const result = []
+    const assetBlobs = {}
+    window.assetBlobs = window.assetBlobs || {}
+    let isPaused = false
+    let wasDemoDisplayed = false
+    const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
+    const rawItems = window.config.items
+    const items = Object.values(rawItems)
+
+    let fontSize = '2rem'
+    switch (window.font_size) {
+      case 2:
+        fontSize = '3rem'
+        break
+      case 3:
+        fontSize = '3.5rem'
+        break
+    }
+    const styles = { fontSize, fontFamily: window.font_family }
+
+    //######################################
+    //## preload assets
+    //######################################
+
+    const readAsset = asset => {
+      return new Promise(async (resolve, reject) => {
+        if (assetBlobs[asset]) {
+          return
+        }
+        const response = await fetch(window.media_paths[asset])
+        const data = await response.arrayBuffer()
+        const parts = asset.split('.')
+        const fileExtension = parts[parts.length - 1]
+        let fileType
+        switch (fileExtension) {
+          case 'mp3':
+            fileType = 'audio/mp3'
+            break
+          case 'webp':
+            fileType = 'image/webp'
+            break
+          case 'png':
+            fileType = 'image/png'
+            break
+          case 'jpg':
+          case 'jpeg':
+            fileType = 'image/jpg'
+            break
+
+          default:
+            break
+        }
+
+        const blob = new Blob([data], { type: fileType })
+        const blobUrl = URL.createObjectURL(blob)
+
+        assetBlobs[asset] = blobUrl
+      })
+    }
+
+    const preloadAssets = () => {
+      const index = currentTask >= 0 ? currentTask : 0
+      const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
+
+      nextItems.forEach(item => {
+        if (!item?.assets) {
+          return
+        }
+
+        item.assets.split(',').forEach(async asset => {
+          await readAsset(asset)
+        })
+
+        window.assetBlobs = assetBlobs
+      })
+    }
+
+    //######################################
+    //## store result from previous task and set next task
+    //######################################
+    const next = res => {
+      if (isPaused) {
+        return
+      }
+
+      const endTaskTimestamp = window.stopTimer()
+      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+
+      result.push({
+        item: items[currentTask].id,
+        question: items[currentTask].question,
+        result: isCorrect,
+        answer: res,
+        time: endTaskTimestamp,
+        group: items[currentTask].group,
+      })
+      if (currentTask === items.length - 1 || timerWidget.hasElapsed()) {
+        timerWidget.stopCounter()
+        const trend = save()
+        quit(trend)
+      } else {
+        setNextItem()
+      }
+    }
+
+    //######################################
+    //## set next item
+    //######################################
+    const setNextItem = () => {
+      if (window.config.options?.show_demo_task && !wasDemoDisplayed) {
+        displayDemoItem()
+        wasDemoDisplayed = true
+      } else {
+        if (!timerWidget.isRunning()) {
+          timerWidget.startCounter()
+        }
+
+        currentTask++
+        const item = items[currentTask]
+        const nextItem = items[currentTask + 1]
+        window.startTimer()
+        preloadAssets()
+        renderItem(item, nextItem)
+      }
+    }
+
+    //######################################
+    //## get the correct renderer for the item
+    //######################################
+    const getRenderer = itemType => {
+      switch (itemType) {
+        case 'multiple_choice':
+          return { renderer: window.useMultipleChoice, options: {} }
+        case 'number_input':
+          return { renderer: window.useNumberInput, options: {} }
+        case 'audio_images_multiple_choice':
+          return {
+            renderer: window.useAudioImagesMultipleChoice,
+            options: { demo: { hideDemoInstructions: true }, contentPages: { hideText: true } },
+          }
+        default:
+          console.warn('Unknown renderer', itemType)
+      }
+    }
+
+    //######################################
+    //## end demo and start test
+    //######################################
+    const endDemo = () => {
+      setNextItem()
+    }
+
+    //######################################
+    //## display demo item
+    //######################################
+    const displayDemoItem = () => {
+      const renderer = getRenderer(window.config.item_type)
+
+      const el = window.useDemoItem({
+        config: { id: 0, styles, item: items[0], ...renderer.options },
+        renderer: renderer.renderer,
+        continueHandler: endDemo,
+      })
+      $('#content-container').html(el)
+      items.shift()
+    }
+
+    //######################################
+    //## display feedback page
+    //######################################
+    const displayFeedback = res => {
+      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+
+      const el = window.useFeedback({
+        isCorrect: isCorrect,
+        item: items[currentTask],
+        styles,
+        continueHandler: () => next(res),
+      })
+      $('#content-container').html(el)
+    }
+
+    //######################################
+    //## render the current item
+    //######################################
+    const renderItem = (item, nextItem) => {
+      const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
+      const renderer = getRenderer(window.config.item_type)
+      const el = renderer.renderer({
+        id: item.id,
+        styles,
+        options: renderer.options,
+        item,
+        nextItem,
+        resultHandler,
+      })
+      $('#content-container').html(el)
+    }
+
+    //######################################
+    //## display end page after test is complete
+    //######################################
+    const quit = trend => {
+      const el = window.useEndPage({ config: window.config.endPage, styles, trend })
+      $('#content-container').html(el)
+    }
+
+    //######################################
+    //## send test results to backend
+    //######################################
+    const save = () => {
+      const duration = timerWidget.getTotalDuration()
+      return window.useSaveResult({ result, duration, dimensions: window.config.dimensions })
+    }
+
+    //######################################
+    //## start test
+    //######################################
+    preloadAssets()
+    if (window.config.startPage.length) {
+      const renderer = getRenderer(window.config.item_type)
+      const el = window.useStartPage({
+        styles,
+        options: renderer.options,
+        config: window.config.startPage,
+        continueHandler: () => {
+          setNextItem()
+        },
+      })
+      $('#content-container').html(el).css(styles)
+    } else {
+      setNextItem()
+    }
+
+    if (window.lastResult !== undefined) {
+      window.shuffleArray(items)
+    }
+
+    //######################################
+    //## initialize timer
+    //######################################
+    const handlePause = isTimerPaused => {
+      isPaused = isTimerPaused
+    }
+    const timerWidget = window.useTimerWidget({
+      pauseHandler: handlePause,
+      displayCounter: true,
+      duration: maxTestDuration,
+    })
+
+    timerWidget.getElement().appendTo('#timer')
+    timerWidget.getPauseButton().appendTo('#timer')
+
+    //######################################
+    //## initial styling
+    //######################################
+    $('#content-container, #timer, #pause-button').css(styles)
+  }
+</script>

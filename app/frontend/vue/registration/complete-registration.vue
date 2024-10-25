@@ -8,10 +8,12 @@
               :errors="errors"
               @change-password="pw => (password = pw)"
               @change-password-confirm="pw => (passwordConfirm = pw)"
-              @change-security-answer="a => (securityAnswer = a)"
-            />
+              @change-security-answer="a => (securityAnswer = a)" />
           </b-card>
-          <b-card v-if="accountType !== 2" title="Helfen Sie uns bei der Forschung" class="mt-4">
+          <b-card
+            v-if="accountType !== 2 && accountType !== 3"
+            title="Helfen Sie uns bei der Forschung"
+            class="mt-4">
             <extra-data-form
               :account-type="accountType"
               :focus-type="focusType || undefined"
@@ -19,12 +21,15 @@
               @change-institution="inst => (institution = inst)"
               @change-town="t => (town = t)"
               @change-school-type="st => (schoolType = st)"
-              @change-focus-type="ft => (focusType = ft)"
-            ></extra-data-form>
+              @change-focus-type="ft => (focusType = ft)"></extra-data-form>
           </b-card>
-          <b-btn class="mt-4" :disabled="!isSubmitEnabled" variant="outline-success" @click="submit"
-            >Fertig!</b-btn
-          >
+          <b-button
+            class="mt-4"
+            :disabled="!isSubmitEnabled"
+            variant="outline-success"
+            @click="submit">
+            Fertig!
+          </b-button>
         </b-card>
       </div>
     </div>

@@ -1,12 +1,7 @@
 <template>
-  <b-modal id="info-dialog" ref="infoDialog" hide-footer>
-    <template #modal-title>
-      {{ title }}
-    </template>
-
+  <b-modal id="info-dialog" ref="infoDialog" :title="title" hide-footer>
     <div class="d-block text-center mb-4">
       {{ message }}
-      <slot></slot>
     </div>
     <div class="d-flex justify-content-end">
       <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>

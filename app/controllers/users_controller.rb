@@ -12,9 +12,20 @@ class UsersController < ApplicationController
                   show
                   statistics
                   get_classbook_info
+                  recovery_notification
+                  recovery_key_verification
+                  delete_used_recovery_key
                 ]
 
-  skip_before_action :set_login, only: %i[create register recover]
+  skip_before_action :set_login,
+                     only: %i[
+                       create
+                       register
+                       recover
+                       recovery_notification
+                       recovery_key_verification
+                       delete_used_recovery_key
+                     ]
 
   #GET /start
   #GET /users/:id
@@ -143,8 +154,17 @@ class UsersController < ApplicationController
 
   def statistics
     if @login.has_capability?('stats')
-      @userinfo = User.get_statistics
-      @testinfo = Test.get_statistics
+      # legacy statistics
+      #@userinfo = User.get_statistics
+      #@testinfo = Test.get_statistics
+
+      @monthly_results = User.get_monthly_results
+
+      # @all_registrations_by_type_and_month = User.get_all_registrations_by_type_and_month
+
+      # das sollte gut sein
+      @active_users_by_month = User.get_active_users_by_month
+      @registrations_by_month_and_state = User.get_registrations_by_time_and_state 'quarter'
     end
   end
 
@@ -310,11 +330,47 @@ class UsersController < ApplicationController
   #POST /passwort
   def recover
     headers['Cache-Control'] = 'no-store, must-revalidate'
-    if request.post?
-      @user = User.find_by_email(params[:email])
-    else
-      render 'recover', layout: 'minimal'
+    @user = User.find_by_email(params[:email]) if request.post?
+    render 'recover', layout: 'minimal'
+  end
+
+  def recovery_notification
+    @user = User.find_by_email(user_attributes[:email])
+    if @user.nil?
+      render json: { message: 'Diese E-Mail-Adresse ist nicht registriert!' }, status: :not_found
+      return
+    elsif @user.intro_state < 4
+      render json: {
+               message:
+                 'Bitte schließen Sie zunächst die Registrierung mit dem Code aus der Registrierungsmail ab!'
+             },
+             status: :not_acceptable
+      return
     end
+    if @user.recovery_key.nil?
+      @user.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+    end
+    UserMailer.with(sender: 'noreply@levumi.de', user: @user).password_reset.deliver_later
+    head :ok
+  end
+
+  def recovery_key_verification
+    @user = User.find_by_email(user_attributes[:email])
+    if @user.recovery_key == user_attributes[:recovery_key]
+      respond_to do |format|
+        format.html { render partial: 'users/recover/decrypt_password' and return }
+        format.json { render json: @user and return }
+      end
+    else
+      render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
+      return
+    end
+  end
+
+  def delete_used_recovery_key
+    @user = User.find_by_email(user_attributes[:email])
+    @user.update(recovery_key: nil)
+    head :ok and return
   end
 
   private
@@ -337,7 +393,8 @@ class UsersController < ApplicationController
           :settings,
           :state,
           :town,
-          :server_error
+          :server_error,
+          :recovery_key
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)

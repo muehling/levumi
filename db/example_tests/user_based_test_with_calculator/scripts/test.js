@@ -197,8 +197,6 @@ const next = res => {
     return
   }
   if (isPaused) {
-    console.log('nope, paused')
-
     return
   }
   const endTaskTimestamp = stopTimer()

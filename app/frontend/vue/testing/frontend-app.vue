@@ -1,20 +1,20 @@
 <template>
   <div>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
-      <a class="navbar-brand" href="/"
-        ><img
-          src="/images/shared/Levumi-normal_small.png"
+      <a class="navbar-brand" href="/">
+        <img
+          :src="'/images/shared/Levumi-normal_small.png'"
           alt="Levumi-Icon"
           width="48"
-          height="48"
-        />Levumi</a
-      >
-      <ul class="navbar-nav ml-auto">
+          height="48" />
+        Levumi
+      </a>
+      <ul class="navbar-nav ms-auto">
         <li v-if="isLoggedIn" id="navbar_button" class="nav-item">
           <b-button variant="outline-secondary" @click="handleLogout">Abmelden</b-button>
         </li>
       </ul>
-      <ul class="navbar-nav ml-auto">
+      <ul class="navbar-nav ms-auto">
         <li v-if="isLoggedIn" id="navbar_text" class="navbar-text">
           {{ student?.login ? `Dein Login-Code: ${student.login}` : '' }}
         </li>
@@ -36,14 +36,12 @@
           <div
             v-for="test in studentTests"
             :key="test.id"
-            class="col-12 col-md-6 col-lg-4 col-xl-2 test-card"
-          >
+            class="col-12 col-md-6 col-lg-4 col-xl-2 test-card">
             <b-card
               class="w-100 m-2 shadow"
               body-class="test-card-body px-3"
               :title="test.test_info.family"
-              :sub-title="test.test_info.level"
-            >
+              :sub-title="test.test_info.level">
               <template slot="header">
                 <h4>{{ test.test_info.competence }}</h4>
                 <h6>{{ test.test_info.area }}</h6>
@@ -54,8 +52,7 @@
                 :disabled="!test.open"
                 :variant="test.open ? 'outline-success' : 'success'"
                 :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
-                @click="triggerAutoLogout = false"
-              >
+                @click="triggerAutoLogout = false">
                 {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
               </b-button>
             </b-card>
@@ -66,21 +63,19 @@
       <div v-else>
         <!-- Login Form anzeigen -->
         <b-row>
-          <b-col md="3"> </b-col>
+          <b-col md="3"></b-col>
           <b-col md="6">
             <div v-if="isManualInput">
               <b-card
                 class="mt-5"
                 style="font-size: 1.2em"
-                header="Gleich geht es los! Gib in das Feld deinen eigenen Zugangscode ein."
-              >
+                header="Gleich geht es los! Gib in das Feld deinen eigenen Zugangscode ein.">
                 <b-form
                   id="code-form"
                   ref="codeForm"
                   accept-charset="UTF-8"
                   aria-label="Zugangscode eingeben"
-                  @submit.prevent.stop="handleLogin"
-                >
+                  @submit.prevent.stop="handleLogin">
                   <b-form-group aria-label="Zugangscode eingeben">
                     <b-form-input
                       v-model="loginCode"
@@ -88,26 +83,25 @@
                       name="login"
                       placeholder="Zugangscode"
                       style="font-size: 1.5em"
-                      :formatter="format"
-                    />
-                    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4"
-                      >Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine
-                      Lehrkraft.</b-alert
-                    >
-                    <b-alert :show="isCodeEmpty" variant="danger" class="mt-4"
-                      >Bitte gib deinen Zugangscode ein.</b-alert
-                    >
+                      :formatter="format" />
+                    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4">
+                      Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine
+                      Lehrkraft.
+                    </b-alert>
+                    <b-alert :show="isCodeEmpty" variant="danger" class="mt-4">
+                      Bitte gib deinen Zugangscode ein.
+                    </b-alert>
                   </b-form-group>
-                  <b-button style="font-size: 1.2em" variant="primary" @click="handleLogin"
-                    >Starten</b-button
-                  >
+                  <b-button style="font-size: 1.2em" variant="primary" @click="handleLogin">
+                    Starten
+                  </b-button>
                   <b-button
                     style="font-size: 1.2em; float: right"
                     type="button"
                     variant="primary"
-                    @click="switchQr()"
-                    >QR-Code</b-button
-                  >
+                    @click="switchQr()">
+                    QR-Code
+                  </b-button>
                 </b-form>
               </b-card>
             </div>
@@ -115,7 +109,7 @@
               <qr-reader :switch-qr="switchQr" />
             </div>
           </b-col>
-          <b-col md="3"> </b-col>
+          <b-col md="3"></b-col>
         </b-row>
       </div>
     </div>

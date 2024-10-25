@@ -57,7 +57,7 @@
       :default-settings="group.settings"
       path="student"
       @hide-student-row-modal="resetSelectedStudent"
-      @update="updateStudent" />
+      @update-font-settings="updateStudent" />
   </div>
 </template>
 

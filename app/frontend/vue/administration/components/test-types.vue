@@ -5,27 +5,24 @@
       <div
         v-for="testType in testTypes"
         :key="testType.id"
-        class="test-type w-100 justify-content-between align-items-center d-flex my-1 p-2"
-      >
+        class="test-type w-100 justify-content-between align-items-center d-flex my-1 p-2">
         <span>{{ testType.name }}</span>
         <span>{{ testType.description }}</span>
-        <b-btn class="btn btn-sm" variant="outline-danger" @click="deleteTestType(testType.id)">
+        <b-button class="btn btn-sm" variant="outline-danger" @click="deleteTestType(testType.id)">
           <i class="fas fa-trash"></i>
-        </b-btn>
+        </b-button>
       </div>
       <div class="mt-4 flex-row d-flex">
         <b-form-input
           id="category"
           v-model="testTypeName"
           placeholder="Neuen Typ eingeben"
-          class="mr-4"
-        ></b-form-input>
+          class="me-4"></b-form-input>
         <b-form-input
           id="category"
           v-model="testTypeDescription"
-          placeholder="Beschreibung eingeben"
-        ></b-form-input>
-        <b-button class="ml-3" @click="createTestType">Speichern</b-button>
+          placeholder="Beschreibung eingeben"></b-form-input>
+        <b-button class="ms-3" @click="createTestType">Speichern</b-button>
       </div>
     </div>
 

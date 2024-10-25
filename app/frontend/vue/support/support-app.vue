@@ -15,32 +15,32 @@
         </template>
         <template #cell(actions)="data">
           <div class="text-nowrap">
-            <b-btn
+            <b-button
               variant="outline-success"
               class="edit-user btn btn-sm mr-1"
               @click="showMessage(data.item)">
               <i class="fas fa-edit"></i>
               <span class="d-none d-lg-inline">Anzeigen</span>
-            </b-btn>
-            <!-- <b-btn
+            </b-button>
+            <!-- <b-button
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="changeStatus(data.item.id)">
               <i class="fas fa-trash"></i>
               <span class="d-none d-lg-inline">Status ändern</span>
-            </b-btn>
-             <b-btn
+            </b-button>
+             <b-button
               variant="outline-danger"
               class="delete-user btn btn-sm mr-1"
               @click="assignUser(data.item.id)">
               <i class="fas fa-trash"></i>
               <span class="d-none d-lg-inline">Bearbeiter zuweisen</span>
-            </b-btn>-->
+            </b-button>-->
           </div>
         </template>
       </b-table>
     </div>
-    <b-modal :visible="!!selectedMessage" @hidden="hideMessage" @ok="updateMessage">
+    <b-modal :model-value="!!selectedMessage" @hidden="hideMessage" @ok="updateMessage">
       <p>
         <a :href="mailto">Antworten an {{ selectedMessage?.sender }}</a>
       </p>

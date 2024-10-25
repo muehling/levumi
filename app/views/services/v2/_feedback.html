@@ -1,0 +1,38 @@
+<script type="module">
+  window.useFeedback = ({ styles, isCorrect, item, continueHandler }) => {
+    let fontAwesomeClass, text
+
+    if (isCorrect) {
+      text = window.config.options?.feedback?.positive
+        ? window.config.options?.feedback?.positive
+        : 'Das war richtig!'
+      fontAwesomeClass = 'fas fa-check text-success'
+    } else {
+      text = window.config.options?.feedback?.negative
+        ? window.config.options?.feedback?.negative
+        : `Das war nicht ganz richtig. Richtig wäre "###" gewesen.`
+
+      fontAwesomeClass = 'fas fa-x text-danger'
+    }
+
+    text = text.replace('###', item.correctAnswer)
+    text = text.replace('%%%', item.question)
+
+    const config = [
+      { type: 'icon', iconClass: fontAwesomeClass },
+      { type: 'p', text },
+    ]
+
+    const el = window.useContentPage({
+      id: 'feedback-page',
+      styles,
+      content: config,
+      continueConfig: {
+        text: `Weiter zur nächsten Frage`,
+        handler: continueHandler,
+      },
+    })
+
+    return el
+  }
+</script>

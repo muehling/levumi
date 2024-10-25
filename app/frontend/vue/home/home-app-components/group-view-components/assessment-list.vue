@@ -2,7 +2,7 @@
   <div>
     <div>
       <b-card
-        v-if="globalStore.studentsInGroups[selectedGroupId].length === 0"
+        v-if="globalStore.studentsInGroups[selectedGroupId]?.length === 0"
         bg-variant="white"
         class="col-lg-8 col-xl-6 mt-3">
         <p v-if="group.read_only" class="mb-0">
@@ -14,7 +14,7 @@
             zuerst im Klassenbuch an, damit Sie testen können!
           </p>
           <b-button variant="outline-secondary" @click="navigateToClassbook">
-            <i class="fas fa-book-open mr-1"></i>
+            <i class="fas fa-book-open me-1"></i>
             Zum Klassenbuch
           </b-button>
         </div>
@@ -50,9 +50,9 @@
   </div>
 </template>
 <script>
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import GroupAssessments from './group-assessments.vue'
+  import { useAssessmentsStore } from '../../../../store/assessmentsStore'
+  import { useGlobalStore } from '../../../../store/store'
+  import GroupAssessments from './assessment-list-components/group-assessments.vue'
   export default {
     name: 'AssessmentView',
     components: { GroupAssessments },
@@ -66,7 +66,9 @@
     },
     computed: {
       group() {
-        return this.globalStore.groups.find(group => group.id === this.selectedGroupId)
+        return this.globalStore.groups.find(
+          group => group.id === parseInt(this.selectedGroupId, 10)
+        )
       },
     },
     methods: {

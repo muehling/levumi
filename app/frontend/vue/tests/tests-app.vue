@@ -11,31 +11,31 @@
       <b-row v-cloak class="mt-3">
         <b-col md="12">
           <b-tabs pills lazy>
-            <b-tab v-for="area in testData" :key="area.id">
-              <template slot="title">
-                {{ area.name }}
-              </template>
+            <b-tab v-for="area in testData" :key="area.id" :title="area.name">
+              <hr />
               <b-tabs pills lazy class="mt-3">
-                <div slot="empty">
-                  <div class="text-center text-muted">Keine Kompetenzbereiche vorhanden.</div>
-                </div>
-                <b-tab v-for="competence in area.competences" :key="competence.id">
-                  <template slot="title">
-                    {{ competence.name }}
-                  </template>
-                  <b-alert show variant="secondary" class="mt-2">
+                <b-tab
+                  v-for="competence in area.competences"
+                  :key="competence.id"
+                  :title="competence.name">
+                  <b-alert
+                    v-if="competence.description"
+                    :model-value="true"
+                    variant="secondary"
+                    class="mt-2">
                     <span class="text-small">{{ competence.description }}</span>
                   </b-alert>
-
+                  <hr />
                   <b-tabs pills lazy class="mt-3">
-                    <div slot="empty">
-                      <div class="text-center text-muted">Keine Tests vorhanden.</div>
-                    </div>
-                    <b-tab v-for="testFamily in competence.test_families" :key="testFamily.id">
-                      <template slot="title">
-                        {{ testFamily.name }}
-                      </template>
-                      <b-alert show variant="secondary" class="mt-2">
+                    <b-tab
+                      v-for="testFamily in competence.test_families"
+                      :key="testFamily.id"
+                      :title="testFamily.name">
+                      <b-alert
+                        v-if="testFamily.description"
+                        :model-value="true"
+                        variant="secondary"
+                        class="mt-2">
                         <span class="text-small">{{ testFamily.description }}</span>
                       </b-alert>
                       <b-card no-body class="mt-3">
@@ -138,6 +138,7 @@
       const testsStore = useTestsStore()
       return { testsStore }
     },
+
     computed: {
       testData() {
         return this.testsStore.tests.filter(area => {
@@ -154,22 +155,29 @@
         return this.testsStore.isLoading
       },
     },
+
     async created() {
       await this.testsStore.fetch()
     },
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       getAttachedImages(test) {
-        return test.info_attachments.filter(attachment =>
+        return test.info_attachments?.filter(attachment =>
           attachment.content_type.startsWith('image')
         )
       },
       getAttachedOther(test) {
-        return test.info_attachments.filter(
+        return test.info_attachments?.filter(
           attachment => !attachment.content_type.startsWith('image')
         )
       },
       hasAttachments(test) {
-        return test.info_attachments.length
+        return test.info_attachments?.length
       },
     },
   }

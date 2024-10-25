@@ -4,8 +4,8 @@
 import './add_jquery'
 import * as bootstrap from 'bootstrap'
 
-import BootstrapVue from 'bootstrap-vue'
-import Vue from 'vue'
+import { createBootstrap } from 'bootstrap-vue-next'
+import { createApp } from 'vue'
 
 import FrontendApp from '../vue/testing/frontend-app.vue'
 
@@ -19,9 +19,19 @@ const init = async () => {
   // TODO remove once all data is fetched from API
   const data = JSON.parse(element.getAttribute('data')) || {}
 
-  Vue.use(BootstrapVue)
+  // new Vue({
+  const app = createApp({
+    el: '#levumi',
+    components: {
+      FrontendApp,
+    },
+    data() {
+      return data
+    },
+  })
+  app.use(createBootstrap())
 
-  Vue.mixin({
+  app.mixin({
     data: function () {
       return {
         get jQuery() {
@@ -30,15 +40,9 @@ const init = async () => {
       }
     },
   })
-
-  new Vue({
-    el: '#levumi',
-    components: {
-      FrontendApp,
-    },
-    data: data,
-  })
+  app.mount('#levumi')
 }
+
 $('[data-toggle="popover"]').popover()
 
 if (element) {

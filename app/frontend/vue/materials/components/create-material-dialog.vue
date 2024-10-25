@@ -4,9 +4,10 @@
       id="users-mail-dialog"
       ref="materialImportDialog"
       title="Material importieren"
-      hide-footer
-      ><div v-if="isLoading" class="card card-body align-items-center">
-        <b-spinner></b-spinner>Hochladen...
+      hide-footer>
+      <div v-if="isLoading" class="card card-body align-items-center">
+        <b-spinner></b-spinner>
+        Hochladen...
       </div>
       <div v-else class="card card-body">
         <b-form-file
@@ -14,9 +15,8 @@
           accept=".zip"
           :state="Boolean(file)"
           placeholder="Datei wählen oder hier ablegen..."
-          drop-placeholder="Datei hier ablegen..."
-        ></b-form-file>
-        <b-btn class="mt-3" variant="primary" @click="importMaterial">Hochladen</b-btn>
+          drop-placeholder="Datei hier ablegen..."></b-form-file>
+        <b-button class="mt-3" variant="primary" @click="importMaterial">Hochladen</b-button>
       </div>
     </b-modal>
   </div>

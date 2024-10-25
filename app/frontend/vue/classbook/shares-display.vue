@@ -1,6 +1,6 @@
 <template>
   <table
-    v-if="group.shares.length > 0"
+    v-if="groupShares?.length > 0"
     class="mt-4 table table-sm table-striped table-responsive-md text-small">
     <thead>
       <tr>
@@ -10,7 +10,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr v-for="share in group.shares" :key="share.id + '/' + share.read_only">
+      <tr v-for="share in groupShares" :key="share.id + '/' + share.read_only">
         <td>
           <p class="my-1">
             {{ share.user }}
@@ -19,11 +19,11 @@
         <td>
           <div class="text-nowrap">
             <div v-if="share.is_anonymous" class="d-inline">
-              <span class="mr-4">Klasse ist anonym geteilt.</span>
+              <span class="me-4">Klasse ist anonym geteilt.</span>
             </div>
             <b-button
               v-if="!share.is_anonymous"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               :variant="share.read_only ? 'primary' : 'outline-primary'"
               @click="changeAccessLevel(share.id, 1)">
               <i class="fas fa-glasses"></i>
@@ -31,13 +31,13 @@
             </b-button>
             <b-button
               v-if="!share.is_anonymous"
-              class="btn btn-sm mr-1"
+              class="btn btn-sm me-1"
               :variant="!share.read_only ? 'primary' : 'outline-primary'"
               @click="changeAccessLevel(share.id, 0)">
               <i class="fas fa-edit"></i>
               Ansicht und verwenden
             </b-button>
-            <b-button class="btn btn-sm mr-1" variant="outline-danger" @click="unshare(share.id)">
+            <b-button class="btn btn-sm me-1" variant="outline-danger" @click="unshare(share.id)">
               <i class="fas fa-trash"></i>
               Nicht mehr teilen
             </b-button>
@@ -64,7 +64,7 @@
   import { ajax } from '../../utils/ajax'
   import { decryptKey } from '../../utils/encryption'
   import { useGlobalStore } from '../../store/store'
-  import Vue from 'vue'
+  //import Vue from 'vue'
   export default {
     name: 'SharesDisplay',
     props: { group: Object },
@@ -77,6 +77,9 @@
         return this.globalStore.shareKeys[this.group.id]
           ? decryptKey(this.globalStore.shareKeys[this.group.id])
           : null
+      },
+      groupShares() {
+        return this.group.shares?.filter(share => !share.owner)
       },
     },
     methods: {
@@ -91,7 +94,8 @@
           const index = groups.findIndex(g => g.id === res.data.id)
           groups[index] = res.data
 
-          Vue.set(this.globalStore, 'groups', groups)
+          //Vue.set(this.globalStore, 'groups', groups)
+          this.globalStore.groups = groups
         } else {
           this.errorMessage = res.data.message
         }
@@ -103,7 +107,8 @@
           method: 'delete',
         })
         if (res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data)
+          //Vue.set(this.globalStore, 'groups', res.data)
+          this.globalStore.groups = res.data
         }
       },
     },

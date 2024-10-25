@@ -3,12 +3,17 @@ import { decryptStudentNames } from '../utils/encryption'
 import apiRoutes from '../vue/routes/api-routes'
 
 import { defineStore } from 'pinia'
-import Vue from 'vue'
 
 export const useGlobalStore = defineStore('global', {
   state: () => ({
     errorMessage: '',
     genericMessage: { title: '', message: '' },
+    generalModals: {
+      isImprintOpen: false,
+      isPrivacyOpen: false,
+      isAboutOpen: false,
+      isCookieHintOpen: false,
+    },
     groupInfo: [],
     groups: [],
     isLoading: false,
@@ -31,7 +36,7 @@ export const useGlobalStore = defineStore('global', {
       this.shareKeys = { ...this.shareKeys, [key]: value }
     },
     setStudentsInGroup({ groupId, students }) {
-      Vue.set(this.studentsInGroups, groupId, [...students])
+      this.studentsInGroups = { ...this.studentsInGroups, [groupId]: students }
     },
     setErrorMessage(msg) {
       this.errorMessage = msg
@@ -72,13 +77,17 @@ export const useGlobalStore = defineStore('global', {
     async fetchGroups() {
       const res = await ajax(apiRoutes.groups.groups)
 
-      this.groups = res.data.groups
       this.shareKeys = res.data.share_keys
       const studentsInGroups = res.data.groups.reduce((acc, group) => {
         acc[group.id] = decryptStudentNames(group)
 
         return acc
       }, {})
+      this.groups = res.data.groups.map(group => {
+        group.students = studentsInGroups[group.id]
+        return group
+      })
+
       this.studentsInGroups = studentsInGroups
     },
     async getItemsForTest(testId) {
@@ -92,7 +101,7 @@ export const useGlobalStore = defineStore('global', {
         const data = await ajax({ ...apiRoutes.tests.items(testId) })
         const items = data.data
         test.items = items
-        Vue.set(this.staticData.testMetaData, 'tests', [...this.staticData.testMetaData.tests])
+        this.staticData.testMetaData['tests'] = [...this.staticData.testMetaData.tests]
       }
     },
 
@@ -100,20 +109,17 @@ export const useGlobalStore = defineStore('global', {
       this.isLoading = showLoader
       const res = await ajax({ url: apiRoutes.users.coreData })
       const coreData = res.data
-      this.groupInfo = coreData.groupInfo
       this.masquerade = coreData.masquerade
       this.login = coreData.login
-      this.staticData = {
-        states: coreData.states,
-        schoolTypes: coreData.schoolTypes,
-        focusTypes: coreData.focusTypes,
-        accountTypes: coreData.accountTypes,
-        annotationCategories: coreData.annotationCategories,
-        testTypes: coreData.testTypes,
-        testMetaData: coreData.testMetaData,
-        news: coreData.news,
-      }
-      this.isLoading = false
+
+      this.staticData.states = coreData.states
+      this.staticData.schoolTypes = coreData.schoolTypes
+      this.staticData.focusTypes = coreData.focusTypes
+      this.staticData.accountTypes = coreData.accountTypes
+      this.staticData.annotationCategories = coreData.annotationCategories
+      this.staticData.testTypes = coreData.testTypes
+      this.staticData.testMetaData = coreData.testMetaData
+      ;(this.staticData.news = coreData.news), (this.isLoading = false)
     },
   },
 })

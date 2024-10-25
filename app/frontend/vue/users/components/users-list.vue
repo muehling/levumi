@@ -2,27 +2,28 @@
   <div>
     <div class="input-group mb-2 p-0 col-lg-8 col-xl-6">
       <div class="input-group-prepend my-1">
-        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass mr-2"></i></span>
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass me-2"></i></span>
       </div>
       <b-form-input
         v-model="searchTerm"
         class="input-field my-1"
         placeholder="Nach Email-Adresse suchen..."
         debounce="500" />
-      <b-btn class="btn-sm ml-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
+      <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label
         for="start-date-registration"
-        class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+        class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
         Registriert zwischen
       </label>
-      <b-form-datepicker
+      <b-form-input
         id="start-date-registration"
         v-model="startDateRegistration"
-        class="my-1 mr-3 date-input col-xs-6 col-sm-4 col-md-4"
+        type="date"
+        class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
         locale="de-DE"
         size="sm"
@@ -30,10 +31,11 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-form-datepicker
+        }" />
+      <b-form-input
         id="end-date-registration"
         v-model="endDateRegistration"
+        type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
         locale="de-DE"
@@ -42,22 +44,23 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-btn
-        class="btn-sm ml-2 my-1"
+        }" />
+      <b-button
+        class="btn-sm ms-2 my-1"
         variant="outline-secondary"
         @click="startDateRegistration = endDateRegistration = undefined">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
-      <label for="start-date-login" class="date-label mr-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+      <label for="start-date-login" class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
         Zuletzt angemeldet zwischen
       </label>
-      <b-form-datepicker
+      <b-form-input
         id="start-date-login"
         v-model="startDateLogin"
-        class="my-1 mr-3 date-input col-xs-6 col-sm-4 col-md-4"
+        type="date"
+        class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
         locale="de-DE"
         size="sm"
@@ -65,10 +68,11 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-form-datepicker
+        }" />
+      <b-form-input
         id="end-date-login"
         v-model="endDateLogin"
+        type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
         locale="de-DE"
@@ -77,13 +81,13 @@
           year: 'numeric',
           month: 'numeric',
           day: 'numeric',
-        }"></b-form-datepicker>
-      <b-btn
-        class="btn-sm ml-2 my-1"
+        }" />
+      <b-button
+        class="btn-sm ms-2 my-1"
         variant="outline-secondary"
         @click="startDateLogin = endDateLogin = undefined">
         <i class="fas fa-trash"></i>
-      </b-btn>
+      </b-button>
     </div>
 
     <div class="input-container d-inline"></div>
@@ -106,29 +110,29 @@
       </template>
       <template #cell(actions)="data">
         <div class="text-nowrap">
-          <b-btn
+          <b-button
             variant="outline-success"
-            class="edit-user btn btn-sm mr-1"
+            class="edit-user btn btn-sm me-1"
             @click="editUser(data.item.id)">
             <i class="fas fa-edit"></i>
             <span class="d-none d-lg-inline">Bearbeiten</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="canDeleteUser(data.item)"
             variant="outline-danger"
-            class="delete-user btn btn-sm mr-1"
+            class="delete-user btn btn-sm me-1"
             @click="requestDeleteUser(data.item.id)">
             <i class="fas fa-trash"></i>
             <span class="d-none d-lg-inline">Löschen</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="isLoginAsAllowed(data.item)"
             variant="outline-secondary"
-            class="delete-user btn btn-sm mr-1"
+            class="delete-user btn btn-sm me-1"
             @click="loginAs(data.item.id)">
             <i class="fas fa-user-md"></i>
             <span class="d-none d-lg-inline">Einloggen als</span>
-          </b-btn>
+          </b-button>
         </div>
       </template>
     </b-table>
@@ -146,7 +150,7 @@
           <span v-else>{{ page }}</span>
         </template>
       </b-pagination>
-      <div class="ml-3 p-1">
+      <div class="ms-3 p-1">
         <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
           <b-dropdown-item @click="perPage = 10">10 Einträge</b-dropdown-item>
           <b-dropdown-item @click="perPage = 20">20 Einträge</b-dropdown-item>

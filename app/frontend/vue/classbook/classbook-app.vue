@@ -6,14 +6,14 @@
         <b-col md="12">
           <div>
             <!-- reguläre Darstellung mit Klassenliste -->
-            <b-tabs :key="forceUpdate" pills>
+            <b-tabs pills>
               <b-tab lazy :active="activeTab === 1" @click="handleNavigate('eigene_klassen')">
-                <template slot="title">
+                <template #title>
                   <span id="intro_cb_1">Eigene Klassen ({{ ownActiveGroups.length }})</span>
                 </template>
 
                 <b-card no-body class="mt-3">
-                  <b-tabs :key="ownActiveGroups.length" pills card>
+                  <b-tabs :key="ownActiveGroups.length" pills card no-fade>
                     <!-- Neue Klasse anlegen -->
                     <b-tab
                       v-if="permissions.createGroup"
@@ -21,7 +21,7 @@
                       :active="activeGroupTab === -2"
                       lazy
                       @click="handleNavigate('neu')">
-                      <template slot="title">
+                      <template #title>
                         <i
                           id="intro_cb_2"
                           class="fas fa-folder-plus fa-lg"
@@ -38,17 +38,26 @@
                       lazy
                       @click="handleNavigate(`eigene_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
-                      <template slot="title">
+                      <template #title>
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>
                           {{ group.label }}
                         </span>
                       </template>
-                      <group-view
-                        :groups="globalStore.groups"
-                        :group="group"
-                        @update:groups="updateGroups"></group-view>
+                      <group-view :groups="globalStore.groups" :group="group" />
                     </b-tab>
+                    <!-- <b-tab
+                      v-for="transferRequest in transferRequests"
+                      :key="transferRequest.id"
+                      :active="transferRequest.id === activeGroupTab"
+                      lazy
+                      @click="handleNavigate(`eigene_klassen/${transferRequest.id}`)">
+                      <template #title>
+                        {{ transferRequest.label }}
+                        <span class="badge badge-info">Neu!</span>
+                      </template>
+                      <transfer-status :group="transferRequest" />
+                    </b-tab>-->
                   </b-tabs>
                 </b-card>
               </b-tab>
@@ -58,11 +67,12 @@
                 v-if="displaySharesTab"
                 :disabled="sharedGroups.length === 0"
                 lazy
+                title-item-class="position-relative"
                 :active="activeTab === 2"
                 @click="handleNavigate('geteilte_klassen')">
-                <template slot="title">
+                <template #title>
                   Mit mir geteilte Klassen
-                  <span v-if="hasNewShares" class="badge badge-info">Neu!</span>
+                  <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
                   <span v-else>({{ sharedGroups.length }})</span>
                 </template>
 
@@ -70,16 +80,18 @@
                   <b-tabs pills card>
                     <b-tab
                       v-for="group in sharedGroups"
-                      :key="group.id"
+                      :key="group.id + '/' + !!group.key"
                       :active="group.id === selectedGroupId"
                       class="m-3"
                       lazy
                       @click="handleNavigate(`geteilte_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
-                      <template slot="title">
+                      <template #title>
                         <i v-if="group.demo">{{ group.label }}</i>
-                        <span v-else>{{ group.label }}</span>
-                        <span v-if="group.key == null" class="badge badge-info ml-2">Neu!</span>
+                        <span v-else>{{ group.label }}&nbsp;</span>
+                        <b-badge v-if="!group.key" class="new-badge" variant="info" pill>
+                          Neu!
+                        </b-badge>
                       </template>
                       <group-view :groups="sharedGroups" :group="group"></group-view>
                     </b-tab>
@@ -94,23 +106,23 @@
                 lazy
                 :active="activeTab === 3"
                 @click="handleNavigate('archiv')">
-                <template slot="title">Archivierte Klassen ({{ archivedGroups.length }})</template>
+                <template #title>Archivierte Klassen ({{ archivedGroups.length }})</template>
 
                 <b-card no-body class="mt-3">
-                  <b-tabs pills card vertical>
+                  <b-tabs pills vertical class="m-3">
                     <!-- Hinweistext falls keine Klasse vorhanden -->
-                    <div slot="empty">
+                    <template #empty>
                       <div v-cloak class="text-center text-muted">
                         Keine Klassen im Archiv vorhanden.
                       </div>
-                    </div>
+                    </template>
                     <b-tab v-for="group in archivedGroups" :key="group.id" class="m-3" lazy>
                       <!-- Beispielklasse kursiv darstellen -->
-                      <template slot="title">
+                      <template #title>
                         <i v-if="group.demo">{{ group.label }}</i>
                         <span v-else>{{ group.label }}</span>
                       </template>
-                      <group-view :groups="groups" :group="group" @update:groups="updateGroups" />
+                      <group-view :groups="groups" :group="group" />
                     </b-tab>
                   </b-tabs>
                 </b-card>
@@ -135,19 +147,23 @@
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  import Vue from 'vue'
+  //import TransferStatus from 'src/vue/classbook/transfer-status.vue'
+
+  import { useRoute } from 'vue-router'
 
   export default {
     name: 'ClassBookApp',
     components: {
-      GroupView,
       GroupForm,
+      GroupView,
       IntroPopover,
       LoadingDots,
     },
     setup() {
+      const route = useRoute()
       const globalStore = useGlobalStore()
-      return { globalStore }
+
+      return { globalStore, route }
     },
     data() {
       return { selectedGroupId: undefined, forceUpdate: undefined }
@@ -194,13 +210,22 @@
         }
       },
       ownActiveGroups() {
-        return this.getTabGroups(true, false)
+        return this.globalStore.groups
+          .filter(
+            group =>
+              group.belongs_to === this.globalStore.login.email && !group.archive && group.key
+          )
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       sharedGroups() {
-        return this.getTabGroups(false, false)
+        return this.globalStore.groups
+          .filter(group => group.belongs_to !== this.globalStore.login.email && !group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
       archivedGroups() {
-        return this.getTabGroups(true, true)
+        return this.globalStore.groups
+          .filter(group => group.archive)
+          .sort((a, b) => (a.label < b.label ? -1 : 1))
       },
 
       firstOwnIndex: function () {
@@ -216,7 +241,13 @@
       },
 
       hasNewShares() {
-        return this.globalStore.groups.reduce((acc, g) => acc || g.key === null, false)
+        return this.globalStore.groups.reduce(
+          (acc, g) => acc || (g.key === null && !g.owner),
+          false
+        )
+      },
+      transferRequests() {
+        return this.globalStore.groups.filter(g => g.owner && !g.key)
       },
       permissions() {
         return access().classbook
@@ -226,18 +257,23 @@
       },
     },
     watch: {
-      '$route.params': {
+      'route.params': {
         immediate: true,
         async handler(data) {
+          if (!data) {
+            return
+          }
+
+          if (this.selectedGroupId !== parseInt(data.groupId, 10)) {
+            this.forceUpdate = Symbol()
+          }
           this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
-          this.forceUpdate = Symbol()
         },
       },
     },
 
     async mounted() {
       await this.globalStore.fetchGroups()
-      this.forceUpdate = Symbol()
 
       let messages, targets
       if (this.isSingleUser) {
@@ -276,21 +312,14 @@
       }
     },
     methods: {
-      getTabGroups(isOwner, isArchive) {
-        if (isEmpty(this.globalStore.groups)) {
-          return []
-        }
-
-        return this.globalStore.groups
-          .filter(group => group.owner === isOwner && group.archive === isArchive)
-          .sort((a, b) => (a.label < b.label ? -1 : 1))
-      },
-      updateGroups(newGroups) {
-        this.globalStore.setGroups(newGroups)
+      handleRouteChange(data) {
+        this.selectedGroupId = data.groupId ? parseInt(data.groupId, 10) : undefined
+        this.forceUpdate = Symbol()
       },
       async finishIntro() {
         await ajax({ url: routes.classbook.finishIntro, method: 'PATCH' })
-        Vue.set(this.globalStore.login, 'intro_state', 5)
+        //Vue.set(this.globalStore.login, 'intro_state', 5)
+        this.globalStore.login.intro_state = 5
       },
       handleNavigate(path) {
         // avoid duplicated navigation

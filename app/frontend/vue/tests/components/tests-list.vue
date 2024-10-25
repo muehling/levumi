@@ -6,7 +6,9 @@
       <div class="bounce3"></div>
     </div>
     <div v-else>
-      <b-checkbox v-model="showArchive">Archivierte Tests anzeigen</b-checkbox>
+      <b-form-checkbox v-model="showArchive" class="mt-4">
+        Archivierte Tests anzeigen
+      </b-form-checkbox>
       <b-table
         class="tests-list text-small"
         small
@@ -27,15 +29,15 @@
           <span>{{ data.item.updated_by || '--' }}</span>
         </template>
         <template #cell(actions)="data">
-          <b-btn
+          <b-button
             v-if="!showExport"
             class="btn-sm mr-1"
             variant="outline-primary"
             @click="showTestDetails(data.item.id)">
             <i class="fas fa-glasses"></i>
             <span class="text-small d-none d-xl-inline pl-2">Details</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!showExport && isEditAndDeleteAllowed"
             class="btn-sm mr-1"
             variant="outline-success"
@@ -43,15 +45,15 @@
             @click="editTest(data.item.id)">
             <i class="fas fa-edit"></i>
             <span class="text-small d-none d-xl-inline pl-2">Bearbeiten</span>
-          </b-btn>
-          <b-btn
+          </b-button>
+          <b-button
             v-if="!showExport && isEditAndDeleteAllowed"
             class="btn-sm mr-1"
             variant="outline-danger"
             @click="deleteTest(data.item.id)">
             <i class="fas fa-trash"></i>
             <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
-          </b-btn>
+          </b-button>
           <b-link
             v-if="showExport"
             class="btn btn-sm btn-outline-primary"

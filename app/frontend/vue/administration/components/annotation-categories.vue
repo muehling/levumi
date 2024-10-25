@@ -5,29 +5,26 @@
       <div
         v-for="annotationCategory in annotationCategories"
         :key="annotationCategory.id"
-        class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2"
-      >
+        class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2">
         <span>{{ parseDisplayName(annotationCategory.name) }}</span>
-        <b-btn
+        <b-button
           class="btn btn-sm"
           variant="outline-danger"
-          @click="deleteCategory(annotationCategory.id)"
-        >
+          @click="deleteCategory(annotationCategory.id)">
           <i class="fas fa-trash"></i>
-        </b-btn>
+        </b-button>
       </div>
       <div class="mt-4 flex-row d-flex">
-        <label class="pt-2 mr-4" for="category">Typ: </label
-        ><b-form-input
+        <label class="pt-2 me-4" for="category">Typ:</label>
+        <b-form-input
           id="category"
           v-model="category"
-          placeholder="Neuen Typ eingeben"
-        ></b-form-input>
-        <label class="pt-2 ml-4 mr-2" for="group">Gruppe: </label
-        ><b-form-input id="group" v-model="group" placeholder="Gruppe"></b-form-input>
-        <label class="pt-2 ml-4 mr-2" for="index">Index: </label
-        ><b-form-input id="index" v-model="index" placeholder="Index"></b-form-input>
-        <b-button class="ml-3" @click="createAnnotationCategory">Speichern</b-button>
+          placeholder="Neuen Typ eingeben"></b-form-input>
+        <label class="pt-2 ms-4 me-2" for="group">Gruppe:</label>
+        <b-form-input id="group" v-model="group" placeholder="Gruppe"></b-form-input>
+        <label class="pt-2 ms-4 me-2" for="index">Index:</label>
+        <b-form-input id="index" v-model="index" placeholder="Index"></b-form-input>
+        <b-button class="ms-3" @click="createAnnotationCategory">Speichern</b-button>
       </div>
     </div>
 
