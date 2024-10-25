@@ -25,7 +25,7 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
-    <b-button class="m-1 d-none" @click="debug">debug</b-button>
+    <!--<b-button class="m-1 d-none" @click="debug">debug</b-button>-->
     <hr />
 
     <div v-if="isCsvChecked">
@@ -37,7 +37,7 @@
         placeholder="Hier bitte die Dateien hochladen"
         drop-placeholder="Datei hier ablegen"
         multiple
-        @input="uploadAssets" />
+        @change="uploadAssets" />
       <hr />
     </div>
   </div>
@@ -62,8 +62,12 @@
       debug() {
         console.log('debug', this.data, this.questions, this.assets)
       },
-      uploadAssets() {
-        this.$emit('submit-csv-assets', this.assets)
+      async uploadAssets() {
+        //todo without the timeout, this.assets is empty at @change. b-form-file is still subject to change, so this might change in the future
+        // https://bootstrap-vue-next.github.io/bootstrap-vue-next/docs/components/form-file.html
+        setTimeout(() => {
+          this.$emit('submit-csv-assets', this.assets)
+        }, 200)
       },
 
       readCsvData() {

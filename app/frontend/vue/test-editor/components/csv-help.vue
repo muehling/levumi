@@ -40,7 +40,7 @@
             </p>
             <p>
               Eine korrekte Zeile sieht folgendermaßen aus:
-              <b-alert show>{{ demoLine }}</b-alert>
+              <b-alert :model-value="true">{{ demoLine }}</b-alert>
             </p>
           </b-card>
         </b-card>

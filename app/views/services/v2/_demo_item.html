@@ -14,12 +14,11 @@
   )
 
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
-    let isEndButtonAppended = false
     const endDemo = () => {
-      if (isEndButtonAppended) {
+      if (config.demo?.hideDemoInstructions) {
+        continueHandler()
         return
       }
-      isEndButtonAppended = true
       const endText = $(
         '<p class="end-demo-text">Keine Fragen mehr? Dann starte den Test!</p>'
       ).css(config.styles)

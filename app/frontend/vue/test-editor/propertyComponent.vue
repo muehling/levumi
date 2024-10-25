@@ -1,5 +1,6 @@
 <template>
-  <b-card :title="`${questionTypeLabel}: Eigenschaften definieren`">
+  <loading-dots v-if="isLoading" />
+  <b-card v-else :title="`${questionTypeLabel}: Eigenschaften definieren`">
     <div class="m-4">
       <b-button class="mt-3" @click="load">Laden</b-button>
       <b-button class="mt-3 ml-2" @click="save">Speichern</b-button>
@@ -198,12 +199,14 @@
 </template>
 
 <script>
+  import { testDefinitions } from './test-definitions.js'
   import { useGlobalStore } from 'src/store/store'
   import ContextHelp from 'src/vue/shared/context-help.vue'
-  import { testDefinitions } from './test-definitions.js'
+  import isEmpty from 'lodash/isEmpty'
+  import LoadingDots from '../shared/loading-dots.vue'
 
   export default {
-    components: { ContextHelp },
+    components: { ContextHelp, LoadingDots },
     props: { questionType: String },
     setup() {
       const store = useGlobalStore()
@@ -269,6 +272,9 @@
     },
 
     computed: {
+      isLoading() {
+        return isEmpty(this.store.staticData)
+      },
       questionTypeLabel() {
         return testDefinitions[this.questionType]?.label
       },

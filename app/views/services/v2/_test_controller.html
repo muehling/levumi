@@ -133,11 +133,14 @@
     const getRenderer = itemType => {
       switch (itemType) {
         case 'multiple_choice':
-          return window.useMultipleChoice
+          return { renderer: window.useMultipleChoice, options: {} }
         case 'number_input':
-          return window.useNumberInput
+          return { renderer: window.useNumberInput, options: {} }
         case 'audio_images_multiple_choice':
-          return window.useAudioImagesMultipleChoice
+          return {
+            renderer: window.useAudioImagesMultipleChoice,
+            options: { demo: { hideDemoInstructions: true }, contentPages: { hideText: true } },
+          }
         default:
           console.warn('Unknown renderer', itemType)
       }
@@ -155,9 +158,10 @@
     //######################################
     const displayDemoItem = () => {
       const renderer = getRenderer(window.config.item_type)
+
       const el = window.useDemoItem({
-        config: { id: 0, styles, item: items[0] },
-        renderer: renderer,
+        config: { id: 0, styles, item: items[0], ...renderer.options },
+        renderer: renderer.renderer,
         continueHandler: endDemo,
       })
       $('#content-container').html(el)
@@ -169,9 +173,10 @@
     //######################################
     const displayFeedback = res => {
       const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+
       const el = window.useFeedback({
         isCorrect: isCorrect,
-        correctAnswer: items[currentTask].correctAnswer,
+        item: items[currentTask],
         styles,
         continueHandler: () => next(res),
       })
@@ -184,9 +189,10 @@
     const renderItem = (item, nextItem) => {
       const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
       const renderer = getRenderer(window.config.item_type)
-      const el = renderer({
+      const el = renderer.renderer({
         id: item.id,
         styles,
+        options: renderer.options,
         item,
         nextItem,
         resultHandler,
@@ -214,14 +220,20 @@
     //## start test
     //######################################
     preloadAssets()
-    const el = window.useStartPage({
-      styles,
-      config: window.config.startPage,
-      continueHandler: () => {
-        setNextItem()
-      },
-    })
-    $('#content-container').html(el).css(styles)
+    if (window.config.startPage.length) {
+      const renderer = getRenderer(window.config.item_type)
+      const el = window.useStartPage({
+        styles,
+        options: renderer.options,
+        config: window.config.startPage,
+        continueHandler: () => {
+          setNextItem()
+        },
+      })
+      $('#content-container').html(el).css(styles)
+    } else {
+      setNextItem()
+    }
 
     if (window.lastResult !== undefined) {
       window.shuffleArray(items)

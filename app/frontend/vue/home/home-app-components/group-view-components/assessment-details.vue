@@ -41,10 +41,10 @@
         </b-nav-item>
       </b-nav>
     </div>
-    <b-tabs v-if="!!test && !isAssessmentLoading" pills card nav-item-class="py-1">
+    <b-tabs v-if="!!test && !isAssessmentLoading" pills card nav-item-class="py-1 mb-2">
       <b-tab :active="!hasResults" class="m-3">
         <template #title>
-          <div>
+          <div class="ms-1">
             Messungen ({{ test.shorthand }})
             <span v-if="!isActive && test.student_test" class=" ">
               <i class="fas fa-pause ms-2 me-3"></i>

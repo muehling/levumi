@@ -60,11 +60,13 @@
 </style>
 
 <script type="module">
-  let currentInputVal = ''
+  let currentInputVal
   let handleInput
   let handleSubmit
   let demoMode
   window.useNumberInput = ({ resultHandler, item, isDemo }) => {
+    currentInputVal = ''
+
     const el = $(`
         <div id="number-input" class="d-flex justify-content-center flex-column">
           <div class="text-center">

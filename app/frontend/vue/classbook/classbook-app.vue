@@ -147,7 +147,7 @@
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
   import routes from '../routes/api-routes'
-  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
+  //import TransferStatus from 'src/vue/classbook/transfer-status.vue'
 
   import { useRoute } from 'vue-router'
 
@@ -158,7 +158,6 @@
       GroupView,
       IntroPopover,
       LoadingDots,
-      TransferStatus,
     },
     setup() {
       const route = useRoute()
@@ -261,6 +260,8 @@
       'route.params': {
         immediate: true,
         async handler(data) {
+          console.log('watch', data)
+
           if (!data) {
             return
           }

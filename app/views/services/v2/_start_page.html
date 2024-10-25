@@ -1,15 +1,19 @@
 <script>
-  window.useStartPage = ({ config, styles, continueHandler }) => {
+  window.useStartPage = ({ config, styles, options, continueHandler }) => {
     const conf = config.length
       ? config
       : [{ type: 'asset', src: '/images/shared/Levumi-normal.jpg' }]
+
+    let continueText = options.contentPages?.hideText
+      ? '<i class="fas fa-arrow-right"></i>'
+      : `Los geht's!`
 
     const el = window.useContentPage({
       id: 'start-page',
       styles,
       content: conf,
       continueConfig: {
-        text: `Los geht's!`,
+        text: continueText,
         handler: () => {
           continueHandler()
         },

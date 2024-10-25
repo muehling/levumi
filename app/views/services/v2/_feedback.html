@@ -1,21 +1,25 @@
 <script type="module">
-  window.useFeedback = ({ styles, isCorrect, correctAnswer, continueHandler }) => {
-    let src, text
+  window.useFeedback = ({ styles, isCorrect, item, continueHandler }) => {
+    let fontAwesomeClass, text
 
     if (isCorrect) {
       text = window.config.options?.feedback?.positive
         ? window.config.options?.feedback?.positive
         : 'Das war richtig!'
-      src = '/images/shared/Levumi-jubelt.gif'
+      fontAwesomeClass = 'fas fa-check text-success'
     } else {
       text = window.config.options?.feedback?.negative
         ? window.config.options?.feedback?.negative
         : `Das war nicht ganz richtig. Richtig wäre "###" gewesen.`
-      text = text.replace('###', correctAnswer)
-      src = '/images/shared/Levumi-liest.gif'
+
+      fontAwesomeClass = 'fas fa-x text-danger'
     }
+
+    text = text.replace('###', item.correctAnswer)
+    text = text.replace('%%%', item.question)
+
     const config = [
-      { type: 'asset', src },
+      { type: 'icon', iconClass: fontAwesomeClass },
       { type: 'p', text },
     ]
 

@@ -109,7 +109,7 @@
       },
 
       dataWasUploaded() {
-        return this.fileUploaded || !this.isEmptyManualQuestions
+        return this.questions.length > 0
       },
       hasQuestions() {
         return this.questions.length !== 0
