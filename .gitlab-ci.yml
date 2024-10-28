@@ -14,7 +14,7 @@ deploy_staging:
   only:
     - staging
   script:
-    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_STAGING --force
+    - git-push ssh://dokku@ruapehu.informatik.uni-kiel.de:22/$APP_NAME_STAGING
 # TODO adapt to deployment on ddi machine
 #deploy_production:
 #  image: ilyasemenov/gitlab-ci-git-push
