@@ -138,6 +138,13 @@
       async handleRegister(e) {
         e.preventDefault()
         e.stopPropagation()
+        console.log('wtf', this.email)
+
+        if (this.email.includes(' ')) {
+          this.errorMessage = 'Die Email-E-Mail-Adresse darf keine Leerzeichen enthalten!'
+          return
+        }
+
         const data = {
           user: {
             email: this.email.trim(),
