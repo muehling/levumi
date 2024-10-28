@@ -95,7 +95,7 @@ class UsersController < ApplicationController
       UserMailer
         .with(
           user: @user,
-          body: params['text'],
+          body: params['message'],
           subject: params['subject'],
           server_error: params['server_error']
         )

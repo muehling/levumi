@@ -12,9 +12,14 @@
   const el = $(
     '<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4"><h1>Beispiel</h1></div>'
   )
-
+  let isAppended = false
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
     const endDemo = () => {
+      if (isAppended) {
+        return
+      }
+      isAppended = true
+
       if (config.demo?.hideDemoInstructions) {
         continueHandler()
         return
