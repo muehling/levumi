@@ -1,5 +1,5 @@
 <template>
-  <div class="contact-form">
+  <div class="contact-form" @click.stop="disableClick">
     <b-form class="m-2" @submit="onSendSupportMail">
       <p><b>Sie haben eine Frage oder möchten uns etwas mitteilen?</b></p>
       <b-form-group v-slot="{ ariaDescribedby }">
@@ -58,6 +58,9 @@
       },
     },
     methods: {
+      disableClick() {
+        // nothing to do, event.stopPropagation() is already handled by the .stop modifier
+      },
       handleClose() {
         this.contactMessage = ''
         this.selectedTopic = undefined
