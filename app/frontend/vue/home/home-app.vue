@@ -97,7 +97,7 @@
         return this.globalStore.groups.filter(group => group.id)
       },
       showIntro() {
-        return this.globalStore.login.intro_state < 4
+        return this.globalStore.login.intro_state < 4 && this.globalStore.login.intro_state > 1
       },
       currentGroup() {
         return this.ownActiveGroups.find(group => group.id === this.selectedGroupId)
