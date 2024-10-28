@@ -9,16 +9,17 @@
     </div>
 
     <b-button variant="success" @click="downloadZIP()">
+      <i class="fas fa-download me-2"></i>
       Test erstellen und herunterladen
-      <b-icon icon="download"></b-icon>
     </b-button>
-    <b-button class="ml-2" @click="printAll">debug</b-button>
+    <b-button v-if="admin" class="ms-2" @click="printAll">debug</b-button>
   </b-card>
 </template>
 
 <script>
   import JSZip from 'jszip'
   import { testDefinitions } from './test-definitions.js'
+  import { isAdmin } from 'src/utils/user.js'
   export default {
     props: { allData: Object, questionType: String },
 
@@ -29,6 +30,9 @@
     },
 
     computed: {
+      admin() {
+        return isAdmin()
+      },
       questionTypeLabel() {
         return testDefinitions[this.questionType]?.label
       },

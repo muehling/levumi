@@ -215,7 +215,6 @@
   import ImprintModal from 'src/vue/shared/modals/imprint-modal.vue'
   import TermsModal from 'src/vue/shared/modals/terms-modal.vue'
   import PrivacyModal from 'src/vue/shared/modals/privacy-modal.vue'
-  import router from '../routes/frontend-routes'
   import UserSettingsDialog from '../users/components/user-settings-dialog.vue'
 
   export default {
@@ -316,8 +315,9 @@
       async handleLogout() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'POST' })
         if (res.status === 200) {
-          router.push('/')
+          this.$router.push('/')
           sessionStorage.removeItem('login')
+          window.location.replace('/')
           window.location.reload()
         }
       },
@@ -325,7 +325,7 @@
         const res = await ajax({ url: apiRoutes.users.logout, method: 'GET' })
         if (res.status === 200) {
           this.globalStore.fetch(true)
-          router.push('/nutzerverwaltung')
+          this.$router.push('/nutzerverwaltung')
           this.assessmentsStore.reset()
         }
       },
