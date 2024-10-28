@@ -62,7 +62,7 @@
     },
     computed: {
       allTestTypes() {
-        return this.globalStore.staticData.testTypes.map(testType => ({
+        return this.globalStore.staticData.testTypes?.map(testType => ({
           id: testType.id,
           name: testType.name,
         }))
