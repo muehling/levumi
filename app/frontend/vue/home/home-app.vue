@@ -122,7 +122,11 @@
         immediate: true,
         async handler(newId) {
           await this.assessmentsStore.fetch(newId)
-          await this.testsStore.fetchUsedTestsForGroup(newId)
+          const newGroup = this.globalStore.groups.find(group => group.id === newId)
+          // not accepted shares will be undefined, resulting in an error
+          if (newGroup && !!newGroup.key) {
+            await this.testsStore.fetchUsedTestsForGroup(newId)
+          }
         },
       },
     },
