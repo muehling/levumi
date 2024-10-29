@@ -38,7 +38,11 @@ class GroupsController < ApplicationController
   #PUT /groups/:id
   def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
     if @group.read_only(@login)
-      render json: { message: 'groups_controller::update: no edit permission', status: :forbidden }
+      render json: {
+               message: 'Sie haben nicht die notwendigen Rechte, um diese Klasse zu bearbeiten.'
+             },
+             status: :forbidden
+      return
     end
 
     # group settings can be changed from various places - with this, you only need to pass

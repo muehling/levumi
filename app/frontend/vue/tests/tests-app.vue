@@ -48,46 +48,46 @@
                               <div class="container-fluid">
                                 <table
                                   class="table table-sm table-striped table-borderless text-small mt-1">
-                                  <tr>
-                                    <td>Anzahl an Items</td>
-                                    <td>{{ test.items_count }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Durchführung</td>
-                                    <td>
-                                      <span>
-                                        {{
-                                          test.is_student_test
-                                            ? 'Selbstständig durch die Schüler:innen'
-                                            : 'Durch die Lehrkraft'
-                                        }}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>Zeitbeschränkung</td>
-                                    <td>{{ test.time_limit }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Durchführung</td>
-                                    <td>
-                                      <p>{{ test.usage }}</p>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>Items</td>
-                                    <td>
-                                      <p>
-                                        <span v-for="(item, key, i) in test.items" :key="key">
+                                  <tbody>
+                                    <tr>
+                                      <td>Kürzel</td>
+                                      <td>{{ test.shorthand }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Anzahl an Items</td>
+                                      <td>{{ test.items_count }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <span>
                                           {{
-                                            `${item}${
-                                              i < parseInt(test.items_count, 10) ? ', ' : ''
-                                            }`
+                                            test.is_student_test
+                                              ? 'Selbstständig durch die Schüler:innen'
+                                              : 'Durch die Lehrkraft'
                                           }}
                                         </span>
-                                      </p>
-                                    </td>
-                                  </tr>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Zeitbeschränkung</td>
+                                      <td>{{ test.time_limit }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <p>{{ test.usage }}</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Items</td>
+                                      <td>
+                                        <p>
+                                          {{ formattedItems(test.items) }}
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
                                 </table>
                               </div>
                               <div v-if="test.description" class="container-fluid mb-4">

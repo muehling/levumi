@@ -120,6 +120,8 @@
               this.$router.push(`/klassenbuch/eigene_klassen/${newIds[0]}`)
             }
           }
+        } else {
+          this.globalStore.setErrorMessage(res.data.message)
         }
       },
 

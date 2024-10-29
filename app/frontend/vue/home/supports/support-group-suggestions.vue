@@ -21,13 +21,15 @@
     </div>
     <table class="table table-sm table-bordered table-striped table-hover group-suggestions">
       <thead>
-        <th>Name</th>
-        <th
-          v-for="(item, index) in itemDictionary"
-          :key="'header' + item + index"
-          class="text-small">
-          {{ item }}
-        </th>
+        <tr>
+          <th>Name</th>
+          <th
+            v-for="(item, index) in itemDictionary"
+            :key="'header' + item + index"
+            class="text-small">
+            {{ item }}
+          </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="(student, studentIndex) in students" :key="student.id">

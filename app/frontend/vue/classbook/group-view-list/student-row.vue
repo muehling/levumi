@@ -182,7 +182,6 @@
       </div>
     </td>
     <td>
-      <span v-if="!hasFontSettings && !empty">Standard</span>
       <span :class="`${hasFontSettings ? 'font-weight-bold' : ''}`">
         {{ empty ? '' : fontSettingsText }}
       </span>

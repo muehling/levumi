@@ -107,8 +107,9 @@
       },
       displayTestAdminButton() {
         return (
-          this.$route.name === 'AssessmentList' ||
-          (this.$route.name === 'Diagnostik' && !this.group.read_only)
+          this.isAllowed &&
+          (this.$route.name === 'AssessmentList' ||
+            (this.$route.name === 'Diagnostik' && !this.group.read_only))
         )
       },
     },

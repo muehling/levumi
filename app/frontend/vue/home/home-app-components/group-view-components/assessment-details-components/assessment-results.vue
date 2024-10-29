@@ -48,12 +48,14 @@
           <b-card class="mt-2">
             <table class="table table-striped table-sm table-borderless">
               <thead>
-                <th>Datum</th>
-                <th>Schüler:in</th>
-                <th>Positiv</th>
-                <th>Negativ</th>
-                <th>Trend</th>
-                <th v-if="!readOnly">Aktionen</th>
+                <tr>
+                  <th>Datum</th>
+                  <th>Schüler:in</th>
+                  <th>Positiv</th>
+                  <th>Negativ</th>
+                  <th>Trend</th>
+                  <th v-if="!readOnly">Aktionen</th>
+                </tr>
               </thead>
               <tbody>
                 <tr

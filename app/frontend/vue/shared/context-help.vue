@@ -5,7 +5,7 @@
         <i class="fas fa-circle-question"></i>
       </span>
     </template>
-    {{ helpText }}
+    <div v-html="helpText"></div>
   </BPopover>
 </template>
 <script>
