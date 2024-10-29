@@ -90,42 +90,44 @@
     <br />
     <br />
     <table>
-      <tr>
-        <td>Prof. Dr. Andreas Mühling</td>
-        <td>und</td>
-        <td>Prof. Dr. Markus Gebhardt</td>
-      </tr>
-      <tr>
-        <td>
-          <address>
-            Christian-Albrechts-Universität zu Kiel
-            <br />
-            Christian-Albrechts-Platz 4
-            <br />
-            24118 Kiel
-            <br />
-            Deutschland
-            <br />
-            Tel.: +49 431-880-7508
-            <br />
-            E-Mail: andreas.muehling@informatik.uni-kiel.de
-          </address>
-        </td>
-        <td style="padding: 3em"></td>
-        <td>
-          <address>
-            Ludwig-Maximilians-Universität München
-            <br />
-            Leopoldstraße 13
-            <br />
-            80802 München
-            <br />
-            Deutschland
-            <br />
-            E-Mail: markus.gebhardt@lmu.de
-          </address>
-        </td>
-      </tr>
+      <tbody>
+        <tr>
+          <td>Prof. Dr. Andreas Mühling</td>
+          <td>und</td>
+          <td>Prof. Dr. Markus Gebhardt</td>
+        </tr>
+        <tr>
+          <td>
+            <address>
+              Christian-Albrechts-Universität zu Kiel
+              <br />
+              Christian-Albrechts-Platz 4
+              <br />
+              24118 Kiel
+              <br />
+              Deutschland
+              <br />
+              Tel.: +49 431-880-7508
+              <br />
+              E-Mail: andreas.muehling@informatik.uni-kiel.de
+            </address>
+          </td>
+          <td style="padding: 3em"></td>
+          <td>
+            <address>
+              Ludwig-Maximilians-Universität München
+              <br />
+              Leopoldstraße 13
+              <br />
+              80802 München
+              <br />
+              Deutschland
+              <br />
+              E-Mail: markus.gebhardt@lmu.de
+            </address>
+          </td>
+        </tr>
+      </tbody>
     </table>
 
     <h3>Name und Anschrift des Datenschutzbeauftragten der Verantwortlichen</h3>
