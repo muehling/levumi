@@ -26,8 +26,8 @@
         <p class="text-center">
           Keine aktiven Tests mit Messungen vorhanden!
           <br />
-          Legen Sie zunächst über den Button "Test hinzufügen/löschen" einen Test für diese Klasse
-          an.
+          Fügen Sie zunächst über den Button "Test hinzufügen/löschen" einen Test zu diese Klasse
+          hinzu.
         </p>
       </b-card>
       <div v-else>

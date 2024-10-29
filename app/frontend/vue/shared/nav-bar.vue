@@ -118,7 +118,7 @@
               <contact-form @close-contact-form="closeContactForm" />
             </b-dropdown-form>
           </b-nav-item-dropdown>
-          <b-nav-item-dropdown text="System" is-nav toggle-class="mt-1">
+          <b-nav-item-dropdown v-if="showSystemMenu" text="System" is-nav toggle-class="mt-1">
             <b-dropdown-item v-if="checkCapability('support')" to="/support">
               Support
             </b-dropdown-item>
@@ -239,6 +239,9 @@
       return { showLegal: false, showProfile: false, showAdminMenu: false }
     },
     computed: {
+      showSystemMenu() {
+        return !this.isRegularUser
+      },
       navigationDisplay() {
         if (this.$route.path.startsWith('/diagnostik')) {
           return 'Diagnostik'
