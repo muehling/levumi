@@ -10,13 +10,29 @@
       <thead>
         <tr>
           <th>Name</th>
-          <th>Login-Code</th>
+          <th>
+            Login-Code
+            <context-help
+              help-text="Login-Code der Schüler:in. Unter 'Aktionen und Einstellungen' können Sie ein PDF mit diesen Codes zum Ausdrucken und Austeilen an die Schüler:innen erzeugen." />
+          </th>
           <th>Geschlecht</th>
           <th>Geburtsdatum</th>
           <th>Förderbedarf</th>
           <th>Weitere Merkmale</th>
-          <th>Schriftart</th>
-          <th>Aktionen</th>
+          <th>
+            Schriftart
+            <context-help
+              help-text="Aktuell verwendete Schrifteinstellungen. Fett gedruckte Zeilen weichen von der unter 'Aktionen und Einstellungen' festgelegten Standard-Schriftart ab." />
+          </th>
+          <th>
+            Aktionen
+            <context-help
+              help-text="<i class='text-secondary me-3 fas fa-text-height'></i>Individuelle Schrifteinstellungen<br/>
+               <i class='text-secondary me-3 fas fa-user-edit'></i>Informationen bearbeiten<br/>
+               <i class='text-secondary me-3 fas fa-qrcode'></i>QR-Code anzeigen<br/>
+               <i class='text-secondary me-3 fas fa-circle-info'></i>Zugewiesene Tests anzeigen
+              " />
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -68,10 +84,11 @@
   import TestInfoModal from 'src/vue/classbook/modals/test-info-modal.vue'
   import QrCodeModal from 'src/vue/classbook/modals/qr-code-modal.vue'
   import FontSettingsModal from 'src/vue/classbook/modals/font-settings-modal.vue'
+  import ContextHelp from 'src/vue/shared/context-help.vue'
 
   export default {
     name: 'StudentList',
-    components: { StudentRow, TestInfoModal, QrCodeModal, FontSettingsModal },
+    components: { StudentRow, TestInfoModal, QrCodeModal, FontSettingsModal, ContextHelp },
     props: {
       group: Object,
       readOnly: Boolean,
