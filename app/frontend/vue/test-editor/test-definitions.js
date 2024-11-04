@@ -6,9 +6,9 @@ export const testDefinitions = {
     renderer: 'v2/render/number_input',
     csvFieldHelp: [
       'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
-      'enthält die erste statische Stelle der Aufgabe.',
+      'enthält die erste Stelle der Aufgabe.',
       'enthalt den Operator.',
-      'enthält die zweite statische Stelle der Aufgabe.',
+      'enthält die zweite Stelle der Aufgabe.',
       'enthält die richtige Antwort.',
       'enthält die Position des Eingabefeldes. Für "echte" Rechenaufgaben ( 1 + 4= _ ) gilt die 3, für Platzhalteraufgaben ( _ + 3 = 5 ) 1 oder ( 3 + _ = 5 ) 2.',
     ],

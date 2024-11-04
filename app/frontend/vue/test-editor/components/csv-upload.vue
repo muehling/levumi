@@ -152,26 +152,36 @@
       parseNumberInput(data) {
         const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
-          let question
+          //let question
+          let firstNumber, secondNumber, correctAnswer
           switch (d[5]) {
             case '1':
-              question = `${d[4]} ${d[2]} ${d[1]} = ${d[3]}`
+              firstNumber= `${d[3]}`
+              secondNumber=`${d[4]}`
+              correctAnswer= `${d[1]}` 
+          //    question = `${d[4]} ${d[2]} ${d[1]} = ${d[3]}`
               break
             case '2':
-              question = `${d[1]} ${d[2]} ${d[4]} = ${d[3]}`
+              firstNumber=`${d[1]}`
+              secondNumber=`${d[4]}`
+              correctAnswer=`${d[3]}`
+          //    question = `${d[1]} ${d[2]} ${d[4]} = ${d[3]}`
               break
             case '3':
-              question = `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`
+              firstNumber=`${d[1]}`
+              secondNumber=`${d[3]}`
+              correctAnswer=`${d[4]}`
+          //    question = `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`
               break
           }
           return {
             id: i + 1,
             group: dimensions.find(dim => dim.text === d[0]).id,
-            question,
-            firstNumber: d[1],
+            question: `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`,
+            firstNumber,
             operation: d[2],
-            secondNumber: d[3],
-            correctAnswer: d[4],
+            secondNumber,
+            correctAnswer,
             inputPosition: d[5],
           }
         })
