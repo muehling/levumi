@@ -217,8 +217,8 @@
         })
         if (res.status === 200) {
           this.toggleCalcSettings()
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
         }
       },
       async moveToArchive() {
@@ -247,6 +247,7 @@
         this.isGeneratingQrCodes = true
         const pdf = new jsPDF()
         let height = 10
+        console.log('meh', this.group.students)
 
         for (let i = 0; i < this.group.students.length; i++) {
           const qrCode = new QRCodeStyling({

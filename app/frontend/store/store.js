@@ -36,6 +36,8 @@ export const useGlobalStore = defineStore('global', {
       this.shareKeys = { ...this.shareKeys, [key]: value }
     },
     setStudentsInGroup({ groupId, students }) {
+      const group = this.groups.find(group => group.id === groupId)
+      group.students = students
       this.studentsInGroups = { ...this.studentsInGroups, [groupId]: students }
     },
     setErrorMessage(msg) {
