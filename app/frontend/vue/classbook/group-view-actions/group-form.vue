@@ -104,12 +104,14 @@
         }
 
         if (res.status === 200) {
+          this.globalStore.setGenericMessage({
+            title: 'Speichern erfolgreich',
+            message: 'Die Änderungen wurden gespeichert!',
+          })
+
           const newIds = res.data.groups
             .filter(group => !this.globalStore.groups.find(g => g.id === group.id))
             .map(a => a.id)
-
-          //Vue.set(this.globalStore, 'groups', res.data.groups)
-          //Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
           this.globalStore.groups = res.data.groups
           this.globalStore.shareKeys = res.data.share_keys
 
