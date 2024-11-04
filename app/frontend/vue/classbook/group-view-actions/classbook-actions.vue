@@ -247,7 +247,6 @@
         this.isGeneratingQrCodes = true
         const pdf = new jsPDF()
         let height = 10
-        console.log('meh', this.group.students)
 
         for (let i = 0; i < this.group.students.length; i++) {
           const qrCode = new QRCodeStyling({
