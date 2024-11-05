@@ -266,13 +266,14 @@
 <script>
   import { access } from 'src/utils/access'
   import { ajax } from 'src/utils/ajax'
+  import { defaultFont } from 'src/utils/constants'
   import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
   import { getFontSettingsDescription } from 'src/utils/helpers'
+  import { useGlobalStore } from 'src/store/store'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import isArray from 'lodash/isArray'
   import isEmpty from 'lodash/isEmpty'
-  import { defaultFont } from 'src/utils/constants'
 
   export default {
     name: 'StudentRow',
@@ -283,6 +284,10 @@
       index: Number,
       open: Boolean,
       student: Object,
+    },
+    setup() {
+      const globalStore = useGlobalStore()
+      return { globalStore }
     },
     data: function () {
       let allTags = [
@@ -442,12 +447,14 @@
       },
 
       collectData() {
-        //Daten aus den Inputs codieren für AJAX Request
-        const encodedName = encodeURIComponent(
-          encryptWithMasterKeyAndGroup(this.name, this.group.id)
-        ) //Namen vor dem Senden verschlüsseln
+        // encoding will fail if password was reset by admins
+        let encodedName
+        try {
+          encodedName = encodeURIComponent(encryptWithMasterKeyAndGroup(this.name, this.group.id))
+        } catch (e) {
+          return null
+        }
         let res = `group=${this.group.id}&student[name]=${encodedName}`
-        //Restliche Attribute anfügen, falls vorhanden
         if (this.gender != null) {
           res += '&student[gender]=' + this.gender
         }
@@ -465,8 +472,14 @@
       },
 
       async handleSubmit() {
+        const studentData = this.collectData()
+        if (studentData === null) {
+          this.globalStore.setErrorMessage('Die Schüler:in kann nicht bearbeitet werden.')
+          return
+        }
+
         const res = await ajax({
-          url: `/students${!this.empty ? '/' + this.student.id : ''}?${this.collectData()}`,
+          url: `/students${!this.empty ? '/' + this.student.id : ''}?${studentData}`,
           method: this.empty ? 'POST' : 'PUT',
         })
         const data = res.data
@@ -480,13 +493,10 @@
       },
 
       update(data) {
-        //Wird bei erfolgreichem Create/Update aufgerufen
-        //Zu Elternkomponente propagieren, dort werden die Daten aktuell gehalten
         this.$emit('update-student', data)
         if (this.index >= 0) {
           this.editMode = false
         } else {
-          //Beim Anlegen Form offen lassen und Input leeren, für mehrfaches Anlegen
           this.name = ''
           this.gender = null
           this.year = null
