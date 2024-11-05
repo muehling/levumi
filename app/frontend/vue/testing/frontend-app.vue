@@ -1,6 +1,6 @@
 <template>
   <div>
-    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light mx-4">
       <a class="navbar-brand" href="/">
         <img
           :src="'/images/shared/Levumi-normal_small.png'"
@@ -37,15 +37,15 @@
             v-for="test in studentTests"
             :key="test.id"
             class="col-12 col-md-6 col-lg-4 col-xl-2 test-card">
-            <b-card
-              class="w-100 m-2 shadow"
-              body-class="test-card-body px-3"
-              :title="test.test_info.family"
-              :sub-title="test.test_info.level">
-              <template slot="header">
+            <b-card class="w-100 m-2 shadow" body-class="test-card-body px-3">
+              <template slot="title">
                 <h4>{{ test.test_info.competence }}</h4>
-                <h6>{{ test.test_info.area }}</h6>
+                <p class="mb-0">{{ test.test_info.area }}</p>
               </template>
+              <hr class="mt-0" />
+              <h4>{{ test.test_info.family }}</h4>
+              <p class="mb-4">{{ test.test_info.level }}</p>
+
               <b-button
                 block
                 :href="`/students/${student.id}/results/new?test_id=${test.test_info.id}`"
@@ -250,6 +250,7 @@
 <style>
   .test-card {
     min-width: 8em;
+    max-width: 20em !important;
     display: flex;
     flex-grow: 1 !important;
   }
