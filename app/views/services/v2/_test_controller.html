@@ -9,6 +9,7 @@
     const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
     const rawItems = window.config.items
     const items = Object.values(rawItems)
+    let demoItem = items[0]
 
     let fontSize = '2rem'
     switch (window.font_size) {
@@ -160,12 +161,11 @@
       const renderer = getRenderer(window.config.item_type)
 
       const el = window.useDemoItem({
-        config: { id: 0, styles, item: items[0], ...renderer.options },
+        config: { id: 0, styles, item: demoItem, ...renderer.options },
         renderer: renderer.renderer,
         continueHandler: endDemo,
       })
       $('#content-container').html(el)
-      items.shift()
     }
 
     //######################################
@@ -216,10 +216,34 @@
       return window.useSaveResult({ result, duration, dimensions: window.config.dimensions })
     }
 
+    const shuffleItemsWithConstraints = () => {
+      for (let i = 0; i < items.length - 1; i++) {
+        if (items[i].group === items[i + 1].group) {
+          let nextItem = items.findIndex(
+            (item, index) => item.group !== items[i].group && index > i
+          )
+
+          if (nextItem && nextItem !== -1) {
+            ;[items[i + 1], items[nextItem]] = [items[nextItem], items[i + 1]]
+          }
+        }
+      }
+    }
+
     //######################################
     //## start test
     //######################################
     preloadAssets()
+    if (window.config.options?.show_demo_task) {
+      items.shift()
+    }
+
+    if (window.lastResult !== undefined) {
+      window.shuffleArray(items)
+      if (window.config.dimensions.length) {
+        shuffleItemsWithConstraints()
+      }
+    }
     if (window.config.startPage.length) {
       const renderer = getRenderer(window.config.item_type)
       const el = window.useStartPage({
@@ -233,10 +257,6 @@
       $('#content-container').html(el).css(styles)
     } else {
       setNextItem()
-    }
-
-    if (window.lastResult !== undefined) {
-      window.shuffleArray(items)
     }
 
     //######################################

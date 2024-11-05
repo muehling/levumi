@@ -63,16 +63,24 @@
       </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
-      <b-col>
+      <b-col :key="forceUpdate">
         <apexchart
-          v-if="hasChartData"
+          v-if="hasChartData && currentChartType === 'line'"
           ref="levumiChart"
-          :key="forceUpdate"
-          :type="currentChartType"
+          type="line"
           height="500px"
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
+        <apexchart
+          v-else-if="hasChartData && currentChartType === 'bar'"
+          ref="levumiChart"
+          type="bar"
+          height="500px"
+          width="100%"
+          :options="chartOptions"
+          :series="chartSeries" />
+
         <div v-else style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
@@ -86,8 +94,8 @@
           <b-col>
             <b-button
               v-if="!readOnly"
-              v-b-toggle.annotation_collapse
               id="annotation_btn"
+              v-b-toggle.annotation_collapse
               :aria-expanded="annotationControlVisible ? 'true' : 'false'"
               aria-controls="annotation_collapse"
               size="sm"
@@ -101,8 +109,8 @@
             </b-button>
             <b-button
               v-if="targetIsEnabled && !readOnly"
-              v-b-toggle.target_collapse
               id="target_btn"
+              v-b-toggle.target_collapse
               class="ms-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
@@ -206,7 +214,7 @@
 <script>
   import { ajax } from '@/utils/ajax'
   import { checkUserSettings } from '@/utils/user'
-  import { computed, toRaw } from 'vue'
+  import { toRaw } from 'vue'
   import { createSimpleTableData, createHtmlTableFromViewConfig } from './data/createTableData'
   import { createTrendline } from './linearRegressionHelpers'
   import { getTrendFromResults } from '@/utils/helpers'
@@ -220,7 +228,6 @@
   import compact from 'lodash/compact'
   import isEmpty from 'lodash/isEmpty'
   import jsPDF from 'jspdf'
-  import LoadingDots from '../../shared/loading-dots.vue'
   import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
@@ -247,7 +254,6 @@
       TargetControls,
       SupportGroupOverview,
       SupportGroupQualitative,
-      LoadingDots,
     },
 
     props: {
@@ -735,6 +741,7 @@
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
         }
+        this.forceUpdate = Symbol()
         this.updateView()
 
         this.$emit('analysis-view-initialized')
@@ -848,7 +855,6 @@
           }
         }
 
-        this.graphData = []
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
         this.graphData = gData
 

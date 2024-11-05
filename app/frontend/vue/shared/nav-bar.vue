@@ -318,7 +318,6 @@
       async handleLogout() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'POST' })
         if (res.status === 200) {
-          this.$router.push('/')
           sessionStorage.removeItem('login')
           window.location.replace('/')
           window.location.reload()

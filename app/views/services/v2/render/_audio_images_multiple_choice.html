@@ -22,8 +22,13 @@
   .student-button {
     height: 3em;
     width: 3em;
+    padding: 0.3em;
     border-radius: 0.2em;
     border-color: black;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
   }
   .selected .image-button-inner {
     box-shadow: 0px 0px 5px 5px #5a598c;
@@ -58,6 +63,7 @@
           </div>
           <div class="d-flex flex-row justify-content-around">
             <button id="replay-button" class="btn student-button">
+              <i class="fas fa-headphones"></i>
               <i class="fas fa-arrow-rotate-right"></i>
             </button>
             <button id="dont-know" class="btn student-button">

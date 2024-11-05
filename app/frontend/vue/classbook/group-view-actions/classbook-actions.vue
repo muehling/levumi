@@ -217,8 +217,8 @@
         })
         if (res.status === 200) {
           this.toggleCalcSettings()
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
         }
       },
       async moveToArchive() {

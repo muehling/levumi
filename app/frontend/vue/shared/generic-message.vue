@@ -1,5 +1,9 @@
 <template>
-  <BModal id="error-dialog" v-if="isOpen" :title="globalStore.genericMessage.title" hide-footer>
+  <b-modal
+    id="error-dialog"
+    :model-value="isOpen"
+    :title="globalStore.genericMessage.title"
+    hide-footer>
     <div class="d-block text-center mb-4">
       {{ globalStore.genericMessage.message }}
       <slot></slot>
@@ -7,7 +11,7 @@
     <div class="d-flex justify-content-end">
       <b-button class="m-1" @click="_close">Schließen</b-button>
     </div>
-  </BModal>
+  </b-modal>
 </template>
 <script>
   /************************************
@@ -23,19 +27,20 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    computed: {
-      isOpen: {
-        get: function () {
-          return !!this.globalStore.genericMessage.message
-        },
-        set: function () {
-          this.globalStore.resetGenericMessage()
+    data() {
+      return { isOpen: false }
+    },
+    watch: {
+      'globalStore.genericMessage': {
+        handler(data) {
+          this.isOpen = !!data?.message
         },
       },
     },
     methods: {
       _close() {
         this.globalStore.resetGenericMessage()
+        this.isOpen = false
       },
     },
   }
