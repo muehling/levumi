@@ -1,6 +1,6 @@
 <style>
-  .height-80 {
-    height: 80vh;
+  .custom-container {
+    height: 75vh;
     width: 100%;
   }
   .image-button.image-button {
@@ -17,7 +17,7 @@
     cursor: pointer;
   }
   .button-container {
-    min-height: 80vh;
+    min-height: 75vh;
   }
   .student-button {
     height: 3em;
@@ -29,6 +29,10 @@
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
+  }
+  .student-button:hover {
+    background-color: unset;
+    color: unset;
   }
   .selected .image-button-inner {
     box-shadow: 0px 0px 5px 5px #5a598c;
@@ -53,12 +57,12 @@
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
     const el = $(
       `<div class="container d-flex flex-column w-100">
-          <div id="audio-images-multiple-choice-${id}" class="height-80 d-flex justify-content-center align-items-center flex-column">
+          <div id="audio-images-multiple-choice-${id}" class="custom-container d-flex justify-content-center align-items-center flex-column">
             <audio id="audio-${id}" autoplay type="audio/mp3" src="${getBlobUrl(
         item.audio
       )}"></audio>
             <div class="w-100 d-flex justify-content-center">
-              <div id="button-container" class="row height-80"></div>
+              <div id="button-container" class="row custom-container"></div>
             </div>
           </div>
           <div class="d-flex flex-row justify-content-around">
