@@ -47,7 +47,7 @@
   const handleClick = (image, index) => {
     clickedImage = image
     $('.image-button').removeClass('selected')
-    const test = $(`#bild-${index}`).addClass('selected')
+    $(`#bild-${index}`).addClass('selected')
   }
 
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
@@ -94,13 +94,24 @@
       .css(styles)
       .on('click', () => {
         $(`#audio-${id}`)[0].play()
+        $('#button-container').focus()
       })
     el.find('#dont-know')
       .css(styles)
-      .on('click', () => resultHandler('nicht beantwortet'))
+      .on('click', () => {
+        clickedImage = undefined
+        resultHandler('nicht beantwortet')
+        $('#button-container').focus()
+      })
     el.find('#continue')
       .css(styles)
-      .on('click', () => resultHandler(clickedImage))
+      .on('click', () => {
+        $('#button-container').focus()
+        if (clickedImage) {
+          resultHandler(clickedImage)
+          clickedImage = undefined
+        }
+      })
 
     el.find('#button-container').append(buttons)
 
