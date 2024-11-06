@@ -18,42 +18,26 @@
         </b-button-group>
         <div class="flex-grow-1 border mx-4">
           <p class="d-flex m-0">{{ typeDescription(item) }}:</p>
-          <b-form-textarea
-            v-if="item.type == 'h1'"
-            rows="2"
-            max-rows="4"
-            :value="item.text"
-            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
-            @input="val => updateElement(item, val)" />
-
-          <b-form-textarea
-            v-if="item.type == 'h3'"
-            rows="2"
-            max-rows="4"
-            :value="item.text"
-            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
-            @input="val => updateElement(item, val)" />
-
-          <b-form-textarea
-            v-if="item.type == 'p'"
-            rows="2"
-            max-rows="4"
-            :value="item.text"
-            :placeholder="item.text ? '!!!Achtung nur ein Placholder erst in ein leeres Feld schreiben!!!'+item.text:'Hier bitte den Text eingeben'"
-            @input="val => updateElement(item, val)" />
-
           <b-form-file
             v-if="item.type == 'asset'"
             :id="`imageUpload${item.id}`"
-            accept="image/*"
             class="inputImage"
             size="md"
-            :label="item.asset ? 'Ihre hochgeladenen Datei ist: '+item.asset.name : 'Bild hochladen'"
+            :label="
+              item.asset ? 'Ihre hochgeladenen Datei ist: ' + item.asset.name : 'Bild hochladen'
+            "
             @input="addPicture(item)" />
+          <b-form-textarea
+            v-else
+            rows="2"
+            max-rows="4"
+            :model-value="item.text"
+            placeholder="Hier bitte den Text eingeben"
+            @input="val => updateElement(item, val)" />
         </div>
         <b-button-group vertical>
           <b-button variant="outline-secondary" @click="deleteElement(item.id)">
-            <i class="fa-solid fa-xmark" aria-hidden="true" ></i>
+            <i class="fa-solid fa-xmark" aria-hidden="true"></i>
           </b-button>
         </b-button-group>
       </div>
@@ -145,6 +129,8 @@
         this.$refs['addElementModal'].show()
       },
       addElement(type) {
+        console.log('meh', this.items)
+
         this.items.push({
           type: type,
           text: '',
@@ -209,8 +195,8 @@
             reader.onload = function (e) {
               let img = new Image()
               img.src = e.target.result
-              let childrenList= document.getElementById('imageContainer' + index).children
-              if (!Array.from(childrenList).some(el => el.src === img.src)){
+              let childrenList = document.getElementById('imageContainer' + index).children
+              if (!Array.from(childrenList).some(el => el.src === img.src)) {
                 document.getElementById('imageContainer' + index).appendChild(img)
               }
             }
