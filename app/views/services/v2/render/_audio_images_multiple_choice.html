@@ -96,7 +96,6 @@
         e.preventDefault()
         e.stopPropagation()
         $(`#audio-${id}`)[0].play()
-        //  $('#replay-button').trigger('blur')
       })
     el.find('#dont-know')
       .css(styles)
@@ -105,14 +104,12 @@
         e.stopPropagation()
         clickedImage = undefined
         resultHandler('nicht beantwortet')
-        // $('#dont-know').trigger('blur')
       })
     el.find('#continue')
       .css(styles)
       .on('click', e => {
         e.preventDefault()
         e.stopPropagation()
-        // $('#continue').trigger('blur')
         if (clickedImage) {
           resultHandler(clickedImage)
           clickedImage = undefined
