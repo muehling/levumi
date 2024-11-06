@@ -94,19 +94,19 @@
       .css(styles)
       .on('click', () => {
         $(`#audio-${id}`)[0].play()
-        $('#button-container').focus()
+        $('#replay-button').trigger('blur')
       })
     el.find('#dont-know')
       .css(styles)
       .on('click', () => {
         clickedImage = undefined
         resultHandler('nicht beantwortet')
-        $('#button-container').focus()
+        $('#dont-know').trigger('blur')
       })
     el.find('#continue')
       .css(styles)
       .on('click', () => {
-        $('#button-container').focus()
+        $('#continue').trigger('blur')
         if (clickedImage) {
           resultHandler(clickedImage)
           clickedImage = undefined
