@@ -56,10 +56,15 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
+    data() {
+      return { isLoading: false }
+    },
     computed: {
-      isLoading() {
-        return this.globalStore.isLoading
-      },
+      //  isLoading() {
+      //    console.log('yay', this.globalStore.isLoading)
+      //
+      //    return this.globalStore.isLoading
+      //  },
       isRegistrationComplete() {
         if (isEmpty(this.globalStore.login)) {
           return true
@@ -114,8 +119,11 @@
       return false
     },
     async mounted() {
+      this.isLoading = true
       await this.globalStore.fetch()
+      this.isLoading = false
       await this.checkLogin()
+
       if (this.globalStore.login.intro_state >= 5) {
         this.displayNews()
       }
