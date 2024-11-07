@@ -5,7 +5,8 @@
 
   <div v-else-if="isRegistrationComplete">
     <nav-bar />
-    <router-view />
+    <loading-dots v-if="isLoading" />
+    <router-view v-else />
     <error-dialog />
     <input-dialog ref="renewLoginDialog">
       <template #extraContent>
