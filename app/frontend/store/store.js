@@ -121,7 +121,8 @@ export const useGlobalStore = defineStore('global', {
       this.staticData.annotationCategories = coreData.annotationCategories
       this.staticData.testTypes = coreData.testTypes
       this.staticData.testMetaData = coreData.testMetaData
-      ;(this.staticData.news = coreData.news), (this.isLoading = false)
+      this.staticData.news = coreData.news
+      this.isLoading = false
     },
   },
 })

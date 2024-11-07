@@ -149,7 +149,7 @@
         return !this.group?.read_only
       },
       defaultTestType() {
-        return this.globalStore.staticData.testMetaData.test_types[0]
+        return this.globalStore.staticData?.testMetaData?.test_types[0]
       },
       toggleButtonVariant() {
         return !this.allTestsActive ? 'outline-success' : 'outline-danger'
@@ -205,7 +205,7 @@
     methods: {
       getTestTypeLabel(testTypeId) {
         return (
-          this.globalStore.staticData.testMetaData.test_types.find(
+          this.globalStore.staticData?.testMetaData?.test_types.find(
             testType => testType.id === testTypeId
           )?.name || this.defaultTestType.name
         )
