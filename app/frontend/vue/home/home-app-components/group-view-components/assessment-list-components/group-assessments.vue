@@ -205,9 +205,9 @@
     methods: {
       getTestTypeLabel(testTypeId) {
         return (
-          this.globalStore.staticData?.testMetaData?.test_types.find(
+          this.globalStore.staticData?.testMetaData?.test_types?.find(
             testType => testType.id === testTypeId
-          )?.name || this.defaultTestType.name
+          )?.name || this.defaultTestType?.name
         )
       },
       checkIsUpdating(testId) {
