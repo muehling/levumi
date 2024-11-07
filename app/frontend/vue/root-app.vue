@@ -105,8 +105,12 @@
         },
       },
     },
-    errorCaptured(error) {
-      this.globalStore.serverError = error.stack.split('\n').slice(0, 2).join('\n')
+    errorCaptured(error, component) {
+      const componentName = component.$?.type?.name
+      const baseURI = component.$el?.baseURI
+      const stack = error.stack.split('\n')?.slice(0, 2)?.join('\n')
+
+      this.globalStore.serverError = `Component: ${componentName}, baseURI: ${baseURI}, Stack: ${stack}`
       return false
     },
     async mounted() {
