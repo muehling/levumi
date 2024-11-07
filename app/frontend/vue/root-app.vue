@@ -105,6 +105,10 @@
         },
       },
     },
+    errorCaptured(error) {
+      this.globalStore.serverError = error.stack.split('\n').slice(0, 2).join('\n')
+      return false
+    },
     async mounted() {
       await this.globalStore.fetch()
       await this.checkLogin()

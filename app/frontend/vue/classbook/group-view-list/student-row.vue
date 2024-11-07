@@ -280,7 +280,7 @@
     components: { ConfirmDialog, ContextHelp },
     props: {
       empty: Boolean,
-      group: Object,
+      //   group: Object,
       index: Number,
       open: Boolean,
       student: Object,
