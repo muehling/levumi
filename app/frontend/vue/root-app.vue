@@ -140,7 +140,7 @@
             data: {
               support: true,
               server_error: true,
-              text: errorMessage,
+              message: errorMessage,
               subject: 'Levumi Serverfehler',
             },
           })
