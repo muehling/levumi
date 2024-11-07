@@ -105,7 +105,6 @@
 </template>
 
 <script>
-  import { checkUserSettings } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
   import { useMaterialsStore } from '../../store/materialsStore'
   import flatten from 'lodash/flatten'
@@ -131,50 +130,35 @@
       isLoading() {
         return this.materialsStore.isLoading
       },
-      mData() {
-        return this.materialsStore.materials
-      },
+
       filteredAreas() {
-        // hides ARTH materials from everyone who does not have hideArthMaterials set to true
-        //TODO remove check once DDM is done. then, always return all areas.
-        if (
-          checkUserSettings(
-            this.globalStore.login.settings,
-            'visibilities.general.hideArthMaterials'
-          ) ||
-          !checkUserSettings(this.globalStore.login.settings, 'visibilities.general')
-        ) {
-          const arthIds = this.mData.tests
-            .filter(test => test.shorthand === 'ARTH' || test.shorthand === 'ARTH_SHORT')
-            .map(test => test.area_id)
-          return this.mData.areas.filter(area => arthIds.findIndex(id => id === area.id))
-        } else {
-          return this.mData.areas
-        }
+        return this.materialsStore.materials.areas
       },
       filteredCompetences() {
-        return this.mData.competences
-          ? Object.values(this.mData.competences).filter(
+        return this.materialsStore.materials.competences
+          ? Object.values(this.materialsStore.materials.competences).filter(
               competence => competence.area_id === this.selected_area
             )
           : []
       },
       filteredTestFamilies() {
-        return this.mData.test_families
-          ? Object.values(this.mData.test_families).filter(
+        return this.materialsStore.materials.test_families
+          ? Object.values(this.materialsStore.materials.test_families).filter(
               family => family.competence_id === this.selected_competence
             )
           : []
       },
       filteredTests() {
-        return this.mData.tests
-          ? Object.values(this.mData.tests).filter(
+        return this.materialsStore.materials.tests
+          ? Object.values(this.materialsStore.materials.tests).filter(
               test => test.test_family_id === this.selected_family
             )
           : []
       },
       filteredMaterials() {
-        const supports = this.mData.supports ? Object.values(this.mData.supports) : []
+        const supports = this.materialsStore.materials.supports
+          ? Object.values(this.materialsStore.materials.supports)
+          : []
 
         const materialIds = flatten([
           supports
@@ -191,7 +175,10 @@
             .map(n => n.material_id),
         ])
 
-        const materials = this.mData.materials ? this.mData.materials : []
+        const materials = this.materialsStore.materials.materials
+          ? this.materialsStore.materials.materials
+          : []
+
         return materials.filter(material => materialIds.findIndex(m => m === material.id) !== -1)
       },
     },

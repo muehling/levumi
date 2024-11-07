@@ -6,25 +6,22 @@
       <div class="bounce2"></div>
       <div class="bounce3"></div>
     </div>
+    <div v-else-if="!suggestions.length">
+      <div class="text-center text-muted">
+        Leider ist zur Zeit kein passendes Fördermaterial vorhanden.
+      </div>
+    </div>
     <div v-else>
       <b-tabs pills>
-        <!-- Hinweistext falls kein Material vorhanden -->
-        <div slot="empty">
-          <div class="text-center text-muted">
-            Leider ist zur Zeit kein passendes Fördermaterial vorhanden.
-          </div>
-        </div>
         <b-tab
           v-for="entry in suggestions"
           :key="entry.student.id"
-          :title="getStudentName(entry.student)"
-        >
+          :title="getStudentName(entry.student)">
           <b-tabs pills card vertical class="mt-2">
             <b-tab
               v-if="specific(entry).length > 0"
               title="Spezifische Vorschläge"
-              disabled
-            ></b-tab>
+              disabled></b-tab>
             <b-tab v-for="material in specific(entry)" :key="material.id" :title="material.name">
               <material-view :material="material" :full="false"></material-view>
             </b-tab>
