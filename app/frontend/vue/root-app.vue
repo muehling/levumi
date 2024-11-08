@@ -60,11 +60,6 @@
       return { isLoading: false }
     },
     computed: {
-      //  isLoading() {
-      //    console.log('yay', this.globalStore.isLoading)
-      //
-      //    return this.globalStore.isLoading
-      //  },
       isRegistrationComplete() {
         if (isEmpty(this.globalStore.login)) {
           return true
@@ -253,6 +248,7 @@
         window.location.reload()
       },
       async sendLogin(text) {
+        await this.$nextTick() // somehow the renewLoginDialog ref is not accessible otherwise
         const pw = await this.$refs.renewLoginDialog.open({
           disableClose: true,
           message: `${text}Bitten geben Sie Ihr Passwort erneut ein, um fortzufahren:`,

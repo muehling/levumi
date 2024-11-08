@@ -1,17 +1,33 @@
 <template>
   <div id="test-types" class="container">
-    <p>Folgende Test-Typen stehen aktuell zur Verfügung:</p>
+    <p class="mt-4">Folgende Test-Typen stehen aktuell zur Verfügung:</p>
     <div>
-      <div
-        v-for="testType in testTypes"
-        :key="testType.id"
-        class="test-type w-100 justify-content-between align-items-center d-flex my-1 p-2">
-        <span>{{ testType.name }}</span>
-        <span>{{ testType.description }}</span>
-        <b-button class="btn btn-sm" variant="outline-danger" @click="deleteTestType(testType.id)">
-          <i class="fas fa-trash"></i>
-        </b-button>
-      </div>
+      <table class="table table-striped table-sm w-100 border">
+        <thead>
+          <tr class="text-bold">
+            <td>ID</td>
+            <td>Bezeichnung</td>
+            <td>Beschreibung</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="testType in testTypes" :key="testType.id">
+            <td>{{ testType.id }}</td>
+            <td>{{ testType.name }}</td>
+            <td>{{ testType.description }}</td>
+            <td>
+              <b-button
+                class="btn btn-sm text-light"
+                variant="danger"
+                @click="deleteTestType(testType.id)">
+                <i class="fas fa-trash"></i>
+              </b-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
       <div class="mt-4 flex-row d-flex">
         <b-form-input
           id="category"
@@ -97,8 +113,3 @@
     },
   }
 </script>
-<style>
-  #test-types .test-type:nth-child(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-</style>
