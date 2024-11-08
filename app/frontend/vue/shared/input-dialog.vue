@@ -7,6 +7,7 @@
     :hide-header-close="disableClose"
     :title="title"
     hide-footer
+    :model-value="isOpen"
     @shown="$refs.inputField.focus()">
     <div class="d-block mb-4">
       <p>{{ message }}</p>
@@ -48,6 +49,7 @@
       type: 'text',
       disableClose: false,
       showPassword: false,
+      isOpen: false,
     }),
     computed: {
       inputType() {
@@ -69,7 +71,6 @@
 
     methods: {
       open(data = {}) {
-        this.$refs.genericInputDialog.show()
         this.message = data.message
         this.title = data.title || ''
         this.okText = data.okText
@@ -77,6 +78,7 @@
         this.placeHolder = data.placeHolder || ''
         this.type = data.type || 'text'
         this.disableClose = data.disableClose || false
+        this.isOpen = true
         return new Promise((resolve, reject) => {
           this.resolvePromise = resolve
           this.rejectPromise = reject
@@ -84,7 +86,7 @@
       },
 
       _close() {
-        this.$refs.genericInputDialog.hide()
+        this.isOpen = false
         this.message = ''
         this.title = ''
         this.resolvePromise(false)
@@ -92,7 +94,7 @@
       _confirm(e) {
         e.preventDefault()
         e.stopPropagation()
-        this.$refs.genericInputDialog.hide()
+        this.isOpen = false
         this.message = ''
         this.title = ''
         this.resolvePromise(this.inputValue)
