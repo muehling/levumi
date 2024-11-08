@@ -1,19 +1,29 @@
 <template>
-  <div id="annotation-categories" class="col-10 col-xl-6 card p-4">
+  <div id="annotation-categories" class="container col-10 col-xl-6 p-4 w-100">
     <p>Folgende Anmerkungstypen stehen aktuell zur Verfügung:</p>
     <div>
-      <div
-        v-for="annotationCategory in annotationCategories"
-        :key="annotationCategory.id"
-        class="category-line w-100 justify-content-between align-items-center d-flex my-1 p-2">
-        <span>{{ parseDisplayName(annotationCategory.name) }}</span>
-        <b-button
-          class="btn btn-sm"
-          variant="outline-danger"
-          @click="deleteCategory(annotationCategory.id)">
-          <i class="fas fa-trash"></i>
-        </b-button>
-      </div>
+      <table class="table table-sm table-striped w-100 border">
+        <thead>
+          <tr>
+            <td>Bezeichnung</td>
+            <td></td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="annotationCategory in annotationCategories" :key="annotationCategory.id">
+            <td>{{ parseDisplayName(annotationCategory.name) }}</td>
+            <td>
+              <b-button
+                class="btn btn-sm"
+                variant="outline-danger"
+                @click="deleteCategory(annotationCategory.id)">
+                <i class="fas fa-trash"></i>
+              </b-button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
       <div class="mt-4 flex-row d-flex">
         <label class="pt-2 me-4" for="category">Typ:</label>
         <b-form-input
@@ -106,8 +116,3 @@
     },
   }
 </script>
-<style>
-  #annotation-categories .category-line:nth-child(odd) {
-    background-color: rgba(0, 0, 0, 0.05);
-  }
-</style>
