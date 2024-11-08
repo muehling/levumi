@@ -106,7 +106,7 @@
               </b-card>
             </div>
             <div v-else>
-              <qr-reader :switch-qr="switchQr" />
+              <qr-reader :switch-qr="switchQr" @code-scanned="handleScannedCode" />
             </div>
           </b-col>
           <b-col md="3"></b-col>
@@ -193,6 +193,11 @@
 
       format(val) {
         return val.toUpperCase()
+      },
+
+      handleScannedCode(code) {
+        this.loginCode = code
+        this.handleLogin()
       },
 
       async handleLogin() {
