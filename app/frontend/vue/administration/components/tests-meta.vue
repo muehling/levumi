@@ -1,14 +1,14 @@
 <template>
-  <div class="col-md-8 col-xl-6">
+  <div class="container">
     <b-card title="Lernbereiche" class="mt-3">
       <b-table small striped hover :items="areas" :fields="fields" @row-clicked="selectArea">
-        <template #cell(actions)="d"
-          ><tests-meta-actions
+        <template #cell(actions)="d">
+          <tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
             type="areas"
-            :rename-item="renameItem"
-        /></template>
+            :rename-item="renameItem" />
+        </template>
         <template #cell(name)="d">
           <span>{{ d.item.name }}</span>
         </template>
@@ -17,54 +17,54 @@
     <b-card
       v-if="areaId && competences.length"
       :title="`Kompetenzbereiche für '${selectedArea?.name}'`"
-      class="mt-3"
-    >
+      class="mt-3">
       <b-table
         small
         striped
         hover
         :items="competences"
         :fields="fields"
-        @row-clicked="selectCompetence"
-      >
-        <template #cell(actions)="d"
-          ><tests-meta-actions
+        @row-clicked="selectCompetence">
+        <template #cell(actions)="d">
+          <tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
             type="competences"
-            :rename-item="renameItem"
-        /></template>
+            :rename-item="renameItem" />
+        </template>
       </b-table>
     </b-card>
     <b-card
       v-if="competenceId && testFamilies.length"
       :title="`Testfamilien für '${selectedCompetence?.name}'`"
-      class="mt-3"
-    >
+      class="mt-3 test-meta">
       <b-table
         small
         striped
         hover
         :items="testFamilies"
         :fields="fields"
-        @row-clicked="selectTestFamily"
-      >
-        <template #cell(actions)="d"
-          ><tests-meta-actions
+        @row-clicked="selectTestFamily">
+        <template #cell(actions)="d">
+          <tests-meta-actions
             :data="d"
             :delete-item="deleteItem"
             type="testFamilies"
-            :rename-item="renameItem"
-        /></template>
+            :rename-item="renameItem" />
+        </template>
       </b-table>
     </b-card>
     <b-card
       v-if="testFamilyId && tests.length"
       :title="`Tests für '${selectedTestFamily?.name}'`"
-      class="mt-3"
-    >
-      <b-table small striped hover :items="tests" :fields="testFields" @row-clicked="editTestMeta">
-      </b-table>
+      class="mt-3">
+      <b-table
+        small
+        striped
+        hover
+        :items="tests"
+        :fields="testFields"
+        @row-clicked="editTestMeta"></b-table>
     </b-card>
     <confirm-dialog ref="confirmDialog" />
     <tests-meta-edit ref="testsMetaEdit" />
