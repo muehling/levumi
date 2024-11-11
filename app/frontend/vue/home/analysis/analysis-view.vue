@@ -966,7 +966,6 @@
           this.studentTargets = []
         }
         // lastly set the displayed value to the just loaded one
-
         this.restoreTarget()
       },
 
@@ -985,12 +984,3 @@
     },
   }
 </script>
-<style>
-  .preparing .spinner {
-    padding-left: 1em;
-  }
-  .preparing .spinner > div {
-    height: 12px !important;
-    width: 12px !important;
-  }
-</style>
