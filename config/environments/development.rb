@@ -81,5 +81,6 @@ Rails.application.configure do
                                          key: 'levumi_session',
                                          expire_after: 1.week,
                                          signed: true,
-                                         secure: false # if true, the csrf token will be stored too, which is guaranteed to not match on subsequent logins
+                                         secure: false, # if true, the csrf token will be stored too, which is guaranteed to not match on subsequent logins
+                                         same_site: :strict
 end
