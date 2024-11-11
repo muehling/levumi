@@ -62,7 +62,8 @@ const defaultRegression = () => {
  */
 export function createTrendline(data, xEnd = null, annotations = [], handleDates = true) {
   let processed = []
-  if (data.length <= 1) {
+  const validPoints = data.filter(d => d.y)
+  if (validPoints.length <= 1) {
     return processed
   }
   // convert dates to seconds since epoch if necessary
@@ -122,7 +123,8 @@ export function createTrendline(data, xEnd = null, annotations = [], handleDates
   }
 
   // add whatever point would be at x = xEnd, if xEnd is given and greater than the currently last x value
-  if (xEnd && xEnd > processed[processed.length - 1].x) {
+
+  if (xEnd && xEnd > processed[processed.length - 1]?.x) {
     processed.push({
       x: xEnd,
       y: calculateYValue(regression, xEnd).toFixed(2),
