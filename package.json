@@ -51,6 +51,8 @@
   },
   "resolutions": {
     "postcss": "^8.4.31",
-    "braces": "^3.0.3"
+    "braces": "^3.0.3",
+    "rollup": "^4.22.4",
+    "elliptic": "^6.6.0"
   }
 }

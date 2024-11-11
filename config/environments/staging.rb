@@ -80,5 +80,6 @@ Rails.application.configure do
                                          key: 'levumi_session',
                                          expire_after: 1.week,
                                          signed: true,
-                                         secure: false
+                                         secure: false,
+                                         same_site: :strict
 end

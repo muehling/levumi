@@ -123,7 +123,7 @@
           variant="outline-danger"
           size="sm"
           @click="changeStoredTarget(true)">
-          <i class="fas fa-check"></i>
+          <i class="fas fa-x"></i>
           Löschen
         </b-button>
       </div>

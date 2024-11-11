@@ -55,7 +55,9 @@
         <b-button
           variant="outline-success"
           size="sm"
-          :disabled="annotationEnd == null || annotationStart == null"
+          :disabled="
+            annotationEnd == null || annotationStart == null || annotationEnd > annotationStart
+          "
           @click="submitAnnotation">
           <i class="fas fa-check"></i>
           Anmerkung speichern
@@ -95,10 +97,13 @@
 <script>
   import { ajax } from 'src/utils/ajax'
   import { getAnnotationLabel, getAnnotationOptions } from 'src/utils/helpers'
-  import apiRoutes from 'src/vue/routes/api-routes'
-  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import { printDate } from 'src/utils/date'
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import apiRoutes from 'src/vue/routes/api-routes'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
+  import isAfter from 'date-fns/isAfter'
+  import isBefore from 'date-fns/isBefore'
+  import isEqual from 'date-fns/isEqual'
 
   export default {
     name: 'AnnotationsSection',
@@ -123,7 +128,6 @@
         annotationEnd: null,
         annotationStart: null,
         annotationCategoryId: 1,
-        annotationIsTrendThreshold: false,
         showAnnotationCategories: false,
       }
     },
@@ -136,12 +140,26 @@
         }
       },
       startLabels() {
-        const labels = this.weeks.map(week => ({ value: week, text: printDate(week) }))
+        let labels = this.weeks.map(week => ({ value: week, text: printDate(week) }))
+        if (this.annotationEnd) {
+          const end = new Date(this.annotationEnd)
+          labels = labels.filter(label => {
+            const start = new Date(label.value)
+            return isBefore(start, end) || isEqual(start, end)
+          })
+        }
         labels.unshift({ value: null, text: 'Von...' })
         return labels
       },
       endLabels() {
-        const labels = this.weeks.map(week => ({ value: week, text: printDate(week) }))
+        let labels = this.weeks.map(week => ({ value: week, text: printDate(week) }))
+        if (this.annotationStart) {
+          const end = new Date(this.annotationStart)
+          labels = labels.filter(label => {
+            const start = new Date(label.value)
+            return isAfter(start, end) || isEqual(start, end)
+          })
+        }
         labels.unshift({ value: null, text: 'Bis...' })
         return labels
       },
@@ -228,7 +246,6 @@
             start: this.annotationStart,
             end: this.annotationEnd,
             annotation_category_id: this.annotationCategoryId,
-            trend_threshold: this.annotationIsTrendThreshold,
             view: this.selectedViewKey,
           },
         }
@@ -250,7 +267,6 @@
           const assessment = { ...this.assessmentsStore.currentAssessment }
           assessment.annotations = annotations.sort((a, b) => (a.end > b.end ? -1 : 1))
           this.assessmentsStore.currentAssessment = assessment
-          this.annotationIsTrendThreshold = false
           this.annotationCategoryId = this.minCategoryId
           this.annotationEnd = null
           this.annotationStart = null
