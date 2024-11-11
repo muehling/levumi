@@ -55,7 +55,7 @@
         <b-button
           variant="outline-success"
           size="sm"
-          :disabled="annotationEnd == null || annotationStart == null"
+          :disabled="annotationEnd == null || annotationStart == null || annotationEnde >= annotationStart"
           @click="submitAnnotation">
           <i class="fas fa-check"></i>
           Anmerkung speichern
