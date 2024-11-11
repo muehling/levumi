@@ -163,6 +163,7 @@
           <b-form @submit.prevent.stop="addTag">
             <b-form-input
               v-model="newTag"
+              maxlength="50"
               placeholder="Weiteres Merkmal"
               class="d-inline new-tag-input text-small py-0"></b-form-input>
             <b-button
