@@ -116,6 +116,7 @@
     async mounted() {
       this.isLoading = true
       await this.globalStore.fetch()
+      await this.globalStore.fetchGroups()
       this.isLoading = false
       await this.checkLogin()
 

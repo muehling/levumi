@@ -112,7 +112,15 @@
             this.assessmentsStore.setCurrentAssessment(undefined)
           }
           if (data.groupId) {
-            this.selectedGroupId = parseInt(data.groupId, 10)
+            const group = this.ownActiveGroups.find(
+              group => group.id === parseInt(data.groupId, 10)
+            )
+
+            if (group) {
+              this.selectedGroupId = parseInt(data.groupId, 10)
+            } else {
+              this.selectedGroupId = this.ownActiveGroups[0]?.id
+            }
           } else {
             this.selectedGroupId = this.ownActiveGroups[0]?.id
           }
@@ -132,7 +140,6 @@
     },
     async mounted() {
       this.isLoading = true
-      await this.globalStore.fetchGroups()
       this.isLoading = false
       if (this.showIntro) {
         this.$refs.introPopover.show({
@@ -148,14 +155,6 @@
           onFinish: this.finishIntro,
         })
       }
-      let selectedGroupId
-      if (this.$route.params.groupId) {
-        selectedGroupId = parseInt(this.$route.params.groupId, 10)
-      } else {
-        const firstActiveGroup = this.ownActiveGroups[0]
-        selectedGroupId = firstActiveGroup?.id
-      }
-      this.selectedGroupId = selectedGroupId
     },
     methods: {
       async finishIntro() {
