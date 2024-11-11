@@ -28,9 +28,11 @@
         <div class="bounce3"></div>
       </div>
       <div v-else-if="isLoggedIn">
-        <b-alert :show="noTestsAvailable" variant="secondary">
-          Gerade gibt es keine Tests für dich!
-        </b-alert>
+        <div class="container">
+          <b-alert :model-value="noTestsAvailable" variant="secondary">
+            Gerade gibt es keine Tests für dich!
+          </b-alert>
+        </div>
         <!-- Übersicht anzeigen -->
         <div class="row">
           <div
@@ -51,8 +53,7 @@
                 :href="`/students/${student.id}/results/new?test_id=${test.test_info.id}`"
                 :disabled="!test.open"
                 :variant="test.open ? 'outline-success' : 'success'"
-                :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'"
-                @click="triggerAutoLogout = false">
+                :aria-label="test.open ? `Los geht's` : 'Nächste Woche wieder'">
                 {{ test.open ? "Los geht's" : 'Nächste Woche wieder' }}
               </b-button>
             </b-card>
@@ -76,19 +77,20 @@
                   accept-charset="UTF-8"
                   aria-label="Zugangscode eingeben"
                   @submit.prevent.stop="handleLogin">
-                  <b-form-group aria-label="Zugangscode eingeben">
+                  <b-form-group aria-label="Zugangscode eingeben" class="mb-3">
                     <b-form-input
                       v-model="loginCode"
                       type="text"
                       name="login"
                       placeholder="Zugangscode"
                       style="font-size: 1.5em"
-                      :formatter="format" />
-                    <b-alert :show="isCodeInvalid" variant="danger" class="mt-4">
+                      :formatter="format"
+                      @focus="resetMessages" />
+                    <b-alert :model-value="isCodeInvalid" variant="danger" class="mt-4">
                       Falscher Zugangscode. Bitte überprüfe ihn nochmal oder wende dich an deine
                       Lehrkraft.
                     </b-alert>
-                    <b-alert :show="isCodeEmpty" variant="danger" class="mt-4">
+                    <b-alert :model-value="isCodeEmpty" variant="danger" class="mt-4">
                       Bitte gib deinen Zugangscode ein.
                     </b-alert>
                   </b-form-group>
@@ -137,7 +139,6 @@
         isCodeInvalid: false,
         isCodeEmpty: false,
         loginCode: '',
-        triggerAutoLogout: true,
       }
     },
     computed: {
@@ -152,7 +153,6 @@
       },
     },
     created() {
-      window.addEventListener('beforeunload', this.autoLogout)
       if (!this.student && window.location.search && window.location.search.startsWith('?login=')) {
         this.loginCode = window.location.search.split('=')[1]
         this.handleLogin()
@@ -165,12 +165,6 @@
     },
 
     methods: {
-      autoLogout() {
-        if (this.triggerAutoLogout) {
-          this.handleLogout()
-        }
-      },
-
       async handleLogout() {
         const res = await fetch('/testen_logout', {
           method: 'POST',
@@ -199,7 +193,11 @@
         this.loginCode = code
         this.handleLogin()
       },
-
+      resetMessages() {
+        this.isCodeInvalid = false
+        this.isCodeEmpty = false
+        this.loginCode = ''
+      },
       async handleLogin() {
         this.isCodeInvalid = false
         if (!this.loginCode) {
