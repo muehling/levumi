@@ -276,12 +276,7 @@
         if (answer) {
           const res = await ajax({ ...apiRoutes.users.delete() })
           if (res.status === 200) {
-            this.$root.$on('bv::modal::hide', () => {
-              location.replace('/')
-              sessionStorage.clear()
-            })
-
-            this.$refs.doneConfirmation.open({
+            await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',
               message:
                 'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
@@ -289,6 +284,8 @@
               okText: 'Ok',
               okIntent: 'outline-success',
             })
+            location.replace('/')
+            sessionStorage.clear()
           }
         }
       },
