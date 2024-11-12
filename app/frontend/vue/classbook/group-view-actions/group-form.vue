@@ -1,13 +1,12 @@
 <template>
   <div>
-    <b-form inline accept-charset="UTF-8" class="mt-3 text-nowrap" @submit="handleSubmit">
-      <label for="label-input" class="me-4">
-        Klassenbezeichnung {{ group.id ? 'ändern:' : 'eingeben:' }}
-      </label>
+    <b-form accept-charset="UTF-8" class="mt-3 text-nowrap" @submit="handleSubmit">
+      <label for="label-input">Klassenbezeichnung {{ group.id ? 'ändern:' : 'eingeben:' }}</label>
       <b-form-input
         id="label-input"
         v-model="label"
-        class="me-2"
+        class="my-3"
+        maxlength="50"
         name="group[label]"
         placeholder="Klassenbezeichnung"
         size="sm" />

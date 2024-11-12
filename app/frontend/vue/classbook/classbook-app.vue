@@ -36,6 +36,7 @@
                         group.id === activeGroupTab || (index === 0 && activeGroupTab === -1)
                       "
                       lazy
+                      title-item-class="mb-2"
                       @click="handleNavigate(`eigene_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template #title>

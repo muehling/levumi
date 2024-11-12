@@ -847,7 +847,6 @@
         }
 
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
-        console.log('bleaaaha', this.chartOptions)
 
         this.graphData = gData
 
