@@ -21,7 +21,10 @@
   </div>
   <div v-else>
     <accept-terms v-if="!areTermsAccepted" />
-    <complete-registration v-else :account-type="accountType" />
+    <complete-registration
+      v-else
+      :account-type="accountType"
+      @registration-complete="fetchGlobalData" />
   </div>
 </template>
 <script>
@@ -114,10 +117,7 @@
       return false
     },
     async mounted() {
-      this.isLoading = true
-      await this.globalStore.fetch()
-      await this.globalStore.fetchGroups()
-      this.isLoading = false
+      await this.fetchGlobalData()
       await this.checkLogin()
 
       if (this.globalStore.login.intro_state >= 5) {
@@ -125,6 +125,12 @@
       }
     },
     methods: {
+      async fetchGlobalData() {
+        this.isLoading = true
+        await this.globalStore.fetch()
+        await this.globalStore.fetchGroups()
+        this.isLoading = false
+      },
       async sendErrorReport() {
         const errorMessage = JSON.stringify(this.globalStore.serverError)
         const sendReport = await this.$refs.confirmDialog.open({

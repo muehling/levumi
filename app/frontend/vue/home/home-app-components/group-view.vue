@@ -148,7 +148,7 @@
     },
 
     async mounted() {
-      this.getAssessmentData()
+      await this.getAssessmentData()
     },
     methods: {
       async getAssessmentData() {
