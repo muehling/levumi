@@ -47,7 +47,7 @@
   export default {
     name: 'CsvUpload',
     components: { CsvHelp },
-    props: { questionType: String },
+    props: { questionType: String, showDemoTask: Boolean },
     data() {
       return {
         csv: undefined,
@@ -87,7 +87,7 @@
           return line.split(';')
         })
 
-        this.deleteEmptyFields(array) // das dürfte quatsch sein
+        this.deleteEmptyFields(array)
 
         if (array[array.length - 1].length === 1) {
           array.pop()
@@ -129,7 +129,10 @@
       },
       parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {
-          acc[d[0]] = true
+          const dimName = d[0].trim()
+          if (dimName) {
+            acc[dimName] = true
+          }
           return acc
         }, {})
         return Object.keys(rawDimensions).map((d, i) => ({ id: i + 1, text: d }))
@@ -139,7 +142,7 @@
         const parsed = data.map((d, i) => {
           return {
             id: i + 1,
-            group: dimensions.find(dim => dim.text === d[0]).id,
+            group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             assets: d[1],
             question: d[2],
             correctAnswer: d[3],
@@ -152,31 +155,27 @@
       parseNumberInput(data) {
         const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
-          //let question
           let firstNumber, secondNumber, correctAnswer
           switch (d[5]) {
             case '1':
-              firstNumber= `${d[3]}`
-              secondNumber=`${d[4]}`
-              correctAnswer= `${d[1]}` 
-          //    question = `${d[4]} ${d[2]} ${d[1]} = ${d[3]}`
+              firstNumber = `${d[3]}`
+              secondNumber = `${d[4]}`
+              correctAnswer = `${d[1]}`
               break
             case '2':
-              firstNumber=`${d[1]}`
-              secondNumber=`${d[4]}`
-              correctAnswer=`${d[3]}`
-          //    question = `${d[1]} ${d[2]} ${d[4]} = ${d[3]}`
+              firstNumber = `${d[1]}`
+              secondNumber = `${d[4]}`
+              correctAnswer = `${d[3]}`
               break
             case '3':
-              firstNumber=`${d[1]}`
-              secondNumber=`${d[3]}`
-              correctAnswer=`${d[4]}`
-          //    question = `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`
+              firstNumber = `${d[1]}`
+              secondNumber = `${d[3]}`
+              correctAnswer = `${d[4]}`
               break
           }
           return {
             id: i + 1,
-            group: dimensions.find(dim => dim.text === d[0]).id,
+            group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             question: `${d[1]} ${d[2]} ${d[3]} = ${d[4]}`,
             firstNumber,
             operation: d[2],
@@ -194,7 +193,7 @@
         const parsed = data.map((d, i) => {
           return {
             id: i + 1,
-            group: dimensions.find(dim => dim.text === d[0]).id,
+            group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             question: d[1],
             audio: d[2],
             correctAnswer: d[3],

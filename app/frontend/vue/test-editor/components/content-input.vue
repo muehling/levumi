@@ -129,8 +129,6 @@
         this.$refs['addElementModal'].show()
       },
       addElement(type) {
-        console.log('meh', this.items)
-
         this.items.push({
           type: type,
           text: '',

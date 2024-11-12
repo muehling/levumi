@@ -26,6 +26,7 @@
           <b-tab title="Datei hochladen" active> -->
         <csv-upload
           :question-type="questionType"
+          :show-demo-task="showDemoTask"
           @submit-csv-data="addCsvData"
           @submit-csv-assets="addCsvAssets" />
         <!--  </b-tab>
@@ -68,7 +69,7 @@
 
   export default {
     components: { CsvUpload, ContentInput },
-    props: { questionType: String },
+    props: { questionType: String, showDemoTask: Boolean },
     setup() {
       const store = useGlobalStore()
       return { store }

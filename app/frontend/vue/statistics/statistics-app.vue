@@ -379,7 +379,6 @@
         //const data = await res.json()
         localStorage.setItem('statistics', JSON.stringify(data))
         this.data = data.data
-        console.log('meh', data)
 
         /*  } else {
           try {
