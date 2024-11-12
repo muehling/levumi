@@ -8,42 +8,34 @@ export const prepareOptions = (
   chartType,
   customOptions,
   weeks,
-  isSlope,
-  targetIsEnabled,
-  animate,
+
   yMax
 ) => {
   let opt
-  // only when targets are enabled and a slope target is desired and a line or rangeArea chart, only then use an rangeArea chart
-  const needRangeAreaChart =
-    isSlope && targetIsEnabled && (chartType === 'line' || chartType === 'rangeArea')
+
   const weekLabels = weeks.map(w => printDate(w))
-  if (needRangeAreaChart) {
-    opt = apexChartOptions(weekLabels).rangeArea
-  } else {
-    // we allow only bar and rangeArea as custom chart types, all others default to line
-    switch (chartType) {
-      case 'bar':
-        if (customOptions?.chart?.stacked) {
-          opt = apexChartOptions(weekLabels).groupedStackedBar
-        } else {
-          opt = apexChartOptions(weekLabels).bar
-        }
-        break
-      case 'rangeArea':
-        opt = apexChartOptions(weekLabels).rangeArea
-        break
-      case 'line':
-      default:
-        opt = apexChartOptions(weekLabels).line
-    }
+
+  // we allow only bar and rangeArea as custom chart types, all others default to line
+  switch (chartType) {
+    case 'bar':
+      if (customOptions?.chart?.stacked) {
+        opt = apexChartOptions(weekLabels).groupedStackedBar
+      } else {
+        opt = apexChartOptions(weekLabels).bar
+      }
+      break
+    case 'rangeArea':
+      opt = apexChartOptions(weekLabels).rangeArea
+      break
+    case 'line':
+    default:
+      opt = apexChartOptions(weekLabels).line
   }
+
   const options = deepmerge(cloneDeep(opt), customOptions)
-  if (needRangeAreaChart) {
-    options.chart.type = 'rangeArea'
-  }
+
   // for updates on a chart animations may be inadequate
-  options.chart.animations.enabled = animate
+  options.chart.animations.enabled = false
 
   if (options.yaxis === undefined) {
     options.yaxis = {}

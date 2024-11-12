@@ -3,7 +3,7 @@ import deepmerge from 'deepmerge'
 
 // input for <b-table-lite>
 export const createSimpleTableData = (data, formatDate) => {
-  const d = data.map(lineData => {
+  const tableData = data.map(lineData => {
     const data = lineData.data.reduce((acc, d) => {
       // createSeries contains raw dates, so we need to format them here
       acc[formatDate ? d.x : printDate(d.x)] = d.y || '-'
@@ -14,7 +14,7 @@ export const createSimpleTableData = (data, formatDate) => {
       ...data,
     }
   })
-  return d
+  return tableData
 }
 
 export const createHtmlTableFromViewConfig = ({

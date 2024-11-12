@@ -13,14 +13,11 @@
       <div v-if="view == 3">
         <dataComponent
           :question-type="questionType"
-          :dimensions="properties.dimensions"
+          :show-demo-task="!!properties.show_demo_task"
           @continueToSummary="setData($event)"></dataComponent>
       </div>
       <div v-if="view == 4">
-        <summaryComponent
-          :all-data="allData"
-          :question-type="questionType"
-          @continueToSummary="setData($event)"></summaryComponent>
+        <summaryComponent :all-data="allData" :question-type="questionType"></summaryComponent>
       </div>
     </b-card>
   </b-container>

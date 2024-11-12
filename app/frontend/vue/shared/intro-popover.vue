@@ -1,10 +1,10 @@
 <template>
   <b-popover
-    v-if="isOpen"
     ref="introPopover"
     :key="currentIndex"
-    :show="true"
-    :target="targets[currentIndex]">
+    :model-value="isOpen"
+    :target="targets[currentIndex]"
+    no-hide>
     <template #title>
       <div>
         Einführung
@@ -63,9 +63,28 @@
     },
   }
 </script>
-<style scoped>
+<style>
   .cancel-tutorial {
     border-color: transparent !important;
     margin-top: -0.25em;
+  }
+  .popover {
+    background: #e9ecef;
+  }
+
+  .popover.bs-popover-top .popover-arrow:after {
+    border-top-color: #e9ecef;
+  }
+
+  .popover.bs-popover-end .popover-arrow:after {
+    border-right-color: #e9ecef;
+  }
+
+  .popover.bs-popover-bottom .popover-arrow:after {
+    border-bottom-color: #e9ecef;
+  }
+
+  .popover.bs-popover-start .popover-arrow:after {
+    border-left-color: #e9ecef;
   }
 </style>

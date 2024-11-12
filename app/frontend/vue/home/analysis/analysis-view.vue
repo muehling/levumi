@@ -108,7 +108,7 @@
                 }`"></i>
             </b-button>
             <b-button
-              v-if="targetIsEnabled && !readOnly"
+              v-if="!readOnly"
               id="target_btn"
               v-b-toggle.target_collapse
               class="ms-2"
@@ -457,14 +457,6 @@
         return toRaw(this.graphData)
       },
 
-      targetIsEnabled() {
-        return true //this.settings.targets?.enabled
-      },
-
-      deviationIsEnabled() {
-        //return this.targetIsEnabled && this.settings.targets?.deviation
-        return true
-      },
       trendIsEnabled() {
         return this.assessmentsStore.currentAssessment.settings?.is_trend_enabled
       },
@@ -707,6 +699,7 @@
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
+        // return res.filter(r => r.y)
         return res
       },
       XYFromResult(result, seriesKey, dateNeedsFormatting) {
@@ -764,9 +757,7 @@
           trueChartType,
           view.options,
           this.weeks,
-          false, //this.targetIsSlopeVariant,
-          true, //this.targetIsEnabled,
-          false, //animate,
+
           this.maxYValue
         )
 
@@ -774,7 +765,7 @@
         if (this.targetVal) {
           target = targetAnnotationOptions(this.targetVal)
           const y2 =
-            this.deviationIsEnabled && this.deviationVal > 0
+            this.deviationVal > 0
               ? this.targetVal - this.targetVal * (this.deviationVal / 100)
               : null
           if (y2) {
@@ -856,6 +847,7 @@
         }
 
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
+
         this.graphData = gData
 
         if (stackedBarChart) {
@@ -913,9 +905,7 @@
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
       // todo if there are a lot of students (> ~50) in a group, the chart will lag considerably when updating. display loader again?
       redrawTarget() {
-        if (this.targetIsEnabled) {
-          this.updateView(false)
-        }
+        this.updateView(false)
       },
 
       hasResults(student) {
@@ -967,7 +957,6 @@
           this.studentTargets = []
         }
         // lastly set the displayed value to the just loaded one
-
         this.restoreTarget()
       },
 
@@ -986,12 +975,3 @@
     },
   }
 </script>
-<style>
-  .preparing .spinner {
-    padding-left: 1em;
-  }
-  .preparing .spinner > div {
-    height: 12px !important;
-    width: 12px !important;
-  }
-</style>

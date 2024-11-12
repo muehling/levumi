@@ -139,8 +139,6 @@
       },
     },
     async mounted() {
-      this.isLoading = true
-      this.isLoading = false
       if (this.showIntro) {
         this.$refs.introPopover.show({
           messages: [
@@ -149,9 +147,10 @@
             'Hier finden Sie Fördermaterial passend zu den Tests.',
             'Informieren Sie sich über die Tests, die zur Verfügung stehen.',
             'Unter diesem Punkt finden Sie weiteres Material, Hilfestellungen und den Blog mit Neuigkeiten.',
+            'Sollten Sie Hilfe benötigen, eine Anregung, Kritik oder ein Lob loswerden wollen, können Sie dem Levumi-Team hier eine Nachricht schreiben.',
             'Hier können Sie Ihre Profildaten und Einstellungen bearbeiten.',
           ],
-          targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6'],
+          targets: ['#intro1', '#intro2', '#intro3', '#intro4', '#intro5', '#intro6', '#intro7'],
           onFinish: this.finishIntro,
         })
       }
