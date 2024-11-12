@@ -11,22 +11,31 @@
       <b-navbar-toggle target="levumi-main-nav" />
       <b-collapse id="levumi-main-nav" is-nav class="mt-3">
         <b-navbar-nav class="d-flex w-100">
-          <b-nav-item to="/diagnostik" :active="$route.path.startsWith('/diagnostik')">
+          <b-nav-item id="intro1" to="/diagnostik" :active="$route.path.startsWith('/diagnostik')">
             Diagnostik
           </b-nav-item>
-          <b-nav-item to="/klassenbuch" :active="$route.path.startsWith('/klassenbuch')">
+          <b-nav-item
+            id="intro2"
+            to="/klassenbuch"
+            :active="$route.path.startsWith('/klassenbuch')">
             <span>
               Klassenbuch
               <b-badge v-if="hasNewShares" variant="info" pill class="new-badge">Neu!</b-badge>
             </span>
           </b-nav-item>
-          <b-nav-item to="/materialien" :active="$route.path.startsWith('/materialien')">
+          <b-nav-item
+            id="intro3"
+            to="/materialien"
+            :active="$route.path.startsWith('/materialien')">
             Fördermaterialien
           </b-nav-item>
-          <b-nav-item to="/testuebersicht" :active="$route.path.startsWith('/testuebersicht')">
+          <b-nav-item
+            id="intro4"
+            to="/testuebersicht"
+            :active="$route.path.startsWith('/testuebersicht')">
             Testübersicht
           </b-nav-item>
-          <b-nav-item-dropdown text="Weiteres" is-nav toggle-class="mt-1">
+          <b-nav-item-dropdown id="intro5" text="Weiteres" is-nav toggle-class="mt-1">
             <b-dropdown-item>
               <a
                 class="dropdown-item"
@@ -113,7 +122,7 @@
             Sitzung als {{ login?.email }} beenden
           </b-nav>
 
-          <b-nav-item-dropdown ref="contactRef" class="mt-1" :text="'Support'" is-nav>
+          <b-nav-item-dropdown id="intro6" ref="contactRef" class="mt-1" :text="'Support'" is-nav>
             <b-dropdown-form>
               <contact-form @close-contact-form="closeContactForm" />
             </b-dropdown-form>
@@ -164,6 +173,7 @@
             </router-link>
           </b-nav-item-dropdown>
           <b-nav-item-dropdown
+            id="intro7"
             :text="`Meine Daten${$root.mode === 'production' ? '' : ' (' + login?.email + ')'}`"
             is-nav
             toggle-class="mt-1">

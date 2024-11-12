@@ -278,7 +278,7 @@
       let messages, targets
       if (this.isSingleUser) {
         messages = [
-          'Hier sehen Sie Ihre Beispielklasse, die dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen dient. Hier können Sie alle Funktionen von Levumi testen.',
+          'Hier sehen Sie Ihre Klasse, die dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen dient. Hier können Sie alle Funktionen von Levumi testen.',
           'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
           'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
           'Hier können Sie die Schüler:in speichern.',
