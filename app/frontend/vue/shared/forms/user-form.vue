@@ -16,8 +16,8 @@
           Bitte wählen Sie einen Account-Typen aus!
         </div>
       </b-form-group>
-      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ">
-        <b-form-input :value="accountTypeText" :readonly="true" />
+      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ" class="mt-3">
+        <b-form-input :model-value="accountTypeText" :readonly="true" />
       </b-form-group>
       <div v-if="!canEditUser" class="form-group row">
         <div class="col-sm-12">
@@ -276,12 +276,7 @@
         if (answer) {
           const res = await ajax({ ...apiRoutes.users.delete() })
           if (res.status === 200) {
-            this.$root.$on('bv::modal::hide', () => {
-              location.replace('/')
-              sessionStorage.clear()
-            })
-
-            this.$refs.doneConfirmation.open({
+            await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',
               message:
                 'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
@@ -289,6 +284,8 @@
               okText: 'Ok',
               okIntent: 'outline-success',
             })
+            location.replace('/')
+            sessionStorage.clear()
           }
         }
       },

@@ -4,9 +4,12 @@
     <div v-else>
       <b-row>
         <b-col md="12" class="mt-3">
-          <b-card v-if="groups.length === 0" bg-variant="white" class="col-lg-8 col-xl-6 mt-3">
-            Keine Klassen vorhanden! Legen Sie eine Klasse an um testen zu können oder verschieben
-            Sie eine Klasse aus dem Archiv.
+          <b-card
+            v-if="ownActiveGroups.length === 0"
+            bg-variant="white"
+            class="col-lg-8 col-xl-6 mt-3">
+            Keine aktiven Klassen vorhanden! Legen Sie eine Klasse an um testen zu können, oder
+            reaktivieren Sie eine Klasse aus dem Archiv.
           </b-card>
           <div v-else>
             <div class="mb-3">
