@@ -16,8 +16,8 @@
           Bitte wählen Sie einen Account-Typen aus!
         </div>
       </b-form-group>
-      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ">
-        <b-form-input :value="accountTypeText" :readonly="true" />
+      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ" class="mt-3">
+        <b-form-input :model-value="accountTypeText" :readonly="true" />
       </b-form-group>
       <div v-if="!canEditUser" class="form-group row">
         <div class="col-sm-12">
