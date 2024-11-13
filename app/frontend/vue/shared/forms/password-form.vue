@@ -1,36 +1,47 @@
 <template>
   <div>
     <b-card>
-      <b-form-group label="Passwort">
+      <b-input-group label="Passwort">
         <b-form-input
           v-model="passwordInput"
-          autocomplete="new-password"
-          type="password"
           :class="hasPasswordErrors && 'is-invalid'"
           :state="isPasswordValid"
+          :type="inputType"
+          autocomplete="new-password"
           placeholder="Neues Passwort"
-          @input="$emit('change-password', $event.target.value)"></b-form-input>
-        <small id="passwordHelp" class="form-text text-muted">
-          Bitte geben Sie ein neues Passwort ein.
-        </small>
-      </b-form-group>
+          @input="$emit('change-password', $event.target.value)" />
+        <template #append>
+          <BInputGroupText>
+            <i :class="passwordIcon" @click="showPassword = !showPassword"></i>
+          </BInputGroupText>
+        </template>
+      </b-input-group>
+      <small id="passwordHelp" class="form-text text-muted">
+        Bitte geben Sie ein neues Passwort ein.
+      </small>
       <div class="mt-3">
-        <b-form-group>
+        <b-input-group>
           <b-form-input
             v-model="passwordConfirm"
             autocomplete="new-password"
-            type="password"
+            :type="inputType"
             :class="hasPasswordErrors && 'is-invalid'"
             :state="isPasswordValid"
             placeholder="Neues Passwort bestätigen"
-            @input="$emit('change-password-confirm', $event.target.value)"></b-form-input>
-          <small id="confirmationHelp" class="form-text text-muted">
-            Bitte geben Sie das neue Passwort erneut ein.
-          </small>
-          <div v-if="hasPasswordErrors || !isPasswordValid" class="invalid-feedback">
-            Passwörter stimmen nicht überein!
-          </div>
-        </b-form-group>
+            @input="$emit('change-password-confirm', $event.target.value)" />
+          <template #append>
+            <BInputGroupText>
+              <i :class="passwordIcon" @click="showPassword = !showPassword"></i>
+            </BInputGroupText>
+          </template>
+        </b-input-group>
+        <small id="confirmationHelp" class="form-text text-muted">
+          Bitte geben Sie das neue Passwort erneut ein.
+        </small>
+
+        <div v-if="hasPasswordErrors || !isPasswordValid" class="text-danger text-small mt-2">
+          Passwörter stimmen nicht überein!
+        </div>
       </div>
       <div class="mt-3">
         <b-form-group>
@@ -69,6 +80,7 @@
         passwordInput: '',
         passwordConfirm: '',
         securityAnswer: '',
+        showPassword: false,
       }
     },
     computed: {
@@ -86,6 +98,12 @@
       },
       isSecurityHintVisible() {
         return this.passwordInput !== '' && this.securityAnswer === ''
+      },
+      passwordIcon() {
+        return this.showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'
+      },
+      inputType() {
+        return this.showPassword ? 'text' : 'password'
       },
     },
   }
