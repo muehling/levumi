@@ -147,6 +147,7 @@
               :student-targets="studentTargets"
               :selected-student-id="selectedStudentId"
               :test="test"
+              :weeks="weeks"
               :group="group" />
           </b-col>
         </b-row>
