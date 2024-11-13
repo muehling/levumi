@@ -1,39 +1,47 @@
 <template>
-  <b-container>
-    <div id="complete-registration" class="d-flex justify-content-center pt-4">
-      <div class="col-lg-8 col-xl-6">
-        <b-card title="Registrierung abschließen">
-          <b-card title="Passwort festlegen" class="mt-4">
-            <password-form
-              :errors="errors"
-              @change-password="pw => (password = pw)"
-              @change-password-confirm="pw => (passwordConfirm = pw)"
-              @change-security-answer="a => (securityAnswer = a)" />
+  <div>
+    <b-navbar toggleable="md" class="nav-pills main-navbar">
+      <b-navbar-brand to="/">
+        <img :src="'/images/shared/Levumi-normal_small.png'" alt="Levumi" height="48" />
+        Levumi
+      </b-navbar-brand>
+    </b-navbar>
+    <b-container>
+      <div id="complete-registration" class="d-flex justify-content-center pt-4">
+        <div class="col-lg-8 col-xl-6">
+          <b-card title="Registrierung abschließen">
+            <b-card title="Passwort festlegen" class="mt-4">
+              <password-form
+                :errors="errors"
+                @change-password="pw => (password = pw)"
+                @change-password-confirm="pw => (passwordConfirm = pw)"
+                @change-security-answer="a => (securityAnswer = a)" />
+            </b-card>
+            <b-card
+              v-if="accountType !== 2 && accountType !== 3"
+              title="Helfen Sie uns bei der Forschung"
+              class="mt-4">
+              <extra-data-form
+                :account-type="accountType"
+                :focus-type="focusType || undefined"
+                :school-type="schoolType || undefined"
+                @change-institution="inst => (institution = inst)"
+                @change-town="t => (town = t)"
+                @change-school-type="st => (schoolType = st)"
+                @change-focus-type="ft => (focusType = ft)"></extra-data-form>
+            </b-card>
+            <b-button
+              class="mt-4"
+              :disabled="!isSubmitEnabled"
+              variant="outline-success"
+              @click="submit">
+              Fertig!
+            </b-button>
           </b-card>
-          <b-card
-            v-if="accountType !== 2 && accountType !== 3"
-            title="Helfen Sie uns bei der Forschung"
-            class="mt-4">
-            <extra-data-form
-              :account-type="accountType"
-              :focus-type="focusType || undefined"
-              :school-type="schoolType || undefined"
-              @change-institution="inst => (institution = inst)"
-              @change-town="t => (town = t)"
-              @change-school-type="st => (schoolType = st)"
-              @change-focus-type="ft => (focusType = ft)"></extra-data-form>
-          </b-card>
-          <b-button
-            class="mt-4"
-            :disabled="!isSubmitEnabled"
-            variant="outline-success"
-            @click="submit">
-            Fertig!
-          </b-button>
-        </b-card>
+        </div>
       </div>
-    </div>
-  </b-container>
+    </b-container>
+  </div>
 </template>
 
 <script>
