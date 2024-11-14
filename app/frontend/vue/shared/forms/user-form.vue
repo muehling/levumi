@@ -58,9 +58,10 @@
         @change-school-type="st => (schoolType = st)"
         @change-focus-type="ft => (focusType = ft)"></extra-data-form>
       <div v-if="canEditSettingsJson" class="mb-3">
-        <b-button v-b-toggle.json-edit variant="outline-secondary">User-Config ändern</b-button>
-        <b-collapse id="json-edit" class="mt-2">
-          <p><i>Scito quid facias.</i></p>
+        <b-button variant="outline-secondary" @click="settingsOpen = !settingsOpen">
+          User-Config ändern
+        </b-button>
+        <b-collapse v-model="settingsOpen" class="mt-2">
           <b-form-textarea
             v-model="settings"
             placeholder="Enter something..."
@@ -133,6 +134,7 @@
             : JSON.stringify(this.user.settings),
         state: this.user.state,
         town: this.user.town,
+        settingsOpen: false,
       }
     },
     computed: {

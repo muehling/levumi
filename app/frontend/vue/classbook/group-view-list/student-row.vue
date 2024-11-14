@@ -311,9 +311,6 @@
         name: this.student.name.trim(),
         activeAssessments: undefined,
         newTag: '',
-
-        //Defaultwerte für  Werte, die ggf. nicht existieren! TODO: Alle irgendwo sammeln?
-
         gender: this.student.gender !== undefined ? this.student.gender : null,
         month:
           this.student.birthmonth !== undefined
