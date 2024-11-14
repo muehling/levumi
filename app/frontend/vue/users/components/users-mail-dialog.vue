@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-button @click="open">Mail an Nutzer</b-button>
-    <b-modal id="users-mail-dialog" title="Nutzer benachrichtigen" v-if="isOpen" hide-footer>
+    <b-button variant="outline-secondary" @click="open">Mail an Nutzer</b-button>
+    <b-modal v-if="isOpen" id="users-mail-dialog" title="Nutzer benachrichtigen" hide-footer>
       <div class="card card-body">
         <b-form>
           <div class="form-group">

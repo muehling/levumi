@@ -55,9 +55,7 @@
         <b-button
           variant="outline-success"
           size="sm"
-          :disabled="
-            annotationEnd == null || annotationStart == null || annotationEnd > annotationStart
-          "
+          :disabled="!datesValid"
           @click="submitAnnotation">
           <i class="fas fa-check"></i>
           Anmerkung speichern
@@ -132,6 +130,14 @@
       }
     },
     computed: {
+      datesValid() {
+        return (
+          !!this.annotationStart &&
+          !!this.annotationEnd &&
+          (isBefore(new Date(this.annotationStart), new Date(this.annotationEnd)) ||
+            isEqual(new Date(this.annotationStart), new Date(this.annotationEnd)))
+        )
+      },
       titleDisplay() {
         if (this.selectedStudent) {
           return `Anmerkungen für ${this.selectedStudent.name}`

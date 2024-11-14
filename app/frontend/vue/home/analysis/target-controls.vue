@@ -32,10 +32,10 @@
           <b-form-input
             id="available_target_input"
             v-model="dateUntil"
-            placeholder="Bis wann soll das Ziel erreicht worden sein?"
             trim
             :formatter="dateFormatter"
             type="date"
+            :min="minDate"
             lang="de"
             size="sm" />
           <context-help
@@ -71,15 +71,16 @@
         <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
           <b-form-input
             id="target_input"
-            v-model="target"
             placeholder="Hier Zielwert eingeben"
             trim
+            :model-value="target"
             :formatter="targetFormatter"
             type="number"
             inputmode="decimal"
             min="0"
             step="0.01"
             lang="de"
+            @input="handleNumberInput"
             size="sm" />
           <context-help
             help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
@@ -102,7 +103,7 @@
               type="number"
               inputmode="numeric"
               min="0"
-              max="100"
+              max="99"
               step="1"
               lang="de"
               size="sm" />
@@ -156,6 +157,7 @@
       viewConfig: Object,
       test: Object,
       group: Object,
+      weeks: Array,
     },
     setup() {
       const globalStore = useGlobalStore()
@@ -178,12 +180,11 @@
       }
     },
     computed: {
+      minDate() {
+        return this.weeks[0]
+      },
       readOnly() {
         return this.group.read_only
-      },
-
-      targetOrTimeValid() {
-        return true //todo
       },
     },
     watch: {
@@ -213,6 +214,14 @@
       },
     },
     methods: {
+      handleNumberInput(e) {
+        const val = parseFloat(e.target.value)
+        if (!isNaN(val) && val >= 0) {
+          this.target = val
+        } else if (!isNaN(val)) {
+          this.target = val * -1
+        }
+      },
       async saveAssessmentSettings() {
         const res = await ajax(
           apiRoutes.assessments.update(this.group.id, this.test.id, {

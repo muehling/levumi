@@ -1,5 +1,9 @@
 <template>
   <div>
+    <div class="d-flex flex-row mb-3">
+      <b-button variant="outline-secondary" class="me-2" @click="createUser">Neuer Nutzer</b-button>
+      <users-mail-dialog ref="usersMailDialog" />
+    </div>
     <div class="input-group mb-2 p-0 col-lg-8 col-xl-6">
       <div class="input-group-prepend my-1">
         <span class="input-group-text"><i class="fa-solid fa-magnifying-glass me-2"></i></span>
@@ -91,7 +95,7 @@
     </div>
 
     <div class="input-container d-inline"></div>
-    <b-table small striped hover class="text-small" :items="users" :fields="fields">
+    <b-table small striped hover class="text-small" :items="displayedUsers" :fields="fields">
       <template #cell(accountType)="d">
         <span>
           {{ accountTypes.find(accountType => d.item.account_type === accountType.id).label }}
@@ -161,7 +165,6 @@
       </div>
     </div>
     <confirm-dialog ref="confirmDialog" />
-    <edit-user-dialog ref="editUserDialog" @refetch="delegateRefetch" />
   </div>
 </template>
 
@@ -172,8 +175,8 @@
   import { useGlobalStore } from 'src/store/store'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import differenceInDays from 'date-fns/differenceInDays'
-  import EditUserDialog from './edit-user-dialog.vue'
   import debounce from 'lodash/debounce'
+  import UsersMailDialog from '../components/users-mail-dialog.vue'
 
   const watchHandler = {
     immediate: true,
@@ -184,7 +187,7 @@
 
   export default {
     name: 'UsersList',
-    components: { ConfirmDialog, EditUserDialog },
+    components: { ConfirmDialog, UsersMailDialog },
     props: {
       users: Array,
       totalRows: Number,
@@ -205,6 +208,9 @@
       }
     },
     computed: {
+      displayedUsers() {
+        return this.users.map(u => ({ ...u, _rowVariant: this.getUserBackgroundColor(u) }))
+      },
       states() {
         return this.globalStore.staticData.states
       },
@@ -230,7 +236,13 @@
       },
     },
     watch: {
-      searchTerm: watchHandler,
+      searchTerm: {
+        immediate: true,
+        handler() {
+          this.currentPage = 1
+          this.delegateRefetch()
+        },
+      },
       currentPage: watchHandler,
       startDateRegistration: watchHandler,
       endDateRegistration: watchHandler,
@@ -239,6 +251,9 @@
       perPage: watchHandler,
     },
     methods: {
+      createUser() {
+        this.$emit('create-user')
+      },
       async requestDeleteUser(id) {
         const user = this.users.find(user => user.id === id)
         if (!user) {
@@ -275,7 +290,10 @@
         })
       },
       editUser(id) {
-        this.$refs.editUserDialog.open({ user: this.users.find(u => u.id === id) })
+        this.$emit(
+          'edit-user',
+          this.users.find(u => u.id === id)
+        )
       },
       loginAs(id) {
         window.location.replace(`/login?user=${id}`)
@@ -285,7 +303,7 @@
       },
       getUserBackgroundColor(user) {
         if (!user.last_login && differenceInDays(new Date(), new Date(user.created_at)) > 30) {
-          return 'table-warning'
+          return 'warning'
         }
         return ''
       },

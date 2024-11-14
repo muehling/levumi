@@ -39,7 +39,7 @@
           Bitte geben Sie das neue Passwort erneut ein.
         </small>
 
-        <div v-if="hasPasswordErrors || !isPasswordValid" class="text-danger text-small mt-2">
+        <div v-if="passwordConfirm !== passwordInput" class="text-danger text-small mt-2">
           Passwörter stimmen nicht überein!
         </div>
       </div>
