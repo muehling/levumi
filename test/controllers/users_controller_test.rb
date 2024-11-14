@@ -84,7 +84,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
              email: 'newguy@example.com'
            }
          }
-    assert_response :bad_request
+    assert_response :forbidden
   end
 
   test 'UsersController::create -> register from backend' do
