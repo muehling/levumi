@@ -11,31 +11,31 @@
       <b-row v-cloak class="mt-3">
         <b-col md="12">
           <b-tabs pills lazy>
-            <b-tab v-for="area in testData" :key="area.id">
-              <template slot="title">
-                {{ area.name }}
-              </template>
+            <b-tab v-for="area in testData" :key="area.id" :title="area.name">
+              <hr />
               <b-tabs pills lazy class="mt-3">
-                <div slot="empty">
-                  <div class="text-center text-muted">Keine Kompetenzbereiche vorhanden.</div>
-                </div>
-                <b-tab v-for="competence in area.competences" :key="competence.id">
-                  <template slot="title">
-                    {{ competence.name }}
-                  </template>
-                  <b-alert show variant="secondary" class="mt-2">
+                <b-tab
+                  v-for="competence in area.competences"
+                  :key="competence.id"
+                  :title="competence.name">
+                  <b-alert
+                    v-if="competence.description"
+                    :model-value="true"
+                    variant="secondary"
+                    class="mt-2">
                     <span class="text-small">{{ competence.description }}</span>
                   </b-alert>
-
+                  <hr />
                   <b-tabs pills lazy class="mt-3">
-                    <div slot="empty">
-                      <div class="text-center text-muted">Keine Tests vorhanden.</div>
-                    </div>
-                    <b-tab v-for="testFamily in competence.test_families" :key="testFamily.id">
-                      <template slot="title">
-                        {{ testFamily.name }}
-                      </template>
-                      <b-alert show variant="secondary" class="mt-2">
+                    <b-tab
+                      v-for="testFamily in competence.test_families"
+                      :key="testFamily.id"
+                      :title="testFamily.name">
+                      <b-alert
+                        v-if="testFamily.description"
+                        :model-value="true"
+                        variant="secondary"
+                        class="mt-2">
                         <span class="text-small">{{ testFamily.description }}</span>
                       </b-alert>
                       <b-card no-body class="mt-3">
@@ -48,46 +48,46 @@
                               <div class="container-fluid">
                                 <table
                                   class="table table-sm table-striped table-borderless text-small mt-1">
-                                  <tr>
-                                    <td>Anzahl an Items</td>
-                                    <td>{{ test.items_count }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Durchführung</td>
-                                    <td>
-                                      <span>
-                                        {{
-                                          test.is_student_test
-                                            ? 'Selbstständig durch die Schüler:innen'
-                                            : 'Durch die Lehrkraft'
-                                        }}
-                                      </span>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>Zeitbeschränkung</td>
-                                    <td>{{ test.time_limit }}</td>
-                                  </tr>
-                                  <tr>
-                                    <td>Durchführung</td>
-                                    <td>
-                                      <p>{{ test.usage }}</p>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td>Items</td>
-                                    <td>
-                                      <p>
-                                        <span v-for="(item, key, i) in test.items" :key="key">
+                                  <tbody>
+                                    <tr>
+                                      <td>Kürzel</td>
+                                      <td>{{ test.shorthand }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Anzahl an Items</td>
+                                      <td>{{ test.items_count }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <span>
                                           {{
-                                            `${item}${
-                                              i < parseInt(test.items_count, 10) ? ', ' : ''
-                                            }`
+                                            test.is_student_test
+                                              ? 'Selbstständig durch die Schüler:innen'
+                                              : 'Durch die Lehrkraft'
                                           }}
                                         </span>
-                                      </p>
-                                    </td>
-                                  </tr>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Zeitbeschränkung</td>
+                                      <td>{{ test.time_limit }}</td>
+                                    </tr>
+                                    <tr>
+                                      <td>Durchführung</td>
+                                      <td>
+                                        <p>{{ test.usage }}</p>
+                                      </td>
+                                    </tr>
+                                    <tr>
+                                      <td>Items</td>
+                                      <td>
+                                        <p>
+                                          {{ formattedItems(test.items) }}
+                                        </p>
+                                      </td>
+                                    </tr>
+                                  </tbody>
                                 </table>
                               </div>
                               <div v-if="test.description" class="container-fluid mb-4">
@@ -138,6 +138,7 @@
       const testsStore = useTestsStore()
       return { testsStore }
     },
+
     computed: {
       testData() {
         return this.testsStore.tests.filter(area => {
@@ -154,22 +155,29 @@
         return this.testsStore.isLoading
       },
     },
+
     async created() {
       await this.testsStore.fetch()
     },
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       getAttachedImages(test) {
-        return test.info_attachments.filter(attachment =>
+        return test.info_attachments?.filter(attachment =>
           attachment.content_type.startsWith('image')
         )
       },
       getAttachedOther(test) {
-        return test.info_attachments.filter(
+        return test.info_attachments?.filter(
           attachment => !attachment.content_type.startsWith('image')
         )
       },
       hasAttachments(test) {
-        return test.info_attachments.length
+        return test.info_attachments?.length
       },
     },
   }

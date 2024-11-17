@@ -101,4 +101,12 @@ Rails.application.configure do
 
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
+
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
+  Rails.application.config.session_store :cache_store,
+                                         key: 'levumi_session',
+                                         expire_after: 1.day,
+                                         signed: true,
+                                         secure: false,
+                                         same_site: :strict
 end

@@ -1,7 +1,8 @@
 module MailSubjects
   NON_LOGGABLE = {
     WELCOME: 'Herzlich Willkommen bei Levumi!',
-    NEW_SHARE: 'Levumi: eine Klasse wurde mit Ihnen geteilt!'
+    NEW_SHARE: 'Levumi: eine Klasse wurde mit Ihnen geteilt!',
+    PASSWORD_RESET: 'Levumi - Passwort wiederherstellen'
   }
   LOGGABLE = {
     NEWS: 'Neuigkeiten von Levumi',

@@ -1,7 +1,9 @@
 <template>
-  <b-modal id="error-dialog" ref="errorDialog" v-model="isOpen" hide-footer>
-    <template #modal-title> {{ globalStore.genericMessage.title }} </template>
-
+  <b-modal
+    id="error-dialog"
+    :model-value="isOpen"
+    :title="globalStore.genericMessage.title"
+    hide-footer>
     <div class="d-block text-center mb-4">
       {{ globalStore.genericMessage.message }}
       <slot></slot>
@@ -25,20 +27,26 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
-    computed: {
-      isOpen: {
-        get: function () {
-          return this.globalStore.genericMessage.message !== ''
-        },
-        set: function () {
-          this.globalStore.resetGenericMessage()
+    data() {
+      return { isOpen: false }
+    },
+    watch: {
+      'globalStore.genericMessage': {
+        handler(data) {
+          this.isOpen = !!data?.message
         },
       },
     },
     methods: {
       _close() {
         this.globalStore.resetGenericMessage()
+        this.isOpen = false
       },
     },
   }
 </script>
+<style>
+  #generic-dialog .generic-message {
+    white-space: pre-line;
+  }
+</style>

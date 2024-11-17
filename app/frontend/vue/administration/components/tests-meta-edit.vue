@@ -1,19 +1,17 @@
 <template>
   <b-modal id="edit-tests-meta-dialog" ref="editTestsMetaDialog" hide-footer @hidden="_close">
-    <template #modal-title> Metadaten bearbeiten </template>
+    <template #modal-title>Metadaten bearbeiten</template>
 
     <div>Test-Typ festlegen</div>
     <b-dropdown
       id="testTypeSelect"
       :text="selectedTestType.name"
       class="m-md-2"
-      variant="outline-secondary"
-    >
+      variant="outline-secondary">
       <b-dropdown-item
         v-for="testType in allTestTypes"
         :key="'testType' + testType.id"
-        @click="selectedTestType = testType"
-      >
+        @click="selectedTestType = testType">
         {{ testType.name }}
       </b-dropdown-item>
     </b-dropdown>
@@ -39,7 +37,7 @@
     },
     computed: {
       allTestTypes() {
-        return this.globalStore.staticData.testTypes.map(testType => ({
+        return this.globalStore.staticData?.testTypes?.map(testType => ({
           id: testType.id,
           name: testType.name,
         }))

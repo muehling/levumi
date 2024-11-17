@@ -19,6 +19,8 @@ class Test < ApplicationRecord
   validates_presence_of :level
   validates_uniqueness_of :shorthand, conditions: -> { where.not(archive: true) }
 
+  attribute :area_name, :string
+
   #Ggf. "veraltet" zum Namen dazufügen
   def name
     archive ? level + ' (veraltet)' : level
@@ -42,85 +44,97 @@ class Test < ApplicationRecord
   end
 
   def self.tests_meta
-    all_families =
-      TestFamily.all.map do |family|
-        tests_for_family = Test.where(test_family_id: family.id)
-        {
-          test_count: tests_for_family.count,
-          test_type_ids:
-            Test
-              .where(test_family_id: family.id)
-              .map { |test| test.test_type_id ? test.test_type_id : TestType.first[:id] }
-              .uniq,
-          test_ids: tests_for_family.pluck(:id),
-          id: family.id,
-          name: family.name,
-          competence_id: family.competence_id
-        }
-      end
-    all_competences =
-      Competence.all.map do |competence|
-        families_for_competence =
-          all_families.select { |family| family[:competence_id] == competence.id }
-        {
-          test_count: families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
-          name: competence.name,
-          test_type_ids:
-            families_for_competence.reduce([]) { |acc, family| acc + family[:test_type_ids] }.uniq,
-          test_ids: families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
-          test_family_ids: families_for_competence.pluck(:id),
-          id: competence.id,
-          area_id: competence.area_id
-        }
-      end
-    all_test_types =
-      TestType.all.map do |test_type|
-        tests_for_test_type = Test.where(test_type_id: test_type.id).pluck(:id)
-        competences_for_test_type =
-          all_competences.select { |competence| competence[:test_type_ids].include? test_type.id }
-        if (test_type.id == 1)
-          tests_for_test_type = tests_for_test_type + Test.where(test_type_id: nil).pluck(:id)
+    tests_meta =
+      Rails
+        .cache
+        .fetch('tests/tests_meta', expires_in: 30.days) do
+          all_families =
+            TestFamily.all.map do |family|
+              tests_for_family = Test.where(test_family_id: family.id)
+              {
+                test_count: tests_for_family.count,
+                test_type_ids:
+                  Test
+                    .where(test_family_id: family.id)
+                    .map { |test| test.test_type_id ? test.test_type_id : TestType.first[:id] }
+                    .uniq,
+                test_ids: tests_for_family.pluck(:id),
+                id: family.id,
+                name: family.name,
+                competence_id: family.competence_id
+              }
+            end
+          all_competences =
+            Competence.all.map do |competence|
+              families_for_competence =
+                all_families.select { |family| family[:competence_id] == competence.id }
+              {
+                test_count:
+                  families_for_competence.reduce(0) { |sum, family| sum + family[:test_count] },
+                name: competence.name,
+                test_type_ids:
+                  families_for_competence
+                    .reduce([]) { |acc, family| acc + family[:test_type_ids] }
+                    .uniq,
+                test_ids:
+                  families_for_competence.reduce([]) { |acc, family| acc + family[:test_ids] },
+                test_family_ids: families_for_competence.pluck(:id),
+                id: competence.id,
+                area_id: competence.area_id
+              }
+            end
+          all_test_types =
+            TestType.all.map do |test_type|
+              tests_for_test_type = Test.where(test_type_id: test_type.id).pluck(:id)
+              competences_for_test_type =
+                all_competences.select do |competence|
+                  competence[:test_type_ids].include? test_type.id
+                end
+              if (test_type.id == 1)
+                tests_for_test_type = tests_for_test_type + Test.where(test_type_id: nil).pluck(:id)
+              end
+              {
+                test_ids: tests_for_test_type,
+                name: test_type.name,
+                id: test_type.id,
+                competence_ids: competences_for_test_type.pluck(:id)
+              }
+            end
+          all_areas =
+            Area.all.map do |area|
+              competences_for_area =
+                all_competences.select { |competence| competence[:area_id] == area.id }
+
+              {
+                test_count:
+                  competences_for_area.reduce(0) do |sum, competence|
+                    sum + competence[:test_count]
+                  end,
+                test_type_ids:
+                  competences_for_area
+                    .reduce([]) { |acc, competence| acc + competence[:test_type_ids] }
+                    .uniq,
+                test_ids:
+                  competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
+                name: area.name,
+                id: area.id
+              }
+            end
+
+          # safety net in case someone forgot to add a test type
+          all_test_types = [
+            { id: 1, name: 'NO TEST TYPE FOUND', test_ids: Test.all.pluck(:id) }
+          ] if all_test_types.empty?
+          {
+            areas: all_areas,
+            test_families: all_families,
+            competences: all_competences,
+            tests: Test.all.as_json(exclude_items: true),
+            test_types: all_test_types
+          }
         end
-        {
-          test_ids: tests_for_test_type,
-          name: test_type.name,
-          id: test_type.id,
-          competence_ids: competences_for_test_type.pluck(:id)
-        }
-      end
-    all_areas =
-      Area.all.map do |area|
-        competences_for_area =
-          all_competences.select { |competence| competence[:area_id] == area.id }
 
-        {
-          test_count:
-            competences_for_area.reduce(0) { |sum, competence| sum + competence[:test_count] },
-          test_type_ids:
-            competences_for_area
-              .reduce([]) { |acc, competence| acc + competence[:test_type_ids] }
-              .uniq,
-          test_ids:
-            competences_for_area.reduce([]) { |acc, competence| acc + competence[:test_ids] },
-          name: area.name,
-          id: area.id
-        }
-      end
-
-    # safety net in case someone forgot to add a test type
-    all_test_types = [
-      { id: 1, name: 'NO TEST TYPE FOUND', test_ids: Test.all.pluck(:id) }
-    ] if all_test_types.empty?
-
-    return(
-      {
-        areas: all_areas,
-        test_families: all_families,
-        competences: all_competences,
-        tests: Test.all.as_json(exclude_items: true),
-        test_types: all_test_types
-      }
-    )
+    tests_meta
   end
 
   #JSON Export, nur relevante Attribute übernehmen
@@ -239,6 +253,10 @@ class Test < ApplicationRecord
       test.updated_by = login.email
 
       if !test.nil? && test.save
+        # invalidate cache
+        Rails.cache.delete('tests/tests_meta')
+        Rails.cache.delete('tests/test_app_data')
+
         # create new assessments in case an old test was archived
         if (!old_test.nil? && old_test.archive && !assessments_for_old_test.nil?)
           assessments_for_old_test.each do |old_assessment|
@@ -274,11 +292,13 @@ class Test < ApplicationRecord
         end
 
         f = zip.glob('test.html').first
-        test.entry_point.attach(
-          io: StringIO.new(f.get_input_stream.read),
-          filename: 'test.html',
-          content_type: 'text/html'
-        )
+        if !f.nil?
+          test.entry_point.attach(
+            io: StringIO.new(f.get_input_stream.read),
+            filename: 'test.html',
+            content_type: 'text/html'
+          )
+        end
 
         zip
           .glob('media/*')
@@ -351,10 +371,11 @@ class Test < ApplicationRecord
 
     #Keine alten Messungen exportieren
     res =
-      Result
-        .where("test_date > '2019-09-09'")
-        .where(student_id: student_ids, assessment_id: assessment_ids, test_date: '2019-09-09'..)
-        .all
+      Result.where(
+        student_id: student_ids,
+        assessment_id: assessment_ids,
+        test_date: '2019-09-09'..
+      ).all
     csv = ''
     csv = res[0].csv_header(false) + "\n" if res.size > 0
     res.each { |r| csv = csv + r.as_csv(false) }
@@ -377,6 +398,7 @@ class Test < ApplicationRecord
         .order(test_family_id: :asc)
         .all
     res = []
+    areas_by_month = {}
     tests.each do |t|
       assessment_ids = Assessment.where(group_id: groups, test_id: t.id).pluck('id')
       results =

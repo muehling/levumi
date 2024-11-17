@@ -1,6 +1,6 @@
 <template>
-  <b-container v-cloak fluid>
-    <b-row class="mt-3"> </b-row>
+  <b-container>
+    <b-row class="mt-3"></b-row>
     <b-tabs card pills>
       <b-tab title="Test-Metadaten" lazy>
         <tests-meta />

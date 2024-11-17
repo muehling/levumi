@@ -1,19 +1,16 @@
 <template>
   <b-modal
     id="confirm-dialog"
-    ref="genericConfirmDialog"
+    ref="confirmDialog"
     hide-footer
     :size="size"
     :no-close-on-backdrop="disableCloseOnBackdrop"
+    :title="title"
     @hidden="_close">
-    <template #modal-title>
-      {{ title }}
-    </template>
     <div v-if="!containsHtml" class="d-block text-center mb-4 text-break">
       {{ message }}
     </div>
     <div v-else class="text-break" v-html="message"></div>
-
     <div class="d-flex justify-content-end">
       <b-button v-if="!hideCancelButton" variant="outline-secondary" class="m-1" @click="_close">
         {{ cancelText }}
@@ -43,7 +40,6 @@
     },
     methods: {
       open(data = {}) {
-        this.$refs.genericConfirmDialog.show()
         this.cancelText = data.cancelText || 'Schließen'
         this.containsHtml = data.containsHtml || false
         this.disableCloseOnBackdrop = data.disableCloseOnBackdrop || false
@@ -53,22 +49,26 @@
         this.okText = data.okText || 'Ok'
         this.title = data.title || ''
         this.size = data.size || ''
+        this.$refs.confirmDialog.show()
         return new Promise(resolve => {
           this.resolvePromise = resolve
         })
       },
 
       _close() {
-        this.$refs.genericConfirmDialog.hide()
-        this.resolvePromise(false)
+        if (this.resolvePromise) {
+          this.resolvePromise(false)
+        }
         this._reset()
       },
       _confirm() {
-        this.$refs.genericConfirmDialog.hide()
-        this.resolvePromise(true)
+        if (this.resolvePromise) {
+          this.resolvePromise(true)
+        }
         this._reset()
       },
       _reset() {
+        this.$refs.confirmDialog.hide()
         this.message = ''
         this.title = ''
         this.okText = ''

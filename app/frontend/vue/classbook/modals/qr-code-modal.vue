@@ -1,15 +1,16 @@
 <template>
   <b-modal
     :id="'qr-code-modal'"
+    v-model="isVisible"
     :title="'QR-Code für ' + student.name"
     scrollable
     hide-footer
     static
     :visible="!!student"
-    @hidden="hideModal"
-  >
+    @hidden="hideModal">
     <p>
-      Code: {{ student.login }} <br />
+      Code: {{ student.login }}
+      <br />
       QR-Code:
     </p>
     <div class="text-center">
@@ -22,6 +23,9 @@
   export default {
     name: 'QrCodeModal',
     props: { student: Object },
+    data() {
+      return { isVisible: !!this.student }
+    },
     watch: {
       'student.id': {
         immediate: true,

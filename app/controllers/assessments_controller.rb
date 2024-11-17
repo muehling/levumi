@@ -39,8 +39,10 @@ class AssessmentsController < ApplicationController
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
       head :ok
-    elsif @assessment.update(params.require(:assessment).permit(:active))
-      head :ok
+    elsif @assessment.update(
+          params.require(:assessment).permit(:active, settings: %i[is_trend_enabled date_until])
+        )
+      render json: @assessment.get_data
     else
       head 304
     end
@@ -48,7 +50,6 @@ class AssessmentsController < ApplicationController
 
   #DEL /groups/:group_id/assessments/:id
   def destroy
-    #return :not_acceptable if @assessment.results.exists?
     if @assessment.destroy
       head :ok
     else

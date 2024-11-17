@@ -1,2 +1,6 @@
-json.users @userinfo
-json.tests @testinfo
+#json.users @userinfo
+#json.tests @testinfo
+#json.all_registrations_by_type_and_month @all_registrations_by_type_and_month
+json.monthly_results @monthly_results
+json.active_users_by_month @active_users_by_month
+json.registrations_by_month_and_state @registrations_by_month_and_state

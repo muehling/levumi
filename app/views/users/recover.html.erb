@@ -1,72 +1,119 @@
 <div class="container">
-  <div class='card mt-4'>  
-    <div class='card-header'>
-      Passwort wiederherstellen
-    </div>
-    <div class='card card-body'>
-      <form id="password-reset">
-        <div class='form-group'>
-          <input type='email' name='email' class='form-control' id='email-input' placeholder='E-Mail Adresse'>
+  <div class="card mt-4">
+    <div class="card-header"><strong>Passwort wiederherstellen</strong></div>    
+    <div class="card card-body">
+    <p>Sie können Ihr Passwort für Levumi wiederherstellen, wenn Sie die Antwort auf die 
+      Sicherheitsfrage noch kennen. In diesem Fall fordern Sie bitte zunächst unten einen Code 
+      für die Wiederherstellung an und geben ihn dann hier ein.
+    </p><p>
+      Falls Sie die Antwort auf die Sicherheitsfrage nicht mehr kennen, kontaktieren Sie uns bitte.
+    </p>
+      
+      <div>
+        <input
+          type="email"
+          name="email"
+          class="form-control"
+          id="email-input"
+          placeholder="E-Mail-Adresse" />
+
+        <div id="email-invalid-feedback" class="invalid-feedback" style="display: none">
+          
         </div>
-        <div class='form-group'>
-          <label for='security'>In welcher Stadt wurden Sie geboren?</label>
-          <input type='text' name='security' class='form-control' id='security' placeholder='Antwort auf die Sicherheitsfrage'>
+        <button class="btn btn-primary mt-3" id="send-code">Code anfordern</button>
+      </div>
+      <div>
+        <div id="hidden-code-input" style="display: none">
+          <input
+            type="text"
+            class="form-control mt-4"
+            id="verificationCode"
+            placeholder="Einmal-Code" />
+          <div id="code-invalid-feedback" class="invalid-feedback" style="display: none">
+            Der eingegebene Code ist falsch!
+          </div>
+          <button class="btn btn-primary mt-3" id="security-key-check">
+            Code überprüfen
+          </button>
         </div>
-        <%= submit_tag 'Überprüfen', class: 'btn btn-primary'%>
-      </form>
-    </div>
-    <div id='res' class='card-footer'>
-      Bitte beachten Sie Groß- und Kleinschreibung bei der Antwort!
+        <p class="mt-4" id="pw-hint">Nach der Eingabe des Codes müssen Sie nur noch die Sicherheitsfrage mit der 
+        von Ihnen festgelegten Antwort beantworten. Danach haben Sie wieder Zugriff auf Ihr Benutzerkonto.
+        </p>
+        <div id="hidden-security-form"></div>
+      </div>
     </div>
   </div>
- 
 </div>
 <script type="module">
+  document.getElementById('send-code').addEventListener('click', sendVerificationCode)
+  document.getElementById('security-key-check').addEventListener('click', checkKey)
 
-const submit = async e => {
-  e.preventDefault()
-  e.stopPropagation()
-
-  const email =  $('#email-input').val()
-  const security =  $('#security').val()
-
-  const res = await fetch('/passwort', {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content'),
-    },
-    body: JSON.stringify({ email, security }),
-  })
-
-  let pw = ''
-  if (res.status === 200) {
-    const data = await res.json()
-    try {
-      pw = sjcl.decrypt(security, data.user.security_digest)
-    } catch (e) {
-      // error message is displayed in the else case below
+  async function sendVerificationCode() {
+    document.getElementById('send-code').textContent = 'Code erneut anfordern'
+    document.getElementById('email-invalid-feedback').style.display = 'none'
+    const email = document.getElementById('email-input').value
+    if (!email || !email.includes('@')) {
+      document.getElementById('email-invalid-feedback').textContent =
+        'Bitte geben Sie eine gültige E-Mail-Adresse an'
+      document.getElementById('email-invalid-feedback').style.display = 'block'
+      return
     }
-  } 
-  if (pw) {
-    $('#res').html(
-        `<button class='btn btn-success' type='button' data-toggle='collapse' data-target='#collapse' aria-expanded='false' aria-controls='collapse'>
-        Überprüfung erfolgreich<br>
-        Hier klicken, um das Passwort anzeigen
-        </button>
-        <div class='collapse mt-3' id='collapse'><p class="alert alert-success">${pw}</p>
-          <p>Bitte kehren Sie zur <a href="/">Startseite</a> zurück, um sich mit Ihrer Email-Adresse und dem angezeigten Passwort einzuloggen.</p>
-        </div>
-        `
-      )
-      
-  } else {
-    $('#res').html(
-      "<div class='alert alert-danger' role='alert'>Überprüfung fehlgeschlagen! Bitte wenden Sie sich an das Levumi Team.</div>"
-    )
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+    const mail = await fetch('/recovery_notification', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({ user: { email } }),
+    })
+    if (mail.status === 200) {
+      document.getElementById('hidden-code-input').style.display = 'block'
+    } else {
+      const res = await mail.json()
+
+      document.getElementById('email-invalid-feedback').textContent = res.message
+      document.getElementById('email-invalid-feedback').style.display = 'block'
+      return
+    }
   }
-}
-$("#password-reset").on("submit", submit)
+
+  async function checkKey() {
+    document.getElementById('code-invalid-feedback').style.display = 'none'
+    const email = document.getElementById('email-input').value
+    const recovery_key = document.getElementById('verificationCode').value
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+
+    const key = await fetch('/recovery_key_verification', {
+      method: 'POST',
+      headers: {
+        Accept: 'text/html',
+        'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json',
+        'X-CSRF-Token': csrfToken,
+      },
+      body: JSON.stringify({ user: { email, recovery_key } }),
+    })
+
+    if (key.status === 200) {
+      const content = await key.text()
+      const pwHint = document.getElementById('pw-hint')
+      if (pwHint) {
+        pwHint.remove()
+        const el = document.getElementById('hidden-security-form')
+        el.innerHTML = content
+        const scripts = el.querySelectorAll('script')     
+        scripts.forEach(script => {
+          const newScript = document.createElement('script')
+          newScript.textContent = script.textContent
+          document.body.appendChild(newScript)
+        })
+      }
+    } else if (key.status === 403) {
+      document.getElementById('code-invalid-feedback').style.display = 'block'
+    }
+  }
+  
 </script>

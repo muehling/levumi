@@ -1,17 +1,12 @@
 <template>
-  <b-container v-cloak fluid>
-    <b-row class="mt-3"> </b-row>
-    <b-tabs card pills>
-      <b-tab title="Nutzerliste">
-        <users-list :users="users" :total-rows="totalUsers" @refetch="refetch"></users-list>
-      </b-tab>
-      <template #tabs-end>
-        <b-nav-item role="presentation" @click="createUser"> Neuen Nutzer anlegen </b-nav-item>
-        <b-nav-item role="presentation" @click="openMailDialog">Nachricht an Nutzer</b-nav-item>
-      </template>
-    </b-tabs>
-    <users-mail-dialog ref="usersMailDialog" />
+  <b-container fluid>
     <edit-user-dialog ref="editUserDialog" @refetch="refetch" />
+    <users-list
+      :users="users"
+      :total-rows="totalUsers"
+      @refetch="refetch"
+      @edit-user="editUser"
+      @create-user="createUser" />
   </b-container>
 </template>
 
@@ -19,13 +14,12 @@
   import { ajax } from '../../utils/ajax'
   import { hasCapability } from '../../utils/user'
   import { useGlobalStore } from '../../store/store'
-  import UsersList from './components/users-list.vue'
   import EditUserDialog from './components/edit-user-dialog.vue'
-  import UsersMailDialog from './components/users-mail-dialog.vue'
-  import Vue from 'vue'
+  import UsersList from './components/users-list.vue'
+
   export default {
     name: 'UsersApp',
-    components: { UsersList, UsersMailDialog, EditUserDialog },
+    components: { UsersList, EditUserDialog },
     setup() {
       const globalStore = useGlobalStore()
       return { globalStore }
@@ -72,11 +66,14 @@
         if (res.status === 200) {
           const data = res.data
           this.totalUsers = data.total_users
-          Vue.set(this, 'users', data.users)
+          this.users = data.users
         }
       },
       createUser() {
         this.$refs.editUserDialog.open({ user: {}, isNew: true })
+      },
+      editUser(user) {
+        this.$refs.editUserDialog.open({ user, isNew: false })
       },
       openMailDialog() {
         this.$refs.usersMailDialog.open({ isNew: true })

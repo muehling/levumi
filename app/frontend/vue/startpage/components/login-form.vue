@@ -20,14 +20,14 @@
           name="password"
           aria-label="Passwort eingeben"
           placeholder="Passwort"
-          :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
+          :class="`my-3 form-control${passwordMismatch ? ' is-invalid' : ''}`" />
         <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
       </div>
       <div class="d-flex submit-section">
         <b-button type="submit" variant="success" :disabled="isLoading" @click="login">
           Einloggen
         </b-button>
-        <div v-if="isLoading" class="spinner ml-3 mt-2">
+        <div v-if="isLoading" class="spinner ms-3 mt-2">
           <div class="bounce1 pt-2"></div>
           <div class="bounce2 pt-2"></div>
           <div class="bounce3 pt-2"></div>
@@ -78,8 +78,7 @@
             break
           default:
             sessionStorage.setItem('login', this.password)
-            this.$router.push('/diagnostik')
-            window.location.reload() // necessary to load the full Levumi app
+            window.location.replace('/diagnostik')
         }
       },
     },

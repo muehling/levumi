@@ -7,37 +7,39 @@
           durchführen oder Einstellungen ändern.
         </p>
       </div>
-      <b-btn
+      <b-button
         v-if="displayTestAdminButton"
         variant="outline-secondary"
         size="sm"
-        class="mr-2 my-3"
+        class="me-2 my-3"
         @click="openTestAdmin">
-        <i class="fas fa-gear mr-1"></i>
+        <i class="fas fa-gear me-2"></i>
         Test hinzufügen / löschen
-      </b-btn>
+      </b-button>
       <b-button
         v-if="displayClassBookButton"
         variant="outline-secondary"
         size="sm"
         class="my-3"
         @click="gotoClassbook">
-        <i class="fas fa-book-open mr-1"></i>
+        <i class="fas fa-book-open me-2"></i>
         Zum Klassenbuch
       </b-button>
       <b-button
         v-if="isTestDetailsOpen || isTestAdminOpen"
-        class="my-3"
+        class="my-3 me-2"
         size="sm"
         variant="outline-secondary"
         @click="backToOverview">
-        <i class="fas fa-arrow-left mr-1"></i>
+        <i class="fas fa-arrow-left me-2"></i>
         Zurück zur Testübersicht
       </b-button>
     </div>
-    <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
-    <assessment-view v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
-    <assessment-details v-if="isTestDetailsOpen" :group="group" @remove-entry="removeEntry" />
+    <div v-if="!!group">
+      <group-test-admin v-if="isAllowed" :group="group" :is-open="isTestAdminOpen" />
+      <assessment-list v-if="isTestListOpen" :selected-group-id="selectedGroupId" />
+      <assessment-details v-if="isTestDetailsOpen" :group="group" />
+    </div>
   </div>
 </template>
 
@@ -46,21 +48,22 @@
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
   import { useGlobalStore } from 'src/store/store'
   import { useTestsStore } from 'src/store/testsStore'
-  import AssessmentDetails from './assessment-details.vue'
-  import AssessmentView from './assessment-view.vue'
-  import GroupTestAdmin from './group-test-admin.vue'
+  import AssessmentDetails from './group-view-components/assessment-details.vue'
+  import AssessmentList from './group-view-components/assessment-list.vue'
+  import GroupTestAdmin from './group-view-components/group-test-admin.vue'
+  import { useRoute } from 'vue-router'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentDetails, AssessmentView, GroupTestAdmin },
-    props: {
-      selectedGroupId: Number,
-    },
+    components: { AssessmentDetails, AssessmentList, GroupTestAdmin },
+    props: { selectedGroupId: Number },
+
     setup() {
+      const route = useRoute()
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
-      return { globalStore, assessmentsStore, testsStore }
+      return { globalStore, assessmentsStore, testsStore, route }
     },
     data: function () {
       return {
@@ -70,7 +73,8 @@
             : 0,
         isTestAdminOpen: false,
         isTestDetailsOpen: false,
-        isTestListOpen: true,
+        isTestListOpen: false,
+        isAssessmentSettingsOpen: false,
       }
     },
     computed: {
@@ -82,7 +86,7 @@
         return this.assessmentData?.annotations
       },
       displayClassBookButton() {
-        return !this.isTestAdminOpen && !this.isTestDetailsOpen && this.group.students.length > 0
+        return this.$route.name === 'AssessmentList' || this.$route.name === 'Diagnostik'
       },
       groups() {
         // the first element is only intended as a placeholder for new groups and is not needed here
@@ -90,7 +94,9 @@
         return this.globalStore.groups.filter(group => group.id)
       },
       group() {
-        return this.groups.find(group => group.id === this.selectedGroupId)
+        return this.globalStore.groups.find(
+          group => group.id === parseInt(this.selectedGroupId, 10)
+        )
       },
       isAllowed() {
         const permissions = access(this.group).diagnostics
@@ -101,33 +107,38 @@
       },
       displayTestAdminButton() {
         return (
-          !!this.selectedGroupId &&
-          !this.assessmentData &&
           this.isAllowed &&
-          !this.isTestAdminOpen &&
-          this.group.students.length > 0
+          (this.$route.name === 'AssessmentList' ||
+            (this.$route.name === 'Diagnostik' && !this.group.read_only))
         )
       },
     },
     watch: {
-      '$route.params': {
+      '$route.name': {
         immediate: true,
-        async handler(data) {
-          switch (data.location) {
-            case 'testverwaltung':
+        async handler(name) {
+          switch (name) {
+            case 'GroupTestAdmin':
+              this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = false
               this.isTestAdminOpen = true
               this.isTestListOpen = false
               break
-            case 'testdetails':
+            case 'Assessment':
+              this.isAssessmentSettingsOpen = false
               this.isTestDetailsOpen = true
               this.isTestAdminOpen = false
               this.isTestListOpen = false
-              if (this.assessmentsStore.currentAssessment?.test?.id !== parseInt(data.testId, 10)) {
-                await this.assessmentsStore.fetchCurrentAssessment(this.group.id, data.testId)
-              }
+
+              break
+            case 'AssessmentSettings':
+              this.isAssessmentSettingsOpen = true
+              this.isTestDetailsOpen = false
+              this.isTestAdminOpen = false
+              this.isTestListOpen = false
               break
             default:
+              this.isAssessmentSettingsOpen = false
               this.isTestAdminOpen = false
               this.isTestDetailsOpen = false
               this.isTestListOpen = true
@@ -137,43 +148,40 @@
     },
 
     async mounted() {
-      const groupId = this.group.id
-
-      this.$root.$on(`annotation-added-${groupId}`, this.addAnnotation)
-      this.$root.$on(`annotation-removed-${groupId}`, this.removeAnnotation)
-
-      await this.assessmentsStore.fetch(groupId)
-      await this.testsStore.fetchUsedTestsForGroup(groupId)
+      await this.getAssessmentData()
     },
     methods: {
-      gotoClassbook() {
-        if (this.group.owner) {
-          this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}`)
-        } else {
-          this.$router.push(`/klassenbuch/geteilte_klassen/${this.group.id}`)
+      async getAssessmentData() {
+        if (
+          this.$route.params.testId &&
+          parseInt(this.$route.params.groupId, 10) === this.selectedGroupId &&
+          this.assessmentsStore.currentAssessment?.test?.id !==
+            parseInt(this.$route.params.testId, 10)
+        ) {
+          await this.assessmentsStore.fetchCurrentAssessment(
+            this.selectedGroupId,
+            this.$route.params.testId
+          )
         }
       },
+      gotoClassbook() {
+        if (this.group.owner) {
+          this.$router.push(`/klassenbuch/eigene_klassen/${this.selectedGroupId}`)
+        } else {
+          this.$router.push(`/klassenbuch/geteilte_klassen/${this.selectedGroupId}`)
+        }
+      },
+
       openTestAdmin() {
         this.$router.push(`/diagnostik/${this.selectedGroupId}/testverwaltung`)
       },
-      addAnnotation(annotation) {
-        const annotations = this.assessmentData.annotations
-        annotations.splice(0, 0, annotation)
-        this.$set(this.assessmentData, 'annotations', annotations)
-      },
-      removeAnnotation(annotationId) {
-        const annotations = this.assessmentData.annotations.filter(a => annotationId !== a.id)
-        this.$set(this.assessmentData, 'annotations', annotations)
-      },
+
       async setPreselect(data) {
         this.testSelected = data.testId
       },
       backToOverview() {
         this.assessmentsStore.setCurrentAssessment(undefined)
         this.$router.push(`/diagnostik/${this.selectedGroupId}`)
-      },
-      removeEntry(index) {
-        this.assessmentData.series.splice(index, 1) // todo Mutation von computed prop, sollte nicht erlaubt sein
       },
     },
   }

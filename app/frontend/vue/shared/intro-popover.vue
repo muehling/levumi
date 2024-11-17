@@ -1,30 +1,28 @@
 <template>
   <b-popover
-    v-if="isOpen"
     ref="introPopover"
     :key="currentIndex"
-    :show="true"
+    :model-value="isOpen"
     :target="targets[currentIndex]"
-  >
+    no-hide>
     <template #title>
       <div>
         Einführung
-        <b-btn
+        <b-button
           v-b-popover.hover="'Diese Einführung beenden und nicht erneut anzeigen'"
           size="xs"
-          class="cancel-tutorial float-right text-secondary"
+          class="cancel-tutorial float-end text-secondary"
           variant="outline-light"
-          @click="cancelTutorial"
-        >
+          @click="cancelTutorial">
           <i class="fas fa-xmark"></i>
-        </b-btn>
+        </b-button>
       </div>
     </template>
     <p>{{ messages[currentIndex] }}</p>
     <div class="text-center mb-2">
-      <b-btn size="sm" class="ml-2" @click="next">
+      <b-button size="sm" class="ms-2" @click="next">
         {{ currentIndex === targets.length - 1 ? "Los geht's" : 'Weiter' }}
-      </b-btn>
+      </b-button>
     </div>
   </b-popover>
 </template>
@@ -65,9 +63,28 @@
     },
   }
 </script>
-<style scoped>
+<style>
   .cancel-tutorial {
     border-color: transparent !important;
     margin-top: -0.25em;
+  }
+  .popover {
+    background: #e9ecef;
+  }
+
+  .popover.bs-popover-top .popover-arrow:after {
+    border-top-color: #e9ecef;
+  }
+
+  .popover.bs-popover-end .popover-arrow:after {
+    border-right-color: #e9ecef;
+  }
+
+  .popover.bs-popover-bottom .popover-arrow:after {
+    border-bottom-color: #e9ecef;
+  }
+
+  .popover.bs-popover-start .popover-arrow:after {
+    border-left-color: #e9ecef;
   }
 </style>
