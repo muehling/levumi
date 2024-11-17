@@ -180,9 +180,6 @@
             <b-dropdown-item v-if="!masquerade" @click="editOwnProfile">
               Profildaten ändern
             </b-dropdown-item>
-            <b-dropdown-item v-if="!masquerade" @click="editUserSettings">
-              Einstellungen ändern
-            </b-dropdown-item>
             <b-dropdown-item :href="`/users/${login.id}.text`" :disabled="!hasTestedStudents">
               Testungen exportieren
             </b-dropdown-item>
@@ -203,7 +200,6 @@
     </b-navbar>
 
     <edit-user-dialog ref="editUserDialog" @refetch="updateUser" />
-    <user-settings-dialog ref="userSettingsDialog" @refetch="updateUser" />
     <ImprintModal />
     <AboutModal />
     <PrivacyModal />
@@ -225,7 +221,6 @@
   import ImprintModal from 'src/vue/shared/modals/imprint-modal.vue'
   import TermsModal from 'src/vue/shared/modals/terms-modal.vue'
   import PrivacyModal from 'src/vue/shared/modals/privacy-modal.vue'
-  import UserSettingsDialog from '../users/components/user-settings-dialog.vue'
 
   export default {
     name: 'NavBar',
