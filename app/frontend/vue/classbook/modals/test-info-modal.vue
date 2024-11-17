@@ -1,14 +1,13 @@
 <template>
   <b-modal
     id="'test-info-modal'"
+    v-model="isVisible"
     title="Aktive Tests"
     scrollable
     hide-footer
     static
     size="lg"
-    :visible="!!student"
-    @hidden="hideModal"
-  >
+    @hidden="hideModal">
     <loading-dots v-if="isLoadingAssessments" />
     <div v-else-if="activeAssessments.length">
       <p>
@@ -19,8 +18,7 @@
         <li v-for="line in activeAssessments" :key="line.text">
           <router-link
             :class="line.isOpen ? 'text-secondary' : 'text-success'"
-            :to="`/diagnostik/${line.groupId}/testdetails/${line.testId}`"
-          >
+            :to="`/diagnostik/${line.groupId}/testdetails/${line.testId}`">
             {{ line.text }}
           </router-link>
         </li>
@@ -45,6 +43,7 @@
       return {
         activeAssessments: [],
         isLoadingAssessments: false,
+        isVisible: !!this.student,
       }
     },
     watch: {

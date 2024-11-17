@@ -1,14 +1,10 @@
 <template>
-  <b-container v-cloak fluid>
-    <b-row class="mt-3"></b-row>
-    <b-tabs card pills>
-      <b-tab title="Testübersicht"></b-tab>
-      <template #tabs-end>
-        <b-nav-item role="presentation" @click="createTest">Neuer Test</b-nav-item>
-      </template>
-    </b-tabs>
-    <tests-list :fetch-trigger="fetchTrigger" />
-    <create-test-dialog ref="createTestDialog" @test-import:success="propagateFetch()" />
+  <b-container fluid>
+    <b-card title="Testverwaltung">
+      <b-button @click="createTest" variant="primary">Test hochladen</b-button>
+      <tests-list :fetch-trigger="fetchTrigger" />
+      <create-test-dialog ref="createTestDialog" @test-import:success="propagateFetch()" />
+    </b-card>
   </b-container>
 </template>
 

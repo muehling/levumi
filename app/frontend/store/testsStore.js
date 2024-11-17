@@ -1,7 +1,6 @@
 import { ajax } from '../utils/ajax'
 import { defineStore } from 'pinia'
 import apiRoutes from '../vue/routes/api-routes'
-import Vue from 'vue'
 import isEmpty from 'lodash/isEmpty'
 
 export const useTestsStore = defineStore('tests', {
@@ -10,6 +9,11 @@ export const useTestsStore = defineStore('tests', {
     tests: [],
     testsForGroup: {},
   }),
+  getters: {
+    getTests(state) {
+      return state.tests
+    },
+  },
   actions: {
     setTests(tests) {
       this.tests = tests
@@ -23,8 +27,7 @@ export const useTestsStore = defineStore('tests', {
       }
       this.isLoading = true
       const res = await ajax({ url: apiRoutes.tests.info })
-      const data = res.data
-      this.setTests(data.tests)
+      this.tests = res.data.tests
       this.isLoading = false
     },
     async fetchUsedTestsForGroup(groupId) {
@@ -33,7 +36,7 @@ export const useTestsStore = defineStore('tests', {
       }
       const res = await ajax(apiRoutes.groups.getTestData(groupId))
       const testData = res.data
-      Vue.set(this.testsForGroup, groupId, testData)
+      this.testsForGroup[groupId] = testData
     },
   },
 })

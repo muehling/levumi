@@ -5,31 +5,26 @@
         <b-form-input
           v-model="email"
           :class="hasEmailErrors && 'is-invalid'"
-          :readonly="!canEditUser"
-        />
+          :readonly="!canEditUser" />
         <div v-if="hasEmailErrors" class="invalid-feedback">{{ errors['email'].join('\n') }}</div>
       </b-form-group>
       <b-form-group v-if="canEditUser" label-cols="4" label="Typ" class="mt-3">
-        <b-form-radio
-          v-for="at in accountTypes"
-          :key="at.id"
-          v-model="accountType"
-          :value="at.id"
-          >{{ at.label }}</b-form-radio
-        >
+        <b-form-radio v-for="at in accountTypes" :key="at.id" v-model="accountType" :value="at.id">
+          {{ at.label }}
+        </b-form-radio>
         <div v-if="hasAccountTypeErrors" class="invalid-feedback">
           Bitte wählen Sie einen Account-Typen aus!
         </div>
       </b-form-group>
-      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ">
-        <b-form-input :value="accountTypeText" :readonly="true" />
+      <b-form-group v-if="!canEditUser" label-cols="4" label="Typ" class="mt-3">
+        <b-form-input :model-value="accountTypeText" :readonly="true" />
       </b-form-group>
       <div v-if="!canEditUser" class="form-group row">
         <div class="col-sm-12">
-          <small class="form-text text-muted"
-            >Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich bitte
-            an uns.</small
-          >
+          <small class="form-text text-muted">
+            Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich bitte
+            an uns.
+          </small>
         </div>
       </div>
 
@@ -40,17 +35,18 @@
             :errors="errors"
             @change-password="pw => (password = pw)"
             @change-password-confirm="pw => (passwordConfirm = pw)"
-            @change-security-answer="a => (securityAnswer = a)"
-        /></b-collapse>
+            @change-security-answer="a => (securityAnswer = a)" />
+        </b-collapse>
       </b-form-group>
-      <b-form-group label-cols="4" label="Bundesland*">
-        <b-form-select
-          id="state-input"
-          v-model="state"
-          :class="hasStateErrors && 'is-invalid'"
-          :options="stateOptions"
-        />
-      </b-form-group>
+      <div class="mt-3 mb-2">
+        <b-form-group label-cols="4" label="Bundesland*">
+          <b-form-select
+            id="state-input"
+            v-model="state"
+            :class="hasStateErrors && 'is-invalid'"
+            :options="stateOptions" />
+        </b-form-group>
+      </div>
       <extra-data-form
         :account-type="accountType"
         :town="town"
@@ -60,19 +56,17 @@
         @change-institution="inst => (institution = inst)"
         @change-town="t => (town = t)"
         @change-school-type="st => (schoolType = st)"
-        @change-focus-type="ft => (focusType = ft)"
-      >
-      </extra-data-form>
+        @change-focus-type="ft => (focusType = ft)"></extra-data-form>
       <div v-if="canEditSettingsJson" class="mb-3">
-        <b-button v-b-toggle.json-edit variant="outline-secondary">User-Config ändern</b-button>
-        <b-collapse id="json-edit" class="mt-2">
-          <p><i>Scito quid facias.</i></p>
+        <b-button variant="outline-secondary" @click="settingsOpen = !settingsOpen">
+          User-Config ändern
+        </b-button>
+        <b-collapse v-model="settingsOpen" class="mt-2">
           <b-form-textarea
             v-model="settings"
             placeholder="Enter something..."
             rows="3"
-            max-rows="6"
-          ></b-form-textarea>
+            max-rows="6"></b-form-textarea>
         </b-collapse>
       </div>
     </b-form>
@@ -81,17 +75,17 @@
         v-if="showDeleteButton && isOwnProfile"
         variant="danger"
         class="m-1"
-        @click="deleteSelf"
-        >Profil löschen</b-button
-      >
+        @click="deleteSelf">
+        Profil löschen
+      </b-button>
       <b-button variant="outline-secondary" class="m-1" @click="_close">Schließen</b-button>
       <b-button
         variant="outline-success"
         class="m-1"
         :disabled="isSubmitDisabled"
-        @click="_handleSubmit"
-        >{{ buttonText }}</b-button
-      >
+        @click="_handleSubmit">
+        {{ buttonText }}
+      </b-button>
     </div>
     <confirm-dialog ref="confirmDeleteDialog" />
     <confirm-dialog ref="doneConfirmation" />
@@ -140,6 +134,7 @@
             : JSON.stringify(this.user.settings),
         state: this.user.state,
         town: this.user.town,
+        settingsOpen: false,
       }
     },
     computed: {
@@ -283,12 +278,7 @@
         if (answer) {
           const res = await ajax({ ...apiRoutes.users.delete() })
           if (res.status === 200) {
-            this.$root.$on('bv::modal::hide', () => {
-              location.replace('/')
-              sessionStorage.clear('login')
-            })
-
-            this.$refs.doneConfirmation.open({
+            await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',
               message:
                 'Ihr Profil wurde vollständig gelöscht. Nach dem Schließen dieses Dialoges werden Sie zur Startseite weitergeleitet.',
@@ -296,6 +286,8 @@
               okText: 'Ok',
               okIntent: 'outline-success',
             })
+            location.replace('/')
+            sessionStorage.clear()
           }
         }
       },

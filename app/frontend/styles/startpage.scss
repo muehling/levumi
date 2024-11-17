@@ -76,6 +76,7 @@
   }
 }
 .info-link {
+  text-decoration: none;
   h4.card-title {
     color: white;
     text-shadow: 0 0 3px black;
@@ -113,6 +114,8 @@ h1.main-header {
 }
 
 .startpage-navbar {
+  background: linear-gradient(to bottom, #e5e4f0, white);
+
   @media (max-width: 576px) {
     position: relative;
   }

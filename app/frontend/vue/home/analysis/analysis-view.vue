@@ -1,9 +1,9 @@
 <template>
   <div>
-    <b-row class="d-flex justify-content-between">
-      <b-button-group class="ml-3" size="sm">
+    <div class="d-flex justify-content-between">
+      <b-button-group class="ms-3" size="sm">
         <b-button
-          class="mr-2"
+          class="me-2"
           size="sm"
           variant="outline-primary"
           :pressed="selectedStudentId === -1"
@@ -28,12 +28,12 @@
           </b-dropdown-item>
         </b-dropdown>
       </b-button-group>
-      <div v-if="isSupportFilterVisible">
-        <label class="text-small">Filtern nach Förderbedarf:</label>
+      <div v-if="isSupportFilterVisible" class="d-flex">
+        <label class="text-small mt-1">Filtern nach Förderbedarf:</label>
         <b-dropdown
           :text="supportNeeds.find(need => need.id === selectedSupportNeedFilter)?.name"
           variant="primary"
-          class="ml-2 text-right"
+          class="ms-2 text-right"
           right
           size="sm">
           <b-dropdown-item
@@ -45,43 +45,42 @@
           </b-dropdown-item>
         </b-dropdown>
       </div>
-    </b-row>
+    </div>
     <b-row class="mt-2">
-      <b-button-group class="ml-3">
-        <b-button
-          v-for="(view, index) in viewsWithGroupAndStudent"
-          :key="index"
-          class="mr-2 shadow-none"
-          size="sm"
-          variant="outline-secondary"
-          :pressed="selectedView === view.key"
-          @click="setSelectedView(view.key)">
-          {{ view.label }}
-        </b-button>
-      </b-button-group>
+      <b-col>
+        <b-button-group class="ms-3">
+          <b-button
+            v-for="(view, index) in viewsWithGroupAndStudent"
+            :key="index"
+            class="me-2 shadow-none"
+            size="sm"
+            variant="outline-secondary"
+            :pressed="selectedView === view.key"
+            @click="setSelectedView(view.key)">
+            {{ view.label }}
+          </b-button>
+        </b-button-group>
+      </b-col>
     </b-row>
     <b-row :hidden="!graph_visible">
-      <b-col>
+      <b-col :key="forceUpdate">
         <apexchart
-          v-if="hasChartData"
+          v-if="hasChartData && currentChartType === 'line'"
           ref="levumiChart"
-          :key="forceUpdate"
-          :type="currentChartType"
+          type="line"
           height="500px"
           width="100%"
           :options="chartOptions"
           :series="chartSeries" />
-        <div v-else-if="!isInitialized" style="height: 500px">
-          <b-alert class="m-4 p-4" variant="secondary" show>
-            <span class="preparing">
-              Daten werden vorbereitet
-              <loading-dots
-                :is-loading="true"
-                class-name="m-0 d-inline"
-                wrapper-class-name="d-inline" />
-            </span>
-          </b-alert>
-        </div>
+        <apexchart
+          v-else-if="hasChartData && currentChartType === 'bar'"
+          ref="levumiChart"
+          type="bar"
+          height="500px"
+          width="100%"
+          :options="chartOptions"
+          :series="chartSeries" />
+
         <div v-else style="height: 500px">
           <b-alert class="m-4 p-4" variant="danger" show>
             Zu den gewählten Filtereinstellungen sind keine Daten vorhanden!
@@ -91,11 +90,12 @@
     </b-row>
     <b-row :hidden="!annotationAndTargetRowVisible">
       <b-col>
-        <b-row class="ml-1">
+        <b-row class="ms-1">
           <b-col>
             <b-button
               v-if="!readOnly"
               id="annotation_btn"
+              v-b-toggle.annotation_collapse
               :aria-expanded="annotationControlVisible ? 'true' : 'false'"
               aria-controls="annotation_collapse"
               size="sm"
@@ -108,9 +108,10 @@
                 }`"></i>
             </b-button>
             <b-button
-              v-if="(targetIsEnabled || dateUntilIsEnabled) && !readOnly"
+              v-if="!readOnly"
               id="target_btn"
-              class="ml-2"
+              v-b-toggle.target_collapse
+              class="ms-2"
               :aria-expanded="targetControlVisible ? 'true' : 'false'"
               aria-controls="target_collapse"
               size="sm"
@@ -122,39 +123,32 @@
                   targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'
                 }`"></i>
             </b-button>
-            <b-button class="ml-2" size="sm" variant="outline-primary" @click="exportGraph">
+            <b-button class="ms-2" size="sm" variant="outline-primary" @click="exportGraph">
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
           </b-col>
         </b-row>
-        <b-row class="ml-1">
-          <b-col class="mr-4">
+        <b-row class="ms-1">
+          <b-col class="me-4">
             <annotations-section
-              :annotations="annotations"
+              v-if="annotationControlVisible"
               :group="group"
               :test="test"
               :selected-student="selectedStudent"
               :selected-view-key="selectedView"
-              :annotation-control-visible.sync="annotationControlVisible"
-              :trend-is-enabled="trendIsEnabled"
-              @annotation-removed="removeAnnotation" />
-            <TargetControls
-              :target-val="targetVal"
-              :deviation-val="deviationVal"
-              :date-until-val="dateUntilVal"
-              :date-until-is-enabled="dateUntilIsEnabled"
-              :target-is-enabled="targetIsEnabled"
-              :deviation-is-enabled="deviationIsEnabled"
-              :target-val-stored="targetValStored"
-              :date-until-stored="dateUntilStored"
-              :deviation-stored="deviationStored"
+              :weeks="weeks" />
+
+            <target-controls
+              v-if="targetControlVisible"
+              :load-student-targets="loadStudentTargets"
+              :view-config="viewConfig"
+              :current-target="currentTarget"
               :student-targets="studentTargets"
               :selected-student-id="selectedStudentId"
-              :target-control-visible.sync="targetControlVisible"
-              :target-valid="targetValid"
               :test="test"
-              :group="group"></TargetControls>
+              :weeks="weeks"
+              :group="group" />
           </b-col>
         </b-row>
       </b-col>
@@ -188,7 +182,7 @@
           </thead>
           <tbody>
             <tr v-for="entry in table_data" :key="entry.week">
-              <td>{{ printDate(entry.week) }}</td>
+              <td>{{ formatDate(entry.week) }}</td>
               <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
             </tr>
           </tbody>
@@ -199,18 +193,21 @@
     <b-row :hidden="!simpleTableVisible">
       <b-tabs class="w-100" pills no-body card>
         <b-tab title="Tabellarische Daten" lazy>
-          <b-table-lite
+          <b-table
             id="simple-table"
             class="mt-4 text-small"
             small
             striped
             hover
-            :items="simpleTableData"></b-table-lite>
+            :fields="simpleTableFields"
+            :items="simpleTableData" />
         </b-tab>
       </b-tabs>
     </b-row>
-    <b-row v-if="niveaus_visible" :hidden="!niveaus_visible">
-      <niveau-overview :niv-config="nivConfig"></niveau-overview>
+    <b-row v-if="selectedViewType === 'niveaus'">
+      <niveau-overview
+        :niv-config="viewConfig.niv_config"
+        :info-attachments="info_attachments"></niveau-overview>
     </b-row>
   </div>
 </template>
@@ -218,7 +215,7 @@
 <script>
   import { ajax } from '@/utils/ajax'
   import { checkUserSettings } from '@/utils/user'
-  import { computed } from 'vue'
+  import { toRaw } from 'vue'
   import { createSimpleTableData, createHtmlTableFromViewConfig } from './data/createTableData'
   import { createTrendline } from './linearRegressionHelpers'
   import { getTrendFromResults } from '@/utils/helpers'
@@ -232,7 +229,6 @@
   import compact from 'lodash/compact'
   import isEmpty from 'lodash/isEmpty'
   import jsPDF from 'jspdf'
-  import LoadingDots from '../../shared/loading-dots.vue'
   import NiveauOverview from '@/vue/home/analysis/niveau-overview.vue'
   import SupportGroupOverview from '@/vue/home/supports/support-group-overview.vue'
   import SupportGroupQualitative from '@/vue/home/supports/support-group-qualitative.vue'
@@ -240,7 +236,6 @@
   import TargetControls from './target-controls.vue'
   import uniq from 'lodash/uniq'
   import {
-    addTargetToChartData,
     addTrendToChartData,
     annotationsLineOptions,
     annotationsPointOptions,
@@ -260,28 +255,10 @@
       TargetControls,
       SupportGroupOverview,
       SupportGroupQualitative,
-      LoadingDots,
     },
 
-    inject: ['studentName', 'printDate', 'readOnly'], //TODO injection of weeks didn't work in some cases. check for other props as well
-    provide: function () {
-      return {
-        restoreTarget: this.restoreTarget, // allowing the target controls to restore and set the target themselves
-        setTarget: this.setTarget,
-        loadStudentTargets: this.loadStudentTargets,
-        targetStored: computed(() => this.targetStored), // computed necessary for reactivity
-        viewConfig: computed(() => this.viewConfig),
-        info_attachments: computed(() => this.info_attachments),
-        weeks: computed(() => this.weeks),
-      }
-    },
     props: {
-      annotations: Array,
-      configuration: Object,
       group: Object,
-      results: Array,
-      students: Array,
-      test: Object,
     },
     setup() {
       const testsStore = useTestsStore()
@@ -293,15 +270,16 @@
       return {
         annotationControlVisible: false,
         chartOptions: apexChartOptions([]).line, // just so that apexcharts is happy being initialized correctly
-        dateUntilVal: null,
+        dateUntilVal: this.assessmentsStore.currentAssessment.settings?.date_until,
         deviationVal: null,
         forceUpdate: undefined,
         graphData: [],
+        isInitting: true,
         isInitialized: false,
         maxY: 0,
         selectedStudentId: -1,
         selectedSupportNeedFilter: undefined,
-        selectedView: this.test?.configuration.views[0].key,
+        selectedView: undefined,
         simpleTableData: undefined,
         studentTargets: [],
         targetAdded: false,
@@ -311,6 +289,31 @@
       }
     },
     computed: {
+      test() {
+        return this.assessmentsStore.currentAssessment?.test
+      },
+      results() {
+        return this.assessmentsStore.currentAssessment?.series
+      },
+      students() {
+        return this.globalStore.studentsInGroups[this.group.id] || []
+      },
+
+      readOnly() {
+        return !!this.group.read_only
+      },
+
+      simpleTableFields() {
+        const a = this.weeks.map(week => ({ key: printDate(week) }))
+        a.unshift({ key: 'name' })
+        return a
+      },
+      annotations() {
+        return this.assessmentsStore.currentAssessment.annotations.slice()
+      },
+      configuration() {
+        return this.assessmentsStore.currentAssessment.configuration // this is actually assessment.test.configuration
+      },
       displaySupportFilterHint() {
         return !this.graphData.length && this.selectedSupportNeedFilter
       },
@@ -380,9 +383,6 @@
       viewConfig() {
         return this.currentViewConfig()
       },
-      nivConfig() {
-        return this.viewConfig.niv_config
-      },
       columns() {
         return this.viewConfig.columns || []
       },
@@ -409,9 +409,7 @@
       simpleTableVisible() {
         return this.selectedViewType === 'graph' && !this.viewConfig.options?.chart?.stacked
       },
-      niveaus_visible() {
-        return this.selectedViewType === 'niveaus'
-      },
+
       annotationAndTargetRowVisible() {
         // groupedStackedBars are hacked in percentile bands and do not offer support for annotations or targets currently
         return this.graph_visible && !this.viewConfig.options?.chart?.stacked
@@ -457,36 +455,23 @@
           : null
       },
       chartSeries() {
-        return [...this.graphData]
+        return toRaw(this.graphData)
       },
-      targetIsSlopeVariant() {
-        return this.settings.targets?.slope
-      },
-      targetIsEnabled() {
-        return this.settings.targets?.enabled
-      },
-      dateUntilIsEnabled() {
-        return this.settings.targets?.enabled || this.settings.trends?.enabled
-      },
-      deviationIsEnabled() {
-        return this.targetIsEnabled && this.settings.targets?.deviation
-      },
+
       trendIsEnabled() {
-        return this.settings.trends?.enabled
+        return this.assessmentsStore.currentAssessment.settings?.is_trend_enabled
       },
-      extrapolationIsEnabled() {
-        return this.settings.trends?.extrapolate
-      },
+
       deviationStored() {
-        const dev = this.targetStored?.deviation
+        const dev = this.currentTarget?.deviation
         return dev === undefined ? null : dev
       },
       dateUntilStored() {
-        const date = this.targetStored?.date_until
+        const date = this.currentTarget?.date_until
         return date === undefined ? null : date
       },
       targetAndTimeValid() {
-        return this.targetValid && this.dateUntilVal
+        return true //this.targetValid && this.dateUntilVal
       },
       targetValid() {
         return (
@@ -497,10 +482,10 @@
         )
       },
       targetValStored() {
-        const val = this.targetStored?.value
+        const val = this.currentTarget?.value
         return val === undefined ? null : val
       },
-      targetStored() {
+      currentTarget() {
         // when no target is defined return null (nothing stored)
         const sId = this.selectedStudentId === -1 ? null : this.selectedStudentId // group targets are stored under a null student
         const res = this.studentTargets.find(
@@ -510,9 +495,9 @@
       },
       /** Returns the stored target INCLUDING THE GROUP TARGET.
        * So when there's no individual target, but a group target, the latter is returned, else 'null' */
-      targetStoredInclGroup() {
-        if (this.targetStored !== null) {
-          return this.targetStored
+      currentTargetInclGroup() {
+        if (this.currentTarget !== null) {
+          return this.currentTarget
         }
         const groupTarget = this.studentTargets.find(
           target => target.student_id === null && target.view === this.viewConfig?.key
@@ -522,19 +507,19 @@
       /** Returns the deviation value of stored target INCLUDING THE GROUP TARGET.
        * So when there's no individual target, but a group target, the latter is returned, else 'null' */
       deviationStoredInclGroup() {
-        const dev = this.targetStoredInclGroup?.deviation
+        const dev = this.currentTargetInclGroup?.deviation
         return dev === undefined ? null : dev
       },
       /** Returns the date value of the stored target INCLUDING THE GROUP TARGET.
        * So when there's no individual target, but a group target, the latter is returned, else 'null' */
       dateUntilStoredInclGroup() {
-        const date = this.targetStoredInclGroup?.date_until
+        const date = this.currentTargetInclGroup?.date_until
         return date === undefined ? null : date
       },
       /** Returns the numerical value of stored target INCLUDING THE GROUP TARGET.
        * So when there's no individual target, but a group target, the latter is returned, else 'null' */
       targetValStoredInclGroup() {
-        const val = this.targetStoredInclGroup?.value
+        const val = this.currentTargetInclGroup?.value
         return val === undefined ? null : val
       },
       maxYValue() {
@@ -546,7 +531,7 @@
         // this watcher might run before the chart is properly instantiated, resulting in Apexcharts
         // throwing an error when it tries to draw the annotations.
         if (this.isInitialized) {
-          this.updateAnnotations()
+          this.updateView(false)
         }
         if (this.trendIsEnabled) {
           this.updateView(true)
@@ -563,7 +548,8 @@
     },
     async mounted() {
       await this.loadStudentTargets()
-      await this.setStudentAndUpdate(
+
+      this.setStudentAndUpdate(
         this.has_group_views
           ? -1
           : this.studentsWithResults[this.studentsWithResults.length - 1]?.id || -1
@@ -572,6 +558,9 @@
       )
     },
     methods: {
+      formatDate(date) {
+        return printDate(date)
+      },
       currentViewConfig(key = this.selectedView) {
         if (key) {
           return this.configuration.views.find(view => view.key === key)
@@ -624,7 +613,6 @@
 
         pdf.save(filename + '.pdf')
       },
-
       createGroupedStackedColumnData() {
         const view = this.viewConfig
         const series = []
@@ -689,10 +677,11 @@
             decreaseBy(referenceData, EPSILON)
           }
         }
+        this.forceUpdate = Symbol()
         return series
       },
 
-      createSeries(studentId, seriesKey, formatDate) {
+      createSeries(studentId, seriesKey, dateNeedsFormatting) {
         const results = this.results.filter(result => result?.student_id === studentId)
 
         const res = this.weeks.map(week => {
@@ -700,9 +689,9 @@
 
           // if a week has no results add a point with an empty y value for this week
           if (currentResult === null || currentResult === undefined) {
-            return { x: formatDate ? printDate(week) : week, y: null }
+            return { x: dateNeedsFormatting ? printDate(week) : week, y: null }
           }
-          let point = this.XYFromResult(currentResult, seriesKey, formatDate)
+          let point = this.XYFromResult(currentResult, seriesKey, dateNeedsFormatting)
           point.y = point.y?.toFixed(2)
           if (point.y === undefined) {
             point.y = null
@@ -711,9 +700,10 @@
           this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
           return point
         })
+        // return res.filter(r => r.y)
         return res
       },
-      XYFromResult(result, seriesKey, formatDate) {
+      XYFromResult(result, seriesKey, dateNeedsFormatting) {
         if (result === null || result === undefined) {
           return undefined
         }
@@ -729,14 +719,14 @@
         }
         const w = result.test_week
         return {
-          x: formatDate ? printDate(w) : w ?? null,
+          x: dateNeedsFormatting ? printDate(w) : w ?? null,
           y: yVal,
         }
       },
       async setStudentAndUpdate(studentId) {
         const previouslySelectedStudent = this.selectedStudentId
         this.selectedStudentId = studentId
-        let animateChange = false
+
         // some combinations of views/selectedStudent/presence of results yield no views
         if (this.viewsWithGroupAndStudent.length) {
           await this.setSelectedView(this.viewsWithGroupAndStudent[0].key)
@@ -744,12 +734,14 @@
         if (studentId !== previouslySelectedStudent) {
           // if a new student is selected (or none meaning class view has been selected) update the target based on what is stored
           this.restoreTarget(false) // don't redraw, as updateView is about to be called anyway
-          animateChange = true
         }
-        await this.updateView(animateChange)
+        this.forceUpdate = Symbol()
+        this.updateView()
+
+        this.$emit('analysis-view-initialized')
       },
 
-      async updateView(animate) {
+      updateView() {
         // return early if the view type has no graph
         if (!this.graph_visible) {
           return
@@ -761,15 +753,30 @@
         if (!trueChartType) {
           trueChartType = 'line'
         }
+
         const preparedOptions = prepareOptions(
           trueChartType,
           view.options,
           this.weeks,
-          this.targetIsSlopeVariant,
-          this.targetIsEnabled,
-          animate,
+
           this.maxYValue
         )
+
+        let target, target2
+        if (this.targetVal) {
+          target = targetAnnotationOptions(this.targetVal)
+          const y2 =
+            this.deviationVal > 0
+              ? this.targetVal - this.targetVal * (this.deviationVal / 100)
+              : null
+          if (y2) {
+            target2 = targetRangeAnnotationOptions(this.targetVal, y2)
+          }
+        }
+
+        const { points, xaxis } = this.updateAnnotations()
+
+        preparedOptions.annotations = { points, xaxis, yaxis: [target, target2] }
 
         // bar and grouped stacked bar are currently the only supported non-line charts
         const nonLineChart = ['bar'].includes(trueChartType)
@@ -809,7 +816,7 @@
               // hand over available time to make sure the line reaches up to this date IF extrapolation is enabled
               trendlineData = createTrendline(
                 gData[0]?.data,
-                this.extrapolationIsEnabled ? this.dateUntilVal : null,
+                this.dateUntilVal,
                 this.annotations.filter(
                   a =>
                     a.trend_threshold &&
@@ -835,27 +842,15 @@
           if (trendlineData) {
             addTrendToChartData(gData, preparedOptions, trendlineData, trueChartType)
           }
-          if (this.targetIsEnabled) {
-            this.appendSlopeTarget(gData, preparedOptions)
-          }
-          if (
-            (trendlineData && this.extrapolationIsEnabled) ||
-            (this.targetIsEnabled && this.targetIsSlopeVariant && this.targetVal)
-          ) {
+          if (trendlineData || this.targetVal) {
             gData = this.expandXAxis(gData)
           }
         }
 
-        this.graphData = []
-        await this.$nextTick() // wait until the chart data is reset before setting the options, otherwise apexcharts will throw errors
         this.chartOptions = { ...this.chartOptions, ...preparedOptions }
+
         this.graphData = gData
 
-        await this.$nextTick() // wait until the chart update is complete, otherwise the annotations will throw errors
-        if (this.targetIsEnabled) {
-          this.updateNonSlopeTarget()
-        }
-        this.updateAnnotations()
         if (stackedBarChart) {
           postProcessGroupedStackedBars(this.viewConfig)
         }
@@ -900,136 +895,27 @@
             return annotationsPointOptions(
               this.viewConfig,
               annotation,
-              dataForAnnotation.y,
+              dataForAnnotation?.y,
               annotation.start
             )
           })
-        // somehow, this.$refs.levumiChart.clearAnnotations() will only clear either point or xaxis-annotations, thus the loop
-        this.annotations.forEach(annotation => {
-          this.$refs.levumiChart?.removeAnnotation('a' + annotation.id)
-        })
 
-        xaxis.forEach(annotation => this.$refs.levumiChart?.addXaxisAnnotation(annotation))
-        points.forEach(annotation => this.$refs.levumiChart?.addPointAnnotation(annotation))
-      },
-
-      // append the slope target line on the chart if the slope variant is chosen by the current view
-      appendSlopeTarget(graphData, opt) {
-        if (!this.targetIsSlopeVariant || !this.targetAndTimeValid) {
-          return
-        }
-        // for the slope variant of a target line we need to add a series that will form this line and set chart options for it
-        // first calculate the start point
-        let startWeek = this.weeks.reduce((acc, w) => (w < acc ? w : acc), '2090-01-01')
-        const startWeekResults = this.results.filter(res => res.test_week === startWeek)
-        let startY
-        if (this.selectedStudentId === -1) {
-          // if no student is selected then calculate the average over the results of the first week
-          startY =
-            startWeekResults.reduce((acc, res) => {
-              return acc + this.XYFromResult(res, null, false)?.y || 0
-            }, 0) / startWeekResults.length
-        } else {
-          // if a student IS selected take their first result as the starting point
-          const firstResult = this.results.reduce(
-            (acc, res) => {
-              return res.student_id === this.selectedStudentId &&
-                Date.parse(res.test_week) < Date.parse(acc.test_week)
-                ? res
-                : acc
-            },
-            // if people still use this Levumi code in the year 90000 this will of course break
-            // but then again, this means they wouldn't have looked at it for 88000 years... (specified max date is somewhere around 270000)
-            { test_week: new Date(Date.UTC(90000, 12, 24)) }
-          )
-          startWeek = firstResult.test_week
-          startY = this.XYFromResult(firstResult, null, false)?.y
-        }
-        const deviate = this.deviationIsEnabled
-
-        const startPoint = { x: startWeek, y: startY }
-        const startPointRange = deviate
-          ? {
-              x: startWeek,
-              y: [startY, startY],
-            }
-          : null
-        // the end point is then created by combining the date until which the target is to be reached with the chosen target value
-        // when a deviation is desired also create a y value lowered by the accepted deviation
-        const endPoint = { x: this.dateUntilVal, y: this.targetVal }
-        const endPointRange = deviate
-          ? {
-              x: this.dateUntilVal,
-              y: [this.targetVal * (1 - this.deviationVal / 100) + '', this.targetVal],
-            }
-          : null
-
-        let endConditionY
-
-        if (deviate) {
-          endConditionY = undefined != endPointRange.y[0] && undefined != endPointRange.y[1]
-        } else {
-          endConditionY = undefined != endPoint.y
-        }
-
-        if (startPoint.x && endPoint.x && startY != undefined && endConditionY) {
-          // if both start and end are well-defined add their line as a series
-          addTargetToChartData(
-            graphData,
-            opt,
-            deviate,
-            startPoint,
-            endPoint,
-            startPointRange,
-            endPointRange
-          )
-        }
-      },
-
-      // updates only the horizontal target lines as this is implemented through dynamic annotations
-      // should only be called after the chart has been rendered or before the chart has been created
-      updateNonSlopeTarget() {
-        if (this.targetAdded) {
-          // first, if there already is a target line remove it
-          this.$refs.levumiChart?.removeAnnotation('target-annotation') // line for target itself
-          this.$refs.levumiChart?.removeAnnotation('target-range-annotation') // range for allowed deviation
-          this.targetAdded = false
-        }
-
-        if (this.targetValid && !this.targetIsSlopeVariant) {
-          const y2 =
-            this.deviationIsEnabled && this.deviationVal > 0
-              ? this.targetVal - this.targetVal * (this.deviationVal / 100)
-              : null
-          if (y2) {
-            this.$refs.levumiChart?.addYaxisAnnotation(
-              targetRangeAnnotationOptions(this.targetVal, y2)
-            )
-          }
-
-          this.$refs.levumiChart?.addYaxisAnnotation(targetAnnotationOptions(this.targetVal))
-          this.targetAdded = true // necessary to keep track of because apexchart.removeAnnotation will fail if called without any dynamically added annotations
-        }
+        return { points, xaxis }
       },
 
       /** Used in cases where the chart has already been rendered and only the target related data needs to be updated. */
+      // todo if there are a lot of students (> ~50) in a group, the chart will lag considerably when updating. display loader again?
       redrawTarget() {
-        if (this.targetIsEnabled) {
-          this.updateView(false)
-        }
+        this.updateView(false)
       },
 
       hasResults(student) {
         return this.results.some(result => result.student_id === student.id)
       },
 
-      removeAnnotation(id) {
-        this.$refs.levumiChart?.removeAnnotation('a' + id)
-      },
-
-      setTarget(targetVal, dateUntilVal, deviationVal, redraw) {
+      setTarget(targetVal, deviationVal, redraw) {
         this.targetVal = targetVal
-        this.dateUntilVal = dateUntilVal
+        this.dateUntilVal = this.assessmentsStore.currentAssessment.settings?.date_until
         this.deviationVal = deviationVal
         if (redraw) {
           this.redrawTarget()
@@ -1041,19 +927,11 @@
        * The assumption behind this is that when teachers haven't set a different target for an individual
        * they'd prefer to see the group target being applied instead of seeing no target at all. */
       restoreTarget(redraw = true) {
-        this.setTarget(
-          this.targetValStoredInclGroup,
-          this.dateUntilStoredInclGroup,
-          this.deviationStoredInclGroup,
-          redraw
-        )
+        this.setTarget(this.targetValStoredInclGroup, this.deviationStoredInclGroup, redraw)
       },
 
       expandXAxis(graphData) {
-        // if an end date has been chosen make sure the x-axis reaches/includes this date
-        // SIDE-FACT: technically expanding the x-axis isn't necessary when there's a slope target or an extrapolated trend
-        //            as these automatically lead to this effect themselves, but I don't think we should check for that here
-        if (!this.dateUntilIsEnabled || !this.dateUntilVal) {
+        if (!this.dateUntilVal) {
           return graphData
         }
         // only use the date if it lies after the last test result
@@ -1073,6 +951,7 @@
         const res = await ajax(apiRoutes.targets.getStudentTargets(this.group.id, this.test.id))
         if (res.status === 200) {
           const result = res.data
+
           this.studentTargets = result.targets
         } else {
           this.studentTargets = []
@@ -1096,12 +975,3 @@
     },
   }
 </script>
-<style>
-  .preparing .spinner {
-    padding-left: 1em;
-  }
-  .preparing .spinner > div {
-    height: 12px !important;
-    width: 12px !important;
-  }
-</style>

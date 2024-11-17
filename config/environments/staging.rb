@@ -1,4 +1,5 @@
 require 'active_support/core_ext/integer/time'
+require_relative '../../lib/middleware/monitor_middleware'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -71,4 +72,14 @@ Rails.application.configure do
   config.action_mailer.perform_caching = false
   config.action_mailer.raise_delivery_errors = true
   config.action_mailer.delivery_method = :sendmail
+
+  config.middleware.use Middleware::MonitorMiddleware
+
+  config.cache_store = :redis_cache_store, { url: ENV['REDIS_URL'] }
+  Rails.application.config.session_store :cache_store,
+                                         key: 'levumi_session',
+                                         expire_after: 1.week,
+                                         signed: true,
+                                         secure: false,
+                                         same_site: :strict
 end

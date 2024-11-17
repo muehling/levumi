@@ -1,13 +1,12 @@
 <template>
   <div>
-    <b-form inline accept-charset="UTF-8" class="mt-3 text-nowrap" @submit="handleSubmit">
-      <label for="label-input" class="mr-4">
-        Klassenbezeichnung {{ group.id ? 'ändern:' : 'eingeben:' }}
-      </label>
+    <b-form accept-charset="UTF-8" class="mt-3 text-nowrap" @submit="handleSubmit">
+      <label for="label-input">Klassenbezeichnung {{ group.id ? 'ändern:' : 'eingeben:' }}</label>
       <b-form-input
         id="label-input"
         v-model="label"
-        class="mr-2"
+        class="my-3"
+        maxlength="50"
         name="group[label]"
         placeholder="Klassenbezeichnung"
         size="sm" />
@@ -22,17 +21,17 @@
           Anlegen
         </b-button>
       </div>
-      <div v-else>
+      <div v-else class="mt-3">
         <!-- Button für existierende Klasse Validierung Name nicht leer  -->
         <b-button
           type="submit"
           variant="outline-success"
-          class="mr-2"
+          class="me-2"
           size="sm"
           :disabled="isGroupLabelSaveDisabled">
           <span>
             <i class="fas fa-check" />
-            <span class="d-none d-lg-inline ml-2">Speichern</span>
+            <span class="d-none d-lg-inline ms-2">Speichern</span>
           </span>
         </b-button>
         <b-button
@@ -41,7 +40,7 @@
           :disabled="label === group.label"
           @click="handleCancel">
           <i class="fas fa-times" />
-          <span class="d-none d-lg-inline ml-2">Abbrechen</span>
+          <span class="d-none d-lg-inline ms-2">Abbrechen</span>
         </b-button>
       </div>
     </b-form>
@@ -52,7 +51,7 @@
   import { ajax } from 'src/utils/ajax'
   import { encryptKey, encryptWithKey } from 'src/utils/encryption'
   import { useGlobalStore } from 'src/store/store'
-  import Vue from 'vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'GroupForm',
@@ -104,12 +103,16 @@
         }
 
         if (res.status === 200) {
+          this.globalStore.setGenericMessage({
+            title: 'Speichern erfolgreich',
+            message: 'Die Änderungen wurden gespeichert!',
+          })
+
           const newIds = res.data.groups
             .filter(group => !this.globalStore.groups.find(g => g.id === group.id))
             .map(a => a.id)
-
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
 
           if (!this.group.id) {
             this.label = ''
@@ -118,6 +121,8 @@
               this.$router.push(`/klassenbuch/eigene_klassen/${newIds[0]}`)
             }
           }
+        } else {
+          this.globalStore.setErrorMessage(res.data.message)
         }
       },
 

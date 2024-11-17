@@ -4,9 +4,9 @@
       <b-button
         v-b-toggle.supportGroupQualitativeExplanation
         variant="outline-secondary"
-        class="mb-3 btn-sm d-none"
-        >Erläuterungen</b-button
-      >
+        class="mb-3 btn-sm d-none">
+        Erläuterungen
+      </b-button>
       <b-collapse id="supportGroupQualitativeExplanation">
         <p>
           Die Zahlen in den eckigen Klammern entsprechen der Anzahl der richtigen Antworten im
@@ -14,21 +14,22 @@
         </p>
         <p v-for="item in supportNeeds" :key="item.color">
           <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <strong class="ml-2">{{ item.name + ': ' }}</strong
-          >{{ item.explanation }}
+          <strong class="ms-2">{{ item.name + ': ' }}</strong>
+          {{ item.explanation }}
         </p>
       </b-collapse>
     </div>
     <table class="table table-sm table-bordered table-striped table-hover group-suggestions">
       <thead>
-        <th>Name</th>
-        <th
-          v-for="(item, index) in itemDictionary"
-          :key="'header' + item + index"
-          class="text-small"
-        >
-          {{ item }}
-        </th>
+        <tr>
+          <th>Name</th>
+          <th
+            v-for="(item, index) in itemDictionary"
+            :key="'header' + item + index"
+            class="text-small">
+            {{ item }}
+          </th>
+        </tr>
       </thead>
       <tbody>
         <tr v-for="(student, studentIndex) in students" :key="student.id">
@@ -36,22 +37,19 @@
           <td
             v-for="(item, index) in itemDictionary"
             :key="'line' + item + index"
-            class="text-small"
-          >
+            class="text-small">
             <b-dropdown
               v-if="materialsPerStudentAndDimension[studentIndex][index]?.suggestions?.length"
               text="Fördermaterial"
               variant="outline-secondary"
               size="sm"
-              :toggle-class="materialsPerStudentAndDimension[studentIndex][index].intent"
-            >
+              :toggle-class="materialsPerStudentAndDimension[studentIndex][index].intent">
               <b-dropdown-item
                 v-for="material in materialsPerStudentAndDimension[studentIndex][index].suggestions"
                 :key="material.label"
                 class="mb-0 text-small"
                 :href="material.link"
-                target="_blank"
-              >
+                target="_blank">
                 {{ material.label }}
               </b-dropdown-item>
             </b-dropdown>

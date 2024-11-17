@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
+ActiveRecord::Schema[7.2].define(version: 2024_11_17_080027) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -55,7 +55,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.bigint "annotation_category_id"
-    t.boolean "trend_threshold"
     t.index ["annotation_category_id"], name: "index_annotations_on_annotation_category_id"
     t.index ["assessment_id"], name: "index_annotations_on_assessment_id"
     t.index ["group_id"], name: "index_annotations_on_group_id"
@@ -76,6 +75,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.json "excludes"
+    t.json "settings"
     t.index ["group_id"], name: "index_assessments_on_group_id"
     t.index ["test_id"], name: "index_assessments_on_test_id"
   end
@@ -176,8 +176,8 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
   create_table "shadow_students", charset: "utf8mb3", force: :cascade do |t|
     t.integer "original_id"
     t.integer "group"
-    t.integer "account_type"
-    t.integer "state"
+    t.integer "account_type", null: false
+    t.integer "state", null: false
     t.integer "gender"
     t.date "birthmonth"
     t.integer "sen"
@@ -219,7 +219,6 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
     t.bigint "student_id"
     t.json "view"
     t.string "value"
-    t.date "date_until"
     t.string "deviation"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -280,6 +279,7 @@ ActiveRecord::Schema[7.1].define(version: 2024_07_25_073046) do
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
     t.json "settings"
+    t.string "recovery_key"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"

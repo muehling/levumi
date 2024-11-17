@@ -13,7 +13,7 @@ export const access = (groupShare = {}) => {
   let createGroup = !isSingleUser()
   let updateGroup = !groupShare.read_only
   let archiveGroup = groupShare.owner && !isSingleUser()
-  let transferGroup = groupShare.owner && !isSingleUser()
+  let transferGroup = false //groupShare.owner && !isSingleUser() //TODO
   let createQRCodes = !groupShare.is_anonymous && !groupShare.read_only
   let setGroupFontSettings = !groupShare.read_only
 

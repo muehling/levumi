@@ -5,20 +5,26 @@
 
   <div v-else-if="isRegistrationComplete">
     <nav-bar />
-    <router-view />
+    <loading-dots v-if="isLoading" />
+    <router-view v-else />
     <error-dialog />
     <input-dialog ref="renewLoginDialog">
-      <div slot="extraContent" class="d-flex justify-content-between mb-4">
-        <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
-        <b-btn variant="outline-secondary" @click="logout">Logout</b-btn>
-      </div>
+      <template #extraContent>
+        <div class="d-flex justify-content-between mb-4">
+          <div class="d-inline-block">Sie sind nicht {{ globalStore.login.email }}?</div>
+          <b-button variant="outline-secondary" @click="logout">Logout</b-button>
+        </div>
+      </template>
     </input-dialog>
     <generic-message />
     <confirm-dialog ref="confirmDialog" />
   </div>
   <div v-else>
     <accept-terms v-if="!areTermsAccepted" />
-    <complete-registration v-else :account-type="accountType" />
+    <complete-registration
+      v-else
+      :account-type="accountType"
+      @registration-complete="fetchGlobalData" />
   </div>
 </template>
 <script>
@@ -34,6 +40,7 @@
   import InputDialog from './shared/input-dialog.vue'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
+  import isEmpty from 'lodash/isEmpty'
 
   export default {
     name: 'RootApp',
@@ -52,16 +59,15 @@
       const globalStore = useGlobalStore()
       return { globalStore }
     },
+    data() {
+      return { isLoading: false }
+    },
     computed: {
-      isLoading() {
-        return this.globalStore.isLoading
-      },
       isRegistrationComplete() {
-        return (
-          !!this.globalStore.login &&
-          this.globalStore.login.tc_accepted &&
-          this.globalStore.login.intro_state > 2
-        )
+        if (isEmpty(this.globalStore.login)) {
+          return true
+        }
+        return this.globalStore.login.tc_accepted && this.globalStore.login.intro_state > 2
       },
       areTermsAccepted() {
         return this.globalStore.login && this.globalStore.login.tc_accepted
@@ -103,13 +109,28 @@
         },
       },
     },
-    async created() {
+    errorCaptured(error, component) {
+      const componentName = component.$?.type?.name
+      const stack = error.stack.split('\n')?.slice(0, 2)?.join('\n')
+
+      this.globalStore.serverError = `Component: ${componentName}, URI: ${window.location.pathname}, Stack: ${stack}`
+      return false
+    },
+    async mounted() {
+      await this.fetchGlobalData()
       await this.checkLogin()
+
       if (this.globalStore.login.intro_state >= 5) {
         this.displayNews()
       }
     },
     methods: {
+      async fetchGlobalData() {
+        this.isLoading = true
+        await this.globalStore.fetch()
+        await this.globalStore.fetchGroups()
+        this.isLoading = false
+      },
       async sendErrorReport() {
         const errorMessage = JSON.stringify(this.globalStore.serverError)
         const sendReport = await this.$refs.confirmDialog.open({
@@ -133,7 +154,7 @@
             data: {
               support: true,
               server_error: true,
-              text: errorMessage,
+              message: errorMessage,
               subject: 'Levumi Serverfehler',
             },
           })
@@ -149,7 +170,6 @@
       async checkLogin() {
         const path = window.location.pathname
         if (path !== '/testen' && path !== '/testen_login') {
-          await this.globalStore.fetch(true)
           // Check if login information is present. This may get lost in restored browser sessions,
           // or when a link is opened in a new tab. In this case, we need to log in again
           const login = sessionStorage.getItem('login')
@@ -188,6 +208,9 @@
       async displayNews() {
         const news = this.globalStore.staticData.news
 
+        if (!news) {
+          return
+        }
         const messagesToBeDisplayed = news.filter(newsItem => {
           if (this.globalStore.login.intro_state === 5) {
             this.updateSeenNews() // for newly registered users, don't display any news.
@@ -232,6 +255,7 @@
         window.location.reload()
       },
       async sendLogin(text) {
+        await this.$nextTick() // somehow the renewLoginDialog ref is not accessible otherwise
         const pw = await this.$refs.renewLoginDialog.open({
           disableClose: true,
           message: `${text}Bitten geben Sie Ihr Passwort erneut ein, um fortzufahren:`,
@@ -245,8 +269,7 @@
         )
         if (res.status === 200) {
           sessionStorage.setItem('login', pw)
-          await this.globalStore.fetch()
-          await this.globalStore.fetchGroups()
+          this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
         }

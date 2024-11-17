@@ -4,9 +4,9 @@
       <b-button
         v-b-toggle.supportGroupOverviewExplanation
         variant="outline-secondary"
-        class="mb-3 btn-sm"
-        >Erläuterungen</b-button
-      >
+        class="mb-3 btn-sm">
+        Erläuterungen
+      </b-button>
       <b-collapse id="supportGroupOverviewExplanation">
         <p>
           Die Zahlen in den eckigen Klammern entsprechen den Gesamtzahlen der richtigen Antworten
@@ -18,7 +18,7 @@
         </p>
         <p v-for="item in supportNeeds" :key="item.color">
           <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <strong class="ml-2">{{ item.name + ': ' }}</strong>
+          <strong class="ms-2">{{ item.name + ': ' }}</strong>
           {{ item.explanation }}
         </p>
       </b-collapse>
@@ -29,8 +29,7 @@
           v-for="item in supportNeeds"
           :key="'header' + item.color"
           width="33%"
-          :style="`background-color: ${item.color};`"
-        >
+          :style="`background-color: ${item.color};`">
           {{ item.name }}
         </th>
       </thead>

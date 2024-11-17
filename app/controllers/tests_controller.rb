@@ -85,7 +85,12 @@ class TestsController < ApplicationController
   end
 
   def get_tests_data
-    @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+    @data =
+      Rails
+        .cache
+        .fetch('tests/test_app_data', expires_in: 30.days) do
+          Area.includes(competences: [{ test_families: [:tests] }]).all
+        end
   end
 
   #Spezialfall: für nur einen Test

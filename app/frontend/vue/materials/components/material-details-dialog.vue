@@ -1,11 +1,11 @@
 <template>
   <info-dialog ref="materialDetails">
     <div class="text-left text-small">
-      <p class="text-light bg-secondary pl-1">Kurzbeschreibung</p>
+      <p class="text-light bg-secondary ps-1">Kurzbeschreibung</p>
       <p v-html="material.description.short"></p>
-      <p class="text-light bg-secondary pl-1">Ausführliche Beschreibung</p>
+      <p class="text-light bg-secondary ps-1">Ausführliche Beschreibung</p>
       <p v-html="material.description.full"></p>
-      <p class="text-light bg-secondary pl-1">Benutzungshinweise</p>
+      <p class="text-light bg-secondary ps-1">Benutzungshinweise</p>
       <p v-html="material.description.usage"></p>
     </div>
   </info-dialog>

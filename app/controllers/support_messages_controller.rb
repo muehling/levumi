@@ -19,8 +19,8 @@ class SupportMessagesController < ApplicationController
       UserMailer
         .with(
           email: @login.email,
-          body: params['message'],
-          subject: "#{params['subject']} von #{@login.email}",
+          body: support_message_attributes['message'],
+          subject: "#{support_message_attributes['subject']} von #{@login.email}",
           support_addresses: User.where('capabilities LIKE ?', '%support%').pluck(:email)
         )
         .support

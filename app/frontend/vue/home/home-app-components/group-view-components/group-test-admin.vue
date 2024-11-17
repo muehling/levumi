@@ -22,7 +22,7 @@
               block
               :variant="`${getTestButtonVariant(test.id)}`"
               @click.stop.prevent="displayTestDetail(test.id)">
-              <span :class="`${assessmentExists('test', test.id) ? 'font-weight-bold' : ''}`">
+              <span :class="`${assessmentExists('test', test.id) ? 'fw-bold' : ''}`">
                 {{ `${test.full_name} ${getTestButtonSuffix(test.id)}` }}
               </span>
             </b-button>
@@ -33,21 +33,18 @@
             <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
               <b-button
                 :aria-expanded="selectedAreaId === area.id ? 'true' : 'false'"
-                :aria-controls="`area-select-accordion${area.id}`"
+                :aria-controls="`area-acc${area.id}`"
                 class="test-admin-button"
                 block
                 :variant="`${selectedAreaId === area.id ? 'primary' : 'outline-primary'}`"
                 @click.stop.prevent="expandArea(area.id)">
-                <span :class="`${assessmentExists('area', area.id) ? 'font-weight-bold' : ''}`">
+                <span :class="`${assessmentExists('area', area.id) ? 'fw-bold' : ''}`">
                   {{ area.name }}
                 </span>
               </b-button>
             </b-card-header>
-            <b-collapse
-              :id="`area-select-accordion${area.id}`"
-              :visible="selectedAreaId === area.id"
-              role="tabpanel">
-              <b-card-body class="pr-0 py-0">
+            <b-collapse :id="`area-acc${area.id}`" :ref="`area-acc${area.id}`" role="tabpanel">
+              <b-card-body class="pe-0 py-0">
                 <div class="accordion" role="tablist">
                   <b-card
                     v-for="testTypeId in area.test_type_ids"
@@ -57,26 +54,26 @@
                     <b-card-header header-tag="header" class="px-1 pb-1 pt-0 border-0" role="tab">
                       <b-button
                         :aria-expanded="selectedTestTypeId === testTypeId ? 'true' : 'false'"
-                        :aria-controls="`testType-select-accordion${testTypeId + '/' + area.id}`"
+                        :aria-controls="`testType-acc${testTypeId + '/' + area.id}`"
                         class="test-admin-button"
                         block
                         :variant="`${
-                          selectedTestTypeId === testTypeId ? 'primary' : 'outline-primary'
+                          selectedTestTypeId === testTypeId && area.id === selectedAreaId
+                            ? 'primary'
+                            : 'outline-primary'
                         }`"
                         @click.stop.prevent="expandTestType(testTypeId)">
                         <span
-                          :class="`${
-                            assessmentExists('testType', testTypeId) ? 'font-weight-bold' : ''
-                          }`">
+                          :class="`${assessmentExists('testType', testTypeId) ? 'fw-bold' : ''}`">
                           {{ testTypes.find(testType => testType.id === testTypeId).name }}
                         </span>
                       </b-button>
                     </b-card-header>
                     <b-collapse
-                      :id="`testType-select-accordion${testTypeId + '/' + area.id}`"
-                      :visible="selectedTestTypeId === testTypeId && selectedAreaId === area.id"
+                      :id="`testType-acc${testTypeId + '/' + area.id}`"
+                      :ref="`testType-acc${testTypeId + '/' + area.id}`"
                       role="tabpanel">
-                      <b-card-body class="pr-0 py-0">
+                      <b-card-body class="pe-0 py-0">
                         <div class="accordion" role="tablist">
                           <b-card
                             v-for="competence in competencesForTestType(area.id, testTypeId)"
@@ -91,9 +88,7 @@
                                 :aria-expanded="
                                   selectedCompetenceId === competence.id ? 'true' : 'false'
                                 "
-                                :aria-controls="`competence-select-accordion${
-                                  testTypeId + '/' + competence.id
-                                }`"
+                                :aria-controls="`competence-acc${testTypeId + '/' + competence.id}`"
                                 class="test-admin-button"
                                 block
                                 :variant="`${
@@ -104,19 +99,17 @@
                                 @click.stop.prevent="expandCompetence(competence.id)">
                                 <span
                                   :class="`${
-                                    assessmentExists('competence', competence.id)
-                                      ? 'font-weight-bold'
-                                      : ''
+                                    assessmentExists('competence', competence.id) ? 'fw-bold' : ''
                                   }`">
                                   {{ competence.name }}
                                 </span>
                               </b-button>
                             </b-card-header>
                             <b-collapse
-                              :id="`competence-select-accordion${testTypeId + '/' + competence.id}`"
-                              :visible="selectedCompetenceId === competence.id"
+                              :id="`competence-acc${testTypeId + '/' + competence.id}`"
+                              :ref="`competence-acc${testTypeId + '/' + competence.id}`"
                               role="tabpanel">
-                              <b-card-body class="pr-0 py-0">
+                              <b-card-body class="pe-0 py-0">
                                 <div class="accordion" role="tablist">
                                   <b-card
                                     v-for="testFamily in testFamiliesForCompetence(
@@ -134,7 +127,7 @@
                                         :aria-expanded="
                                           selectedTestFamilyId === testFamily.id ? 'true' : 'false'
                                         "
-                                        :aria-controls="`testFamily-select-accordion${
+                                        :aria-controls="`testFamily-acc${
                                           testTypeId + '/' + testFamily.id
                                         }`"
                                         class="test-admin-button"
@@ -148,7 +141,7 @@
                                         <span
                                           :class="`${
                                             assessmentExists('testFamily', testFamily.id)
-                                              ? 'font-weight-bold'
+                                              ? 'fw-bold'
                                               : ''
                                           }`">
                                           {{ testFamily.name }}
@@ -156,12 +149,10 @@
                                       </b-button>
                                     </b-card-header>
                                     <b-collapse
-                                      :id="`testFamily-select-accordion${
-                                        testTypeId + '/' + testFamily.id
-                                      }`"
-                                      :visible="testFamily.id === selectedTestFamilyId"
+                                      :id="`testFamily-acc${testTypeId + '/' + testFamily.id}`"
+                                      :ref="`testFamily-acc${testTypeId + '/' + testFamily.id}`"
                                       role="tabpanel">
-                                      <b-card-body class="pr-0 py-0">
+                                      <b-card-body class="pe-0 py-0">
                                         <div class="accordion" role="tablist">
                                           <b-card
                                             v-for="test in testsForTestFamily(
@@ -183,7 +174,7 @@
                                                 <span
                                                   :class="`${
                                                     assessmentExists('test', test.id)
-                                                      ? 'font-weight-bold'
+                                                      ? 'fw-bold'
                                                       : ''
                                                   }`">
                                                   {{ test.level + getTestButtonSuffix(test.id) }}
@@ -210,7 +201,7 @@
         </div>
       </div>
       <div class="col-12 col-xl-9 col-lg-8 col-md-7 col-sm-6 d-flex flex-column">
-        <div v-if="!selectedTest" class="col-lg-6 ml-0 pl-0">
+        <div v-if="!selectedTest" class="col-lg-6 ms-0 pl-0">
           <p>
             Die Tests sind hierarchisch in Lernbereiche, Lernkompetenzen und Testfamilien
             eingeordnet. Sie können sich durch die Baumstruktur links navigieren, um selbst Tests
@@ -232,15 +223,15 @@
               {{ assessmentForSelectedTest?.result_count }} Messungen für diese Klasse vorhanden
             </p>
             <div class="text-left text-small">
-              <p v-if="selectedTest.description.short" class="text-light bg-secondary pl-1">
+              <p v-if="selectedTest.description.short" class="text-light bg-secondary ps-1">
                 Kurzbeschreibung
               </p>
               <p v-if="selectedTest.description.short" v-html="selectedTest.description.short"></p>
-              <p v-if="selectedTest.description.full" class="text-light bg-secondary pl-1">
+              <p v-if="selectedTest.description.full" class="text-light bg-secondary ps-1">
                 Beschreibung
               </p>
               <p v-if="selectedTest.description" v-html="selectedTest.description.full"></p>
-              <p class="text-light bg-secondary pl-1">Ausführliche Beschreibung</p>
+              <p class="text-light bg-secondary ps-1">Ausführliche Beschreibung</p>
               <table class="table table-striped table-sm text-left">
                 <tbody>
                   <tr>
@@ -259,11 +250,11 @@
                   </tr>
                   <tr>
                     <td>Zeitbeschränkung</td>
-                    <td>{{ selectedTest.time_limit }}</td>
+                    <td>{{ selectedTest.description.time_limit + timeLimitSuffix }}</td>
                   </tr>
                   <tr>
                     <td>Durchführung</td>
-                    <td>{{ selectedTest.usage }}</td>
+                    <td>{{ selectedTest.description.usage }}</td>
                   </tr>
                   <tr>
                     <td colspan="2">
@@ -271,7 +262,7 @@
                         Items
                       </b-button>
                       <b-collapse id="test-items">
-                        {{ Object.values(selectedTest.items).join(', ') }}
+                        <p v-html="formattedItems(selectedTest.items)"></p>
                       </b-collapse>
                     </td>
                   </tr>
@@ -284,7 +275,7 @@
         <div class="d-flex flex-grow-0 justify-content-start align-items-end flex-wrap">
           <b-button
             v-if="!!selectedTestId"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             :href="`/results/start_demo/${selectedTestId}`"
             target="_blank"
             variant="outline-secondary">
@@ -292,28 +283,28 @@
           </b-button>
           <b-button
             v-if="!assessmentForSelectedTest && selectedTestId"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             variant="success"
             @click="createAssessment">
             Test für die Klasse aktivieren
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             variant="outline-success"
             @click="jumpToAssessment()">
-            <i class="fas fa-check mr-2"></i>
+            <i class="fas fa-check me-2"></i>
             Zur Diagnostik
           </b-button>
           <b-button
             v-if="assessmentForSelectedTest"
-            class="mr-2 mt-3"
+            class="me-2 mt-3"
             :variant="assessmentForSelectedTest?.result_count ? 'danger' : 'outline-danger'"
             @click="deleteAssessment">
-            <i class="fas fa-trash mr-2"></i>
+            <i class="fas fa-trash me-2"></i>
             Test löschen
           </b-button>
-          <b-btn class="mr-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-btn>
+          <b-button class="me-2 mt-3" variant="danger" @click="handleClose">Abbrechen</b-button>
         </div>
       </div>
     </div>
@@ -321,12 +312,12 @@
   </b-card>
 </template>
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { useAssessmentsStore } from '../../store/assessmentsStore'
-  import { useGlobalStore } from '../../store/store'
-  import { useTestsStore } from '../../store/testsStore'
-  import apiRoutes from '../routes/api-routes'
-  import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import { ajax } from 'src/utils/ajax'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import { useGlobalStore } from 'src/store/store'
+  import { useTestsStore } from 'src/store/testsStore'
+  import apiRoutes from 'src/vue/routes/api-routes'
+  import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
     name: 'GroupTestAdmin',
@@ -354,6 +345,10 @@
       }
     },
     computed: {
+      timeLimitSuffix() {
+        const isNumber = /^\d+$/.test(this.selectedTest.description.time_limit)
+        return isNumber ? ' Minuten' : ''
+      },
       filteredTests: function () {
         return this.testMetaData.tests
           .filter(
@@ -479,6 +474,12 @@
     },
 
     methods: {
+      formattedItems(items) {
+        const it = Object.values(items).map(item =>
+          typeof item === 'string' ? item : item.question
+        )
+        return it.join(', ')
+      },
       handleClose() {
         this.reset('area')
         this.$router.push(`/diagnostik/${this.group.id}`)
@@ -581,36 +582,72 @@
       },
 
       reset(level) {
+        // first elements of the refs contain the bootstrap collapse instance, so we can call .hide() and .show() on it
         switch (level) {
           case 'area':
-            this.selectedAreaId = undefined
+            this.$refs[`area-acc${this.selectedAreaId}`] &&
+              this.$refs[`area-acc${this.selectedAreaId}`][0]?.hide()
+
           case 'testType': //eslint-disable-line no-fallthrough
-            this.selectedTestTypeId = undefined
+            this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`] &&
+              this.$refs[`testType-acc${this.selectedTestTypeId}/${this.selectedAreaId}`][0]?.hide()
+
           case 'competence': // eslint-disable-line no-fallthrough
-            this.selectedCompetenceId = undefined
+            this.$refs[`competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`] &&
+              this.$refs[
+                `competence-acc${this.selectedTestTypeId}/${this.selectedCompetenceId}`
+              ][0]?.hide()
+
           case 'testFamily': // eslint-disable-line no-fallthrough
-            this.selectedTestFamilyId = undefined
-          case 'test': // eslint-disable-line no-fallthrough
-            this.selectedTestId = undefined
+            this.$refs[`testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`] &&
+              this.$refs[
+                `testFamily-acc${this.selectedTestTypeId}/${this.selectedTestFamilyId}`
+              ][0]?.hide()
         }
+        if (level === 'area' || level === 'testType') {
+          this.selectedTestTypeId = undefined
+        }
+        this.selectedTestId = undefined
       },
       expandArea(areaId) {
-        this.reset('testType')
-        this.selectedAreaId = this.selectedAreaId === areaId ? undefined : areaId
+        if (areaId !== this.selectedAreaId) {
+          this.$refs[`area-acc${areaId}`][0]?.show()
+          this.reset('area')
+          this.selectedAreaId = areaId
+        } else {
+          this.selectedAreaId = undefined
+          this.$refs[`area-acc${areaId}`][0]?.hide()
+        }
       },
       expandTestType(testTypeId) {
-        this.selectedTestTypeId = this.selectedTestTypeId === testTypeId ? undefined : testTypeId
-        this.reset('competence')
+        if (testTypeId !== this.selectedTestTypeId) {
+          this.reset('testType')
+          this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0]?.show()
+          this.selectedTestTypeId = testTypeId
+        } else {
+          this.$refs[`testType-acc${testTypeId}/${this.selectedAreaId}`][0]?.hide()
+          this.selectedTestTypeId = undefined
+        }
       },
       expandCompetence(competenceId) {
-        this.reset('testFamily')
-        this.selectedCompetenceId =
-          this.selectedCompetenceId === competenceId ? undefined : competenceId
+        if (competenceId !== this.selectedCompetenceId) {
+          this.reset('competence')
+          this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0]?.show()
+          this.selectedCompetenceId = competenceId
+        } else {
+          this.$refs[`competence-acc${this.selectedTestTypeId}/${competenceId}`][0]?.hide()
+          this.selectedCompetenceId = undefined
+        }
       },
       expandTestFamily(testFamilyId) {
-        this.reset('test')
-        this.selectedTestFamilyId =
-          this.selectedTestFamilyId === testFamilyId ? undefined : testFamilyId
+        if (testFamilyId !== this.selectedTestFamilyId) {
+          this.reset('testFamily')
+          this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0]?.show()
+          this.selectedTestFamilyId = testFamilyId
+        } else {
+          this.$refs[`testFamily-acc${this.selectedTestTypeId}/${testFamilyId}`][0]?.hide()
+          this.selectedTestFamilyId = undefined
+        }
       },
       async displayTestDetail(testId) {
         await this.globalStore.getItemsForTest(testId)
@@ -672,5 +709,8 @@
   .test-details {
     max-height: 80vh;
     overflow: auto;
+  }
+  .test-admin-button {
+    width: 100%;
   }
 </style>

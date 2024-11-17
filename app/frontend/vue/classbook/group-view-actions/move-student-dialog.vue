@@ -86,7 +86,7 @@
                 </span>
               </div>
             </b-card>
-            <b-button class="mt-3" variant="outline-secondary mr-2" @click="reset">
+            <b-button class="mt-3" variant="outline-secondary me-2" @click="reset">
               Abbrechen
             </b-button>
             <b-button class="mt-3" variant="outline-success" @click="handleMove">

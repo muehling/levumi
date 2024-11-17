@@ -4,9 +4,9 @@
       <b-button
         v-b-toggle.supportGroupQualitativeExplanation
         variant="outline-secondary"
-        class="mb-3 btn-sm"
-        >Erläuterungen</b-button
-      >
+        class="mb-3 btn-sm">
+        Erläuterungen
+      </b-button>
       <b-collapse id="supportGroupQualitativeExplanation">
         <p>
           Die Zahlen in den eckigen Klammern entsprechen der Anzahl der richtigen Antworten im
@@ -14,7 +14,7 @@
         </p>
         <p v-for="item in supportNeeds" :key="item.color">
           <span :style="`background-color:${item.color}`">&nbsp;&nbsp;&nbsp;&nbsp;</span>
-          <strong class="ml-2">{{ item.name + ': ' }}</strong>
+          <strong class="ms-2">{{ item.name + ': ' }}</strong>
           {{ item.explanation }}
         </p>
         <p>
@@ -33,8 +33,7 @@
           <td
             v-for="(item, index) in itemDictionary"
             :key="'line' + item + index"
-            :style="`background-color: ${getBackgroundColor(student.id, index)};`"
-          >
+            :style="`background-color: ${getBackgroundColor(student.id, index)};`">
             {{ getDisplayValue(getTrendForStudentAndDimension(student.id, index)?.answers) }}
           </td>
         </tr>

@@ -30,6 +30,10 @@
     }, 1000)
   }
 
+  const isRunning = () => {
+    return !!testTimeout
+  }
+
   const stopCounter = () => {
     clearTimeout(testTimeout)
     testTimeout = undefined
@@ -86,8 +90,8 @@
   }
 
   window.useTimerWidget = ({
-    displayCounter = false,
-    displayPauseButton = false,
+    displayCounter = true, //TODO set this according to group/assessment/student settings, once available
+    displayPauseButton = true, //TODO set this according to group/assessment/student settings, once available
     pauseHandler,
     duration = 300000,
     timedOutHandler = () => {},
@@ -110,6 +114,7 @@
       handlePauseButton,
       hasElapsed,
       getTotalDuration,
+      isRunning,
     }
   }
 </script>

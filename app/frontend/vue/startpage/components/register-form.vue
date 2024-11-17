@@ -16,54 +16,42 @@
       </p>
       <hr />
       <b-form @submit="handleRegister">
-        <b-form-group
-          label-class="text-small mb-0"
-          label="Email-Adresse"
-          label-for="register-email">
-          <b-form-input
+        <BFormGroup label-class="text-small" label="Email-Adresse" label-for="register-email">
+          <BFormInput
             id="register-email"
             v-model="email"
             placeholder="E-Mail-Adresse"
-            type="email"
-            name="user[email]"
-            @focus="errorMessage = ''" />
+            type="email" />
           <div v-if="errorMessage" class="invalid-feedback d-block">{{ errorMessage }}</div>
-        </b-form-group>
+        </BFormGroup>
+
+        <div class="mt-3 mb-0">
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="2">
+            Ich bin Privatperson/möchte Levumi nur ausprobieren.
+          </b-form-radio>
+          <br />
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="0">
+            Ich bin hauptsächlich an einer Schule tätig.
+          </b-form-radio>
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="1">
+            Ich bin hauptsächlich in der Forschung tätig.
+          </b-form-radio>
+          <b-form-radio v-model="accountType" inline name="user[account_type]" value="3">
+            Ich bin in einer Klinik/privaten Praxis tätig.
+          </b-form-radio>
+        </div>
         <hr class="mt-0 d-none" />
-        <b-form-group v-slot="{ ariaDescribedby }" label-class="text-small mb-0" label="Ich bin...">
-          <b-form-radio
-            v-model="accountType"
-            inline
-            :aria-describedby="ariaDescribedby"
-            name="user[account_type]"
-            value="0">
-            Lehrkraft
-          </b-form-radio>
-          <b-form-radio
-            v-model="accountType"
-            inline
-            :aria-describedby="ariaDescribedby"
-            name="user[account_type]"
-            value="1">
-            Forscher:in
-          </b-form-radio>
-          <b-form-radio
-            v-model="accountType"
-            inline
-            :aria-describedby="ariaDescribedby"
-            name="user[account_type]"
-            value="2">
-            Privatperson
-          </b-form-radio>
-        </b-form-group>
-        <hr class="mt-0 d-none" />
-        <b-form-group label-class="text-small mb-0" label="Aus...">
-          <b-form-select v-model="state" variant="outline-secondary" :options="states" />
-        </b-form-group>
+        <BFormGroup label-class="text-small mt-3 mb-0" label="Aus...">
+          <b-form-select
+            v-model="state"
+            class="mb-3"
+            variant="outline-secondary"
+            :options="states" />
+        </BFormGroup>
         <hr class="m-0 d-none" />
         <b-form-checkbox
           v-model="acceptTerms"
-          class="mt-3"
+          class=""
           name="accept-terms"
           value="accepted"
           unchecked-value="not_accepted">
@@ -95,6 +83,7 @@
     name: 'RegisterForm',
     components: { LoginForm },
     props: { openModal: Boolean },
+
     data() {
       return {
         acceptTerms: false,
@@ -104,24 +93,8 @@
         comment: '',
         errorMessage: '',
         registrationSuccessful: undefined,
-      }
-    },
-    computed: {
-      isSubmitDisabled() {
-        return (
-          !this.acceptTerms ||
-          this.acceptTerms !== 'accepted' ||
-          this.email === '' ||
-          !this.state ||
-          this.accountType === undefined
-        )
-      },
-      timestamp() {
-        return sessionStorage.getItem('ts')
-      },
-      states() {
-        return [
-          { text: 'Bundesland...', value: null, disabled: true },
+        states: [
+          { text: 'Bundesland auswählen', value: null, disabled: true },
           { text: 'Baden-Württemberg', value: 1 },
           { text: 'Bayern', value: 2 },
           { text: 'Berlin', value: 3 },
@@ -141,7 +114,21 @@
           { text: 'Österreich', value: 17 },
           { text: 'Schweiz', value: 18 },
           { text: 'Anderes Land', value: 19 },
-        ]
+        ],
+      }
+    },
+    computed: {
+      isSubmitDisabled() {
+        return (
+          !this.acceptTerms ||
+          this.acceptTerms !== 'accepted' ||
+          this.email === '' ||
+          !this.state ||
+          this.accountType === undefined
+        )
+      },
+      timestamp() {
+        return sessionStorage.getItem('ts')
       },
     },
     methods: {
@@ -151,6 +138,12 @@
       async handleRegister(e) {
         e.preventDefault()
         e.stopPropagation()
+
+        if (this.email.includes(' ')) {
+          this.errorMessage = 'Die E-Mail-Adresse darf keine Leerzeichen enthalten!'
+          return
+        }
+
         const data = {
           user: {
             email: this.email.trim(),
@@ -178,3 +171,8 @@
     },
   }
 </script>
+<style>
+  .form-check-input {
+    border-color: gray !important;
+  }
+</style>

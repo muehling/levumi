@@ -2,18 +2,20 @@
   <div>
     <b-table class="text-small" small striped hover :fields="fields" :items="materials">
       <template #cell(actions)="data">
-        <b-btn
-          class="btn-sm mr-1"
+        <b-button
+          class="btn-sm me-1"
           variant="outline-primary"
-          @click="showMaterialDetails(data.item.id)"
-        >
+          @click="showMaterialDetails(data.item.id)">
           <i class="fas fa-search"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Beschreibung</span></b-btn
-        >
-        <b-btn class="btn-sm mr-1" variant="outline-danger" @click="deleteMaterial(data.item.id)">
+          <span class="text-small d-none d-xl-inline ps-2">Beschreibung</span>
+        </b-button>
+        <b-button
+          class="btn-sm me-1"
+          variant="outline-danger"
+          @click="deleteMaterial(data.item.id)">
           <i class="fas fa-trash"></i>
-          <span class="text-small d-none d-xl-inline pl-2">Löschen</span></b-btn
-        >
+          <span class="text-small d-none d-xl-inline ps-2">Löschen</span>
+        </b-button>
       </template>
     </b-table>
     <material-details-dialog ref="detailsDialog" />

@@ -11,12 +11,7 @@
           Herzlich Willkommen bei
           <span class="text-nowrap">
             Levumi!
-            <img
-              src="/images/shared/Levumi-normal_small.png"
-              class="mb-3 ml-3"
-              alt="Levumi"
-              width="48"
-              height="48" />
+            <img :src="levumiSmall" class="mb-3 ms-3" alt="Levumi" width="48" height="48" />
           </span>
         </h1>
       </div>
@@ -32,8 +27,8 @@
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg mr-4 mb-4 float-left shadow"
-                :src="require('../../../../assets/images/frontpage/frontpage_3.webp')"
+                class="img-bg me-4 mb-4 float-start shadow"
+                :src="frontpage3"
                 fluid
                 alt="Schüler und Lehrerin vor einem Monitor" />
               <p>
@@ -52,8 +47,8 @@
           <b-col>
             <b-card class="shadow" body-class="info-card">
               <b-img
-                class="img-bg ml-4 mb-4 float-right shadow"
-                :src="require('../../../../assets/images/frontpage/frontpage_4.webp')"
+                class="img-bg ms-4 mb-4 float-end shadow"
+                :src="frontpage4"
                 fluid
                 alt="Schüler:innen arbeiten an Laptops" />
               <h4><u>Leichter Zugang und Datenschutz</u></h4>
@@ -84,9 +79,23 @@
 <script>
   import StartpageNav from './startpage-nav.vue'
   import RegisterForm from './register-form.vue'
+  import levumiSmallSrc from '../../../../assets/images/shared/Levumi-normal_small.png'
+  import frontpage3Src from '../../../../assets/images/frontpage/frontpage_3.webp'
+  import frontpage4Src from '../../../../assets/images/frontpage/frontpage_4.webp'
   export default {
     name: 'StartageTeachers',
     components: { StartpageNav, RegisterForm },
     props: { isLoggedIn: Boolean },
+    computed: {
+      levumiSmall() {
+        return levumiSmallSrc
+      },
+      frontpage3() {
+        return frontpage3Src
+      },
+      frontpage4() {
+        return frontpage4Src
+      },
+    },
   }
 </script>

@@ -4,10 +4,14 @@
       <b-form-checkbox-group
         v-model="selectedFilters"
         :options="availableFilters"></b-form-checkbox-group>
-      <b-btn v-if="isAllowed" size="sm" :variant="toggleButtonVariant" @click="handleToggleActive">
+      <b-button
+        v-if="isAllowed"
+        size="sm"
+        :variant="toggleButtonVariant"
+        @click="handleToggleActive">
         <i :class="`fas fa-${!allTestsActive ? 'play' : 'pause'}`"></i>
         {{ toggleButtonText }}
-      </b-btn>
+      </b-button>
     </div>
     <table
       class="table table-sm table-striped table-hover table-responsive-md text-small group-assessments">
@@ -30,8 +34,8 @@
           <td class="assessment-link" @click="setPreselect(assessment)">
             <i
               v-if="loadingAssessmentId === assessment.test_id"
-              class="ml-4 fas fa-spinner fa-spin"></i>
-            <i v-else class="ml-4 fas fa-magnifying-glass"></i>
+              class="ms-4 fas fa-spinner fa-spin"></i>
+            <i v-else class="ms-4 fas fa-magnifying-glass"></i>
           </td>
           <td class="assessment-link" @click="setPreselect(assessment)">
             {{ assessment.shorthand }}
@@ -43,7 +47,7 @@
           <td>{{ formatLastDate(assessment.last_test) }}</td>
           <td>{{ getTestTypeLabel(assessment.test_type_id) }}</td>
           <td v-if="isAllowed" class="text-nowrap text-right">
-            <b-btn
+            <b-button
               v-if="assessment.student_test && !assessment.archive"
               class="btn-sm button-10"
               :variant="assessment.active ? 'outline-danger' : 'outline-success'"
@@ -53,17 +57,24 @@
                 :class="`fas fa-${assessment.active ? 'pause' : 'play'}`"></i>
               <i v-else class="fas fa-spinner fa-spin"></i>
               {{ assessment.active ? 'Pausieren' : 'Aktivieren' }}
-            </b-btn>
-            <b-btn
+            </b-button>
+            <b-button
               v-else-if="!assessment.archive"
               class="btn-sm button-10"
               variant="outline-secondary"
               disabled>
               (Lehrkräfte-Übung)
-            </b-btn>
+            </b-button>
+            <b-button
+              v-else-if="assessment.archive"
+              class="btn-sm button-10"
+              variant="outline-secondary"
+              disabled>
+              (varaltet)
+            </b-button>
             <b-button
               v-if="showDeleteAssessmentButton"
-              class="btn-sm ml-1"
+              class="btn-sm ms-1"
               :variant="assessment?.result_count ? 'danger' : 'outline-danger'"
               @click="deleteAssessment(assessment)">
               <i class="fas fa-trash"></i>
@@ -135,10 +146,10 @@
         return isAdmin()
       },
       isAllowed() {
-        return !this.group.read_only
+        return !this.group?.read_only
       },
       defaultTestType() {
-        return this.globalStore.staticData.testMetaData.test_types[0]
+        return this.globalStore.staticData?.testMetaData?.test_types[0]
       },
       toggleButtonVariant() {
         return !this.allTestsActive ? 'outline-success' : 'outline-danger'
@@ -194,9 +205,9 @@
     methods: {
       getTestTypeLabel(testTypeId) {
         return (
-          this.globalStore.staticData.testMetaData.test_types.find(
+          this.globalStore.staticData?.testMetaData?.test_types?.find(
             testType => testType.id === testTypeId
-          )?.name || this.defaultTestType.name
+          )?.name || this.defaultTestType?.name
         )
       },
       checkIsUpdating(testId) {
@@ -232,6 +243,7 @@
           this.group.id,
           assessment.test_id
         )
+
         this.loadingAssessmentId = undefined
         this.$router.push(`/diagnostik/${this.group.id}/testdetails/${assessment.test_id}`)
       },

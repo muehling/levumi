@@ -1,7 +1,12 @@
 <template>
-  <span v-b-popover="popoverOptions" style="font-size: 1rem" :class="className">
-    <i class="fas fa-circle-question"></i>
-  </span>
+  <BPopover :close-on-hide="true" :delay="{ show: 0, hide: 0 }">
+    <template #target>
+      <span style="font-size: 1rem" :class="className">
+        <i class="fas fa-circle-question"></i>
+      </span>
+    </template>
+    <div v-html="helpText"></div>
+  </BPopover>
 </template>
 <script>
   export default {

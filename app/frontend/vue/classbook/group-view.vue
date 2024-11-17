@@ -3,12 +3,14 @@
     <div v-if="group.archive === false" pills>
       <div v-if="!showActionTab">
         <share-status v-if="!group.owner" :group="group" />
+        <transfer-status v-if="group.owner" :group="group" />
+
         <div>
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
             size="sm"
-            class="mr-2"
+            class="me-2"
             variant="outline-secondary"
             @click="handleNavigate('aktionen')">
             <i class="fas fa-gear"></i>
@@ -44,6 +46,8 @@
               <div v-if="currentNav === 'share' && permissions?.createShare">
                 <share-form :group="group" @update:groups="updateGroup($event)" />
                 <shares-display v-if="group.owner" :group="group" />
+                <hr />
+                <transfer-group :group="group" />
               </div>
               <div v-if="currentNav === 'movestudents' && permissions?.moveStudents">
                 <move-student-dialog :group="group" />
@@ -60,14 +64,14 @@
         <br />
         <span>Schüler:innen: {{ group.size }}</span>
       </p>
-      <b-button class="mr-1" variant="outline-primary" @click="reactivateGroup">
+      <b-button class="me-1" variant="outline-primary" @click="reactivateGroup">
         <i class="fas fa-file-import"></i>
         Klasse aus dem Archiv holen
       </b-button>
-      <b-btn variant="outline-danger" @click="requestDeleteGroup">
+      <b-button variant="outline-danger" @click="requestDeleteGroup">
         <i class="fas fa-trash"></i>
         Klasse löschen
-      </b-btn>
+      </b-button>
       <confirm-dialog ref="confirmDialog" />
     </div>
   </div>
@@ -81,13 +85,14 @@
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
   import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
-  import isEmpty from 'lodash/isEmpty'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
   import ShareForm from './group-view-actions/share-form.vue'
   import SharesDisplay from './shares-display.vue'
   import ShareStatus from './share-status.vue'
   import StudentList from './group-view-list/student-list.vue'
-  import Vue from 'vue'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
+  import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
+  //import Vue from 'vue'
 
   export default {
     name: 'GroupView',
@@ -100,6 +105,8 @@
       SharesDisplay,
       ShareStatus,
       StudentList,
+      TransferStatus,
+      TransferGroup,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
@@ -140,6 +147,9 @@
       },
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
+      },
+      transferRequests() {
+        return this.group.shares?.filter(share => share.owner)
       },
       showActionTab() {
         return this.$route.path.endsWith('aktionen')
@@ -195,22 +205,20 @@
         })
         const data = res.data
         if (data && res.status === 200) {
-          Vue.set(this.globalStore, 'groups', res.data.groups)
-          Vue.set(this.globalStore, 'shareKeys', res.data.share_keys)
+          this.globalStore.groups = res.data.groups
+          this.globalStore.shareKeys = res.data.share_keys
           this.$router.push(`/klassenbuch/eigene_klassen/${this.group.id}/liste`)
         }
       },
       /*****************************
-       * update group and propagate to parent component
+       * update group
        ******************************/
       updateGroup({ object }) {
-        this.$set(this.group, object)
-        //store.shareKeys[object.id] = object.key
         this.globalStore.setShareKey({ key: object.id, value: object.key })
         const groups = [...this.groups]
         const index = groups.findIndex(g => g.id === object.id)
         groups[index] = object
-        this.$emit('update:groups', groups)
+        this.globalStore.groups = groups
       },
 
       /*****************************
@@ -230,7 +238,12 @@
 
           if (res.status === 200) {
             const remainingGroups = this.groups.filter(g => g.id !== this.group.id)
-            this.$emit('update:groups', remainingGroups)
+            this.globalStore.groups = remainingGroups
+
+            const archivedGroups = this.globalStore.groups.filter(group => group.archive)
+            if (archivedGroups.length === 0) {
+              this.$router.push('/diagnostik')
+            }
           }
         }
       },

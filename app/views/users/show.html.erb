@@ -13,35 +13,6 @@
   end
 %>
 
-<div id='levumi' data="<%= data.to_json%>">
-
-  <!-- Spinner -->
-  <div v-if='!$data'>
-    <b-row>
-      <div class='spinner'>
-        <div class='bounce1'></div>
-        <div class='bounce2'></div>
-        <div class='bounce3'></div>
-      </div>
-    </b-row>
-  </div>
-  <div id='tc' class='modal fade' tabindex='-1'>
-    <div class='modal-dialog modal-dialog-scrollable modal-lg'>
-      <div class='modal-content'>
-        <div class='modal-header'>
-          <h5 class='modal-title'>Nutzungsbedingungen</h5>
-          <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-            <span aria-hidden='true'>&times;</span>
-          </button>
-        </div>
-        <div class='modal-body'>
-          <%= render 'application/terms_and_conditions' %>
-          <p class='text-muted'>Zugestimmt am: <%= @login.tc_accepted.strftime('%d.%m.%Y - %H:%M') %></p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Vue-component -->
+<div id='levumi' data="<%= data.to_json%>"> 
   <root-app></root-app>
 </div>

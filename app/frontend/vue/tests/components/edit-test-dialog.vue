@@ -7,13 +7,11 @@
             id="testTypeSelect"
             :text="selectedTestType.name"
             class="m-md-2"
-            variant="outline-secondary"
-          >
+            variant="outline-secondary">
             <b-dropdown-item
               v-for="testType in allTestTypes"
               :key="'testType' + testType.id"
-              @click="selectedTestType = testType"
-            >
+              @click="selectedTestType = testType">
               {{ testType.name }}
             </b-dropdown-item>
           </b-dropdown>
@@ -24,8 +22,7 @@
             v-model="description"
             class="mb-2"
             rows="3"
-            max-rows="6"
-          ></b-form-textarea>
+            max-rows="6"></b-form-textarea>
         </b-form-group>
         <b-form-group label="Kurzbeschreibung">
           <b-form-textarea
@@ -33,12 +30,13 @@
             v-model="shortDescription"
             class="mb-2"
             rows="3"
-            max-rows="6"
-          ></b-form-textarea>
+            max-rows="6"></b-form-textarea>
         </b-form-group>
         <div class="d-flex justify-content-end">
-          <b-btn class="m-1" variant="outline-primary" @click="cancel">Abbrechen</b-btn>
-          <b-btn class="m-1" variant="outline-success" @click="saveChanges">Aktualisieren</b-btn>
+          <b-button class="m-1" variant="outline-primary" @click="cancel">Abbrechen</b-button>
+          <b-button class="m-1" variant="outline-success" @click="saveChanges">
+            Aktualisieren
+          </b-button>
         </div>
       </b-form>
     </div>
@@ -64,7 +62,7 @@
     },
     computed: {
       allTestTypes() {
-        return this.globalStore.staticData.testTypes.map(testType => ({
+        return this.globalStore.staticData.testTypes?.map(testType => ({
           id: testType.id,
           name: testType.name,
         }))
