@@ -228,7 +228,6 @@
       ContactForm,
       EditUserDialog,
       RouterLink,
-      UserSettingsDialog,
       AboutModal,
       CookieInfo,
       ImprintModal,
@@ -317,9 +316,7 @@
       editOwnProfile() {
         this.$refs.editUserDialog.open({ user: this.globalStore.login, isNew: false })
       },
-      editUserSettings() {
-        this.$refs.userSettingsDialog.open({ user: this.globalStore.login })
-      },
+
       async handleLogout() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'POST' })
         if (res.status === 200) {

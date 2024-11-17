@@ -109,13 +109,13 @@
         },
       },
     },
-    errorCaptured(error, component) {
+    /* errorCaptured(error, component) {
       const componentName = component.$?.type?.name
       const stack = error.stack.split('\n')?.slice(0, 2)?.join('\n')
 
       this.globalStore.serverError = `Component: ${componentName}, URI: ${window.location.pathname}, Stack: ${stack}`
       return false
-    },
+    },*/
     async mounted() {
       await this.fetchGlobalData()
       await this.checkLogin()
