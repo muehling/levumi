@@ -166,6 +166,7 @@
         continueHandler: endDemo,
       })
       $('#content-container').html(el)
+      el.trigger('mounted')
     }
 
     //######################################
@@ -198,6 +199,7 @@
         resultHandler,
       })
       $('#content-container').html(el)
+      el.trigger('mounted')
     }
 
     //######################################
