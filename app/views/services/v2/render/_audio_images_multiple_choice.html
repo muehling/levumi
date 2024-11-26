@@ -73,8 +73,9 @@
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
     const el = $(
       `<div class="container d-flex flex-column w-100">
+        <div id="debug"></div>
           <div id="audio-images-multiple-choice-${id}" class="custom-container d-flex justify-content-center align-items-center flex-column">
-            <audio id="audio-${id}" autoplay type="audio/mp3" src="${getBlobUrl(
+            <audio id="audio-${id}" autoplay type="audio/mpeg" src="${getBlobUrl(
         item.audio
       )}"></audio>
             <div class="w-100 d-flex justify-content-center">
@@ -112,7 +113,9 @@
 
     el.find('#replay-button')
       .css(styles)
-      .on('click', () => {
+      .on('click', e => {
+        e.preventDefault()
+        e.stopPropagation()
         const audio = document.querySelector('audio')
         if (isPlaying(audio)) {
           return
@@ -125,7 +128,6 @@
 
     el.find('#dont-know')
       .css(styles)
-      .attr('disabled', true)
       .on('click', () => {
         clickedImage = undefined
         resultHandler('nicht beantwortet', replayCount > 0 ? `(${replayCount}x)` : '')
@@ -134,7 +136,6 @@
 
     el.find('#continue')
       .css(styles)
-      .attr('disabled', true)
       .on('click', () => {
         $('#button-container').focus()
         if (clickedImage) {
@@ -152,13 +153,15 @@
       audioElement.addEventListener('playing', () => {
         $('#dont-know').attr('disabled', true)
         $('#continue').attr('disabled', true)
-        $('#replay-button').attr('disabled', true)
+        // $('#replay-button').attr('disabled', true)
+        $('#debug').text('playing')
       })
 
       audioElement.addEventListener('ended', () => {
         $('#replay-button').attr('disabled', false)
         $('#dont-know').attr('disabled', false)
-        $('#replay-button').attr('disabled', false)
+        //  $('#replay-button').attr('disabled', false)
+        $('#debug').text('stopped')
       })
     }
 

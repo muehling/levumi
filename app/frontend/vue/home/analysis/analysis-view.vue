@@ -937,7 +937,8 @@
         // only use the date if it lies after the last test result
         // TODO might be necessary to extract the maxDate from all results (see below)
         const maxDate = graphData[0]?.data.reduce((acc, d) => {
-          return d.x > acc ? d.x : acc
+          console.log('debug', acc, d)
+          return d?.x > acc ? d?.x : acc
         }, this.dateUntilVal)
         // to trick ApexCharts into drawing until there add an empty data point to all series
         // TODO: it would be nice if this could be achieved without polluting the data
