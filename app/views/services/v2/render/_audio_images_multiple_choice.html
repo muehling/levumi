@@ -96,7 +96,7 @@
         </div>
         `
     ).css(styles)
-
+    let replayCount = 1
     const images = item.wrongAnswers.split(',')
     images.push(item.correctAnswer)
     window.shuffleArray(images)
@@ -117,16 +117,20 @@
         e.stopPropagation()
         const audio = document.querySelector('audio')
         if (isPlaying(audio)) {
-          audio.load()
+          return
         }
-        audio.play()
+        $(`#audio-${id}`)[0].play()
+        $('#button-container').focus()
+        $('.image-button').removeClass('selected')
+        replayCount++
       })
 
     el.find('#dont-know')
       .css(styles)
       .on('click', () => {
         clickedImage = undefined
-        resultHandler('nicht beantwortet')
+        resultHandler('nicht beantwortet', replayCount > 0 ? `(${replayCount}x)` : '')
+        $('#button-container').focus()
       })
 
     el.find('#continue')
@@ -134,7 +138,7 @@
       .on('click', () => {
         $('#button-container').focus()
         if (clickedImage) {
-          resultHandler(clickedImage)
+          resultHandler(clickedImage, `(${replayCount}x)`)
           clickedImage = undefined
         }
       })
@@ -148,11 +152,13 @@
       audioElement.addEventListener('playing', () => {
         $('#dont-know').attr('disabled', true)
         $('#continue').attr('disabled', true)
+        $('#replay-button').attr('disabled', true)
       })
 
       audioElement.addEventListener('ended', () => {
         $('#replay-button').attr('disabled', false)
         $('#dont-know').attr('disabled', false)
+        $('#replay-button').attr('disabled', false)
       })
     }
 
