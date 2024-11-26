@@ -153,14 +153,14 @@
       audioElement.addEventListener('playing', () => {
         $('#dont-know').attr('disabled', true)
         $('#continue').attr('disabled', true)
-        $('#replay-button').attr('disabled', true)
+        // $('#replay-button').attr('disabled', true)
         $('#debug').text('playing')
       })
 
       audioElement.addEventListener('ended', () => {
         $('#replay-button').attr('disabled', false)
         $('#dont-know').attr('disabled', false)
-        $('#replay-button').attr('disabled', false)
+        //  $('#replay-button').attr('disabled', false)
         $('#debug').text('stopped')
       })
     }
