@@ -30,6 +30,10 @@
     justify-content: space-around;
     align-items: center;
   }
+  .student-button:disabled {
+    border-color: #666;
+    color: #999;
+  }
   .student-button:hover {
     background-color: unset;
     color: unset;
@@ -42,16 +46,28 @@
   const getBlobUrl = asset => {
     if (window.assetBlobs[asset]) {
       return assetBlobs[asset]
-    } else {
+    } else if (window.media_paths[asset]) {
       return window.media_paths[asset]
+    } else {
+      return null
     }
   }
 
   let clickedImage
   const handleClick = (image, index) => {
+    const audio = document.querySelector('audio')
+    if (isPlaying(audio)) {
+      return
+    }
     clickedImage = image
+    $('#continue').attr('disabled', false)
     $('.image-button').removeClass('selected')
     $(`#bild-${index}`).addClass('selected')
+    $('#continue').attr('disabled', false)
+  }
+
+  const isPlaying = audioElement => {
+    return !audioElement.paused && !audioElement.ended && audioElement.readyState > 2
   }
 
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
@@ -97,18 +113,26 @@
     el.find('#replay-button')
       .css(styles)
       .on('click', () => {
+        const audio = document.querySelector('audio')
+        if (isPlaying(audio)) {
+          audio.load()
+        }
         $(`#audio-${id}`)[0].play()
         $('#button-container').focus()
       })
+
     el.find('#dont-know')
       .css(styles)
+      .attr('disabled', true)
       .on('click', () => {
         clickedImage = undefined
         resultHandler('nicht beantwortet')
         $('#button-container').focus()
       })
+
     el.find('#continue')
       .css(styles)
+      .attr('disabled', true)
       .on('click', () => {
         $('#button-container').focus()
         if (clickedImage) {
@@ -119,6 +143,22 @@
 
     el.find('#button-container').append(buttons)
 
+    const initHandlers = e => {
+      e.stopPropagation()
+
+      const audioElement = el.find('audio')[0]
+      audioElement.addEventListener('playing', () => {
+        $('#dont-know').attr('disabled', true)
+        $('#continue').attr('disabled', true)
+      })
+
+      audioElement.addEventListener('ended', () => {
+        $('#replay-button').attr('disabled', false)
+        $('#dont-know').attr('disabled', false)
+      })
+    }
+
+    el.on('mounted', initHandlers)
     return el
   }
 </script>
