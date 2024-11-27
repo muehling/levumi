@@ -82,7 +82,7 @@
     //######################################
     //## store result from previous task and set next task
     //######################################
-    const next = res => {
+    const next = (res, additionalData) => {
       if (isPaused) {
         return
       }
@@ -97,6 +97,7 @@
         answer: res,
         time: endTaskTimestamp,
         group: items[currentTask].group,
+        additionalData,
       })
       if (currentTask === items.length - 1 || timerWidget.hasElapsed()) {
         timerWidget.stopCounter()
@@ -166,19 +167,20 @@
         continueHandler: endDemo,
       })
       $('#content-container').html(el)
+      el.trigger('mounted')
     }
 
     //######################################
     //## display feedback page
     //######################################
-    const displayFeedback = res => {
+    const displayFeedback = (res, additionalData) => {
       const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
 
       const el = window.useFeedback({
         isCorrect: isCorrect,
         item: items[currentTask],
         styles,
-        continueHandler: () => next(res),
+        continueHandler: () => next(res, additionalData),
       })
       $('#content-container').html(el)
     }
@@ -198,6 +200,7 @@
         resultHandler,
       })
       $('#content-container').html(el)
+      el.trigger('mounted')
     }
 
     //######################################
