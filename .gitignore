@@ -33,7 +33,6 @@ yarn-debug.log*
 
 /public/vite-dev
 /public/vite-test
-
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 

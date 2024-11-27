@@ -1,5 +1,6 @@
 class TestsController < ApplicationController
   skip_before_action :set_login, only: [:get_tests_data]
+  rescue_from ActiveRecord::RecordNotFound, with: :handle_test_not_found
   before_action :set_test,
                 except: %i[index create get_tests_data get_tests_meta check_upload_version]
   before_action :is_allowed, only: %i[create edit update destroy]
@@ -101,8 +102,6 @@ class TestsController < ApplicationController
   def get_items
     if @test
       render json: @test.items
-    else
-      render json: {}
     end
   end
 
@@ -125,6 +124,10 @@ class TestsController < ApplicationController
 
   def get_tests_meta
     render json: Test.tests_meta
+  end
+
+  def handle_test_not_found
+    head :not_found
   end
 
   private

@@ -8,7 +8,7 @@ writing_n1:
   student_test: false
   archive: false
   configuration: ''
-  items: ''
+  items: '[{"b":1},{"c":5,"f":7}]'
 
 writing_n2:
   id: 2
@@ -20,4 +20,4 @@ writing_n2:
   student_test: true
   archive: false
   configuration: ''
-  items: ''
+  items: '{}'
