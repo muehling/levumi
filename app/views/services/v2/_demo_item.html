@@ -40,8 +40,13 @@
     config.resultHandler = endDemo
     config.isDemo = true
 
-    el.append(renderer(config))
+    const itemEl = renderer(config)
 
+    el.append(itemEl)
+    el.on('mounted', e => {
+      e.stopPropagation()
+      itemEl.trigger('mounted')
+    })
     return el
   }
 </script>
