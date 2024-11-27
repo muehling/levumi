@@ -355,3 +355,27 @@ a:hover {
 #levumi_img {
   position: unset !important;
 }
+// hotfix for all legacy tests with number inputs
+#button_area1 > button {
+  flex: 1 0 0%;
+}
+#button_area2 > button {
+  flex: 1 0 0%;
+}
+#button_area3 > button {
+  flex: 1 0 0%;
+}
+#button_area4 > button {
+  flex: 1 0 0%;
+}
+// hotfix for legacy tests that use a canvas for rendering
+#divNumbersLine > canvas {
+  width: unset !important;
+}
+#next_area {
+  text-align: center;
+}
+
+#testspace #hinweis {
+  text-align: center;
+}
