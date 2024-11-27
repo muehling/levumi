@@ -9,8 +9,10 @@ admin_user:
   state: 1
   institution: 'Uni'
   town: 'Town'
-  tc_accepted: '2022-11-16 07:34:57.117653'
+  tc_accepted: '1960-11-16 07:34:57.117653'
   intro_state: 5
+  created_at: '1960-11-16 07:34:57.117653'
+  updated_at: '1960-11-16 07:34:57.117653'
 
 other_user:
   id: 2
@@ -24,4 +26,38 @@ other_user:
   institution: 'Uni'
   town: 'Town'
   tc_accepted: '2022-11-16 07:34:57.117653'
-  intro_state: 5
+  intro_state: 4
+  created_at: '2022-11-16 07:34:57.117653'
+  updated_at: '2022-11-16 07:34:57.117653'
+
+hacker_user:
+  id: 3
+  email: 'hacker@example.com'
+  password_digest: '$2a$12$wxVddyVrBgF29eAtGDrgWujTSNVwcMF1izA7YoOPlvYTpIQfiVf2i'
+  security_digest: ''
+  capabilities: 'test'
+  last_login: '2069-11-16 07:34:57.117653'
+  account_type: 1
+  state: 1
+  institution: 'Uni'
+  town: 'Town'
+  tc_accepted: '2022-11-16 07:34:57.117653'
+  intro_state: 0
+  created_at: '2022-11-16 07:34:57.117653'
+  updated_at: '2022-11-16 07:34:57.117653'
+ 
+teaching_user:
+  id: 4
+  email: 'teaching@example.com'
+  password_digest: '$2a$12$wxVddyVrBgF29eAtGDrgWujTSNVwcMF1izA7YoOPlvYTpIQfiVf2i'
+  security_digest: ''
+  capabilities: 'test'
+  last_login: '2069-11-16 07:34:57.117653'
+  account_type: 1
+  state: 1
+  institution: 'Uni'
+  town: 'Town'
+  tc_accepted: '2022-11-16 07:34:57.117653'
+  intro_state: 3
+  created_at: '2022-11-16 07:34:57.117653'
+  updated_at: '2022-11-16 07:34:57.117653'
