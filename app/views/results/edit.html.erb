@@ -198,7 +198,8 @@
             [array[i], array[j]] = [array[j], array[i]]
         }
     }
-    window.shuffleArray = shuffleArray
+    // do not remove the `;` after the next line, otherwise the DigiLev tests break.
+    window.shuffleArray = shuffleArray;
 
     // include test scripts, or call the test controller, if no tests scripts are found
     <% if @test.script_files.count > 0       

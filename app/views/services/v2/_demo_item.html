@@ -45,6 +45,7 @@
     el.append(itemEl)
     el.on('mounted', e => {
       e.stopPropagation()
+      e.preventDefault()
       itemEl.trigger('mounted')
     })
     return el

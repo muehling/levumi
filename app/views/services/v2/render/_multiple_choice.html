@@ -56,6 +56,9 @@
       buttonContainer.append(button)
     })
     el.append(buttonContainer)
+    el.on('mounted', e => {
+      e.stopPropagation()
+    })
     return el
   }
 </script>
