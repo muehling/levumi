@@ -127,7 +127,9 @@
         '<p class="text-center">Zum Eingeben der Lösung kannst du sowohl die Tastatur als auch den Ziffernblock benutzen.</p>'
       )
     }
-
+    el.on('mounted', e => {
+      e.stopPropagation()
+    })
     return el
   }
 
