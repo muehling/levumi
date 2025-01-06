@@ -10,7 +10,7 @@
     <b-collapse id="assessmentViewStudentsExplanation">
       <b-card class="mb-4">
         <p class="text-light bg-secondary">&nbsp;Lehrkräfte-Übung</p>
-        <p>
+        <p class="text-small">
           Dieser Test ist für die Durchführung durch Lehrkräfte gedacht und kann daher nicht
           aktiviert oder pausiert werden.
         </p>
@@ -57,27 +57,29 @@
         {{ isActive ? 'Wöchentliche Testung pausieren' : 'Wöchentliche Testung aktivieren' }}
       </b-button>
 
-      <b-dropdown v-if="isAllowed" size="sm" class="ms-1" variant="outline-secondary" no-caret>
+      <b-dropdown
+        v-if="isAllowed"
+        size="sm"
+        class="ms-1"
+        variant="outline-secondary"
+        no-caret
+        auto-close="outside">
         <template #button-content>
           Schüler:innen ein-/ausschließen
           <i class="fas fa-caret-down ms-2"></i>
         </template>
-        <b-dropdown-group id="dropdown-group-1" header="Vom Test ausschließen">
-          <b-dropdown-item
-            v-for="student in includedStudents"
+        <b-dropdown-form>
+          <b-form-checkbox
+            v-for="student in students"
             :key="student.id"
-            @click="exclude(student.id)">
+            input-class="custom-toggle"
+            switch
+            reverse
+            :model-value="!excludeList.includes(student.id)"
+            @click="toggleStudent(student.id)">
             {{ student.name }}
-          </b-dropdown-item>
-        </b-dropdown-group>
-        <b-dropdown-group id="dropdown-group-2" header="In Test einschließen">
-          <b-dropdown-item
-            v-for="student in excludedStudents"
-            :key="student.id"
-            @click="include(student.id)">
-            {{ student.name }}
-          </b-dropdown-item>
-        </b-dropdown-group>
+          </b-form-checkbox>
+        </b-dropdown-form>
       </b-dropdown>
       <b-button variant="outline-secondary" class="ms-1 btn btn-sm" @click="refetch">
         <i class="fas fa-refresh me-2"></i>
@@ -120,15 +122,17 @@
     <table>
       <thead>
         <tr>
-          <th v-if="includedStudents.length" scope="col" class="pe-4">
+          <th v-if="includedStudents.length" scope="col" class="pe-4 custom-th">
             Teilnehmende Schüler:innen
           </th>
-          <th v-if="excludedStudents.length" scope="col">Ausgeschlossene Schüler:innen</th>
+          <th v-if="excludedStudents.length" scope="col" class="custom-th">
+            Ausgeschlossene Schüler:innen
+          </th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td v-if="includedStudents.length" class="pe-4">
+          <td v-if="includedStudents.length" class="pe-4 custom-td">
             <div size="sm" class="flex-wrap d-flex h-100">
               <!-- Button erscheint grün, falls schon ein Ergebnis vorhanden ist. -->
               <form
@@ -151,7 +155,7 @@
               </form>
             </div>
           </td>
-          <td v-if="excludedStudents.length">
+          <td v-if="excludedStudents.length" class="custom-td">
             <div size="sm" class="flex-wrap d-flex h-100">
               <b-button
                 v-for="student in excludedStudents"
@@ -247,31 +251,27 @@
         }
         this.isUpdating = false
       },
-      async include(studentId) {
-        const res = await ajax(
-          apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId)
-        )
-        if (res.status === 200) {
+      async toggleStudent(studentId) {
+        if (this.excludeList.includes(studentId)) {
           this.excludeList = this.excludeList.filter(item => item !== studentId)
-        }
-      },
-      async exclude(studentId) {
-        const res = await ajax(
-          apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId)
-        )
-        if (res.status === 200) {
+          await ajax(apiRoutes.assessments.includeStudent(this.group.id, this.test.id, studentId))
+        } else {
           this.excludeList.push(studentId)
+          await ajax(apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId))
         }
       },
     },
   }
 </script>
-<style scoped>
-  td {
+<style>
+  .custom-td {
     vertical-align: top;
   }
-  th {
+  .custom-th {
     vertical-align: top;
     padding-bottom: 0.5em;
+  }
+  .custom-toggle {
+    margin-left: 1.5em !important;
   }
 </style>
