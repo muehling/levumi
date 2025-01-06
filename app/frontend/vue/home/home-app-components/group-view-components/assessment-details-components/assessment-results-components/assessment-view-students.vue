@@ -274,4 +274,14 @@
   .custom-toggle {
     margin-left: 1.5em !important;
   }
+  .form-check.form-switch {
+    text-align: left;
+  }
+  .form-check.form-switch > input:hover,
+  label:hover {
+    cursor: pointer;
+  }
+  .form-check.form-switch > input:checked {
+    background-color: green;
+  }
 </style>
