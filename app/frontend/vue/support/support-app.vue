@@ -1,5 +1,94 @@
 <template>
   <b-container fluid>
+    <div class="input-group mb-2 p-0 col-lg-8 col-xl-6">
+      <div class="input-group-prepend my-1">
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass me-2"></i></span>
+      </div>
+      <b-form-input
+        v-model="searchTerm"
+        class="input-field my-1"
+        placeholder="Nach Email-Adresse suchen..."
+        debounce="500" />
+      <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
+        <i class="fas fa-trash"></i>
+      </b-button>
+    </div>
+    <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
+      <label
+        for="start-date-registration"
+        class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+        Registriert zwischen
+      </label>
+      <b-form-input
+        id="start-date-registration"
+        v-model="startDateRegistration"
+        type="date"
+        class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Startdatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }" />
+      <b-form-input
+        id="end-date-registration"
+        v-model="endDateRegistration"
+        type="date"
+        class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Enddatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }" />
+      <b-button
+        class="btn-sm ms-2 my-1"
+        variant="outline-secondary"
+        @click="startDateRegistration = endDateRegistration = undefined">
+        <i class="fas fa-trash"></i>
+      </b-button>
+    </div>
+    <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
+      <label for="start-date-login" class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
+        Zuletzt angemeldet zwischen
+      </label>
+      <b-form-input
+        id="start-date-login"
+        v-model="startDateLogin"
+        type="date"
+        class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Startdatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }" />
+      <b-form-input
+        id="end-date-login"
+        v-model="endDateLogin"
+        type="date"
+        class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
+        placeholder="Enddatum"
+        locale="de-DE"
+        size="sm"
+        :date-format-options="{
+          year: 'numeric',
+          month: 'numeric',
+          day: 'numeric',
+        }" />
+      <b-button
+        class="btn-sm ms-2 my-1"
+        variant="outline-secondary"
+        @click="startDateLogin = endDateLogin = undefined">
+        <i class="fas fa-trash"></i>
+      </b-button>
+    </div>
     <div>
       <b-table small striped hover class="text-small" :items="supportMessages" :fields="fields">
         <template #cell(created_at)="d">
@@ -39,6 +128,31 @@
           </div>
         </template>
       </b-table>
+      <div class="d-flex">
+      <b-pagination
+        v-model="currentPage"
+        :total-rows="totalRows"
+        :per-page="perPage"
+        first-number
+        last-number
+        active-class="bg-primary"
+        aria-controls="usersTable">
+        <template #page="{ page, active }">
+          <b v-if="active" class="bg-primary">{{ page }}</b>
+          <span v-else>{{ page }}</span>
+        </template>
+      </b-pagination>
+      <div class="ms-3 p-1">
+        <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
+          <b-dropdown-item @click="perPage = 10">10 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 20">20 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 40">40 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 100">100 Einträge</b-dropdown-item>
+          <b-dropdown-item @click="perPage = 200">200 Einträge</b-dropdown-item>
+        </b-dropdown>
+      </div>
+      
+    </div>
     </div>
     <b-modal :model-value="!!selectedMessage" @hidden="hideMessage" @ok="updateMessage">
       <p>
@@ -66,6 +180,15 @@
   import apiRoutes from 'src/vue/routes/api-routes'
   import { ajax } from 'src/utils/ajax'
   import { useGlobalStore } from 'src/store/store'
+  import debounce from 'lodash/debounce'
+
+  const watchHandler = {
+    immediate: true,
+    handler: debounce(function () {
+      this.fetch()
+    }, 100),
+  }
+
   export default {
     name: 'SupportApp',
     setup() {
@@ -74,14 +197,25 @@
     },
     data() {
       return {
+        currentPage: 1,
+        perPage: 20,
+        searchTerm: '',
+        startDateRegistration: undefined,
+        endDateRegistration: undefined,
+        startDateLogin: undefined,
+        endDateLogin: undefined,
+        totalRows: undefined,
         supportUsers: [],
-        supportMessages: [],
+       // supportMessages: [],
         selectedMessage: undefined,
         selectedStatus: undefined,
         comment: undefined,
       }
     },
     computed: {
+      supportMessages() {
+        return this.support_message
+      },
       fields() {
         return [
           { key: 'created_at', label: 'Erstellt am' },
@@ -89,10 +223,25 @@
           { key: 'subject', label: 'Betreff' },
           { key: 'message', label: 'Nachricht' },
           { key: 'comment', label: 'Kommentar' },
-          { key: 'status', label: 'Status' },
+          { key: 'status', label: 'Status', sortable: true},
           { key: 'updated_by', label: 'Bearbeitet von' },
           { key: 'actions', label: 'Aktionen' },
         ]
+      },
+      watch: {     
+        searchTerm: {
+        immediate: true,
+        handler() {
+          this.currentPage = 1
+          this.fetch()
+        },
+      },
+      currentPage: watchHandler,
+      startDateRegistration: watchHandler,
+      endDateRegistration: watchHandler,
+      startDateLogin: watchHandler,
+      endDateLogin: watchHandler,
+      perPage: watchHandler,
       },
       status() {
         return [
@@ -110,13 +259,15 @@
           '\n\n-----Ursprüngliche Nachricht-----\n\n' + this.selectedMessage?.message
         )}`
       },
-    },
+
+    }, 
     async created() {
-      const res = await ajax(apiRoutes.supportMessages.index)
+      const res = await ajax(apiRoutes.supportMessages)
 
       this.supportMessages = res.data.messages
       this.supportUsers = res.data.users
     },
+
     methods: {
       showMessage(message) {
         this.selectedStatus = this.status.find(s => s.id === message.status)?.id
@@ -154,6 +305,39 @@
           default:
             return 'text-dark'
         }
+      },
+      async fetch() {
+        const params = {
+          searchTerm: this.searchTerm.length > 3 ? this.searchTerm : '',
+          pageSize: this.perPage,
+          currentPage: this.currentPage,
+          startDateLogin: this.startDateLogin,
+          endDateLogin: this.endDateLogin,
+          startDateRegistration: this.startDateRegistration,
+          endDateRegistration: this.endDateRegistration,
+        };
+
+
+        let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
+        if (params.searchTerm) {
+          urlParams += `&search_term=${params.searchTerm}`
+        }
+        if (params.startDateRegistration && params.endDateRegistration) {
+          urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
+        }
+        if (params.startDateLogin && params.endDateLogin) {
+          urlParams += `&start_date_login=${params.startDateLogin}&end_date_login=${params.endDateLogin}`
+        }
+        const res = await ajax({
+          url: `support_messages/search${urlParams}`,
+        })
+        if (res.status === 200) {
+          const data = res.data
+          this.totalRows = data.total_messages
+          this.support_message = data.support_messages
+        }
+
+
       },
     },
   }

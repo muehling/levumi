@@ -48,6 +48,39 @@ class SupportMessagesController < ApplicationController
 
   def edit; end
 
+  def search
+    head :forbidden and return if !@login.has_capability?('user')
+
+    search_string = params[:search_term] || ''
+    index = params[:index].to_i.positive? ? params[:index].to_i : 1
+    page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+
+    conditions = []
+    conditions << ['LOWER(email) LIKE ?', "%#{search_string}%"] if search_string != ''
+
+    if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
+      start_date = Date.parse(params[:start_date_registration])
+      end_date = Date.parse(params[:end_date_registration])
+      conditions << ['created_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    if !params[:start_date_login].nil? && !params[:end_date_login].nil?
+      start_date = Date.parse(params[:start_date_login])
+      end_date = Date.parse(params[:end_date_login])
+      conditions << ['last_login BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+    end
+
+    support_message =
+      SupportMessage.where(
+        conditions.map { |condition| condition.shift }.join(' AND '),
+        *conditions.flatten
+      )
+
+    @support_message = support_message.limit(page_size).offset((index - 1) * page_size)
+    @total_messages = SupportMessage.count
+    render :index
+  end
+
   private
 
   def support_message_attributes
