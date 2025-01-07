@@ -6,6 +6,7 @@ class NewsController < ApplicationController
 
   def create
     @news = News.new(news_attributes)
+    @news.date = Date.today
     if @news.save
       render json: @news
     else
@@ -16,14 +17,19 @@ class NewsController < ApplicationController
     end
   end
 
+  def update
+    news = News.find(params[:id])
+    news.update(news_attributes)
+  end
+
   def destroy
     News.destroy(params[:id])
-    head :ok
+    render json: News.all, status: :ok
   end
 
   private
 
   def news_attributes
-    params.permit(:id, :date, :title, :message)
+    params.require(:news).permit(:id, :date, :title, :message)
   end
 end
