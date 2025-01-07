@@ -64,8 +64,9 @@ class ResultsController < ApplicationController
     if @student.group.owner == @login
       @result = Result.find(params[:id])
       unless @result.nil? || @result.student != @student
+        assessment = Assessment.find(@result.assessment_id)
         @result.destroy
-        head :ok
+        render json: assessment.get_data
       else
         render json: {
                  message: "results_controller::destroy: result couldn't be found"

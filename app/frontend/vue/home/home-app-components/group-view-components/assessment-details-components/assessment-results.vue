@@ -93,18 +93,19 @@
           </b-card>
         </b-collapse>
       </div>
-      <confirm-dialog ref="confirmDialog" />
+      <confirm-dialog ref="confDialog" />
     </div>
     <div v-else>Für diesen Test liegen noch keine Messungen vor.</div>
   </div>
 </template>
 <script setup>
+  import { ajax } from 'src/utils/ajax'
+  import { computed, ref } from 'vue'
+  import { printDate } from 'src/utils/date'
+  import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import apiRoutes from 'src/vue/routes/api-routes'
   import AssessmentViewStudents from './assessment-results-components/assessment-view-students.vue'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
-  import { printDate } from 'src/utils/date'
-  import { ajax } from 'src/utils/ajax'
-  import apiRoutes from 'src/vue/routes/api-routes'
-  import { computed } from 'vue'
 
   const { test, group, weeks, results, assessment } = defineProps({
     test: Object,
@@ -113,6 +114,10 @@
     results: Array,
     assessment: Object,
   })
+
+  const store = useAssessmentsStore()
+
+  const confDialog = ref(0)
 
   const students = computed(() => group.students)
   const readOnly = computed(() => !!group.read_only)
@@ -142,8 +147,8 @@
     return printDate(date)
   }
 
-  const deleteResult = async (result, index) => {
-    const ok = await this.$refs.confirmDialog.open({
+  const deleteResult = async result => {
+    const ok = await confDialog.value.open({
       title: 'Messung löschen',
       message: `Diese Messung unwiderruflich löschen! Sind Sie sicher?`,
       okText: 'Ja, löschen',
@@ -153,7 +158,7 @@
         apiRoutes.assessments.deleteResult(result.data.student_id, result.data.id)
       )
       if (res.status === 200) {
-        this.remove(result.index, index)
+        store.setCurrentAssessment(res.data)
       }
     }
   }
