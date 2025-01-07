@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   get '/klassenbuch/neu', to: 'users#show'
   get '/materialien', to: 'users#show'
   get '/materialverwaltung', to: 'users#show'
+  get '/neuigkeiten', to: 'users#show'
   get '/nutzerverwaltung', to: 'users#show'
   get '/start', to: 'users#show'
   get '/statistiken', to: 'users#show'
