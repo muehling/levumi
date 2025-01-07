@@ -68,6 +68,14 @@
           Schüler:innen ein-/ausschließen
           <i class="fas fa-caret-down ms-2"></i>
         </template>
+        <b-dropdown-form class="d-flex">
+          <b-button class="text-small me-1" variant="outline-danger" @click="toggleAllOff">
+            Alle ausschließen
+          </b-button>
+          <b-button class="text-small ms-1" variant="outline-success" @click="toggleAllOn">
+            Alle einschließen
+          </b-button>
+        </b-dropdown-form>
         <b-dropdown-form>
           <b-form-checkbox
             v-for="student in students"
@@ -259,6 +267,26 @@
           this.excludeList.push(studentId)
           await ajax(apiRoutes.assessments.excludeStudent(this.group.id, this.test.id, studentId))
         }
+      },
+      async toggleAllOff() {
+        this.excludeList = this.students.map(s => s.id)
+        await ajax(
+          apiRoutes.assessments.excludeStudent(
+            this.group.id,
+            this.test.id,
+            JSON.stringify(this.excludeList)
+          )
+        )
+      },
+      async toggleAllOn() {
+        this.excludeList = []
+        await ajax(
+          apiRoutes.assessments.includeStudent(
+            this.group.id,
+            this.test.id,
+            JSON.stringify(this.students.map(s => s.id))
+          )
+        )
       },
     },
   }
