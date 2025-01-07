@@ -55,7 +55,7 @@
         Weiter zur Zusammenfassung
         <i class="fa-solid fa-arrow-right"></i>
       </b-button>
-      <b-button class="ml-2 d-none" @click="prepareData">debug</b-button>
+      <b-button class="ms-2 d-none" @click="prepareData">debug</b-button>
     </div>
   </b-card>
 </template>

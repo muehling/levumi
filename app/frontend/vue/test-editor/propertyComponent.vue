@@ -3,8 +3,8 @@
   <b-card v-else :title="`${questionTypeLabel}: Eigenschaften definieren`">
     <div class="m-4">
       <b-button class="mt-3" @click="load">Laden</b-button>
-      <b-button class="mt-3 ml-2" @click="save">Speichern</b-button>
-      <b-button class="continue mt-3 ml-2" @click="saveAndContinue">
+      <b-button class="mt-3 ms-2" @click="save">Speichern</b-button>
+      <b-button class="continue mt-3 ms-2" @click="saveAndContinue">
         Speichern und weiter
         <i class="fa-solid fa-arrow-right"></i>
       </b-button>
