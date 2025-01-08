@@ -31,20 +31,15 @@
       ref="createNewsDialog"
       v-model="isDialogOpen"
       title="News erstellen/bearbeiten"
+      cancel-variant="outline-danger"
+      cancel-title="Abbrechen"
+      ok-variant="outline-success"
+      ok-title="Speichern"
+      @ok="saveNews"
       @hidden="resetDialog">
       <b-form>
-        <b-form-input
-          v-model="title"
-          placeholder="Titel eingeben (optional)"
-          class="mb-2"></b-form-input>
-        <b-form-textarea
-          v-model="message"
-          placeholder="Nachricht eingeben"
-          class="mb-2"></b-form-textarea>
-        <b-button variant="outline-danger" class="me-2" @click="isDialogOpen = false">
-          Abbrechen
-        </b-button>
-        <b-button variant="outline-success" @click="saveNews">Speichern</b-button>
+        <b-form-input v-model="title" placeholder="Titel eingeben (optional)" class="mb-2" />
+        <b-form-textarea v-model="message" placeholder="Nachricht eingeben" class="mb-2" />
       </b-form>
     </b-modal>
   </b-container>
@@ -104,6 +99,7 @@
       })
     }
     await fetch()
+    isDialogOpen.value = false
   }
 
   const deleteNews = async item => {
