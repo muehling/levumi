@@ -26,7 +26,7 @@ class Assessment < ApplicationRecord
     if new_includes.kind_of?(Array)
       new_includes.each { |include| self.excludes.delete(include.to_i) }
     else
-      self.excludes.delete(id.to_i)
+      self.excludes.delete(ids.to_i)
     end
     self.save
   end

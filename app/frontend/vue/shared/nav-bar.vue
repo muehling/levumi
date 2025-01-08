@@ -131,6 +131,7 @@
             <b-dropdown-item v-if="checkCapability('support')" to="/support">
               Support
             </b-dropdown-item>
+            <b-dropdown-item v-if="checkCapability('news')" to="/neuigkeiten">News</b-dropdown-item>
             <!--<b-dropdown-item v-if="checkCapability('stats')" to="/statistiken">
                 Statistiken
               </b-dropdown-item>-->

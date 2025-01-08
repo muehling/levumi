@@ -31,7 +31,7 @@
         <template #cell(actions)="data">
           <b-button
             v-if="!showExport"
-            class="btn-sm mr-1"
+            class="btn-sm me-1"
             variant="outline-primary"
             @click="showTestDetails(data.item.id)">
             <i class="fas fa-glasses"></i>
@@ -39,7 +39,7 @@
           </b-button>
           <b-button
             v-if="!showExport && isEditAndDeleteAllowed"
-            class="btn-sm mr-1"
+            class="btn-sm me-1"
             variant="outline-success"
             :disabled="data.item.archive === 'Ja'"
             @click="editTest(data.item.id)">
@@ -48,7 +48,7 @@
           </b-button>
           <b-button
             v-if="!showExport && isEditAndDeleteAllowed"
-            class="btn-sm mr-1"
+            class="btn-sm me-1"
             variant="outline-danger"
             @click="deleteTest(data.item.id)">
             <i class="fas fa-trash"></i>
