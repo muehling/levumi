@@ -349,8 +349,38 @@ class Test < ApplicationRecord
   #Gibt es (exportierbare) Ergebnisse?
   def has_results
     assessment_ids = Assessment.where(test_id: self.id).pluck('id')
-
     Result.where(assessment_id: assessment_ids, test_date: '2019-09-09'..).exists?
+  end
+
+  def average
+    av =
+      Rails
+        .cache
+        .fetch("#{self.shorthand}_results_average") do
+          assessment_ids = self.assessments.pluck(:id)
+          results = Result.where(assessment_id: assessment_ids)
+
+          count = 0.0
+          mean = 0.0
+          m2 = 0.0
+
+          results.each do |result|
+            count += 1
+            data = result['views']
+            key, new_value = data.first
+
+            delta = new_value - mean
+            mean += delta / count
+            delta2 = new_value - mean
+            m2 += delta * delta2
+            values += [new_value]
+            puts "count #{count}, mean #{mean}, m2 #{m2}, new_value #{new_value}"
+          end
+
+          { m2: m2, count: count, mean: mean }
+        end
+
+    return av
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
