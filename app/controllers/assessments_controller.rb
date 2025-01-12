@@ -32,13 +32,13 @@ class AssessmentsController < ApplicationController
   end
 
   #PUT /groups/:group_id/assessments/:id
-  def update #Anzeige in Vue-Component, daher entweder JSON oder 304 als Rückmeldung
+  def update
     if params.require(:assessment).has_key?(:exclude) &&
          @assessment.exclude(params.require(:assessment)[:exclude])
-      head :ok
+      render json: @assessment.get_data
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
-      head :ok
+      render json: @assessment.get_data
     elsif @assessment.update(
           params.require(:assessment).permit(:active, settings: %i[is_trend_enabled date_until])
         )

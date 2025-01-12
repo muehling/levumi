@@ -11,13 +11,23 @@ class Assessment < ApplicationRecord
     assessment.save
   end
 
-  def exclude(id)
-    self.excludes = (self.excludes + [id.to_i]).uniq
+  def exclude(ids)
+    new_excludes = JSON.parse(ids)
+    if new_excludes.kind_of?(Array)
+      self.excludes = (self.excludes + new_excludes).uniq
+    else
+      self.excludes = (self.excludes + [new_excludes.to_i]).uniq
+    end
     self.save
   end
 
-  def include(id)
-    self.excludes.delete(id.to_i)
+  def include(ids)
+    new_includes = JSON.parse(ids)
+    if new_includes.kind_of?(Array)
+      new_includes.each { |include| self.excludes.delete(include.to_i) }
+    else
+      self.excludes.delete(ids.to_i)
+    end
     self.save
   end
 

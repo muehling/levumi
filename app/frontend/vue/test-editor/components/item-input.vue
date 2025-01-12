@@ -3,7 +3,7 @@
     {{ JSON.stringify(item) }}
     <p>
       <b-button class="btn-sm" @click="toggleCollapse">Frage {{ item.id }}</b-button>
-      <b-button class="btn-sm ml-2 text-nowrap" variant="outline-danger" @click="deleteItem">
+      <b-button class="btn-sm ms-2 text-nowrap" variant="outline-danger" @click="deleteItem">
         <i class="fas fa-trash"></i>
         <span class="text-small d-none d-xl-inline pl-2">Löschen</span>
       </b-button>

@@ -13,6 +13,7 @@ export const useGlobalStore = defineStore('global', {
       isPrivacyOpen: false,
       isAboutOpen: false,
       isCookieHintOpen: false,
+      isGPLOpen: false,
     },
     groupInfo: [],
     groups: [],

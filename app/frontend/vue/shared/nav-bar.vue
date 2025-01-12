@@ -131,6 +131,7 @@
             <b-dropdown-item v-if="checkCapability('support')" to="/support">
               Support
             </b-dropdown-item>
+            <b-dropdown-item v-if="checkCapability('news')" to="/neuigkeiten">News</b-dropdown-item>
             <!--<b-dropdown-item v-if="checkCapability('stats')" to="/statistiken">
                 Statistiken
               </b-dropdown-item>-->
@@ -192,6 +193,7 @@
             <b-dropdown-item href="#" @click="openImprint">Impressum</b-dropdown-item>
             <b-dropdown-item href="#" @click="openPrivacy">Datenschutzerklärung</b-dropdown-item>
             <b-dropdown-item href="#" @click="openTerms">Nutzungsbedingungen</b-dropdown-item>
+            <b-dropdown-item href="#" @click="openGPLNotes">Open Source</b-dropdown-item>
             <b-dropdown-item href="#" @click="openCookieHint">Cookie-Hinweis</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-nav-item @click="handleLogout">Ausloggen</b-nav-item>
@@ -205,6 +207,7 @@
     <PrivacyModal />
     <CookieInfo />
     <TermsModal />
+    <GPLModal />
   </div>
 </template>
 <script>
@@ -221,6 +224,7 @@
   import ImprintModal from 'src/vue/shared/modals/imprint-modal.vue'
   import TermsModal from 'src/vue/shared/modals/terms-modal.vue'
   import PrivacyModal from 'src/vue/shared/modals/privacy-modal.vue'
+  import GPLModal from 'src/vue/shared/modals/gpl-modal.vue'
 
   export default {
     name: 'NavBar',
@@ -233,6 +237,7 @@
       ImprintModal,
       PrivacyModal,
       TermsModal,
+      GPLModal,
     },
     setup() {
       const assessmentsStore = useAssessmentsStore()
@@ -293,6 +298,9 @@
     methods: {
       closeContactForm() {
         this.$refs.contactRef.hide()
+      },
+      openGPLNotes() {
+        this.globalStore.generalModals.isGPLOpen = true
       },
       openImprint() {
         this.globalStore.generalModals.isImprintOpen = true

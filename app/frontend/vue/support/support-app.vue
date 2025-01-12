@@ -17,21 +17,21 @@
           <div class="text-nowrap">
             <b-button
               variant="outline-success"
-              class="edit-user btn btn-sm mr-1"
+              class="edit-user btn btn-sm me-1"
               @click="showMessage(data.item)">
               <i class="fas fa-edit"></i>
               <span class="d-none d-lg-inline">Anzeigen</span>
             </b-button>
             <!-- <b-button
               variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
+              class="delete-user btn btn-sm me-1"
               @click="changeStatus(data.item.id)">
               <i class="fas fa-trash"></i>
               <span class="d-none d-lg-inline">Status ändern</span>
             </b-button>
              <b-button
               variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
+              class="delete-user btn btn-sm me-1"
               @click="assignUser(data.item.id)">
               <i class="fas fa-trash"></i>
               <span class="d-none d-lg-inline">Bearbeiter zuweisen</span>

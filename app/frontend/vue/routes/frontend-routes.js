@@ -4,6 +4,7 @@ import ClassBookApp from '../classbook/classbook-app.vue'
 import HomeApp from '../home/home-app.vue'
 import MaterialsAdmin from '../materials/materials-admin.vue'
 import MaterialsApp from '../materials/materials-app.vue'
+import NewsApp from '../news/news-app.vue'
 import StatisticsApp from '../statistics/statistics-app.vue'
 import SupportApp from '../support/support-app.vue'
 import TestEditorApp from '../test-editor/test-editor-app.vue'
@@ -103,6 +104,7 @@ const routes = [
   { path: '/groups/:groupId/assessments/:testId', component: HomeApp }, // Redirect route after user based tests // TODO might want to redirect to /diagnostik if the data can be kept
   { path: '/support', component: SupportApp },
   { path: '/test-editor', component: TestEditorApp },
+  { path: '/neuigkeiten', component: NewsApp },
 ]
 
 export default createRouter({ routes, linkActiveClass: 'active', history: createWebHistory() })
