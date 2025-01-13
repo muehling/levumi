@@ -550,6 +550,50 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
   },
 })
 
+export const testAverageAnnotationOptions = targetY => ({
+  id: 'test-average-annotation',
+  y: targetY,
+  strokeDashArray: 2,
+  borderColor: '#22222288',
+  borderWidth: 2,
+  fillColor: '#222222',
+  opacity: 0.9,
+  label: {
+    borderColor: '#424242',
+    borderWidth: 1,
+    text: 'Test-Durchschnitt: ' + targetY.toFixed(2),
+    textAnchor: 'end',
+    position: 'right',
+    offsetY: 0,
+    offsetX: 0,
+    style: {
+      background: '#fff',
+      color: '#777',
+      fontSize: '12px',
+      cssClass: 'apexcharts-yaxis-test-average-label',
+    },
+  },
+})
+
+export const testAverageRangeAnnotationOptions = (targetY, y2 = null) => ({
+  id: 'test-average-range-annotation',
+  y: targetY,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: '#444',
+  opacity: 0.125,
+  label: {
+    borderColor: '#00000000',
+    borderWidth: 0,
+    text: undefined,
+    style: {
+      background: '#00000000',
+      color: '#00000000',
+    },
+  },
+})
+
 export function quantile(arr, q) {
   const asc = arr => arr.sort((a, b) => a - b)
   const sorted = asc(arr)

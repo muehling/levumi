@@ -363,6 +363,8 @@ class Test < ApplicationRecord
           count = 0.0
           mean = 0.0
           m2 = 0.0
+          delta = 0.0
+          delta2 = 0.0
 
           results.each do |result|
             count += 1
@@ -373,7 +375,6 @@ class Test < ApplicationRecord
             mean += delta / count
             delta2 = new_value - mean
             m2 += delta * delta2
-            values += [new_value]
             puts "count #{count}, mean #{mean}, m2 #{m2}, new_value #{new_value}"
           end
 

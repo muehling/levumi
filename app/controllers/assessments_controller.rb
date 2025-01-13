@@ -40,7 +40,9 @@ class AssessmentsController < ApplicationController
           @assessment.include(params.require(:assessment)[:include])
       render json: @assessment.get_data
     elsif @assessment.update(
-          params.require(:assessment).permit(:active, settings: %i[is_trend_enabled date_until])
+          params
+            .require(:assessment)
+            .permit(:active, settings: %i[is_trend_enabled date_until is_test_average_enabled])
         )
       render json: @assessment.get_data
     else

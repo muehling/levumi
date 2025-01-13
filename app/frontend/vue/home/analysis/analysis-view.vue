@@ -245,6 +245,8 @@
     apexChartOptions,
     quantile,
     postProcessGroupedStackedBars,
+    testAverageAnnotationOptions,
+    testAverageRangeAnnotationOptions,
   } from './apexChartHelpers'
 
   export default {
@@ -460,6 +462,9 @@
 
       trendIsEnabled() {
         return this.assessmentsStore.currentAssessment.settings?.is_trend_enabled
+      },
+      isTestAverageEnabled() {
+        return this.assessmentsStore.currentAssessment.settings?.is_test_average_enabled
       },
 
       deviationStored() {
@@ -774,9 +779,23 @@
           }
         }
 
+        let testAverage, testAverage2
+        if (this.isTestAverageEnabled) {
+          const testAverageVal = this.assessmentsStore.currentAssessment?.test_average
+          testAverage = testAverageAnnotationOptions(testAverageVal.mean)
+          testAverage2 = testAverageRangeAnnotationOptions(
+            testAverageVal.mean - testAverageVal.std_dev / 2,
+            testAverageVal.mean + testAverageVal.std_dev / 2
+          )
+        }
+
         const { points, xaxis } = this.updateAnnotations()
 
-        preparedOptions.annotations = { points, xaxis, yaxis: [target, target2] }
+        preparedOptions.annotations = {
+          points,
+          xaxis,
+          yaxis: [target, target2, testAverage, testAverage2],
+        }
 
         // bar and grouped stacked bar are currently the only supported non-line charts
         const nonLineChart = ['bar'].includes(trueChartType)
