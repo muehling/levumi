@@ -13,11 +13,24 @@
         <i class="fas fa-trash"></i>
       </b-button>
     </div>
+    <div class="input-group mb-2 p-0 col-lg-8 col-xl-6">
+      <div class="input-group-prepend my-1">
+        <span class="input-group-text"><i class="fa-solid fa-magnifying-glass me-2"></i></span>
+      </div>
+      <b-form-input
+        v-model="searchTermByHelpDesk"
+        class="input-field my-1"
+        placeholder="Nach letzten Bearbeitenden suchen..."
+        debounce="500" />
+      <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTermByHelpDesk = ''">
+        <i class="fas fa-trash"></i>
+      </b-button>
+    </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label
         for="start-date-registration"
         class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
-        Registriert zwischen
+        Erstellt zwischen
       </label>
       <b-form-input
         id="start-date-registration"
@@ -54,11 +67,11 @@
     </div>
     <div class="input-group mb-2 col-lg-8 col-xl-6 p-0">
       <label for="start-date-login" class="date-label me-3 pt-2 pl-0 col-xs-6 col-sm-6 col-md-4">
-        Zuletzt angemeldet zwischen
+        Zuletzt bearbeitet zwischen
       </label>
       <b-form-input
         id="start-date-login"
-        v-model="startDateLogin"
+        v-model="startUpdatedAtDate"
         type="date"
         class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
@@ -71,7 +84,7 @@
         }" />
       <b-form-input
         id="end-date-login"
-        v-model="endDateLogin"
+        v-model="endUpdatedAtDate"
         type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
@@ -85,7 +98,7 @@
       <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
-        @click="startDateLogin = endDateLogin = undefined">
+        @click="startUpdatedAtDate = endUpdatedAtDate = undefined">
         <i class="fas fa-trash"></i>
       </b-button>
     </div>
@@ -184,9 +197,10 @@
 
   const watchHandler = {
     immediate: true,
-    handler: debounce(function () {
+    handler: debounce(function (){
       this.fetch()
-    }, 100),
+    },100)
+    ,
   }
 
   export default {
@@ -200,22 +214,21 @@
         currentPage: 1,
         perPage: 20,
         searchTerm: '',
+        searchTermByHelpDesk: '',
         startDateRegistration: undefined,
         endDateRegistration: undefined,
-        startDateLogin: undefined,
-        endDateLogin: undefined,
+        startUpdatedAtDate: undefined,
+        endUpdatedAtDate: undefined,
         totalRows: undefined,
         supportUsers: [],
-       // supportMessages: [],
+        supportMessages: [],
         selectedMessage: undefined,
         selectedStatus: undefined,
         comment: undefined,
       }
     },
     computed: {
-      supportMessages() {
-        return this.support_message
-      },
+
       fields() {
         return [
           { key: 'created_at', label: 'Erstellt am' },
@@ -227,21 +240,6 @@
           { key: 'updated_by', label: 'Bearbeitet von' },
           { key: 'actions', label: 'Aktionen' },
         ]
-      },
-      watch: {     
-        searchTerm: {
-        immediate: true,
-        handler() {
-          this.currentPage = 1
-          this.fetch()
-        },
-      },
-      currentPage: watchHandler,
-      startDateRegistration: watchHandler,
-      endDateRegistration: watchHandler,
-      startDateLogin: watchHandler,
-      endDateLogin: watchHandler,
-      perPage: watchHandler,
       },
       status() {
         return [
@@ -260,14 +258,31 @@
         )}`
       },
 
-    }, 
+    },
+    watch: {     
+        searchTerm: {
+        immediate: true,
+        handler() {
+          this.currentPage = 1
+          this.fetch()
+        },
+      },
+      searchTermByHelpDesk:watchHandler,
+      currentPage: watchHandler,
+      startDateRegistration: watchHandler,
+      endDateRegistration: watchHandler,
+      startUpdatedAtDate: watchHandler,
+      endUpdatedAtDate: watchHandler,
+      perPage: watchHandler,
+      },
+      /** 
     async created() {
       const res = await ajax(apiRoutes.supportMessages)
 
       this.supportMessages = res.data.messages
       this.supportUsers = res.data.users
     },
-
+*/
     methods: {
       showMessage(message) {
         this.selectedStatus = this.status.find(s => s.id === message.status)?.id
@@ -309,24 +324,27 @@
       async fetch() {
         const params = {
           searchTerm: this.searchTerm.length > 3 ? this.searchTerm : '',
+          searchTermByHelpDesk: this.searchTermByHelpDesk.length > 3 ? this.searchTermByHelpDesk: '',
           pageSize: this.perPage,
           currentPage: this.currentPage,
-          startDateLogin: this.startDateLogin,
-          endDateLogin: this.endDateLogin,
+          startUpdatedAtDate: this.startUpdatedAtDate,
+          endUpdatedAtDate: this.endUpdatedAtDate,
           startDateRegistration: this.startDateRegistration,
           endDateRegistration: this.endDateRegistration,
         };
-
 
         let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
         if (params.searchTerm) {
           urlParams += `&search_term=${params.searchTerm}`
         }
+        if (params.searchTermByHelpDesk) {
+          urlParams += `&search_term_by_help_desk=${params.searchTermByHelpDesk}`
+        }
         if (params.startDateRegistration && params.endDateRegistration) {
           urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
         }
-        if (params.startDateLogin && params.endDateLogin) {
-          urlParams += `&start_date_login=${params.startDateLogin}&end_date_login=${params.endDateLogin}`
+        if (params.startUpdatedAtDate && params.endUpdatedAtDate) {
+          urlParams += `&start_date_login=${params.startUpdatedAtDate}&end_date_login=${params.endUpdatedAtDate}`
         }
         const res = await ajax({
           url: `support_messages/search${urlParams}`,
@@ -334,7 +352,7 @@
         if (res.status === 200) {
           const data = res.data
           this.totalRows = data.total_messages
-          this.support_message = data.support_messages
+          this.supportMessages = data.support_messages
         }
 
 

@@ -50,13 +50,20 @@ class SupportMessagesController < ApplicationController
 
   def search
     head :forbidden and return if !@login.has_capability?('user')
+    conditions = []
 
     search_string = params[:search_term] || ''
     index = params[:index].to_i.positive? ? params[:index].to_i : 1
     page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+    conditions << ['LOWER(sender) LIKE ?', "%#{search_string}%"] if search_string != ''
 
-    conditions = []
-    conditions << ['LOWER(email) LIKE ?', "%#{search_string}%"] if search_string != ''
+    search_string_by_help_desk = params[:search_term_by_help_desk] || ''
+    index = params[:index].to_i.positive? ? params[:index].to_i : 1
+    page_size = params[:page_size].to_i.positive? ? params[:page_size].to_i : 20
+
+    if search_string_by_help_desk != ''
+      conditions << ['LOWER(updated_by) LIKE ?', "%#{search_string_by_help_desk}%"]
+    end
 
     if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
       start_date = Date.parse(params[:start_date_registration])
@@ -67,16 +74,20 @@ class SupportMessagesController < ApplicationController
     if !params[:start_date_login].nil? && !params[:end_date_login].nil?
       start_date = Date.parse(params[:start_date_login])
       end_date = Date.parse(params[:end_date_login])
-      conditions << ['last_login BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
+      conditions << [
+        'updated_at BETWEEN ? AND ?',
+        start_updated_at_date.beginning_of_day,
+        end_updated_at_date.end_of_day
+      ]
     end
 
-    support_message =
+    support_messages =
       SupportMessage.where(
         conditions.map { |condition| condition.shift }.join(' AND '),
         *conditions.flatten
       )
 
-    @support_message = support_message.limit(page_size).offset((index - 1) * page_size)
+    @support_messages = support_messages.limit(page_size).offset((index - 1) * page_size)
     @total_messages = SupportMessage.count
     render :index
   end
