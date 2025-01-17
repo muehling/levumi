@@ -186,6 +186,16 @@
         value-field="id"
         text-field="label" />
       <b-form-input v-model="comment" placeholder="Kommentar" />
+      <b-button
+            v-if="isLoginAsAllowed()"
+            variant="outline-secondary"
+            class="delete-user btn btn-sm me-1"
+            style="margin-top: 14px;"
+            @click="loginAs(selectedMessage?.sender)"
+            >
+            <i class="fas fa-user-md"></i>
+            <span class="d-none d-lg-inline">Einloggen als ...</span>
+          </b-button>
     </b-modal>
   </b-container>
 </template>
@@ -194,6 +204,7 @@
   import { ajax } from 'src/utils/ajax'
   import { useGlobalStore } from 'src/store/store'
   import debounce from 'lodash/debounce'
+  import { hasCapability } from 'src/utils/user'
 
   const watchHandler = {
     immediate: true,
@@ -226,7 +237,8 @@
         selectedStatus: undefined,
         comment: undefined,
       }
-    },
+    }
+    ,
     computed: {
 
       fields() {
@@ -354,8 +366,38 @@
           this.totalRows = data.total_messages
           this.supportMessages = data.support_messages
         }
-
-
+      },
+      isLoginAsAllowed() {
+        return (
+          hasCapability('user', this.store.login.capabilities)
+        )
+      },
+      async loginAs(sender){
+        const params={          
+          searchTerm:sender,
+        };
+        let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
+        if (params.searchTerm) {
+          urlParams += `&search_term=${params.searchTerm}`
+        }
+        if (params.startDateRegistration && params.endDateRegistration) {
+          urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
+        }
+        if (params.startDateLogin && params.endDateLogin) {
+          urlParams += `&start_date_login=${params.startDateLogin}&end_date_login=${params.endDateLogin}`
+        }
+        const res = await ajax({
+          url: `users/search${urlParams}`,
+        })
+        if (res.status === 200) {
+          if (res.data.users.length < 1) {
+            alert('Der User existiert nicht mehr oder hat vermutlich einen andere Mailadresse')
+          }else{
+            window.location.replace(`/login?user=${res.data.users[0].id}`)
+          }
+          
+        }
+        
       },
     },
   }
