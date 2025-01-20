@@ -6,6 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
+          <BAlert v-if="group.demo" :model-value="true" variant="danger">Finger wech davon !</BAlert>
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
