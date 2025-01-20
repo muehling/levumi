@@ -594,6 +594,16 @@ export const testAverageRangeAnnotationOptions = (targetY, y2 = null) => ({
   },
 })
 
+export const quartileOptions = (y1, y2, color) => ({
+  id: `quartile-annotation-${color}`,
+  y: y1,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: color,
+  opacity: 0.125,
+})
+
 export function quantile(arr, q) {
   const asc = arr => arr.sort((a, b) => a - b)
   const sorted = asc(arr)
