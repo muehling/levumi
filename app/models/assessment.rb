@@ -45,12 +45,7 @@ class Assessment < ApplicationRecord
     res['annotations'] = self.annotations.order(end: :desc)
     res['targets'] = self.targets
     res['settings'] = self.settings
-    res['test_average'] = {
-      mean: self.test.average[:mean],
-      count: self.test.average[:count],
-      std_dev: Math.sqrt(self.test.average[:m2] / self.test.average[:count])
-    }
-
+    res['test_quartiles'] = self.test.quartiles
     res
   end
 

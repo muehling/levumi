@@ -8,6 +8,22 @@
       </div>
       <div class="text-small row">
         <div class="col-12 col-md-3 col-xl-2">
+          <label label-for="trend-input">Test-Durchschnitt anzeigen:</label>
+        </div>
+        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
+          <b-form-checkbox
+            id="trend-input"
+            v-model="showTestAverage"
+            size="sm"
+            switch
+            @change="saveAssessmentSettings" />
+          <context-help
+            help-text="Mit dieser Option wird der Durchschnittswert aller bisherigen Messungen dieses Tests eingeblendet. Der Durchschnitt wird als gepunktete Linie dargestellt, die Standardabweichung als grauer Bereich."
+            class-name="mt-1 ms-3" />
+        </div>
+      </div>
+      <div class="text-small row">
+        <div class="col-12 col-md-3 col-xl-2">
           <label label-for="trend-input">Trend anzeigen:</label>
         </div>
         <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
@@ -110,22 +126,6 @@
           </b-input-group>
           <context-help
             help-text="Dieser Wert bestimmt, wie weit die Ergebnisse maximal vom vorgegebenen Zielwert abweichen sollten."
-            class-name="mt-1 ms-3" />
-        </div>
-      </div>
-      <div class="text-small row">
-        <div class="col-12 col-md-3 col-xl-2">
-          <label label-for="trend-input">Test-Durchschnitt anzeigen:</label>
-        </div>
-        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
-          <b-form-checkbox
-            id="trend-input"
-            v-model="showTestAverage"
-            size="sm"
-            switch
-            @change="saveAssessmentSettings" />
-          <context-help
-            help-text="Mit dieser Option wird der Durchschnittswert aller bisherigen Messungen dieses Tests eingeblendet. Der Durchschnitt wird als gepunktete Linie dargestellt, die Standardabweichung als grauer Bereich."
             class-name="mt-1 ms-3" />
         </div>
       </div>

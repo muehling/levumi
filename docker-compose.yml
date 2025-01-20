@@ -56,7 +56,6 @@ services:
     volumes:
     - ./tmp/redis_data:/var/lib/redis/data
   mailhog:
-    container_name: mailhog
     image: mailhog/mailhog:latest   
     logging:
       driver: 'none'  # disable saving logs 

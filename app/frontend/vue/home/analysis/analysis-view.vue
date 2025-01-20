@@ -245,8 +245,7 @@
     apexChartOptions,
     quantile,
     postProcessGroupedStackedBars,
-    testAverageAnnotationOptions,
-    testAverageRangeAnnotationOptions,
+    quartileOptions,
   } from './apexChartHelpers'
 
   export default {
@@ -528,7 +527,15 @@
         return val === undefined ? null : val
       },
       maxYValue() {
-        return Math.max(this.maxY, this.targetVal)
+        if (
+          this.isTestAverageEnabled &&
+          (this.viewConfig.options?.chart?.type === 'line' || true)
+        ) {
+          const testAverageVal = this.assessmentsStore.currentAssessment?.test_quartiles
+          return Math.max(this.maxY, this.targetVal, testAverageVal.q3)
+        } else {
+          return Math.max(this.maxY, this.targetVal)
+        }
       },
     },
     watch: {
@@ -702,10 +709,10 @@
             point.y = null
           }
 
-          this.maxY = Math.max(this.maxY, parseInt(point.y, 10 || 0))
+          this.maxY = Math.max(this.maxY, parseFloat(point.y, 10) || 0)
+
           return point
         })
-        // return res.filter(r => r.y)
         return res
       },
       XYFromResult(result, seriesKey, dateNeedsFormatting) {
@@ -759,14 +766,6 @@
           trueChartType = 'line'
         }
 
-        const preparedOptions = prepareOptions(
-          trueChartType,
-          view.options,
-          this.weeks,
-
-          this.maxYValue
-        )
-
         let target, target2
         if (this.targetVal) {
           target = targetAnnotationOptions(this.targetVal)
@@ -779,22 +778,11 @@
           }
         }
 
-        let testAverage, testAverage2
-        if (this.isTestAverageEnabled) {
-          const testAverageVal = this.assessmentsStore.currentAssessment?.test_average
-          testAverage = testAverageAnnotationOptions(testAverageVal.mean)
-          testAverage2 = testAverageRangeAnnotationOptions(
-            testAverageVal.mean - testAverageVal.std_dev / 2,
-            testAverageVal.mean + testAverageVal.std_dev / 2
-          )
-        }
-
-        const { points, xaxis } = this.updateAnnotations()
-
-        preparedOptions.annotations = {
-          points,
-          xaxis,
-          yaxis: [target, target2, testAverage, testAverage2],
+        let upperQuartile, lowerQuartile
+        if (this.isTestAverageEnabled && trueChartType === 'line') {
+          const testAverageVal = this.assessmentsStore.currentAssessment?.test_quartiles
+          upperQuartile = quartileOptions(this.maxYValue * 1.1, testAverageVal.q3, 'green')
+          lowerQuartile = quartileOptions(testAverageVal.q1, 0, 'red')
         }
 
         // bar and grouped stacked bar are currently the only supported non-line charts
@@ -802,7 +790,7 @@
         const stackedBarChart = trueChartType === 'bar' && view.options?.chart?.stacked
         let trendlineData = undefined
         let gData = undefined
-        // group data
+
         if (this.selectedStudentId === -1) {
           if (stackedBarChart) {
             // in case this is a grouped stacked bar chart do not create a series per student, but instead create
@@ -854,6 +842,21 @@
               }
             })
           }
+        }
+
+        const { points, xaxis } = this.updateAnnotations()
+
+        const preparedOptions = prepareOptions(
+          trueChartType,
+          view.options,
+          this.weeks,
+          this.maxYValue
+        )
+
+        preparedOptions.annotations = {
+          points,
+          xaxis,
+          yaxis: [target, target2, upperQuartile, lowerQuartile],
         }
 
         // trends and targets are displayed only for line graphs charts and views with a single series

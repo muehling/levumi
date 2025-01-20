@@ -1,6 +1,8 @@
 require 'zip'
 
 class Test < ApplicationRecord
+  include Averages
+
   # Muss vor has_many stehen, da ansonsten die Kindelemente schon vor before_destroy gelöscht werden und ShadowResults angelegt werden.
   before_destroy :cleanup
 
@@ -352,36 +354,12 @@ class Test < ApplicationRecord
     Result.where(assessment_id: assessment_ids, test_date: '2019-09-09'..).exists?
   end
 
-  def average
-    av =
-      Rails
-        .cache
-        .fetch("#{self.shorthand}_results_average") do
-          assessment_ids = self.assessments.pluck(:id)
-          results = Result.where(assessment_id: assessment_ids)
-
-          count = 0.0
-          mean = 0.0
-          m2 = 0.0
-          delta = 0.0
-          delta2 = 0.0
-
-          results.each do |result|
-            count += 1
-            data = result['views']
-            key, new_value = data.first
-
-            delta = new_value - mean
-            mean += delta / count
-            delta2 = new_value - mean
-            m2 += delta * delta2
-            puts "count #{count}, mean #{mean}, m2 #{m2}, new_value #{new_value}"
-          end
-
-          { m2: m2, count: count, mean: mean }
-        end
-
-    return av
+  def quartiles
+    Rails
+      .cache
+      .fetch("#{self.shorthand}/#{self.version}_quartiles", expires_in: 7.days) do
+        Averages.calculate_quartiles(self.id)
+      end
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export

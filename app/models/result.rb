@@ -1,4 +1,6 @@
 class Result < ApplicationRecord
+  include Averages
+
   belongs_to :student
   belongs_to :assessment
   validate :similar_within_last_ten_seconds # block posting of results for 10 seconds (some tests still do that)
@@ -11,35 +13,6 @@ class Result < ApplicationRecord
     else
       result.test_week = nil
     end
-  end
-
-  after_create do |result|
-    cached_average = Rails.cache.fetch("#{self.assessment.test.shorthand}_results_average") { 0.0 }
-    cached_count = Rails.cache.fetch("#{self.assessment.test.shorthand}_results_count") { 0 }
-
-    key, new_value = result.views.first
-
-    count = 0.0
-    mean = 0.0
-    m2 = 0.0
-
-    count += 1
-    data = result['views']
-    key, new_value = data.first
-
-    total_points += new_value.to_f
-
-    delta = new_value - mean
-    mean += delta / count
-    delta2 = new_value - mean
-    m2 += delta * delta2
-
-    puts "count #{count}, mean #{mean}, m2 #{m2}, new_value #{new_value}"
-
-    Rails.cache.write(
-      "#{self.assessment.test.shorthand}_results_average",
-      { mean: mean, count: count, m2: m2 }
-    )
   end
 
   # Schattenkopie anlegen. falls Result-Objekt nicht zur Beispielklasse gehört, nicht leer ist und länger als 24h in der Datenbank (sonst vermutlich einfach fehlerhafte Messung).
