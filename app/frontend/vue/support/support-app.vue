@@ -22,7 +22,10 @@
         class="input-field my-1"
         placeholder="Nach letzten Bearbeitenden suchen..."
         debounce="500" />
-      <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTermByHelpDesk = ''">
+      <b-button
+        class="btn-sm ms-2 my-1"
+        variant="outline-secondary"
+        @click="searchTermByHelpDesk = ''">
         <i class="fas fa-trash"></i>
       </b-button>
     </div>
@@ -34,7 +37,7 @@
       </label>
       <b-form-input
         id="start-date-registration"
-        v-model="startDateRegistration"
+        v-model="startDateCreatedAt"
         type="date"
         class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
@@ -47,7 +50,7 @@
         }" />
       <b-form-input
         id="end-date-registration"
-        v-model="endDateRegistration"
+        v-model="endDateCreatedAt"
         type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
@@ -61,7 +64,7 @@
       <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
-        @click="startDateRegistration = endDateRegistration = undefined">
+        @click="startDateCreatedAt = endDateCreatedAt = undefined">
         <i class="fas fa-trash"></i>
       </b-button>
     </div>
@@ -71,7 +74,7 @@
       </label>
       <b-form-input
         id="start-date-login"
-        v-model="startUpdatedAtDate"
+        v-model="startDateUpdatedAt"
         type="date"
         class="my-1 me-3 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Startdatum"
@@ -84,7 +87,7 @@
         }" />
       <b-form-input
         id="end-date-login"
-        v-model="endUpdatedAtDate"
+        v-model="endDateUpdatedAt"
         type="date"
         class="my-1 date-input col-xs-6 col-sm-4 col-md-4"
         placeholder="Enddatum"
@@ -98,12 +101,19 @@
       <b-button
         class="btn-sm ms-2 my-1"
         variant="outline-secondary"
-        @click="startUpdatedAtDate = endUpdatedAtDate = undefined">
+        @click="startDateUpdatedAt = endDateUpdatedAt = undefined">
         <i class="fas fa-trash"></i>
       </b-button>
     </div>
     <div>
-      <b-table small striped hover class="text-small" :items="supportMessages" :fields="fields">
+      <b-table
+        id="messagesTable"
+        small
+        striped
+        hover
+        class="text-small"
+        :items="supportMessages"
+        :fields="fields">
         <template #cell(created_at)="d">
           <span>{{ new Date(d.item.created_at).toLocaleString('de-DE') }}</span>
         </template>
@@ -124,48 +134,33 @@
               <i class="fas fa-edit"></i>
               <span class="d-none d-lg-inline">Anzeigen</span>
             </b-button>
-            <!-- <b-button
-              variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
-              @click="changeStatus(data.item.id)">
-              <i class="fas fa-trash"></i>
-              <span class="d-none d-lg-inline">Status ändern</span>
-            </b-button>
-             <b-button
-              variant="outline-danger"
-              class="delete-user btn btn-sm mr-1"
-              @click="assignUser(data.item.id)">
-              <i class="fas fa-trash"></i>
-              <span class="d-none d-lg-inline">Bearbeiter zuweisen</span>
-            </b-button>-->
           </div>
         </template>
       </b-table>
       <div class="d-flex">
-      <b-pagination
-        v-model="currentPage"
-        :total-rows="totalRows"
-        :per-page="perPage"
-        first-number
-        last-number
-        active-class="bg-primary"
-        aria-controls="usersTable">
-        <template #page="{ page, active }">
-          <b v-if="active" class="bg-primary">{{ page }}</b>
-          <span v-else>{{ page }}</span>
-        </template>
-      </b-pagination>
-      <div class="ms-3 p-1">
-        <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
-          <b-dropdown-item @click="perPage = 10">10 Einträge</b-dropdown-item>
-          <b-dropdown-item @click="perPage = 20">20 Einträge</b-dropdown-item>
-          <b-dropdown-item @click="perPage = 40">40 Einträge</b-dropdown-item>
-          <b-dropdown-item @click="perPage = 100">100 Einträge</b-dropdown-item>
-          <b-dropdown-item @click="perPage = 200">200 Einträge</b-dropdown-item>
-        </b-dropdown>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="totalRows"
+          :per-page="perPage"
+          first-number
+          last-number
+          active-class="bg-primary"
+          aria-controls="messagesTable">
+          <template #page="{ page, active }">
+            <b v-if="active" class="bg-primary">{{ page }}</b>
+            <span v-else>{{ page }}</span>
+          </template>
+        </b-pagination>
+        <div class="ms-3 p-1">
+          <b-dropdown size="sm" variant="outline-primary" :text="`${perPage} Einträge pro Seite`">
+            <b-dropdown-item @click="perPage = 10">10 Einträge</b-dropdown-item>
+            <b-dropdown-item @click="perPage = 20">20 Einträge</b-dropdown-item>
+            <b-dropdown-item @click="perPage = 40">40 Einträge</b-dropdown-item>
+            <b-dropdown-item @click="perPage = 100">100 Einträge</b-dropdown-item>
+            <b-dropdown-item @click="perPage = 200">200 Einträge</b-dropdown-item>
+          </b-dropdown>
+        </div>
       </div>
-      
-    </div>
     </div>
     <b-modal :model-value="!!selectedMessage" @hidden="hideMessage" @ok="updateMessage">
       <p>
@@ -187,15 +182,14 @@
         text-field="label" />
       <b-form-input v-model="comment" placeholder="Kommentar" />
       <b-button
-            v-if="isLoginAsAllowed()"
-            variant="outline-secondary"
-            class="delete-user btn btn-sm me-1"
-            style="margin-top: 14px;"
-            @click="loginAs(selectedMessage)"
-            >
-            <i class="fas fa-user-md"></i>
-            <span class="d-none d-lg-inline">Einloggen als ...</span>
-          </b-button>
+        v-if="isLoginAsAllowed(selectedMessage)"
+        variant="outline-secondary"
+        class="delete-user btn btn-sm me-1"
+        style="margin-top: 14px"
+        @click="loginAs(selectedMessage)">
+        <i class="fas fa-user-md"></i>
+        <span class="d-none d-lg-inline">Einloggen als ...</span>
+      </b-button>
     </b-modal>
   </b-container>
 </template>
@@ -208,10 +202,9 @@
 
   const watchHandler = {
     immediate: true,
-    handler: debounce(function (){
+    handler: debounce(function () {
       this.fetch()
-    },100)
-    ,
+    }, 100),
   }
 
   export default {
@@ -226,10 +219,10 @@
         perPage: 20,
         searchTerm: '',
         searchTermByHelpDesk: '',
-        startDateRegistration: undefined,
-        endDateRegistration: undefined,
-        startUpdatedAtDate: undefined,
-        endUpdatedAtDate: undefined,
+        startDateCreatedAt: undefined,
+        endDateCreatedAt: undefined,
+        startDateUpdatedAt: undefined,
+        endDateUpdatedAt: undefined,
         totalRows: undefined,
         supportUsers: [],
         supportMessages: [],
@@ -237,10 +230,8 @@
         selectedStatus: undefined,
         comment: undefined,
       }
-    }
-    ,
+    },
     computed: {
-
       fields() {
         return [
           { key: 'created_at', label: 'Erstellt am' },
@@ -248,7 +239,7 @@
           { key: 'subject', label: 'Betreff' },
           { key: 'message', label: 'Nachricht' },
           { key: 'comment', label: 'Kommentar' },
-          { key: 'status', label: 'Status', sortable: true},
+          { key: 'status', label: 'Status' },
           { key: 'updated_by', label: 'Bearbeitet von' },
           { key: 'actions', label: 'Aktionen' },
         ]
@@ -269,32 +260,24 @@
           '\n\n-----Ursprüngliche Nachricht-----\n\n' + this.selectedMessage?.message
         )}`
       },
-
     },
-    watch: {     
-        searchTerm: {
+    watch: {
+      searchTerm: {
         immediate: true,
         handler() {
           this.currentPage = 1
           this.fetch()
         },
       },
-      searchTermByHelpDesk:watchHandler,
+      searchTermByHelpDesk: watchHandler,
       currentPage: watchHandler,
-      startDateRegistration: watchHandler,
-      endDateRegistration: watchHandler,
-      startUpdatedAtDate: watchHandler,
-      endUpdatedAtDate: watchHandler,
+      startDateCreatedAt: watchHandler,
+      endDateCreatedAt: watchHandler,
+      startDateUpdatedAt: watchHandler,
+      endDateUpdatedAt: watchHandler,
       perPage: watchHandler,
-      },
-      /** 
-    async created() {
-      const res = await ajax(apiRoutes.supportMessages)
-
-      this.supportMessages = res.data.messages
-      this.supportUsers = res.data.users
     },
-*/
+
     methods: {
       showMessage(message) {
         this.selectedStatus = this.status.find(s => s.id === message.status)?.id
@@ -322,7 +305,7 @@
           this.supportMessages = m
         }
       },
-      assignUser(message) {},
+
       getStatusClass(status) {
         switch (status) {
           case 1:
@@ -336,74 +319,43 @@
       async fetch() {
         const params = {
           searchTerm: this.searchTerm.length > 3 ? this.searchTerm : '',
-          searchTermByHelpDesk: this.searchTermByHelpDesk.length > 3 ? this.searchTermByHelpDesk: '',
-          pageSize: this.perPage,
-          currentPage: this.currentPage,
-          startUpdatedAtDate: this.startUpdatedAtDate,
-          endUpdatedAtDate: this.endUpdatedAtDate,
-          startDateRegistration: this.startDateRegistration,
-          endDateRegistration: this.endDateRegistration,
-        };
+          searchTermByHelpDesk:
+            this.searchTermByHelpDesk.length > 3 ? this.searchTermByHelpDesk : '',
+        }
 
-        let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
+        let urlParams = `?page_size=${this.perPage}&index=${this.currentPage}`
         if (params.searchTerm) {
           urlParams += `&search_term=${params.searchTerm}`
         }
         if (params.searchTermByHelpDesk) {
           urlParams += `&search_term_by_help_desk=${params.searchTermByHelpDesk}`
         }
-        if (params.startDateRegistration && params.endDateRegistration) {
-          urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
+        if (this.startDateCreatedAt && this.endDateCreatedAt) {
+          urlParams += `&start_date_created_at=${this.startDateCreatedAt}&end_date_created_at=${this.endDateCreatedAt}`
         }
-        if (params.startUpdatedAtDate && params.endUpdatedAtDate) {
-          urlParams += `&start_date_login=${params.startUpdatedAtDate}&end_date_login=${params.endUpdatedAtDate}`
+        if (this.startDateUpdatedAt && this.endDateUpdatedAt) {
+          urlParams += `&start_date_updated_at=${this.startDateUpdatedAt}&end_date_updated_at=${this.endDateUpdatedAt}`
         }
         const res = await ajax({
           url: `support_messages/search${urlParams}`,
         })
         if (res.status === 200) {
           const data = res.data
-          this.totalRows = data.total_messages
+          this.totalRows = data.total_support_messages
           this.supportMessages = data.support_messages
         }
       },
-      isLoginAsAllowed() {
-        return (
-          hasCapability('user', this.store.login.capabilities)
-        )
+      isLoginAsAllowed(message) {
+        return hasCapability('user', this.store.login.capabilities) && !!message?.user_id
       },
-      async loginAs(message){
+      async loginAs(message) {
         const user_id = message?.user_id
-        if(user_id){
+        if (user_id) {
           window.open(`/login?user=${user_id}`)
-        }else{
-        const params={          
-          searchTerm:message?.sender,
-        };
-        let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
-        if (params.searchTerm) {
-          urlParams += `&search_term=${params.searchTerm}`
         }
-        if (params.startDateRegistration && params.endDateRegistration) {
-          urlParams += `&start_date_registration=${params.startDateRegistration}&end_date_registration=${params.endDateRegistration}`
-        }
-        if (params.startDateLogin && params.endDateLogin) {
-          urlParams += `&start_date_login=${params.startDateLogin}&end_date_login=${params.endDateLogin}`
-        }
-        const res = await ajax({
-          url: `users/search${urlParams}`,
-        })
-        if (res.status === 200) {
-          if (res.data.users.length < 1) {
-            alert('Der User existiert nicht mehr oder hat vermutlich einen andere Mailadresse')
-          }else{
-            window.open(`/login?user=${res.data.users[0].id}`)
-          }
-          }
-        }
-        },
       },
-    }
+    },
+  }
 </script>
 <style>
   .mailbody {

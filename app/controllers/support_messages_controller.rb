@@ -65,20 +65,16 @@ class SupportMessagesController < ApplicationController
       conditions << ['LOWER(updated_by) LIKE ?', "%#{search_string_by_help_desk}%"]
     end
 
-    if !params[:start_date_registration].nil? && !params[:end_date_registration].nil?
-      start_date = Date.parse(params[:start_date_registration])
-      end_date = Date.parse(params[:end_date_registration])
+    if !params[:start_date_created_at].nil? && !params[:end_date_created_at].nil?
+      start_date = Date.parse(params[:start_date_created_at])
+      end_date = Date.parse(params[:end_date_created_at])
       conditions << ['created_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
     end
 
-    if !params[:start_date_login].nil? && !params[:end_date_login].nil?
-      start_date = Date.parse(params[:start_date_login])
-      end_date = Date.parse(params[:end_date_login])
-      conditions << [
-        'updated_at BETWEEN ? AND ?',
-        start_updated_at_date.beginning_of_day,
-        end_updated_at_date.end_of_day
-      ]
+    if !params[:start_date_updated_at].nil? && !params[:end_date_updated_at].nil?
+      start_date = Date.parse(params[:start_date_updated_at])
+      end_date = Date.parse(params[:end_date_updated_at])
+      conditions << ['updated_at BETWEEN ? AND ?', start_date.beginning_of_day, end_date.end_of_day]
     end
 
     support_messages =
@@ -87,7 +83,8 @@ class SupportMessagesController < ApplicationController
         *conditions.flatten
       )
 
-    @support_messages = support_messages.limit(page_size).offset((index - 1) * page_size)
+    @support_messages =
+      support_messages.limit(page_size).offset((index - 1) * page_size).order(created_at: :desc)
     @total_messages = SupportMessage.count
     render :index
   end
