@@ -191,7 +191,7 @@
             variant="outline-secondary"
             class="delete-user btn btn-sm me-1"
             style="margin-top: 14px;"
-            @click="loginAs(selectedMessage?.sender)"
+            @click="loginAs(selectedMessage)"
             >
             <i class="fas fa-user-md"></i>
             <span class="d-none d-lg-inline">Einloggen als ...</span>
@@ -372,9 +372,13 @@
           hasCapability('user', this.store.login.capabilities)
         )
       },
-      async loginAs(sender){
+      async loginAs(message){
+        const user_id = message?.user_id
+        if(user_id){
+          window.open(`/login?user=${user_id}`)
+        }else{
         const params={          
-          searchTerm:sender,
+          searchTerm:message?.sender,
         };
         let urlParams = `?page_size=${params.pageSize}&index=${params.currentPage}`
         if (params.searchTerm) {
@@ -393,14 +397,13 @@
           if (res.data.users.length < 1) {
             alert('Der User existiert nicht mehr oder hat vermutlich einen andere Mailadresse')
           }else{
-            window.location.replace(`/login?user=${res.data.users[0].id}`)
+            window.open(`/login?user=${res.data.users[0].id}`)
           }
-          
+          }
         }
-        
+        },
       },
-    },
-  }
+    }
 </script>
 <style>
   .mailbody {
