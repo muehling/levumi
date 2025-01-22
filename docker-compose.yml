@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   web:
     build:
@@ -24,7 +22,7 @@ services:
       VITE_RUBY_HOST: vite
       MAIL_HOST: mailhog
       MAIL_PORT: 1025
-      REDIS_URL: 'redis://levumi_redis_1:6379'
+      REDIS_URL: 'redis://levumi-redis-1:6379'
       #MAINTENANCE: "true" # uncomment to test maintenance mode
   vite:
     build: .
@@ -41,7 +39,7 @@ services:
   db:
     image: mysql:8.0    
     environment:
-      - MYSQL_DATABASE=levumi2_dev_small
+      - MYSQL_DATABASE=levumi2_dev
       - MYSQL_ROOT_PASSWORD=password
       - MYSQL_USER=mysql
       - MYSQL_PASSWORD=password
