@@ -40,11 +40,8 @@ module Averages
     results.each do |result|
       d = result['views']
       key, value = d.find { |k, v| v.is_a?(Numeric) } # get first view with a single numeric value
-
       data += [value] if !value.nil? # might be the case for some tests
     end
-
-    puts data
 
     sorted_data = data.sort
 

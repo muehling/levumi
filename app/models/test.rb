@@ -355,9 +355,10 @@ class Test < ApplicationRecord
   end
 
   def quartiles
+    duration = self.archive ? 2.years : 7.days
     Rails
       .cache
-      .fetch("#{self.shorthand}/#{self.version}_quartiles", expires_in: 7.days) do
+      .fetch("#{self.shorthand}/#{self.version}_quartiles", expires_in: duration) do
         Averages.calculate_quartiles(self.id)
       end
   end

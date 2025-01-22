@@ -8,17 +8,17 @@
       </div>
       <div class="text-small row">
         <div class="col-12 col-md-3 col-xl-2">
-          <label label-for="trend-input">Test-Durchschnitt anzeigen:</label>
+          <label label-for="trend-input">Oberes und unteres Quartil:</label>
         </div>
         <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
           <b-form-checkbox
             id="trend-input"
-            v-model="showTestAverage"
+            v-model="showTestQuartiles"
             size="sm"
             switch
             @change="saveAssessmentSettings" />
           <context-help
-            help-text="Mit dieser Option wird der Durchschnittswert aller bisherigen Messungen dieses Tests eingeblendet. Der Durchschnitt wird als gepunktete Linie dargestellt, die Standardabweichung als grauer Bereich."
+            help-text="Mit dieser Option werden das obere und das untere Quartil aller bisherigen Messungen dieses Tests eingeblendet. In die Berechnung fließen alle in Levumi erfassten Messwerte ein, nicht nur die aus der aktuell ausgewählten Klasse. Der Wert wird wöchentlich aktualisiert."
             class-name="mt-1 ms-3" />
         </div>
       </div>
@@ -192,7 +192,8 @@
         dateUntil: this.assessmentsStore.currentAssessment.settings?.date_until,
         deviation: target?.deviation,
         showTrends: this.assessmentsStore.currentAssessment.settings?.is_trend_enabled,
-        showTestAverage: this.assessmentsStore.currentAssessment.settings?.is_test_average_enabled,
+        showTestQuartiles:
+          this.assessmentsStore.currentAssessment.settings?.is_test_average_enabled,
         showClassTargetForStudent: false,
       }
     },
@@ -246,7 +247,7 @@
               settings: {
                 is_trend_enabled: this.showTrends,
                 date_until: this.dateUntil,
-                is_test_average_enabled: this.showTestAverage,
+                is_test_average_enabled: this.showTestQuartiles,
               },
             },
           })
