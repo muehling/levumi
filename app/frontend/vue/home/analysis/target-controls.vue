@@ -16,9 +16,14 @@
             v-model="showTestQuartiles"
             size="sm"
             switch
+            :disabled="!hasSufficientQuartileData"
             @change="saveAssessmentSettings" />
           <context-help
-            help-text="Mit dieser Option werden das obere und das untere Quartil aller bisherigen Messungen dieses Tests eingeblendet. In die Berechnung fließen alle in Levumi erfassten Messwerte ein, nicht nur die aus der aktuell ausgewählten Klasse. Der Wert wird wöchentlich aktualisiert."
+            :help-text="`Mit dieser Option werden das obere und das untere Quartil aller bisherigen Messungen dieses Tests eingeblendet. In die Berechnung fließen alle in Levumi erfassten Messwerte ein, nicht nur die aus der aktuell ausgewählten Klasse. Der Wert wird monatlich aktualisiert. ${
+              hasSufficientQuartileData
+                ? ''
+                : '<br/><br/><b>Aktuell liegen nicht genügend Daten für diesen Test vor, um die Quartile zu berechnen.</b>'
+            }`"
             class-name="mt-1 ms-3" />
         </div>
       </div>
@@ -96,8 +101,8 @@
             min="0"
             step="0.01"
             lang="de"
-            @input="handleNumberInput"
-            size="sm" />
+            size="sm"
+            @input="handleNumberInput" />
           <context-help
             help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
             class-name="mt-1 ms-3" />
@@ -203,6 +208,9 @@
       },
       readOnly() {
         return this.group.read_only
+      },
+      hasSufficientQuartileData() {
+        return this.assessmentsStore.currentAssessment?.test_quartiles?.count > 100
       },
     },
     watch: {

@@ -531,8 +531,8 @@
           this.isTestAverageEnabled &&
           (this.viewConfig.options?.chart?.type === 'line' || true)
         ) {
-          const testAverageVal = this.assessmentsStore.currentAssessment?.test_quartiles
-          return Math.max(this.maxY, this.targetVal, testAverageVal.q3)
+          const testQuartiles = this.assessmentsStore.currentAssessment?.test_quartiles
+          return Math.max(this.maxY, this.targetVal, testQuartiles.q3)
         } else {
           return Math.max(this.maxY, this.targetVal)
         }
@@ -780,9 +780,9 @@
 
         let upperQuartile, lowerQuartile
         if (this.isTestAverageEnabled && trueChartType === 'line') {
-          const testAverageVal = this.assessmentsStore.currentAssessment?.test_quartiles
-          upperQuartile = quartileOptions(this.maxYValue * 1.1, testAverageVal.q3, 'green')
-          lowerQuartile = quartileOptions(testAverageVal.q1, 0, 'red')
+          const testQuartiles = this.assessmentsStore.currentAssessment?.test_quartiles
+          upperQuartile = quartileOptions(this.maxYValue * 1.1, testQuartiles.q3, 'green')
+          lowerQuartile = quartileOptions(testQuartiles.q1, 0, 'red')
         }
 
         // bar and grouped stacked bar are currently the only supported non-line charts
