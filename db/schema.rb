@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_17_080027) do
+ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -258,6 +258,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_17_080027) do
     t.string "updated_by"
     t.string "responsible"
     t.json "required_services"
+    t.boolean "allow_quartiles", default: false
     t.index ["test_family_id"], name: "index_tests_on_test_family_id"
     t.index ["test_type_id"], name: "index_tests_on_test_type_id"
   end
