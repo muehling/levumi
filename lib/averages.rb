@@ -37,6 +37,7 @@ module Averages
     assessment_ids = test.assessments.pluck(:id)
     results = Result.where(assessment_id: assessment_ids)
     data = []
+    return { q1: 0, q3: 0, count: 0 } if results.count == 0
     results.each do |result|
       d = result['views']
       key, value = d.find { |k, v| v.is_a?(Numeric) } # get first view with a single numeric value
