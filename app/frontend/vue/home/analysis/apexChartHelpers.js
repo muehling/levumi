@@ -353,8 +353,6 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
 
   let hoverList = ''
   hoverListArray.forEach(item => {
-    
-   // if (item.value !== null){
     hoverList += `
       <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
         <span class="apexcharts-tooltip-marker" style="background-color: ${item.color};"></span>
@@ -365,7 +363,6 @@ function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
           </div>
         </div>
       </div>`
-   // }
   })
 
   const date = new Date(hoverXaxis).toLocaleDateString('de')
