@@ -330,36 +330,47 @@ const commonTooltip = () => ({
   intersect: false,
 })
 
-/** credit goes to @Splinter0 on GitHub: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
 function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   const hoverXaxis = w.globals.seriesX[seriesIndex][dataPointIndex]
   const hoverIndexes = w.globals.seriesX.map(seriesX => {
     return seriesX.findIndex(xData => xData === hoverXaxis)
   })
 
-  let hoverList = ''
+  let hoverListArray = []
+  
   hoverIndexes.forEach((hoverIndex, seriesEachIndex) => {
-    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] != undefined) {
-      hoverList += `
-                        <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
-                            <span class="apexcharts-tooltip-marker" style="background-color: ${
-                              w.globals.markers.colors[seriesEachIndex]
-                            };"></span>
-                            <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
-                                <div class="apexcharts-tooltip-y-group">
-                                    <span class="apexcharts-tooltip-text-y-label">${
-                                      w.globals.seriesNames[seriesEachIndex]
-                                    }: </span>
-                                    <span class="apexcharts-tooltip-text-y-value">${w.globals.yLabelFormatters[0](
-                                      series[seriesEachIndex][hoverIndex]
-                                    )}</span>
-                                </div>
-                            </div>
-                        </div>`
+    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] !== undefined && series[seriesEachIndex][hoverIndex] !== null) {
+      hoverListArray.push({
+        seriesIndex: seriesEachIndex,
+        value: series[seriesEachIndex][hoverIndex],
+        seriesName: w.globals.seriesNames[seriesEachIndex],
+        color: w.globals.markers.colors[seriesEachIndex],
+      })
     }
   })
+
+  hoverListArray.sort((a, b) => b.value - a.value)
+
+  let hoverList = ''
+  hoverListArray.forEach(item => {
+    
+   // if (item.value !== null){
+    hoverList += `
+      <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+        <span class="apexcharts-tooltip-marker" style="background-color: ${item.color};"></span>
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">                            
+          <div class="apexcharts-tooltip-y-group">
+            <span class="apexcharts-tooltip-text-y-label">${item.seriesName}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${w.globals.yLabelFormatters[0](item.value)}</span>
+          </div>
+        </div>
+      </div>`
+   // }
+  })
+
   const date = new Date(hoverXaxis).toLocaleDateString('de')
   return `<div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${date}</div>${hoverList}`
+  
 }
 
 // eslint-disable-next-line no-unused-vars
