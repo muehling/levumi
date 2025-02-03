@@ -6,7 +6,9 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
-          <BAlert v-if="group.demo" :model-value="true" variant="danger">Finger wech davon !</BAlert>
+          <BAlert v-if="group.demo" :model-value="true" variant="danger">
+            Finger wech davon !
+          </BAlert>
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
@@ -20,6 +22,17 @@
           <b-button v-if="group.key" variant="outline-secondary" size="sm" @click="gotoClassbook">
             <i class="fas fa-chalkboard-user"></i>
             Zur Diagnostik
+          </b-button>
+          <b-button
+            v-if="group.demo"
+            id="intro_cb_3"
+            size="sm"
+            class="me-2"
+            variant="outline-secondary"
+            style="margin: 0.5%"
+            @click="ariseOfDemoStudents">
+            <i class="fa-solid fa-shower fa-lg"></i>
+            Demo Daten anlegen
           </b-button>
         </div>
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
@@ -93,6 +106,7 @@
   import StudentList from './group-view-list/student-list.vue'
   import TransferStatus from 'src/vue/classbook/transfer-status.vue'
   import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
+  import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
   //import Vue from 'vue'
 
   export default {
@@ -246,6 +260,24 @@
               this.$router.push('/diagnostik')
             }
           }
+        }
+      },
+      async ariseOfDemoStudents() {
+        // encoding will fail if password was reset by admins
+        const encodedNames = ['Baltazhar','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
+        const studentData = {group_id:this.group.id,
+          student_names: encodedNames
+        }
+        console.log(studentData)
+        
+        const res = await ajax({
+          url: `/add_demo_data`,
+          method:'POST',
+          data:studentData
+        })
+        const data = res.data
+        if (data && res.status === 200) {
+          this.update(data)
         }
       },
     },

@@ -15,6 +15,7 @@ class UsersController < ApplicationController
                   recovery_notification
                   recovery_key_verification
                   delete_used_recovery_key
+                  add_demo_data
                 ]
 
   skip_before_action :set_login,
@@ -387,6 +388,218 @@ class UsersController < ApplicationController
     @user = User.find_by_email(user_attributes[:email])
     @user.update(recovery_key: nil)
     head :ok and return
+  end
+
+  def add_demo_data
+    params[:student_names].map! { |name| URI.decode_www_form_component(name) }
+    params[:student_names].each do |student_name|
+      Student.create!(name: student_name, group_id: params[:group_id])
+    end
+    assessment_id = Assessment.create(test_id: 328, group_id: params[:group_id]).id
+
+    views = {
+      'V1': 18,
+      'V2': {
+        'LG': '90.0',
+        'FGI':
+          "<strong>Addition (1. Summand ≥ 2. Summand; 2. Summand < 2):: 0</strong><hr class='my-0'/><br/></br/><strong>Addition (1. Summand ≥ 2. Summand; 2. Summand ≥ 2):: 1</strong><hr class='my-0'/>(6 + 4 = 10)<br/></br/><strong>Addition (1. Summand < 2. Summand;  2. Summand ≥ 2): 1</strong><hr class='my-0'/>(2 + 7 = 9)<br/></br/>",
+        'LGM': '4',
+        'RGI':
+          "<strong>Addition (1. Summand ≥ 2. Summand; 2. Summand < 2):: 6</strong><hr class='my-0'/>(2 + 1 = 3), (9 + 1 = 10), (4 + 1 = 5), (9 + 0 = 9), (3 + 1 = 4), (7 + 1 = 8)<br/></br/><strong>Addition (1. Summand ≥ 2. Summand; 2. Summand ≥ 2):: 6</strong><hr class='my-0'/>(3 + 3 = 6), (7 + 3 = 10), (4 + 2 = 6), (4 + 4 = 8), (8 + 2 = 10), (4 + 3 = 7)<br/></br/><strong>Addition (1. Summand < 2. Summand;  2. Summand ≥ 2): 6</strong><hr class='my-0'/>(2 + 6 = 8), (2 + 4 = 6), (4 + 5 = 9), (1 + 5 = 6), (3 + 5 = 8), (1 + 7 = 8)<br/></br/>"
+      },
+      'V3': {
+        'LG': '90.0',
+        'FGI':
+          "<strong>Addition (1. Summand ≥ 2. Summand; 2. Summand < 2):: 0</strong><hr class='my-0'/><br/></br/><strong>Addition (1. Summand ≥ 2. Summand; 2. Summand ≥ 2):: 1</strong><hr class='my-0'/>(6 + 4 = 10)<br/></br/><strong>Addition (1. Summand < 2. Summand;  2. Summand ≥ 2): 1</strong><hr class='my-0'/>(2 + 7 = 9)<br/></br/>",
+        'LGM': '4',
+        'RGI':
+          "<strong>Addition (1. Summand ≥ 2. Summand; 2. Summand < 2):: 6</strong><hr class='my-0'/>(2 + 1 = 3), (9 + 1 = 10), (4 + 1 = 5), (9 + 0 = 9), (3 + 1 = 4), (7 + 1 = 8)<br/></br/><strong>Addition (1. Summand ≥ 2. Summand; 2. Summand ≥ 2):: 6</strong><hr class='my-0'/>(3 + 3 = 6), (7 + 3 = 10), (4 + 2 = 6), (4 + 4 = 8), (8 + 2 = 10), (4 + 3 = 7)<br/></br/><strong>Addition (1. Summand < 2. Summand;  2. Summand ≥ 2): 6</strong><hr class='my-0'/>(2 + 6 = 8), (2 + 4 = 6), (4 + 5 = 9), (1 + 5 = 6), (3 + 5 = 8), (1 + 7 = 8)<br/></br/>",
+        'SUM': 18
+      }
+    }
+
+    report = {
+      'trend': 1,
+      'negative': %w[I62 I15],
+      'positive': %w[I36 I33 I18 I06 I27 I61 I53 I26 I07 I25 I55 I17 I28 I02 I04 I16 I05 I64],
+      'result_number': 3
+    }
+
+    data = [
+      {
+        'item': 'I62',
+        'time': 12_656,
+        'group': 3,
+        'answer': '10',
+        'result': 0,
+        'description': '2 + 7 = 9'
+      },
+      {
+        'item': 'I36',
+        'time': 10_378,
+        'group': 1,
+        'answer': '3',
+        'result': 1,
+        'description': '2 + 1 = 3'
+      },
+      {
+        'item': 'I33',
+        'time': 10_278,
+        'group': 2,
+        'answer': '6',
+        'result': 1,
+        'description': '3 + 3 = 6'
+      },
+      {
+        'item': 'I18',
+        'time': 17_141,
+        'group': 3,
+        'answer': '8',
+        'result': 1,
+        'description': '2 + 6 = 8'
+      },
+      {
+        'item': 'I15',
+        'time': 39_283,
+        'group': 2,
+        'answer': '13',
+        'result': 0,
+        'description': '6 + 4 = 10'
+      },
+      {
+        'item': 'I06',
+        'time': 11_972,
+        'group': 1,
+        'answer': '10',
+        'result': 1,
+        'description': '9 + 1 = 10'
+      },
+      {
+        'item': 'I27',
+        'time': 37_913,
+        'group': 2,
+        'answer': '10',
+        'result': 1,
+        'description': '7 + 3 = 10'
+      },
+      {
+        'item': 'I61',
+        'time': 23_398,
+        'group': 3,
+        'answer': '6',
+        'result': 1,
+        'description': '2 + 4 = 6'
+      },
+      {
+        'item': 'I53',
+        'time': 7367,
+        'group': 1,
+        'answer': '5',
+        'result': 1,
+        'description': '4 + 1 = 5'
+      },
+      {
+        'item': 'I26',
+        'time': 7288,
+        'group': 3,
+        'answer': '9',
+        'result': 1,
+        'description': '4 + 5 = 9'
+      },
+      {
+        'item': 'I07',
+        'time': 14_818,
+        'group': 2,
+        'answer': '6',
+        'result': 1,
+        'description': '4 + 2 = 6'
+      },
+      {
+        'item': 'I25',
+        'time': 12_961,
+        'group': 1,
+        'answer': '9',
+        'result': 1,
+        'description': '9 + 0 = 9'
+      },
+      {
+        'item': 'I55',
+        'time': 18_056,
+        'group': 3,
+        'answer': '6',
+        'result': 1,
+        'description': '1 + 5 = 6'
+      },
+      {
+        'item': 'I17',
+        'time': 13_192,
+        'group': 1,
+        'answer': '4',
+        'result': 1,
+        'description': '3 + 1 = 4'
+      },
+      {
+        'item': 'I28',
+        'time': 6201,
+        'group': 2,
+        'answer': '8',
+        'result': 1,
+        'description': '4 + 4 = 8'
+      },
+      {
+        'item': 'I02',
+        'time': 8150,
+        'group': 1,
+        'answer': '8',
+        'result': 1,
+        'description': '7 + 1 = 8'
+      },
+      {
+        'item': 'I04',
+        'time': 12_124,
+        'group': 3,
+        'answer': '8',
+        'result': 1,
+        'description': '3 + 5 = 8'
+      },
+      {
+        'item': 'I16',
+        'time': 13_632,
+        'group': 2,
+        'answer': '10',
+        'result': 1,
+        'description': '8 + 2 = 10'
+      },
+      {
+        'item': 'I05',
+        'time': 17_335,
+        'group': 2,
+        'answer': '7',
+        'result': 1,
+        'description': '4 + 3 = 7'
+      },
+      {
+        'item': 'I64',
+        'time': 5861,
+        'group': 3,
+        'answer': '8',
+        'result': 1,
+        'description': '1 + 7 = 8'
+      }
+    ]
+
+    test_date = DateTime.now
+    id =
+      Result.create(
+        student_id: 70_462,
+        assessment_id: assessment_id,
+        views: views,
+        report: report,
+        data: data,
+        test_date: test_date
+      )
+    puts '###########'
+    puts id.inspect
   end
 
   private
