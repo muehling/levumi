@@ -4,7 +4,7 @@ class GroupsController < ApplicationController
   #GET /groups
   def index
     shares_object = {}
-    @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
+    @login.group_shares.each { |c| shares_object[c.group_id] = c.key }
     @data = {
       'groups': @login.get_classbook_info,
       'single': @login.account_type == 2,

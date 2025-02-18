@@ -88,7 +88,7 @@
                       @click="handleNavigate(`geteilte_klassen/${group.id}/liste`)">
                       <!-- Beispielklasse kursiv darstellen -->
                       <template #title>
-                        <i v-if="group.demo">{{ group.label }}</i>
+                        <i v-if="group.demo">{{ group.label }}&nbsp;</i>
                         <span v-else>{{ group.label }}&nbsp;</span>
                         <b-badge v-if="!group.key" class="new-badge" variant="info" pill>
                           Neu!

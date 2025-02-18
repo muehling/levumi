@@ -69,13 +69,16 @@ export const encryptKey = text => {
   return sjcl.encrypt(sessionStorage.getItem('login'), text)
 }
 
-export const recodeKeys = newPassword => {
-  const store = useGlobalStore()
-  // decrypt keys with current password
-  const oldPassword = sessionStorage.getItem('login')
-  const newKeys = Object.entries(store.shareKeys).reduce((acc, k) => {
+export const recodeKeys = (newPassword, oldPassword, shareKeys) => {
+  if (!newPassword) {
+    return { error: 'new password cannot be empty!' }
+  }
+
+  const oldPw = oldPassword || sessionStorage.getItem('login')
+
+  const newKeys = Object.entries(shareKeys).reduce((acc, k) => {
     if (k[1]) {
-      acc[k[0]] = decryptWithKey(k[1], oldPassword)
+      acc[k[0]] = decryptWithKey(k[1], oldPw)
     }
     return acc
   }, {})

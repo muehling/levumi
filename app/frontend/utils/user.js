@@ -1,5 +1,8 @@
-import isArray from 'lodash/isArray'
+import { ajax } from './ajax'
+import { encryptWithKey, recodeKeys, decryptWithKey } from 'src/utils/encryption'
 import { useGlobalStore } from '../store/store'
+import apiRoutes from 'src/vue/routes/api-routes'
+import isArray from 'lodash/isArray'
 
 export const isAdmin = () => {
   const gs = useGlobalStore()
@@ -46,4 +49,41 @@ export const checkUserSettings = (config, keyPath) => {
   }
 
   return currentObj
+}
+
+export const decryptOrAddMasterkey = async (res, password) => {
+  let masterkey = res.data.masterkey
+  if (!masterkey) {
+    masterkey = Math.random()
+      .toString(36)
+      .replace(/[^a-z]+/g, '')
+      .substring(0, 6)
+
+    sessionStorage.setItem('login', masterkey)
+    await recodeGroupKeysWithMasterkey(res.data.id, masterkey, password, res.data.shares)
+  } else {
+    const decryptedKey = decryptWithKey(masterkey, password)
+    sessionStorage.setItem('login', decryptedKey)
+  }
+}
+
+export const recodeGroupKeysWithMasterkey = async (id, key, pw, shares) => {
+  const encodedKey = encryptWithKey(key, pw)
+  const recodedShares = recodeKeys(key, pw, shares)
+
+  if (recodedShares.error) {
+    console.log('error.', recodedShares)
+
+    return
+  }
+
+  const data = { user: { masterkey: encodedKey }, keys: JSON.stringify(recodedShares) }
+  const res = await ajax({
+    ...apiRoutes.users.update(id),
+    data,
+  })
+
+  if (res.status !== 200) {
+    console.warn('error recoding share keys')
+  }
 }
