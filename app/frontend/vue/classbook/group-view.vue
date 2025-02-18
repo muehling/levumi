@@ -264,7 +264,7 @@
       },
       async ariseOfDemoStudents() {
         // encoding will fail if password was reset by admins
-        const encodedNames = ['Baltazhar','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
+        const encodedNames = ['Gustav','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
         const studentData = {group_id:this.group.id,
           student_names: encodedNames
         }
@@ -275,9 +275,9 @@
           method:'POST',
           data:studentData
         })
-        const data = res.data
-        if (data && res.status === 200) {
-          this.update(data)
+        if (res.status === 200) {
+          window.location.reload()
+          
         }
       },
     },
