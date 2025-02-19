@@ -47,19 +47,6 @@
                       </template>
                       <group-view :groups="globalStore.groups" :group="group" />
                     </b-tab>
-                    <b-tab
-                      v-if="permissions.createGroup"
-                      key="new_group"
-                      lazy
-                      @click="handleNavigate('neu')">
-                      <template #title>
-                        <i
-                          id="intro_cb_2"
-                          class="fa-solid fa-shower fa-lg"
-                          title="Demo Klasse anlegen"></i>
-                      </template>
-                      <group-form :group="{}"></group-form>
-                    </b-tab>
                     <!-- <b-tab
                       v-for="transferRequest in transferRequests"
                       :key="transferRequest.id"

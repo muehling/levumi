@@ -24,15 +24,28 @@
             Zur Diagnostik
           </b-button>
           <b-button
-            v-if="group.demo"
+            v-if="group.demo && !isAgeOfDemoStudents"
             id="intro_cb_3"
             size="sm"
             class="me-2"
             variant="outline-secondary"
             style="margin: 0.5%"
+            :disabled="isMessingWithDemoStudents"
             @click="ariseOfDemoStudents">
-            <i class="fa-solid fa-shower fa-lg"></i>
-            Demo Daten anlegen
+            <i class="fa-solid fa-hammer fa-lg"></i>
+            Demo Daten anlegen <i v-if="isMessingWithDemoStudents" class="fas fa-spinner fa-spin"></i>
+          </b-button>
+          <b-button
+            v-if="group.demo && isAgeOfDemoStudents"
+            id="intro_cb_3"
+            size="sm"
+            class="me-2"
+            variant="outline-danger"
+            style="margin: 0.5%"
+            :disabled="isMessingWithDemoStudents"
+            @click="downfallOfDemoStudents">
+            <i class="fa-solid fa-hammer fa-lg"></i>
+            Demo Daten entfernen <i v-if="isMessingWithDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
         </div>
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
@@ -132,7 +145,10 @@
       return { globalStore }
     },
     data() {
-      return { currentNav: 'general' }
+      return { currentNav: 'general',
+        isMessingWithDemoStudents: false,
+        isAgeOfDemoStudents: false
+      }
     },
     computed: {
       actionCardTitle() {
@@ -263,23 +279,38 @@
         }
       },
       async ariseOfDemoStudents() {
+        this.isMessingWithDemoStudents = true
         // encoding will fail if password was reset by admins
         const encodedNames = ['Gustav','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
         const studentData = {group_id:this.group.id,
           student_names: encodedNames
         }
-        console.log(studentData)
-        
         const res = await ajax({
           url: `/add_demo_data`,
           method:'POST',
           data:studentData
         })
         if (res.status === 200) {
-          window.location.reload()
+          await this.globalStore.fetchGroups()
+          this.isAgeOfDemoStudents=true
+          this.isMessingWithDemoStudents = false
           
         }
       },
+      async downfallOfDemoStudents(){
+        this.isMessingWithDemoStudents = true
+        const groupId = this.group.id
+        const res = await ajax({
+          url: `/delete_demo_data`,
+          method:'POST',
+          data:groupId
+        })
+        if (res.status === 200) {
+          await this.globalStore.fetchGroups()
+          this.isAgeOfDemoStudents=false
+          this.isMessingWithDemoStudents = false
+        }
+      }
     },
   }
 </script>

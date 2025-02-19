@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_11_17_080027) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_19_090649) do
   create_table "active_storage_attachments", charset: "utf8mb3", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -198,6 +198,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_11_17_080027) do
     t.json "settings"
     t.datetime "created_at", precision: nil, null: false
     t.datetime "updated_at", precision: nil, null: false
+    t.boolean "is_demo"
     t.index ["group_id"], name: "index_students_on_group_id"
   end
 

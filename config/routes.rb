@@ -89,7 +89,8 @@ Rails.application.routes.draw do
   post '/students/move_students', to: 'students#move_students'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
-  post '/add_demo_data', to: 'users#add_demo_data'
+  post '/add_demo_data', to: 'groups#add_demo_data'
+  post '/delete_demo_data', to: 'groups#delete_demo_data'
 
   #Reguläres REST-Routing
   resources :users
