@@ -355,7 +355,8 @@ class Test < ApplicationRecord
   end
 
   def quartiles
-    duration = self.archive ? 2.years : 7.days
+    #duration = self.archive ? 2.years : 7.days
+    duration = self.archive ? 2.years : 2.seconds
     Rails
       .cache
       .fetch("#{self.shorthand}/#{self.version}_quartiles", expires_in: duration) do
