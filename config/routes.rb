@@ -75,6 +75,7 @@ Rails.application.routes.draw do
   get '/registration_error', to: 'application#redirect_to_registration_error'
   get '/results/start_demo/:test_id', to: 'results#start_demo'
   get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
+  get '/support_messages/search', to: 'support_messages#search'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   get '/tests/info_attachments/:id', to: 'tests#get_test_info_attachments' # special case: only used by a certain view in analysis-view.vue
   get '/tests/info', to: 'tests#get_tests_data'
@@ -84,13 +85,13 @@ Rails.application.routes.draw do
   get '/users/page/:page_number', to: 'users#index_paginated'
   get '/users/search', to: 'users#search'
   get '/users/statistics', to: 'users#statistics'
+  post '/add_demo_data', to: 'groups#add_demo_data'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
+  post '/delete_demo_data', to: 'groups#delete_demo_data'
   post '/renew_login', to: 'application#renew_login'
   post '/students/move_students', to: 'students#move_students'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
-  post '/add_demo_data', to: 'groups#add_demo_data'
-  post '/delete_demo_data', to: 'groups#delete_demo_data'
 
   #Reguläres REST-Routing
   resources :users
