@@ -24,28 +24,28 @@
             Zur Diagnostik
           </b-button>
           <b-button
-            v-if="group.demo && !isAgeOfDemoStudents"
+            v-if="group.demo && !group.has_demo_students"
             id="intro_cb_3"
             size="sm"
             class="me-2"
             variant="outline-secondary"
             style="margin: 0.5%"
-            :disabled="isMessingWithDemoStudents"
+            :disabled="isWorkingOnDemoStudents"
             @click="ariseOfDemoStudents">
             <i class="fa-solid fa-hammer fa-lg"></i>
-            Demo Daten anlegen <i v-if="isMessingWithDemoStudents" class="fas fa-spinner fa-spin"></i>
+            Demo Daten anlegen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
           <b-button
-            v-if="group.demo && isAgeOfDemoStudents"
+            v-if="group.demo && group.has_demo_students"
             id="intro_cb_3"
             size="sm"
             class="me-2"
             variant="outline-danger"
             style="margin: 0.5%"
-            :disabled="isMessingWithDemoStudents"
+            :disabled="isWorkingOnDemoStudents"
             @click="downfallOfDemoStudents">
             <i class="fa-solid fa-hammer fa-lg"></i>
-            Demo Daten entfernen <i v-if="isMessingWithDemoStudents" class="fas fa-spinner fa-spin"></i>
+            Demo Daten entfernen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
         </div>
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
@@ -146,8 +146,7 @@
     },
     data() {
       return { currentNav: 'general',
-        isMessingWithDemoStudents: false,
-        isAgeOfDemoStudents: false
+        isWorkingOnDemoStudents: false,
       }
     },
     computed: {
@@ -279,7 +278,7 @@
         }
       },
       async ariseOfDemoStudents() {
-        this.isMessingWithDemoStudents = true
+        this.isWorkingOnDemoStudents = true
         // encoding will fail if password was reset by admins
         const encodedNames = ['Gustav','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
         const studentData = {group_id:this.group.id,
@@ -292,13 +291,12 @@
         })
         if (res.status === 200) {
           await this.globalStore.fetchGroups()
-          this.isAgeOfDemoStudents=true
-          this.isMessingWithDemoStudents = false
+          this.isWorkingOnDemoStudents = false
           
         }
       },
       async downfallOfDemoStudents(){
-        this.isMessingWithDemoStudents = true
+        this.isWorkingOnDemoStudents = true
         const groupId = this.group.id
         const res = await ajax({
           url: `/delete_demo_data`,
@@ -307,8 +305,7 @@
         })
         if (res.status === 200) {
           await this.globalStore.fetchGroups()
-          this.isAgeOfDemoStudents=false
-          this.isMessingWithDemoStudents = false
+          this.isWorkingOnDemoStudents = false
         }
       }
     },
