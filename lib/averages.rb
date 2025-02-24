@@ -60,7 +60,21 @@ module Averages
         .where(assessment_id: assessment_ids)
         .where('created_at > ?', previous_results[:timestamp])
 
+    after_db = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails
+      .logger.info "Read from DB #{after_db - after_cache}, number of read results #{results.count}"
+
     data = self.get_numeric_view_data(results) + previous_results[:values]
+
+    return { q1: 0, q3: 0, count: 0 } if data.count < 100
+
+    after_view = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails.logger.info "Get numeric view #{after_view - after_db}"
+
+    sorted_data = data.sort
+
+    after_sort = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails.logger.info "Sort #{after_sort - after_view}"
 
     Rails.cache.write(
       "#{test.shorthand}/#{test.version}_numeric_results",
@@ -77,8 +91,15 @@ module Averages
     lower_half = sorted_data[0...mid]
     upper_half = n.odd? ? sorted_data[mid + 1..] : sorted_data[mid..]
 
+    Rails.logger.info sorted_data
+    Rails.logger.info lower_half
+    Rails.logger.info upper_half
+
     q1 = self.median(lower_half)
     q3 = self.median(upper_half)
+
+    end_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails.logger.info "All in all #{end_time - start_time}"
 
     { q1: q1, q3: q3, count: data.count }
   end
