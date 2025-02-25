@@ -38,7 +38,8 @@ module Averages
       r = results[0]
       key, value = r['views'].find { |k, v| v.is_a?(Numeric) }
       results.each do |result|
-        data += [value] if !value.nil? # might be the case for some tests
+        v = result['views'][key]
+        data += [v] if !v.nil? # might be the case for some tests
       end
     end
     data
