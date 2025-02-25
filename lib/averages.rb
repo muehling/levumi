@@ -46,6 +46,8 @@ module Averages
     test = Test.find(test_id)
     assessment_ids = test.assessments.pluck(:id)
 
+    start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails.logger.info "Get quartiles for #{test.shorthand}/#{test.version}"
     previous_results =
       Rails
         .cache
@@ -54,6 +56,10 @@ module Averages
           data = self.get_numeric_view_data(results)
           { values: data, timestamp: Time.now }
         end
+
+    after_cache = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails
+      .logger.info "Read from cache #{after_cache - start_time}, number of read results #{previous_results[:values].count}"
 
     results =
       Result
