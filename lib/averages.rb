@@ -34,10 +34,12 @@ module Averages
 
   def self.get_numeric_view_data(results)
     data = []
-    results.each do |result|
-      d = result['views']
-      key, value = d.find { |k, v| v.is_a?(Numeric) } # get first view with a single numeric value
-      data += [value] if !value.nil? # might be the case for some tests
+    if !results.empty?
+      r = results[0]
+      key, value = r['views'].find { |k, v| v.is_a?(Numeric) }
+      results.each do |result|
+        data += [value] if !value.nil? # might be the case for some tests
+      end
     end
     data
   end
@@ -97,9 +99,9 @@ module Averages
     lower_half = sorted_data[0...mid]
     upper_half = n.odd? ? sorted_data[mid + 1..] : sorted_data[mid..]
 
-    Rails.logger.info sorted_data
-    Rails.logger.info lower_half
-    Rails.logger.info upper_half
+    # Rails.logger.info sorted_data
+    # Rails.logger.info lower_half
+    # Rails.logger.info upper_half
 
     q1 = self.median(lower_half)
     q3 = self.median(upper_half)
