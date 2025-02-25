@@ -39,7 +39,7 @@ module Averages
       key, value = r['views'].find { |k, v| v.is_a?(Numeric) }
       results.each do |result|
         v = result['views'][key]
-        data += [v] if !v.nil? # might be the case for some tests
+        data += [v] if v.is_a?(Numeric) # might be the case for some tests, e. g. 0 and "NA"
       end
     end
     data
@@ -50,6 +50,7 @@ module Averages
     assessment_ids = test.assessments.pluck(:id)
 
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    Rails.logger.info '##################################'
     Rails.logger.info "Get quartiles for #{test.shorthand}/#{test.version}"
     previous_results =
       Rails
