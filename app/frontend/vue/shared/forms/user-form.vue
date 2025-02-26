@@ -244,7 +244,7 @@
             data.user.password = this.password
             data.user.password_confirmation = this.passwordConfirm
             data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
-            data.user.masterkey = encryptWithKey(sessionStorage.getItem('login'), this.password)
+            data.user.masterkey = encryptWithKey(sessionStorage.getItem('mk'), this.password)
           }
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),

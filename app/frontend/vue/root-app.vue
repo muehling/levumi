@@ -176,7 +176,7 @@
         if (path !== '/testen' && path !== '/testen_login') {
           // Check if login information is present. This may get lost in restored browser sessions,
           // or when a link is opened in a new tab. In this case, we need to log in again
-          const login = sessionStorage.getItem('login')
+          const login = sessionStorage.getItem('mk')
           if (!login) {
             if (!this.globalStore.masquerade) {
               await this.sendLogin('')

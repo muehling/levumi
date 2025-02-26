@@ -59,18 +59,25 @@ export const decryptOrAddMasterkey = async (res, password) => {
       .replace(/[^a-z]+/g, '')
       .substring(0, 6)
 
-    sessionStorage.setItem('login', masterkey)
+    sessionStorage.setItem('mk', masterkey)
     await recodeGroupKeysWithMasterkey(res.data.id, masterkey, password, res.data.shares)
   } else {
     const decryptedKey = decryptWithKey(masterkey, password)
-    sessionStorage.setItem('login', decryptedKey)
+    sessionStorage.setItem('mk', decryptedKey)
+    sessionStorage.removeItem('login')
   }
 }
 
 export const recodeGroupKeysWithMasterkey = async (id, key, pw, shares) => {
-  const encodedKey = encryptWithKey(key, pw)
-  const recodedShares = recodeKeys(key, pw, shares)
+  // this needs to be a promise. otherwise the redirect to /diagnostik after login
+  // can occur too early, resulting in improperly recoded keys.
+  const p = new Promise(resolve => {
+    const encodedKey = encryptWithKey(key, pw)
+    const recodedShares = recodeKeys(key, pw, shares)
 
+    resolve({ encodedKey, recodedShares })
+  })
+  const { encodedKey, recodedShares } = await p
   if (recodedShares.error) {
     console.log('error.', recodedShares)
 

@@ -120,7 +120,7 @@
         // refetch global data, so the root app will know about the finished registration
         if (res.status === 200) {
           this.$emit('registration-complete')
-          sessionStorage.setItem('login', masterkey)
+          sessionStorage.setItem('mk', masterkey)
         }
       },
     },

@@ -8,7 +8,7 @@ export const decryptStudentName = (text, alt, group) => {
 
   const store = useGlobalStore()
   try {
-    let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[group])
+    let tempkey = sjcl.decrypt(sessionStorage.getItem('mk'), store.shareKeys[group])
     res = sjcl.decrypt(tempkey, text)
   } catch (e) {
     res = alt
@@ -31,7 +31,7 @@ export const decryptStudentNames = group => {
 //Verschlüsselt einen String mit dem im sessionStorage gespeicherten "Masterkey" und dem Key der Gruppe.
 export const encryptWithMasterKeyAndGroup = (text, groupId) => {
   const store = useGlobalStore()
-  let tempkey = sjcl.decrypt(sessionStorage.getItem('login'), store.shareKeys[groupId])
+  let tempkey = sjcl.decrypt(sessionStorage.getItem('mk'), store.shareKeys[groupId])
   return sjcl.encrypt(tempkey, text)
 }
 
@@ -54,7 +54,7 @@ export const decryptKey = text => {
   }
   let res = ''
   try {
-    res = sjcl.decrypt(sessionStorage.getItem('login'), text)
+    res = sjcl.decrypt(sessionStorage.getItem('mk'), text)
   } catch (e) {
     res = ''
   }
@@ -66,7 +66,7 @@ export const encryptKey = text => {
   if (!text) {
     return null
   }
-  return sjcl.encrypt(sessionStorage.getItem('login'), text)
+  return sjcl.encrypt(sessionStorage.getItem('mk'), text)
 }
 
 export const recodeKeys = (newPassword, oldPassword, shareKeys) => {
@@ -74,7 +74,7 @@ export const recodeKeys = (newPassword, oldPassword, shareKeys) => {
     return { error: 'new password cannot be empty!' }
   }
 
-  const oldPw = oldPassword || sessionStorage.getItem('login')
+  const oldPw = oldPassword || sessionStorage.getItem('mk')
 
   const newKeys = Object.entries(shareKeys).reduce((acc, k) => {
     if (k[1]) {

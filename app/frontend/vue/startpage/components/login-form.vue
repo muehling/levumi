@@ -79,7 +79,7 @@
             break
           case 200:
             if (res.data.is_registered) {
-              decryptOrAddMasterkey(res, this.password)
+              await decryptOrAddMasterkey(res, this.password)
             }
             window.location.replace('/diagnostik')
             break
