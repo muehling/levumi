@@ -74,10 +74,10 @@
             sender: this.globalStore.login.email,
             message: this.contactMessage,
             subject: this.selectedTopic,
+            user_id: this.globalStore.login.id,
             status: 1,
           },
         }
-
         await ajax(apiRoutes.supportMessages.create(data))
 
         this.globalStore.setGenericMessage({
