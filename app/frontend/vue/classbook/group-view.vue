@@ -6,7 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
-          <BAlert v-if="group.demo" :model-value="true" variant="danger">
+          <BAlert v-if="group.demo && !isPrivatUser()" :model-value="true" variant="danger">
             Finger wech davon !
           </BAlert>
           <b-button
@@ -25,25 +25,24 @@
           </b-button>
           <b-button
             v-if="group.demo && !group.has_demo_students"
-            id="intro_cb_3"
             size="sm"
             class="me-2"
             variant="outline-secondary"
             style="margin: 0.5%"
             :disabled="isWorkingOnDemoStudents"
-            @click="ariseOfDemoStudents">
+            @click="createDemoData">
             <i class="fa-solid fa-hammer fa-lg"></i>
             Demo Daten anlegen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
           <b-button
             v-if="group.demo && group.has_demo_students"
-            id="intro_cb_3"
+            
             size="sm"
             class="me-2"
             variant="outline-danger"
             style="margin: 0.5%"
             :disabled="isWorkingOnDemoStudents"
-            @click="downfallOfDemoStudents">
+            @click="deleteDemoData">
             <i class="fa-solid fa-hammer fa-lg"></i>
             Demo Daten entfernen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
@@ -120,6 +119,7 @@
   import TransferStatus from 'src/vue/classbook/transfer-status.vue'
   import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
   import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
+  import { isSingleUser } from 'src/utils/user'
   //import Vue from 'vue'
 
   export default {
@@ -277,29 +277,31 @@
           }
         }
       },
-      async ariseOfDemoStudents() {
+      isPrivatUser(){
+        return isSingleUser()
+      },
+      async createDemoData() {
         this.isWorkingOnDemoStudents = true
         // encoding will fail if password was reset by admins
         const encodedNames = ['Gustav','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
-        const studentData = {group_id:this.group.id,
+        const studentData = {
           student_names: encodedNames
         }
         const res = await ajax({
-          url: `/add_demo_data`,
+          url: `groups/${this.group.id}/add_demo_data`,
           method:'POST',
           data:studentData
         })
         if (res.status === 200) {
-          await this.globalStore.fetchGroups()
-          this.isWorkingOnDemoStudents = false
-          
+          this.globalStore.setGroupsData(res)
         }
+        this.isWorkingOnDemoStudents = false
       },
-      async downfallOfDemoStudents(){
+      async deleteDemoData(){
         this.isWorkingOnDemoStudents = true
         const groupId = this.group.id
         const res = await ajax({
-          url: `/delete_demo_data`,
+          url: `groups/${this.group.id}/delete_demo_data`,
           method:'POST',
           data:groupId
         })

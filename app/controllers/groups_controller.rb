@@ -4,13 +4,7 @@ class GroupsController < ApplicationController
 
   #GET /groups
   def index
-    shares_object = {}
-    @login.group_shares.map { |c| shares_object[c.group_id] = c.key }
-    @data = {
-      'groups': @login.get_classbook_info,
-      'single': @login.account_type == 2,
-      'share_keys': shares_object
-    }
+    group_index_data
     render json: @data
   end
 
@@ -90,7 +84,7 @@ class GroupsController < ApplicationController
     end
 
     def delete_demo_data
-      Student.where(group: params['_json'], is_demo: true).each { |student| student.destroy }
+      Student.where(group: params['_json'], is_demo: true).destroy_all
       head :ok
     end
 
@@ -101,124 +95,31 @@ class GroupsController < ApplicationController
         student = Student.create!(name: student_name, group_id: params[:group_id], is_demo: true)
         students.push(student.id)
       end
-      assessment = Assessment.find_or_create_by(test_id: 328, group_id: params[:group_id])
+      test_id = Test.where(shorthand: 'ADD1').order(version: :desc).first.id
+      assessment = Assessment.find_or_create_by(test_id: test_id, group_id: params[:group_id])
       assessment_id = assessment.id
-      test_date = '2025-02-18'
-      id =
-        Result.create(
-          student_id: students[0],
-          assessment_id: assessment_id,
-          views: views_one,
-          report: report_one,
-          data: data_one,
-          test_date: test_date
-        )
-      test_date = '2025-01-26'
-      id =
-        Result.new(
-          student_id: students[1],
-          assessment_id: assessment_id,
-          views: views_one,
-          report: report_one,
-          data: data_one,
-          test_date: test_date
-        )
-      id.save(validate: false)
+      views = [views_one, views_two, views_three, views_four, views_five, views_six]
+      reports = [report_one, report_two, report_three, report_four, report_five, report_six]
+      datas = [data_one, data_two, data_three, data_four, data_five, data_six]
+      test_dates = [7.days.ago, 14.days.ago, 21.days.ago, 28.days.ago, 35.days.ago]
 
-      test_date = '2025-02-16'
-      id =
-        Result.new(
-          student_id: students[1],
-          assessment_id: assessment_id,
-          views: views_two,
-          report: report_two,
-          data: data_two,
-          test_date: test_date
-        )
-      id.save(validate: false)
-      test_date = '2025-02-16'
-      id =
-        Result.new(
-          student_id: students[0],
-          assessment_id: assessment_id,
-          views: views_three,
-          report: report_three,
-          data: data_three,
-          test_date: test_date
-        )
-      id.save(validate: false)
-      test_date = '2025-02-09'
-      id =
-        Result.new(
-          student_id: students[0],
-          assessment_id: assessment_id,
-          views: views_four,
-          report: report_four,
-          data: data_four,
-          test_date: test_date
-        )
-      id.save(validate: false)
-
-      test_date = '2025-02-02'
-      id =
-        Result.new(
-          student_id: students[1],
-          assessment_id: assessment_id,
-          views: views_four,
-          report: report_four,
-          data: data_four,
-          test_date: test_date
-        )
-      id.save(validate: false)
-
-      test_date = '2025-02-02'
-      id =
-        Result.new(
-          student_id: students[0],
-          assessment_id: assessment_id,
-          views: views_five,
-          report: report_five,
-          data: data_five,
-          test_date: test_date
-        )
-      id.save(validate: false)
-
-      test_date = '2025-02-09'
-      id =
-        Result.new(
-          student_id: students[1],
-          assessment_id: assessment_id,
-          views: views_five,
-          report: report_five,
-          data: data_five,
-          test_date: test_date
-        )
-      id.save(validate: false)
-
-      test_date = '2025-01-26'
-      id =
-        Result.new(
-          student_id: students[0],
-          assessment_id: assessment_id,
-          views: views_six,
-          report: report_six,
-          data: data_six,
-          test_date: test_date
-        )
-      id.save(validate: false)
-
-      test_date = '2025-02-18'
-      id =
-        Result.new(
-          student_id: students[1],
-          assessment_id: assessment_id,
-          views: views_six,
-          report: report_six,
-          data: data_six,
-          test_date: test_date
-        )
-      id.save(validate: false)
-      head :ok
+      students.each do |student|
+        randomized_dates = test_dates.shuffle
+        views.each_with_index do |view, index|
+          result =
+            Result.new(
+              student_id: student,
+              assessment_id: assessment_id,
+              views: view,
+              report: reports[index],
+              data: datas[index],
+              test_date: randomized_dates[index]
+            )
+          result.save(validate: false)
+        end
+      end
+      group_index_data
+      render json: @data
     end
   end
 
@@ -234,5 +135,14 @@ class GroupsController < ApplicationController
     params
       .require(:group)
       .permit(:label, :archive, settings: %i[font_family font_size calculator_layout])
+  end
+  def group_index_data
+    shares_object = {}
+    @login.group_shares.each { |c| shares_object[c.group_id] = c.key }
+    @data = {
+      'groups': @login.get_classbook_info,
+      'single': @login.account_type == 2,
+      'share_keys': shares_object
+    }
   end
 end
