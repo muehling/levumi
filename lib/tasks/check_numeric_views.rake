@@ -21,12 +21,6 @@ task 'check_numeric_views' => :environment do
 
       a = Assessment.find(result[:assessment_id])
       t = Test.find (a.test_id)
-
-      puts '###################################'
-      puts "#{result[:id]}, #{result[:assessment_id]}"
-      puts view_names
-      puts t.shorthand
     end
   end
-  puts data
 end

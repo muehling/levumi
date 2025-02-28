@@ -1,6 +1,5 @@
 desc 'Recover deleted Assessments of an user'
 task 'export_backup' => :environment do |_, args|
-  puts 'test'
   puts 'Please enter the mailadress of the user:'
 
   #awaiting input
