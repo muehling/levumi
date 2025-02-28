@@ -117,7 +117,7 @@
               size="sm"
               :variant="`${targetControlVisible ? 'outline-success' : 'outline-primary'}`"
               @click="toggleCollapse('target_collapse')">
-              Ziele und Trends
+              Diagrammeinstellungen
               <i
                 :class="`when-closed fas ${
                   targetControlVisible ? 'fa-caret-down' : 'fa-caret-up'
@@ -180,7 +180,7 @@
               <th v-for="col in columns" :key="col">{{ col }}</th>
             </tr>
           </thead>
-          <tbody>            
+          <tbody>
             <tr v-for="entry in table_data" :key="entry.week">
               <td>{{ formatDate(entry.week) }}</td>
               <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
