@@ -180,7 +180,7 @@
               <th v-for="col in columns" :key="col">{{ col }}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody>            
             <tr v-for="entry in table_data" :key="entry.week">
               <td>{{ formatDate(entry.week) }}</td>
               <td v-for="col in columns" :key="col"><span v-html="entry[col]"></span></td>
@@ -304,8 +304,8 @@
       },
 
       simpleTableFields() {
-        const a = this.weeks.map(week => ({ key: printDate(week) }))
-        a.unshift({ key: 'name' })
+        const a = this.weeks.map(week => ({ key: printDate(week), sortable: true }))
+        a.unshift({ key: 'name', sortable: true })
         return a
       },
       annotations() {
