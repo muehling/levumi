@@ -2,7 +2,7 @@
   <b-modal id="test-edit-dialog" ref="testEditDialog" title="Test bearbeiten" hide-footer>
     <div>
       <b-form>
-        <b-form-group label="Test-Type">
+        <b-form-group label="Test-Typ">
           <b-dropdown
             id="testTypeSelect"
             :text="selectedTestType.name"
@@ -32,6 +32,11 @@
             rows="3"
             max-rows="6"></b-form-textarea>
         </b-form-group>
+        <b-form-group>
+          <b-form-checkbox id="quartileCheckbox" v-model="allowQuartiles" class="mb-2" switch>
+            Quartilanzeige verfügbar?
+          </b-form-checkbox>
+        </b-form-group>
         <div class="d-flex justify-content-end">
           <b-button class="m-1" variant="outline-primary" @click="cancel">Abbrechen</b-button>
           <b-button class="m-1" variant="outline-success" @click="saveChanges">
@@ -58,7 +63,13 @@
       return { globalStore }
     },
     data() {
-      return { description: '', shortDescription: '', testId: undefined, selectedTestType: {} }
+      return {
+        description: '',
+        shortDescription: '',
+        testId: undefined,
+        selectedTestType: {},
+        allowQuartiles: false,
+      }
     },
     computed: {
       allTestTypes() {
@@ -69,12 +80,13 @@
       },
     },
     methods: {
-      open({ description, shortDescription, id, testTypeId }) {
+      open({ description, shortDescription, id, testTypeId, allowQuartiles }) {
         this.description = description
         this.shortDescription = shortDescription
         this.testId = id
         this.selectedTestType =
           this.allTestTypes.find(tt => tt.id === testTypeId) || this.allTestTypes[0]
+        this.allowQuartiles = allowQuartiles
 
         this.$refs.testEditDialog.show()
       },
@@ -91,6 +103,7 @@
           test: {
             description: { full: this.description, short: this.shortDescription },
             test_type_id: this.selectedTestType.id,
+            allow_quartiles: this.allowQuartiles,
           },
         }
         const res = await ajax({ ...apiRoutes.tests.update(this.testId), data })

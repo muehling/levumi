@@ -302,7 +302,13 @@ const commonOptions = () => ({
     min: 0,
     forceNiceScale: true,
     labels: {
-      formatter: val => (typeof val === 'number' ? val?.toFixed(2) : val),
+      formatter: val => {
+        if (typeof val === 'number') {
+          return val > 0 ? val.toFixed(0) : val.toFixed(2)
+        } else {
+          return val
+        }
+      },
     },
   },
 })
@@ -556,6 +562,35 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
       color: '#00000000',
     },
   },
+})
+
+export const testAverageRangeAnnotationOptions = (targetY, y2 = null) => ({
+  id: 'test-average-range-annotation',
+  y: targetY,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: '#444',
+  opacity: 0.125,
+  label: {
+    borderColor: '#00000000',
+    borderWidth: 0,
+    text: undefined,
+    style: {
+      background: '#00000000',
+      color: '#00000000',
+    },
+  },
+})
+
+export const quartileOptions = (y1, y2, color) => ({
+  id: `quartile-annotation-${color}`,
+  y: y1,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: color,
+  opacity: 0.125,
 })
 
 export function quantile(arr, q) {

@@ -100,9 +100,7 @@ class TestsController < ApplicationController
   end
 
   def get_items
-    if @test
-      render json: @test.items
-    end
+    render json: @test.items if @test
   end
 
   def check_upload_version
@@ -134,7 +132,7 @@ class TestsController < ApplicationController
 
   #Erlaubte Attribute definieren
   def test_attributes
-    params.require(:test).permit(:test_type_id, description: %i[full short])
+    params.require(:test).permit(:test_type_id, :allow_quartiles, description: %i[full short])
   end
 
   #Prüfen ob Nutzer die Berechtigung für Testaktualisierungen hat

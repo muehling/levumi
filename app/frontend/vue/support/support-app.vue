@@ -351,7 +351,7 @@
       async loginAs(message) {
         const user_id = message?.user_id
         if (user_id) {
-          window.open(`/login?user=${user_id}`)
+          window.location.replace(`/login?user=${user_id}`)
         }
       },
     },

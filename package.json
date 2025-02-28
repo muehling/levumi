@@ -47,7 +47,7 @@
     "vite-plugin-commonjs-externals": "^0.1.1",
     "vite-plugin-full-reload": "^1.0.1",
     "vite-plugin-node-polyfills": "^0.22.0",
-    "vite-plugin-ruby": "^5.0.0"
+    "vite-plugin-ruby": "^5.1.0"
   },
   "resolutions": {
     "postcss": "^8.4.31",

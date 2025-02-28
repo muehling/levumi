@@ -45,6 +45,7 @@ class Assessment < ApplicationRecord
     res['annotations'] = self.annotations.order(end: :desc)
     res['targets'] = self.targets
     res['settings'] = self.settings
+    res['test_quartiles'] = self.test.quartiles
     res
   end
 
