@@ -75,9 +75,11 @@ Rails.application.routes.draw do
   get '/registration_error', to: 'application#redirect_to_registration_error'
   get '/results/start_demo/:test_id', to: 'results#start_demo'
   get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
+  get '/support_messages/search', to: 'support_messages#search'
   get '/tests_meta', to: 'tests#get_tests_meta' # returns metadata for all tests
   get '/tests/info_attachments/:id', to: 'tests#get_test_info_attachments' # special case: only used by a certain view in analysis-view.vue
   get '/tests/info', to: 'tests#get_tests_data'
+  get '/tests/invalidate_cache', to: 'tests#invalidate_cache'
   get '/tests/items/:id', to: 'tests#get_items'
   get '/users/core_data', to: 'users#get_core_data'
   get '/users/get_classbook_info', to: 'users#get_classbook_info'

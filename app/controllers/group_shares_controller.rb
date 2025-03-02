@@ -97,7 +97,6 @@ class GroupSharesController < ApplicationController
 
         # if necessary, delete old share of new owner
         old_share = GroupShare.where(user_id: @login.id, group_id: @share.group_id, owner: false)
-        puts old_share.inspect
         old_share.destroy if !old_share.empty?
       end
       render json: @group.as_hash(@login)
