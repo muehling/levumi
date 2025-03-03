@@ -1,4 +1,6 @@
 class Result < ApplicationRecord
+  include Averages
+
   belongs_to :student
   belongs_to :assessment
   validate :similar_within_last_ten_seconds # block posting of results for 10 seconds (some tests still do that)

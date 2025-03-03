@@ -17,4 +17,5 @@ json.tests @all_tests.map do |test|
   json.updated_by test.updated_by
   json.test_type_id test.test_type_id
   json.responsible test.responsible
+  json.allow_quartiles test.allow_quartiles
 end

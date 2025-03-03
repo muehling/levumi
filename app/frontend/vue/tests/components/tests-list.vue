@@ -177,6 +177,7 @@
           shortDescription: t.description.short,
           testTypeId: t.test_type_id,
           id,
+          allowQuartiles: t.allow_quartiles,
         })
       },
       async deleteTest(id) {
