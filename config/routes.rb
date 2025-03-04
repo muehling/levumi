@@ -86,9 +86,7 @@ Rails.application.routes.draw do
   get '/users/page/:page_number', to: 'users#index_paginated'
   get '/users/search', to: 'users#search'
   get '/users/statistics', to: 'users#statistics'
-  post '/add_demo_data', to: 'groups#add_demo_data'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
-  post '/delete_demo_data', to: 'groups#delete_demo_data'
   post '/groups/:group_id/add_demo_data', to: 'groups#add_demo_data'
   post '/groups/:group_id/delete_demo_data', to: 'groups#delete_demo_data'
   post '/renew_login', to: 'application#renew_login'

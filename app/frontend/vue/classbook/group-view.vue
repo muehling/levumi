@@ -6,9 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
-          <BAlert v-if="group.demo && !isPrivatUser()" :model-value="true" variant="danger">
-            Finger wech davon !
-          </BAlert>
+          <demo-group-hints :group="group" source="classbook" />
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
@@ -22,29 +20,6 @@
           <b-button v-if="group.key" variant="outline-secondary" size="sm" @click="gotoClassbook">
             <i class="fas fa-chalkboard-user"></i>
             Zur Diagnostik
-          </b-button>
-          <b-button
-            v-if="group.demo && !group.has_demo_students"
-            size="sm"
-            class="me-2"
-            variant="outline-secondary"
-            style="margin: 0.5%"
-            :disabled="isWorkingOnDemoStudents"
-            @click="createDemoData">
-            <i class="fa-solid fa-hammer fa-lg"></i>
-            Demo Daten anlegen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
-          </b-button>
-          <b-button
-            v-if="group.demo && group.has_demo_students"
-            
-            size="sm"
-            class="me-2"
-            variant="outline-danger"
-            style="margin: 0.5%"
-            :disabled="isWorkingOnDemoStudents"
-            @click="deleteDemoData">
-            <i class="fa-solid fa-hammer fa-lg"></i>
-            Demo Daten entfernen <i v-if="isWorkingOnDemoStudents" class="fas fa-spinner fa-spin"></i>
           </b-button>
         </div>
         <student-list v-if="group.key != null" class="mt-4" :group="group" :read-only="readOnly" />
@@ -110,31 +85,30 @@
   import { useGlobalStore } from 'src/store/store'
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import DemoGroupHints from '../shared/demo-group/demo-group-hints.vue'
   import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
   import ShareForm from './group-view-actions/share-form.vue'
   import SharesDisplay from './shares-display.vue'
   import ShareStatus from './share-status.vue'
   import StudentList from './group-view-list/student-list.vue'
-  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
   import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
-  import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
-  import { isSingleUser } from 'src/utils/user'
-  //import Vue from 'vue'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
 
   export default {
     name: 'GroupView',
     components: {
       ClassbookActions,
       ConfirmDialog,
+      DemoGroupHints,
       GroupViewActionsNav,
       MoveStudentDialog,
       ShareForm,
       SharesDisplay,
       ShareStatus,
       StudentList,
-      TransferStatus,
       TransferGroup,
+      TransferStatus,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
@@ -145,9 +119,7 @@
       return { globalStore }
     },
     data() {
-      return { currentNav: 'general',
-        isWorkingOnDemoStudents: false,
-      }
+      return { currentNav: 'general', isWorkingOnDemoStudents: false }
     },
     computed: {
       actionCardTitle() {
@@ -178,6 +150,7 @@
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
       },
+
       transferRequests() {
         return this.group.shares?.filter(share => share.owner)
       },
@@ -277,39 +250,6 @@
           }
         }
       },
-      isPrivatUser(){
-        return isSingleUser()
-      },
-      async createDemoData() {
-        this.isWorkingOnDemoStudents = true
-        // encoding will fail if password was reset by admins
-        const encodedNames = ['Gustav','Johannita','Angelika'].map(name => encodeURIComponent(encryptWithMasterKeyAndGroup(name, this.group.id)))
-        const studentData = {
-          student_names: encodedNames
-        }
-        const res = await ajax({
-          url: `groups/${this.group.id}/add_demo_data`,
-          method:'POST',
-          data:studentData
-        })
-        if (res.status === 200) {
-          this.globalStore.setGroupsData(res)
-        }
-        this.isWorkingOnDemoStudents = false
-      },
-      async deleteDemoData(){
-        this.isWorkingOnDemoStudents = true
-        const groupId = this.group.id
-        const res = await ajax({
-          url: `groups/${this.group.id}/delete_demo_data`,
-          method:'POST',
-          data:groupId
-        })
-        if (res.status === 200) {
-          await this.globalStore.fetchGroups()
-          this.isWorkingOnDemoStudents = false
-        }
-      }
     },
   }
 </script>
