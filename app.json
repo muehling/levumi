@@ -5,5 +5,11 @@
       "predeploy": "bundle exec rake assets:precompile",
       "postdeploy": "bundle exec rake db:migrate"
     }
-  }
+  },
+  "cron": [
+    {
+      "command": "rake update_quartiles",
+      "schedule": "@weekly"
+    }
+  ]
 }
