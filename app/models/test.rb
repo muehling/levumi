@@ -367,7 +367,7 @@ class Test < ApplicationRecord
   def update_quartiles
     Rails
       .cache
-      .write("#{self.shorthand}/#{self.version}_numeric_results", expires_in: 2.weeks) do
+      .write("#{self.shorthand}/#{self.version}_quartiles", expires_in: 2.weeks) do
         Averages.calculate_quartiles(self.id)
       end
   end
