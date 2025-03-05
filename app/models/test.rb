@@ -365,11 +365,8 @@ class Test < ApplicationRecord
   end
 
   def update_quartiles
-    Rails
-      .cache
-      .write("#{self.shorthand}/#{self.version}_numeric_results", expires_in: 2.weeks) do
-        Averages.calculate_quartiles(self.id)
-      end
+    data = Averages.calculate_quartiles(self.id)
+    Rails.cache.write("#{self.shorthand}/#{self.version}_quartiles", data, expires_in: 2.weeks)
   end
 
   #Alle Ergebnisse eines Tests als CSV-Export
