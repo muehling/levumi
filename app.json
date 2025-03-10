@@ -9,7 +9,7 @@
   "cron": [
     {
       "command": "rake update_quartiles",
-      "schedule": "@weekly"
+      "schedule": "@monthly"
     }
   ]
 }

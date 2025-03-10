@@ -355,7 +355,7 @@ class Test < ApplicationRecord
   end
 
   def quartiles
-    duration = self.archive ? 2.years : 2.weeks
+    duration = self.archive ? 15.years : 6.weeks
 
     Rails
       .cache
