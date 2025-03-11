@@ -15,7 +15,8 @@ class ResultsController < ApplicationController
         @assessment =
           Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first #Assessment aus student_id und test_id bestimmen
         @last_result = @student.results.where(assessment_id: @assessment).order(:test_week).last #Letztes Ergebnis aus der Datenbank
-        if @test.student_test
+        if @test.student_test &&
+             (@last_result.nil? || @last_result.test_date < Time.current.beginning_of_week)
           #Reicht das immer aus?
           @redirect = '/testen'
         else
@@ -25,7 +26,11 @@ class ResultsController < ApplicationController
             @redirect = "/diagnostik/#{@student.group.id}/testdetails/#{@test.id}"
           end
         end
-        render 'edit', layout: 'testing'
+        if @last_result.nil? || @last_result.created_at < Time.current.beginning_of_week
+          render 'edit', layout: 'testing'
+        else
+          @redirect = '/nummerderwoechentlichentestswurdeueberschritten'
+        end
       end
     else
       head 304
@@ -44,17 +49,30 @@ class ResultsController < ApplicationController
   #POST /students/:student_id/results
   def create
     if params.has_key?(:assessment_id)
-      @result = @student.results.build(assessment_id: params[:assessment_id])
-      @result.views = JSON.parse(params[:views])
-      @result.report = JSON.parse(params[:report])
-      @result.data = JSON.parse(params[:data])
-      @result.test_date = DateTime.now
-
-      if @result.save
-        head :ok
-        return
+      @last_result =
+        @student.results.where(assessment_id: params[:assessment_id]).order(:test_week).last #Letztes Ergebnis aus der Datenbank
+      if !@last_result.nil?
+        puts '################################################'
+        puts @last_result.inspect
+        puts @last_result.test_date
+        puts Time.current.beginning_of_week
+        puts @last_result.test_date < Time.current.beginning_of_week
+        puts @last_result.test_week == Time.current.beginning_of_week
+      end
+      if !@last_result.nil? && @last_result.test_week == Time.current.beginning_of_week
+        head 404
       else
-        render json: @result.errors, status: :unprocessable_entity
+        @result = @student.results.build(assessment_id: params[:assessment_id])
+        @result.views = JSON.parse(params[:views])
+        @result.report = JSON.parse(params[:report])
+        @result.data = JSON.parse(params[:data])
+        @result.test_date = DateTime.now
+        if @result.save
+          head :ok
+          return
+        else
+          render json: @result.errors, status: :unprocessable_entity
+        end
       end
     end
   end
