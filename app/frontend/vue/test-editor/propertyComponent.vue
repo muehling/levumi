@@ -153,6 +153,19 @@
           help-text="Text, der als negatives Feedback dargestellt wird. ### kann als Platzhalter für die korrekte Antwort verwendet werden." />
       </b-form-group>
       <b-form-group
+        v-if="showFeedback"
+        label="Aufgabenstellung ausblenden"
+        label-for="hideTaskInFeedback"
+        label-cols="3">
+        <b-form-checkbox
+          id="inputDemoTask"
+          v-model="hideTaskInFeedback"
+          :value="1"
+          :unchecked-value="0" />
+        <context-help
+          help-text="Wenn aktiv, wird die Aufgabenstellung (z. b. '3 + 6 = __' auf der Feedbackseite ausgeblendet." />
+      </b-form-group>
+      <b-form-group
         id="input-group-12"
         label="Beschreibung"
         label-for="inputDescription"
@@ -232,6 +245,7 @@
         showFeedback: false,
         positiveFeedbackText: '',
         negativeFeedbackText: '',
+        hideTaskInFeedback: false,
 
         timeDropdownOptions: [
           { value: null, text: 'Bitte auswählen' },
@@ -332,6 +346,7 @@
           show_feedback: this.showFeedback,
           positive_feedback_text: this.positiveFeedbackText,
           negative_feedback_text: this.negativeFeedbackText,
+          hide_task_in_feedback: this.hideTaskInFeedback,
         }
       },
       shd() {
