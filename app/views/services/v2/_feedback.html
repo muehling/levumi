@@ -3,25 +3,27 @@
     let fontAwesomeClass, text
 
     if (isCorrect) {
+      fontAwesomeClass = 'fas fa-check text-success'
       text = window.config.options?.feedback?.positive
         ? window.config.options?.feedback?.positive
-        : 'Das war richtig!'
-      fontAwesomeClass = 'fas fa-check text-success'
+        : `<span class='${fontAwesomeClass}'></span>&nbsp;<span>Das war richtig!</span>`
     } else {
+      fontAwesomeClass = 'fas fa-x text-danger'
       text = window.config.options?.feedback?.negative
         ? window.config.options?.feedback?.negative
-        : `Das war nicht ganz richtig. Richtig wäre "###" gewesen.`
-
-      fontAwesomeClass = 'fas fa-x text-danger'
+        : `<span class='${fontAwesomeClass}'></span>&nbsp;<span>Das war nicht ganz richtig. Richtig wäre "###" gewesen.</span>`
     }
 
     text = text.replace('###', item.correctAnswer)
     text = text.replace('%%%', item.question)
 
-    const config = [
-      { type: 'icon', iconClass: fontAwesomeClass },
-      { type: 'p', text },
-    ]
+    const displayQuestion = item.question.replace(/\(.+\)/, '_')
+
+    const config = []
+    if (window.config.options?.feedback?.show_task) {
+      config.push({ type: 'p', text: displayQuestion }, { type: 'hr' })
+    }
+    config.push({ type: 'p', text })
 
     const el = window.useContentPage({
       id: 'feedback-page',
