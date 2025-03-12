@@ -20,7 +20,7 @@
     const displayQuestion = item.question.replace(/\(.+\)/, '_')
 
     const config = []
-    if (window.config.options?.feedback?.show_task) {
+    if (!window.config.options?.feedback?.hide_task) {
       config.push({ type: 'p', text: displayQuestion }, { type: 'hr' })
     }
     config.push({ type: 'p', text })
