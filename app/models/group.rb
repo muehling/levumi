@@ -27,7 +27,8 @@ class Group < ApplicationRecord
       share_id: group_share.id,
       size: students.size,
       students: students,
-      updated_at: updated_at
+      updated_at: updated_at,
+      has_demo_students: !Student.where(group_id: self.id, is_demo: true).empty?
     }
     data['belongs_to'] = group_share.group.owner.email
     if group_share.owner
