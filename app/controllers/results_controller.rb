@@ -28,8 +28,6 @@ class ResultsController < ApplicationController
         end
         if @last_result.nil? || @last_result.created_at < Time.current.beginning_of_week
           render 'edit', layout: 'testing'
-        else
-          @redirect = '/nummerderwoechentlichentestswurdeueberschritten'
         end
       end
     else
@@ -51,16 +49,8 @@ class ResultsController < ApplicationController
     if params.has_key?(:assessment_id)
       @last_result =
         @student.results.where(assessment_id: params[:assessment_id]).order(:test_week).last #Letztes Ergebnis aus der Datenbank
-      if !@last_result.nil?
-        puts '################################################'
-        puts @last_result.inspect
-        puts @last_result.test_date
-        puts Time.current.beginning_of_week
-        puts @last_result.test_date < Time.current.beginning_of_week
-        puts @last_result.test_week == Time.current.beginning_of_week
-      end
       if !@last_result.nil? && @last_result.test_week == Time.current.beginning_of_week
-        head 404
+        head 409
       else
         @result = @student.results.build(assessment_id: params[:assessment_id])
         @result.views = JSON.parse(params[:views])
