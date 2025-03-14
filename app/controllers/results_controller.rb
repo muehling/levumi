@@ -29,7 +29,8 @@ class ResultsController < ApplicationController
         if @last_result.nil? || @last_result.created_at < Time.current.beginning_of_week
           render 'edit', layout: 'testing'
         else
-          head 409
+          @redirect = "/testen_login?login=#{@student.login}"
+          redirect_to @redirect
         end
       end
     else
