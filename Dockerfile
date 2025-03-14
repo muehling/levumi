@@ -10,6 +10,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   build-essential \
   gnupg2 \
   git \
+  nano \
   yarn \
   default-libmysqlclient-dev \ 
   libpq-dev \ 
