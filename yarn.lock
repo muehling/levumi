@@ -2740,7 +2740,7 @@ utrie@^1.0.2:
   dependencies:
     base64-arraybuffer "^1.0.2"
 
-vite-plugin-commonjs-externals@0.1.4:
+vite-plugin-commonjs-externals@^0.1.4:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/vite-plugin-commonjs-externals/-/vite-plugin-commonjs-externals-0.1.4.tgz#e78f75f94c75227fd134d64f38cb4df1429fb842"
   integrity sha512-mJ5KzL8F3RqyFh8IhEBfRK6cDY+HXz7HXIDht5c9W+DOKbLpk57CX1LOwnG/Lx3v++ywIcMt51yRuezATV8kaQ==
