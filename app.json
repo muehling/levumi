@@ -19,7 +19,7 @@
         "name": "web check",
         "description": "Check if the app responds to the /lehrkraefte endpoint",
         "path": "/lehrkraefte",
-        "content": "Individualisiertes Lernen",
+        "content": "Levumi",
         "attempts": 3
       }
     ]
