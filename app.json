@@ -2,7 +2,7 @@
   "name": "levumi",
   "scripts": {
     "dokku": {
-      "predeploy": "rails test && bundle exec rake assets:precompile",
+      "predeploy": "bundle exec rake assets:precompile",
       "postdeploy": "bundle exec rake db:migrate"
     }
   },

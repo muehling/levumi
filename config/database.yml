@@ -4,16 +4,12 @@ default: &default
   pool: 5
   timeout: 5000
 
-#test:
-#  <<: *default
-#  host: db
-#  database: levumi2_test
-#  username: 'root'
-#  password: 'password'
-
 test:
-  adapter: sqlite3
-  database: ':memory:'
+  <<: *default
+  host: db
+  database: levumi2_test
+  username: 'root'
+  password: 'password'
 
 development:
   <<: *default
