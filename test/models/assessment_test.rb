@@ -4,11 +4,14 @@ class AssessmentTest < ActionDispatch::IntegrationTest
   test 'Assessment.include/exclude' do
     assessment = assessments(:a1)
     assert_equal assessment.excludes.length, 0
-    assessment.exclude 1
+    assessment.exclude '1'
     assert_equal assessment.excludes.length, 1
     assert assessment.excludes.include? 1
-    assessment.include 1
+    assessment.include '1'
     refute assessment.excludes.include? 1
+    assessment.exclude '[1,2]'
+    assert assessment.excludes.include? 2
+    assert_equal assessment.excludes.length, 2
   end
 
   test 'Assessment.get_data' do
