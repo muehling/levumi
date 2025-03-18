@@ -85,6 +85,7 @@
             feedback: {
               positive: this.properties.positive_feedback_text,
               negative: this.properties.negative_feedback_text,
+              show_task: this.properties.hide_task_in_feedback,
             },
           },
           views: [
