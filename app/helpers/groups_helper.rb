@@ -175,13 +175,11 @@ module GroupsHelper
         {
           'item': 'I36',
           'time': 10_378,
-          'time': 11_972,
           'group': 1,
           'answer': '10',
           'result': 1,
           'description': '9 + 1 = 10'
         },
-        { 'answer': '3', 'result': 1, 'description': '2 + 1 = 3' },
         {
           'item': 'I33',
           'time': 10_278,
@@ -208,7 +206,6 @@ module GroupsHelper
         },
         {
           'item': 'I06',
-          'item': 'I27',
           'time': 37_913,
           'group': 2,
           'answer': '10',
@@ -325,13 +322,11 @@ module GroupsHelper
         {
           'item': 'I36',
           'time': 10_378,
-          'time': 11_972,
           'group': 1,
           'answer': '11',
           'result': 0,
           'description': '9 + 1 = 10'
         },
-        { 'answer': '3', 'result': 1, 'description': '2 + 1 = 3' },
         {
           'item': 'I33',
           'time': 10_278,
@@ -358,7 +353,6 @@ module GroupsHelper
         },
         {
           'item': 'I06',
-          'item': 'I27',
           'time': 37_913,
           'group': 2,
           'answer': '10',

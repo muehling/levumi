@@ -5,5 +5,17 @@
       "predeploy": "bundle exec rake assets:precompile",
       "postdeploy": "bundle exec rake db:migrate"
     }
+  },
+  "healthchecks": {
+    "web": [
+      {
+        "type": "startup",
+        "name": "web check",
+        "description": "Check if the app responds to the /lehrkraefte endpoint",
+        "path": "/lehrkraefte",
+        "content": "Levumi",
+        "attempts": 3
+      }
+    ]
   }
 }
