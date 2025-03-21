@@ -105,13 +105,6 @@
         }
         this._reset()
       },
-      //in onSendSupportMail rein
-     /* _confirm() {
-        if (this.resolvePromise) {
-          this.resolvePromise(true)
-        }
-        this._reset()
-      },*/
       _reset() {
         this.$refs.confirmDialog.hide()
         this.message = ''
@@ -126,17 +119,18 @@
         e.stopPropagation()
         if (this.resolvePromise) {
           
-          const data = {
-          support_message: {
-            sender: null,
-            message: this.contactMessage,
-            subject: this.selectedTopic,
-            user_id: null,
-            status: 1,
-          },
-        }
-        await ajax(apiRoutes.supportMessages.create(data))
-
+          if(this.contactMessage != ''){
+            const data = {
+            support_message: {
+              sender: null,
+              message: this.contactMessage,
+              subject: this.selectedTopic,
+              user_id: null,
+              status: 1,
+            },
+          }
+          await ajax(apiRoutes.supportMessages.create(data))
+          }
         this.resolvePromise(true)
         }
 
