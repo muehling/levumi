@@ -87,7 +87,7 @@
         {{ buttonText }}
       </b-button>
     </div>
-    <confirm-dialog ref="confirmDeleteDialog" />
+    <feedback-on-user-deletion ref="confirmDeleteDialog" />
     <confirm-dialog ref="doneConfirmation" />
   </b-container>
 </template>
@@ -102,10 +102,11 @@
   import ExtraDataForm from './extra-data-form.vue'
   import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
+  import FeedbackOnUserDeletion from '../feedback-on-user-deletion.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion, },
     props: {
       isNew: Boolean,
       user: Object,
