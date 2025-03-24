@@ -58,22 +58,16 @@ class ResultsController < ApplicationController
   #POST /students/:student_id/results
   def create
     if params.has_key?(:assessment_id)
-      @last_result =
-        @student.results.where(assessment_id: params[:assessment_id]).order(:test_week).last #Letztes Ergebnis aus der Datenbank
-      if !@last_result.nil? && @last_result.test_week == Time.current.beginning_of_week
-        head 409
+      @result = @student.results.build(assessment_id: params[:assessment_id])
+      @result.views = JSON.parse(params[:views])
+      @result.report = JSON.parse(params[:report])
+      @result.data = JSON.parse(params[:data])
+      @result.test_date = DateTime.now
+      if @result.save
+        head :ok
+        return
       else
-        @result = @student.results.build(assessment_id: params[:assessment_id])
-        @result.views = JSON.parse(params[:views])
-        @result.report = JSON.parse(params[:report])
-        @result.data = JSON.parse(params[:data])
-        @result.test_date = DateTime.now
-        if @result.save
-          head :ok
-          return
-        else
-          render json: @result.errors, status: :unprocessable_entity
-        end
+        render json: @result.errors, status: :unprocessable_entity
       end
     end
   end
