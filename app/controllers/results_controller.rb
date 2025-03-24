@@ -9,15 +9,15 @@ class ResultsController < ApplicationController
   def new
     headers['Cache-Control'] = 'no-store, must-revalidate'
     if params.has_key?(:test_id)
-      #Eigentlich "new" Action => Kein Objekt anlegen, Testseite rendern
       @test = Test.find(params[:test_id])
       unless @test.nil?
         @assessment =
-          Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first #Assessment aus student_id und test_id bestimmen
-        @last_result = @student.results.where(assessment_id: @assessment).order(:test_week).last #Letztes Ergebnis aus der Datenbank
+          Assessment.where(group_id: @student.group_id, test_id: @test.id).pluck(:id).first
+        @last_result = @student.results.where(assessment_id: @assessment).order(:test_week).last
+
+        # get correct redirect url after successful test
         if @test.student_test &&
              (@last_result.nil? || @last_result.test_date < Time.current.beginning_of_week)
-          #Reicht das immer aus?
           @redirect = '/testen'
         else
           if params.has_key? :student
@@ -26,11 +26,19 @@ class ResultsController < ApplicationController
             @redirect = "/diagnostik/#{@student.group.id}/testdetails/#{@test.id}"
           end
         end
+
+        # either render the test if there is no result in the interval,
+        # or redirect to the student page or the respective assessment
         if @last_result.nil? || @last_result.created_at < Time.current.beginning_of_week
           render 'edit', layout: 'testing'
         else
-          @redirect = "/testen_login?login=#{@student.login}"
-          redirect_to @redirect
+          redirect_to(
+            if @test.student_test
+              "/testen_login?login=#{@student.login}"
+            else
+              "/diagnostik/#{@student.group.id}/testdetails/#{@test.id}"
+            end
+          )
         end
       end
     else

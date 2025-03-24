@@ -11,9 +11,6 @@
 <div id="error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em; display: none">
   Verbindungsfehler! Ergebnisse konnten nicht gespeichert werden.
 </div>
-<div id="double_tab_error_message" class="alert alert-danger" role="alert" style="font-size: 1.25em; display: none">
-  Doppelter-Tab-Fehler! Deine Ergebnisse wurde bereits gespeichert. Du scheinst die Aufgaben bereits gemacht zu haben.
-</div>
 
 <% if @test.script_files.count == 0 %>
     <div id="main-container">
@@ -160,8 +157,7 @@
       
         switch (res.status){
             case 200: callback(); break;
-            case 422: return; // result has been posted in the previous 10 seconds (some tests might do this)    
-            case 409: window["$"]('#double_tab_error_message').show()
+            case 422: break; // result has been posted in the previous 10 seconds (some tests might do this)               
             default: 
                 window["$"]('#error_message').show()
         }
