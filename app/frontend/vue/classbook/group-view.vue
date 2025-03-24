@@ -6,6 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
+          <demo-group-hints :group="group" source="classbook" />
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
@@ -84,29 +85,30 @@
   import { useGlobalStore } from 'src/store/store'
   import ClassbookActions from './group-view-actions/classbook-actions.vue'
   import ConfirmDialog from '../shared/confirm-dialog.vue'
+  import DemoGroupHints from '../shared/demo-group/demo-group-hints.vue'
   import GroupViewActionsNav from './group-view-actions/group-view-actions-nav.vue'
   import MoveStudentDialog from './group-view-actions/move-student-dialog.vue'
   import ShareForm from './group-view-actions/share-form.vue'
   import SharesDisplay from './shares-display.vue'
   import ShareStatus from './share-status.vue'
   import StudentList from './group-view-list/student-list.vue'
-  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
   import TransferGroup from 'src/vue/classbook/group-view-actions/transfer-group.vue'
-  //import Vue from 'vue'
+  import TransferStatus from 'src/vue/classbook/transfer-status.vue'
 
   export default {
     name: 'GroupView',
     components: {
       ClassbookActions,
       ConfirmDialog,
+      DemoGroupHints,
       GroupViewActionsNav,
       MoveStudentDialog,
       ShareForm,
       SharesDisplay,
       ShareStatus,
       StudentList,
-      TransferStatus,
       TransferGroup,
+      TransferStatus,
     },
     props: {
       groups: Array, //Alle benötigt, um Klassen aus Archiv zu verschieben
@@ -117,7 +119,7 @@
       return { globalStore }
     },
     data() {
-      return { currentNav: 'general' }
+      return { currentNav: 'general', isWorkingOnDemoStudents: false }
     },
     computed: {
       actionCardTitle() {
@@ -148,6 +150,7 @@
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner
       },
+
       transferRequests() {
         return this.group.shares?.filter(share => share.owner)
       },

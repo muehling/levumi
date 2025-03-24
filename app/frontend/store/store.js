@@ -79,7 +79,9 @@ export const useGlobalStore = defineStore('global', {
     },
     async fetchGroups() {
       const res = await ajax(apiRoutes.groups.groups)
-
+      this.setGroupsData(res)
+    },
+    setGroupsData(res){
       this.shareKeys = res.data.share_keys
       const studentsInGroups = res.data.groups.reduce((acc, group) => {
         acc[group.id] = decryptStudentNames(group)

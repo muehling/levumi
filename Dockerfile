@@ -10,6 +10,7 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   build-essential \
   gnupg2 \
   git \
+  nano \
   yarn \
   default-libmysqlclient-dev \ 
   libpq-dev \ 
@@ -23,7 +24,7 @@ ENV LANG=C.UTF-8 \
 WORKDIR /usr/src/app
 COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock /
 
 RUN gem update --system && gem install bundler && bundle install
 RUN yarn
