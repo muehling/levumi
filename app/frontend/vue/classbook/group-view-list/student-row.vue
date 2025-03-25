@@ -475,7 +475,7 @@
           this.globalStore.setErrorMessage('Die Schüler:in kann nicht bearbeitet werden.')
           return
         }
-
+        
         const res = await ajax({
           url: `/students${!this.empty ? '/' + this.student.id : ''}?${studentData}`,
           method: this.empty ? 'POST' : 'PUT',
