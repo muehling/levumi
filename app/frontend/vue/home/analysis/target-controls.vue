@@ -8,6 +8,27 @@
       </div>
       <div class="text-small row">
         <div class="col-12 col-md-3 col-xl-2">
+          <label label-for="trend-input">Oberes und unteres Quartil:</label>
+        </div>
+        <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
+          <b-form-checkbox
+            id="trend-input"
+            v-model="showTestQuartiles"
+            size="sm"
+            switch
+            :disabled="!hasSufficientQuartileData"
+            @change="saveAssessmentSettings" />
+          <context-help
+            :help-text="`Mit dieser Option werden das obere und das untere Quartil aller bisherigen Messungen dieses Tests eingeblendet. In die Berechnung fließen alle in Levumi erfassten Messwerte ein, nicht nur die aus der aktuell ausgewählten Klasse. Der Wert wird monatlich aktualisiert. ${
+              hasSufficientQuartileData
+                ? ''
+                : '<br/><br/><b>Aktuell liegen nicht genügend Daten für diesen Test vor, um die Quartile zu berechnen.</b>'
+            }`"
+            class-name="mt-1 ms-3" />
+        </div>
+      </div>
+      <div class="text-small row">
+        <div class="col-12 col-md-3 col-xl-2">
           <label label-for="trend-input">Trend anzeigen:</label>
         </div>
         <div class="col-12 col-md-4 col-xl-3 d-inline-flex">
@@ -80,8 +101,8 @@
             min="0"
             step="0.01"
             lang="de"
-            @input="handleNumberInput"
-            size="sm" />
+            size="sm"
+            @input="handleNumberInput" />
           <context-help
             help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
             class-name="mt-1 ms-3" />
@@ -176,6 +197,8 @@
         dateUntil: this.assessmentsStore.currentAssessment.settings?.date_until,
         deviation: target?.deviation,
         showTrends: this.assessmentsStore.currentAssessment.settings?.is_trend_enabled,
+        showTestQuartiles:
+          this.assessmentsStore.currentAssessment.settings?.is_test_average_enabled,
         showClassTargetForStudent: false,
       }
     },
@@ -185,6 +208,9 @@
       },
       readOnly() {
         return this.group.read_only
+      },
+      hasSufficientQuartileData() {
+        return this.assessmentsStore.currentAssessment?.test_quartiles?.count > 100
       },
     },
     watch: {
@@ -226,7 +252,11 @@
         const res = await ajax(
           apiRoutes.assessments.update(this.group.id, this.test.id, {
             assessment: {
-              settings: { is_trend_enabled: this.showTrends, date_until: this.dateUntil },
+              settings: {
+                is_trend_enabled: this.showTrends,
+                date_until: this.dateUntil,
+                is_test_average_enabled: this.showTestQuartiles,
+              },
             },
           })
         )

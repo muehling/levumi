@@ -39,8 +39,6 @@ module Levumi2
     # Don't generate system test files.
     config.generators.system_tests = nil
 
-    config.session_store :cookie_store, key: '_levumi2.1_session'
-
     config.active_model.i18n_customize_full_message = true
 
     # allow svgs to served as svgs instead of octet-streams

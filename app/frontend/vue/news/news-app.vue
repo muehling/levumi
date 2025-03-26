@@ -84,7 +84,6 @@
   }
 
   const saveNews = async () => {
-    console.log('selected', selectedNews.value)
     if (!selectedNews.value) {
       await ajax({
         url: '/news',

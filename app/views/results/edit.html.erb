@@ -34,7 +34,6 @@
 <% if @assessment.nil? && @student.nil? %>
     <div class="m-4 text-center"><button id="end-preview" class="btn btn-danger">Vorschau beenden</button></div>
 <% end %>
-<% puts @test.entry_point.download.inspect %>
 <% if !@test.entry_point.download.nil? %>
     <%= raw @test.entry_point.download.force_encoding('UTF-8') %>
 <% end %>
@@ -158,7 +157,7 @@
       
         switch (res.status){
             case 200: callback(); break;
-            case 422: return; // result has been posted in the previous 10 seconds (some tests might do this)          
+            case 422: break; // result has been posted in the previous 10 seconds (some tests might do this)               
             default: 
                 window["$"]('#error_message').show()
         }

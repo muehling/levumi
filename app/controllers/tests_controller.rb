@@ -2,8 +2,15 @@ class TestsController < ApplicationController
   skip_before_action :set_login, only: [:get_tests_data]
   rescue_from ActiveRecord::RecordNotFound, with: :handle_test_not_found
   before_action :set_test,
-                except: %i[index create get_tests_data get_tests_meta check_upload_version]
-  before_action :is_allowed, only: %i[create edit update destroy]
+                except: %i[
+                  index
+                  create
+                  get_tests_data
+                  get_tests_meta
+                  check_upload_version
+                  invalidate_cache
+                ]
+  before_action :is_allowed, only: %i[create edit update destroy invalidate_cache]
 
   #GET /tests
   def index
@@ -86,12 +93,14 @@ class TestsController < ApplicationController
   end
 
   def get_tests_data
-    @data =
+    test_data =
       Rails
         .cache
-        .fetch('tests/test_app_data', expires_in: 30.days) do
-          Area.includes(competences: [{ test_families: [:tests] }]).all
+        .fetch('tests/test_app_data', expires_in: 15.years) do
+          @data = Area.includes(competences: [{ test_families: [:tests] }]).all
+          render_to_string template: 'tests/get_tests_data'
         end
+    render json: test_data
   end
 
   #Spezialfall: für nur einen Test
@@ -100,9 +109,7 @@ class TestsController < ApplicationController
   end
 
   def get_items
-    if @test
-      render json: @test.items
-    end
+    render json: @test.items if @test
   end
 
   def check_upload_version
@@ -130,11 +137,17 @@ class TestsController < ApplicationController
     head :not_found
   end
 
+  def invalidate_cache
+    Rails.cache.delete('tests/tests_meta')
+    Rails.cache.delete('tests/test_app_data')
+    head :ok
+  end
+
   private
 
   #Erlaubte Attribute definieren
   def test_attributes
-    params.require(:test).permit(:test_type_id, description: %i[full short])
+    params.require(:test).permit(:test_type_id, :allow_quartiles, description: %i[full short])
   end
 
   #Prüfen ob Nutzer die Berechtigung für Testaktualisierungen hat

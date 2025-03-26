@@ -35,12 +35,14 @@ class AssessmentsController < ApplicationController
   def update
     if params.require(:assessment).has_key?(:exclude) &&
          @assessment.exclude(params.require(:assessment)[:exclude])
-      render json: @assessment.get_data
+      head :ok
     elsif params.require(:assessment).has_key?(:include) &&
           @assessment.include(params.require(:assessment)[:include])
-      render json: @assessment.get_data
+      head :ok
     elsif @assessment.update(
-          params.require(:assessment).permit(:active, settings: %i[is_trend_enabled date_until])
+          params
+            .require(:assessment)
+            .permit(:active, settings: %i[is_trend_enabled date_until is_test_average_enabled])
         )
       render json: @assessment.get_data
     else

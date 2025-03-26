@@ -302,7 +302,13 @@ const commonOptions = () => ({
     min: 0,
     forceNiceScale: true,
     labels: {
-      formatter: val => (typeof val === 'number' ? val?.toFixed(2) : val),
+      formatter: val => {
+        if (typeof val === 'number') {
+          return val > 0 ? val.toFixed(0) : val.toFixed(2)
+        } else {
+          return val
+        }
+      },
     },
   },
 })
@@ -330,36 +336,44 @@ const commonTooltip = () => ({
   intersect: false,
 })
 
-/** credit goes to @Splinter0 on GitHub: https://github.com/apexcharts/apexcharts.js/issues/420#issuecomment-1047056648*/
 function customSharedTooltip({ series, seriesIndex, dataPointIndex, w }) {
   const hoverXaxis = w.globals.seriesX[seriesIndex][dataPointIndex]
   const hoverIndexes = w.globals.seriesX.map(seriesX => {
     return seriesX.findIndex(xData => xData === hoverXaxis)
   })
 
-  let hoverList = ''
+  let hoverListArray = []
+  
   hoverIndexes.forEach((hoverIndex, seriesEachIndex) => {
-    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] != undefined) {
-      hoverList += `
-                        <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
-                            <span class="apexcharts-tooltip-marker" style="background-color: ${
-                              w.globals.markers.colors[seriesEachIndex]
-                            };"></span>
-                            <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">
-                                <div class="apexcharts-tooltip-y-group">
-                                    <span class="apexcharts-tooltip-text-y-label">${
-                                      w.globals.seriesNames[seriesEachIndex]
-                                    }: </span>
-                                    <span class="apexcharts-tooltip-text-y-value">${w.globals.yLabelFormatters[0](
-                                      series[seriesEachIndex][hoverIndex]
-                                    )}</span>
-                                </div>
-                            </div>
-                        </div>`
+    if (hoverIndex >= 0 && series[seriesEachIndex][hoverIndex] !== undefined && series[seriesEachIndex][hoverIndex] !== null) {
+      hoverListArray.push({
+        seriesIndex: seriesEachIndex,
+        value: series[seriesEachIndex][hoverIndex],
+        seriesName: w.globals.seriesNames[seriesEachIndex],
+        color: w.globals.markers.colors[seriesEachIndex],
+      })
     }
   })
+
+  hoverListArray.sort((a, b) => b.value - a.value)
+
+  let hoverList = ''
+  hoverListArray.forEach(item => {
+    hoverList += `
+      <div class="apexcharts-tooltip-series-group apexcharts-active" style="order: 1; display: flex;">
+        <span class="apexcharts-tooltip-marker" style="background-color: ${item.color};"></span>
+        <div class="apexcharts-tooltip-text" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">                            
+          <div class="apexcharts-tooltip-y-group">
+            <span class="apexcharts-tooltip-text-y-label">${item.seriesName}: </span>
+            <span class="apexcharts-tooltip-text-y-value">${w.globals.yLabelFormatters[0](item.value)}</span>
+          </div>
+        </div>
+      </div>`
+  })
+
   const date = new Date(hoverXaxis).toLocaleDateString('de')
   return `<div class="apexcharts-tooltip-title" style="font-family: Helvetica, Arial, sans-serif; font-size: 12px;">${date}</div>${hoverList}`
+  
 }
 
 // eslint-disable-next-line no-unused-vars
@@ -548,6 +562,35 @@ export const targetRangeAnnotationOptions = (targetY, y2 = null) => ({
       color: '#00000000',
     },
   },
+})
+
+export const testAverageRangeAnnotationOptions = (targetY, y2 = null) => ({
+  id: 'test-average-range-annotation',
+  y: targetY,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: '#444',
+  opacity: 0.125,
+  label: {
+    borderColor: '#00000000',
+    borderWidth: 0,
+    text: undefined,
+    style: {
+      background: '#00000000',
+      color: '#00000000',
+    },
+  },
+})
+
+export const quartileOptions = (y1, y2, color) => ({
+  id: `quartile-annotation-${color}`,
+  y: y1,
+  y2: y2,
+  strokeDashArray: 0,
+  borderColor: '#00000000',
+  fillColor: color,
+  opacity: 0.125,
 })
 
 export function quantile(arr, q) {

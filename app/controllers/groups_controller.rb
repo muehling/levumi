@@ -1,15 +1,10 @@
 class GroupsController < ApplicationController
+  include GroupsHelper
   before_action :set_group, only: %i[update destroy get_test_data]
 
   #GET /groups
   def index
-    shares_object = {}
-    @login.group_shares.each { |c| shares_object[c.group_id] = c.key }
-    @data = {
-      'groups': @login.get_classbook_info,
-      'single': @login.account_type == 2,
-      'share_keys': shares_object
-    }
+    set_group_index_data
     render json: @data
   end
 
@@ -89,6 +84,56 @@ class GroupsController < ApplicationController
     end
   end
 
+  def delete_demo_data
+    Student.where(group: params['group_id'], is_demo: true).destroy_all
+    set_group_index_data
+    render json: @data
+  end
+
+  def add_demo_data
+    params[:student_names].map! { |name| URI.decode_www_form_component(name) }
+    students = []
+    params[:student_names].each do |student_name|
+      student = Student.create!(name: student_name, group_id: params[:group_id], is_demo: true)
+      students.push(student.id)
+    end
+
+    test = Test.find_by_shorthand('ADD1')
+    if test.nil?
+      render json: {
+               message: 'Test ADD1 fehlt, Demodaten können nicht angelegt werden.'
+             },
+             status: :unprocessable_entity
+      return
+    end
+
+    test_id = Test.where(shorthand: 'ADD1').order(version: :desc).first.id
+    assessment = Assessment.find_or_create_by(test_id: test_id, group_id: params[:group_id])
+    assessment_id = assessment.id
+    views = get_demo_views
+    reports = get_demo_reports
+    data = get_demo_data
+    test_dates = [7.days.ago, 14.days.ago, 21.days.ago, 28.days.ago, 35.days.ago]
+
+    students.each do |student|
+      randomized_dates = test_dates.shuffle
+      views.each_with_index do |view, index|
+        result =
+          Result.new(
+            student_id: student,
+            assessment_id: assessment_id,
+            views: view,
+            report: reports[index],
+            data: data[index],
+            test_date: randomized_dates[index]
+          )
+        result.save(validate: false)
+      end
+    end
+    set_group_index_data
+    render json: @data
+  end
+
   private
 
   #Gruppenummer aus Parametern holen und Gruppe laden
@@ -101,5 +146,15 @@ class GroupsController < ApplicationController
     params
       .require(:group)
       .permit(:label, :archive, settings: %i[font_family font_size calculator_layout])
+  end
+
+  def set_group_index_data
+    shares_object = {}
+    @login.group_shares.each { |c| shares_object[c.group_id] = c.key }
+    @data = {
+      'groups': @login.get_classbook_info,
+      'single': @login.account_type == 2,
+      'share_keys': shares_object
+    }
   end
 end
