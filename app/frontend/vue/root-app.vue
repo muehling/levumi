@@ -274,7 +274,7 @@
         })
 
         if (res.status === 200) {
-          decryptOrAddMasterkey(res, pw)
+          await decryptOrAddMasterkey(res, pw)
           this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
