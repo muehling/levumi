@@ -61,10 +61,10 @@ export const decryptOrAddMasterkey = async (res, password) => {
 
     sessionStorage.setItem('mk', masterkey)
     await recodeGroupKeysWithMasterkey(res.data.id, masterkey, password, res.data.shares)
+    sessionStorage.removeItem('login')
   } else {
     const decryptedKey = decryptWithKey(masterkey, password)
     sessionStorage.setItem('mk', decryptedKey)
-    sessionStorage.removeItem('login')
   }
 }
 
