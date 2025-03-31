@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_02_19_090649) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_20_080116) do
   create_table 'active_storage_attachments', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name', null: false
     t.string 'record_type', null: false
@@ -80,6 +80,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_19_090649) do
     t.datetime 'updated_at', precision: nil, null: false
     t.json 'excludes'
     t.json 'settings'
+    t.integer 'interval'
     t.index ['group_id'], name: 'index_assessments_on_group_id'
     t.index ['test_id'], name: 'index_assessments_on_test_id'
   end
@@ -180,8 +181,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_19_090649) do
   create_table 'shadow_students', charset: 'utf8mb3', force: :cascade do |t|
     t.integer 'original_id'
     t.integer 'group'
-    t.integer 'account_type'
-    t.integer 'state'
+    t.integer 'account_type', null: false
+    t.integer 'state', null: false
     t.integer 'gender'
     t.date 'birthmonth'
     t.integer 'sen'
@@ -260,10 +261,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_19_090649) do
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
     t.bigint 'test_type_id'
-    t.json 'required_services'
     t.string 'updated_by'
     t.string 'responsible'
+    t.json 'required_services'
     t.boolean 'allow_quartiles', default: false
+    t.integer 'interval'
     t.index ['test_family_id'], name: 'index_tests_on_test_family_id'
     t.index ['test_type_id'], name: 'index_tests_on_test_type_id'
   end
