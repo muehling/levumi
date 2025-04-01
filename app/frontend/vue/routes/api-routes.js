@@ -1,5 +1,3 @@
-import { hasData } from "jquery";
-
 export default {
   classbook: {
     finishIntro: '/willkommen?classbook=true',
@@ -146,8 +144,8 @@ export default {
     update: (id, data) => ({ url: `/support_messages/${id}`, method: 'PATCH', data }),
     search: data => ({
       url: '/support_messages/search',
-      method: 'POST', 
-      data, 
+      method: 'POST',
+      data,
     }),
   },
 }
