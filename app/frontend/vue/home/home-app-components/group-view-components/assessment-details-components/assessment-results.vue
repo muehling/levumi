@@ -159,6 +159,8 @@
       )
       if (res.status === 200) {
         store.setCurrentAssessment(res.data)
+        const currentAssessment = store.assessments[group.id].find(a => a.id === assessment.id)
+        currentAssessment.result_count = res.data.result_count
       }
     }
   }
