@@ -36,3 +36,5 @@ gem 'bundle-audit', '~> 0.1.0'
 
 gem 'redis', '~> 5.3'
 gem 'redis-client', '~> 0.22.0'
+
+gem "csv", "~> 3.3"
