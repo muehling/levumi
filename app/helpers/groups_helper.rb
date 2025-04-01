@@ -212,7 +212,14 @@ module GroupsHelper
           'result': 1,
           'description': '7 + 3 = 10'
         },
-        { 'item': 'I61', 'time': 23_398, 'result': 1, 'description': '2 + 4 = 6' },
+        {
+          'item': 'I61',
+          'time': 23_398,
+          'result': 1,
+          'group': 1,
+          'answer': '42',
+          'description': '2 + 4 = 6'
+        },
         {
           'item': 'I53',
           'time': 7367,
@@ -359,7 +366,14 @@ module GroupsHelper
           'result': 1,
           'description': '7 + 3 = 10'
         },
-        { 'item': 'I61', 'time': 23_398, 'result': 1, 'description': '2 + 4 = 6' },
+        {
+          'item': 'I61',
+          'time': 23_398,
+          'group': 1,
+          'answer': '10',
+          'result': 1,
+          'description': '2 + 4 = 6'
+        },
         {
           'item': 'I53',
           'time': 7367,
