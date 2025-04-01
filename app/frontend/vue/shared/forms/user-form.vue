@@ -106,7 +106,7 @@
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion, },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion },
     props: {
       isNew: Boolean,
       user: Object,
@@ -267,17 +267,10 @@
         }
       },
       async deleteSelf() {
-        const answer = await this.$refs.confirmDeleteDialog.open({
-          title: 'Profil löschen',
-          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht.
-            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
-            Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
-          okText: 'Ja, löschen',
-          cancelText: 'Nein, abbrechen',
-        })
+        const answer = await this.$refs.confirmDeleteDialog.open()
 
         if (answer) {
-          const res = await ajax({ ...apiRoutes.users.delete() })
+          const res = await ajax({ ...apiRoutes.users.delete(answer) })
           if (res.status === 200) {
             await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',
