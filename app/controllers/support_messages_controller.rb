@@ -88,10 +88,6 @@ class SupportMessagesController < ApplicationController
     @total_messages = SupportMessage.count
     render :index
   end
-  def delete_foreign_key(id)
-    SupportMessage.where(user_id: id).update_all(user_id: nil)
-    head :ok
-  end
 
   private
 

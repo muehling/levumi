@@ -197,7 +197,14 @@ class UsersController < ApplicationController
   def destroy_self
     head :forbidden and return if !@login.is_regular_user?
 
-    @support_message = SupportMessage.new(params.require(:support_message).permit(:message))
+    @support_message =
+      SupportMessage.new(
+        {
+          message: params['support_message']['message'],
+          subject: "#{@login.email} hat seinen Account gelöscht.",
+          sender: @login.email
+        }
+      )
     if @support_message.save
       UserMailer
         .with(
