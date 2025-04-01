@@ -135,6 +135,4 @@
     }
     isWorkingOnDemoStudents.value = false
   }
-
-  const onlySingleGroupAllowed = computed(() => isSingleUser())
 </script>
