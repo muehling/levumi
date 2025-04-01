@@ -193,7 +193,7 @@ GEM
       connection_pool
     reline (0.6.0)
       io-console (~> 0.5)
-    rubyzip (2.3.2)
+    rubyzip (2.4.1)
     securerandom (0.4.1)
     sprockets (4.2.1)
       concurrent-ruby (~> 1.0)
@@ -239,7 +239,7 @@ DEPENDENCIES
   rails (>= 7.2.2)
   redis (~> 5.3)
   redis-client (~> 0.22.0)
-  rubyzip (~> 2.3.0)
+  rubyzip (~> 2.4.1)
   sprockets-rails
   tzinfo-data
   vite_rails

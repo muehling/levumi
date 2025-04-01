@@ -20,7 +20,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'bcrypt', '~> 3.1.7'
 gem 'bootsnap', '>= 1.1.0', require: false
 
-gem 'rubyzip', '~> 2.3.0'
+gem 'rubyzip', '~> 2.4.1'
 
 #TEMPCODE (vielleicht trotzdem nützlich wegen Blog?)
 gem 'rack-cors', require: 'rack/cors'
@@ -37,4 +37,4 @@ gem 'bundle-audit', '~> 0.1.0'
 gem 'redis', '~> 5.3'
 gem 'redis-client', '~> 0.22.0'
 
-gem "csv", "~> 3.3"
+gem 'csv', '~> 3.3'
