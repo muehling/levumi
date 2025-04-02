@@ -68,10 +68,6 @@
       supportOptions() {
         return [
           {
-            text: 'Ich wollte Levumi nur ausprobieren.',
-            value: 'Ich wollte Levumi nur ausprobieren.',
-          },
-          {
             text: 'Ich habe an einer Studie teilgenommen, die jetzt beendet ist.',
             value: 'Ich habe an einer Studie teilgenommen, die jetzt beendet ist.',
           },
@@ -82,6 +78,10 @@
           {
             text: 'Ich bin mit der Benutzerführung unzufrieden.',
             value: 'Ich bin mit der Benutzerführung unzufrieden.',
+          },
+          {
+            text: 'Die IT-Ausstattung meiner Schule reicht nicht für die Verwendung von Levumi.',
+            value: 'Die IT-Ausstattung meiner Schule reicht nicht für die Verwendung von Levumi.',
           },
           { text: 'Sonstiges', value: 'Sonstiges' },
         ]
