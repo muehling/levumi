@@ -217,7 +217,7 @@ module GroupsHelper
           'time': 23_398,
           'result': 1,
           'group': 1,
-          'answer': '42',
+          'answer': '6',
           'description': '2 + 4 = 6'
         },
         {
@@ -370,7 +370,7 @@ module GroupsHelper
           'item': 'I61',
           'time': 23_398,
           'group': 1,
-          'answer': '10',
+          'answer': '6',
           'result': 1,
           'description': '2 + 4 = 6'
         },
