@@ -108,8 +108,9 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     parsed = fetch_users
     assert_equal parsed['users'].length, 3
+
     #test if other user is still there
-    assert_equal parsed ['users'].include?(user.id), false
+    assert_equal parsed['users'].include?(user.id), false
   end
 
   test 'UsersController::destroy -> no admin' do
@@ -134,68 +135,68 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
 
     parsed = fetch_users
     assert_equal parsed['users'].length, 4
-    #test if other user is still there
-    assert_equal parsed ['users'].include?(user.id), false
-  end
 
+    #test if other user is still there
+    assert_equal parsed['users'].include?(user.id), false
+  end
 
   test 'UsersController::search -> no admin user' do
     user = users :other_user
     login_as user
-    
+
     get "#{users_search_url}?search_term=admin"
 
     assert_response :forbidden
-  end 
+  end
 
   test 'UsersController::search -> admin user' do
     user = users :admin_user
     login_as user
     get "#{users_search_url}?search_term=admin"
     assert_response :ok
-  end 
+  end
 
   test 'UsersController::search -> test user' do
     user = users :hacker_user
     login_as user
-    
+
     get "#{users_search_url}?search_term=admin"
 
     assert_response :forbidden
   end
-  
+
   test 'UsersController::search -> (Mail) right number of hits ' do
     user = users :admin_user
     login_as user
-    
-    get "#{users_search_url}?search_term=@example", headers: {
-      'Accept': 'application/json'
-    }
+
+    get "#{users_search_url}?search_term=@example", headers: { 'Accept': 'application/json' }
     parsed = JSON.parse(@response.body)
     assert_equal parsed['total_users'], 4
-  end 
+  end
 
   test 'UsersController::search -> (Date) right number of hits' do
     user = users :admin_user
     login_as user
-    
-    get "#{users_search_url}?start_date_registration='2022-11-16 07:34:57.117653'&end_date_registration='2022-11-16 07:34:57.117653'", headers: {
-      'Accept': 'application/json'
-    }
+
+    get "#{users_search_url}?start_date_registration='2022-11-16 07:34:57.117653'&end_date_registration='2022-11-16 07:34:57.117653'",
+        headers: {
+          'Accept': 'application/json'
+        }
     parsed = JSON.parse(@response.body)
     assert_equal parsed['total_users'], 3
-  end 
+  end
 
   test 'UsersController::search -> (Last Login) right number of hits' do
     user = users :admin_user
     login_as user
-    
-    get "#{users_search_url}?start_date_login='2020-11-16 07:34:57.117653'&end_date_login='2023-11-16 07:34:57.117653'", headers: {
-      'Accept': 'application/json'
-    }
+
+    get "#{users_search_url}?start_date_login='2020-11-16 07:34:57.117653'&end_date_login='2023-11-16 07:34:57.117653'",
+        headers: {
+          'Accept': 'application/json'
+        }
     parsed = JSON.parse(@response.body)
     assert_equal parsed['total_users'], 1
-  end 
+  end
 
   test 'UsersController::register -> no User' do
     get willkommen_url
@@ -206,23 +207,23 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     user = users :hacker_user
     login_as user
     get willkommen_url
-    assert_equal('http://www.example.com/willkommen',@response.request.url)
+    assert_equal('http://www.example.com/willkommen', @response.request.url)
   end
 
   test 'UsersController::register -> intro state 1' do
     user = users :hacker_user
     login_as user
-    patch willkommen_url, 
-    headers: {
-      'Accept': 'application/json'
-    },
-    params: {
-      user: {
-        email: 'hacker@example.com',
-        account_type: 1,
-        state: 1,
-      },
-    }
+    patch willkommen_url,
+          headers: {
+            'Accept': 'application/json'
+          },
+          params: {
+            user: {
+              email: 'hacker@example.com',
+              account_type: 1,
+              state: 1
+            }
+          }
     assert_response :ok
   end
 
@@ -232,7 +233,4 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
     patch willkommen_url
     assert_response :ok
   end
-  
- 
-
 end

@@ -35,6 +35,7 @@ class User < ApplicationRecord
       end
       share.destroy
     end
+    SupportMessage.where(user_id: id).update_all(user_id: nil)
   end
 
   #Alle Schüler des Nutzers zurückliefern.
