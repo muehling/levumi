@@ -27,17 +27,27 @@
           </small>
         </div>
       </div>
+      <b-form-group>
+        <div v-if="isOwnProfile" class="d-flex gap-3 w-100">
+          <b-button v-b-toggle.password-section variant="outline-secondary" class="flex-grow-1">
+            Passwort ändern
+          </b-button>
 
-      <b-form-group v-if="isOwnProfile">
-        <b-button v-b-toggle.password-section variant="outline-secondary">Passwort ändern</b-button>
-        <b-collapse id="password-section" class="mt-2">
-          <password-form
-            :errors="errors"
-            @change-password="pw => (password = pw)"
-            @change-password-confirm="pw => (passwordConfirm = pw)"
-            @change-security-answer="a => (securityAnswer = a)" />
-        </b-collapse>
+          <b-button v-b-toggle.email-section variant="outline-secondary" class="flex-grow-1">
+            E-Mail-Adresse ändern
+          </b-button>
+        </div>
       </b-form-group>
+      <b-collapse id="password-section" class="mt-2">
+        <password-form
+          :errors="errors"
+          @change-password="pw => (password = pw)"
+          @change-password-confirm="pw => (passwordConfirm = pw)"
+          @change-security-answer="a => (securityAnswer = a)" />
+      </b-collapse>
+      <b-collapse id="email-section" class="mt-2">
+        <email-form @user-email-changed="e => (email = e)" />
+      </b-collapse>
       <div class="mt-3 mb-2">
         <b-form-group label-cols="4" label="Bundesland*">
           <b-form-select
@@ -102,10 +112,11 @@
   import ExtraDataForm from './extra-data-form.vue'
   import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
+  import EmailForm from './email-form.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, EmailForm },
     props: {
       isNew: Boolean,
       user: Object,

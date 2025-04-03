@@ -13,8 +13,11 @@ class UsersController < ApplicationController
                   statistics
                   get_classbook_info
                   recovery_notification
+                  email_change_notification
                   recovery_key_verification
                   delete_used_recovery_key
+                  email_verification_key_verification
+                  delete_old_email
                 ]
 
   skip_before_action :set_login,
@@ -370,6 +373,22 @@ class UsersController < ApplicationController
     head :ok
   end
 
+  def email_change_notification
+    if User.find_by_email(user_attributes[:email]) == nil
+      @user = User.find_by_id(@login.id)
+      if @user.recovery_key.nil?
+        @user.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+      end
+      UserMailer
+        .with(sender: 'noreply@levumi.de', user: @user, email: user_attributes[:email])
+        .email_reset
+        .deliver_later
+      head :ok
+    else
+      head :forbidden
+    end
+  end
+
   def recovery_key_verification
     @user = User.find_by_email(user_attributes[:email])
     if @user.recovery_key == user_attributes[:recovery_key]
@@ -383,10 +402,30 @@ class UsersController < ApplicationController
     end
   end
 
+  def email_verification_key_verification
+    @user = @login
+    if @user.recovery_key == user_attributes[:verification_key]
+      head :ok
+    else
+      render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
+      return
+    end
+  end
+
   def delete_used_recovery_key
     @user = User.find_by_email(user_attributes[:email])
     @user.update(recovery_key: nil)
     head :ok and return
+  end
+
+  def delete_old_email
+    @user = @login
+    if @user.recovery_key == user_attributes[:verification_key]
+      @user.update(email: user_attributes[:email], recovery_key: nil)
+      @user = User.find_by_id(@login.id)
+      render json: @user
+      return
+    end
   end
 
   private
@@ -410,7 +449,8 @@ class UsersController < ApplicationController
           :state,
           :town,
           :server_error,
-          :recovery_key
+          :recovery_key,
+          :verification_key
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)
