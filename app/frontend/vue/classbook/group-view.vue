@@ -6,7 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
-          <demo-group-hints :group="group" source="classbook" />
+          <demo-group-hints v-if="displayActionButton" :group="group" source="classbook" />
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
