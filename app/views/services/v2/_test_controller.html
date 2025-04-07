@@ -23,6 +23,21 @@
     const styles = { fontSize, fontFamily: window.font_family }
 
     //######################################
+    //## initialize timer
+    //######################################
+    const handlePause = isTimerPaused => {
+      isPaused = isTimerPaused
+    }
+    const timerWidget = window.useTimerWidget({
+      pauseHandler: handlePause,
+      displayCounter: true,
+      duration: maxTestDuration,
+    })
+
+    timerWidget.getElement().appendTo('#timer')
+    timerWidget.getPauseButton().appendTo('#timer')
+
+    //######################################
     //## preload assets
     //######################################
 
@@ -261,21 +276,6 @@
     } else {
       setNextItem()
     }
-
-    //######################################
-    //## initialize timer
-    //######################################
-    const handlePause = isTimerPaused => {
-      isPaused = isTimerPaused
-    }
-    const timerWidget = window.useTimerWidget({
-      pauseHandler: handlePause,
-      displayCounter: true,
-      duration: maxTestDuration,
-    })
-
-    timerWidget.getElement().appendTo('#timer')
-    timerWidget.getPauseButton().appendTo('#timer')
 
     //######################################
     //## initial styling
