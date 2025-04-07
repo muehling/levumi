@@ -192,6 +192,27 @@ class UsersController < ApplicationController
 
   def destroy_self
     head :forbidden and return if !@login.is_regular_user?
+
+    @support_message =
+      SupportMessage.new(
+        {
+          message: params['support_message']['message'],
+          subject: "#{@login.email} hat seinen Account gelöscht.",
+          sender: @login.email
+        }
+      )
+    if @support_message.save
+      UserMailer
+        .with(
+          email: @login.email,
+          body: params['support_message']['message'],
+          subject: "#{@login.email} hat seinen Account gelöscht.",
+          support_addresses: User.where('capabilities LIKE ?', '%support%').pluck(:email)
+        )
+        .support
+        .deliver_later
+    end
+
     @login.destroy
     reset_session
     head :ok

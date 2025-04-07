@@ -2,7 +2,7 @@
   <div classname="group-view my-3">
     <div class="mb-3">
       <div class="mt-4">
-        <demo-group-hints :group="group" source="home" />
+        <demo-group-hints v-if="displayDemoDataButtons" :group="group" source="home" />
       </div>
       <div v-if="readOnly">
         <p>
@@ -86,6 +86,9 @@
 
       annotations: function () {
         return this.assessmentData?.annotations
+      },
+      displayDemoDataButtons() {
+        return access(this.group).diagnostics?.createResults && this.group.key // shares without key are not accepted yet
       },
       displayClassBookButton() {
         return this.$route.name === 'AssessmentList' || this.$route.name === 'Diagnostik'
