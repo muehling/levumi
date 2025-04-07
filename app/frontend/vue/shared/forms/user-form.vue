@@ -94,7 +94,7 @@
 
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
+  import { encryptWithKey } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
@@ -242,12 +242,10 @@
           res = await ajax({ ...apiRoutes.users.create, data })
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
-            // Password and security question
-            newKeys = recodeKeys(this.password)
-            data.keys = JSON.stringify(newKeys)
             data.user.password = this.password
             data.user.password_confirmation = this.passwordConfirm
             data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
+            data.user.masterkey = encryptWithKey(sessionStorage.getItem('mk'), this.password)
           }
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),
@@ -258,7 +256,6 @@
         if (res.status === 200) {
           this.$emit('submitSuccessful', res)
           if (newKeys) {
-            sessionStorage.setItem('login', this.password)
             this.globalStore.setShareKeys(newKeys)
           }
         } else {

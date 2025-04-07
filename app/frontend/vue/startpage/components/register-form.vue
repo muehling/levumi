@@ -132,9 +132,6 @@
       },
     },
     methods: {
-      handleClose() {
-        this.$root.$emit('bv::hide::modal', 'register-modal')
-      },
       async handleRegister(e) {
         e.preventDefault()
         e.stopPropagation()

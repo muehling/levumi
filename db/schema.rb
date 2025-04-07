@@ -288,6 +288,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_02_20_080116) do
     t.datetime 'updated_at', precision: nil, null: false
     t.json 'settings'
     t.string 'recovery_key'
+    t.string 'masterkey'
   end
 
   add_foreign_key 'active_storage_attachments', 'active_storage_blobs', column: 'blob_id'

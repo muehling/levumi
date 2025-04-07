@@ -89,7 +89,6 @@ Rails.application.routes.draw do
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
   post '/groups/:group_id/add_demo_data', to: 'groups#add_demo_data'
   post '/groups/:group_id/delete_demo_data', to: 'groups#delete_demo_data'
-  post '/renew_login', to: 'application#renew_login'
   post '/students/move_students', to: 'students#move_students'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'

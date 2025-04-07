@@ -16,6 +16,7 @@ json.login do
     :state,
     :tc_accepted,
     :town,
+    :masterkey,
     :updated_at
   )
   json.settings @login.settings ? JSON.parse(@login.settings) : {}

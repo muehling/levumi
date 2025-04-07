@@ -10,7 +10,7 @@ task 'export_backup' => :environment do |_, args|
   user_id = user.id
 
   #Active Record Object of User
-  group_shares = GroupShare.where(user_id: user_id)
+  group_shares = GroupShare.where(user_id: user_id, owner: true)
 
   #prepare the user_login mail for filename
   user_login = user_login.gsub('@', 'at')
@@ -27,8 +27,8 @@ task 'export_backup' => :environment do |_, args|
 
   #filling arrays
   group_shares.each do |group_share|
-    students = students + Student.where(group_id: group_share.id)
-    assessments = assessments + Assessment.where(group_id: group_share.id)
+    students = students + Student.where(group_id: group_share.group_id)
+    assessments = assessments + Assessment.where(group_id: group_share.group_id)
     assessment_ids = assessments.pluck(:id)
     results = results + Result.where(id: assessment_ids)
     groups = groups + Group.where(id: group_share.group_id)
@@ -37,7 +37,7 @@ task 'export_backup' => :environment do |_, args|
   assessments.each do |assessment|
     a = assessment.test_id
     t = Test.find(a)
-    helper = { id: a, shorthand: t.shorthand }
+    helper = { id: a, shorthand: t.shorthand, version: t.version }
     tests.push(helper)
   end
 

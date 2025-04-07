@@ -343,6 +343,7 @@
           const data = res.data
           this.totalRows = data.total_support_messages
           this.supportMessages = data.support_messages
+          this.supportUsers = data.users
         }
       },
       isLoginAsAllowed(message) {

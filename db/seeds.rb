@@ -10,7 +10,7 @@ if Rails.env.development?
       account_type: 1,
       state: 1,
       tc_accepted: DateTime.now,
-      intro_state: 4
+      intro_state: 5
     },
     {
       email: 'user@user.de',
@@ -20,7 +20,7 @@ if Rails.env.development?
       account_type: 0,
       tc_accepted: DateTime.now,
       state: 1,
-      intro_state: 1
+      intro_state: 5
     }
   ]
 

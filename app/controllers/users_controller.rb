@@ -47,27 +47,23 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    # "Normales" Update
-    res = @user.update(user_attributes)
-    if !res
-      render json: { message: 'Validation failed', errors: @user.errors }, status: 400
+    # update of any user (from the users list)
+    if (@login.id != @user.id)
+      simple_update
     else
-      if (@login.id == @user.id)
-        #Eigenes Update, ggf. keys Recodieren
-        if (params.has_key?(:user) && params.has_key?(:keys) && !params[:keys].blank?)
+      # self-update of logged-in user
+      unless (params.has_key?(:user) && params.has_key?(:keys) && !params[:keys].blank?)
+        simple_update
+      else
+        User.transaction do
+          @user.update!(user_attributes)
           todo = JSON.parse(params[:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupShare-Objekte.
           todo.each do |k, v|
             ga = GroupShare.where(user: @login, group_id: k).first
-            unless ga.nil? || ga.key.nil? || ga.key.blank?
-              ga.key = v
-              ga.save
-            end
+            ga.update!(key: v) unless ga.nil? || ga.key.nil? || ga.key.blank?
           end
         end
         render json: @user # return user to update view
-      else
-        @users = User.all #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
-        head :ok
       end
     end
   end
@@ -412,6 +408,15 @@ class UsersController < ApplicationController
 
   private
 
+  def simple_update
+    res = @user.update(user_attributes)
+    if !res
+      render json: { message: 'Validation failed', errors: @user.errors }, status: 400
+    else
+      head :ok
+    end
+  end
+
   def user_attributes
     temp =
       params
@@ -423,15 +428,16 @@ class UsersController < ApplicationController
           :focus,
           :institution,
           :intro_state,
+          :masterkey,
           :password_confirmation,
           :password,
+          :recovery_key,
           :school_type,
           :security_digest,
+          :server_error,
           :settings,
           :state,
-          :town,
-          :server_error,
-          :recovery_key
+          :town
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)

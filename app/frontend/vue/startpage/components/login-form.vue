@@ -41,6 +41,7 @@
   </div>
 </template>
 <script>
+  import { decryptOrAddMasterkey } from 'src/utils/user'
   import { ajax } from '../../../utils/ajax'
   import apiRoutes from '../../routes/api-routes'
 
@@ -76,9 +77,14 @@
           case 403:
             this.passwordMismatch = true
             break
-          default:
-            sessionStorage.setItem('login', this.password)
+          case 200:
+            if (res.data.is_registered) {
+              await decryptOrAddMasterkey(res, this.password)
+            }
             window.location.replace('/diagnostik')
+            break
+          default:
+            console.warn('unknown login response')
         }
       },
     },
