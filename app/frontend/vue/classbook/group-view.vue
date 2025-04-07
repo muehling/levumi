@@ -145,7 +145,7 @@
         return this.group.read_only || this.globalStore.masquerade
       },
       displayActionButton() {
-        return this.permissions.updateGroup && this.group.key // shares without key are not accepted yet
+        return this.permissions?.updateGroup && this.group.key // shares without key are not accepted yet
       },
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner

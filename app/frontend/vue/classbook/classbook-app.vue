@@ -16,7 +16,7 @@
                   <b-tabs :key="ownActiveGroups.length" pills card no-fade>
                     <!-- Neue Klasse anlegen -->
                     <b-tab
-                      v-if="permissions.createGroup"
+                      v-if="permissions?.createGroup"
                       key="new_group"
                       :active="activeGroupTab === -2"
                       lazy
