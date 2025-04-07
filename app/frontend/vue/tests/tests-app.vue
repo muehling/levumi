@@ -141,15 +141,7 @@
 
     computed: {
       testData() {
-        return this.testsStore.tests.filter(area => {
-          area.competences = area.competences.filter(competence => {
-            competence.test_families = competence.test_families.filter(tf => {
-              return tf.tests.length > 0
-            })
-            return competence.test_families.length > 0
-          })
-          return area.competences.length > 0
-        })
+        return this.testsStore.tests
       },
       isLoading() {
         return this.testsStore.isLoading

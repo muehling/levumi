@@ -25,6 +25,11 @@ class GroupTest < ActionDispatch::IntegrationTest
   end
 
   test 'Group.as_hash' do
-    #TODO
+    group = groups(:group_1)
+    user = users(:admin_user)
+    info = group.as_hash user
+    assert info[:students].first[:login] == 'abcde'
+    assert info[:has_demo_students] == false
+    assert info[:owner] == true
   end
 end

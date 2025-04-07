@@ -54,7 +54,7 @@
                   <th>Positiv</th>
                   <th>Negativ</th>
                   <th>Trend</th>
-                  <th v-if="!readOnly">Aktionen</th>
+                  <th v-if="!readOnly && isOwner">Aktionen</th>
                 </tr>
               </thead>
               <tbody>
@@ -78,7 +78,7 @@
                       class="fas fa-arrow-right neutral-arrrow"></i>
                     <i v-else class="fas fa-arrow-down degradation-arrow"></i>
                   </td>
-                  <td v-if="!readOnly">
+                  <td v-if="!readOnly && isOwner">
                     <b-button
                       small
                       variant="outline-danger"
@@ -119,6 +119,7 @@
 
   const confDialog = ref(0)
 
+  const isOwner = computed(() => !!group.owner)
   const students = computed(() => group.students)
   const readOnly = computed(() => !!group.read_only)
   const groupedResults = computed(() => {
@@ -159,6 +160,8 @@
       )
       if (res.status === 200) {
         store.setCurrentAssessment(res.data)
+        const currentAssessment = store.assessments[group.id].find(a => a.id === assessment.id)
+        currentAssessment.result_count = res.data.result_count
       }
     }
   }

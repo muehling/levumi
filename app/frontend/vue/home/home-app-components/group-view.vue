@@ -1,6 +1,9 @@
 <template>
   <div classname="group-view my-3">
     <div class="mb-3">
+      <div class="mt-4">
+        <demo-group-hints v-if="displayDemoDataButtons" :group="group" source="home" />
+      </div>
       <div v-if="readOnly">
         <p>
           Diese Klasse ist mit Ihnen zur Ansicht geteilt, daher können Sie keine eigenen Messungen
@@ -11,7 +14,7 @@
         v-if="displayTestAdminButton"
         variant="outline-secondary"
         size="sm"
-        class="me-2 my-3"
+        class="me-2 my-2"
         @click="openTestAdmin">
         <i class="fas fa-gear me-2"></i>
         Test hinzufügen / löschen
@@ -20,14 +23,14 @@
         v-if="displayClassBookButton"
         variant="outline-secondary"
         size="sm"
-        class="my-3"
+        class="my-2"
         @click="gotoClassbook">
         <i class="fas fa-book-open me-2"></i>
         Zum Klassenbuch
       </b-button>
       <b-button
         v-if="isTestDetailsOpen || isTestAdminOpen"
-        class="my-3 me-2"
+        class="my-2 me-2"
         size="sm"
         variant="outline-secondary"
         @click="backToOverview">
@@ -50,20 +53,19 @@
   import { useTestsStore } from 'src/store/testsStore'
   import AssessmentDetails from './group-view-components/assessment-details.vue'
   import AssessmentList from './group-view-components/assessment-list.vue'
+  import DemoGroupHints from '../../shared/demo-group/demo-group-hints.vue'
   import GroupTestAdmin from './group-view-components/group-test-admin.vue'
-  import { useRoute } from 'vue-router'
 
   export default {
     name: 'GroupView',
-    components: { AssessmentDetails, AssessmentList, GroupTestAdmin },
+    components: { AssessmentDetails, AssessmentList, GroupTestAdmin, DemoGroupHints },
     props: { selectedGroupId: Number },
 
     setup() {
-      const route = useRoute()
       const globalStore = useGlobalStore()
       const assessmentsStore = useAssessmentsStore()
       const testsStore = useTestsStore()
-      return { globalStore, assessmentsStore, testsStore, route }
+      return { globalStore, assessmentsStore, testsStore }
     },
     data: function () {
       return {
@@ -84,6 +86,9 @@
 
       annotations: function () {
         return this.assessmentData?.annotations
+      },
+      displayDemoDataButtons() {
+        return access(this.group).diagnostics?.createResults && this.group.key // shares without key are not accepted yet
       },
       displayClassBookButton() {
         return this.$route.name === 'AssessmentList' || this.$route.name === 'Diagnostik'
