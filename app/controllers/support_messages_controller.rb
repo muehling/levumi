@@ -86,6 +86,7 @@ class SupportMessagesController < ApplicationController
     @support_messages =
       support_messages.limit(page_size).offset((index - 1) * page_size).order(created_at: :desc)
     @total_messages = SupportMessage.count
+    @support_users = User.where('capabilities LIKE ?', '%support%').pluck(:email)
     render :index
   end
 

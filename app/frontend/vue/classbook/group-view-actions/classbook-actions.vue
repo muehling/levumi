@@ -24,7 +24,7 @@
       </div>
     </div>
     <hr />
-    <div v-if="permissions.setGroupFontSettings" class="row">
+    <div v-if="permissions?.setGroupFontSettings" class="row">
       <div class="col-3 d-flex align-items-center">
         <b-button
           variant="outline-secondary"

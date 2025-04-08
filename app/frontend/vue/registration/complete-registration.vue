@@ -25,10 +25,11 @@
                 :account-type="accountType"
                 :focus-type="focusType || undefined"
                 :school-type="schoolType || undefined"
+                :institution="institution || undefined"
                 @change-institution="inst => (institution = inst)"
                 @change-town="t => (town = t)"
                 @change-school-type="st => (schoolType = st)"
-                @change-focus-type="ft => (focusType = ft)"></extra-data-form>
+                @change-focus-type="ft => (focusType = ft)" />
             </b-card>
             <b-button
               class="mt-4"
@@ -45,9 +46,9 @@
 </template>
 
 <script>
-  import { ajax } from '../../utils/ajax'
-  import { encryptWithKey } from '../../utils/encryption'
-  import { useGlobalStore } from '../../store/store'
+  import { ajax } from 'src/utils/ajax'
+  import { encryptWithKey } from 'src/utils/encryption'
+  import { useGlobalStore } from 'src/store/store'
   import apiRoutes from '../routes/api-routes'
   import ExtraDataForm from '../shared/forms/extra-data-form.vue'
   import PasswordForm from '../shared/forms/password-form.vue'
@@ -83,19 +84,26 @@
         )
       },
     },
+
     methods: {
       async submit() {
         const key = Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, '')
           .substring(0, 6)
+        const masterkey = Math.random()
+          .toString(36)
+          .replace(/[^a-z]+/g, '')
+          .substring(0, 6)
+
         const data = {
           user: {
             password: this.password,
             password_confirmation: this.passwordConfirm,
             security_digest: encryptWithKey(this.password, this.securityAnswer),
+            masterkey: encryptWithKey(masterkey, this.password),
           },
-          key: encryptWithKey(key, this.password),
+          key: encryptWithKey(key, masterkey),
           auth_token: encryptWithKey(key, key),
         }
         switch (this.accountType) {
@@ -113,7 +121,7 @@
         // refetch global data, so the root app will know about the finished registration
         if (res.status === 200) {
           this.$emit('registration-complete')
-          sessionStorage.setItem('login', this.password)
+          sessionStorage.setItem('mk', masterkey)
         }
       },
     },

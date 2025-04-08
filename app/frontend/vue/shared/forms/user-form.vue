@@ -97,14 +97,14 @@
         {{ buttonText }}
       </b-button>
     </div>
-    <confirm-dialog ref="confirmDeleteDialog" />
+    <feedback-on-user-deletion ref="confirmDeleteDialog" />
     <confirm-dialog ref="doneConfirmation" />
   </b-container>
 </template>
 
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
+  import { encryptWithKey } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
@@ -112,11 +112,11 @@
   import ExtraDataForm from './extra-data-form.vue'
   import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
-  import EmailForm from './email-form.vue'
+  import FeedbackOnUserDeletion from '../feedback-on-user-deletion.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog, EmailForm },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion },
     props: {
       isNew: Boolean,
       user: Object,
@@ -252,12 +252,10 @@
           res = await ajax({ ...apiRoutes.users.create, data })
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
-            // Password and security question
-            newKeys = recodeKeys(this.password)
-            data.keys = JSON.stringify(newKeys)
             data.user.password = this.password
             data.user.password_confirmation = this.passwordConfirm
             data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
+            data.user.masterkey = encryptWithKey(sessionStorage.getItem('mk'), this.password)
           }
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),
@@ -268,7 +266,6 @@
         if (res.status === 200) {
           this.$emit('submitSuccessful', res)
           if (newKeys) {
-            sessionStorage.setItem('login', this.password)
             this.globalStore.setShareKeys(newKeys)
           }
         } else {
@@ -277,17 +274,10 @@
         }
       },
       async deleteSelf() {
-        const answer = await this.$refs.confirmDeleteDialog.open({
-          title: 'Profil löschen',
-          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht.
-            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
-            Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
-          okText: 'Ja, löschen',
-          cancelText: 'Nein, abbrechen',
-        })
+        const answer = await this.$refs.confirmDeleteDialog.open()
 
         if (answer) {
-          const res = await ajax({ ...apiRoutes.users.delete() })
+          const res = await ajax({ ...apiRoutes.users.delete(answer) })
           if (res.status === 200) {
             await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',

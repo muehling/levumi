@@ -38,8 +38,17 @@ class ApplicationController < ActionController::Base
       u.recovery_key = nil
       u.save
 
-      #head :ok
-      redirect_to :diagnostik
+      # group_shares are needed in case they need to be recoded with the masterkey,
+      # as after redirection to /diagnostik, the password needed for recoding is no longer accessible.
+      shares_object = {}
+      u.group_shares.each { |c| shares_object[c.group_id] = c.key }
+
+      render json: {
+               id: u.id,
+               is_registered: u.is_registered,
+               masterkey: u.masterkey,
+               shares: shares_object
+             }
     else
       if ENV['MAINTENANCE'] == 'true'
         @retry = true
@@ -50,21 +59,6 @@ class ApplicationController < ActionController::Base
                },
                status: :forbidden
       end
-    end
-  end
-
-  def renew_login
-    u = User.find_by_email(params[:email])
-    if !u.nil? && u.authenticate(params[:password])
-      session[:user] = u.id
-      u.last_login = Time.now
-      u.save
-      head :ok
-    else
-      render json: {
-               message: 'application_controller::renew_login: user not found or invalid credentials'
-             },
-             status: :forbidden
     end
   end
 

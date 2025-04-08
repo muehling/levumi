@@ -38,9 +38,10 @@
   import ErrorDialog from './shared/error-dialog.vue'
   import GenericMessage from './shared/generic-message.vue'
   import InputDialog from './shared/input-dialog.vue'
+  import isEmpty from 'lodash/isEmpty'
   import LoadingDots from './shared/loading-dots.vue'
   import NavBar from './shared/nav-bar.vue'
-  import isEmpty from 'lodash/isEmpty'
+  import { decryptOrAddMasterkey } from 'src/utils/user'
 
   export default {
     name: 'RootApp',
@@ -118,7 +119,9 @@
     },*/
     async mounted() {
       await this.fetchGlobalData()
-      await this.checkLogin()
+      if (this.globalStore.login.intro_state >= 3) {
+        await this.checkLogin()
+      }
 
       if (this.globalStore.login.intro_state >= 5) {
         this.displayNews()
@@ -167,12 +170,13 @@
         }
         this.globalStore.serverError = undefined
       },
+
       async checkLogin() {
         const path = window.location.pathname
         if (path !== '/testen' && path !== '/testen_login') {
           // Check if login information is present. This may get lost in restored browser sessions,
           // or when a link is opened in a new tab. In this case, we need to log in again
-          const login = sessionStorage.getItem('login')
+          const login = sessionStorage.getItem('mk')
           if (!login) {
             if (!this.globalStore.masquerade) {
               await this.sendLogin('')
@@ -264,11 +268,13 @@
           title: 'Passwort erneut eingeben',
           type: 'password',
         })
-        const res = await ajax(
-          apiRoutes.users.renewLogin({ email: this.globalStore.login.email, password: pw })
-        )
+        const res = await ajax({
+          ...apiRoutes.users.login,
+          data: { email: this.globalStore.login.email, password: pw },
+        })
+
         if (res.status === 200) {
-          sessionStorage.setItem('login', pw)
+          await decryptOrAddMasterkey(res, pw)
           this.globalStore.fetchGroups()
         } else {
           this.sendLogin('Das hat leider nicht geklappt. ')
