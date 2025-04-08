@@ -25,10 +25,11 @@
                 :account-type="accountType"
                 :focus-type="focusType || undefined"
                 :school-type="schoolType || undefined"
+                :institution="institution || undefined"
                 @change-institution="inst => (institution = inst)"
                 @change-town="t => (town = t)"
                 @change-school-type="st => (schoolType = st)"
-                @change-focus-type="ft => (focusType = ft)"></extra-data-form>
+                @change-focus-type="ft => (focusType = ft)" />
             </b-card>
             <b-button
               class="mt-4"

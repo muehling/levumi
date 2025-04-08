@@ -4,54 +4,51 @@
       <b-form-group
         label-cols="3"
         description="An welcher Forschungseinrichtung sind Sie tätig?"
-        label="Institution"
-      >
+        label="Institution">
         <b-form-input
-          :value="institution"
-          @input="$emit('change-institution', $event)"
-        ></b-form-input>
+          :model-value="institution"
+          @input="$emit('change-institution', $event.target.value)"></b-form-input>
       </b-form-group>
     </div>
     <div v-if="accountType === 0">
       <b-form-group label-cols="3" description="Wo befindet sich Ihre Schule?" label="Ort">
-        <b-form-input :value="town" @input="$emit('change-town', $event)"></b-form-input>
+        <b-form-input
+          :model-value="town"
+          @input="$emit('change-town', $event.target.value)"></b-form-input>
       </b-form-group>
       <b-form-group label-cols="3" label="Schulart">
         <b-dropdown
           variant="outline-secondary"
           block
-          toggle-class="d-flex justify-content-between align-items-center w-100"
-        >
+          toggle-class="d-flex justify-content-between align-items-center w-100">
           <template #button-content>
             {{ schoolTypeDisplay || '&nbsp;' }}
           </template>
           <b-dropdown-item
             v-for="st in schoolTypes"
             :key="st.label"
-            @click="$emit('change-school-type', st.id)"
-            >{{ st.label }}
+            @click="$emit('change-school-type', st.id)">
+            {{ st.label }}
           </b-dropdown-item>
         </b-dropdown>
       </b-form-group>
       <b-form-group
         label-cols="3"
         description="Was ist Ihre überwiegende Tätigkeit?"
-        label="Tätigkeit"
-      >
+        label="Tätigkeit">
         <b-dropdown
           variant="outline-secondary"
           block
-          toggle-class="d-flex justify-content-between align-items-center w-100"
-        >
+          toggle-class="d-flex justify-content-between align-items-center w-100">
           <template #button-content>
             {{ focusTypeDisplay || '&nbsp;' }}
           </template>
           <b-dropdown-item
             v-for="ft in focusTypes"
             :key="ft.label"
-            @click="$emit('change-focus-type', ft.id)"
-            >{{ ft.label }}</b-dropdown-item
-          >
+            @click="$emit('change-focus-type', ft.id)">
+            {{ ft.label }}
+          </b-dropdown-item>
         </b-dropdown>
       </b-form-group>
     </div>
