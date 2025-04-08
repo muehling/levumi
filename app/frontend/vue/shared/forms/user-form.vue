@@ -45,8 +45,8 @@
           @change-password-confirm="pw => (passwordConfirm = pw)"
           @change-security-answer="a => (securityAnswer = a)" />
       </b-collapse>
-      <b-collapse id="email-section" class="mt-2">
-        <email-form @user-email-changed="e => (email = e)" />
+      <b-collapse ref="passwordCollapse" id="email-section" class="mt-2">
+        <email-form @user-email-changed="changeUserMail" />
       </b-collapse>
       <div class="mt-3 mb-2">
         <b-form-group label-cols="4" label="Bundesland*">
@@ -113,10 +113,11 @@
   import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
   import FeedbackOnUserDeletion from '../feedback-on-user-deletion.vue'
+  import EmailForm from './email-form.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion, EmailForm },
     props: {
       isNew: Boolean,
       user: Object,
@@ -222,6 +223,10 @@
     },
 
     methods: {
+      changeUserMail(newAddress) {
+        this.email = newAddress
+        // todo collapses auf- und zumachen
+      },
       _close() {
         this.$emit('cancelEdit')
       },

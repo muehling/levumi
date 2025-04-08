@@ -24,13 +24,6 @@ Rails.application.routes.draw do
   patch '/willkommen', to: 'users#register'
   get '/passwort', to: 'users#recover'
   post '/passwort', to: 'users#recover'
-  post '/recovery_notification', to: 'users#recovery_notification'
-  post '/email_change_notification', to: 'users#email_change_notification'
-  post '/recovery_key_verification', to: 'users#recovery_key_verification'
-  post '/email_verification_key_verification', to: 'users#email_verification_key_verification'
-  post '/delete_old_email', to: 'users#delete_old_email'
-  get '/recovery_key_verification', to: 'users#recovery_key_verification'
-  post '/delete_used_recovery_key', to: 'users#delete_used_recovery_key'
 
   # Front page
   get '/faq', to: 'application#start'
@@ -75,6 +68,7 @@ Rails.application.routes.draw do
   get '/groups/:id/test_data', to: 'groups#get_test_data'
   get '/materials/info', to: 'materials#get_material_data'
   get '/materials/test/:test_id', to: 'materials#get_specific_materials_for_test'
+  get '/recovery_key_verification', to: 'users#recovery_key_verification'
   get '/registration_error', to: 'application#redirect_to_registration_error'
   get '/results/start_demo/:test_id', to: 'results#start_demo'
   get '/student_frontend_data/:id', to: 'students#get_get_student_frontend_data'
@@ -90,9 +84,14 @@ Rails.application.routes.draw do
   get '/users/search', to: 'users#search'
   get '/users/statistics', to: 'users#statistics'
   post '/check_upload_version', to: 'tests#check_upload_version' # return metadata for single test from uploaded test.json
+  post '/delete_used_recovery_key', to: 'users#delete_used_recovery_key'
   post '/groups/:group_id/add_demo_data', to: 'groups#add_demo_data'
   post '/groups/:group_id/delete_demo_data', to: 'groups#delete_demo_data'
+  post '/recovery_key_verification', to: 'users#recovery_key_verification'
+  post '/recovery_notification', to: 'users#recovery_notification'
   post '/students/move_students', to: 'students#move_students'
+  post '/users/change_user_email', to: 'users#change_user_email'
+  post '/users/email_change_notification', to: 'users#email_change_notification'
   put '/groups/:group_id/assessments', to: 'assessments#toggle_all_active'
   put '/users/:id/mail', to: 'users#user_mail'
 

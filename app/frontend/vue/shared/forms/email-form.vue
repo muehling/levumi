@@ -1,42 +1,38 @@
 <template>
   <div>
     <b-card>
-      <b-input-group label="Email">
-        <input
+      <b-form-group label="Neue E-Mail-Adresse">
+        <b-form-input
           v-model="email"
           type="email"
           name="email"
           class="form-control"
-          placeholder="E-Mail-Adresse" 
-          :disabled = "isEmailSend" />
-      </b-input-group>
-      <div v-if="txtForCorrectMail" id="email-invalid-feedback" d-block style="color: red">
-        {{ txtForCorrectMail }}
-        <b-button v-if="txtForCorrectMail" @click="newMailInput">E-Mail ändern</b-button>
-      </div>
-      
-      <small class="form-text text-muted">
-        Bitte geben Sie eine neue Mailadresse ein und fordern dann einen Einmalcode an.
-      </small>
-      <div>
-        <b-button @click="sendCheckMail()">Einmalcode anfordern</b-button>
-      </div>
-        <div v-if="isEmailSend">
-          <div class="mt-3">
-            <input
-              v-model="verification_key"
-              name="verification_key"
-              class="form-control"
-              placeholder="Einmalcode" 
-              :disabled="isKeyCorrect"/>
-            <small id="confirmationHelp" class="form-text text-muted">
-              Bitte geben Sie den Einmalcode ein.
-            </small>
-            <b-button :variant="isKeyCorrect ? 'success' : 'danger'" @click="validateVerificationKey()" >Einmalcode überprüfen</b-button>
-            <div v-if="wrongKey" class="text-danger text-small mt-2">
-              {{ wrongKey }}
-            </div>
-            <b-button v-if="isKeyCorrect" :variant="isMailNew ? 'success' : 'danger'" @click="changeMail()" >E-Mail-Adresse ändern</b-button>
+          :disabled="isEmailSent"
+          placeholder="E-Mail-Adresse"
+          @focus="errorMessage = ''" />
+        <span v-if="!!errorMessage" class="text-small text-danger">{{ errorMessage }}</span>
+        <div>
+          <b-button :disabled="isVerificationRequestDisabled" @click="sendCheckMail" class="mt-3">
+            Einmalcode anfordern
+          </b-button>
+        </div>
+      </b-form-group>
+      <div v-if="isEmailSent">
+        <div class="mt-3">
+          <b-form-input
+            v-model="verification_key"
+            name="verification_key"
+            class="form-control"
+            placeholder="Einmalcode" />
+          <small id="confirmationHelp" class="form-text text-muted">
+            Bitte geben Sie den Einmalcode ein.
+          </small>
+          <b-button class="mt-3" variant="outline-success" @click="changeEmailAddress">
+            E-Mail-Adresse ändern
+          </b-button>
+          <div v-if="wrongKey" class="text-danger text-small mt-2">
+            {{ wrongKey }}
+          </div>
         </div>
       </div>
     </b-card>
@@ -55,71 +51,63 @@
     data() {
       return {
         email: '',
-        isEmailSend: false,
+        isEmailSent: false,
         verification_key: '',
-        txtForCorrectMail: '',
+        errorMessage: '',
         wrongKey: '',
-        isKeyCorrect:false,
-        isMailNew:false,
       }
     },
-    computed: {},
-    methods: {
-      newMailInput(){
-        this.isEmailSend = false
-        this.txtForCorrectMail=''
+    computed: {
+      isVerificationRequestDisabled() {
+        return !!this.errorMessage || this.isEmailSent
       },
+    },
+    methods: {
       async sendCheckMail() {
-        this.isEmailSend = true
+        this.isEmailSent = true
         const email = this.email
         if (!email || !email.includes('@')) {
-          this.txtForCorrectMail = 'Bitte geben Sie eine gültige E-Mail-Adresse an'
-          this.isEmailSend = false
+          this.errorMessage = 'Bitte geben Sie eine gültige E-Mail-Adresse an'
+          this.isEmailSent = false
           return
         } else {
-          this.txtForCorrectMail = ''
+          this.errorMessage = ''
         }
-        const mail = await ajax({url:'/email_change_notification',
+        const mail = await ajax({
+          url: '/users/email_change_notification',
           method: 'POST',
-          data:{ user: { email } }})
+          data: { user: { email } },
+        })
         if (mail.status === 200) {
-          this.txtForCorrectMail = ''
+          this.errorMessage = ''
         } else if (mail.status === 403) {
-          this.txtForCorrectMail =
+          this.errorMessage =
             'Diese Mail ist bereits in Benutzung, bitte wählen Sie eine andere oder kontaktieren Sie uns.'
-            this.isEmailSend = false
+          this.isEmailSent = false
         } else {
-          this.txtForCorrectMail =
+          this.errorMessage =
             'Da ist etwas schiefgelaufen, bitte versuchen Sie es erneut oder kontaktieren Sie uns.'
-            this.isEmailSend = false
-          return
+          this.isEmailSent = false
         }
       },
-      async validateVerificationKey() {
+      async changeEmailAddress() {
         const email = this.email
         const verification_key = this.verification_key
-        const key = await ajax({url:'/email_verification_key_verification',
-        method: 'POST',data:{user: { email, verification_key } }}) 
-        if (key.status === 200) {
-          this.isKeyCorrect = true
+        const res = await ajax({
+          url: '/users/change_user_email',
+          method: 'POST',
+          data: { user: { email, verification_key } },
+        })
+
+        if (res.status === 200) {
           this.wrongKey = ''
+          this.globalStore.login = res.data
+          this.$emit('user-email-changed', email)
         } else {
-          this.isKeyCorrect = false
           this.wrongKey =
             'Dies ist leider der falschen Code, bitte geben Sie ihn erneut ein oder kontaktieren Sie uns.'
         }
       },
-      async changeMail(){
-        const email = this.email
-        const verification_key = this.verification_key
-        const key = await ajax({url:'/email_verification_key_verification',
-        method: 'POST',data:{user: { email, verification_key } }}) 
-        if (key.status === 200) {
-          this.isMailNew = true
-          this.globalStore.login= key.data
-          this.$emit("user-email-changed", email)
-        } 
-      }
     },
   }
 </script>
