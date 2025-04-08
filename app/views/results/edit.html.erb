@@ -89,7 +89,7 @@
         const itemText = '<%= raw @test[:items].to_json %>'
         const configText = '<%= raw @test[:configuration].to_json %>'
 
-        let it = []
+        let itemsParsed = []
         let conf = {}
         try {
             conf = JSON.parse(configText)
@@ -99,12 +99,12 @@
 
         
         try {            
-            it = JSON.parse(itemText)        
+            itemsParsed = JSON.parse(itemText)        
         } catch (e) {
             console.error ("Items fehlerhaft", e)
         }
         window.config = window.config || {}
-        window.config.items = it
+        window.config.items = itemsParsed
         window.config.startPage = conf.start_page
         window.config.endPage = conf.end_page
         window.config.timeLimit = conf.time_limit
