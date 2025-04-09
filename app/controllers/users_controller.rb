@@ -438,7 +438,7 @@ class UsersController < ApplicationController
     if !res
       render json: { message: 'Validation failed', errors: @user.errors }, status: 400
     else
-      head :ok
+      render json: @user
     end
   end
 

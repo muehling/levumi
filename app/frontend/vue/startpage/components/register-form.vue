@@ -140,6 +140,10 @@
           this.errorMessage = 'Die E-Mail-Adresse darf keine Leerzeichen enthalten!'
           return
         }
+        if (!this.email.includes('@')) {
+          this.errorMessage = 'Dies ist keine gültige E-Mail-Adresse!'
+          return
+        }
 
         const data = {
           user: {

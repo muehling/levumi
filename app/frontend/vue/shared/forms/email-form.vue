@@ -1,18 +1,22 @@
 <template>
   <div>
     <b-card>
-      <b-form-group label="Neue E-Mail-Adresse">
+      <b-form-group>
+        <p>
+          Vor dem Ändern Ihrer E-Mail-Adresse senden wir Ihnen einen Einmalcode an die neue
+          E-Mail-Adresse, um sicherzustellen, dass Sie Zugriff darauf haben.
+        </p>
         <b-form-input
           v-model="email"
           type="email"
           name="email"
           class="form-control"
           :disabled="isEmailSent"
-          placeholder="E-Mail-Adresse"
+          placeholder="Neue E-Mail-Adresse eingeben"
           @focus="errorMessage = ''" />
         <span v-if="!!errorMessage" class="text-small text-danger">{{ errorMessage }}</span>
         <div>
-          <b-button :disabled="isVerificationRequestDisabled" @click="sendCheckMail" class="mt-3">
+          <b-button :disabled="isVerificationRequestDisabled" class="mt-3" @click="sendCheckMail">
             Einmalcode anfordern
           </b-button>
         </div>
@@ -20,10 +24,10 @@
       <div v-if="isEmailSent">
         <div class="mt-3">
           <b-form-input
-            v-model="verification_key"
-            name="verification_key"
+            v-model="verificationKey"
+            name="verificationKey"
             class="form-control"
-            placeholder="Einmalcode" />
+            placeholder="Einmalcode eingeben" />
           <small id="confirmationHelp" class="form-text text-muted">
             Bitte geben Sie den Einmalcode ein.
           </small>
@@ -52,7 +56,7 @@
       return {
         email: '',
         isEmailSent: false,
-        verification_key: '',
+        verificationKey: '',
         errorMessage: '',
         wrongKey: '',
       }
@@ -65,47 +69,48 @@
     methods: {
       async sendCheckMail() {
         this.isEmailSent = true
-        const email = this.email
-        if (!email || !email.includes('@')) {
-          this.errorMessage = 'Bitte geben Sie eine gültige E-Mail-Adresse an'
+        if (!this.email || !this.email.includes('@') || this.email.includes(' ')) {
+          this.errorMessage = 'Bitte geben Sie eine gültige E-Mail-Adresse an.'
           this.isEmailSent = false
           return
         } else {
           this.errorMessage = ''
         }
-        const mail = await ajax({
+        const res = await ajax({
           url: '/users/email_change_notification',
           method: 'POST',
-          data: { user: { email } },
+          data: { user: { email: this.email } },
         })
-        if (mail.status === 200) {
+        if (res.status === 200) {
           this.errorMessage = ''
-        } else if (mail.status === 403) {
+        } else if (res.status === 403) {
           this.errorMessage =
-            'Diese Mail ist bereits in Benutzung, bitte wählen Sie eine andere oder kontaktieren Sie uns.'
+            'Diese E-Mail-Adresse wird bereits von einem anderen Nutzer verwendet!'
           this.isEmailSent = false
         } else {
           this.errorMessage =
-            'Da ist etwas schiefgelaufen, bitte versuchen Sie es erneut oder kontaktieren Sie uns.'
+            'Da ist etwas schiefgelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.'
           this.isEmailSent = false
         }
       },
       async changeEmailAddress() {
         const email = this.email
-        const verification_key = this.verification_key
+        const verificationKey = this.verificationKey
         const res = await ajax({
           url: '/users/change_user_email',
           method: 'POST',
-          data: { user: { email, verification_key } },
+          data: { user: { email, verificationKey } },
         })
 
         if (res.status === 200) {
           this.wrongKey = ''
+          this.verificationKey = ''
+          this.email = ''
           this.globalStore.login = res.data
           this.$emit('user-email-changed', email)
         } else {
           this.wrongKey =
-            'Dies ist leider der falschen Code, bitte geben Sie ihn erneut ein oder kontaktieren Sie uns.'
+            'Der eingegebene Code stimmt nicht. Bitte probieren Sie es erneut und achten auch auf Leerzeichen am Anfang oder Ende des Codes.'
         }
       },
     },

@@ -1,5 +1,6 @@
 import { ajax } from './ajax'
 import { encryptWithKey, recodeKeys, decryptWithKey } from 'src/utils/encryption'
+import { isEmpty } from 'lodash'
 import { useGlobalStore } from '../store/store'
 import apiRoutes from 'src/vue/routes/api-routes'
 import isArray from 'lodash/isArray'
@@ -39,6 +40,9 @@ export const isMasquerading = () => {
 // separated with dots, e. g. "visibilities.supportView.generalSuggestions"
 // returns false if the path is not found, or the setting value.
 export const checkUserSettings = (config, keyPath) => {
+  if (!config || isEmpty(config)) {
+    return {}
+  }
   const keys = keyPath.split('.')
   let currentObj = config
   for (const key of keys) {
