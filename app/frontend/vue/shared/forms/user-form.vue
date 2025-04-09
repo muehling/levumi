@@ -231,7 +231,10 @@
       changeUserMail(newAddress) {
         this.email = newAddress
         this.isEmailSectionOpen = false
-        this.globalStore.setGenericMessage('Die E-Mail-Adresse wurde erfolgreich geändert!')
+        this.globalStore.setGenericMessage({
+          title: 'E-Mail-Adresse geändert',
+          message: 'Die E-Mail-Adresse wurde erfolgreich geändert!',
+        })
       },
       _close() {
         this.$emit('cancelEdit')
