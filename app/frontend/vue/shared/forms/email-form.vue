@@ -95,11 +95,10 @@
       },
       async changeEmailAddress() {
         const email = this.email
-        const verificationKey = this.verificationKey
         const res = await ajax({
           url: '/users/change_user_email',
           method: 'POST',
-          data: { user: { email, verificationKey } },
+          data: { user: { email, verification_key: this.verificationKey } },
         })
 
         if (res.status === 200) {
