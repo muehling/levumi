@@ -29,7 +29,7 @@ class ResultsController < ApplicationController
 
         # either render the test if there is no result in the interval,
         # or redirect to the student page or the respective assessment
-        if @last_result.nil? || @last_result.created_at < Time.current.beginning_of_week
+        if @last_result.nil? || @last_result.test_date < Time.current.beginning_of_week
           render 'edit', layout: 'testing'
         else
           redirect_to(
