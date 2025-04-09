@@ -8,7 +8,7 @@
           type="email"
           name="email"
           :disabled="!!registeredEmail"
-          aria-label="Email-Adresse eingeben"
+          aria-label="E-Mail-Adresse eingeben"
           placeholder="E-Mail Adresse"
           :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
       </div>
