@@ -13,14 +13,20 @@
           :class="`form-control${passwordMismatch ? ' is-invalid' : ''}`" />
       </div>
       <div class="form-group">
-        <b-input
-          id="password"
-          v-model="password"
-          type="password"
-          name="password"
-          aria-label="Passwort eingeben"
-          placeholder="Passwort"
-          :class="`my-3 form-control${passwordMismatch ? ' is-invalid' : ''}`" />
+        <div class="row">
+          <div class="col-11">
+            <b-form-input
+              v-model="password"
+              aria-label="Passwort eingeben"
+              placeholder="Passwort"
+              :class="`my-3 form-control${passwordMismatch ? ' is-invalid' : ''}`"
+              :type="isPasswordVisible ? 'text' : 'password'" />
+          </div>
+          <div class="col-1 pl-0 pt-2 px-0 my-3">
+            <i :class="passwordIcon" @click="showPassword"></i>
+          </div>
+        </div>
+
         <div class="invalid-feedback">Benutzername oder Passwort ist falsch!</div>
       </div>
       <div class="d-flex submit-section">
@@ -54,7 +60,13 @@
         email: '',
         passwordMismatch: false,
         isLoading: false,
+        isPasswordVisible: false,
       }
+    },
+    computed: {
+      passwordIcon() {
+        return this.isPasswordVisible ? 'fa fa-eye-slash' : 'fa fa-eye'
+      },
     },
     mounted() {
       if (this.registeredEmail) {
@@ -62,6 +74,9 @@
       }
     },
     methods: {
+      showPassword() {
+        this.isPasswordVisible = !this.isPasswordVisible
+      },
       async login(e) {
         e.preventDefault()
         e.stopPropagation()
