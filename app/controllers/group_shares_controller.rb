@@ -8,7 +8,7 @@ class GroupSharesController < ApplicationController
 
     @recipient = User.find_by_email(params[:email])
     if @recipient.nil?
-      render json: { message: 'Diese Email-Adresse ist nicht registriert!' }, status: :forbidden
+      render json: { message: 'Diese E-Mail-Adresse ist nicht registriert!' }, status: :forbidden
     elsif !@recipient.is_registered
       render json: {
                message:

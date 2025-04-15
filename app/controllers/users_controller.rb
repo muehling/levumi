@@ -13,8 +13,10 @@ class UsersController < ApplicationController
                   statistics
                   get_classbook_info
                   recovery_notification
+                  email_change_notification
                   recovery_key_verification
                   delete_used_recovery_key
+                  change_user_email
                 ]
 
   skip_before_action :set_login,
@@ -387,23 +389,46 @@ class UsersController < ApplicationController
     head :ok
   end
 
+  def email_change_notification
+    if User.find_by_email(user_attributes[:email]) == nil
+      if @login.recovery_key.nil?
+        @login.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+      end
+      UserMailer
+        .with(sender: 'noreply@levumi.de', user: @login, email: user_attributes[:email])
+        .email_reset
+        .deliver_later
+      head :ok
+    else
+      render json: { message: 'Die eingegebene Adresse ist bereits vergeben!' }, status: :forbidden
+    end
+  end
+
   def recovery_key_verification
     @user = User.find_by_email(user_attributes[:email])
     if @user.recovery_key == user_attributes[:recovery_key]
       respond_to do |format|
-        format.html { render partial: 'users/recover/decrypt_password' and return }
-        format.json { render json: @user and return }
+        format.html { render partial: 'users/recover/decrypt_password' }
+        format.json { render json: @user }
       end
     else
       render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
-      return
+    end
+  end
+
+  def change_user_email
+    if @login.recovery_key == user_attributes[:verification_key]
+      @login.update(email: user_attributes[:email], recovery_key: nil)
+      render json: @login
+    else
+      render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
     end
   end
 
   def delete_used_recovery_key
     @user = User.find_by_email(user_attributes[:email])
     @user.update(recovery_key: nil)
-    head :ok and return
+    head :ok
   end
 
   private
@@ -413,7 +438,7 @@ class UsersController < ApplicationController
     if !res
       render json: { message: 'Validation failed', errors: @user.errors }, status: 400
     else
-      head :ok
+      render json: @user
     end
   end
 
@@ -437,7 +462,8 @@ class UsersController < ApplicationController
           :server_error,
           :settings,
           :state,
-          :town
+          :town,
+          :verification_key
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)
