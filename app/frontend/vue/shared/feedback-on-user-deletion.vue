@@ -8,16 +8,16 @@
     @hidden="_close">
     <div class="d-block text-center mb-4 text-break">
       Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht. Dies betrifft sowohl
-      das Benutzerprofil wie auch alle bisher erfassten Schüler, Klassen und Messungen. Dieser
-      Vorgang kann nicht rückgängig gemacht werden.
+      das Benutzerprofil wie auch alle bisher erfassten Schüler, Klassen und Messungen.
+      <b-alert :model-value="true" variant="danger" class="mt-3">
+        <strong>Dieser Vorgang kann nicht rückgängig gemacht werden!</strong>
+      </b-alert>
     </div>
     <div class="contact-form" @click.stop="disableClick">
       <b-form class="m-2" @submit="deleteUser">
         <p>
-          <b>
-            Schade, dass Sie und verlassen wollen. Wenn Sie möchten, dann geben Sie uns gerne
-            Feedback!
-          </b>
+          Schade, dass Sie und verlassen wollen. Wenn Sie möchten, dann geben Sie uns gerne
+          Feedback!
         </p>
         <b-form-group v-slot="{ ariaDescribedby }">
           <b-form-radio-group
@@ -41,9 +41,7 @@
     </div>
     <div class="d-flex justify-content-end">
       <b-button variant="outline-secondary" class="m-1" @click="_close">Abbrechen</b-button>
-      <b-button variant="outline-danger" class="m-1" @click="deleteUser">
-        Profil jetzt löschen
-      </b-button>
+      <b-button variant="danger" class="m-1" @click="deleteUser">Profil jetzt löschen</b-button>
     </div>
   </b-modal>
 </template>

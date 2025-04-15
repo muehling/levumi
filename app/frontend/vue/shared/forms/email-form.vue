@@ -16,7 +16,11 @@
           @focus="errorMessage = ''" />
         <span v-if="!!errorMessage" class="text-small text-danger">{{ errorMessage }}</span>
         <div>
-          <b-button :disabled="isVerificationRequestDisabled" class="mt-3" @click="sendCheckMail">
+          <b-button
+            :disabled="isVerificationRequestDisabled"
+            variant="outline-secondary"
+            class="mt-3"
+            @click="sendCheckMail">
             Einmalcode anfordern
           </b-button>
         </div>
@@ -31,9 +35,17 @@
           <small id="confirmationHelp" class="form-text text-muted">
             Bitte geben Sie den Einmalcode ein.
           </small>
-          <b-button class="mt-3" variant="outline-success" @click="changeEmailAddress">
-            E-Mail-Adresse ändern
-          </b-button>
+          <div class="d-flex gap-2 w-100">
+            <b-button
+              class="mt-3 flex-grow-1"
+              variant="outline-success"
+              @click="changeEmailAddress">
+              E-Mail-Adresse ändern
+            </b-button>
+            <b-button variant="outline-danger" class="mt-3 flex-grow-1" @click="resetEmailInput">
+              Eingabe zurücksetzen
+            </b-button>
+          </div>
           <div v-if="wrongKey" class="text-danger text-small mt-2">
             {{ wrongKey }}
           </div>
@@ -65,6 +77,9 @@
       isVerificationRequestDisabled() {
         return !!this.errorMessage || this.isEmailSent
       },
+      isResetButtonVisible() {
+        return this.isEmailSent
+      },
     },
     methods: {
       async sendCheckMail() {
@@ -92,6 +107,11 @@
             'Da ist etwas schiefgelaufen. Bitte versuchen Sie es erneut oder kontaktieren Sie uns.'
           this.isEmailSent = false
         }
+      },
+      resetEmailInput() {
+        this.errorMessage = ''
+        this.email = ''
+        this.isEmailSent = false
       },
       async changeEmailAddress() {
         const email = this.email
