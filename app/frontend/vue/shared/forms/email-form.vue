@@ -15,9 +15,10 @@
           placeholder="Neue E-Mail-Adresse eingeben"
           @focus="errorMessage = ''" />
         <span v-if="!!errorMessage" class="text-small text-danger">{{ errorMessage }}</span>
+
         <div>
           <b-button
-            :disabled="isVerificationRequestDisabled"
+            v-if="isCodeRequestButtonVisible"
             variant="outline-secondary"
             class="mt-3"
             @click="sendCheckMail">
@@ -46,9 +47,6 @@
               Eingabe zurücksetzen
             </b-button>
           </div>
-          <div v-if="wrongKey" class="text-danger text-small mt-2">
-            {{ wrongKey }}
-          </div>
         </div>
       </div>
     </b-card>
@@ -70,12 +68,11 @@
         isEmailSent: false,
         verificationKey: '',
         errorMessage: '',
-        wrongKey: '',
       }
     },
     computed: {
-      isVerificationRequestDisabled() {
-        return !!this.errorMessage || this.isEmailSent
+      isCodeRequestButtonVisible() {
+        return !this.isEmailSent
       },
       isResetButtonVisible() {
         return this.isEmailSent
@@ -122,14 +119,14 @@
         })
 
         if (res.status === 200) {
-          this.wrongKey = ''
+          this.errorMessage = ''
           this.verificationKey = ''
           this.email = ''
           this.globalStore.login = res.data
           this.$emit('user-email-changed', email)
         } else {
-          this.wrongKey =
-            'Der eingegebene Code stimmt nicht. Bitte probieren Sie es erneut und achten auch auf Leerzeichen am Anfang oder Ende des Codes.'
+          this.errorMessage =
+            'Der eingegebene Code ist nicht korrekt. Bitte probieren Sie es erneut und achten auch auf Leerzeichen am Anfang oder Ende des Codes.'
         }
       },
     },
