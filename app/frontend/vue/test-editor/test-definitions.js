@@ -29,6 +29,15 @@ export const testDefinitions = {
     ],
     demoLine: `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
     additionalInfo: ``,
+    options: [
+      {
+        label: 'Keyboard verwenden',
+        id: 'useKeyboard',
+        type: 'boolean',
+        description:
+          'Gedacht für Lehrkräfte-Tests. Wenn angehakt, wird "1" als "richtig" und "0" als "falsch" interpretiert.',
+      },
+    ],
   },
   audio_images_multiple_choice: {
     label: 'Audio/Bilder',
