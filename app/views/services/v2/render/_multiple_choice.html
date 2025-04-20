@@ -19,6 +19,16 @@
   }
 </style>
 <script type="module">
+  const handleKeyup = (e, item, resultHandler) => {
+    switch (e.key) {
+      case '1':
+        resultHandler(item.correctAnswer)
+        break
+      case '0':
+        resultHandler('-')
+    }
+  }
+
   window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
     const el = $(
       `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
@@ -55,6 +65,10 @@
       })
       buttonContainer.append(button)
     })
+    if (window.config.options.test_options?.useKeyboard) {
+      $(window).one('keyup', e => handleKeyup(e, item, resultHandler))
+    }
+
     el.append(buttonContainer)
     el.on('mounted', e => {
       e.stopPropagation()

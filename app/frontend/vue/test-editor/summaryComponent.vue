@@ -60,19 +60,31 @@
     },
 
     methods: {
-      printAll: function () {
+      printAll() {
         console.log(this.allData)
         console.log(this.properties)
         console.log(this.getConfiguration())
       },
 
-      printQuestions: function () {
+      printQuestions() {
         console.log(this.allData.questions)
       },
-      getProps: function () {
-        return JSON.stringify(this.properties)
+      getProperties() {
+        return {
+          area: this.properties.area,
+          competence: this.properties.competence,
+          family: this.properties.family,
+          test_type: this.properties.test_type,
+          shorthand: this.properties.shorthand,
+          level: this.properties.level,
+          student_test: this.properties.student_test,
+          version: this.properties.version,
+          time_limit: this.properties.time_limit,
+          description: { ...this.properties.description },
+          responsible: this.properties.responsible,
+        }
       },
-      getConfiguration: function () {
+      getConfiguration() {
         const a = {
           start_page: this.startPage,
           end_page: this.endPage,
@@ -87,6 +99,7 @@
               negative: this.properties.negative_feedback_text,
               show_task: this.properties.hide_task_in_feedback,
             },
+            test_options: this.properties.options,
           },
           views: [
             {
@@ -204,7 +217,7 @@
         }
 
         const json = JSON.stringify({
-          ...this.properties,
+          ...this.getProperties(),
           required_services: requiredServices,
           configuration: this.getConfiguration(),
           items: items,
