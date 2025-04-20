@@ -109,6 +109,34 @@
                 A3 Levumi liest
               </a>
             </b-dropdown-item>
+            <b-dropdown-divider />
+            <b-dropdown-item>
+              <h6 class="dropdown-header">Urkunden</h6>
+              <a
+                class="dropdown-item"
+                href="/files/Urkunde_Levumi_mit_Punkten.docx"
+                target="_blank">
+                Levumi mit Punkten (docx)
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/Urkunde_Levumi_mit_Punkten.pdf" target="_blank">
+                Levumi mit Punkten (pdf)
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a
+                class="dropdown-item"
+                href="/files/Urkunde_Levumi_ohne_Punkte.docx"
+                target="_blank">
+                Levumi ohne Punkte (docx)
+              </a>
+            </b-dropdown-item>
+            <b-dropdown-item>
+              <a class="dropdown-item" href="/files/Urkunde_Levumi_ohne_Punkte.pdf" target="_blank">
+                Levumi mit Punkten (pdf)
+              </a>
+            </b-dropdown-item>
           </b-nav-item-dropdown>
           <b-alert v-if="!!systemMessage" class="ms-auto mb-0" :model-value="true" variant="danger">
             {{ systemMessage }}
@@ -328,7 +356,7 @@
       async handleLogout() {
         const res = await ajax({ url: apiRoutes.users.logout, method: 'POST' })
         if (res.status === 200) {
-          sessionStorage.removeItem('login')
+          sessionStorage.removeItem('mk')
           window.location.replace('/')
           window.location.reload()
         }

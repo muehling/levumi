@@ -153,6 +153,19 @@
           help-text="Text, der als negatives Feedback dargestellt wird. ### kann als Platzhalter für die korrekte Antwort verwendet werden." />
       </b-form-group>
       <b-form-group
+        v-if="showFeedback"
+        label="Aufgabenstellung ausblenden"
+        label-for="hideTaskInFeedback"
+        label-cols="3">
+        <b-form-checkbox
+          id="inputDemoTask"
+          v-model="hideTaskInFeedback"
+          :value="1"
+          :unchecked-value="0" />
+        <context-help
+          help-text="Wenn aktiv, wird die Aufgabenstellung (z. b. '3 + 6 = __' auf der Feedbackseite ausgeblendet." />
+      </b-form-group>
+      <b-form-group
         id="input-group-12"
         label="Beschreibung"
         label-for="inputDescription"
@@ -189,7 +202,16 @@
           rows="3"
           max-rows="6" />
       </b-form-group>
-
+      <div v-if="options.length">
+        <hr />
+        <div v-for="o in options" :key="o.id">
+          <b-form-group v-if="o.type === 'boolean'" :label="o.label" label-cols="3">
+            <b-form-radio @click="setOption({ [o.id]: true })">Aktiv</b-form-radio>
+            <b-form-radio @click="setOption({ [o.id]: false })">Inaktiv</b-form-radio>
+            <context-help :help-text="o.description" />
+          </b-form-group>
+        </div>
+      </div>
       <b-button class="continue mt-4" @click="saveAndContinue">
         Speichern und weiter
         <i class="fa-solid fa-arrow-right"></i>
@@ -232,6 +254,8 @@
         showFeedback: false,
         positiveFeedbackText: '',
         negativeFeedbackText: '',
+        hideTaskInFeedback: false,
+        selectedOptions: {},
 
         timeDropdownOptions: [
           { value: null, text: 'Bitte auswählen' },
@@ -306,6 +330,10 @@
           text: testType.name,
         }))
       },
+      options() {
+        return testDefinitions[this.questionType]?.options || []
+      },
+
       compiledProps() {
         return {
           area: this.store.staticData.testMetaData.areas.find(a => a.id === this.area)?.name,
@@ -332,10 +360,9 @@
           show_feedback: this.showFeedback,
           positive_feedback_text: this.positiveFeedbackText,
           negative_feedback_text: this.negativeFeedbackText,
+          hide_task_in_feedback: this.hideTaskInFeedback,
+          options: this.selectedOptions,
         }
-      },
-      shd() {
-        return this.shorthand.replaceAll(/\s/g, '')
       },
     },
 
@@ -343,6 +370,9 @@
       setShorthand(val) {
         const trimmed = val.replaceAll(/\s/g, '')
         return trimmed
+      },
+      setOption(val) {
+        this.selectedOptions = { ...this.selectedOptions, ...val }
       },
       load() {
         const d = localStorage.getItem('test-editor-data')

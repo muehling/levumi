@@ -31,9 +31,8 @@
 </template>
 <script setup>
   import { ajax } from 'src/utils/ajax'
-  import { computed, defineProps, ref } from 'vue'
+  import { defineProps, ref } from 'vue'
   import { encryptWithMasterKeyAndGroup } from 'src/utils/encryption'
-  import { isSingleUser } from 'src/utils/user'
   import { useGlobalStore } from 'src/store/store'
   import { useRouter } from 'vue-router'
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
@@ -135,6 +134,4 @@
     }
     isWorkingOnDemoStudents.value = false
   }
-
-  const onlySingleGroupAllowed = computed(() => isSingleUser())
 </script>

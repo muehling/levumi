@@ -2,17 +2,21 @@
   <div>
     <span class="me-4">Diese Klasse wurde geteilt von: {{ group.belongs_to }}</span>
     <div v-if="!group.key">
-      <b-form class="mt-3" inline :validated="checkKey()" @submit.prevent.stop="acceptShare">
+      <b-form class="mt-3" inline @submit.prevent.stop="acceptShare">
         <b-input
           v-if="!group.is_anonymous"
           v-model="keyInput"
           class="me-2 mb-3"
           placeholder="Code"
           size="sm" />
-        <b-button type="submit" variant="outline-primary" size="sm" :disabled="!checkKey()">
+        <b-button
+          type="submit"
+          :variant="isInputCorrect ? 'outline-success' : 'outline-primary'"
+          size="sm"
+          :disabled="!isInputCorrect">
           Jetzt freischalten
         </b-button>
-        <b-button variant="outline-primary" size="sm" class="ms-3" @click="requestUnshare">
+        <b-button variant="outline-danger" size="sm" class="ms-3" @click="requestUnshare">
           Klassen entfernen
         </b-button>
       </b-form>
@@ -47,6 +51,20 @@
     },
     data() {
       return { keyInput: '' }
+    },
+    computed: {
+      isInputCorrect() {
+        if (this.group.is_anonymous) {
+          return true
+        }
+        if (this.keyInput) {
+          // The Accept button will remain disabled until the key can be successfully decrypted with the auth_token
+          const decrypted = decryptWithKey(this.group.auth_token, this.keyInput)
+          return decrypted ? true : false
+        } else {
+          return false
+        }
+      },
     },
 
     methods: {

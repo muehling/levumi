@@ -55,10 +55,6 @@ class UserTest < ActionDispatch::IntegrationTest
     assert (user.get_account_type == 'Privat')
   end
 
-  test 'User.get_home_info' do
-    #TODO
-  end
-
   test 'User.get_classbook_info' do
     user = users(:admin_user)
 

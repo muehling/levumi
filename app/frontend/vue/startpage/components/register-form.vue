@@ -16,7 +16,7 @@
       </p>
       <hr />
       <b-form @submit="handleRegister">
-        <BFormGroup label-class="text-small" label="Email-Adresse" label-for="register-email">
+        <BFormGroup label-class="text-small" label="E-Mail-Adresse" label-for="register-email">
           <BFormInput
             id="register-email"
             v-model="email"
@@ -132,15 +132,16 @@
       },
     },
     methods: {
-      handleClose() {
-        this.$root.$emit('bv::hide::modal', 'register-modal')
-      },
       async handleRegister(e) {
         e.preventDefault()
         e.stopPropagation()
 
         if (this.email.includes(' ')) {
           this.errorMessage = 'Die E-Mail-Adresse darf keine Leerzeichen enthalten!'
+          return
+        }
+        if (!this.email.includes('@')) {
+          this.errorMessage = 'Dies ist keine gültige E-Mail-Adresse!'
           return
         }
 

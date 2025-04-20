@@ -14,7 +14,9 @@
             {{ systemMessage }}
           </b-alert>
         </b-nav-item>
-        <a href="/testen" class="btn btn-outline-secondary">Zugang für Schülerinnen und Schüler</a>
+        <a v-if="!isMaintenance" href="/testen" class="btn btn-outline-secondary">
+          Zugang für Schülerinnen und Schüler
+        </a>
         <div class="mt-2 mt-md-0">
           <div v-if="isLoggedIn">
             <a class="btn btn-outline-secondary" href="/diagnostik">{{ user }}</a>
@@ -25,7 +27,7 @@
               auto-close="false"
               menu-class="login-dropdown"
               variant="outline-secondary"
-              text="Einloggen"
+              :text="isMaintenance ? 'Admin-Zugang' : 'Einloggen'"
               right>
               <div class="px-4 py-3 mx-3">
                 <login-form />
@@ -35,7 +37,8 @@
         </div>
       </div>
     </nav>
-    <div class="main-container startpage-container">
+    <MaintenanceMode v-if="isMaintenance" />
+    <div v-else class="main-container startpage-container">
       <router-view :is-logged-in="isLoggedIn" />
     </div>
     <footer-bar />
@@ -47,16 +50,17 @@
   import FooterBar from '../shared/footer-bar.vue'
   import LoginForm from './components/login-form.vue'
   import levumiSmallSrc from '../../../assets/images/shared/Levumi-normal_small.png'
+  import MaintenanceMode from './components/maintenance-mode.vue'
 
   export default {
     name: 'StartpageApp',
-    components: { FooterBar, RouterView, LoginForm },
+    components: { FooterBar, RouterView, LoginForm, MaintenanceMode },
     provide() {
       return {
         passwordMismatch: this.passwordMismatch,
       }
     },
-    props: { user: String, retry: String, initialTimeStamp: String },
+    props: { user: String, retry: String, initialTimeStamp: String, isMaintenance: String },
     data() {
       return { showLogin: false }
     },

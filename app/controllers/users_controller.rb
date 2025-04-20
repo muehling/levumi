@@ -13,8 +13,10 @@ class UsersController < ApplicationController
                   statistics
                   get_classbook_info
                   recovery_notification
+                  email_change_notification
                   recovery_key_verification
                   delete_used_recovery_key
+                  change_user_email
                 ]
 
   skip_before_action :set_login,
@@ -47,27 +49,23 @@ class UsersController < ApplicationController
 
   #PUT /users/:id
   def update
-    # "Normales" Update
-    res = @user.update(user_attributes)
-    if !res
-      render json: { message: 'Validation failed', errors: @user.errors }, status: 400
+    # update of any user (from the users list)
+    if (@login.id != @user.id)
+      simple_update
     else
-      if (@login.id == @user.id)
-        #Eigenes Update, ggf. keys Recodieren
-        if (params.has_key?(:user) && params.has_key?(:keys) && !params[:keys].blank?)
+      # self-update of logged-in user
+      unless (params.has_key?(:user) && params.has_key?(:keys) && !params[:keys].blank?)
+        simple_update
+      else
+        User.transaction do
+          @user.update!(user_attributes)
           todo = JSON.parse(params[:keys]) || [] #Gesendet werden (key, value)-Paare der keys für GroupShare-Objekte.
           todo.each do |k, v|
             ga = GroupShare.where(user: @login, group_id: k).first
-            unless ga.nil? || ga.key.nil? || ga.key.blank?
-              ga.key = v
-              ga.save
-            end
+            ga.update!(key: v) unless ga.nil? || ga.key.nil? || ga.key.blank?
           end
         end
         render json: @user # return user to update view
-      else
-        @users = User.all #Update für anderen Nutzer aus der Benutzerverwaltung => Tabelle wird neu gerendert
-        head :ok
       end
     end
   end
@@ -196,6 +194,27 @@ class UsersController < ApplicationController
 
   def destroy_self
     head :forbidden and return if !@login.is_regular_user?
+
+    @support_message =
+      SupportMessage.new(
+        {
+          message: params['support_message']['message'],
+          subject: "#{@login.email} hat seinen Account gelöscht.",
+          sender: @login.email
+        }
+      )
+    if @support_message.save
+      UserMailer
+        .with(
+          email: @login.email,
+          body: params['support_message']['message'],
+          subject: "#{@login.email} hat seinen Account gelöscht.",
+          support_addresses: User.where('capabilities LIKE ?', '%support%').pluck(:email)
+        )
+        .support
+        .deliver_later
+    end
+
     @login.destroy
     reset_session
     head :ok
@@ -370,26 +389,58 @@ class UsersController < ApplicationController
     head :ok
   end
 
+  def email_change_notification
+    if User.find_by_email(user_attributes[:email]) == nil
+      if @login.recovery_key.nil?
+        @login.update(recovery_key: (0...9).map { ('a'..'z').to_a[rand(26)] }.join)
+      end
+      UserMailer
+        .with(sender: 'noreply@levumi.de', user: @login, email: user_attributes[:email])
+        .email_reset
+        .deliver_later
+      head :ok
+    else
+      render json: { message: 'Die eingegebene Adresse ist bereits vergeben!' }, status: :forbidden
+    end
+  end
+
   def recovery_key_verification
     @user = User.find_by_email(user_attributes[:email])
     if @user.recovery_key == user_attributes[:recovery_key]
       respond_to do |format|
-        format.html { render partial: 'users/recover/decrypt_password' and return }
-        format.json { render json: @user and return }
+        format.html { render partial: 'users/recover/decrypt_password' }
+        format.json { render json: @user }
       end
     else
       render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
-      return
+    end
+  end
+
+  def change_user_email
+    if @login.recovery_key == user_attributes[:verification_key]
+      @login.update(email: user_attributes[:email], recovery_key: nil)
+      render json: @login
+    else
+      render json: { message: 'Der eingegebene Code ist falsch!' }, status: :forbidden
     end
   end
 
   def delete_used_recovery_key
     @user = User.find_by_email(user_attributes[:email])
     @user.update(recovery_key: nil)
-    head :ok and return
+    head :ok
   end
 
   private
+
+  def simple_update
+    res = @user.update(user_attributes)
+    if !res
+      render json: { message: 'Validation failed', errors: @user.errors }, status: 400
+    else
+      render json: @user
+    end
+  end
 
   def user_attributes
     temp =
@@ -402,15 +453,17 @@ class UsersController < ApplicationController
           :focus,
           :institution,
           :intro_state,
+          :masterkey,
           :password_confirmation,
           :password,
+          :recovery_key,
           :school_type,
           :security_digest,
+          :server_error,
           :settings,
           :state,
           :town,
-          :server_error,
-          :recovery_key
+          :verification_key
         )
         .reject { |_, v| v.blank? }
     if temp.has_key?(:password) && !temp.has_key?(:password_confirmation)

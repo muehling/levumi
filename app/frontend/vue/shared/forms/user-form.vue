@@ -2,11 +2,7 @@
   <b-container>
     <b-form @submit="_handleSubmit">
       <b-form-group label-cols="4" label="E-Mail-Adresse*">
-        <b-form-input
-          v-model="email"
-          :class="hasEmailErrors && 'is-invalid'"
-          :readonly="!canEditUser" />
-        <div v-if="hasEmailErrors" class="invalid-feedback">{{ errors['email'].join('\n') }}</div>
+        <b-form-input v-model="email" :readonly="true" />
       </b-form-group>
       <b-form-group v-if="canEditUser" label-cols="4" label="Typ" class="mt-3">
         <b-form-radio v-for="at in accountTypes" :key="at.id" v-model="accountType" :value="at.id">
@@ -22,22 +18,31 @@
       <div v-if="!canEditUser" class="form-group row">
         <div class="col-sm-12">
           <small class="form-text text-muted">
-            Wenn Sie Ihre E-Mail Adresse oder Ihren Nutzertyp ändern möchten, wenden Sie sich bitte
+            Wenn Sie Ihren Nutzertyp ändern möchten, wenden Sie sich bitte über das Kontaktformular
             an uns.
           </small>
         </div>
       </div>
-
-      <b-form-group v-if="isOwnProfile">
-        <b-button v-b-toggle.password-section variant="outline-secondary">Passwort ändern</b-button>
-        <b-collapse id="password-section" class="mt-2">
-          <password-form
-            :errors="errors"
-            @change-password="pw => (password = pw)"
-            @change-password-confirm="pw => (passwordConfirm = pw)"
-            @change-security-answer="a => (securityAnswer = a)" />
-        </b-collapse>
+      <b-form-group>
+        <div v-if="isOwnProfile" class="d-flex gap-2 w-100">
+          <b-button variant="outline-secondary" class="flex-grow-1" @click="togglePasswordSection">
+            Passwort ändern
+          </b-button>
+          <b-button variant="outline-secondary" class="flex-grow-1" @click="toggleEmailSection">
+            E-Mail-Adresse ändern
+          </b-button>
+        </div>
       </b-form-group>
+      <b-collapse class="mt-2" :model-value="isPasswordSectionOpen">
+        <password-form
+          :errors="errors"
+          @change-password="pw => (password = pw)"
+          @change-password-confirm="pw => (passwordConfirm = pw)"
+          @change-security-answer="a => (securityAnswer = a)" />
+      </b-collapse>
+      <b-collapse class="mt-2" :model-value="isEmailSectionOpen">
+        <email-form @user-email-changed="changeUserMail" />
+      </b-collapse>
       <div class="mt-3 mb-2">
         <b-form-group label-cols="4" label="Bundesland*">
           <b-form-select
@@ -87,14 +92,14 @@
         {{ buttonText }}
       </b-button>
     </div>
-    <confirm-dialog ref="confirmDeleteDialog" />
+    <feedback-on-user-deletion ref="confirmDeleteDialog" />
     <confirm-dialog ref="doneConfirmation" />
   </b-container>
 </template>
 
 <script>
   import { ajax } from '../../../utils/ajax'
-  import { encryptWithKey, recodeKeys } from '../../../utils/encryption'
+  import { encryptWithKey } from '../../../utils/encryption'
   import { hasCapability } from '../../../utils/user'
   import { useGlobalStore } from '../../../store/store'
   import apiRoutes from '../../routes/api-routes'
@@ -102,10 +107,12 @@
   import ExtraDataForm from './extra-data-form.vue'
   import isEmpty from 'lodash/isEmpty'
   import PasswordForm from './password-form.vue'
+  import FeedbackOnUserDeletion from '../feedback-on-user-deletion.vue'
+  import EmailForm from './email-form.vue'
 
   export default {
     name: 'UserForm',
-    components: { PasswordForm, ExtraDataForm, ConfirmDialog },
+    components: { PasswordForm, ExtraDataForm, ConfirmDialog, FeedbackOnUserDeletion, EmailForm },
     props: {
       isNew: Boolean,
       user: Object,
@@ -135,6 +142,8 @@
         state: this.user.state,
         town: this.user.town,
         settingsOpen: false,
+        isPasswordSectionOpen: false,
+        isEmailSectionOpen: false,
       }
     },
     computed: {
@@ -211,6 +220,22 @@
     },
 
     methods: {
+      togglePasswordSection() {
+        this.isPasswordSectionOpen = !this.isPasswordSectionOpen
+        this.isEmailSectionOpen = false
+      },
+      toggleEmailSection() {
+        this.isEmailSectionOpen = !this.isEmailSectionOpen
+        this.isPasswordSectionOpen = false
+      },
+      changeUserMail(newAddress) {
+        this.email = newAddress
+        this.isEmailSectionOpen = false
+        this.globalStore.setGenericMessage({
+          title: 'E-Mail-Adresse geändert',
+          message: 'Die E-Mail-Adresse wurde erfolgreich geändert!',
+        })
+      },
       _close() {
         this.$emit('cancelEdit')
       },
@@ -241,12 +266,10 @@
           res = await ajax({ ...apiRoutes.users.create, data })
         } else {
           if (this.password !== '' && this.securityAnswer !== '') {
-            // Password and security question
-            newKeys = recodeKeys(this.password)
-            data.keys = JSON.stringify(newKeys)
             data.user.password = this.password
             data.user.password_confirmation = this.passwordConfirm
             data.user.security_digest = encryptWithKey(this.password, this.securityAnswer)
+            data.user.masterkey = encryptWithKey(sessionStorage.getItem('mk'), this.password)
           }
           res = await ajax({
             ...apiRoutes.users.update(this.user.id),
@@ -256,8 +279,8 @@
 
         if (res.status === 200) {
           this.$emit('submitSuccessful', res)
+          this.globalStore.login = res.data
           if (newKeys) {
-            sessionStorage.setItem('login', this.password)
             this.globalStore.setShareKeys(newKeys)
           }
         } else {
@@ -266,17 +289,10 @@
         }
       },
       async deleteSelf() {
-        const answer = await this.$refs.confirmDeleteDialog.open({
-          title: 'Profil löschen',
-          message: `Mit dieser Aktion werden alle Daten des angemeldeten Benutzers gelöscht.
-            Dies betrifft sowohl das Benutzerprofil wie auch alle bisher erfassten Schüler,
-            Klassen und Messungen. Dieser Vorgang kann nicht rückgängig gemacht werden.`,
-          okText: 'Ja, löschen',
-          cancelText: 'Nein, abbrechen',
-        })
+        const answer = await this.$refs.confirmDeleteDialog.open()
 
         if (answer) {
-          const res = await ajax({ ...apiRoutes.users.delete() })
+          const res = await ajax({ ...apiRoutes.users.delete(answer) })
           if (res.status === 200) {
             await this.$refs.doneConfirmation.open({
               title: 'Profil erfolgreich gelöscht',

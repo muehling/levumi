@@ -6,7 +6,7 @@
       </div>
       <div v-else class="d-inline">
         <b-button
-          v-if="permissions.createStudents"
+          v-if="permissions?.createStudents"
           variant="outline-secondary"
           class="text-nowrap mt-2"
           size="sm"
@@ -56,7 +56,7 @@
       <span>
         <b-button-group :class="!empty && !editMode ? '' : 'd-none'">
           <b-button
-            v-if="permissions.updateStudents"
+            v-if="permissions?.updateStudents"
             v-b-modal="'modal_settings_' + student.id"
             class="me-1"
             variant="outline-secondary"
@@ -65,7 +65,7 @@
             <i class="fas fa-text-height"></i>
           </b-button>
           <b-button
-            v-if="permissions.updateStudents"
+            v-if="permissions?.updateStudents"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -73,7 +73,7 @@
             <i class="fas fa-user-edit"></i>
           </b-button>
           <b-button
-            v-if="permissions.updateStudents"
+            v-if="permissions?.updateStudents"
             variant="outline-secondary"
             class="me-1"
             size="sm"
@@ -475,7 +475,7 @@
           this.globalStore.setErrorMessage('Die Schüler:in kann nicht bearbeitet werden.')
           return
         }
-        
+
         const res = await ajax({
           url: `/students${!this.empty ? '/' + this.student.id : ''}?${studentData}`,
           method: this.empty ? 'POST' : 'PUT',

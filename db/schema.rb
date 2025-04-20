@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
+ActiveRecord::Schema[7.2].define(version: 2025_02_20_080116) do
   create_table 'active_storage_attachments', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name', null: false
     t.string 'record_type', null: false
@@ -23,10 +23,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
             unique: true
   end
 
-  create_table 'active_storage_blobs',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'active_storage_blobs', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'key', null: false
     t.string 'filename', null: false
     t.string 'content_type'
@@ -38,10 +35,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['key'], name: 'index_active_storage_blobs_on_key', unique: true
   end
 
-  create_table 'active_storage_variant_records',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'active_storage_variant_records', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'blob_id', null: false
     t.string 'variation_digest', null: false
     t.index %w[blob_id variation_digest],
@@ -49,19 +43,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
             unique: true
   end
 
-  create_table 'annotation_categories',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'annotation_categories', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
   end
 
-  create_table 'annotations',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'annotations', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'assessment_id'
     t.bigint 'student_id'
     t.bigint 'group_id'
@@ -77,17 +65,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['student_id'], name: 'index_annotations_on_student_id'
   end
 
-  create_table 'areas', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
+  create_table 'areas', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.string 'color'
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
   end
 
-  create_table 'assessments',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'assessments', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'group_id'
     t.bigint 'test_id'
     t.boolean 'active', default: true
@@ -95,14 +80,12 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.datetime 'updated_at', precision: nil, null: false
     t.json 'excludes'
     t.json 'settings'
+    t.integer 'interval'
     t.index ['group_id'], name: 'index_assessments_on_group_id'
     t.index ['test_id'], name: 'index_assessments_on_test_id'
   end
 
-  create_table 'competences',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'competences', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.text 'description'
     t.bigint 'area_id'
@@ -111,10 +94,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['area_id'], name: 'index_competences_on_area_id'
   end
 
-  create_table 'group_shares',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'group_shares', charset: 'utf8mb3', force: :cascade do |t|
     t.boolean 'owner'
     t.boolean 'read_only'
     t.string 'key'
@@ -127,10 +107,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['user_id'], name: 'index_group_shares_on_user_id'
   end
 
-  create_table 'groups',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'groups', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'label'
     t.boolean 'archive', default: false
     t.boolean 'demo', default: false
@@ -140,10 +117,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.json 'settings'
   end
 
-  create_table 'material_supports',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'material_supports', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'material_id'
     t.bigint 'area_id'
     t.bigint 'competence_id'
@@ -160,17 +134,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['test_id'], name: 'index_material_supports_on_test_id'
   end
 
-  create_table 'materials',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'materials', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.json 'description'
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
   end
 
-  create_table 'news', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
+  create_table 'news', charset: 'utf8mb3', force: :cascade do |t|
     t.date 'date'
     t.string 'title'
     t.text 'message'
@@ -178,10 +149,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.datetime 'updated_at', null: false
   end
 
-  create_table 'results',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'results', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'student_id'
     t.bigint 'assessment_id'
     t.date 'test_date'
@@ -195,10 +163,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['student_id'], name: 'index_results_on_student_id'
   end
 
-  create_table 'shadow_results',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'shadow_results', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'shadow_student_id'
     t.string 'shorthand'
     t.integer 'version'
@@ -213,14 +178,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['shadow_student_id'], name: 'index_shadow_results_on_shadow_student_id'
   end
 
-  create_table 'shadow_students',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'shadow_students', charset: 'utf8mb3', force: :cascade do |t|
     t.integer 'original_id'
     t.integer 'group'
-    t.integer 'account_type'
-    t.integer 'state'
+    t.integer 'account_type', null: false
+    t.integer 'state', null: false
     t.integer 'gender'
     t.date 'birthmonth'
     t.integer 'sen'
@@ -230,10 +192,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['original_id'], name: 'index_shadow_students_on_original_id'
   end
 
-  create_table 'students',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'students', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.string 'login'
     t.bigint 'group_id'
@@ -244,13 +203,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.json 'settings'
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
+    t.boolean 'is_demo'
     t.index ['group_id'], name: 'index_students_on_group_id'
   end
 
-  create_table 'support_messages',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'support_messages', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'subject'
     t.string 'sender'
     t.text 'message'
@@ -263,10 +220,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['user_id'], name: 'index_support_messages_on_user_id'
   end
 
-  create_table 'targets',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'targets', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'assessment_id'
     t.bigint 'student_id'
     t.json 'view'
@@ -278,10 +232,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['student_id'], name: 'index_targets_on_student_id'
   end
 
-  create_table 'test_families',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'test_families', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name'
     t.text 'description'
     t.bigint 'competence_id'
@@ -290,17 +241,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.index ['competence_id'], name: 'index_test_families_on_competence_id'
   end
 
-  create_table 'test_types',
-               charset: 'utf8mb4',
-               collation: 'utf8mb4_0900_ai_ci',
-               force: :cascade do |t|
+  create_table 'test_types', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'name', null: false
     t.text 'description'
     t.datetime 'created_at', null: false
     t.datetime 'updated_at', null: false
   end
 
-  create_table 'tests', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
+  create_table 'tests', charset: 'utf8mb3', force: :cascade do |t|
     t.bigint 'test_family_id'
     t.string 'level'
     t.string 'shorthand'
@@ -313,15 +261,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.datetime 'created_at', precision: nil, null: false
     t.datetime 'updated_at', precision: nil, null: false
     t.bigint 'test_type_id'
-    t.json 'required_services'
     t.string 'updated_by'
     t.string 'responsible'
+    t.json 'required_services'
     t.boolean 'allow_quartiles', default: false
+    t.integer 'interval'
     t.index ['test_family_id'], name: 'index_tests_on_test_family_id'
     t.index ['test_type_id'], name: 'index_tests_on_test_type_id'
   end
 
-  create_table 'users', charset: 'utf8mb4', collation: 'utf8mb4_0900_ai_ci', force: :cascade do |t|
+  create_table 'users', charset: 'utf8mb3', force: :cascade do |t|
     t.string 'email'
     t.string 'password_digest'
     t.string 'security_digest'
@@ -339,6 +288,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_01_27_114541) do
     t.datetime 'updated_at', precision: nil, null: false
     t.json 'settings'
     t.string 'recovery_key'
+    t.string 'masterkey'
   end
 
   add_foreign_key 'active_storage_attachments', 'active_storage_blobs', column: 'blob_id'

@@ -157,7 +157,7 @@
       
         switch (res.status){
             case 200: callback(); break;
-            case 422: return; // result has been posted in the previous 10 seconds (some tests might do this)          
+            case 422: break; // result has been posted in the previous 10 seconds (some tests might do this)               
             default: 
                 window["$"]('#error_message').show()
         }

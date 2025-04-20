@@ -1,4 +1,4 @@
-FROM ruby:3.1.2-slim
+FROM ruby:3.4.2-slim
 
 RUN apt-get update && apt-get install -y curl
 
@@ -10,7 +10,9 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
   build-essential \
   gnupg2 \
   git \
+  nano \
   yarn \
+  libyaml-dev \
   default-libmysqlclient-dev \ 
   libpq-dev \ 
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -23,7 +25,7 @@ ENV LANG=C.UTF-8 \
 WORKDIR /usr/src/app
 COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
-COPY package.json yarn.lock /app/
+COPY package.json yarn.lock /
 
 RUN gem update --system && gem install bundler && bundle install
 RUN yarn

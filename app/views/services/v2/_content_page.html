@@ -35,6 +35,9 @@
             `<div id='content-image-${index}' class='content-image-element' style='background-image:url(${imgSrc});'></div`
           )
           break
+        case 'hr':
+          el.append('<hr class="w-100"/>')
+          break
         case 'p':
         case 'h1':
           const textEl = $(`<${item.type} class='content-${item.type}-element'></${item.type}>`)

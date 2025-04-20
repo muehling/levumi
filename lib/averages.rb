@@ -52,7 +52,7 @@ module Averages
     previous_results =
       Rails
         .cache
-        .fetch("#{test.shorthand}/#{test.version}_numeric_results", expires_in: 2.years) do
+        .fetch("#{test.shorthand}/#{test.version}_numeric_results", expires_in: 15.years) do
           results = Result.where(assessment_id: assessment_ids)
           data = self.get_numeric_view_data(results)
           { values: data, timestamp: Time.now }
@@ -72,7 +72,7 @@ module Averages
     Rails.cache.write(
       "#{test.shorthand}/#{test.version}_numeric_results",
       { values: data, timestamp: Time.now },
-      expires_in: 2.years
+      expires_in: 15.years
     )
     return { q1: 0, q3: 0, count: 0 } if data.count == 0
 

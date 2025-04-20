@@ -7,7 +7,7 @@
       <b-form-input
         v-model="searchTerm"
         class="input-field my-1"
-        placeholder="Nach Email-Adresse suchen..."
+        placeholder="Nach E-Mail-Adresse suchen..."
         debounce="500" />
       <b-button class="btn-sm ms-2 my-1" variant="outline-secondary" @click="searchTerm = ''">
         <i class="fas fa-trash"></i>
@@ -343,6 +343,7 @@
           const data = res.data
           this.totalRows = data.total_support_messages
           this.supportMessages = data.support_messages
+          this.supportUsers = data.users
         }
       },
       isLoginAsAllowed(message) {

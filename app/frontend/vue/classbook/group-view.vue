@@ -6,7 +6,7 @@
         <transfer-status v-if="group.owner" :group="group" />
 
         <div>
-          <demo-group-hints :group="group" source="classbook" />
+          <demo-group-hints v-if="displayActionButton" :group="group" source="classbook" />
           <b-button
             v-if="displayActionButton"
             id="intro_cb_3"
@@ -145,7 +145,7 @@
         return this.group.read_only || this.globalStore.masquerade
       },
       displayActionButton() {
-        return this.permissions.updateGroup && this.group.key // shares without key are not accepted yet
+        return this.permissions?.updateGroup && this.group.key // shares without key are not accepted yet
       },
       displayActions() {
         return !isMasquerading() && this.group.id && this.group.owner

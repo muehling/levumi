@@ -17,7 +17,7 @@
             @focus="errorMessage = ''" />
 
           <context-help
-            help-text="Geben Sie hier die Email-Adresse der Person ein, mit der Sie
+            help-text="Geben Sie hier die E-Mail-Adresse der Person ein, mit der Sie
             die Klasse teilen möchten. Die Person wird dann per Mail informiert. Bei nicht-anonymem
             Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler:innen-Namen.
             Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder 

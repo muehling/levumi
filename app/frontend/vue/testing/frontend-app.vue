@@ -40,11 +40,11 @@
             :key="test.id"
             class="col-12 col-md-6 col-lg-4 col-xl-2 test-card">
             <b-card class="w-100 m-2 shadow" body-class="test-card-body px-3">
-              <template slot="title">
+              <template #header>
                 <h4>{{ test.test_info.competence }}</h4>
                 <p class="mb-0">{{ test.test_info.area }}</p>
               </template>
-              <hr class="mt-0" />
+
               <h4>{{ test.test_info.family }}</h4>
               <p class="mb-4">{{ test.test_info.level }}</p>
 

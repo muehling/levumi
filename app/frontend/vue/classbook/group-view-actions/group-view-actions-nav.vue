@@ -7,7 +7,7 @@
       v-if="permissions?.createShare"
       :active="current === 'share'"
       @click="handleClick('share')">
-      Klasse teilen
+      Klasse teilen{{ shareCountDisplay }}
     </b-nav-item>
     <b-nav-item
       v-if="permissions?.moveStudents"
@@ -23,6 +23,9 @@
     name: 'GroupViewActionsNav',
     props: { current: String, group: Object },
     computed: {
+      shareCountDisplay() {
+        return this.group.shares.length ? ` (${this.group.shares.length}x geteilt)` : ''
+      },
       permissions() {
         return access(this.group).classbook
       },

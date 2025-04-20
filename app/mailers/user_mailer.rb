@@ -56,4 +56,10 @@ class UserMailer < ApplicationMailer
     @recovery = @user.recovery_key
     mail(to: @user.email, subject: MailSubjects::NON_LOGGABLE[:PASSWORD_RESET])
   end
+
+  def email_reset
+    @user = params[:user]
+    @recovery = @user.recovery_key
+    mail(to: params[:email], subject: MailSubjects::NON_LOGGABLE[:PASSWORD_RESET])
+  end
 end

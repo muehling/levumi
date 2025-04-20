@@ -25,7 +25,6 @@
                     <span v-else-if="!group.owner" :id="`tooltip-target-${index}`">
                       {{ group.label }}
                       <span class="small">
-                        &nbsp;
                         <i class="fas fa-share-nodes"></i>
                       </span>
                     </span>
