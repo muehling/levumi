@@ -134,7 +134,7 @@
             </b-dropdown-item>
             <b-dropdown-item>
               <a class="dropdown-item" href="/files/Urkunde_Levumi_ohne_Punkte.pdf" target="_blank">
-                Levumi mit Punkten (pdf)
+                Levumi ohne Punkte (pdf)
               </a>
             </b-dropdown-item>
           </b-nav-item-dropdown>
