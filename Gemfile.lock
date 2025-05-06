@@ -100,7 +100,6 @@ GEM
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     io-console (0.8.0)
-    ip_anonymizer (0.3.0)
     irb (1.15.1)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -233,7 +232,6 @@ DEPENDENCIES
   bundle-audit (~> 0.1.0)
   csv (~> 3.3)
   debug
-  ip_anonymizer
   jbuilder (~> 2.5)
   mysql2
   puma (~> 6.4.3)

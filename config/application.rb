@@ -13,6 +13,7 @@ require 'action_text/engine'
 require 'action_view/railtie'
 require 'action_cable/engine'
 require_relative './initializers/custom_action_mailer_logger'
+require_relative '../lib/middleware/ip_masking_middleware'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -49,6 +50,6 @@ module Levumi2
       CustomActionMailerLogger.new(Rails.root.join("log/#{Rails.env}.log"))
     config.active_job.log_arguments = false
 
-    config.middleware.insert_after ActionDispatch::RemoteIp, IpAnonymizer::MaskIp
+    config.middleware.insert_after ActionDispatch::RemoteIp, Middleware::IPMaskingMiddleware
   end
 end
