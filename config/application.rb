@@ -48,5 +48,7 @@ module Levumi2
     config.action_mailer.logger =
       CustomActionMailerLogger.new(Rails.root.join("log/#{Rails.env}.log"))
     config.active_job.log_arguments = false
+
+    config.middleware.insert_after ActionDispatch::RemoteIp, IpAnonymizer::MaskIp
   end
 end

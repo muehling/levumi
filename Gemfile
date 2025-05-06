@@ -38,3 +38,5 @@ gem 'redis', '~> 5.3'
 gem 'redis-client', '~> 0.22.0'
 
 gem 'csv', '~> 3.3'
+
+gem 'ip_anonymizer'
