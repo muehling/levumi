@@ -1,6 +1,6 @@
 require 'ipaddr'
 module Middleware
-  class IPMaskingMiddleware
+  class IpMaskingMiddleware
     def initialize(app)
       @app = app
     end
@@ -11,16 +11,11 @@ module Middleware
       remote_ip = req.get_header('action_dispatch.remote_ip'.freeze)
       addr = IPAddr.new(remote_ip.to_s)
       if addr.ipv4?
-        # set last octet to 0
         t = addr.mask('255.255.0.0').to_s
-        puts 'v4'
       else
-        # set last 80 bits to zeros
-        puts 'v6'
         t = addr.mask(48).to_s
       end
-      puts addr.inspect
-      puts "##################### #{remote_ip} / #{addr} #{t}"
+
       req.remote_ip = t
       @app.call(req.env)
     end
