@@ -20,7 +20,7 @@
 </template>
 <script setup>
   import DemoGroupButtons from './demo-group-buttons.vue'
-  import { computed, defineProps } from 'vue'
+  import { computed } from 'vue'
 
   import { isSingleUser } from 'src/utils/user'
 
