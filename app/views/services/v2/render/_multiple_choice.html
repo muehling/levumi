@@ -8,14 +8,21 @@
     background-position: center;
     background-repeat: no-repeat;
   }
-  .multiple-choice-answer-button {
+  .multiple-choice-answer-button.multiple-choice-answer-button {
     font-size: 1em;
     margin: 0.25em;
     padding: 0.25em 0.5em;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    border: 5px solid transparent !important;
+    border-radius: 0.5em !important;
   }
   .multiple-choice-question {
     text-align: center;
     font-size: 1em;
+  }
+  .answer-selected.answer-selected {
+    border: 5px solid green !important;
   }
 </style>
 <script type="module">
@@ -46,27 +53,79 @@
         imageContainer.append(image)
       })
     }
+    const descriptionString = window.config.options.test_options?.customItemDescription
+    const itemString = `<p class='multiple-choice-question'>${item.question}</p>`
+
     if (item.imageTextOrder === '0') {
       el.append(imageContainer)
-      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+      if (descriptionString) {
+        el.append($(`<p>${descriptionString}</p>`))
+      }
+      el.append(itemString)
     } else {
-      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+      if (descriptionString) {
+        el.append($(`<p>${descriptionString}</p>`))
+      }
+      el.append(itemString)
       el.append(imageContainer)
     }
-    const answers = [...item.wrongAnswers, item.correctAnswer]
-    window.shuffleArray(answers)
+    const answers = [item.correctAnswer, ...item.wrongAnswers]
+
+    if (window.config.options.test_options?.shuffleItems) {
+      window.shuffleArray(answers)
+    }
 
     const buttonContainer = $(`<div id='#button-container'>`)
+
+    buttonContainer.css({ height: '6rem' })
+
+    let currentAnswer
+
     answers.forEach(function (answer, index) {
+      let itemText = answer
+      let buttonStyles = 'btn-primary'
+
+      if (answer.hasOwnProperty('text')) {
+        itemText = answer.text
+      }
+      if (answer.hasOwnProperty('styles')) {
+        buttonStyles = answer.styles
+      }
       const button = $(
-        `<button id='button${index}' class='multiple-choice-answer-button btn btn-primary'>${answer}</button>`
-      ).on('click', () => {
-        resultHandler(answer)
+        `<button id='button${index}' class='multiple-choice-answer-button btn ${buttonStyles}'>${itemText}</button>`
+      ).on('click', function () {
+        $('.multiple-choice-answer-button').removeClass('answer-selected')
+        $(this).addClass('answer-selected')
+        if (window.config.options.test_options?.showContinue) {
+          currentAnswer = itemText
+        } else {
+          saveItem(itemText)
+        }
       })
+
       buttonContainer.append(button)
     })
+
+    if (window.config.options.test_options?.showContinue) {
+      const continueButton = $(
+        `<button class="multiple-choice-answer-button btn btn-success">Weiter</button>`
+      ).on('click', () => {
+        if (currentAnswer) {
+          saveItem(currentAnswer)
+        }
+      })
+      buttonContainer.append(continueButton)
+    }
+
     if (window.config.options.test_options?.useKeyboard) {
       $(window).one('keyup', e => handleKeyup(e, item, resultHandler))
+    }
+
+    const saveItem = answer => {
+      const strip = new DOMParser().parseFromString(answer, 'text/html')
+      console.log('strip', strip.body.textContent)
+
+      resultHandler(strip.body.textContent || 'error')
     }
 
     el.append(buttonContainer)

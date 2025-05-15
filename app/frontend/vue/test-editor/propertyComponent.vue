@@ -210,6 +210,11 @@
             <b-form-radio @click="setOption({ [o.id]: false })">Inaktiv</b-form-radio>
             <context-help :help-text="o.description" />
           </b-form-group>
+          <b-form-group v-if="o.type === 'text'" :label="o.label" label-cols="3">
+            <b-form-input @input="e => setOption({ [o.id]: e.target.value })"></b-form-input>
+
+            <context-help :help-text="o.description" />
+          </b-form-group>
         </div>
       </div>
       <b-button class="continue mt-4" @click="saveAndContinue">
@@ -372,6 +377,8 @@
         return trimmed
       },
       setOption(val) {
+        console.log('yay', val)
+
         this.selectedOptions = { ...this.selectedOptions, ...val }
       },
       load() {

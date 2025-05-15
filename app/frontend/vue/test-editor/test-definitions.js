@@ -35,7 +35,27 @@ export const testDefinitions = {
         id: 'useKeyboard',
         type: 'boolean',
         description:
-          'Gedacht für Lehrkräfte-Tests. Wenn angehakt, wird "1" als "richtig" und "0" als "falsch" interpretiert.',
+          'Gedacht für Lehrkräfte-Tests. Wenn angehakt, wird "1" als "richtig" und "0" als "falsch" interpretiert. Nicht kompatibel mit dem Weiter-Knopf.',
+      },
+      {
+        label: 'Antworten nicht randomisieren',
+        id: 'randomizeItems',
+        type: 'boolean',
+        description:
+          'Wenn angehakt, erscheinen sie in der durch die CSV definierten Reihenfolge. Andernfalls werden die Items randomisiert',
+      },
+      {
+        label: 'Weiter-Knopf anzeigen',
+        id: 'showContinue',
+        type: 'boolean',
+        description:
+          'Wenn angehakt, wird ein Weiter-Knopf angezeigt, mit dem es zum nächsten Item geht. Ansonsten geht es direkt mit Klick auf eine Antwort weiter. Nicht kompatibel mit der Keyboard-Option.',
+      },
+      {
+        label: 'Item-Beschreibung',
+        id: 'customItemDescription',
+        type: 'text',
+        description: 'Text, der oberhalb des Items angezeigt wird. HTML kann verwendet werden.',
       },
     ],
   },

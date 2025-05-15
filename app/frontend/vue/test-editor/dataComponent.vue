@@ -303,10 +303,14 @@
 
         const data = {
           questionType: this.questionType,
-          questions: this.replaceUnsafeCharacters(this.questions, 'question'),
-          startPage: this.replaceUnsafeCharacters(this.startPage, 'text'),
-          endPage: this.replaceUnsafeCharacters(this.endPage, 'text'),
-          dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
+          //  questions: this.replaceUnsafeCharacters(this.questions, 'question'),
+          //  startPage: this.replaceUnsafeCharacters(this.startPage, 'text'),
+          //  endPage: this.replaceUnsafeCharacters(this.endPage, 'text'),
+          //  dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
+          questions: this.questions,
+          startPage: this.startPage,
+          endPage: this.endPage,
+          dimensions: this.dimensions,
         }
 
         const usedFiles = this.assets.filter(

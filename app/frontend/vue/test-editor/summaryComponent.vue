@@ -36,15 +36,6 @@
       questionTypeLabel() {
         return testDefinitions[this.questionType]?.label
       },
-      isMultipleChoice() {
-        return this.allData.questionType === 'multiple_choice'
-      },
-      isTrueOrFalse() {
-        return this.allData.questionType === 'trueOrFalse'
-      },
-      isGapText() {
-        return this.allData.questionType === 'gapText'
-      },
       properties() {
         return this.allData.properties
       },

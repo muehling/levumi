@@ -25,7 +25,8 @@
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
-    <!--<b-button class="m-1 d-none" @click="debug">debug</b-button>-->
+
+    <b-button class="m-1" @click="debug">debug</b-button>
     <hr />
 
     <div v-if="isCsvChecked">
@@ -146,9 +147,18 @@
             assets: d[1],
             question: d[2],
             correctAnswer: d[3],
-            wrongAnswers: d[4].split(','),
+            wrongAnswers: d[4].split('|').map(g => {
+              let f
+              try {
+                f = JSON.parse(g) //needed for answers with custom styles
+                return f
+              } catch (e) {
+                return g
+              }
+            }),
           }
         })
+
         return { questions: parsed, dimensions }
       },
 
