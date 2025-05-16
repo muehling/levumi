@@ -42,7 +42,13 @@ export const testDefinitions = {
         id: 'randomizeItems',
         type: 'boolean',
         description:
-          'Wenn angehakt, erscheinen sie in der durch die CSV definierten Reihenfolge. Andernfalls werden die Items randomisiert',
+          'Wenn angehakt, erscheinen sie in der durch die CSV definierten Reihenfolge. Andernfalls werden die Items randomisiert. Nicht kompatibel mit "Antworten sortieren"',
+      },
+      {
+        label: 'Antworten sortieren',
+        id: 'sortItems',
+        type: 'boolean',
+        description: 'Wenn angehakt, werden die Antworten alphabetisch sortiert.',
       },
       {
         label: 'Weiter-Knopf anzeigen',

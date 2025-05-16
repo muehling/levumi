@@ -140,13 +140,21 @@
       },
       parseMultipleChoice(data) {
         const dimensions = this.parseDimensions(data)
+
         const parsed = data.map((d, i) => {
+          let correctAnswer
+          try {
+            correctAnswer = JSON.parse(d[3])
+          } catch (e) {
+            correctAnswer = d[3]
+          }
+
           return {
             id: i + 1,
             group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             assets: d[1],
             question: d[2],
-            correctAnswer: d[3],
+            correctAnswer,
             wrongAnswers: d[4].split('|').map(g => {
               let f
               try {

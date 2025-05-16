@@ -71,8 +71,10 @@
     }
     const answers = [item.correctAnswer, ...item.wrongAnswers]
 
-    if (window.config.options.test_options?.shuffleItems) {
+    if (window.config.options.test_options?.randomizeItems) {
       window.shuffleArray(answers)
+    } else if (window.config.optons.test_options?.sortItems) {
+      //TODO
     }
 
     const buttonContainer = $(`<div id='#button-container'>`)
@@ -84,7 +86,6 @@
     answers.forEach(function (answer, index) {
       let itemText = answer
       let buttonStyles = 'btn-primary'
-
       if (answer.hasOwnProperty('text')) {
         itemText = answer.text
       }
@@ -97,9 +98,9 @@
         $('.multiple-choice-answer-button').removeClass('answer-selected')
         $(this).addClass('answer-selected')
         if (window.config.options.test_options?.showContinue) {
-          currentAnswer = itemText
+          currentAnswer = answer
         } else {
-          saveItem(itemText)
+          saveItem(answer)
         }
       })
 
@@ -122,10 +123,9 @@
     }
 
     const saveItem = answer => {
-      const strip = new DOMParser().parseFromString(answer, 'text/html')
-      console.log('strip', strip.body.textContent)
+      console.log('saveItem', answer)
 
-      resultHandler(strip.body.textContent || 'error')
+      resultHandler(answer)
     }
 
     el.append(buttonContainer)
