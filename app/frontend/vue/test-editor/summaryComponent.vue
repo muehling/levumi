@@ -90,7 +90,7 @@
               negative: this.properties.negative_feedback_text,
               show_task: this.properties.hide_task_in_feedback,
             },
-            test_options: this.properties.options,
+            ...this.properties.test_options,
           },
           views: [
             {

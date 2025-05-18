@@ -1,3 +1,12 @@
+const generalOptions = [
+  {
+    id: 'show_demo_task',
+    label: 'Demo-Aufgabe anzeigen',
+    type: 'boolean',
+  },
+  { id: 'show_feedback', label: 'Feedback anzeigen', type: 'boolean' },
+]
+
 export const testDefinitions = {
   number_input: {
     label: 'Mathematik',
@@ -14,22 +23,24 @@ export const testDefinitions = {
     ],
     demoLine: `Addition ohne Zehnerübergang;4;+;4;8;3`,
     additionalInfo: ``,
+    options: [...generalOptions],
   },
   multiple_choice: {
     label: 'Multiple Choice',
     description:
-      'Für Multiple Choice-Tests, wahlweise mit oder ohne Bild. Es sind beliebig viele falsche Antworten möglich.',
+      'Für Multiple Choice-Tests, wahlweise mit oder ohne Bild. Es sind beliebig viele falsche Antworten möglich. Sowohl in der Frage als auch in den Antworten kann HTML verwendet werden.',
     renderer: 'v2/render/multiple_choice',
     csvFieldHelp: [
       'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
       'enthält (optional) den Dateinamen des Bildes. Der hier eingetragene Name muss zwingend der gleiche wie der der hochgeladenen Bilddatei sein. Für Items ohne Bild bitte leer lassen. Sollen mehrere Bilder für ein Item angezeigt werden, müssen die Einträge durch Kommata OHNE Leerzeichen getrennt werden.',
       'enthält die dargestellte Frage.',
       'enthält die richtige Antwort.',
-      'enthält die falschen Antworten, durch Kommata ohne Leerzeichen voneinander getrennt. Es sollte mindestens eine falsche Antwort hinterlegt werden.',
+      'enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es sollte mindestens eine falsche Antwort hinterlegt werden.',
     ],
     demoLine: `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
     additionalInfo: ``,
     options: [
+      ...generalOptions,
       {
         label: 'Keyboard verwenden',
         id: 'useKeyboard',
@@ -38,11 +49,11 @@ export const testDefinitions = {
           'Gedacht für Lehrkräfte-Tests. Wenn angehakt, wird "1" als "richtig" und "0" als "falsch" interpretiert. Nicht kompatibel mit dem Weiter-Knopf.',
       },
       {
-        label: 'Antworten nicht randomisieren',
+        label: 'Antworten randomisieren',
         id: 'randomizeItems',
         type: 'boolean',
         description:
-          'Wenn angehakt, erscheinen sie in der durch die CSV definierten Reihenfolge. Andernfalls werden die Items randomisiert. Nicht kompatibel mit "Antworten sortieren"',
+          'Wenn angehakt, werden die Items randomisiert, andernfalls erscheinen sie wie in der CSV definiert. Nicht kompatibel mit "Antworten sortieren"',
       },
       {
         label: 'Antworten sortieren',
@@ -79,5 +90,6 @@ export const testDefinitions = {
     ],
     demoLine: `Dimension 1;Satz 6;audio6.mp3;levumi1.gif;bild1.png,bild5.png,bild3.png`,
     additionalInfo: ``,
+    options: [...generalOptions],
   },
 }

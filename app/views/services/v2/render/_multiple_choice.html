@@ -53,6 +53,8 @@
         imageContainer.append(image)
       })
     }
+    console.log('1')
+
     const descriptionString = window.config.options.test_options?.customItemDescription
     const itemString = `<p class='multiple-choice-question'>${item.question}</p>`
 
@@ -70,12 +72,23 @@
       el.append(imageContainer)
     }
     const answers = [item.correctAnswer, ...item.wrongAnswers]
+    console.log('1.5', window.config.options.test_options)
 
     if (window.config.options.test_options?.randomizeItems) {
+      console.log('1.6')
+
       window.shuffleArray(answers)
-    } else if (window.config.optons.test_options?.sortItems) {
+    } else if (window.config.options.test_options?.sortItems) {
+      console.log('1.6')
+
       //TODO
+      answers.sort((a, b) => {
+        const textA = typeof a === 'string' ? a : a.text
+        const textB = typeof b === 'string' ? b : b.text
+        return textA.localeCompare(textB)
+      })
     }
+    console.log('2')
 
     const buttonContainer = $(`<div id='#button-container'>`)
 

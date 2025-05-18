@@ -204,18 +204,9 @@
       </b-form-group>
       <div v-if="options.length">
         <hr />
-        <div v-for="o in options" :key="o.id">
-          <b-form-group v-if="o.type === 'boolean'" :label="o.label" label-cols="3">
-            <b-form-radio @click="setOption({ [o.id]: true })">Aktiv</b-form-radio>
-            <b-form-radio @click="setOption({ [o.id]: false })">Inaktiv</b-form-radio>
-            <context-help :help-text="o.description" />
-          </b-form-group>
-          <b-form-group v-if="o.type === 'text'" :label="o.label" label-cols="3">
-            <b-form-input @input="e => setOption({ [o.id]: e.target.value })"></b-form-input>
-
-            <context-help :help-text="o.description" />
-          </b-form-group>
-        </div>
+        a
+        <edit-test-properties :options="options" @change-prop="setOption" />
+        b
       </div>
       <b-button class="continue mt-4" @click="saveAndContinue">
         Speichern und weiter
@@ -231,9 +222,10 @@
   import ContextHelp from 'src/vue/shared/context-help.vue'
   import isEmpty from 'lodash/isEmpty'
   import LoadingDots from '../shared/loading-dots.vue'
+  import EditTestProperties from '../shared/edit-test-properties.vue'
 
   export default {
-    components: { ContextHelp, LoadingDots },
+    components: { ContextHelp, LoadingDots, EditTestProperties },
     props: { questionType: String },
     setup() {
       const store = useGlobalStore()
@@ -366,7 +358,7 @@
           positive_feedback_text: this.positiveFeedbackText,
           negative_feedback_text: this.negativeFeedbackText,
           hide_task_in_feedback: this.hideTaskInFeedback,
-          options: this.selectedOptions,
+          test_options: this.selectedOptions,
         }
       },
     },
@@ -414,8 +406,8 @@
             tt => tt.name === props.test_type
           )?.id
 
-          this.showDemoTask = parseInt(props.show_demo_task, 10)
-          this.showFeedback = parseInt(props.show_feedback, 10)
+          this.showDemoTask = props.show_demo_task
+          this.showFeedback = props.show_feedback
           this.positiveFeedbackText = props.positive_feedback_text.replaceAll('"', 'ʺ')
           this.negativeFeedbackText = props.negative_feedback_text.replaceAll('"', 'ʺ')
         } else {
@@ -455,6 +447,7 @@
         } catch (e) {
           console.error('Error parsing saved data', e)
         }
+
         localStorage.setItem(
           'test-editor-data',
           JSON.stringify({ ...data, properties: this.compiledProps })
