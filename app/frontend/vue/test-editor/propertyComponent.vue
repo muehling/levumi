@@ -28,6 +28,7 @@
 
       <b-form-group
         id="input-group-4"
+        class="property-input-group"
         label="Lernkompetenz"
         label-for="inputCompetence"
         label-cols="3">
@@ -42,6 +43,7 @@
 
       <b-form-group
         id="input-group-5"
+        class="property-input-group"
         label="Testfamilie"
         label-for="inputTestFamily"
         label-cols="3">
@@ -54,49 +56,71 @@
           :options="testFamilies" />
       </b-form-group>
       <hr />
-      <b-form-group id="input-group-6" label="Kürzel" label-for="inputShorthand" label-cols="3">
+      <b-form-group
+        id="input-group-6"
+        class="property-input-group"
+        label="Kürzel"
+        label-for="inputShorthand"
+        label-cols="3">
         <b-form-input
           id="inputShorthand"
           v-model="shorthand"
           :formatter="setShorthand"
           required
-          class="d-inline" />
+          class="d-inline me-2" />
         <context-help
           help-text="Kürzel des Tests. Muss eindeutig sein und darf keine Leerzeichen enthalten. Aktuell findet keine Überprüfung statt, ob das Kürzel bereits vergeben ist." />
       </b-form-group>
 
       <b-form-group
         id="input-group-7"
+        class="property-input-group"
         label="Verantwortlich"
         label-for="inputResponsible"
         label-cols="3">
-        <b-form-input id="inputResponsible" v-model="responsible" type="email" required class="" />
+        <b-form-input
+          id="inputResponsible"
+          v-model="responsible"
+          type="email"
+          required
+          class="d-inline me-2" />
         <context-help
           help-text="Emailadresse der verantwortlichen Person. Verwenden Sie im Zweifelsfall Ihre eigene." />
       </b-form-group>
 
-      <b-form-group id="input-group-8" label="Niveaustufe" label-for="inputLevel" label-cols="3">
-        <b-form-input id="inputLevel" v-model="level" required class="" />
+      <b-form-group
+        id="input-group-8"
+        class="property-input-group"
+        label="Niveaustufe"
+        label-for="inputLevel"
+        label-cols="3">
+        <b-form-input id="inputLevel" v-model="level" required class="d-inline me-2" />
       </b-form-group>
 
       <b-form-group
         id="input-group-9"
+        class="property-input-group"
         label="Durchführung durch"
         label-for="inputStudentTest"
         label-cols="3">
         <b-form-select
           id="inputStudentTest"
           v-model="student_test"
-          class=""
+          class="d-inline me-2"
           required
           :options="student_testOptions" />
       </b-form-group>
 
-      <b-form-group id="input-group-10" label="Version" label-for="inputVersion" label-cols="3">
+      <b-form-group
+        id="input-group-10"
+        class="property-input-group"
+        label="Version"
+        label-for="inputVersion"
+        label-cols="3">
         <b-form-select
           id="inputVersion"
           v-model="version"
-          class=""
+          class="d-inline me-2"
           required
           :options="versionDropdownOptions" />
         <context-help
@@ -105,6 +129,7 @@
 
       <b-form-group
         id="input-group-11"
+        class="property-input-group"
         label="Zeitbegrenzung"
         label-for="inputTimeLimit"
         label-cols="3">
@@ -115,29 +140,37 @@
           required
           :options="timeDropdownOptions" />
       </b-form-group>
-      <b-form-group label="Demo-Aufgabe anzeigen" label-for="inputDemoTask" label-cols="3">
+      <b-form-group
+        class="property-input-group"
+        label="Demo-Aufgabe anzeigen"
+        label-for="inputDemoTask"
+        label-cols="3">
         <b-form-checkbox
           id="inputDemoTask"
           v-model="showDemoTask"
-          :value="1"
-          :unchecked-value="0" />
+          inline
+          :value="true"
+          :unchecked-value="false" />
         <context-help
           help-text="Wenn aktiv, wird eine zufällige Aufgabe als Demo-Aufgabe angzeigt. Die gegebene Antwort fließt nicht in die Messung ein." />
       </b-form-group>
       <b-form-group
+        class="property-input-group"
         label="Feedback nach jeder Aufgabe anzeigen"
         label-for="inputFeedback"
         label-cols="3">
         <b-form-checkbox
           id="inputFeedback"
           v-model="showFeedback"
-          :value="1"
-          :unchecked-value="0" />
+          inline
+          :value="true"
+          :unchecked-value="false" />
         <context-help
           help-text="Wenn aktiv, wird nach jeder Frage eine Feedback-Seite angezeigt." />
       </b-form-group>
       <b-form-group
         v-if="showFeedback"
+        class="property-input-group"
         label="Text für positives Feedback"
         label-for="inputPositiveFeedback"
         label-cols="3">
@@ -145,6 +178,7 @@
       </b-form-group>
       <b-form-group
         v-if="showFeedback"
+        class="property-input-group"
         label="Text für negatives Feedback"
         label-for="inputNegativeFeedback"
         label-cols="3">
@@ -154,19 +188,22 @@
       </b-form-group>
       <b-form-group
         v-if="showFeedback"
+        class="property-input-group"
         label="Aufgabenstellung ausblenden"
         label-for="hideTaskInFeedback"
         label-cols="3">
         <b-form-checkbox
           id="inputDemoTask"
           v-model="hideTaskInFeedback"
-          :value="1"
-          :unchecked-value="0" />
+          inline
+          :value="true"
+          :unchecked-value="false" />
         <context-help
           help-text="Wenn aktiv, wird die Aufgabenstellung (z. b. '3 + 6 = __' auf der Feedbackseite ausgeblendet." />
       </b-form-group>
       <b-form-group
         id="input-group-12"
+        class="property-input-group"
         label="Beschreibung"
         label-for="inputDescription"
         label-cols="3">
@@ -181,6 +218,7 @@
 
       <b-form-group
         id="input-group-13"
+        class="property-input-group"
         label="Kurzbeschreibung"
         label-for="inputShortDescription"
         label-cols="3">
@@ -193,7 +231,12 @@
           required />
       </b-form-group>
 
-      <b-form-group id="input-group-14" label="Verwendung" label-for="inputUsage" label-cols="3">
+      <b-form-group
+        id="input-group-14"
+        class="property-input-group"
+        label="Verwendung"
+        label-for="inputUsage"
+        label-cols="3">
         <b-form-textarea
           id="inputUsage"
           v-model="usage"
@@ -204,9 +247,8 @@
       </b-form-group>
       <div v-if="options.length">
         <hr />
-        a
+
         <edit-test-properties :options="options" @change-prop="setOption" />
-        b
       </div>
       <b-button class="continue mt-4" @click="saveAndContinue">
         Speichern und weiter
@@ -369,8 +411,6 @@
         return trimmed
       },
       setOption(val) {
-        console.log('yay', val)
-
         this.selectedOptions = { ...this.selectedOptions, ...val }
       },
       load() {
@@ -456,3 +496,15 @@
     },
   }
 </script>
+<style>
+  .property-input-group > div.col {
+    width: 90%;
+    display: inline;
+    margin-bottom: 0.5em;
+  }
+  .property-input-group > div.col > input.form-control,
+  select.form-select {
+    width: 90%;
+    margin-right: 1em;
+  }
+</style>

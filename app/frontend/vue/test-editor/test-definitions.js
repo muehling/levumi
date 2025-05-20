@@ -1,12 +1,3 @@
-const generalOptions = [
-  {
-    id: 'show_demo_task',
-    label: 'Demo-Aufgabe anzeigen',
-    type: 'boolean',
-  },
-  { id: 'show_feedback', label: 'Feedback anzeigen', type: 'boolean' },
-]
-
 export const testDefinitions = {
   number_input: {
     label: 'Mathematik',
@@ -23,7 +14,7 @@ export const testDefinitions = {
     ],
     demoLine: `Addition ohne Zehnerübergang;4;+;4;8;3`,
     additionalInfo: ``,
-    options: [...generalOptions],
+    options: [],
   },
   multiple_choice: {
     label: 'Multiple Choice',
@@ -40,7 +31,6 @@ export const testDefinitions = {
     demoLine: `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
     additionalInfo: ``,
     options: [
-      ...generalOptions,
       {
         label: 'Keyboard verwenden',
         id: 'useKeyboard',
@@ -69,6 +59,13 @@ export const testDefinitions = {
           'Wenn angehakt, wird ein Weiter-Knopf angezeigt, mit dem es zum nächsten Item geht. Ansonsten geht es direkt mit Klick auf eine Antwort weiter. Nicht kompatibel mit der Keyboard-Option.',
       },
       {
+        label: 'Item-Text nicht anzeigen',
+        id: 'hideItemText',
+        type: 'boolean',
+        description:
+          'Wenn angehakt, wird der Itemtext nicht angezeigt. Kann in Kombination mit Bildern sinnvoll sein.',
+      },
+      {
         label: 'Item-Beschreibung',
         id: 'customItemDescription',
         type: 'text',
@@ -90,6 +87,6 @@ export const testDefinitions = {
     ],
     demoLine: `Dimension 1;Satz 6;audio6.mp3;levumi1.gif;bild1.png,bild5.png,bild3.png`,
     additionalInfo: ``,
-    options: [...generalOptions],
+    options: [],
   },
 }

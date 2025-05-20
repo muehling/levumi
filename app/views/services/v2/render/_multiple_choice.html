@@ -38,7 +38,7 @@
 
   window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
     const el = $(
-      `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
+      `<div id='multiple-choice-${id}' class='container d-flex justify-content-center align-items-center flex-column'></div`
     ).css(styles)
     const imageContainer = $("<div class='image-container'></div>")
 
@@ -53,46 +53,44 @@
         imageContainer.append(image)
       })
     }
-    console.log('1')
 
-    const descriptionString = window.config.options.test_options?.customItemDescription
+    const descriptionString = window.config.options.customItemDescription
     const itemString = `<p class='multiple-choice-question'>${item.question}</p>`
-
+    const displayItemString =
+      !window.config.options.hasOwnProperty('hideItemText') ||
+      window.config.options.hideItemText === false
     if (item.imageTextOrder === '0') {
       el.append(imageContainer)
       if (descriptionString) {
         el.append($(`<p>${descriptionString}</p>`))
       }
-      el.append(itemString)
+      el.append(displayItemString && itemString)
     } else {
       if (descriptionString) {
         el.append($(`<p>${descriptionString}</p>`))
       }
-      el.append(itemString)
+      el.append(displayItemString && itemString)
       el.append(imageContainer)
     }
     const answers = [item.correctAnswer, ...item.wrongAnswers]
-    console.log('1.5', window.config.options.test_options)
 
-    if (window.config.options.test_options?.randomizeItems) {
-      console.log('1.6')
-
+    if (window.config.options.randomizeItems) {
       window.shuffleArray(answers)
-    } else if (window.config.options.test_options?.sortItems) {
-      console.log('1.6')
-
-      //TODO
+    } else if (window.config.options.sortItems) {
       answers.sort((a, b) => {
-        const textA = typeof a === 'string' ? a : a.text
-        const textB = typeof b === 'string' ? b : b.text
-        return textA.localeCompare(textB)
+        if (a.hasOwnProperty('index')) {
+          const indexA = a.index
+          const indexB = b.index
+          return indexA > indexB ? 1 : -1
+        } else {
+          const textA = typeof a === 'string' ? a : a.text
+          const textB = typeof b === 'string' ? b : b.text
+          return textA.localeCompare(textB)
+        }
       })
     }
-    console.log('2')
 
     const buttonContainer = $(`<div id='#button-container'>`)
-
-    buttonContainer.css({ height: '6rem' })
 
     let currentAnswer
 
@@ -110,7 +108,7 @@
       ).on('click', function () {
         $('.multiple-choice-answer-button').removeClass('answer-selected')
         $(this).addClass('answer-selected')
-        if (window.config.options.test_options?.showContinue) {
+        if (window.config.options.showContinue) {
           currentAnswer = answer
         } else {
           saveItem(answer)
@@ -119,19 +117,20 @@
 
       buttonContainer.append(button)
     })
+    el.append(buttonContainer)
 
-    if (window.config.options.test_options?.showContinue) {
+    if (window.config.options.showContinue) {
       const continueButton = $(
-        `<button class="multiple-choice-answer-button btn btn-success">Weiter</button>`
+        `<div class="d-flex justify-content-end w-100"><button class="multiple-choice-answer-button btn btn-success">Weiter</button></div>`
       ).on('click', () => {
         if (currentAnswer) {
           saveItem(currentAnswer)
         }
       })
-      buttonContainer.append(continueButton)
+      el.append(continueButton)
     }
 
-    if (window.config.options.test_options?.useKeyboard) {
+    if (window.config.options.useKeyboard) {
       $(window).one('keyup', e => handleKeyup(e, item, resultHandler))
     }
 
@@ -141,7 +140,6 @@
       resultHandler(answer)
     }
 
-    el.append(buttonContainer)
     el.on('mounted', e => {
       e.stopPropagation()
     })

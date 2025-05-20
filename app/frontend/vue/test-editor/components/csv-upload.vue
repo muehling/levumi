@@ -149,21 +149,31 @@
             correctAnswer = d[3]
           }
 
+          const parseAnswer = a => {
+            let f
+            try {
+              f = JSON.parse(a) //needed for answers with custom styles
+              return f
+            } catch (e) {
+              return a
+            }
+          }
+          let wrongAnswers
+          if (d[4].includes('|')) {
+            wrongAnswers = d[4].split('|').map(g => {
+              return parseAnswer(g)
+            })
+          } else {
+            wrongAnswers = parseAnswer(d[4])
+          }
+
           return {
             id: i + 1,
             group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             assets: d[1],
             question: d[2],
             correctAnswer,
-            wrongAnswers: d[4].split('|').map(g => {
-              let f
-              try {
-                f = JSON.parse(g) //needed for answers with custom styles
-                return f
-              } catch (e) {
-                return g
-              }
-            }),
+            wrongAnswers,
           }
         })
 
