@@ -84,6 +84,7 @@
           item_type: this.allData.questionType,
           options: {
             show_demo_task: this.properties.show_demo_task,
+            instruction_text: this.properties.instruction_text,
             show_feedback: this.properties.show_feedback,
             feedback: {
               positive: this.properties.positive_feedback_text,

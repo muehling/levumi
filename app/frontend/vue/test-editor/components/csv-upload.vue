@@ -142,6 +142,9 @@
         const dimensions = this.parseDimensions(data)
 
         const parsed = data.map((d, i) => {
+          if (d.length === 1) {
+            return null
+          }
           let correctAnswer
           try {
             correctAnswer = JSON.parse(d[3])
@@ -164,7 +167,7 @@
               return parseAnswer(g)
             })
           } else {
-            wrongAnswers = parseAnswer(d[4])
+            wrongAnswers = [parseAnswer(d[4])]
           }
 
           return {
@@ -177,7 +180,7 @@
           }
         })
 
-        return { questions: parsed, dimensions }
+        return { questions: parsed.filter(p => !!p), dimensions }
       },
 
       parseNumberInput(data) {

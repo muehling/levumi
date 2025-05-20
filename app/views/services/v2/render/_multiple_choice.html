@@ -26,16 +26,6 @@
   }
 </style>
 <script type="module">
-  const handleKeyup = (e, item, resultHandler) => {
-    switch (e.key) {
-      case '1':
-        resultHandler(item.correctAnswer)
-        break
-      case '0':
-        resultHandler('-')
-    }
-  }
-
   window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
     const el = $(
       `<div id='multiple-choice-${id}' class='container d-flex justify-content-center align-items-center flex-column'></div`
@@ -52,6 +42,18 @@
         )
         imageContainer.append(image)
       })
+    }
+
+    const handleKeyup = e => {
+      switch (e.key) {
+        case '1':
+          resultHandler(item.correctAnswer)
+          $(window).off('keyup', handleKeyup)
+          break
+        case '0':
+          resultHandler('-')
+          $(window).off('keyup', handleKeyup)
+      }
     }
 
     const descriptionString = window.config.options.customItemDescription
@@ -131,12 +133,10 @@
     }
 
     if (window.config.options.useKeyboard) {
-      $(window).one('keyup', e => handleKeyup(e, item, resultHandler))
+      $(window).on('keyup', handleKeyup)
     }
 
     const saveItem = answer => {
-      console.log('saveItem', answer)
-
       resultHandler(answer)
     }
 

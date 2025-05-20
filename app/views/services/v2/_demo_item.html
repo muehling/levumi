@@ -9,11 +9,19 @@
   }
 </style>
 <script type="module">
-  const el = $(
-    '<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4"><h1>Beispiel</h1></div>'
-  )
   let isAppended = false
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
+    const el = $(
+      `<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4">
+      <h1>Beispiel</h1>
+      ${
+        window.config.options.instruction_text
+          ? '<p class="text-center">' + window.config.options.instruction_text + '</p>'
+          : ''
+      }
+    </div>`
+    )
+
     const endDemo = () => {
       if (isAppended) {
         return

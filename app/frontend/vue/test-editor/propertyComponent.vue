@@ -155,6 +155,14 @@
           help-text="Wenn aktiv, wird eine zufällige Aufgabe als Demo-Aufgabe angzeigt. Die gegebene Antwort fließt nicht in die Messung ein." />
       </b-form-group>
       <b-form-group
+        v-if="showDemoTask"
+        class="property-input-group"
+        label="Instruktionen, werden bei der Demo-Aufgabe angezeigt"
+        label-for="inputDemoInstructions"
+        label-cols="3">
+        <b-form-input id="inputDemoInstructions" v-model="instructionText" />
+      </b-form-group>
+      <b-form-group
         class="property-input-group"
         label="Feedback nach jeder Aufgabe anzeigen"
         label-for="inputFeedback"
@@ -290,6 +298,7 @@
         test_type: undefined,
         wasSubmitted: false,
         showDemoTask: false,
+        instructionText: '',
         showFeedback: false,
         positiveFeedbackText: '',
         negativeFeedbackText: '',
@@ -394,8 +403,8 @@
             usage: this.usage,
           },
           responsible: this.responsible,
-
           show_demo_task: this.showDemoTask,
+          instruction_text: this.instructionText,
           show_feedback: this.showFeedback,
           positive_feedback_text: this.positiveFeedbackText,
           negative_feedback_text: this.negativeFeedbackText,
@@ -447,6 +456,7 @@
           )?.id
 
           this.showDemoTask = props.show_demo_task
+          this.instructionText = props.instruction_text
           this.showFeedback = props.show_feedback
           this.positiveFeedbackText = props.positive_feedback_text.replaceAll('"', 'ʺ')
           this.negativeFeedbackText = props.negative_feedback_text.replaceAll('"', 'ʺ')
