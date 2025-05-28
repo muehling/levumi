@@ -22,11 +22,11 @@ export const testDefinitions = {
       'Für Multiple Choice-Tests, wahlweise mit oder ohne Bild. Es sind beliebig viele falsche Antworten möglich. Sowohl in der Frage als auch in den Antworten kann HTML verwendet werden.',
     renderer: 'v2/render/multiple_choice',
     csvFieldHelp: [
-      'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
-      'enthält (optional) den Dateinamen des Bildes. Der hier eingetragene Name muss zwingend der gleiche wie der der hochgeladenen Bilddatei sein. Für Items ohne Bild bitte leer lassen. Sollen mehrere Bilder für ein Item angezeigt werden, müssen die Einträge durch Kommata OHNE Leerzeichen getrennt werden.',
-      'enthält die dargestellte Frage. HTML¹ ist eingeschränkt zulässig.',
-      'enthält die richtige Antwort. JSON² ist zulässig.',
-      'enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.',
+      `bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.`,
+      `enthält (optional) den Dateinamen des Bildes. Der hier eingetragene Name muss zwingend der gleiche wie der der hochgeladenen Bilddatei sein. Für Items ohne Bild bitte leer lassen. Sollen mehrere Bilder für ein Item angezeigt werden, müssen die Einträge durch Kommata OHNE Leerzeichen getrennt werden.`,
+      `enthält die dargestellte Frage. HTML¹ ist eingeschränkt zulässig.`,
+      `enthält die richtige Antwort. JSON² ist zulässig.`,
+      `enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.`,
     ],
     demoLine: [
       `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
@@ -34,8 +34,9 @@ export const testDefinitions = {
       `5;pb4_bett.png;(Bett, T);{"text":"Hinten","index":3};{"text":"Vorne","index":1}|{"text":"Mitte","index":2}|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger","index":5}`,
     ],
     additionalInfo: [
-      `1) HTML-Elemente sind zulässig, können aber nur über die Vergabe von Klassen gestylt werden: <span class='text-danger'>Test</span> oder <b>Test</b>.`,
-      `2) Für JSON-Objekte sind folgende Keys zulässig: text (dargestellter Text), styles (CSS-Klassennamen), index (Sortierreihenfolge, nur relevant mit der Option "Antworten sortieren").`,
+      `Bei HTML- oder JSON-Elementen muss penibel auf einfache oder doppelte Anführungszeichen geachtet werden, da dies sonst zu Fehlern führt, die erst während der Testausführung auftreten.`,
+      `1) HTML-Elemente sind zulässig, können aber nur über die Vergabe von Klassen gestylt werden: <span class='text-danger'>Test</span> oder <b>Test</b>. Bei der Angabe von Klassennamen muss das einfache Hochkomma ' (Shift #) verwendet werden. Kommt im Text ein doppeltes Anführungszeichen vor, muss das typographische ʺ (ALT + 0147) verwendet werden`,
+      `2) Für JSON-Objekte sind folgende Keys zulässig: text (dargestellter Text), styles (CSS-Klassennamen), index (Sortierreihenfolge, nur relevant mit der Option "Antworten sortieren"). Sowohl Keys als auch die dazugehörigen Werte müssen in normale Anführungszeichen " (Shift 2) eingeschlossen werden.`,
     ],
     options: [
       {
