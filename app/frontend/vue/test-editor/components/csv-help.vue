@@ -31,6 +31,9 @@
               {{ field }}
             </li>
           </ul>
+          <div>
+            <p v-for="(line, index) in additionalInfo" :key="index">{{ line }}</p>
+          </div>
           <b-card variant="info">
             <p>
               Es kann vorkommen, dass beim Export aus Excel oder Libre Office noch andere
@@ -39,8 +42,10 @@
               exportierte Datei in einem einfachen Text-Editor geöffnet wird.
             </p>
             <p>
-              Eine korrekte Zeile sieht folgendermaßen aus:
-              <b-alert :model-value="true">{{ demoLine }}</b-alert>
+              Beispiel(e) für korrekte Zeilen:
+              <b-alert :model-value="true">
+                <p v-for="(line, index) in demoLine" :key="index">{{ line }}</p>
+              </b-alert>
             </p>
           </b-card>
         </b-card>
@@ -59,6 +64,9 @@
       },
       demoLine() {
         return testDefinitions[this.type].demoLine
+      },
+      additionalInfo() {
+        return testDefinitions[this.type].additionalInfo
       },
     },
   }

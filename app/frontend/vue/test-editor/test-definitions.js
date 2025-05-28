@@ -12,8 +12,8 @@ export const testDefinitions = {
       'enthält die richtige Antwort.',
       'enthält die Position des Eingabefeldes. Für "echte" Rechenaufgaben ( 1 + 4= _ ) gilt die 3, für Platzhalteraufgaben ( _ + 3 = 5 ) 1 oder ( 3 + _ = 5 ) 2.',
     ],
-    demoLine: `Addition ohne Zehnerübergang;4;+;4;8;3`,
-    additionalInfo: ``,
+    demoLine: [`Addition ohne Zehnerübergang;4;+;4;8;3`],
+    additionalInfo: [],
     options: [],
   },
   multiple_choice: {
@@ -24,12 +24,19 @@ export const testDefinitions = {
     csvFieldHelp: [
       'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
       'enthält (optional) den Dateinamen des Bildes. Der hier eingetragene Name muss zwingend der gleiche wie der der hochgeladenen Bilddatei sein. Für Items ohne Bild bitte leer lassen. Sollen mehrere Bilder für ein Item angezeigt werden, müssen die Einträge durch Kommata OHNE Leerzeichen getrennt werden.',
-      'enthält die dargestellte Frage.',
-      'enthält die richtige Antwort.',
-      'enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es sollte mindestens eine falsche Antwort hinterlegt werden.',
+      'enthält die dargestellte Frage. HTML¹ ist eingeschränkt zulässig.',
+      'enthält die richtige Antwort. JSON² ist zulässig.',
+      'enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.',
     ],
-    demoLine: `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
-    additionalInfo: ``,
+    demoLine: [
+      `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
+      `;;<b class='text-danger'>sehen</b>;Ja;Nein|{"text":"Vielleicht", "styles":"btn-danger"}|{"text":"Ich weiß nicht", "styles":"btn-success"}`,
+      `5;pb4_bett.png;(Bett, T);{"text":"Hinten","index":3};{"text":"Vorne","index":1}|{"text":"Mitte","index":2}|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger","index":5}`,
+    ],
+    additionalInfo: [
+      `1) HTML-Elemente sind zulässig, können aber nur über die Vergabe von Klassen gestylt werden: <span class='text-danger'>Test</span> oder <b>Test</b>.`,
+      `2) Für JSON-Objekte sind folgende Keys zulässig: text (dargestellter Text), styles (CSS-Klassennamen), index (Sortierreihenfolge, nur relevant mit der Option "Antworten sortieren").`,
+    ],
     options: [
       {
         label: 'Keyboard verwenden',
@@ -85,8 +92,8 @@ export const testDefinitions = {
       'enthält den Namen des richtigen anzuklickenden Bildes.',
       'enthält die Namen der falschen Bilder, durch Kommata ohne Leerzeichen voneinander getrennt.',
     ],
-    demoLine: `Dimension 1;Satz 6;audio6.mp3;levumi1.gif;bild1.png,bild5.png,bild3.png`,
-    additionalInfo: ``,
+    demoLine: [`Dimension 1;Satz 6;audio6.mp3;levumi1.gif;bild1.png,bild5.png,bild3.png`],
+    additionalInfo: [],
     options: [],
   },
 }
