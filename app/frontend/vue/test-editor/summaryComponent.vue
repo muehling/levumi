@@ -207,6 +207,9 @@
         if (this.properties.show_demo_task) {
           requiredServices.push('v2/demo_item')
         }
+        if (testDefinitions[this.allData.questionType].additionalServices) {
+          requiredServices.push(...testDefinitions[this.allData.questionType].additionalServices)
+        }
 
         const json = JSON.stringify({
           ...this.getProperties(),

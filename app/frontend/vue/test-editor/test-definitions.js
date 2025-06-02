@@ -16,6 +16,22 @@ export const testDefinitions = {
     additionalInfo: [],
     options: [],
   },
+  math_text_problem: {
+    label: 'Textaufgabe',
+    description:
+      'Zeigt einen Text mit der Aufgabenstellung an, zu der die Antwort mit dem Zahleneingabe-Widget erfolgen soll.',
+    renderer: 'v2/render/math_text_problem',
+    additionalServices: ['v2/render/numpad'],
+    csvFieldHelp: [
+      'bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.',
+      'enthält die Aufgabenstellung',
+      'enthält die Kurzfassung der Aufgabenstellung zur Anzeige in Auswertungen',
+      'enthält die richtige Antwort',
+    ],
+    demoLine: [`Addition ohne Zehnerübergang;Wieviel ist 3 plus 5?;3 + 5;8`],
+    additionalInfo: [],
+    options: [],
+  },
   multiple_choice: {
     label: 'Multiple Choice',
     description:
@@ -29,7 +45,7 @@ export const testDefinitions = {
       `enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.`,
     ],
     demoLine: [
-      `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus,Katze,Pferd`,
+      `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus|Katze|Pferd`,
       `;;<b class='text-danger'>sehen</b>;Ja;Nein|{"text":"Vielleicht", "styles":"btn-danger"}|{"text":"Ich weiß nicht", "styles":"btn-success"}`,
       `5;pb4_bett.png;(Bett, T);{"text":"Hinten","index":3};{"text":"Vorne","index":1}|{"text":"Mitte","index":2}|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger","index":5}`,
     ],

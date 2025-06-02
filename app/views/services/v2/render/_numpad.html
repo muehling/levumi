@@ -1,0 +1,181 @@
+<style>
+  #delete {
+    white-space: nowrap;
+  }
+  #numpad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.2em;
+    touch-action: manipulation;
+    min-width: 50%;
+    width: 10em;
+  }
+
+  .delete {
+    grid-column: span 2;
+    order: 11;
+  }
+  #continue {
+    grid-column: span 3;
+    order: 12;
+  }
+
+  .button {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+  }
+  .order-1 {
+    order: 1;
+  }
+  .order-2 {
+    order: 2;
+  }
+  .order-3 {
+    order: 3;
+  }
+  .order-4 {
+    order: 4;
+  }
+  .order-5 {
+    order: 5;
+  }
+  .order-6 {
+    order: 6;
+  }
+  .order-7 {
+    order: 7;
+  }
+  .order-8 {
+    order: 8;
+  }
+  .order-9 {
+    order: 9;
+  }
+  .order-10 {
+    order: 10;
+  }
+</style>
+
+<script type="module">
+  let currentInputVal
+  let handleInput
+  let handleSubmit
+
+  let demoMode
+  window.useNumpad = ({ resultHandler, updateHandler, item, isDemo }) => {
+    currentInputVal = ''
+
+    const el = $(`
+        <div id="number-input" class="d-flex justify-content-center flex-column">         
+          <div class="container">
+            <div class="mt-3 d-flex justify-content-center">
+              <div id="numpad"></div>
+            </div>
+          </div>
+          <div id="empty-error" class="text-danger"></div>
+        </div>
+    `)
+
+    handleSubmit = resultHandler
+    handleInput = updateHandler
+    demoMode = isDemo
+
+    attachHandlers()
+
+    const inputs =
+      window.calculatorLayout === 'phone'
+        ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+        : [7, 8, 9, 4, 5, 6, 1, 2, 3, 0]
+
+    const calcButtons = inputs.map((v, i) => {
+      const calcButton = $(
+        `<div id="btn-${v}" class="calc-btn btn btn-primary order-${i}">${v}</div>`
+      )
+      calcButton
+        .on('click', () => addNumber(v))
+        .css({ fontSize: '3rem', fontFamily: window.font_family })
+      return calcButton
+    })
+
+    const numpad = el.find('#numpad')
+
+    numpad.append(calcButtons)
+
+    const del = $('<div class="calc-btn btn btn-warning delete">Löschen</div>')
+      .on('click', removeNumber)
+      .css({ fontSize: '3rem', fontFamily: window.font_family })
+
+    const cont = $('<div id="continue" class="calc-btn btn btn-success w-100">Weiter</div>')
+      .on('click', submit)
+      .css({ fontSize: '3rem', fontFamily: window.font_family })
+
+    numpad.append(del).append(cont)
+
+    if (demoMode) {
+      el.append(
+        '<p class="text-center">Zum Eingeben der Lösung kannst du sowohl die Tastatur als auch den Ziffernblock benutzen.</p>'
+      )
+    }
+    el.on('mounted', e => {
+      e.stopPropagation()
+    })
+    return el
+  }
+
+  let handlersAttached = false
+  const attachHandlers = () => {
+    if (!handlersAttached) {
+      // keyboard input
+      document.addEventListener('keydown', e => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (e.key >= '0' && e.key <= '9') {
+          addNumber(e.key)
+        } else if (e.key === 'Backspace') {
+          removeNumber()
+        } else if (e.key === 'Enter') {
+          submit()
+        }
+      })
+      handlersAttached = true
+    }
+  }
+
+  const submit = () => {
+    if (currentInputVal === '') {
+      $('#empty-error').text('Bitte gib eine Zahl ein!')
+      return
+    }
+    $('#empty-error').text('')
+
+    if (demoMode) {
+      $('#continue').hide()
+    }
+
+    handleSubmit(currentInputVal)
+    currentInputVal = ''
+  }
+
+  const addNumber = num => {
+    console.log('add', num)
+
+    currentInputVal += num
+    updateDom()
+  }
+
+  const removeNumber = () => {
+    currentInputVal = currentInputVal.slice(0, -1)
+    updateDom()
+  }
+
+  const updateDom = () => {
+    currentInputVal = currentInputVal.replace(/[^\d ]+/g, '')
+    currentInputVal = currentInputVal.replace(/ /g, '')
+
+    // Add spaces as thousands separators every three digits
+    currentInputVal = currentInputVal.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+    handleInput(currentInputVal)
+  }
+</script>

@@ -221,7 +221,19 @@
 
         return { questions: parsed, dimensions }
       },
-
+      parseMathTextProblem(data) {
+        const dimensions = this.parseDimensions(data)
+        const parsed = data.map((d, i) => {
+          return {
+            id: i + 1,
+            group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
+            question: d[1],
+            shortQuestion: d[2],
+            correctAnswer: d[3],
+          }
+        })
+        return { questions: parsed, dimensions }
+      },
       parseAudioImageMultipleChoice(data) {
         const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
@@ -246,6 +258,8 @@
             return this.parseNumberInput(data)
           case 'audio_images_multiple_choice':
             return this.parseAudioImageMultipleChoice(data)
+          case 'math_text_problem':
+            return this.parseMathTextProblem(data)
           default:
             console.log('Unbekannte Testart :-(')
         }

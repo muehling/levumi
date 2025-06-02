@@ -1,0 +1,58 @@
+<style>
+  #answer {
+    max-width: 4em;
+    text-align: center;
+  }
+</style>
+<script type="module">
+  let currentInputVal
+  let handleInput
+  let handleSubmit
+  let demoMode
+  window.useMathTextProblem = ({ resultHandler, item, isDemo }) => {
+    currentInputVal = ''
+
+    const el = $(`
+        <div id="number-input" class="d-flex justify-content-center flex-column">
+          <div class="text-center">
+            <p id="task-description"></p>
+          </div>
+          <div class="text-center">
+            <input type="input" id="answer" readonly />
+          </div>
+          <div id="numpad-placeholder" class="container"></div>        
+        </div>
+    `)
+
+    handleSubmit = resultHandler
+    demoMode = isDemo
+
+    const calcButtons = window.useNumpad({
+      resultHandler: submit,
+      updateHandler: update,
+      item,
+      isDemo,
+    })
+    const numpad = el.find('#numpad-placeholder')
+    numpad.append(calcButtons)
+
+    updateQuestion(el, item)
+
+    el.on('mounted', e => {
+      e.stopPropagation()
+    })
+    return el
+  }
+
+  const updateQuestion = (el, item) => {
+    el.find('#task-description').text(item.question)
+  }
+  const update = val => {
+    $('#answer').val(val)
+  }
+  const submit = val => {
+    handleSubmit(val)
+    currentInputVal = ''
+    $('#answer').val(currentInputVal)
+  }
+</script>

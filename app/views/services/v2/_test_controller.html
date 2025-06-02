@@ -107,7 +107,7 @@
 
       result.push({
         item: items[currentTask].id,
-        question: items[currentTask].question,
+        question: items[currentTask].shortQuestion || items[currentTask].question,
         result: isCorrect,
         answer: res,
         time: endTaskTimestamp,
@@ -158,6 +158,8 @@
             renderer: window.useAudioImagesMultipleChoice,
             options: { demo: { hideDemoInstructions: true }, contentPages: { hideText: true } },
           }
+        case 'math_text_problem':
+          return { renderer: window.useMathTextProblem, options: {} }
         default:
           console.warn('Unknown renderer', itemType)
       }

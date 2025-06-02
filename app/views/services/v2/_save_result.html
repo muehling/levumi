@@ -41,7 +41,10 @@
     const correct = dimensions.reduce((acc, dimension) => {
       const d = result
         .filter(res => res.result === 1 && res.group + '' === dimension.id + '')
-        .map(res => `(${res.question}${res.additionalData ? res.additionalData : ''})`)
+        .map(
+          res =>
+            `(${res.shortQuestion || res.question}${res.additionalData ? res.additionalData : ''})`
+        )
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
         ', '
       )}<br/></br/>`
@@ -52,7 +55,9 @@
         .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
         .map(
           res =>
-            `(${res.question} &lt;${res.answer}&gt;${res.additionalData ? res.additionalData : ''})`
+            `(${res.shortQuestion || res.question} &lt;${res.answer}&gt;${
+              res.additionalData ? res.additionalData : ''
+            })`
         )
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
         ', '
@@ -62,9 +67,9 @@
   }
 
   const saveWithoutDimensions = (positive, negative) => {
-    const positiveQuestions = positive.map(res => `${res.question}`).join(', ')
+    const positiveQuestions = positive.map(res => `${res.shortQuestion || res.question}`).join(', ')
     const negativeQuestions = negative
-      .map(res => `${res.question} &lt;${res.answer}&gt;`)
+      .map(res => `${res.shortQuestion || res.question} &lt;${res.answer}&gt;`)
       .join(', ')
 
     const correct =
