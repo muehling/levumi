@@ -57,7 +57,11 @@
     }
 
     const descriptionString = window.config.options.customItemDescription
-    const itemString = `<p class='multiple-choice-question'>${item.question}</p>`
+
+    const itemString = `<p class='multiple-choice-question'>${item.question.replace(
+      '###',
+      '<span id="correct-answer">.............</span>'
+    )}</p>`
     const displayItemString =
       !window.config.options.hasOwnProperty('hideItemText') ||
       window.config.options.hideItemText === false
@@ -111,7 +115,8 @@
         $('.multiple-choice-answer-button').removeClass('answer-selected')
         $(this).addClass('answer-selected')
         if (window.config.options.showContinue) {
-          currentAnswer = answer
+          currentAnswer = answer.hasOwnProperty('text') ? answer.text : answer
+          $('#correct-answer').text(currentAnswer).css('text-decoration', 'dotted underline')
         } else {
           saveItem(answer)
         }
@@ -137,7 +142,7 @@
     }
 
     const saveItem = answer => {
-      resultHandler(answer)
+      resultHandler(answer.hasOwnProperty('text') ? answer.text : answer)
     }
 
     el.on('mounted', e => {
