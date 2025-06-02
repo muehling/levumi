@@ -67,7 +67,7 @@
                     <span v-html="getFormattedItems(result.data.report.positive)"></span>
                   </td>
                   <td>
-                    <span v-html="getFormattedItems(result.data.report.negative)"></span>
+                    <span v-html="getFormattedItems(result.data.report.negative, result)"></span>
                   </td>
                   <td>
                     <i
@@ -103,6 +103,7 @@
   import { computed, ref } from 'vue'
   import { printDate } from 'src/utils/date'
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
+  import isObject from 'lodash/isObject'
   import apiRoutes from 'src/vue/routes/api-routes'
   import AssessmentViewStudents from './assessment-results-components/assessment-view-students.vue'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
@@ -132,15 +133,25 @@
     return result
   })
 
-  const getFormattedItems = items => {
+  const getFormattedItems = (items, result) => {
     if (!items) {
       return ''
     }
 
     const it = Object.values(items).map(item => {
+      let givenAnswer
+      if (result) {
+        const r = result.data.data.find(d => d.item === item)
+        console.log('boooo', r)
+
+        givenAnswer = isObject(r?.answer) ? r?.answer.text : r?.answer
+      }
+
       const a = test.items[item] || { question: '<unknown item>' }
 
-      return typeof a === 'string' ? a : a.question
+      return typeof a === 'string'
+        ? `${a}${givenAnswer ? ' (' + givenAnswer + ')' : ''}`
+        : `${a.shortQuestion || a.question}${givenAnswer ? ' (' + givenAnswer + ')' : ''}`
     })
     return it.join(', ')
   }
