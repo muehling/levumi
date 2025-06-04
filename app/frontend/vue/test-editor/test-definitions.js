@@ -111,6 +111,13 @@ export const testDefinitions = {
     ],
     demoLine: [`Dimension 1;Satz 6;audio6.mp3;levumi1.gif;bild1.png,bild5.png,bild3.png`],
     additionalInfo: [],
-    options: [],
+    options: [
+      {
+        label: 'Frage anzeigen',
+        id: 'displayQuestion',
+        type: 'boolean',
+        description: 'Zeigt die Frage oberhalb der Bilder an.',
+      },
+    ],
   },
 }
