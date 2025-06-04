@@ -84,7 +84,7 @@
       window.shuffleArray(answers)
     } else if (window.config.options.sortItems) {
       answers.sort((a, b) => {
-        if (a.hasOwnProperty('index')) {
+        if (a.hasOwnProperty('index') && b.hasOwnProperty('index')) {
           const indexA = a.index
           const indexB = b.index
           return indexA > indexB ? 1 : -1
@@ -109,6 +109,12 @@
       if (answer.hasOwnProperty('styles')) {
         buttonStyles = answer.styles
       }
+      console.log(answer, item.correctAnswer)
+
+      if (window.config.options.useKeyboard) {
+        itemText += answer === item.correctAnswer ? ' (Taste 1)' : ' (Taste 0)'
+      }
+
       const button = $(
         `<button id='button${index}' class='multiple-choice-answer-button btn ${buttonStyles}'>${itemText}</button>`
       ).on('click', function () {

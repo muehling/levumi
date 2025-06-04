@@ -103,7 +103,14 @@
       }
 
       const endTaskTimestamp = window.stopTimer()
-      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+
+      let isCorrect = 0
+      if (
+        res + '' === items[currentTask].correctAnswer ||
+        res + '' === items[currentTask].correctAnswer.text
+      ) {
+        isCorrect = 1
+      }
 
       result.push({
         item: items[currentTask].id,
