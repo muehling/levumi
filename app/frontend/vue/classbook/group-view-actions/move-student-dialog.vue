@@ -2,7 +2,7 @@
   <div class="d-inline">
     <div class="d-flex mb-3">
       <span class="flex-grow-1 pt-1">
-        Wählen Sie die Klasse aus, in die Sie die Schüler:innen verschieben wollen.
+        Wählen Sie die Klasse aus, in die Sie die Schüler*innen verschieben wollen.
       </span>
       <b-button v-b-toggle.move-explanation variant="outline-secondary" class="btn-sm">
         Hinweise
@@ -13,15 +13,15 @@
       <b-card class="mb-3">
         <ul>
           <li>
-            Schüler:innen werden mit allen bisherigen Messergebnissen in die gewählte Klasse
+            Schüler*innen werden mit allen bisherigen Messergebnissen in die gewählte Klasse
             verschoben.
           </li>
-          <li>Nur Schüler:innen der aktuellen Klasse können verschoben werden.</li>
+          <li>Nur Schüler*innen der aktuellen Klasse können verschoben werden.</li>
           <li>
             Wenn Messergebnisse für einen Test vorhanden sind, der der Zielklasse bisher nicht
             zugeordnet ist, wird der Test für die Zielklasse aktiviert. Die bereits vorhandenen
-            Schüler:innen werden jedoch erst einmal ausgeschlossen; wenn gewünscht, müssen die
-            vorhandenen Schüler:innen manuell für die Teilnahme aktiviert werden.
+            Schüler*innen werden jedoch erst einmal ausgeschlossen; wenn gewünscht, müssen die
+            vorhandenen Schüler*innen manuell für die Teilnahme aktiviert werden.
           </li>
           <li>
             Wenn Messergebnisse zu einem in der Zielklasse pausierten Test vorhanden sind, wird
@@ -37,7 +37,7 @@
     <div v-if="targetGroupId">
       <hr />
       <p>
-        Mit Klick auf eine Schüler:in wird diese aus der Klasse
+        Mit Klick auf eine Schüler*in wird diese aus der Klasse
         <b>{{ group.label }}</b>
         in die ausgewählte Klasse
         <b>{{ targetGroup.label }}</b>

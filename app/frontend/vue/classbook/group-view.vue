@@ -63,7 +63,7 @@
       <p class="text-small">
         <em>Ins Archiv verschoben am {{ date }}</em>
         <br />
-        <span>Schüler:innen: {{ group.size }}</span>
+        <span>Schüler*innen: {{ group.size }}</span>
       </p>
       <b-button class="me-1" variant="outline-primary" @click="reactivateGroup">
         <i class="fas fa-file-import"></i>
@@ -129,7 +129,7 @@
           case 'share':
             return 'Klasse teilen'
           case 'movestudents':
-            return 'Schüler:innen verschieben'
+            return 'Schüler*innen verschieben'
         }
         return 'Unbekannte Aktion'
       },
@@ -230,7 +230,7 @@
       async requestDeleteGroup() {
         const ok = await this.$refs.confirmDialog.open({
           title: 'Klasse löschen',
-          message: `Die Klasse wird mit allen Schüler:innen und allen Messergebnissen gelöscht! Sind Sie sicher?`,
+          message: `Die Klasse wird mit allen Schüler*innen und allen Messergebnissen gelöscht! Sind Sie sicher?`,
           okText: 'Klasse löschen',
         })
         if (ok) {

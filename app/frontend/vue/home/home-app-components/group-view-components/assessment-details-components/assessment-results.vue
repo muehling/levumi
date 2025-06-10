@@ -10,8 +10,8 @@
       </div>
       <div v-else-if="students.length == 0">
         <p>
-          In dieser Klasse sind noch keine Schüler:innen angelegt. Um in dieser Klasse testen zu
-          können, legen Sie bitte neue Schüler:innen im Klassenbuch an.
+          In dieser Klasse sind noch keine Schüler*innen angelegt. Um in dieser Klasse testen zu
+          können, legen Sie bitte neue Schüler*innen im Klassenbuch an.
         </p>
       </div>
       <div v-else-if="!!assessment">
@@ -50,7 +50,7 @@
               <thead>
                 <tr>
                   <th>Datum</th>
-                  <th>Schüler:in</th>
+                  <th>Schüler*in</th>
                   <th>Positiv</th>
                   <th>Negativ</th>
                   <th>Trend</th>

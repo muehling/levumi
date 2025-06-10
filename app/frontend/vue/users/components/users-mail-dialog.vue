@@ -17,7 +17,7 @@
               </label>
               <label>
                 <input v-model="researchers" type="checkbox" name="researcher" />
-                Forscher:innen
+                Forscher*innen
               </label>
               <label>
                 <input v-model="privatePersons" type="checkbox" name="private" />

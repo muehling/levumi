@@ -4,7 +4,7 @@
       <div class="d-inline-flex">
         <p class="mb-3 me-3">Globale Einstellungen</p>
         <context-help
-          help-text="Diese Einstellungen gelten sowohl für die ganze Klasse als auch für einzelne Schüler:innen." />
+          help-text="Diese Einstellungen gelten sowohl für die ganze Klasse als auch für einzelne Schüler*innen." />
       </div>
       <div class="text-small row">
         <div class="col-12 col-md-3 col-xl-2">
@@ -39,7 +39,7 @@
             switch
             @change="saveAssessmentSettings" />
           <context-help
-            help-text="Mit dieser Option wird aus den bisherigen Messungen einer Schüler:in ein Trend bis 
+            help-text="Mit dieser Option wird aus den bisherigen Messungen einer Schüler*in ein Trend bis 
             zum eingegebenen Enddatum generiert. Die Trendlinie wird nicht in der Klassenansicht dargestellt,
              sondern nur in den Individualgraphen."
             class-name="mt-1 ms-3" />
@@ -80,7 +80,7 @@
       <div v-if="showClassTargetForStudent && selectedStudentId !== -1">
         <BAlert :model-value="true" class="p-2">
           <span class="text-small">
-            Der angezeigte Zielwert ist auf Klassenebene festgelegt. Sie können für diese Schüler:in
+            Der angezeigte Zielwert ist auf Klassenebene festgelegt. Sie können für diese Schüler*in
             einen eigenen Zielwert festlegen.
           </span>
         </BAlert>
@@ -104,7 +104,7 @@
             size="sm"
             @input="handleNumberInput" />
           <context-help
-            help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler:in den vorgebenen Zielwert erreichen kann. "
+            help-text="Der Zielwert wird als an-/absteigende Gerade, ausgehend vom ersten Messwert, dargestellt. In Verbindung mit einer extrapolierten Trendlinie lässt sich abschätzen, ob eine Schüler*in den vorgebenen Zielwert erreichen kann. "
             class-name="mt-1 ms-3" />
         </div>
       </div>

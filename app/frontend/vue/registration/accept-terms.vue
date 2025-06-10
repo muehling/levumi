@@ -13,7 +13,7 @@
             </p>
             <h5>Registrierung und Verwendung Ihrer Daten</h5>
             <p class="text-justify">
-              Wir bieten Levumi unentgeltlich für Schulen und Lehrkräfte, Forscher:innen und
+              Wir bieten Levumi unentgeltlich für Schulen und Lehrkräfte, Forscher*innen und
               Privatpersonen an. Für jede dieser Nutzungsarten ist eine Registrierung erforderlich,
               für die Sie neben der gewünschten Nutzungsart eine gültige E-Mail Adresse, ein
               Passwort sowie ihr Bundesland angeben müssen. Weitere Angaben sind optional. Wir
@@ -28,7 +28,7 @@
             <h5>Anlegen von Testpersonen und Verwendung der Daten</h5>
             <p class="text-justify">
               Um Levumi verwenden zu können, müssen Sie nach der Registrierung Testpersonen (z.B.
-              die Schüler:innen Ihrer Klasse) anlegen, mit denen Sie arbeiten. Für jede Testperson
+              die Schüler*innen Ihrer Klasse) anlegen, mit denen Sie arbeiten. Für jede Testperson
               müssen Sie einen Namen vergeben. Alle weiteren Angaben sind optional, helfen uns aber
               bei der wissenschaftlichen Auswertung und darauf aufbauenden Verbesserung von Levumi.
               Der Name, den Sie für eine Testperson vergeben wird bereits verschlüsselt an Levumi

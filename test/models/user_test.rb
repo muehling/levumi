@@ -38,9 +38,9 @@ class UserTest < ActionDispatch::IntegrationTest
     assert (user.is_regular_user? == false)
   end
 
-  test 'User.account_type for Forscher:in' do
+  test 'User.account_type for Forscher*in' do
     user = users(:other_user)
-    assert (user.get_account_type == 'Forscher:in')
+    assert (user.get_account_type == 'Forscher*in')
   end
 
   test 'User.account_type for Lehrkraft' do

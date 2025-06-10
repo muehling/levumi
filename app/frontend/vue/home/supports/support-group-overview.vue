@@ -13,7 +13,7 @@
           der letzten drei Testzeitpunkte.
         </p>
         <p>
-          Für nicht in der Tabelle enthaltene Schüler:innen liegen nicht genug Ergebnisse vor, um
+          Für nicht in der Tabelle enthaltene Schüler*innen liegen nicht genug Ergebnisse vor, um
           den Förderbedarf zu ermitteln.
         </p>
         <p v-for="item in supportNeeds" :key="item.color">
