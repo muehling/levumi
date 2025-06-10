@@ -69,12 +69,12 @@
     if (item.imageTextOrder === '0') {
       el.append(imageContainer)
       if (descriptionString) {
-        el.append($(`<p>${descriptionString}</p>`))
+        el.append($(`<p id="item-description">${descriptionString}</p>`))
       }
       el.append(displayItemString && $(itemString))
     } else {
       if (descriptionString) {
-        el.append($(`<p>${descriptionString}</p>`))
+        el.append($(`<p id="item-description">${descriptionString}</p>`))
       }
       el.append(displayItemString && $(itemString))
       el.append(imageContainer)
@@ -110,7 +110,6 @@
       if (answer.hasOwnProperty('styles')) {
         buttonStyles = answer.styles
       }
-      console.log(answer, item.correctAnswer)
 
       if (window.config.options.useKeyboard) {
         itemText += answer === item.correctAnswer ? ' (Taste 1)' : ' (Taste 0)'

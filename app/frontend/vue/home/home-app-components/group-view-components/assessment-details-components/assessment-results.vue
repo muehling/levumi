@@ -133,6 +133,11 @@
     return result
   })
 
+  const stripHtml = val => {
+    let doc = new DOMParser().parseFromString(val, 'text/html')
+    return doc.body.textContent || ''
+  }
+
   const getFormattedItems = (items, result) => {
     if (!items) {
       return ''
@@ -142,17 +147,16 @@
       let givenAnswer
       if (result) {
         const r = result.data.data.find(d => d.item === item)
-        console.log('boooo', r)
-
         givenAnswer = isObject(r?.answer) ? r?.answer.text : r?.answer
       }
-
       const a = test.items[item] || { question: '<unknown item>' }
-
       return typeof a === 'string'
-        ? `${a}${givenAnswer ? ' (' + givenAnswer + ')' : ''}`
-        : `${a.shortQuestion || a.question}${givenAnswer ? ' (' + givenAnswer + ')' : ''}`
+        ? `${a}${givenAnswer ? ' (' + stripHtml(givenAnswer) + ')' : ''}`
+        : `${stripHtml(a.shortQuestion || a.question)}${
+            givenAnswer ? ' (' + stripHtml(givenAnswer) + ')' : ''
+          }`
     })
+
     return it.join(', ')
   }
   const formatDate = date => {

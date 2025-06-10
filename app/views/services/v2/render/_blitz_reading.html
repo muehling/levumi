@@ -31,6 +31,7 @@
   const updateQuestion = (el, item) => {
     el.find('#question-space').html(item.question)
     window.setTimeout(() => {
+      el.find('#item-description').html('Welches Wort hast du gesehen?')
       el.find('#question-space').html('&nbsp;')
     }, parseInt(item.timeout, 10))
   }

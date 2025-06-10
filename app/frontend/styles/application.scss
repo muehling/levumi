@@ -351,6 +351,32 @@ a:hover {
   justify-content: center;
 }
 
+// custom font-sizes for editor-tests
+.levumi-l {
+  font-size: 3rem;
+}
+.levumi-xl {
+  font-size: 3.5rem;
+}
+.levumi-2xl {
+  font-size: 4rem;
+}
+.levumi-3xl {
+  font-size: 4.5rem;
+}
+.levumi-4xl {
+  font-size: 5rem;
+}
+.levumi-5xl {
+  font-size: 6rem;
+}
+.levumi-6xl {
+  font-size: 7rem;
+}
+.levumi-7xl {
+  font-size: 8rem;
+}
+
 // hotfix for FM tests, which have a inline `position: absolute`
 #levumi_img {
   position: unset !important;
