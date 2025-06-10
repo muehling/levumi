@@ -1,0 +1,37 @@
+<style>
+  #answer {
+    max-width: 4em;
+    text-align: center;
+  }
+</style>
+<script type="module">
+  window.useBlitzReading = ({ resultHandler, item, isDemo }) => {
+    const el = $(`
+          <div id="blitz-reading" class="d-flex justify-content-center flex-column">           
+            <div id="mc-buttons" class="text-center"></div>                           
+          </div>
+      `)
+
+    const mcButtons = window.useMultipleChoice({
+      id: item.id,
+      styles: {},
+      item,
+      resultHandler,
+    })
+
+    el.find('#mc-buttons').append(mcButtons)
+    updateQuestion(el, item)
+
+    el.on('mounted', e => {
+      e.stopPropagation()
+    })
+    return el
+  }
+
+  const updateQuestion = (el, item) => {
+    el.find('#question-space').html(item.question)
+    window.setTimeout(() => {
+      el.find('#question-space').html('&nbsp;')
+    }, parseInt(item.timeout, 10))
+  }
+</script>

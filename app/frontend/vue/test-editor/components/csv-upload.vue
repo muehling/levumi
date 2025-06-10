@@ -182,6 +182,13 @@
 
         return { questions: parsed.filter(p => !!p), dimensions }
       },
+      parseBlitzReading(data) {
+        const mcPart = this.parseMultipleChoice(data)
+        const test = mcPart.questions.map((line, index) => {
+          return { ...line, timeout: data[index][5] }
+        })
+        return { ...mcPart, questions: test }
+      },
 
       parseNumberInput(data) {
         const dimensions = this.parseDimensions(data)
@@ -260,6 +267,8 @@
             return this.parseAudioImageMultipleChoice(data)
           case 'math_text_problem':
             return this.parseMathTextProblem(data)
+          case 'blitz_reading':
+            return this.parseBlitzReading(data)
           default:
             console.log('Unbekannte Testart :-(')
         }

@@ -167,6 +167,8 @@
           }
         case 'math_text_problem':
           return { renderer: window.useMathTextProblem, options: {} }
+        case 'blitz_reading':
+          return { renderer: window.useBlitzReading, options: {} }
         default:
           console.warn('Unknown renderer', itemType)
       }

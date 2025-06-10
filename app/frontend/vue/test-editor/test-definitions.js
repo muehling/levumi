@@ -120,4 +120,40 @@ export const testDefinitions = {
       },
     ],
   },
+  blitz_reading: {
+    label: 'Blitzlesen',
+    description:
+      'Multiple Choice Test, bei dem die Frage nach einer definierten Zeit ausgeblendet wird.',
+    renderer: 'v2/render/blitz_reading',
+    additionalServices: ['v2/render/multiple_choice'],
+    csvFieldHelp: [
+      `bestimmt, welcher Dimension das Item angehört. Wenn der Test keine Dimensionen enthält, muss diese Spalte leergelassen werden.`,
+      `enthält (optional) den Dateinamen des Bildes. Der hier eingetragene Name muss zwingend der gleiche wie der der hochgeladenen Bilddatei sein. Für Items ohne Bild bitte leer lassen. Sollen mehrere Bilder für ein Item angezeigt werden, müssen die Einträge durch Kommata OHNE Leerzeichen getrennt werden.`,
+      `enthält die dargestellte Frage. HTML¹ ist eingeschränkt zulässig.`,
+      `enthält die richtige Antwort. JSON² ist zulässig.`,
+      `enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.`,
+      `enthält die Zeit, für die das Item angezeigt werden soll, Angabe in Millisekunden`,
+    ],
+    additionalInfo: [
+      `Bei HTML- oder JSON-Elementen muss penibel auf einfache oder doppelte Anführungszeichen geachtet werden, da dies sonst zu Fehlern führt, die erst während der Testausführung auftreten.`,
+      `1) HTML-Elemente sind zulässig, können aber nur über die Vergabe von Klassen gestylt werden: <span class='text-danger'>Test</span> oder <b>Test</b>. Bei der Angabe von Klassennamen muss das einfache Hochkomma ' (Shift #) verwendet werden. Kommt im Text ein doppeltes Anführungszeichen vor, muss das typographische ʺ (ALT + 0147) verwendet werden`,
+      `2) Für JSON-Objekte sind folgende Keys zulässig: text (dargestellter Text), styles (CSS-Klassennamen), index (Sortierreihenfolge, nur relevant mit der Option "Antworten sortieren"). Sowohl Keys als auch die dazugehörigen Werte müssen in normale Anführungszeichen " (Shift 2) eingeschlossen werden.`,
+    ],
+    demoLine: [`Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus|Katze|Pferd;1500`],
+    options: [
+      {
+        label: 'Weiter-Knopf anzeigen',
+        id: 'showContinue',
+        type: 'boolean',
+        description:
+          'Wenn angehakt, wird ein Weiter-Knopf angezeigt, mit dem es zum nächsten Item geht. Ansonsten geht es direkt mit Klick auf eine Antwort weiter. Nicht kompatibel mit der Keyboard-Option.',
+      },
+      {
+        label: 'Item-Beschreibung',
+        id: 'customItemDescription',
+        type: 'text',
+        description: 'Text, der oberhalb des Items angezeigt wird. HTML kann verwendet werden.',
+      },
+    ],
+  },
 }

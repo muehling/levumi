@@ -58,24 +58,25 @@
 
     const descriptionString = window.config.options.customItemDescription
 
-    const itemString = `<p class='multiple-choice-question'>${item.question.replace(
+    const itemString = `<p id="question-space" class='multiple-choice-question'>${item.question.replace(
       '###',
       '<span id="correct-answer">.............</span>'
     )}</p>`
     const displayItemString =
       !window.config.options.hasOwnProperty('hideItemText') ||
       window.config.options.hideItemText === false
+
     if (item.imageTextOrder === '0') {
       el.append(imageContainer)
       if (descriptionString) {
         el.append($(`<p>${descriptionString}</p>`))
       }
-      el.append(displayItemString && itemString)
+      el.append(displayItemString && $(itemString))
     } else {
       if (descriptionString) {
         el.append($(`<p>${descriptionString}</p>`))
       }
-      el.append(displayItemString && itemString)
+      el.append(displayItemString && $(itemString))
       el.append(imageContainer)
     }
     const answers = [item.correctAnswer, ...item.wrongAnswers]
@@ -96,7 +97,7 @@
       })
     }
 
-    const buttonContainer = $(`<div id='#button-container'>`)
+    const buttonContainer = $(`<div id='button-container'>`)
 
     let currentAnswer
 
