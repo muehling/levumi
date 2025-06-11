@@ -12,7 +12,8 @@
             <li>Bilddateien sollten nach Möglichkeit nicht größer als 50kb sein.</li>
             <li>Audiodateien sollten nach Möglichkeit nicht größer als 15kb/s sein.</li>
             <li>
-              Als Format für Bilddateien eignet sich webp, für Audio ist mp3 am Besten geeignet.
+              Als Format für Bilddateien eignen sich webp, png oder svg, für Audio ist mp3 am Besten
+              geeignet.
             </li>
           </ul>
         </b-card>

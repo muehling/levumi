@@ -47,9 +47,7 @@
 <script type="module">
   const getBlobUrl = asset => {
     if (window.assetBlobs[asset]) {
-      return assetBlobs[asset]
-    } else if (window.media_paths[asset]) {
-      return window.media_paths[asset]
+      return assetBlobs[asset].url
     } else {
       return null
     }
@@ -73,7 +71,7 @@
 
   window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
     const el = $(
-      `<div class="container d-flex flex-column w-100">
+      `<div class="container d-flex flex-column w-100">     
           <div id="audio-images-multiple-choice-${id}" class="custom-container d-flex justify-content-center align-items-center flex-column">
             <audio id="audio-${id}" autoplay type="audio/mpeg" src="${getBlobUrl(
         item.audio

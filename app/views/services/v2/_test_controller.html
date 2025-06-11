@@ -1,8 +1,7 @@
 <script>
-  window.useTestController = () => {
+  window.useTestController = async () => {
     let currentTask = -1
     const result = []
-    const assetBlobs = {}
     window.assetBlobs = window.assetBlobs || {}
     let isPaused = false
     let wasDemoDisplayed = false
@@ -41,57 +40,52 @@
     //## preload assets
     //######################################
 
-    const readAsset = asset => {
-      return new Promise(async (resolve, reject) => {
-        if (assetBlobs[asset]) {
-          return
-        }
-        const response = await fetch(window.media_paths[asset])
-        const data = await response.arrayBuffer()
-        const parts = asset.split('.')
-        const fileExtension = parts[parts.length - 1]
-        let fileType
-        switch (fileExtension) {
-          case 'mp3':
-            fileType = 'audio/mp3'
-            break
-          case 'webp':
-            fileType = 'image/webp'
-            break
-          case 'png':
-            fileType = 'image/png'
-            break
-          case 'jpg':
-          case 'jpeg':
-            fileType = 'image/jpg'
-            break
+    const readAsset = async asset => {
+      if (window.assetBlobs[asset]?.status === true) {
+        return
+      }
+      const response = await fetch(window.media_paths[asset])
 
-          default:
-            break
-        }
+      const data = await response.arrayBuffer()
+      const parts = asset.split('.')
+      const fileExtension = parts[parts.length - 1]
+      let fileType
+      switch (fileExtension) {
+        case 'mp3':
+          fileType = 'audio/mp3'
+          break
+        case 'webp':
+          fileType = 'image/webp'
+          break
+        case 'png':
+          fileType = 'image/png'
+          break
+        case 'jpg':
+        case 'jpeg':
+          fileType = 'image/jpg'
+          break
+        default:
+          break
+      }
 
-        const blob = new Blob([data], { type: fileType })
-        const blobUrl = URL.createObjectURL(blob)
+      const blob = new Blob([data], { type: fileType })
+      const blobUrl = { url: URL.createObjectURL(blob), status: true }
 
-        assetBlobs[asset] = blobUrl
-      })
+      window.assetBlobs[asset] = blobUrl
     }
 
-    const preloadAssets = () => {
+    const preloadAssets = async () => {
       const index = currentTask >= 0 ? currentTask : 0
       const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
 
-      nextItems.forEach(item => {
-        if (!item?.assets) {
-          return
+      for (const item of nextItems) {
+        if (item?.assets) {
+          const assets = item.assets.split(',')
+          for (const asset of assets) {
+            const res = await readAsset(asset)
+          }
         }
-
-        item.assets.split(',').forEach(async asset => {
-          await readAsset(asset)
-        })
-
-        window.assetBlobs = assetBlobs
-      })
+      }
     }
 
     //######################################
@@ -146,6 +140,7 @@
         const item = items[currentTask]
         const nextItem = items[currentTask + 1]
         window.startTimer()
+
         preloadAssets()
         renderItem(item, nextItem)
       }
@@ -211,10 +206,39 @@
       $('#content-container').html(el)
     }
 
+    const checkAsset = item => {
+      if (!item.assets) {
+        return true
+      }
+      const assets = item.assets.split(',')
+      const ex = assets.reduce((acc, asset) => {
+        console.log('meh', asset, window.assetBlobs[asset])
+
+        return acc && window.assetBlobs[asset].status === true
+      }, true)
+
+      return ex
+    }
+
     //######################################
     //## render the current item
     //######################################
     const renderItem = (item, nextItem) => {
+      const assetsAvailable = checkAsset(item)
+      console.log('assets available', item.assets, assetsAvailable)
+
+      // loader einblenden, interval richtig beenden und erst dann rendern
+      if (!assetsAvailable) {
+        let counter
+        const interval = setInterval(() => {
+          if (counter > 20) {
+            clearInterval(interval)
+          } else {
+            console.log('test', checkAsset(item))
+          }
+        }, 1000)
+      }
+
       const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
       const renderer = getRenderer(window.config.item_type)
       const el = renderer.renderer({
@@ -262,32 +286,45 @@
     //######################################
     //## start test
     //######################################
-    preloadAssets()
+    items.forEach(item => {
+      if (!item.assets) {
+        return
+      }
+      const assets = item.assets.split(',')
+      assets.forEach(asset => {
+        window.assetBlobs[asset] = { url: undefined, status: false }
+      })
+    })
+
+    await preloadAssets()
     if (window.config.options?.show_demo_task) {
       items.shift()
     }
 
-    if (window.lastResult !== undefined) {
-      window.shuffleArray(items)
-      if (window.config.dimensions.length) {
-        shuffleItemsWithConstraints()
+    const startTest = () => {
+      if (window.lastResult !== undefined) {
+        window.shuffleArray(items)
+        if (window.config.dimensions.length) {
+          shuffleItemsWithConstraints()
+        }
+      }
+
+      if (window.config.startPage.length) {
+        const renderer = getRenderer(window.config.item_type)
+        const el = window.useStartPage({
+          styles,
+          options: renderer.options,
+          config: window.config.startPage,
+          continueHandler: () => {
+            setNextItem()
+          },
+        })
+        $('#content-container').html(el).css(styles)
+      } else {
+        setNextItem()
       }
     }
-    if (window.config.startPage.length) {
-      const renderer = getRenderer(window.config.item_type)
-      const el = window.useStartPage({
-        styles,
-        options: renderer.options,
-        config: window.config.startPage,
-        continueHandler: () => {
-          setNextItem()
-        },
-      })
-      $('#content-container').html(el).css(styles)
-    } else {
-      setNextItem()
-    }
-
+    startTest()
     //######################################
     //## initial styling
     //######################################
