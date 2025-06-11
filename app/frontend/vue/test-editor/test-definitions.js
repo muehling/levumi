@@ -73,7 +73,8 @@ export const testDefinitions = {
         label: 'Antworten sortieren',
         id: 'sortItems',
         type: 'boolean',
-        description: 'Wenn angehakt, werden die Antworten alphabetisch sortiert.',
+        description:
+          'Wenn angehakt, werden die Antworten alphabetisch, oder, falls vorhanden, nach dem Index-Attribut sortiert.',
       },
       {
         label: 'Weiter-Knopf anzeigen',
