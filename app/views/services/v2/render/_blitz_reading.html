@@ -30,9 +30,11 @@
 
   const updateQuestion = (el, item) => {
     el.find('#question-space').html(item.question)
+    el.find('#button-container').addClass('d-none')
     window.setTimeout(() => {
       el.find('#item-description').html('Welches Wort hast du gesehen?')
       el.find('#question-space').html('&nbsp;')
+      el.find('#button-container').removeClass('d-none')
     }, parseInt(item.timeout, 10))
   }
 </script>
