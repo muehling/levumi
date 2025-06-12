@@ -127,6 +127,10 @@
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
+                        <b-button class="ms-2" size="sm" variant="outline-primary" @click="hideSuS">
+              <i class="fa-solid fa-hippo"></i>
+              Alle SuS ausblenden
+            </b-button>
           </b-col>
         </b-row>
         <b-row class="ms-1">
@@ -993,6 +997,13 @@
             this.targetControlVisible = !this.targetControlVisible
             break
         }
+      },
+      hideSuS(){
+        const chart = this.$refs.levumiChart?.chart
+        if (chart) {
+          this.graphData.forEach((series => {chart.hideSeries(series.name)}))
+        }
+
       },
     },
   }
