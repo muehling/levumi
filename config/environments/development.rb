@@ -1,4 +1,5 @@
 require 'active_support/core_ext/integer/time'
+require_relative '../../lib/middleware/slow_middleware'
 
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
@@ -83,4 +84,6 @@ Rails.application.configure do
                                          signed: true,
                                          secure: false, # if true, the csrf token will be stored too, which is guaranteed to not match on subsequent logins
                                          same_site: :strict
+
+  config.middleware.insert_before ActionDispatch::Static, Middleware::SlowMiddleware
 end

@@ -5,7 +5,7 @@
   }
 </style>
 <script type="module">
-  window.useBlitzReading = ({ resultHandler, item, isDemo }) => {
+  window.useBlitzReading = ({ resultHandler, item, isDemo, styles }) => {
     const el = $(`
           <div id="blitz-reading" class="d-flex justify-content-center flex-column">           
             <div id="mc-buttons" class="text-center"></div>                           
@@ -14,13 +14,13 @@
 
     const mcButtons = window.useMultipleChoice({
       id: item.id,
-      styles: {},
+      styles,
       item,
       resultHandler,
     })
 
     el.find('#mc-buttons').append(mcButtons)
-    updateQuestion(el, item)
+    updateQuestion(el, item, styles)
 
     el.on('mounted', e => {
       e.stopPropagation()
@@ -28,13 +28,13 @@
     return el
   }
 
-  const updateQuestion = (el, item) => {
+  const updateQuestion = (el, item, styles) => {
     el.find('#question-space').html(item.question)
-    el.find('#button-container').addClass('d-none')
+    el.find('#button-container').addClass('invisible')
     window.setTimeout(() => {
       el.find('#item-description').html('Welches Wort hast du gesehen?')
       el.find('#question-space').html('&nbsp;')
-      el.find('#button-container').removeClass('d-none')
+      el.find('#button-container').removeClass('invisible')
     }, parseInt(item.timeout, 10))
   }
 </script>

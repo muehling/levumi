@@ -69,9 +69,9 @@
     return !audioElement.paused && !audioElement.ended && audioElement.readyState > 2
   }
 
-  window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
+  window.useAudioImagesMultipleChoice = ({ id, styles, item, resultHandler, isDemo }) => {
     const el = $(
-      `<div class="container d-flex flex-column w-100">     
+      `<div class="container d-flex flex-column w-100">   ${item.audio}  
           <div id="audio-images-multiple-choice-${id}" class="custom-container d-flex justify-content-center align-items-center flex-column">
             <audio id="audio-${id}" autoplay type="audio/mpeg" src="${getBlobUrl(
         item.audio

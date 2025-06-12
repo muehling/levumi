@@ -8,6 +8,7 @@
     const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
     const rawItems = window.config.items
     const items = Object.values(rawItems)
+    let isLoaderShown = false
     let demoItem = items[0]
 
     let fontSize = '2rem'
@@ -41,10 +42,14 @@
     //######################################
 
     const readAsset = async asset => {
-      if (window.assetBlobs[asset]?.status === true) {
+      if (window.assetBlobs[asset]?.status !== 0) {
         return
       }
+
+      window.assetBlobs[asset] = { url: undefined, status: 1 }
+
       const response = await fetch(window.media_paths[asset])
+      console.log('fetched ' + asset)
 
       const data = await response.arrayBuffer()
       const parts = asset.split('.')
@@ -69,20 +74,21 @@
       }
 
       const blob = new Blob([data], { type: fileType })
-      const blobUrl = { url: URL.createObjectURL(blob), status: true }
-
-      window.assetBlobs[asset] = blobUrl
+      const blobUrl = (window.assetBlobs[asset] = { url: URL.createObjectURL(blob), status: 2 })
     }
 
     const preloadAssets = async () => {
       const index = currentTask >= 0 ? currentTask : 0
+      console.log('preload', index)
+
       const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
 
       for (const item of nextItems) {
         if (item?.assets) {
           const assets = item.assets.split(',')
           for (const asset of assets) {
-            const res = await readAsset(asset)
+            //  const res = await readAsset(asset)
+            const res = readAsset(asset)
           }
         }
       }
@@ -180,15 +186,21 @@
     //## display demo item
     //######################################
     const displayDemoItem = () => {
-      const renderer = getRenderer(window.config.item_type)
+      const assetsAvailable = checkAssets(demoItem)
+      console.log('assetsAvailable demo', demoItem.id, assetsAvailable)
+      if (!assetsAvailable) {
+        displayLoaderWhileNecessary(demoItem, displayDemoItem)
+      } else {
+        const renderer = getRenderer(window.config.item_type)
 
-      const el = window.useDemoItem({
-        config: { id: 0, styles, item: demoItem, ...renderer.options },
-        renderer: renderer.renderer,
-        continueHandler: endDemo,
-      })
-      $('#content-container').html(el)
-      el.trigger('mounted')
+        const el = window.useDemoItem({
+          config: { id: 0, styles, item: demoItem, ...renderer.options },
+          renderer: renderer.renderer,
+          continueHandler: endDemo,
+        })
+        $('#content-container').html(el)
+        el.trigger('mounted')
+      }
     }
 
     //######################################
@@ -206,51 +218,73 @@
       $('#content-container').html(el)
     }
 
-    const checkAsset = item => {
+    const checkAssets = item => {
       if (!item.assets) {
         return true
       }
       const assets = item.assets.split(',')
-      const ex = assets.reduce((acc, asset) => {
-        console.log('meh', asset, window.assetBlobs[asset])
-
-        return acc && window.assetBlobs[asset].status === true
+      return assets.reduce((acc, asset) => {
+        return acc && window.assetBlobs[asset].status === 2
       }, true)
+    }
 
-      return ex
+    const displayLoaderWhileNecessary = (item, callback) => {
+      let counter
+      const interval = setInterval(() => {
+        if (checkAssets(item)) {
+          timerWidget.startCounter()
+          clearInterval(interval)
+          hideLoader()
+          callback(item)
+        } else {
+          timerWidget.stopCounter()
+          showLoader()
+        }
+      }, 1000)
     }
 
     //######################################
     //## render the current item
     //######################################
-    const renderItem = (item, nextItem) => {
-      const assetsAvailable = checkAsset(item)
-      console.log('assets available', item.assets, assetsAvailable)
-
-      // loader einblenden, interval richtig beenden und erst dann rendern
+    const renderItem = item => {
+      const assetsAvailable = checkAssets(item)
+      console.log('assetsAvailable', item.id, assetsAvailable)
       if (!assetsAvailable) {
-        let counter
-        const interval = setInterval(() => {
-          if (counter > 20) {
-            clearInterval(interval)
-          } else {
-            console.log('test', checkAsset(item))
-          }
-        }, 1000)
-      }
+        displayLoaderWhileNecessary(item, renderItem)
+      } else {
+        const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
+        const renderer = getRenderer(window.config.item_type)
+        const el = renderer.renderer({
+          id: item.id,
+          styles,
+          options: renderer.options,
+          item,
 
-      const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
-      const renderer = getRenderer(window.config.item_type)
-      const el = renderer.renderer({
-        id: item.id,
-        styles,
-        options: renderer.options,
-        item,
-        nextItem,
-        resultHandler,
-      })
-      $('#content-container').html(el)
-      el.trigger('mounted')
+          resultHandler,
+        })
+        $('#content-container').html(el)
+
+        el.trigger('mounted')
+      }
+    }
+
+    //######################################
+    //## loader
+    //######################################
+    const showLoader = () => {
+      if (isLoaderShown === true) {
+        return
+      }
+      const loader = $(
+        '<div id="preloading-break" class="position-absolute top-50 start-50 fs-1"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+      )
+      $('#content-container').prepend(loader)
+      isLoaderShown = true
+    }
+
+    const hideLoader = () => {
+      $('#content-container').find('#preloading-break').remove()
+      isLoaderShown = false
     }
 
     //######################################
@@ -292,7 +326,7 @@
       }
       const assets = item.assets.split(',')
       assets.forEach(asset => {
-        window.assetBlobs[asset] = { url: undefined, status: false }
+        window.assetBlobs[asset] = { url: undefined, status: 0 }
       })
     })
 
@@ -324,6 +358,7 @@
         setNextItem()
       }
     }
+
     startTest()
     //######################################
     //## initial styling
