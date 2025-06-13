@@ -134,7 +134,7 @@
 
     if (window.config.options.showContinue) {
       const continueButton = $(
-        `<div class="d-flex justify-content-end w-100"><button class="multiple-choice-answer-button btn btn-success">Weiter</button></div>`
+        `<div id="continue-button" class="d-flex justify-content-end w-100"><button class="multiple-choice-answer-button btn btn-success">Weiter</button></div>`
       ).on('click', () => {
         if (currentAnswer) {
           saveItem(currentAnswer)

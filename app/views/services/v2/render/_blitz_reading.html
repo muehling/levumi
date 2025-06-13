@@ -31,10 +31,12 @@
   const updateQuestion = (el, item, styles) => {
     el.find('#question-space').html(item.question)
     el.find('#button-container').addClass('invisible')
+    el.find('#continue-button').addClass('invisible')
     window.setTimeout(() => {
       el.find('#item-description').html('Welches Wort hast du gesehen?')
       el.find('#question-space').html('&nbsp;')
       el.find('#button-container').removeClass('invisible')
+      el.find('#continue-button').removeClass('invisible')
     }, parseInt(item.timeout, 10))
   }
 </script>
