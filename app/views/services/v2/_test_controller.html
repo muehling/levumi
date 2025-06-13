@@ -1,9 +1,8 @@
 <script>
   window.useTestController = async () => {
-    let currentTask = -1
+    let currentItem = -1
     const result = []
     window.assetBlobs = window.assetBlobs || {}
-    let isPaused = false
     let wasDemoDisplayed = false
     const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
     const rawItems = window.config.items
@@ -25,11 +24,7 @@
     //######################################
     //## initialize timer
     //######################################
-    const handlePause = isTimerPaused => {
-      isPaused = isTimerPaused
-    }
     const timerWidget = window.useTimerWidget({
-      pauseHandler: handlePause,
       displayCounter: true,
       duration: maxTestDuration,
     })
@@ -47,10 +42,7 @@
       }
 
       window.assetBlobs[asset] = { url: undefined, status: 1 }
-
       const response = await fetch(window.media_paths[asset])
-      console.log('fetched ' + asset)
-
       const data = await response.arrayBuffer()
       const parts = asset.split('.')
       const fileExtension = parts[parts.length - 1]
@@ -78,16 +70,13 @@
     }
 
     const preloadAssets = async () => {
-      const index = currentTask >= 0 ? currentTask : 0
-      console.log('preload', index)
-
+      const index = currentItem >= 0 ? currentItem : 0
       const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
 
       for (const item of nextItems) {
         if (item?.assets) {
           const assets = item.assets.split(',')
           for (const asset of assets) {
-            //  const res = await readAsset(asset)
             const res = readAsset(asset)
           }
         }
@@ -98,7 +87,7 @@
     //## store result from previous task and set next task
     //######################################
     const next = (res, additionalData) => {
-      if (isPaused) {
+      if (!timerWidget.isRunning) {
         return
       }
 
@@ -106,22 +95,22 @@
 
       let isCorrect = 0
       if (
-        res + '' === items[currentTask].correctAnswer ||
-        res + '' === items[currentTask].correctAnswer.text
+        res + '' === items[currentItem].correctAnswer ||
+        res + '' === items[currentItem].correctAnswer.text
       ) {
         isCorrect = 1
       }
 
       result.push({
-        item: items[currentTask].id,
-        question: items[currentTask].shortQuestion || items[currentTask].question,
+        item: items[currentItem].id,
+        question: items[currentItem].shortQuestion || items[currentItem].question,
         result: isCorrect,
         answer: res,
         time: endTaskTimestamp,
-        group: items[currentTask].group,
+        group: items[currentItem].group,
         additionalData,
       })
-      if (currentTask === items.length - 1 || timerWidget.hasElapsed()) {
+      if (currentItem === items.length - 1 || timerWidget.hasElapsed()) {
         timerWidget.stopCounter()
         const trend = save()
         quit(trend)
@@ -142,9 +131,9 @@
           timerWidget.startCounter()
         }
 
-        currentTask++
-        const item = items[currentTask]
-        const nextItem = items[currentTask + 1]
+        currentItem++
+        const item = items[currentItem]
+        const nextItem = items[currentItem + 1]
         window.startTimer()
 
         preloadAssets()
@@ -187,9 +176,8 @@
     //######################################
     const displayDemoItem = () => {
       const assetsAvailable = checkAssets(demoItem)
-      console.log('assetsAvailable demo', demoItem.id, assetsAvailable)
       if (!assetsAvailable) {
-        displayLoaderWhileNecessary(demoItem, displayDemoItem)
+        displayLoaderWhileNecessary(demoItem, displayDemoItem, true)
       } else {
         const renderer = getRenderer(window.config.item_type)
 
@@ -207,17 +195,20 @@
     //## display feedback page
     //######################################
     const displayFeedback = (res, additionalData) => {
-      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+      const isCorrect = res + '' === items[currentItem].correctAnswer + '' ? 1 : 0
 
       const el = window.useFeedback({
         isCorrect: isCorrect,
-        item: items[currentTask],
+        item: items[currentItem],
         styles,
         continueHandler: () => next(res, additionalData),
       })
       $('#content-container').html(el)
     }
 
+    //######################################
+    //## check if assets for item are present
+    //######################################
     const checkAssets = item => {
       if (!item.assets) {
         return true
@@ -228,17 +219,24 @@
       }, true)
     }
 
-    const displayLoaderWhileNecessary = (item, callback) => {
+    //######################################
+    //## loader
+    //######################################
+    const displayLoaderWhileNecessary = (item, callback, ignoreTimer) => {
       let counter
       const interval = setInterval(() => {
         if (checkAssets(item)) {
-          timerWidget.startCounter()
+          if (!ignoreTimer) {
+            timerWidget.unpause()
+          }
           clearInterval(interval)
           hideLoader()
           callback(item)
         } else {
-          timerWidget.stopCounter()
           showLoader()
+          if (!ignoreTimer) {
+            timerWidget.pause()
+          }
         }
       }, 1000)
     }
@@ -248,9 +246,8 @@
     //######################################
     const renderItem = item => {
       const assetsAvailable = checkAssets(item)
-      console.log('assetsAvailable', item.id, assetsAvailable)
       if (!assetsAvailable) {
-        displayLoaderWhileNecessary(item, renderItem)
+        displayLoaderWhileNecessary(item, renderItem, false)
       } else {
         const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
         const renderer = getRenderer(window.config.item_type)
@@ -259,7 +256,6 @@
           styles,
           options: renderer.options,
           item,
-
           resultHandler,
         })
         $('#content-container').html(el)
@@ -275,8 +271,21 @@
       if (isLoaderShown === true) {
         return
       }
+      let infoText = currentItem === -1 ? 'Gleich geht es los!' : 'Gleich geht es weiter!'
+
       const loader = $(
-        '<div id="preloading-break" class="position-absolute top-50 start-50 fs-1"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div></div>'
+        `<div id="preloading-break" class="position-absolute top-0 start-0"> 
+        <div  class="position-absolute top-50 start-50 fs-1 translate-middle text-center p-3 m-3 bg-body shadow rounded">
+          <p>
+            ${infoText}
+          </p>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">
+              Lade...
+            </span>
+          </div>
+        </div>
+        </div>`
       )
       $('#content-container').prepend(loader)
       isLoaderShown = true
@@ -320,6 +329,7 @@
     //######################################
     //## start test
     //######################################
+    // init assetBlobs and preload items
     items.forEach(item => {
       if (!item.assets) {
         return
@@ -329,8 +339,9 @@
         window.assetBlobs[asset] = { url: undefined, status: 0 }
       })
     })
-
     await preloadAssets()
+
+    // remove first item in case it is the demo item
     if (window.config.options?.show_demo_task) {
       items.shift()
     }
@@ -358,11 +369,12 @@
         setNextItem()
       }
     }
-
-    startTest()
+    $(document).ready(() => {
+      startTest()
+      $('#content-container, #timer, #pause-button').css(styles)
+    })
     //######################################
     //## initial styling
     //######################################
-    $('#content-container, #timer, #pause-button').css(styles)
   }
 </script>

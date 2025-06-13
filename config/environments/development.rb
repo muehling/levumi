@@ -85,5 +85,6 @@ Rails.application.configure do
                                          secure: false, # if true, the csrf token will be stored too, which is guaranteed to not match on subsequent logins
                                          same_site: :strict
 
-  config.middleware.insert_before ActionDispatch::Static, Middleware::SlowMiddleware
+  # enable to debug slow network issues with asset downloading
+  #config.middleware.insert_before ActionDispatch::Static, Middleware::SlowMiddleware
 end

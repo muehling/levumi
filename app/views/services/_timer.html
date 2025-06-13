@@ -3,12 +3,10 @@
 <script type="module">
   let isCounterDisplayed = false
   let handleTimedOut = undefined
-  let handlePause = undefined
   let testDuration = undefined
   let remainingTime = undefined
   let startTime = undefined
   let counterInterval
-  let testTimeout
   let isPauseButtonDisplayed = false
 
   const startCounter = () => {
@@ -22,7 +20,6 @@
     remainingTime = testDuration
     startTime = Date.now()
     updateCounter()
-    testTimeout = setTimeout(timeElapsedHandler, testDuration)
 
     counterInterval = setInterval(() => {
       remainingTime -= 1000
@@ -31,12 +28,10 @@
   }
 
   const isRunning = () => {
-    return !!testTimeout
+    return !!counterInterval
   }
 
   const stopCounter = () => {
-    clearTimeout(testTimeout)
-    testTimeout = undefined
     clearInterval(counterInterval)
   }
 
@@ -50,18 +45,11 @@
   const resume = () => {}
 
   const handlePauseButton = () => {
-    if (testTimeout !== undefined) {
+    if (!isRunning()) {
       $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
-      stopCounter()
-      handlePause(true)
+      pause()
     } else {
-      handlePause(false)
-      $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
-      testTimeout = setTimeout(timeElapsedHandler, remainingTime)
-      counterInterval = setInterval(() => {
-        remainingTime -= 1000
-        updateCounter()
-      }, 1000)
+      unpause()
     }
   }
 
@@ -89,17 +77,31 @@
     return $('#pause-button')
   }
 
+  const pause = () => {
+    stopCounter()
+  }
+  const unpause = () => {
+    $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
+
+    counterInterval = setInterval(() => {
+      remainingTime -= 1000
+      updateCounter()
+      if (remainingTime < 0) {
+        clearInterval(counterInterval)
+        timeElapsedHandler()
+      }
+    }, 1000)
+  }
+
   window.useTimerWidget = ({
     displayCounter = true, //TODO set this according to group/assessment/student settings, once available
     displayPauseButton = true, //TODO set this according to group/assessment/student settings, once available
-    pauseHandler,
     duration = 300000,
     timedOutHandler = () => {},
   }) => {
-    isCounterDisplayed = displayCounter && window.displayTimer
-    isPauseButtonDisplayed = displayPauseButton && window.displayTimer
+    isCounterDisplayed = (displayCounter && window.displayTimer) || true
+    isPauseButtonDisplayed = (displayPauseButton && window.displayTimer) || true
     testDuration = duration
-    handlePause = pauseHandler
     handleTimedOut = timedOutHandler
 
     if (displayPauseButton) {
@@ -115,6 +117,8 @@
       hasElapsed,
       getTotalDuration,
       isRunning,
+      pause,
+      unpause,
     }
   }
 </script>

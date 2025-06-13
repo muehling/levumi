@@ -14,7 +14,7 @@ test:
 development:
   <<: *default
   host: db
-  database: levumi2_dev_small
+  database: levumi2_dev
   username: 'root'
   password: 'password'
 

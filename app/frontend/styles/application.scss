@@ -377,6 +377,12 @@ a:hover {
   font-size: 8rem;
 }
 
+#preloading-break {
+  background-color: rgb(100,100,100,0.5);
+  width: 100vw;
+  height: 100vh;
+}
+
 // hotfix for FM tests, which have a inline `position: absolute`
 #levumi_img {
   position: unset !important;
