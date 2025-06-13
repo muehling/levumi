@@ -81,7 +81,7 @@
     }
     const answers = [item.correctAnswer, ...item.wrongAnswers]
 
-    if (window.config.options.randomizeItems) {
+    if (window.config.options.randomizeAnswers) {
       window.shuffleArray(answers)
     } else if (window.config.options.sortItems) {
       answers.sort((a, b) => {

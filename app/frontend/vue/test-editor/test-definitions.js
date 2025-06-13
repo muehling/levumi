@@ -64,7 +64,7 @@ export const testDefinitions = {
       },
       {
         label: 'Antworten randomisieren',
-        id: 'randomizeItems',
+        id: 'randomizeAnswers',
         type: 'boolean',
         description:
           'Wenn angehakt, werden die Items randomisiert, andernfalls erscheinen sie wie in der CSV definiert. Nicht kompatibel mit "Antworten sortieren"',
