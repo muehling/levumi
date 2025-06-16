@@ -13,15 +13,8 @@
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
     const el = $(
       `<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4">
-      <h1>Beispiel</h1>
-      ${
-        window.config.options.instruction_text
-          ? '<p id="instruction-text" class="text-center">' +
-            window.config.options.instruction_text +
-            '</p>'
-          : ''
-      }
-    </div>`
+        <h1>Beispiel</h1>
+      </div>`
     )
 
     const endDemo = () => {
@@ -41,6 +34,8 @@
         config.styles
       )
 
+      $('#start-demo-button').remove()
+      el.find('#instruction-text').remove()
       continueButton.on('click', () => {
         continueHandler()
       })
@@ -50,12 +45,14 @@
     const createDemoElements = () => {
       config.resultHandler = endDemo
       config.isDemo = true
-
+      if (window.config.options?.instruction_text) {
+        el.append(`<p id="instruction-text" class="text-center border border-secondary rounded">
+            ${window.config.options.instruction_text}
+            </p>`)
+      }
       const itemEl = renderer(config)
 
       el.append(itemEl)
-      $('#start-demo-button').remove()
-      el.find('#instruction-text').remove()
       el.on('mounted', e => {
         e.stopPropagation()
         e.preventDefault()
