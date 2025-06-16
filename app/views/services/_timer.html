@@ -13,7 +13,6 @@
 
   const checkInterval = () => {
     remainingTime -= 1000
-
     updateCounter()
     if (remainingTime < 0) {
       clearInterval(counterInterval)
@@ -54,8 +53,6 @@
     updateCounter()
   }
 
-  const resume = () => {}
-
   const handlePauseButton = () => {
     if (isRunning()) {
       pause()
@@ -65,7 +62,7 @@
   }
 
   const hasElapsed = () => {
-    return remainingTime < 0 ? true : false
+    return remainingTime <= 0 ? true : false
   }
 
   const getTotalDuration = () => {

@@ -87,10 +87,6 @@
     //## store result from previous task and set next task
     //######################################
     const next = (res, additionalData) => {
-      if (!timerWidget.isRunning() && !timerWidget.hasElapsed()) {
-        return
-      }
-
       const endTaskTimestamp = window.stopTimer()
 
       let isCorrect = 0
@@ -127,7 +123,7 @@
         displayDemoItem()
         wasDemoDisplayed = true
       } else {
-        if (!timerWidget.isRunning()) {
+        if (!timerWidget.isRunning() && !timerWidget.hasElapsed()) {
           timerWidget.startCounter()
         }
 
