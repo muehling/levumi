@@ -87,7 +87,7 @@
     //## store result from previous task and set next task
     //######################################
     const next = (res, additionalData) => {
-      if (!timerWidget.isRunning()) {
+      if (!timerWidget.isRunning() && !timerWidget.hasElapsed()) {
         return
       }
 

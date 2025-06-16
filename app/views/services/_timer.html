@@ -65,7 +65,7 @@
   }
 
   const hasElapsed = () => {
-    return Date.now() - startTime >= testDuration ? true : false
+    return remainingTime < 0 ? true : false
   }
 
   const getTotalDuration = () => {
