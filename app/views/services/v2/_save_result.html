@@ -61,7 +61,7 @@
         .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
         .map(
           res =>
-            `(${res.shortQuestion || res.question} &lt;${res.answer}&gt;${
+            `(${res.shortQuestion || res.question} (${res.answer})${
               res.additionalData ? res.additionalData : ''
             })`
         )
@@ -77,7 +77,7 @@
       positive.map(res => `${res.shortQuestion || res.question}`).join(', ')
     )
     const negativeQuestions = stripHtml(
-      negative.map(res => `${res.shortQuestion || res.question} &lt;${res.answer}&gt;`).join(', ')
+      negative.map(res => `${res.shortQuestion || res.question} (${res.answer})`).join(', ')
     )
 
     const correct =

@@ -1,5 +1,7 @@
-<div id="timer-widget" class="d-none"><p id="counter"></p></div>
-<button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1">Pause</button>
+<div id="timer-widget" class="d-none">
+  <p id="counter" class="mb-0 me-3"></p>
+</div>
+<button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1 px-3">Pause</button>
 <script type="module">
   let isCounterDisplayed = false
   let handleTimedOut = undefined
@@ -8,6 +10,18 @@
   let startTime = undefined
   let counterInterval
   let isPauseButtonDisplayed = false
+
+  const checkInterval = () => {
+    remainingTime -= 1000
+
+    updateCounter()
+    if (remainingTime < 0) {
+      clearInterval(counterInterval)
+      counterInterval = undefined
+      timeElapsedHandler()
+      $('#pause-button').attr('disabled', true)
+    }
+  }
 
   const startCounter = () => {
     if (isPauseButtonDisplayed) {
@@ -20,11 +34,7 @@
     remainingTime = testDuration
     startTime = Date.now()
     updateCounter()
-
-    counterInterval = setInterval(() => {
-      remainingTime -= 1000
-      updateCounter()
-    }, 1000)
+    counterInterval = setInterval(checkInterval, 1000)
   }
 
   const isRunning = () => {
@@ -33,10 +43,12 @@
 
   const stopCounter = () => {
     clearInterval(counterInterval)
+    counterInterval = undefined
   }
 
   const timeElapsedHandler = () => {
     clearInterval(counterInterval)
+    counterInterval = undefined
     handleTimedOut()
     remainingTime = 0
     updateCounter()
@@ -45,8 +57,7 @@
   const resume = () => {}
 
   const handlePauseButton = () => {
-    if (!isRunning()) {
-      $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
+    if (isRunning()) {
       pause()
     } else {
       unpause()
@@ -78,19 +89,12 @@
   }
 
   const pause = () => {
+    $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
     stopCounter()
   }
   const unpause = () => {
     $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
-
-    counterInterval = setInterval(() => {
-      remainingTime -= 1000
-      updateCounter()
-      if (remainingTime < 0) {
-        clearInterval(counterInterval)
-        timeElapsedHandler()
-      }
-    }, 1000)
+    counterInterval = setInterval(checkInterval, 1000)
   }
 
   window.useTimerWidget = ({
