@@ -347,7 +347,13 @@
     computed: {
       timeLimitSuffix() {
         const isNumber = /^\d+$/.test(this.selectedTest.description.time_limit)
-        return isNumber ? ' Minuten' : ''
+        if (isNumber) {
+          return parseInt(this.selectedTest.description.time_limit, 10) === 1
+            ? ' Minute'
+            : ' Minuten'
+        } else {
+          return ''
+        }
       },
       filteredTests: function () {
         return this.testMetaData.tests
