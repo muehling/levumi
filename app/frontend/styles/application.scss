@@ -339,6 +339,22 @@ a:hover {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  font-size: 2em;
+
+  #pause-overlay {
+    background-color: rgb(100, 100, 100, 0.5);
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+  }
+  #pause-button {
+    z-index: 6;
+    min-width: 8rem;
+    font-size: 1em;
+  }
+  #counter {
+    z-index: 6;
+  }
 }
 
 #image-container {
@@ -378,10 +394,15 @@ a:hover {
   font-size: 8rem;
 }
 
-#preloading-break {
+#preloading-break,
+#pause-overlay {
   background-color: rgb(100, 100, 100, 0.5);
   width: 100vw;
   height: 100vh;
+}
+
+#preloading-break {
+  z-index: 10;
 }
 
 // hotfix for FM tests, which have a inline `position: absolute`

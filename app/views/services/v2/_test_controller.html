@@ -222,7 +222,7 @@
       let counter
       const interval = setInterval(() => {
         if (checkAssets(item)) {
-          if (!ignoreTimer) {
+          if (!ignoreTimer && !timerWidget.isRunning()) {
             timerWidget.unpause()
           }
           clearInterval(interval)
@@ -234,7 +234,7 @@
             timerWidget.pause()
           }
         }
-      }, 1000)
+      }, 200)
     }
 
     //######################################
@@ -367,7 +367,7 @@
     }
     $(document).ready(() => {
       startTest()
-      $('#content-container, #timer, #pause-button').css(styles)
+      $('#content-container').css(styles)
     })
     //######################################
     //## initial styling
