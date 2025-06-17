@@ -102,11 +102,12 @@
   import { ajax } from 'src/utils/ajax'
   import { computed, ref } from 'vue'
   import { printDate } from 'src/utils/date'
+  import { stripHtml } from 'src/utils/helpers'
   import { useAssessmentsStore } from 'src/store/assessmentsStore'
-  import isObject from 'lodash/isObject'
   import apiRoutes from 'src/vue/routes/api-routes'
   import AssessmentViewStudents from './assessment-results-components/assessment-view-students.vue'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
+  import isObject from 'lodash/isObject'
 
   const { test, group, weeks, results, assessment } = defineProps({
     test: Object,
@@ -132,11 +133,6 @@
 
     return result
   })
-
-  const stripHtml = val => {
-    let doc = new DOMParser().parseFromString(val, 'text/html')
-    return doc.body.textContent || ''
-  }
 
   const getFormattedItems = (items, result) => {
     if (!items) {
