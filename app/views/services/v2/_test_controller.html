@@ -219,9 +219,7 @@
       if (!item.assets) {
         return true
       }
-      if (!item.assets.includes(',')) {
-        item.assets = [item.assets]
-      }
+
       const assets = item.assets.split(',')
       return assets.reduce((acc, asset) => {
         return acc && window.assetBlobs[asset].status === 2
