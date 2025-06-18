@@ -83,13 +83,23 @@
       }
     }
 
+    const checkCorrectness = res => {
+      let isCorrect = 0
+      if (
+        res + '' === items[currentItem].correctAnswer ||
+        res + '' === items[currentItem].correctAnswer.text
+      ) {
+        isCorrect = 1
+      }
+      return isCorrect
+    }
     //######################################
     //## store result from previous task and set next task
     //######################################
     const next = (res, additionalData) => {
       const endTaskTimestamp = window.stopTimer()
 
-      let isCorrect = 0
+      let isCorrect = checkCorrectness(res)
       if (
         res + '' === items[currentItem].correctAnswer ||
         res + '' === items[currentItem].correctAnswer.text
@@ -191,7 +201,7 @@
     //## display feedback page
     //######################################
     const displayFeedback = (res, additionalData) => {
-      const isCorrect = res + '' === items[currentItem].correctAnswer + '' ? 1 : 0
+      const isCorrect = checkCorrectness(res)
 
       const el = window.useFeedback({
         isCorrect: isCorrect,
