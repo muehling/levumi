@@ -44,7 +44,7 @@
           <h4><u>Lernverlaufsdiagnostik: Datenanalyse und Testdesign</u></h4>
           <p>
             Für Forschende bietet Levumi die Möglichkeit, Studien durchzuführen und die erhobenen
-            Rohdaten, Schüler:innen Merkmale und weitere Daten der Testungen für die eigenen
+            Rohdaten, Schüler*innen Merkmale und weitere Daten der Testungen für die eigenen
             Analysen zu exportieren. Auch hier ist der Datenschutz zentral, die Daten sind
             anonymisiert und können gemeinsam mit Lehrkräften erhoben werden, sofern diese auch
             einen Zugang zu Levumi besitzen.

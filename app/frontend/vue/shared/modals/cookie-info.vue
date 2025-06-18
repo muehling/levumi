@@ -24,7 +24,7 @@
         <tr>
           <td>mk</td>
           <td>
-            Willkürliche Zeichenfolge, die zum Ver-/Entschlüsseln der Schüler:innen-Namen verwendet
+            Willkürliche Zeichenfolge, die zum Ver-/Entschlüsseln der Schüler*innen-Namen verwendet
             wird. Datenbankseitig ist diese Zeichenfolge ebenfalls verschlüsselt; erst nach Eingabe
             des Nutzerpassworts wird diese entschlüsselt. Dadurch ist sichergestellt, dass außer dem
             angemeldeten Benutzer niemand Zugriff auf diese Daten hat.

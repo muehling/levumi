@@ -35,7 +35,7 @@
                 Unsere Plattform ermöglicht es Ihnen, kostenfrei den Lernfortschritt jeder Klasse
                 und jedes einzelnen Schülers transparent zu verfolgen. Mit unbegrenzter Klassen- und
                 Schülerzahl sowie der Möglichkeit, Klassen mit Kolleginnen und Kollegen zu teilen,
-                bieten wir Ihnen die Möglichkeit, effizient mir Ihren Kolleg:innen
+                bieten wir Ihnen die Möglichkeit, effizient mir Ihren Kolleg*innen
                 zusammenzuarbeiten.
               </p>
             </b-card>
@@ -50,7 +50,7 @@
                 class="img-bg ms-4 mb-4 float-end shadow"
                 :src="frontpage4"
                 fluid
-                alt="Schüler:innen arbeiten an Laptops" />
+                alt="Schüler*innen arbeiten an Laptops" />
               <h4><u>Leichter Zugang und Datenschutz</u></h4>
               <p>
                 Für Schülerinnen und Schüler ist die Nutzung unserer Plattform denkbar einfach: sie

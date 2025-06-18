@@ -18,6 +18,7 @@
         "type": "startup",
         "name": "web check",
         "description": "Check if the app responds to the /lehrkraefte endpoint",
+        "initialDelay": 15,
         "path": "/lehrkraefte",
         "content": "Levumi",
         "attempts": 3

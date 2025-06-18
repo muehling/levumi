@@ -6,11 +6,11 @@
         bg-variant="white"
         class="col-lg-8 col-xl-6 mt-3">
         <p v-if="group.read_only" class="mb-0">
-          In dieser Klasse wurden noch keine Schüler:innen angelegt.
+          In dieser Klasse wurden noch keine Schüler*innen angelegt.
         </p>
         <div v-else>
           <p>
-            Aktuell sind noch keine Schüler:innen für die Klasse angelegt. Bitte legen Sie diese
+            Aktuell sind noch keine Schüler*innen für die Klasse angelegt. Bitte legen Sie diese
             zuerst im Klassenbuch an, damit Sie testen können!
           </p>
           <b-button variant="outline-secondary" @click="navigateToClassbook">

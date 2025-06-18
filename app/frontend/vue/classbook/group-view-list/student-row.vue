@@ -472,7 +472,7 @@
       async handleSubmit() {
         const studentData = this.collectData()
         if (studentData === null) {
-          this.globalStore.setErrorMessage('Die Schüler:in kann nicht bearbeitet werden.')
+          this.globalStore.setErrorMessage('Die Schüler*in kann nicht bearbeitet werden.')
           return
         }
 

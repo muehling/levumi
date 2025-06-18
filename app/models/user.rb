@@ -62,7 +62,7 @@ class User < ApplicationRecord
     when 0
       'Lehrkraft'
     when 1
-      'Forscher:in'
+      'Forscher*in'
     else
       'Privat'
     end

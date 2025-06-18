@@ -243,7 +243,7 @@
                     <td>
                       {{
                         selectedTest.student_test
-                          ? 'Selbstständig durch die Schüler:innen'
+                          ? 'Selbstständig durch die Schüler*innen'
                           : 'Durch die Lehrkraft'
                       }}
                     </td>

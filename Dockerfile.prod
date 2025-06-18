@@ -31,6 +31,7 @@ WORKDIR /usr/src/app
 COPY Gemfile /Gemfile
 COPY Gemfile.lock /Gemfile.lock
 COPY package.json yarn.lock /
+COPY nginx.conf.sigil .
 
 RUN gem update --system && gem install bundler && bundle config set --local without test development && bundle install
 RUN yarn

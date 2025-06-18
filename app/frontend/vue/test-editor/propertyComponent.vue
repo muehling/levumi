@@ -326,7 +326,7 @@
         student_testOptions: [
           { value: null, text: 'Bitte auswählen' },
           { value: 0, text: 'Zur Durchführung durch die Lehrkraft' },
-          { value: 1, text: 'Selbständige Durchführung durch die Schüler:innen' },
+          { value: 1, text: 'Selbständige Durchführung durch die Schüler*innen' },
         ],
 
         versionDropdownOptions: [

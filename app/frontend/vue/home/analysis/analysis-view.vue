@@ -127,6 +127,10 @@
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
+            <b-button class="ms-2" size="sm" variant="outline-primary" @click="exportCsv">
+              <i class="fas fa-file-csv"></i>
+              CSV erzeugen
+            </b-button>
           </b-col>
         </b-row>
         <b-row class="ms-1">
@@ -207,7 +211,7 @@
     <b-row v-if="selectedViewType === 'niveaus'">
       <niveau-overview
         :niv-config="viewConfig.niv_config"
-        :info-attachments="info_attachments"></niveau-overview>
+        *info-attachments="info_attachments"></niveau-overview>
     </b-row>
   </div>
 </template>
@@ -596,7 +600,32 @@
       getStudentName(id) {
         return this.students.find(student => student.id === id)?.name
       },
+      exportCsv() {
+        let data
+        let filename
+        if (this.selectedStudentId === -1) {
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
+          data = this.graphData
+        } else {
+          const studentName = this.getStudentName(this.selectedStudentId)
+          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_${studentName}`
+          data = this.graphData.filter(d => d.id === this.selectedStudentId)
+        }
 
+        const dates = this.weeks.map(w => printDate(w))
+        const titleRow = ['', ...dates, '\n']
+        const rows = data.map(row => {
+          const rowData = [row.name, ...row.data.map(d => d.y)]
+          return rowData
+        })
+        const csvData = titleRow.join(',') + rows.map(r => r.join(',')).join('\n')
+        const blob = new Blob([csvData], { type: 'text/csv' })
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `${filename}.csv`
+        a.click()
+      },
       async exportGraph() {
         let title
         let filename
@@ -606,7 +635,9 @@
           filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Klassenansicht`
         } else {
           title = `${this.getStudentName(this.selectedStudentId)} - ${view.label}`
-          filename = `${this.group.label}_${this.test.shorthand}_${this.test.level}_Kindansicht`
+          filename = `${this.group.label}_${this.test.shorthand}_${
+            this.test.level
+          }_${this.getStudentName(this.selectedStudentId)}`
         }
         const pdf = new jsPDF({ orientation: 'landscape' })
         pdf.text(this.test.full_name, 10, 10)
@@ -800,6 +831,7 @@
             // else this is a graph with one series per student reaching over all available dates
             gData = this.studentsWithResults.map(student => {
               return {
+                id: student.id,
                 name: student.name,
                 type: trueChartType,
                 data: this.createSeries(student.id, undefined, nonLineChart),
@@ -812,6 +844,7 @@
           if (!view.series_keys) {
             gData = [
               {
+                id: student.id,
                 name: student.name,
                 type: trueChartType,
                 data: this.createSeries(student.id, undefined, nonLineChart),
