@@ -26,6 +26,13 @@
   }
 </style>
 <script type="module">
+  const getBlobUrl = asset => {
+    if (window.assetBlobs[asset]) {
+      return assetBlobs[asset].url
+    } else {
+      return null
+    }
+  }
   window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
     const el = $(
       `<div id='multiple-choice-${id}' class='container d-flex justify-content-center align-items-center flex-column'></div`
@@ -38,7 +45,9 @@
       assets.forEach(i => {
         //TODO might check if asset is an image
         const image = $(
-          `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${window.media_paths[i]});'></div`
+          `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${getBlobUrl(
+            i
+          )});'></div`
         )
         imageContainer.append(image)
       })
