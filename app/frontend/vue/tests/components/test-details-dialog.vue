@@ -38,6 +38,7 @@
   </info-dialog>
 </template>
 <script>
+  import { stripHtml } from 'src/utils/helpers'
   import InfoDialog from '../../shared/info-dialog.vue'
   export default {
     name: 'TestDetailsDialog',
@@ -52,7 +53,7 @@
         }
         return Object.values(this.test.items)
           .map(i => {
-            return i.question ? i.question : i
+            return stripHtml(i.question ? i.question : i)
           })
           .join(', ')
       },

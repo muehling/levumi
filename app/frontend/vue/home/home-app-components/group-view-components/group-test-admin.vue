@@ -319,6 +319,7 @@
   import apiRoutes from 'src/vue/routes/api-routes'
   import ConfirmDialog from 'src/vue/shared/confirm-dialog.vue'
   import LicenceDisplay from 'src/vue/shared/licence-display.vue'
+  import { stripHtml } from 'src/utils/helpers'
   export default {
     name: 'GroupTestAdmin',
     components: { ConfirmDialog, LicenceDisplay },
@@ -484,7 +485,7 @@
         const it = Object.values(items).map(item =>
           typeof item === 'string' ? item : item.question
         )
-        return it.join(', ')
+        return stripHtml(it.join(', '))
       },
       handleClose() {
         this.reset('area')
