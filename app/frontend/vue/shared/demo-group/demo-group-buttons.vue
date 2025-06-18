@@ -59,7 +59,7 @@
 
   const createDemoData = async () => {
     const answer = await confDialog.value.open({
-      message: `Mit dieser Aktion werden drei Demo-Schüler:innen sowie jeweils fünf Messergebnisse pro Schüler:in angelegt. Möchten Sie fortfahren?`,
+      message: `Mit dieser Aktion werden drei Demo-Schüler*innen sowie jeweils fünf Messergebnisse pro Schüler*in angelegt. Möchten Sie fortfahren?`,
       okText: 'Ja, Daten erstellen',
       okIntent: 'outline-success',
       containsHtml: true,

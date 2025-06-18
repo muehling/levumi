@@ -16,7 +16,7 @@
         </b-button>
         <context-help
           help-text="Hier können Sie die in den Tests verwendete Schriftart einstellen.
-      Diese kann auch in der Liste individuell pro Schüler:in eingestellt werden. Individuelle Einstellungen haben Vorrang vor den Klasseneinstellungen."
+      Diese kann auch in der Liste individuell pro Schüler*in eingestellt werden. Individuelle Einstellungen haben Vorrang vor den Klasseneinstellungen."
           class-name="mt-2 ms-2" />
       </div>
       <div class="col-9 d-flex align-items-center">
@@ -125,7 +125,7 @@
         QR-Code PDF erstellen
       </b-button>
       <context-help
-        help-text="Mit dieser Aktion wird ein PDF mit QR-Codes zum Einloggen in die Testoberfläche erstellt. Die QR-Codes können ausgedruckt und an die Schüler:innen ausgeteilt werden."
+        help-text="Mit dieser Aktion wird ein PDF mit QR-Codes zum Einloggen in die Testoberfläche erstellt. Die QR-Codes können ausgedruckt und an die Schüler*innen ausgeteilt werden."
         class-name="mt-2 ms-2" />
     </div>
     <div v-if="permissions?.archiveGroup" class="d-inline">

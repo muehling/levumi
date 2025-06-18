@@ -13,7 +13,7 @@
       v-if="permissions?.moveStudents"
       :active="current === 'movestudents'"
       @click="handleClick('movestudents')">
-      Schüler:innen verschieben
+      Schüler*innen verschieben
     </b-nav-item>
   </b-nav>
 </template>

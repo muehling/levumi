@@ -28,8 +28,8 @@
 
   const content = computed(() => {
     return [
-      'Die Beispielklasse dient zum Ausprobieren und Kennenlernen der Funktionen und Abläufe von Levumi. Hier können Sie z. B. Schüler:innen anlegen, ändern und löschen. Messdaten für die Beispiel-Schüler:innen können Sie auf dem Diagnostik-Tab einsehen und anlegen.',
-      'Zusätzlich stehen die Funktionen "<b>Demo-Daten anlegen</b>" und "<b>Demo-Daten entfernen</b>" zur Verfügung. Diese erstellen/entfernen einige Schüler:innen im Klassenbuch, sowie einige beispielhafte Messungen in der Diagnostik. Manuell angelegte Schüler:innen und Testdaten werden dabei nicht entfernt.',
+      'Die Beispielklasse dient zum Ausprobieren und Kennenlernen der Funktionen und Abläufe von Levumi. Hier können Sie z. B. Schüler*innen anlegen, ändern und löschen. Messdaten für die Beispiel-Schüler*innen können Sie auf dem Diagnostik-Tab einsehen und anlegen.',
+      'Zusätzlich stehen die Funktionen "<b>Demo-Daten anlegen</b>" und "<b>Demo-Daten entfernen</b>" zur Verfügung. Diese erstellen/entfernen einige Schüler*innen im Klassenbuch, sowie einige beispielhafte Messungen in der Diagnostik. Manuell angelegte Schüler*innen und Testdaten werden dabei nicht entfernt.',
       'Die Beispielklasse ist nicht für den regelmäßigen Einsatz im Unterricht gedacht. Bitte legen Sie eine neue Klasse an, um eigene Messungen durchzuführen.',
       '<b>Daten aus Beispielklassen können nicht exportiert werden!</b>',
     ]

@@ -207,7 +207,7 @@
     <b-row v-if="selectedViewType === 'niveaus'">
       <niveau-overview
         :niv-config="viewConfig.niv_config"
-        :info-attachments="info_attachments"></niveau-overview>
+        *info-attachments="info_attachments"></niveau-overview>
     </b-row>
   </div>
 </template>

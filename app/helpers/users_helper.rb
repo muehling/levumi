@@ -49,7 +49,7 @@ module UsersHelper
   end
 
   def account_types
-    %w[Lehrkraft Forscher:in Privatperson Klinik/Praxis]
+    %w[Lehrkraft Forscher*in Privatperson Klinik/Praxis]
   end
 
   def accounttypes_to_array
