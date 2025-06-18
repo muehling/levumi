@@ -49,7 +49,7 @@
         .filter(res => res.result === 1 && res.group + '' === dimension.id + '')
         .map(
           res =>
-            `(${res.shortQuestion || res.question}${res.additionalData ? res.additionalData : ''})`
+            `${res.shortQuestion || res.question}${res.additionalData ? res.additionalData : ''}`
         )
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${stripHtml(
         d.join(', ')
@@ -61,9 +61,9 @@
         .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
         .map(
           res =>
-            `(${res.shortQuestion || res.question} (${res.answer})${
+            `${res.shortQuestion || res.question} (${res.answer})${
               res.additionalData ? res.additionalData : ''
-            })`
+            }`
         )
       return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${stripHtml(
         d.join(', ')
