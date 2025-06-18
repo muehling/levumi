@@ -216,21 +216,14 @@
     //## check if assets for item are present
     //######################################
     const checkAssets = item => {
-      console.log('checkassets', item)
-
       if (!item.assets) {
-        console.log('wtf')
-
         return true
       }
 
       const assets = item.assets.split(',')
       const assetsAvailable = assets.reduce((acc, asset) => {
-        console.log('meh', window.assetBlobs[asset])
         return acc && window.assetBlobs[asset].status === 2
       }, true)
-      console.log('muh', assetsAvailable)
-
       return assetsAvailable
     }
 
