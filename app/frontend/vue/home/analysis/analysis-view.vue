@@ -127,9 +127,9 @@
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
-                        <b-button class="ms-2" size="sm" variant="outline-primary" @click="hideSuS">
+              <b-button class="ms-2" size="sm" variant="outline-primary" @click="hideSuS" >
               <i class="fa-solid fa-hippo"></i>
-              Alle SuS ausblenden
+              {{ allSusVisible ? 'Alle SuS ausblenden' : 'Alle SuS einblenden '}}
             </b-button>
           </b-col>
         </b-row>
@@ -204,7 +204,8 @@
             striped
             hover
             :fields="simpleTableFields"
-            :items="simpleTableData" />
+            :items="simpleTableData" 
+            @row-clicked="oneSuS"/>
         </b-tab>
       </b-tabs>
     </b-row>
@@ -291,6 +292,7 @@
         targetControlVisible: false,
         targetVal: null,
         info_attachments: undefined,
+        allSusVisible : true,
       }
     },
     computed: {
@@ -1000,10 +1002,26 @@
       },
       hideSuS(){
         const chart = this.$refs.levumiChart?.chart
+        if(this.allSusVisible){
+            if (chart) {
+            this.graphData.forEach((series => {chart.hideSeries(series.name)}))
+          }
+          this.allSusVisible = false
+        } else{
+            if (chart) {
+            this.graphData.forEach((series => {chart.showSeries(series.name)}))
+          }
+          this.allSusVisible = true
+        }
+        
+      },
+      oneSuS(sus){
+        const chart = this.$refs.levumiChart?.chart
         if (chart) {
           this.graphData.forEach((series => {chart.hideSeries(series.name)}))
+          chart.showSeries(sus.name)
         }
-
+        
       },
     },
   }
