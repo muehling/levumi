@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="dataInfoText">
-      Bitte laden Sie hier eine .CSV-Datei mit den einzelnen Fragen/Aufgaben hoch.
+    <div>
+      Bitte lade hier eine .csv-Datei mit den einzelnen Fragen/Aufgaben hoch.
       <csv-help :type="questionType" />
     </div>
 
@@ -15,13 +15,37 @@
       accept="text/csv"
       placeholder="Datei auswählen oder hier ablegen"
       drop-placeholder="Datei hier ablegen" />
-    <b-form-invalid-feedback class="defaultFeedbackData" :state="isCsvChecked">
-      {{ `Die Datei daf keines der folgenden Zeichen enthalten: <, >, " oder '` }}
-      <br />
-      Auch sind Felder, die ausschließlich Leerzeichen enthalten nicht erlaubt.
-      <br />
-    </b-form-invalid-feedback>
-    <b-button :disabled="!csv" class="m-1" @click="checkCsv">
+    <div v-if="checkedLines !== undefined">
+      <b-card>
+        <span>
+          Es scheint, als gäbe es Fehler in der csv-Datei. Bitte überprüfe die Tabelle: Zellen mit
+          <i class="fas fa-x text-danger"></i>
+          sind falsch definiert (siehe Hinweise zur CSV-Struktur). Leere oder zuvielene Zellen sind
+          wahrscheinlich auf zuviele oder zuwenige Zeilenumbrüche in der CSV zurückzuführen.
+        </span>
+        <table>
+          <thead>
+            <tr>
+              <td></td>
+              <td v-for="(header, index) in checkedLines[0]" :key="index" class="px-2">
+                Spalte {{ index + 1 }}
+              </td>
+            </tr>
+          </thead>
+          <tr v-for="(row, rowIndex) in checkedLines" :key="rowIndex">
+            <td>Zeile {{ rowIndex + 1 }}</td>
+            <td
+              v-for="(cell, colIndex) in row"
+              :key="colIndex"
+              :class="`${cell ? 'true' : 'false'} px-2 text-center`">
+              <i v-if="cell === true" class="fas fa-check text-success"></i>
+              <i v-if="cell === false" class="fas fa-x text-danger"></i>
+            </td>
+          </tr>
+        </table>
+      </b-card>
+    </div>
+    <b-button :disabled="!csv" class="m-1 mt-3" @click="checkCsv">
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
@@ -45,6 +69,8 @@
 </template>
 <script>
   import CsvHelp from './csv-help.vue'
+  import { testDefinitions } from '../test-definitions'
+  import { checkLine } from './line-checker'
   export default {
     name: 'CsvUpload',
     components: { CsvHelp },
@@ -53,15 +79,21 @@
       return {
         csv: undefined,
         data: null,
-        isCsvChecked: null,
+        isCsvChecked: undefined,
         assets: [],
+        checkedLines: undefined,
       }
     },
-    computed: {},
+    computed: {
+      fieldConstraints() {
+        return testDefinitions[this.questionType]?.fieldConstraints
+      },
+    },
 
     methods: {
-      debug() {
-        console.log('debug', this.data, this.questions, this.assets)
+      async debug() {
+        const t = await this.checkCsv(true)
+        console.log('debug', this.data, this.questions, this.assets, t)
       },
       async uploadAssets() {
         //todo without the timeout, this.assets is empty at @change. b-form-file is still subject to change, so this might change in the future
@@ -104,29 +136,35 @@
           }
         })
       },
-      async checkCsv() {
+      async checkCsv(debug) {
         const dataAsString = await this.readCsvData()
         const data = this.stringToArray(dataAsString)
 
-        const checkResult = data.reduce((linesOkaySoFar, line) => {
-          const lineHasInvalidFields = true //line.reduce((fieldsOkaySoFar, field, index) => {
-          //  if (index !== 0 && index !== 1) {
-          //    return fieldsOkaySoFar && this.stringIsValid(field)
-          //  } else if (index === 1) {
-          //    return fieldsOkaySoFar && this.isValidCsvName(field)
-          //  } else {
-          //    return fieldsOkaySoFar
-          //  }
-          //}, true)
-          return linesOkaySoFar && lineHasInvalidFields
+        const checkResult = data.map(line => {
+          const checked = checkLine(line, this.fieldConstraints)
+
+          return checked
+        })
+        const allClear = checkResult.reduce((acc, line) => {
+          return (
+            acc &&
+            line.reduce((innerAcc, field) => {
+              return innerAcc && field
+            }, true)
+          )
         }, true)
 
-        if (checkResult) {
+        if (allClear && debug !== true) {
           this.data = data
           this.$emit('submit-csv-data', this.parseData(data))
-        }
+        } else if (!allClear) {
+          //todo wird irgendwo oben für irgendne validierung gebraucht
 
-        this.isCsvChecked = checkResult
+          this.checkedLines = checkResult
+        } else {
+          this.checkedLines = checkResult
+        }
+        this.isCsvChecked = allClear
       },
       parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {
@@ -270,7 +308,7 @@
           case 'blitz_reading':
             return this.parseBlitzReading(data)
           default:
-            console.log('Unbekannte Testart :-(')
+            console.warn('Unbekannte Testart :-(')
         }
       },
       isValidFileName(name) {

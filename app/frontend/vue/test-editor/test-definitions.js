@@ -12,6 +12,7 @@ export const testDefinitions = {
       'enthält die richtige Antwort.',
       'enthält die Position des Eingabefeldes. Für "echte" Rechenaufgaben ( 1 + 4= _ ) gilt die 3, für Platzhalteraufgaben ( _ + 3 = 5 ) 1 oder ( 3 + _ = 5 ) 2.',
     ],
+    fieldConstraints: [['text', 'empty'], ['number'], ['text'], ['number'], ['number'], ['number']],
     demoLine: [`Addition ohne Zehnerübergang;4;+;4;8;3`],
     additionalInfo: [],
     options: [],
@@ -43,6 +44,13 @@ export const testDefinitions = {
       `enthält die dargestellte Frage. HTML¹ ist eingeschränkt zulässig.`,
       `enthält die richtige Antwort. JSON² ist zulässig.`,
       `enthält die falschen Antworten, durch | ohne Leerzeichen voneinander getrennt. Es muss mindestens eine falsche Antwort hinterlegt werden. JSON² ist zulässig.`,
+    ],
+    fieldConstraints: [
+      ['text', 'empty'],
+      ['image', 'empty'],
+      ['text', 'html'],
+      ['text', 'json'],
+      ['text', 'json', 'multiple'],
     ],
     demoLine: [
       `Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus|Katze|Pferd`,
@@ -139,6 +147,14 @@ export const testDefinitions = {
       `Bei HTML- oder JSON-Elementen muss penibel auf einfache oder doppelte Anführungszeichen geachtet werden, da dies sonst zu Fehlern führt, die erst während der Testausführung auftreten.`,
       `1) HTML-Elemente sind zulässig, können aber nur über die Vergabe von Klassen gestylt werden: <span class='text-danger'>Test</span> oder <b>Test</b>. Bei der Angabe von Klassennamen muss das einfache Hochkomma ' (Shift #) verwendet werden. Kommt im Text ein doppeltes Anführungszeichen vor, muss das typographische ʺ (ALT + 0147) verwendet werden`,
       `2) Für JSON-Objekte sind folgende Keys zulässig: text (dargestellter Text), styles (CSS-Klassennamen), index (Sortierreihenfolge, nur relevant mit der Option "Antworten sortieren"). Sowohl Keys als auch die dazugehörigen Werte müssen in normale Anführungszeichen " (Shift 2) eingeschlossen werden.`,
+    ],
+    fieldConstraints: [
+      ['text', 'empty'],
+      ['image', 'empty'],
+      ['text', 'html'],
+      ['text', 'json'],
+      ['text', 'json', 'multiple'],
+      ['number'],
     ],
     demoLine: [`Säugetiere;bild1.png;Welches Tier siehst du?;Kalb;Maus|Katze|Pferd;1500`],
     options: [
