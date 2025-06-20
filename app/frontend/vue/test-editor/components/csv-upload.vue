@@ -17,12 +17,13 @@
       drop-placeholder="Datei hier ablegen" />
     <div v-if="checkedLines !== undefined">
       <b-card>
-        <span>
+        <h4>Fehler gefunden!</h4>
+        <p>
           Es scheint, als gäbe es Fehler in der csv-Datei. Bitte überprüfe die Tabelle: Zellen mit
           <i class="fas fa-x text-danger"></i>
           sind falsch definiert (siehe Hinweise zur CSV-Struktur). Leere oder zuvielene Zellen sind
           wahrscheinlich auf zuviele oder zuwenige Zeilenumbrüche in der CSV zurückzuführen.
-        </span>
+        </p>
         <table>
           <thead>
             <tr>
@@ -54,7 +55,7 @@
     <hr />
 
     <div v-if="isCsvChecked">
-      <p>Laden Sie hier bitte ggf. die benötigten Assets (Bilder, mp3s, etc.) hoch.</p>
+      <p>Lade hier bitte ggf. die benötigten Assets (Bilder, mp3s, etc.) hoch.</p>
       <b-form-file
         id="assetUploader"
         v-model="assets"
@@ -154,17 +155,22 @@
           )
         }, true)
 
-        if (allClear && debug !== true) {
+        // disabled for staging test. reenable for live deployment
+        /*  if (allClear && debug !== true) {
           this.data = data
           this.$emit('submit-csv-data', this.parseData(data))
         } else if (!allClear) {
-          //todo wird irgendwo oben für irgendne validierung gebraucht
-
           this.checkedLines = checkResult
         } else {
           this.checkedLines = checkResult
         }
-        this.isCsvChecked = allClear
+        this.isCsvChecked = allClear*/
+        this.isCsvChecked = true
+        this.data = data
+        this.$emit('submit-csv-data', this.parseData(data))
+        if (!allClear) {
+          this.checkedLines = checkResult
+        }
       },
       parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {

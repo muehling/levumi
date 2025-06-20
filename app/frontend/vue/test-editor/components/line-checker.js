@@ -3,7 +3,7 @@ export const checkField = (field, constraints) => {
     return false
   }
 
-  if (constraints.includes('multiple') /* && field.includes('|')*/) {
+  if (constraints.includes('multiple')) {
     const singleFieldConstraints = constraints.filter(c => c != 'multiple')
     const singleFields = field.split('|')
     const checked = singleFields.reduce((acc, fieldEntry) => {
@@ -31,13 +31,15 @@ export const checkField = (field, constraints) => {
           }
           break
         case 'json':
-          if (field.includes("'")) {
+          if (field.includes("'") || !field.includes('"')) {
             looksCorrect = false
           }
-          try {
-            JSON.parse(field)
-          } catch (e) {
-            looksCorrect = false
+          if (field.startsWith('{')) {
+            try {
+              JSON.parse(field)
+            } catch (e) {
+              looksCorrect = false
+            }
           }
           break
         case 'number':
