@@ -27,6 +27,11 @@
             {{ s.name }}
           </b-dropdown-item>
         </b-dropdown>
+
+        <b-button class="ms-2" size="sm" variant="outline-primary" @click="toggleAllRows">
+          <i class="fas fa-chart-line"></i>
+          {{ allSusVisible ? 'Alle SuS ausblenden' : 'Alle SuS einblenden ' }}
+        </b-button>
       </b-button-group>
       <div v-if="isSupportFilterVisible" class="d-flex">
         <label class="text-small mt-1">Filtern nach Förderbedarf:</label>
@@ -204,7 +209,8 @@
             striped
             hover
             :fields="simpleTableFields"
-            :items="simpleTableData" />
+            :items="simpleTableData"
+            @row-hovered="highlightRow" />
         </b-tab>
       </b-tabs>
     </b-row>
@@ -291,6 +297,7 @@
         targetControlVisible: false,
         targetVal: null,
         info_attachments: undefined,
+        allSusVisible: true,
       }
     },
     computed: {
@@ -1025,6 +1032,37 @@
             this.annotationControlVisible = false
             this.targetControlVisible = !this.targetControlVisible
             break
+        }
+      },
+      toggleHiddenSeries(isHidden) {
+        let tempData = this.graphData
+        for (let series in tempData) {
+          tempData[series].hidden = isHidden
+        }
+        return tempData
+      },
+      toggleAllRows() {
+        const chart = this.$refs.levumiChart?.chart
+        if (!chart) {
+          return
+        }
+        let tempData
+        if (this.allSusVisible) {
+          tempData = this.toggleHiddenSeries(true)
+          this.allSusVisible = false
+        } else {
+          tempData = this.toggleHiddenSeries(false)
+          // crude workaround - if options are not set with a new object, the dots in the lines won't show up again
+          const options = { ...this.chartOptions }
+          this.chartOptions = options
+          this.allSusVisible = true
+        }
+        this.graphData = [...tempData]
+      },
+      highlightRow(sus) {
+        const chart = this.$refs.levumiChart?.chart
+        if (chart) {
+          chart.highlightSeries(sus.name)
         }
       },
     },
