@@ -40,6 +40,7 @@
           break
         case 'p':
         case 'h1':
+        case 'h3':
           const textEl = $(`<${item.type} class='content-${item.type}-element'></${item.type}>`)
           textEl.html(item.text)
           el.append(textEl)

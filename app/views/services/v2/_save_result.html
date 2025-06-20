@@ -37,13 +37,22 @@
     )
     return trend
   }
+
+  const stripHtml = val => {
+    let doc = new DOMParser().parseFromString(val, 'text/html')
+    return doc.body.textContent || ''
+  }
+
   const saveWithDimensions = (result, dimensions) => {
     const correct = dimensions.reduce((acc, dimension) => {
       const d = result
         .filter(res => res.result === 1 && res.group + '' === dimension.id + '')
-        .map(res => `(${res.question}${res.additionalData ? res.additionalData : ''})`)
-      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
-        ', '
+        .map(
+          res =>
+            `${res.shortQuestion || res.question}${res.additionalData ? res.additionalData : ''}`
+        )
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${stripHtml(
+        d.join(', ')
       )}<br/></br/>`
     }, '')
 
@@ -52,20 +61,24 @@
         .filter(res => res.result === 0 && res.group + '' === dimension.id + '')
         .map(
           res =>
-            `(${res.question} &lt;${res.answer}&gt;${res.additionalData ? res.additionalData : ''})`
+            `${res.shortQuestion || res.question} (${res.answer})${
+              res.additionalData ? res.additionalData : ''
+            }`
         )
-      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${d.join(
-        ', '
+      return `${acc}<strong>${dimension.text}: ${d.length}</strong><hr class='my-0'/>${stripHtml(
+        d.join(', ')
       )}<br/></br/>`
     }, '')
     return { correct, wrong }
   }
 
   const saveWithoutDimensions = (positive, negative) => {
-    const positiveQuestions = positive.map(res => `${res.question}`).join(', ')
-    const negativeQuestions = negative
-      .map(res => `${res.question} &lt;${res.answer}&gt;`)
-      .join(', ')
+    const positiveQuestions = stripHtml(
+      positive.map(res => `${res.shortQuestion || res.question}`).join(', ')
+    )
+    const negativeQuestions = stripHtml(
+      negative.map(res => `${res.shortQuestion || res.question} (${res.answer})`).join(', ')
+    )
 
     const correct =
       '<strong>Anzahl richtig gelöster Items:</strong> ' +

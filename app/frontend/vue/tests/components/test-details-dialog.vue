@@ -28,7 +28,7 @@
           </tr>
           <tr>
             <td>Items</td>
-            <td>{{ Object.values(test.items).join(', ') }}</td>
+            <td>{{ items }}</td>
           </tr>
         </tbody>
       </table>
@@ -38,6 +38,7 @@
   </info-dialog>
 </template>
 <script>
+  import { stripHtml } from 'src/utils/helpers'
   import InfoDialog from '../../shared/info-dialog.vue'
   export default {
     name: 'TestDetailsDialog',
@@ -45,7 +46,18 @@
     data() {
       return { test: { description: {}, items: [] } }
     },
-
+    computed: {
+      items() {
+        if (!this.test) {
+          return ''
+        }
+        return Object.values(this.test.items)
+          .map(i => {
+            return stripHtml(i.question ? i.question : i)
+          })
+          .join(', ')
+      },
+    },
     methods: {
       open({ test }) {
         this.test = test

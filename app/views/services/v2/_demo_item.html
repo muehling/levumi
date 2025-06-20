@@ -9,11 +9,14 @@
   }
 </style>
 <script type="module">
-  const el = $(
-    '<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4"><h1>Beispiel</h1></div>'
-  )
   let isAppended = false
   window.useDemoItem = ({ config, renderer, continueHandler }) => {
+    const el = $(
+      `<div id="demo-task" class="d-flex justify-content-center flex-column flex-grow-1 mt-4">
+        <h1>Beispiel</h1>
+      </div>`
+    )
+
     const endDemo = () => {
       if (isAppended) {
         return
@@ -31,23 +34,42 @@
         config.styles
       )
 
+      $('#start-demo-button').remove()
+      el.find('#instruction-text').remove()
       continueButton.on('click', () => {
         continueHandler()
       })
       el.append(endText).append(continueButton)
     }
 
-    config.resultHandler = endDemo
-    config.isDemo = true
+    const createDemoElements = () => {
+      config.resultHandler = endDemo
+      config.isDemo = true
+      if (window.config.options?.instruction_text) {
+        el.append(`<p id="instruction-text" class="text-center border border-secondary rounded">
+            ${window.config.options.instruction_text}
+            </p>`)
+      }
+      const itemEl = renderer(config)
 
-    const itemEl = renderer(config)
+      el.append(itemEl)
+      el.on('mounted', e => {
+        e.stopPropagation()
+        e.preventDefault()
+        itemEl.trigger('mounted')
+      })
+    }
+    if (!window.config.options.deferDemoItem) {
+      createDemoElements()
+    } else {
+      const button = $(
+        '<button id="start-demo-button" class="btn btn-success">Beispiel starten</button>'
+      )
+        .on('click', createDemoElements)
+        .css(config.styles)
+      el.append(button)
+    }
 
-    el.append(itemEl)
-    el.on('mounted', e => {
-      e.stopPropagation()
-      e.preventDefault()
-      itemEl.trigger('mounted')
-    })
     return el
   }
 </script>

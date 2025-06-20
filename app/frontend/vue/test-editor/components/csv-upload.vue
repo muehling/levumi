@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="dataInfoText">
-      Bitte laden Sie hier eine .CSV-Datei mit den einzelnen Fragen/Aufgaben hoch.
+    <div>
+      Bitte lade hier eine .csv-Datei mit den einzelnen Fragen/Aufgaben hoch.
       <csv-help :type="questionType" />
     </div>
 
@@ -15,21 +15,47 @@
       accept="text/csv"
       placeholder="Datei auswählen oder hier ablegen"
       drop-placeholder="Datei hier ablegen" />
-    <b-form-invalid-feedback class="defaultFeedbackData" :state="isCsvChecked">
-      {{ `Die Datei daf keines der folgenden Zeichen enthalten: <, >, " oder '` }}
-      <br />
-      Auch sind Felder, die ausschließlich Leerzeichen enthalten nicht erlaubt.
-      <br />
-    </b-form-invalid-feedback>
-    <b-button :disabled="!csv" class="m-1" @click="checkCsv">
+    <div v-if="checkedLines !== undefined">
+      <b-card>
+        <h4>Fehler gefunden!</h4>
+        <p>
+          Es scheint, als gäbe es Fehler in der csv-Datei. Bitte überprüfe die Tabelle: Zellen mit
+          <i class="fas fa-x text-danger"></i>
+          sind falsch definiert (siehe Hinweise zur CSV-Struktur). Leere oder zuvielene Zellen sind
+          wahrscheinlich auf zuviele oder zuwenige Zeilenumbrüche in der CSV zurückzuführen.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <td></td>
+              <td v-for="(header, index) in checkedLines[0]" :key="index" class="px-2">
+                Spalte {{ index + 1 }}
+              </td>
+            </tr>
+          </thead>
+          <tr v-for="(row, rowIndex) in checkedLines" :key="rowIndex">
+            <td>Zeile {{ rowIndex + 1 }}</td>
+            <td
+              v-for="(cell, colIndex) in row"
+              :key="colIndex"
+              :class="`${cell ? 'true' : 'false'} px-2 text-center`">
+              <i v-if="cell === true" class="fas fa-check text-success"></i>
+              <i v-if="cell === false" class="fas fa-x text-danger"></i>
+            </td>
+          </tr>
+        </table>
+      </b-card>
+    </div>
+    <b-button :disabled="!csv" class="m-1 mt-3" @click="checkCsv">
       <i class="fa-solid fa-magnifying-glass"></i>
       Datei überprüfen und fortfahren
     </b-button>
-    <!--<b-button class="m-1 d-none" @click="debug">debug</b-button>-->
+
+    <b-button class="m-1" @click="debug">debug</b-button>
     <hr />
 
     <div v-if="isCsvChecked">
-      <p>Laden Sie hier bitte ggf. die benötigten Assets (Bilder, mp3s, etc.) hoch.</p>
+      <p>Lade hier bitte ggf. die benötigten Assets (Bilder, mp3s, etc.) hoch.</p>
       <b-form-file
         id="assetUploader"
         v-model="assets"
@@ -44,6 +70,8 @@
 </template>
 <script>
   import CsvHelp from './csv-help.vue'
+  import { testDefinitions } from '../test-definitions'
+  import { checkLine } from './line-checker'
   export default {
     name: 'CsvUpload',
     components: { CsvHelp },
@@ -52,15 +80,21 @@
       return {
         csv: undefined,
         data: null,
-        isCsvChecked: null,
+        isCsvChecked: undefined,
         assets: [],
+        checkedLines: undefined,
       }
     },
-    computed: {},
+    computed: {
+      fieldConstraints() {
+        return testDefinitions[this.questionType]?.fieldConstraints
+      },
+    },
 
     methods: {
-      debug() {
-        console.log('debug', this.data, this.questions, this.assets)
+      async debug() {
+        const t = await this.checkCsv(true)
+        console.log('debug', this.data, this.questions, this.assets, t)
       },
       async uploadAssets() {
         //todo without the timeout, this.assets is empty at @change. b-form-file is still subject to change, so this might change in the future
@@ -103,29 +137,40 @@
           }
         })
       },
-      async checkCsv() {
+      async checkCsv(debug) {
         const dataAsString = await this.readCsvData()
         const data = this.stringToArray(dataAsString)
 
-        const checkResult = data.reduce((linesOkaySoFar, line) => {
-          const lineHasInvalidFields = true //line.reduce((fieldsOkaySoFar, field, index) => {
-          //  if (index !== 0 && index !== 1) {
-          //    return fieldsOkaySoFar && this.stringIsValid(field)
-          //  } else if (index === 1) {
-          //    return fieldsOkaySoFar && this.isValidCsvName(field)
-          //  } else {
-          //    return fieldsOkaySoFar
-          //  }
-          //}, true)
-          return linesOkaySoFar && lineHasInvalidFields
+        const checkResult = data.map(line => {
+          const checked = checkLine(line, this.fieldConstraints)
+
+          return checked
+        })
+        const allClear = checkResult.reduce((acc, line) => {
+          return (
+            acc &&
+            line.reduce((innerAcc, field) => {
+              return innerAcc && field
+            }, true)
+          )
         }, true)
 
-        if (checkResult) {
+        // disabled for staging test. reenable for live deployment
+        /*  if (allClear && debug !== true) {
           this.data = data
           this.$emit('submit-csv-data', this.parseData(data))
+        } else if (!allClear) {
+          this.checkedLines = checkResult
+        } else {
+          this.checkedLines = checkResult
         }
-
-        this.isCsvChecked = checkResult
+        this.isCsvChecked = allClear*/
+        this.isCsvChecked = true
+        this.data = data
+        this.$emit('submit-csv-data', this.parseData(data))
+        if (!allClear) {
+          this.checkedLines = checkResult
+        }
       },
       parseDimensions(data) {
         const rawDimensions = data.reduce((acc, d) => {
@@ -139,17 +184,54 @@
       },
       parseMultipleChoice(data) {
         const dimensions = this.parseDimensions(data)
+
         const parsed = data.map((d, i) => {
+          if (d.length === 1) {
+            return null
+          }
+          let correctAnswer
+          try {
+            correctAnswer = JSON.parse(d[3])
+          } catch (e) {
+            correctAnswer = d[3]
+          }
+
+          const parseAnswer = a => {
+            let f
+            try {
+              f = JSON.parse(a) //needed for answers with custom styles
+              return f
+            } catch (e) {
+              return a
+            }
+          }
+          let wrongAnswers
+          if (d[4].includes('|')) {
+            wrongAnswers = d[4].split('|').map(g => {
+              return parseAnswer(g)
+            })
+          } else {
+            wrongAnswers = [parseAnswer(d[4])]
+          }
+
           return {
             id: i + 1,
             group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
             assets: d[1],
             question: d[2],
-            correctAnswer: d[3],
-            wrongAnswers: d[4].split(','),
+            correctAnswer,
+            wrongAnswers,
           }
         })
-        return { questions: parsed, dimensions }
+
+        return { questions: parsed.filter(p => !!p), dimensions }
+      },
+      parseBlitzReading(data) {
+        const mcPart = this.parseMultipleChoice(data)
+        const test = mcPart.questions.map((line, index) => {
+          return { ...line, timeout: data[index][5] }
+        })
+        return { ...mcPart, questions: test }
       },
 
       parseNumberInput(data) {
@@ -190,7 +272,19 @@
 
         return { questions: parsed, dimensions }
       },
-
+      parseMathTextProblem(data) {
+        const dimensions = this.parseDimensions(data)
+        const parsed = data.map((d, i) => {
+          return {
+            id: i + 1,
+            group: dimensions.find(dim => dim.text === d[0].trim())?.id || 0,
+            question: d[1],
+            shortQuestion: d[2],
+            correctAnswer: d[3],
+          }
+        })
+        return { questions: parsed, dimensions }
+      },
       parseAudioImageMultipleChoice(data) {
         const dimensions = this.parseDimensions(data)
         const parsed = data.map((d, i) => {
@@ -215,8 +309,12 @@
             return this.parseNumberInput(data)
           case 'audio_images_multiple_choice':
             return this.parseAudioImageMultipleChoice(data)
+          case 'math_text_problem':
+            return this.parseMathTextProblem(data)
+          case 'blitz_reading':
+            return this.parseBlitzReading(data)
           default:
-            console.log('Unbekannte Testart :-(')
+            console.warn('Unbekannte Testart :-(')
         }
       },
       isValidFileName(name) {

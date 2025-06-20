@@ -171,13 +171,9 @@
         this.$refs.detailsDialog.open({ test: this.tests.find(t => t.id === id) })
       },
       editTest(id) {
-        const t = this.tests.find(test => test.id === id)
+        const test = this.tests.find(test => test.id === id)
         this.$refs.editTestDialog.open({
-          description: t.description.full,
-          shortDescription: t.description.short,
-          testTypeId: t.test_type_id,
-          id,
-          allowQuartiles: t.allow_quartiles,
+          test,
         })
       },
       async deleteTest(id) {

@@ -1,6 +1,5 @@
 <style>
   .custom-container {
-    height: 75vh;
     width: 100%;
   }
   .image-button.image-button {
@@ -15,6 +14,9 @@
     border: 1px solid black;
     border-radius: 0.2em;
     cursor: pointer;
+  }
+  #button-wrapper {
+    height: 75vh;
   }
   .button-container {
     min-height: 75vh;
@@ -45,9 +47,7 @@
 <script type="module">
   const getBlobUrl = asset => {
     if (window.assetBlobs[asset]) {
-      return assetBlobs[asset]
-    } else if (window.media_paths[asset]) {
-      return window.media_paths[asset]
+      return assetBlobs[asset].url
     } else {
       return null
     }
@@ -69,15 +69,15 @@
     return !audioElement.paused && !audioElement.ended && audioElement.readyState > 2
   }
 
-  window.useAudioImagesMultipleChoice = ({ id, styles, item, nextItem, resultHandler, isDemo }) => {
+  window.useAudioImagesMultipleChoice = ({ id, styles, item, resultHandler, isDemo }) => {
     const el = $(
       `<div class="container d-flex flex-column w-100">
-        <div id="debug"></div>
           <div id="audio-images-multiple-choice-${id}" class="custom-container d-flex justify-content-center align-items-center flex-column">
             <audio id="audio-${id}" autoplay type="audio/mpeg" src="${getBlobUrl(
         item.audio
       )}"></audio>
-            <div class="w-100 d-flex justify-content-center">
+            <div id="question-container" class="w-100 d-flex justify-content-center"></div>
+            <div id="button-wrapper" class="w-100 d-flex justify-content-center">
               <div id="button-container" class="row custom-container"></div>
             </div>
           </div>
@@ -144,6 +144,10 @@
       })
 
     el.find('#button-container').append(buttons)
+
+    if (window.config.options.displayQuestion) {
+      el.find('#question-container').append(`<p>${item.question}</p>`)
+    }
 
     const initHandlers = e => {
       e.stopPropagation()

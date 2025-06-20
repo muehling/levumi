@@ -50,7 +50,7 @@
 <script>
   import { ajax } from '../../../utils/ajax'
   import apiRoutes from '../../routes/api-routes'
-
+  import { testDefinitions } from 'src/vue/test-editor/test-definitions'
   import { useGlobalStore } from '../../../store/store'
 
   export default {
@@ -69,6 +69,7 @@
         testId: undefined,
         selectedTestType: {},
         allowQuartiles: false,
+        test: undefined,
       }
     },
     computed: {
@@ -78,15 +79,34 @@
           name: testType.name,
         }))
       },
+      testConfig() {
+        const generalConfig = this.test.configuration.options
+        const testConfig = testDefinitions[this.test.configuration.item_type].options
+
+        return [
+          ...Object.entries(generalConfig).map(conf => {
+            const tc = testConfig.find(tc => tc.id === conf[0])
+
+            if (tc) {
+              return {
+                label: tc.label,
+                value: Object.values(conf)[0],
+                type: tc.type,
+              }
+            }
+          }),
+        ].filter(a => !!a)
+      },
     },
     methods: {
-      open({ description, shortDescription, id, testTypeId, allowQuartiles }) {
-        this.description = description
-        this.shortDescription = shortDescription
-        this.testId = id
+      open({ test }) {
+        this.description = test.description.full
+        this.shortDescription = test.description.short
+        this.testId = test.id
         this.selectedTestType =
-          this.allTestTypes.find(tt => tt.id === testTypeId) || this.allTestTypes[0]
-        this.allowQuartiles = allowQuartiles
+          this.allTestTypes.find(tt => tt.id === test.testTypeId) || this.allTestTypes[0]
+        this.allowQuartiles = test.allowQuartiles
+        this.test = test
 
         this.$refs.testEditDialog.show()
       },

@@ -328,6 +328,7 @@ a:hover {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .answer-button {
@@ -338,6 +339,22 @@ a:hover {
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  font-size: 2em;
+
+  #pause-overlay {
+    background-color: rgb(100, 100, 100, 0.5);
+    width: 100vw;
+    height: 100vh;
+    z-index: 5;
+  }
+  #pause-button {
+    z-index: 6;
+    min-width: 8rem;
+    font-size: 1em;
+  }
+  #counter {
+    z-index: 6;
+  }
 }
 
 #image-container {
@@ -349,6 +366,43 @@ a:hover {
 #content-container {
   display: flex;
   justify-content: center;
+}
+
+// custom font-sizes for editor-tests
+.levumi-l {
+  font-size: 3rem;
+}
+.levumi-xl {
+  font-size: 3.5rem;
+}
+.levumi-2xl {
+  font-size: 4rem;
+}
+.levumi-3xl {
+  font-size: 4.5rem;
+}
+.levumi-4xl {
+  font-size: 5rem;
+}
+.levumi-5xl {
+  font-size: 6rem;
+}
+.levumi-6xl {
+  font-size: 7rem;
+}
+.levumi-7xl {
+  font-size: 8rem;
+}
+
+#preloading-break,
+#pause-overlay {
+  background-color: rgb(100, 100, 100, 0.5);
+  width: 100vw;
+  height: 100vh;
+}
+
+#preloading-break {
+  z-index: 10;
 }
 
 // hotfix for FM tests, which have a inline `position: absolute`

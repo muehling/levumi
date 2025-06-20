@@ -1,15 +1,27 @@
-<div id="timer-widget" class="d-none"><p id="counter"></p></div>
-<button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1">Pause</button>
+<div id="timer-widget" class="d-none">
+  <div id="pause-overlay" class="position-fixed top-0 start-0 d-none"></div>
+  <p id="counter" class="mb-0 me-3"></p>
+</div>
+<button id="pause-button" class="timer-btn btn btn-sm btn-danger d-none p-1 m-1 px-3">Pause</button>
 <script type="module">
   let isCounterDisplayed = false
   let handleTimedOut = undefined
-  let handlePause = undefined
   let testDuration = undefined
   let remainingTime = undefined
   let startTime = undefined
   let counterInterval
-  let testTimeout
   let isPauseButtonDisplayed = false
+
+  const checkInterval = () => {
+    remainingTime -= 1000
+    updateCounter()
+    if (remainingTime < 0) {
+      clearInterval(counterInterval)
+      counterInterval = undefined
+      timeElapsedHandler()
+      $('#pause-button').attr('disabled', true)
+    }
+  }
 
   const startCounter = () => {
     if (isPauseButtonDisplayed) {
@@ -22,51 +34,36 @@
     remainingTime = testDuration
     startTime = Date.now()
     updateCounter()
-    testTimeout = setTimeout(timeElapsedHandler, testDuration)
-
-    counterInterval = setInterval(() => {
-      remainingTime -= 1000
-      updateCounter()
-    }, 1000)
+    counterInterval = setInterval(checkInterval, 1000)
   }
 
   const isRunning = () => {
-    return !!testTimeout
+    return !!counterInterval
   }
 
   const stopCounter = () => {
-    clearTimeout(testTimeout)
-    testTimeout = undefined
     clearInterval(counterInterval)
+    counterInterval = undefined
   }
 
   const timeElapsedHandler = () => {
     clearInterval(counterInterval)
+    counterInterval = undefined
     handleTimedOut()
     remainingTime = 0
     updateCounter()
   }
 
-  const resume = () => {}
-
   const handlePauseButton = () => {
-    if (testTimeout !== undefined) {
-      $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
-      stopCounter()
-      handlePause(true)
+    if (isRunning()) {
+      pause()
     } else {
-      handlePause(false)
-      $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
-      testTimeout = setTimeout(timeElapsedHandler, remainingTime)
-      counterInterval = setInterval(() => {
-        remainingTime -= 1000
-        updateCounter()
-      }, 1000)
+      unpause()
     }
   }
 
   const hasElapsed = () => {
-    return Date.now() - startTime >= testDuration ? true : false
+    return remainingTime <= 0 ? true : false
   }
 
   const getTotalDuration = () => {
@@ -89,17 +86,26 @@
     return $('#pause-button')
   }
 
+  const pause = () => {
+    $('#pause-button').addClass('btn-success').removeClass('btn-danger').text('Start')
+    $('#pause-overlay').removeClass('d-none')
+    stopCounter()
+  }
+  const unpause = () => {
+    $('#pause-button').addClass('btn-danger').removeClass('btn-success').text('Pause')
+    $('#pause-overlay').addClass('d-none')
+    counterInterval = setInterval(checkInterval, 1000)
+  }
+
   window.useTimerWidget = ({
     displayCounter = true, //TODO set this according to group/assessment/student settings, once available
     displayPauseButton = true, //TODO set this according to group/assessment/student settings, once available
-    pauseHandler,
     duration = 300000,
     timedOutHandler = () => {},
   }) => {
     isCounterDisplayed = displayCounter && window.displayTimer
     isPauseButtonDisplayed = displayPauseButton && window.displayTimer
     testDuration = duration
-    handlePause = pauseHandler
     handleTimedOut = timedOutHandler
 
     if (displayPauseButton) {
@@ -115,6 +121,8 @@
       hasElapsed,
       getTotalDuration,
       isRunning,
+      pause,
+      unpause,
     }
   }
 </script>
