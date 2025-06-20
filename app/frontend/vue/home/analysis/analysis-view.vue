@@ -27,6 +27,11 @@
             {{ s.name }}
           </b-dropdown-item>
         </b-dropdown>
+
+        <b-button class="ms-2" size="sm" variant="outline-primary" @click="toggleAllRows">
+          <i class="fas fa-chart-line"></i>
+          {{ allSusVisible ? 'Alle SuS ausblenden' : 'Alle SuS einblenden ' }}
+        </b-button>
       </b-button-group>
       <div v-if="isSupportFilterVisible" class="d-flex">
         <label class="text-small mt-1">Filtern nach Förderbedarf:</label>
@@ -127,10 +132,6 @@
               <i class="fas fa-file-pdf"></i>
               PDF erzeugen
             </b-button>
-              <b-button class="ms-2" size="sm" variant="outline-primary" @click="hideSuS" >
-              <i class="fa-solid fa-hippo"></i>
-              {{ allSusVisible ? 'Alle SuS ausblenden' : 'Alle SuS einblenden '}}
-            </b-button>
           </b-col>
         </b-row>
         <b-row class="ms-1">
@@ -204,8 +205,8 @@
             striped
             hover
             :fields="simpleTableFields"
-            :items="simpleTableData" 
-            @row-clicked="oneSuS"/>
+            :items="simpleTableData"
+            @row-hovered="highlightRow" />
         </b-tab>
       </b-tabs>
     </b-row>
@@ -292,7 +293,7 @@
         targetControlVisible: false,
         targetVal: null,
         info_attachments: undefined,
-        allSusVisible : true,
+        allSusVisible: true,
       }
     },
     computed: {
@@ -1000,28 +1001,36 @@
             break
         }
       },
-      hideSuS(){
+      toggleHiddenSeries(isHidden) {
+        let tempData = this.graphData
+        for (let series in tempData) {
+          tempData[series].hidden = isHidden
+        }
+        return tempData
+      },
+      toggleAllRows() {
         const chart = this.$refs.levumiChart?.chart
-        if(this.allSusVisible){
-            if (chart) {
-            this.graphData.forEach((series => {chart.hideSeries(series.name)}))
-          }
+        if (!chart) {
+          return
+        }
+        let tempData
+        if (this.allSusVisible) {
+          tempData = this.toggleHiddenSeries(true)
           this.allSusVisible = false
-        } else{
-            if (chart) {
-            this.graphData.forEach((series => {chart.showSeries(series.name)}))
-          }
+        } else {
+          tempData = this.toggleHiddenSeries(false)
+          // crude workaround - if options are not set with a new object, the dots in the lines won't show up again
+          const options = { ...this.chartOptions }
+          this.chartOptions = options
           this.allSusVisible = true
         }
-        
+        this.graphData = [...tempData]
       },
-      oneSuS(sus){
+      highlightRow(sus) {
         const chart = this.$refs.levumiChart?.chart
         if (chart) {
-          this.graphData.forEach((series => {chart.hideSeries(series.name)}))
-          chart.showSeries(sus.name)
+          chart.highlightSeries(sus.name)
         }
-        
       },
     },
   }
