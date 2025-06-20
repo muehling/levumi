@@ -103,8 +103,8 @@
     duration = 300000,
     timedOutHandler = () => {},
   }) => {
-    isCounterDisplayed = (displayCounter && window.displayTimer) || true
-    isPauseButtonDisplayed = (displayPauseButton && window.displayTimer) || true
+    isCounterDisplayed = displayCounter && window.displayTimer
+    isPauseButtonDisplayed = displayPauseButton && window.displayTimer
     testDuration = duration
     handleTimedOut = timedOutHandler
 
