@@ -132,7 +132,7 @@
         availableFilters: [
           { text: 'Mit Messungen', value: Filter.WithResults },
           { text: 'Ohne Messungen', value: Filter.WithoutResults },
-          { text: 'Schüler:innen-Tests', value: Filter.StudentTests },
+          { text: 'Schüler*innen-Tests', value: Filter.StudentTests },
           { text: 'Lehrkräfte-Übungen', value: Filter.UserTests },
           { text: 'Aktivierte Testungen', value: Filter.ActiveTests },
           { text: 'Pausierte Testungen', value: Filter.InactiveTests },

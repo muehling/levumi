@@ -14,7 +14,7 @@
             <td>Durchführung</td>
             <td>
               {{
-                test.student_test ? 'Selbstständig durch die Schüler:innen' : 'Durch die Lehrkraft'
+                test.student_test ? 'Selbstständig durch die Schüler*innen' : 'Durch die Lehrkraft'
               }}
             </td>
           </tr>

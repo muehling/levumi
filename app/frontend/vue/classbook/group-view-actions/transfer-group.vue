@@ -41,7 +41,7 @@
         </span>
       </b-button>
       <context-help
-        help-text="Mit dieser Aktion wird die Klasse an eine andere Person übertragen. Sie behalten dadurch Lese- und Schreibzugriff auf die Klasse, diese erscheint jedoch dann unter 'Mit mir geteilte Klassen'. Bis die neue Eigentümer:in die Anfrage angenommen hat, können Sie diese abbrechen."
+        help-text="Mit dieser Aktion wird die Klasse an eine andere Person übertragen. Sie behalten dadurch Lese- und Schreibzugriff auf die Klasse, diese erscheint jedoch dann unter 'Mit mir geteilte Klassen'. Bis die neue Eigentümer*in die Anfrage angenommen hat, können Sie diese abbrechen."
         class-name="mt-2 ms-2" />
     </b-form>
     <confirm-dialog ref="confirmDialog" />
