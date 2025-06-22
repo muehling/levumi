@@ -33,14 +33,14 @@
   "devDependencies": {
     "@prettier/plugin-ruby": "^2.1.0",
     "@vitejs/plugin-vue": "^5",
-    "eslint": "^8.22.0",
+    "eslint": "^9",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-vue": "^9.3.0",
     "postcss": "^8.4.31",
     "postcss-nesting": "^10.1.10",
     "prettier": "^2.3",
     "sass": "^1.53.0",
-    "unplugin-vue-components": "^0.27.0",
+    "unplugin-vue-components": "^0.28",
     "vite": "^6",
     "vite-plugin-commonjs-externals": "^0.1.4",
     "vite-plugin-full-reload": "^1.0.1",
@@ -49,6 +49,7 @@
   },
   "resolutions": {
     "dompurify": "^3.2.4",
-    "canvg": "^4.0.3"
+    "canvg": "^4.0.3",
+    "brace-expansion": "^2.0.2"
   }
 }
