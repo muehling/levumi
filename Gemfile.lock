@@ -122,7 +122,7 @@ GEM
     msgpack (1.8.0)
     mutex_m (0.3.0)
     mysql2 (0.5.6)
-    net-imap (0.5.6)
+    net-imap (0.5.9)
       date
       net-protocol
     net-pop (0.1.2)
@@ -132,7 +132,7 @@ GEM
     net-smtp (0.5.1)
       net-protocol
     nio4r (2.7.4)
-    nokogiri (1.18.7-x86_64-linux-gnu)
+    nokogiri (1.18.8-x86_64-linux-gnu)
       racc (~> 1.4)
     pp (0.6.2)
       prettyprint
@@ -143,12 +143,12 @@ GEM
     puma (6.4.3)
       nio4r (~> 2.0)
     racc (1.8.1)
-    rack (3.1.12)
+    rack (3.1.16)
     rack-cors (2.0.2)
       rack (>= 2.0.0)
     rack-proxy (0.7.7)
       rack
-    rack-session (2.1.0)
+    rack-session (2.1.1)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
     rack-test (2.2.0)
