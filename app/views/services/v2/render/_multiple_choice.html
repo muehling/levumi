@@ -8,30 +8,34 @@
     background-position: center;
     background-repeat: no-repeat;
   }
-  .multiple-choice-answer-button {
+  .multiple-choice-answer-button.multiple-choice-answer-button {
     font-size: 1em;
     margin: 0.25em;
     padding: 0.25em 0.5em;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    border: 5px solid transparent !important;
+    border-radius: 0.5em !important;
   }
   .multiple-choice-question {
     text-align: center;
     font-size: 1em;
   }
+  .answer-selected.answer-selected {
+    border: 5px solid green !important;
+  }
 </style>
 <script type="module">
-  const handleKeyup = (e, item, resultHandler) => {
-    switch (e.key) {
-      case '1':
-        resultHandler(item.correctAnswer)
-        break
-      case '0':
-        resultHandler('-')
+  const getBlobUrl = asset => {
+    if (window.assetBlobs[asset]) {
+      return assetBlobs[asset].url
+    } else {
+      return null
     }
   }
-
   window.useMultipleChoice = ({ id, styles, item, resultHandler }) => {
     const el = $(
-      `<div id='multiple-choice-${id}' class='d-flex justify-content-center align-items-center flex-column'></div`
+      `<div id='multiple-choice-${id}' class='container d-flex justify-content-center align-items-center flex-column'></div`
     ).css(styles)
     const imageContainer = $("<div class='image-container'></div>")
 
@@ -41,35 +45,121 @@
       assets.forEach(i => {
         //TODO might check if asset is an image
         const image = $(
-          `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${window.media_paths[i]});'></div`
+          `<div id='item-image' class='multiple-choice-image-element' style='background-image:url(${getBlobUrl(
+            i
+          )});'></div`
         )
         imageContainer.append(image)
       })
     }
+
+    const handleKeyup = e => {
+      switch (e.key) {
+        case '1':
+          resultHandler(item.correctAnswer)
+          $(window).off('keyup', handleKeyup)
+          break
+        case '0':
+          resultHandler('-')
+          $(window).off('keyup', handleKeyup)
+      }
+    }
+
+    const descriptionString = window.config.options.customItemDescription
+
+    const itemString = `<p id="question-space" class='multiple-choice-question'>${item.question.replace(
+      '###',
+      '<span id="correct-answer">.............</span>'
+    )}</p>`
+    const displayItemString =
+      !window.config.options.hasOwnProperty('hideItemText') ||
+      window.config.options.hideItemText === false
+
     if (item.imageTextOrder === '0') {
       el.append(imageContainer)
-      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+      if (descriptionString) {
+        el.append($(`<p id="item-description">${descriptionString}</p>`))
+      }
+      el.append(displayItemString && $(itemString))
     } else {
-      el.append(`<p class='multiple-choice-question'>${item.question}</p>`)
+      if (descriptionString) {
+        el.append($(`<p id="item-description">${descriptionString}</p>`))
+      }
+      el.append(displayItemString && $(itemString))
       el.append(imageContainer)
     }
-    const answers = [...item.wrongAnswers, item.correctAnswer]
-    window.shuffleArray(answers)
+    const answers = [item.correctAnswer, ...item.wrongAnswers]
 
-    const buttonContainer = $(`<div id='#button-container'>`)
-    answers.forEach(function (answer, index) {
-      const button = $(
-        `<button id='button${index}' class='multiple-choice-answer-button btn btn-primary'>${answer}</button>`
-      ).on('click', () => {
-        resultHandler(answer)
+    if (window.config.options.randomizeAnswers) {
+      window.shuffleArray(answers)
+    } else if (window.config.options.sortItems) {
+      answers.sort((a, b) => {
+        if (a.hasOwnProperty('index') && b.hasOwnProperty('index')) {
+          const indexA = a.index
+          const indexB = b.index
+          return indexA > indexB ? 1 : -1
+        } else {
+          const textA = typeof a === 'string' ? a : a.text
+          const textB = typeof b === 'string' ? b : b.text
+          return textA.localeCompare(textB)
+        }
       })
-      buttonContainer.append(button)
-    })
-    if (window.config.options.test_options?.useKeyboard) {
-      $(window).one('keyup', e => handleKeyup(e, item, resultHandler))
     }
 
+    const buttonContainer = $(`<div id='button-container'>`)
+
+    let currentAnswer
+
+    answers.forEach(function (answer, index) {
+      let itemText = answer
+      let buttonStyles = 'btn-primary'
+      if (answer.hasOwnProperty('text')) {
+        itemText = answer.text
+      }
+      if (answer.hasOwnProperty('styles')) {
+        buttonStyles = answer.styles
+      }
+
+      if (window.config.options.useKeyboard) {
+        itemText += answer === item.correctAnswer ? ' (Taste 1)' : ' (Taste 0)'
+      }
+
+      const button = $(
+        `<button id='button${index}' class='multiple-choice-answer-button btn ${buttonStyles}'>${itemText}</button>`
+      ).on('click', function () {
+        $('.multiple-choice-answer-button').removeClass('answer-selected')
+        $(this).addClass('answer-selected')
+        if (window.config.options.showContinue) {
+          currentAnswer = answer.hasOwnProperty('text') ? answer.text : answer
+          $('#correct-answer').text(currentAnswer).css('text-decoration', 'dotted underline')
+        } else {
+          saveItem(answer)
+        }
+      })
+
+      buttonContainer.append(button)
+    })
     el.append(buttonContainer)
+
+    if (window.config.options.showContinue) {
+      const continueButton = $(
+        `<div id="continue-button" class="d-flex justify-content-end w-100"><button class="multiple-choice-answer-button btn btn-success">Weiter</button></div>`
+      ).on('click', () => {
+        if (currentAnswer) {
+          saveItem(currentAnswer)
+        }
+      })
+      el.append(continueButton)
+    }
+
+    if (window.config.options.useKeyboard) {
+      $(window).on('keyup', handleKeyup)
+    }
+
+    const saveItem = answer => {
+      resultHandler(answer.hasOwnProperty('text') ? answer.text : answer)
+    }
+
     el.on('mounted', e => {
       e.stopPropagation()
     })

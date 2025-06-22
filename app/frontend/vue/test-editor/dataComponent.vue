@@ -1,6 +1,6 @@
 <template>
   <b-card class="dataApp" :title="`${questionTypeLabel}: Start-/Endseite/Daten definieren`">
-    <div class="dataInfoText">
+    <div>
       In diesem Abschnitt können Sie die Start- und Endseite des Tests sowie die einzelnen Fragen
       und Antworten definieren. Klicken Sie auf die einzelnen Abschnitte, um diese zu bearbeiten.
     </div>
@@ -303,10 +303,14 @@
 
         const data = {
           questionType: this.questionType,
-          questions: this.replaceUnsafeCharacters(this.questions, 'question'),
-          startPage: this.replaceUnsafeCharacters(this.startPage, 'text'),
-          endPage: this.replaceUnsafeCharacters(this.endPage, 'text'),
-          dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
+          //  questions: this.replaceUnsafeCharacters(this.questions, 'question'),
+          //  startPage: this.replaceUnsafeCharacters(this.startPage, 'text'),
+          //  endPage: this.replaceUnsafeCharacters(this.endPage, 'text'),
+          //  dimensions: this.replaceUnsafeCharacters(this.dimensions, 'text'),
+          questions: this.questions,
+          startPage: this.startPage,
+          endPage: this.endPage,
+          dimensions: this.dimensions,
         }
 
         const usedFiles = this.assets.filter(

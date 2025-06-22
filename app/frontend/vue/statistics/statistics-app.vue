@@ -7,7 +7,7 @@
           <tr>
             <th scope="col"></th>
             <th scope="col">Lehrkraft</th>
-            <th scope="col">Forscher:in</th>
+            <th scope="col">Forscher*in</th>
             <th scope="col">Privatperson</th>
           </tr>
         </thead>
@@ -40,7 +40,7 @@
           <tr>
             <th scope="col">Bundesland</th>
             <th scope="col">Lehrkraft</th>
-            <th scope="col">Forscher:in</th>
+            <th scope="col">Forscher*in</th>
           </tr>
         </thead>
 

@@ -280,19 +280,19 @@
       if (this.isSingleUser) {
         messages = [
           'Hier sehen Sie Ihre Klasse, die dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen dient. Hier können Sie alle Funktionen von Levumi testen.',
-          'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
-          'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
-          'Hier können Sie die Schüler:in speichern.',
+          'Hier können Sie Schüler*innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
+          'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler*in. Mit diesem Code kann sich ein Kind im Zugang für Schüler*innen einloggen.',
+          'Hier können Sie die Schüler*in speichern.',
         ]
         targets = ['#intro_cb_1', '#intro_cb_5', '#intro_cb_6', '#intro_cb_7']
       } else {
         messages = [
           'Hier sehen Sie Ihre eigenen Klassen, Klassen die mit Ihnen geteilt wurden und Klassen, die Sie in ihr Archiv verschoben haben. Aktuell gibt es bereits die Beispielklasse, mit der Sie alle Funktionen von Levumi testen können. Diese Beispielklasse dient dem intuitiven Kennenlernen der Levumi.de Plattform, den Tests und allen Funktionen. Daher werden keine Daten gespeichert. Für Testungen von realen Schüler*innen legen Sie bitte eine neue Klasse an. ',
           'Wenn Sie hier klicken, können Sie eine neue Klasse anlegen. Vergeben Sie für die Klasse einen beliebigen Namen.',
-          'Hier finden Sie klassenspezifische Einstellungen und Aktionen, wie das Umbennen der Klasse, das Generieren von QR-Codes, das Teilen der Klasse mit Kollegen, oder das Verschieben von Schüler:innen in eine andere Klasse.',
-          'Hier können Sie Schüler:innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
-          'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler:in. Mit diesem Code kann sich ein Kind im Zugang für Schüler:innen einloggen.',
-          'Hier können Sie die Schüler:in speichern.',
+          'Hier finden Sie klassenspezifische Einstellungen und Aktionen, wie das Umbennen der Klasse, das Generieren von QR-Codes, das Teilen der Klasse mit Kollegen, oder das Verschieben von Schüler*innen in eine andere Klasse.',
+          'Hier können Sie Schüler*innen für Ihre Klasse anlegen. Sie müssen einen Namen eingeben, die anderen Daten sind optional, helfen uns aber bei der Forschung. Auch das können Sie gleich für die Beispielklasse ausprobieren!',
+          'Der Logincode wird vom System vergeben, Sie sehen ihn nach dem Speichern der Schüler*in. Mit diesem Code kann sich ein Kind im Zugang für Schüler*innen einloggen.',
+          'Hier können Sie die Schüler*in speichern.',
         ]
         targets = [
           '#intro_cb_1',

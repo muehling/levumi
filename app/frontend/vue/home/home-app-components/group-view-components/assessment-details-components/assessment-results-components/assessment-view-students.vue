@@ -29,7 +29,7 @@
 
     <!-- Schüler anzeigen um Messung zu starten. -->
     <br />
-    <strong>Teilnehmende Schüler:innen</strong>
+    <strong>Teilnehmende Schüler*innen</strong>
     <div size="sm" class="d-flex flex-wrap">
       <!-- Button erscheint grün, falls schon ein Ergebnis in der aktuellen Woche vorhanden-->
       <b-button
@@ -65,7 +65,7 @@
         no-caret
         auto-close="outside">
         <template #button-content>
-          Schüler:innen ein-/ausschließen
+          Schüler*innen ein-/ausschließen
           <i class="fas fa-caret-down ms-2"></i>
         </template>
         <b-dropdown-form class="d-flex">
@@ -108,21 +108,21 @@
         <p v-if="test.description?.usage">{{ test.description.usage }}</p>
         <p class="text-light bg-secondary">&nbsp;Hinweise</p>
         <p>
-          Diesen Test müssen die Schüler:innen mit ihrem Logincode in ihrem
+          Diesen Test müssen die Schüler*innen mit ihrem Logincode in ihrem
           <a href="/testen" target="_blank">eigenen Zugang</a>
-          durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler:in. Wenn Sie für
-          eine Schüler:in einen Test durchführen, können Sie die Ergebnisse mit dem Button
+          durchführen! Ein Klick auf den Namen öffnet den Zugang dieser Schüler*in. Wenn Sie für
+          eine Schüler*in einen Test durchführen, können Sie die Ergebnisse mit dem Button
           <strong>Aktualisieren</strong>
           erneut abrufen.
         </p>
         <p>Der Test ist jede Woche automatisch verfügbar, außer Sie pausieren die Testung.</p>
         <p>
-          Sie können sehen, welche Schüler:innen den Test in dieser Woche bereits durchgeführt haben
+          Sie können sehen, welche Schüler*innen den Test in dieser Woche bereits durchgeführt haben
           - ihre Namen sind grün hinterlegt.
         </p>
         <p>
-          Über den Button "Schüler:innen ein-/ausschließen" können Sie festlegen, welche
-          Schüler:innen am Test teilnehmen sollen.
+          Über den Button "Schüler*innen ein-/ausschließen" können Sie festlegen, welche
+          Schüler*innen am Test teilnehmen sollen.
         </p>
       </b-card>
     </b-collapse>
@@ -131,10 +131,10 @@
       <thead>
         <tr>
           <th v-if="includedStudents.length" scope="col" class="pe-4 custom-th">
-            Teilnehmende Schüler:innen
+            Teilnehmende Schüler*innen
           </th>
           <th v-if="excludedStudents.length" scope="col" class="custom-th">
-            Ausgeschlossene Schüler:innen
+            Ausgeschlossene Schüler*innen
           </th>
         </tr>
       </thead>

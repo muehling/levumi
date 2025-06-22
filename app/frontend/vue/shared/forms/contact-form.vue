@@ -11,13 +11,14 @@
           stacked></b-form-radio-group>
       </b-form-group>
       <b-form-group label-for="contact-message">
+        <label for="contact-message" class="mt-4">Ihre Nachricht:</label>
         <b-form-textarea
           id="contact-message"
           v-model="contactMessage"
-          placeholder="Bitte geben Sie Ihre Nachricht ein."
-          rows="3"
+          :placeholder="'Hallo liebes Levumi-Team,\n ...\n Mit freundlichen Grüßen\n ...'"
+          rows="4"
           max-rows="6"
-          class="mt-4"
+          class="mt-1"
           required></b-form-textarea>
         <b-button class="mt-4 mx-auto" type="submit" variant="outline-success">
           <span>Absenden</span>

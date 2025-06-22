@@ -1,0 +1,4 @@
+ 1;pb4_ampel.png;Ampel, A;{"text":"Vorne","index":1};{"text":"Mitte","index":2}|Hinten|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger",,"index":5}
+ 3;pb4_elefant.png;Elefant, A;{"text":"Mitte","index":2};{"text":"Vorne","index":1}|Hinten|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger",,"index":5}
+ 4;pb4_telefon.png;Telefon, T;{"text":"Vorne","index":1};{"text":"Mitte","index":2}|Hinten|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger",,"index":5}
+ 5;pb4_bett.png;Bett, T;Hinten;{"text":"Vorne","index":1}|{"text":"Mitte","index":2}|{"text":"Gar nicht","styles":"btn-danger","index":4}|{"text":"Ich weiß nicht!","styles":"btn-danger",,"index":5}

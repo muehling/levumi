@@ -24,7 +24,7 @@
         </li>
       </ul>
     </div>
-    <div v-else>Im Moment sind keine aktiven Tests für diese Schüler:in vorhanden.</div>
+    <div v-else>Im Moment sind keine aktiven Tests für diese Schüler*in vorhanden.</div>
   </b-modal>
 </template>
 <script>

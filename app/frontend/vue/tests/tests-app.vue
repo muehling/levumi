@@ -63,7 +63,7 @@
                                         <span>
                                           {{
                                             test.is_student_test
-                                              ? 'Selbstständig durch die Schüler:innen'
+                                              ? 'Selbstständig durch die Schüler*innen'
                                               : 'Durch die Lehrkraft'
                                           }}
                                         </span>
@@ -129,6 +129,7 @@
 </template>
 
 <script>
+  import { stripHtml } from 'src/utils/helpers'
   import { useTestsStore } from '../../store/testsStore'
   import LicenceDisplay from 'src/vue/shared/licence-display.vue'
   export default {
@@ -156,7 +157,7 @@
         const it = Object.values(items).map(item =>
           typeof item === 'string' ? item : item.question
         )
-        return it.join(', ')
+        return stripHtml(it.join(', '))
       },
       getAttachedImages(test) {
         return test.info_attachments?.filter(attachment =>

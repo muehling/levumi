@@ -1,14 +1,13 @@
 <script>
-  window.useTestController = () => {
-    let currentTask = -1
+  window.useTestController = async () => {
+    let currentItem = -1
     const result = []
-    const assetBlobs = {}
     window.assetBlobs = window.assetBlobs || {}
-    let isPaused = false
     let wasDemoDisplayed = false
     const maxTestDuration = window.config.timeLimit * 60 * 1000 // minutes * seconds * milliseconds
     const rawItems = window.config.items
     const items = Object.values(rawItems)
+    let isLoaderShown = false
     let demoItem = items[0]
 
     let fontSize = '2rem'
@@ -25,11 +24,7 @@
     //######################################
     //## initialize timer
     //######################################
-    const handlePause = isTimerPaused => {
-      isPaused = isTimerPaused
-    }
     const timerWidget = window.useTimerWidget({
-      pauseHandler: handlePause,
       displayCounter: true,
       duration: maxTestDuration,
     })
@@ -41,80 +36,87 @@
     //## preload assets
     //######################################
 
-    const readAsset = asset => {
-      return new Promise(async (resolve, reject) => {
-        if (assetBlobs[asset]) {
-          return
-        }
-        const response = await fetch(window.media_paths[asset])
-        const data = await response.arrayBuffer()
-        const parts = asset.split('.')
-        const fileExtension = parts[parts.length - 1]
-        let fileType
-        switch (fileExtension) {
-          case 'mp3':
-            fileType = 'audio/mp3'
-            break
-          case 'webp':
-            fileType = 'image/webp'
-            break
-          case 'png':
-            fileType = 'image/png'
-            break
-          case 'jpg':
-          case 'jpeg':
-            fileType = 'image/jpg'
-            break
+    const readAsset = async asset => {
+      if (window.assetBlobs[asset]?.status !== 0) {
+        return
+      }
 
-          default:
-            break
-        }
+      window.assetBlobs[asset] = { url: undefined, status: 1 }
+      const response = await fetch(window.media_paths[asset])
+      const data = await response.arrayBuffer()
+      const parts = asset.split('.')
+      const fileExtension = parts[parts.length - 1]
+      let fileType
+      switch (fileExtension) {
+        case 'mp3':
+          fileType = 'audio/mp3'
+          break
+        case 'webp':
+          fileType = 'image/webp'
+          break
+        case 'png':
+          fileType = 'image/png'
+          break
+        case 'jpg':
+        case 'jpeg':
+          fileType = 'image/jpg'
+          break
+        default:
+          break
+      }
 
-        const blob = new Blob([data], { type: fileType })
-        const blobUrl = URL.createObjectURL(blob)
-
-        assetBlobs[asset] = blobUrl
-      })
+      const blob = new Blob([data], { type: fileType })
+      const blobUrl = (window.assetBlobs[asset] = { url: URL.createObjectURL(blob), status: 2 })
     }
 
-    const preloadAssets = () => {
-      const index = currentTask >= 0 ? currentTask : 0
+    const preloadAssets = async () => {
+      const index = currentItem >= 0 ? currentItem : 0
       const nextItems = [items[index], items[index + 1], items[index + 2], items[index + 3]]
 
-      nextItems.forEach(item => {
-        if (!item?.assets) {
-          return
+      for (const item of nextItems) {
+        if (item?.assets) {
+          const assets = item.assets.split(',')
+          for (const asset of assets) {
+            const res = readAsset(asset)
+          }
         }
-
-        item.assets.split(',').forEach(async asset => {
-          await readAsset(asset)
-        })
-
-        window.assetBlobs = assetBlobs
-      })
+      }
     }
 
+    const checkCorrectness = res => {
+      let isCorrect = 0
+      if (
+        res + '' === items[currentItem].correctAnswer ||
+        res + '' === items[currentItem].correctAnswer.text
+      ) {
+        isCorrect = 1
+      }
+      return isCorrect
+    }
     //######################################
     //## store result from previous task and set next task
     //######################################
     const next = (res, additionalData) => {
-      if (isPaused) {
-        return
+      const endTaskTimestamp = window.stopTimer()
+
+      let isCorrect = checkCorrectness(res)
+      if (
+        res + '' === items[currentItem].correctAnswer ||
+        res + '' === items[currentItem].correctAnswer.text
+      ) {
+        isCorrect = 1
       }
 
-      const endTaskTimestamp = window.stopTimer()
-      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
-
       result.push({
-        item: items[currentTask].id,
-        question: items[currentTask].question,
+        item: items[currentItem].id,
+        question: items[currentItem].shortQuestion || items[currentItem].question,
         result: isCorrect,
         answer: res,
         time: endTaskTimestamp,
-        group: items[currentTask].group,
+        group: items[currentItem].group,
         additionalData,
       })
-      if (currentTask === items.length - 1 || timerWidget.hasElapsed()) {
+      if (currentItem === items.length - 1 || timerWidget.hasElapsed()) {
         timerWidget.stopCounter()
         const trend = save()
         quit(trend)
@@ -131,14 +133,15 @@
         displayDemoItem()
         wasDemoDisplayed = true
       } else {
-        if (!timerWidget.isRunning()) {
+        if (!timerWidget.isRunning() && !timerWidget.hasElapsed()) {
           timerWidget.startCounter()
         }
 
-        currentTask++
-        const item = items[currentTask]
-        const nextItem = items[currentTask + 1]
+        currentItem++
+        const item = items[currentItem]
+        const nextItem = items[currentItem + 1]
         window.startTimer()
+
         preloadAssets()
         renderItem(item, nextItem)
       }
@@ -158,6 +161,10 @@
             renderer: window.useAudioImagesMultipleChoice,
             options: { demo: { hideDemoInstructions: true }, contentPages: { hideText: true } },
           }
+        case 'math_text_problem':
+          return { renderer: window.useMathTextProblem, options: {} }
+        case 'blitz_reading':
+          return { renderer: window.useBlitzReading, options: {} }
         default:
           console.warn('Unknown renderer', itemType)
       }
@@ -174,26 +181,31 @@
     //## display demo item
     //######################################
     const displayDemoItem = () => {
-      const renderer = getRenderer(window.config.item_type)
+      const assetsAvailable = checkAssets(demoItem)
+      if (!assetsAvailable) {
+        displayLoaderWhileNecessary(demoItem, displayDemoItem, true)
+      } else {
+        const renderer = getRenderer(window.config.item_type)
 
-      const el = window.useDemoItem({
-        config: { id: 0, styles, item: demoItem, ...renderer.options },
-        renderer: renderer.renderer,
-        continueHandler: endDemo,
-      })
-      $('#content-container').html(el)
-      el.trigger('mounted')
+        const el = window.useDemoItem({
+          config: { id: 0, styles, item: demoItem, ...renderer.options },
+          renderer: renderer.renderer,
+          continueHandler: endDemo,
+        })
+        $('#content-container').html(el)
+        el.trigger('mounted')
+      }
     }
 
     //######################################
     //## display feedback page
     //######################################
     const displayFeedback = (res, additionalData) => {
-      const isCorrect = res + '' === items[currentTask].correctAnswer + '' ? 1 : 0
+      const isCorrect = checkCorrectness(res)
 
       const el = window.useFeedback({
         isCorrect: isCorrect,
-        item: items[currentTask],
+        item: items[currentItem],
         styles,
         continueHandler: () => next(res, additionalData),
       })
@@ -201,21 +213,95 @@
     }
 
     //######################################
+    //## check if assets for item are present
+    //######################################
+    const checkAssets = item => {
+      if (!item.assets) {
+        return true
+      }
+
+      const assets = item.assets.split(',')
+      const assetsAvailable = assets.reduce((acc, asset) => {
+        return acc && window.assetBlobs[asset].status === 2
+      }, true)
+      return assetsAvailable
+    }
+
+    //######################################
+    //## loader
+    //######################################
+    const displayLoaderWhileNecessary = (item, callback, ignoreTimer) => {
+      let counter
+      const interval = setInterval(() => {
+        if (checkAssets(item)) {
+          if (!ignoreTimer && !timerWidget.isRunning()) {
+            timerWidget.unpause()
+          }
+          clearInterval(interval)
+          hideLoader()
+          callback(item)
+        } else {
+          showLoader()
+          if (!ignoreTimer) {
+            timerWidget.pause()
+          }
+        }
+      }, 200)
+    }
+
+    //######################################
     //## render the current item
     //######################################
-    const renderItem = (item, nextItem) => {
-      const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
-      const renderer = getRenderer(window.config.item_type)
-      const el = renderer.renderer({
-        id: item.id,
-        styles,
-        options: renderer.options,
-        item,
-        nextItem,
-        resultHandler,
-      })
-      $('#content-container').html(el)
-      el.trigger('mounted')
+    const renderItem = item => {
+      const assetsAvailable = checkAssets(item)
+      if (!assetsAvailable) {
+        displayLoaderWhileNecessary(item, renderItem, false)
+      } else {
+        const resultHandler = window.config.options?.show_feedback ? displayFeedback : next
+        const renderer = getRenderer(window.config.item_type)
+        const el = renderer.renderer({
+          id: item.id,
+          styles,
+          options: renderer.options,
+          item,
+          resultHandler,
+        })
+        $('#content-container').html(el)
+
+        el.trigger('mounted')
+      }
+    }
+
+    //######################################
+    //## loader
+    //######################################
+    const showLoader = () => {
+      if (isLoaderShown === true) {
+        return
+      }
+      let infoText = currentItem === -1 ? 'Gleich geht es los!' : 'Gleich geht es weiter!'
+
+      const loader = $(
+        `<div id="preloading-break" class="position-absolute top-0 start-0"> 
+        <div  class="position-absolute top-50 start-50 fs-1 translate-middle text-center p-3 m-3 bg-body shadow rounded">
+          <p>
+            ${infoText}
+          </p>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">
+              Lade...
+            </span>
+          </div>
+        </div>
+        </div>`
+      )
+      $('#content-container').prepend(loader)
+      isLoaderShown = true
+    }
+
+    const hideLoader = () => {
+      $('#content-container').find('#preloading-break').remove()
+      isLoaderShown = false
     }
 
     //######################################
@@ -251,35 +337,52 @@
     //######################################
     //## start test
     //######################################
-    preloadAssets()
+    // init assetBlobs and preload items
+    items.forEach(item => {
+      if (!item.assets) {
+        return
+      }
+      const assets = item.assets.split(',')
+      assets.forEach(asset => {
+        window.assetBlobs[asset] = { url: undefined, status: 0 }
+      })
+    })
+    await preloadAssets()
+
+    // remove first item in case it is the demo item
     if (window.config.options?.show_demo_task) {
       items.shift()
     }
 
-    if (window.lastResult !== undefined) {
-      window.shuffleArray(items)
-      if (window.config.dimensions.length) {
-        shuffleItemsWithConstraints()
+    const startTest = () => {
+      if (window.lastResult !== undefined) {
+        window.shuffleArray(items)
+        if (window.config.dimensions.length) {
+          shuffleItemsWithConstraints()
+        }
+      }
+
+      if (window.config.startPage.length) {
+        const renderer = getRenderer(window.config.item_type)
+        const el = window.useStartPage({
+          styles,
+          options: renderer.options,
+          config: window.config.startPage,
+          continueHandler: () => {
+            setNextItem()
+          },
+        })
+        $('#content-container').html(el).css(styles)
+      } else {
+        setNextItem()
       }
     }
-    if (window.config.startPage.length) {
-      const renderer = getRenderer(window.config.item_type)
-      const el = window.useStartPage({
-        styles,
-        options: renderer.options,
-        config: window.config.startPage,
-        continueHandler: () => {
-          setNextItem()
-        },
-      })
-      $('#content-container').html(el).css(styles)
-    } else {
-      setNextItem()
-    }
-
+    $(document).ready(() => {
+      startTest()
+      $('#content-container').css(styles)
+    })
     //######################################
     //## initial styling
     //######################################
-    $('#content-container, #timer, #pause-button').css(styles)
   }
 </script>

@@ -19,7 +19,7 @@
           <context-help
             help-text="Geben Sie hier die E-Mail-Adresse der Person ein, mit der Sie
             die Klasse teilen möchten. Die Person wird dann per Mail informiert. Bei nicht-anonymem
-            Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler:innen-Namen.
+            Teilen enthält die Mail auch den Zugangsschlüssel zum Ansehen der Schüler*innen-Namen.
             Sie können die Berechtigung der Person jederzeit ändern und das Teilen der Klasse auch wieder 
             beenden. Wenn Sie die Klasse in das Archiv verschieben, wird das Teilen automatisch beendet."
             class-name="ms-2" />
@@ -93,7 +93,7 @@
             value: 1,
             disabled: 0,
             helpText:
-              'Die Person darf die Klasse nicht bearbeiten, kann jedoch Messungen und Namen der Schüler:innen sehen.',
+              'Die Person darf die Klasse nicht bearbeiten, kann jedoch Messungen und Namen der Schüler*innen sehen.',
           },
           {
             text: 'Ansicht und verwenden',
@@ -107,7 +107,7 @@
             value: 2,
             disabled: 0,
             helpText:
-              'Die Person darf die Klasse nicht bearbeiten; Namen der Schüler:innen sind anonymisiert. Bei anonym geteilten Klassen kann die Berechtigungsstufe im Nachhinein nicht geändert werden.',
+              'Die Person darf die Klasse nicht bearbeiten; Namen der Schüler*innen sind anonymisiert. Bei anonym geteilten Klassen kann die Berechtigungsstufe im Nachhinein nicht geändert werden.',
           },
         ]
       },

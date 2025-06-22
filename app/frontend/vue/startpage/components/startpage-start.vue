@@ -64,7 +64,7 @@
             class="img-bg me-4 mb-4 float-start shadow"
             :src="frontpage5"
             fluid
-            alt="Eine Lehrerin demonstriert ihren Schüler:innen etwas an einer Landkarte" />
+            alt="Eine Lehrerin demonstriert ihren Schüler*innen etwas an einer Landkarte" />
           <p>
             Wir bieten aktuell unter anderem Tests zum Lesen, zur Rechtschreibung und für Mathematik
             an. Vorhandenes Fördermaterial wird spezifisch anhand der Testergebnisse empfohlen.

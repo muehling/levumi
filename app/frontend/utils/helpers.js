@@ -96,3 +96,8 @@ export const getCalcSettingsDescription = (studentSettings, groupSettings) => {
       return { id: 2, text: 'Nummernblock' }
   }
 }
+
+export const stripHtml = val => {
+  let doc = new DOMParser().parseFromString(val, 'text/html')
+  return doc.body.textContent || ''
+}

@@ -36,15 +36,6 @@
       questionTypeLabel() {
         return testDefinitions[this.questionType]?.label
       },
-      isMultipleChoice() {
-        return this.allData.questionType === 'multiple_choice'
-      },
-      isTrueOrFalse() {
-        return this.allData.questionType === 'trueOrFalse'
-      },
-      isGapText() {
-        return this.allData.questionType === 'gapText'
-      },
       properties() {
         return this.allData.properties
       },
@@ -93,13 +84,14 @@
           item_type: this.allData.questionType,
           options: {
             show_demo_task: this.properties.show_demo_task,
+            instruction_text: this.properties.instruction_text,
             show_feedback: this.properties.show_feedback,
             feedback: {
               positive: this.properties.positive_feedback_text,
               negative: this.properties.negative_feedback_text,
               show_task: this.properties.hide_task_in_feedback,
             },
-            test_options: this.properties.options,
+            ...this.properties.test_options,
           },
           views: [
             {
@@ -214,6 +206,9 @@
         }
         if (this.properties.show_demo_task) {
           requiredServices.push('v2/demo_item')
+        }
+        if (testDefinitions[this.allData.questionType].additionalServices) {
+          requiredServices.push(...testDefinitions[this.allData.questionType].additionalServices)
         }
 
         const json = JSON.stringify({

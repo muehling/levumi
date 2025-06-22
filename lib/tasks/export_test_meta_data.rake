@@ -31,7 +31,7 @@ task 'export_tests_meta_data' => :environment do |_, args|
         test.level,
         test.version,
         test.updated_at.strftime('%d.%m.%Y'),
-        test.student_test ? 'Schüler:innen' : 'Lehrkräfte',
+        test.student_test ? 'Schüler*innen' : 'Lehrkräfte',
         tt
       ].join(',') + "\n"
     index = index + 1

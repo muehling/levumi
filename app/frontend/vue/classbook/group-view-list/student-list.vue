@@ -4,7 +4,7 @@
       v-if="students.length === 0 && group.read_only"
       bg-variant="white"
       class="col-lg-8 col-xl-6 mt-3">
-      Keine Schüler:innen vorhanden!
+      Keine Schüler*innen vorhanden!
     </b-card>
     <table v-else class="table table-sm table-striped table-hover table-responsive-md text-small">
       <thead>
@@ -13,7 +13,7 @@
           <th>
             Login-Code
             <context-help
-              help-text="Login-Code der Schüler:in. Unter 'Aktionen und Einstellungen' können Sie ein PDF mit diesen Codes zum Ausdrucken und Austeilen an die Schüler:innen erzeugen." />
+              help-text="Login-Code der Schüler*in. Unter 'Aktionen und Einstellungen' können Sie ein PDF mit diesen Codes zum Ausdrucken und Austeilen an die Schüler*innen erzeugen." />
           </th>
           <th>Geschlecht</th>
           <th>Geburtsdatum</th>
